@@ -30,8 +30,14 @@
       ]
     },
     "R3_tiny_router_v2_action_classifier": {
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "scripts/train_tiny_router.py",
+        "scripts/eval_tiny_router.py",
+        "web/tiny_router.js",
+        "web/tiny_router_model.generated.js",
+        "artifacts/tiny_router_model.json"
+      ]
     },
     "R4_language_layer_voice_verifier": {
       "status": "pending",

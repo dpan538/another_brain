@@ -63,7 +63,7 @@ function tinyAnswer(prompt, state) {
     const total = Math.round(now() - started);
     return {
       prompt,
-      intent: exactOrNear.label === "rewrite_short" ? "rewrite_short" : `tiny_${exactOrNear.label}`,
+      intent: exactOrNear.label === "SHORTEN_TEXT" ? "rewrite_short" : `tiny_${exactOrNear.label}`,
       output: exactOrNear.answer,
       outputChars: exactOrNear.answer.length,
       rawOutput: "",

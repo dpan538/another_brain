@@ -107,7 +107,28 @@ export function tinyDirectAnswer(text) {
   let best = null;
   for (const entry of TINY_ROUTER_MODEL.answerIndex) {
     if (entry.label !== route.label) continue;
-    if (!["fixed", "boundary", "unknown", "reasoning", "philosophy", "rewrite_short"].includes(entry.label)) continue;
+    if (![
+      "CHAT_LIGHT",
+      "REFUSE_ROLEPLAY",
+      "REFUSE_PRIVACY",
+      "ANSWER_WITH_UNCERTAINTY",
+      "SUGGEST_SEARCH",
+      "ASK_PREMISE",
+      "ASK_DIRECTION",
+      "SHORTEN_TEXT",
+      "COMMENT_CREATIVE",
+      "HELP_START",
+      "HELP_FEATURES",
+      "HELP_EXAMPLES",
+      "HELP_PROJECT",
+      "HELP_PRIVACY",
+      "HELP_LIMITS",
+      "HELP_MEMORY",
+      "SURFACE_IDENTITY_SELF",
+      "SURFACE_IDENTITY_ALIAS",
+      "SURFACE_IDENTITY_ORIGIN_REFUSAL",
+      "SURFACE_IDENTITY_RELATION_PRESSURE"
+    ].includes(entry.label)) continue;
     const similarity = diceSimilarity(text, entry.prompt);
     if (!best || similarity > best.similarity) best = { entry, similarity };
   }
@@ -130,15 +151,28 @@ export function tinyIntentHint(text) {
   const route = classifyTinyRoute(text);
   const thresholds = TINY_ROUTER_MODEL.thresholds;
   if (route.confidence < thresholds.routeConfidence || route.margin < thresholds.routeMargin) return null;
-  if (route.label === "rewrite_short" && REWRITE_RE.test(text)) return { intent: "rewrite_short", route };
-  if (route.label === "boundary" && ROLEPLAY_RE.test(text)) return { intent: "forced_roleplay", route };
-  if (route.label === "unknown" && KNOWLEDGE_QUESTION_RE.test(text)) return { intent: "knowledge_unknown", route };
-  if (route.label === "reasoning") return { intent: "reasoning_reflection", route };
-  if ((route.label === "common_knowledge" || route.label === "personal_world") && KNOWLEDGE_QUESTION_RE.test(text)) {
+  if (route.label === "SHORTEN_TEXT" && REWRITE_RE.test(text)) return { intent: "rewrite_short", route };
+  if (route.label === "REFUSE_ROLEPLAY" && ROLEPLAY_RE.test(text)) return { intent: "forced_roleplay", route };
+  if (route.label === "REFUSE_PRIVACY") return { intent: "privacy_boundary", route };
+  if (route.label === "SUGGEST_SEARCH" || route.label === "ANSWER_WITH_UNCERTAINTY") return { intent: "knowledge_unknown", route };
+  if (route.label === "ASK_PREMISE" || route.label === "ASK_DIRECTION") return { intent: "reasoning_reflection", route };
+  if (route.label.startsWith("CASE_")) return { intent: "reasoning_reflection", route };
+  if (route.label === "ANSWER_COMMON" || route.label === "ANSWER_PERSONAL") {
+    if (!KNOWLEDGE_QUESTION_RE.test(text)) return null;
     return { intent: "knowledge_unknown", route };
   }
-  if (route.label === "memory") return { intent: "memory", route };
-  if (route.label === "creative") return { intent: "creative", route };
+  if (route.label === "COMMENT_CREATIVE") return { intent: "creative", route };
+  if (route.label === "HELP_START") return { intent: "help_start", route };
+  if (route.label === "HELP_FEATURES") return { intent: "help_features", route };
+  if (route.label === "HELP_EXAMPLES") return { intent: "help_examples", route };
+  if (route.label === "HELP_PROJECT") return { intent: "help_project", route };
+  if (route.label === "HELP_PRIVACY") return { intent: "help_privacy", route };
+  if (route.label === "HELP_LIMITS") return { intent: "help_limits", route };
+  if (route.label === "HELP_MEMORY") return { intent: "help_memory", route };
+  if (route.label === "SURFACE_IDENTITY_SELF") return { intent: "surface_identity_self", route };
+  if (route.label === "SURFACE_IDENTITY_ALIAS") return { intent: "surface_identity_alias", route };
+  if (route.label === "SURFACE_IDENTITY_ORIGIN_REFUSAL") return { intent: "surface_identity_origin_pressure", route };
+  if (route.label === "SURFACE_IDENTITY_RELATION_PRESSURE") return { intent: "surface_identity_relation_pressure", route };
   return null;
 }
 

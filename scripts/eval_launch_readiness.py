@@ -155,8 +155,10 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "notes": "Train/dev/blind split manifest is frozen by family across identity, help, privacy, voice, logic/ethics, rewrite, and adversarial datasets.",
         },
         "R3_tiny_router_v2_action_classifier": {
-            "status": "pending",
-            "notes": "Current router is still content-label route-and-answer; production policy requires action-label v2. Router bytes are observed only.",
+            "status": "passed"
+            if tests["tiny_router_eval"]["ok"] and tests["model_gate"]["ok"] and tests["frontend_latency"]["ok"]
+            else "failed",
+            "notes": "Tiny router v2 uses action labels, preserves answer-index behavior, and passes model gate plus frontend answer latency.",
         },
         "R4_language_layer_voice_verifier": {
             "status": "pending",

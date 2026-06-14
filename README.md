@@ -147,10 +147,11 @@ npm run check:launch-readiness
 ## Current Gate Snapshot
 
 - Distillation dataset: 76365 rows, 74580 train, 1785 eval.
-- Tiny router web artifact: 1871095 bytes, observed only. Production blocking is loaded-page answer latency, not router byte size.
-- Tiny router feature weights: 18000.
-- Tiny router answer index: 787.
-- Tiny router route accuracy: 0.9372.
+- Tiny router web artifact: 7581139 bytes, observed only. Production blocking is loaded-page answer latency, not router byte size.
+- Tiny router v2 label mode: action labels.
+- Tiny router feature weights: 32000.
+- Tiny router answer index: 789.
+- Tiny router action accuracy: 0.9414 overall, identity 1.0000, privacy 1.0000, help 1.0000.
 - Tiny router family-holdout accuracy: 0.9467 across 6833 held-out examples from unseen source/tag/id families.
 - Relationship repetition gate: 16/16 turns passed.
 - Knowledge runtime: 55151 generated cards, 55284 total runtime cards, p95 0.231ms and p99 0.324ms on the last local run.

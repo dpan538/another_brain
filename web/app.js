@@ -153,7 +153,7 @@ function answerWithTinyRouter(text, state) {
   const exactOrNear = tinyDirectAnswer(text);
   if (exactOrNear?.answer) {
     return {
-      intent: exactOrNear.label === "rewrite_short" ? "rewrite_short" : `tiny_${exactOrNear.label}`,
+      intent: exactOrNear.label === "SHORTEN_TEXT" ? "rewrite_short" : `tiny_${exactOrNear.label}`,
       answer: exactOrNear.answer
     };
   }
