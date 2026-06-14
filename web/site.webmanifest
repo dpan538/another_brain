@@ -1,0 +1,12 @@
+{
+  "name": "Answer Machine",
+  "short_name": "Answer Machine",
+  "description": "A local-first browser-side answer machine at efishother.com.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fff4e2",
+  "theme_color": "#fff4e2",
+  "lang": "zh-CN",
+  "dir": "ltr"
+}

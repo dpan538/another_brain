@@ -17,7 +17,12 @@ required_files=(
   "README.md"
   ".vercelignore"
   "vercel.json"
+  "web/about.txt"
   "web/index.html"
+  "web/llms.txt"
+  "web/robots.txt"
+  "web/sitemap.xml"
+  "web/site.webmanifest"
   "web/app.js"
   "web/debug_report.js"
   "web/dialog_rules.js"
@@ -88,6 +93,8 @@ fi
 
 python3 -m json.tool vercel.json >/dev/null
 python3 -m json.tool package.json >/dev/null
+python3 -m json.tool web/site.webmanifest >/dev/null
 python3 scripts/validate_knowledge_shards.py >/dev/null
+node scripts/eval_seo_metadata.mjs >/dev/null
 
 printf 'release check passed\n'

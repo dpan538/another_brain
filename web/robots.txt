@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /bench.html
+Disallow: /bench.js
+Disallow: /model_gate.html
+Disallow: /model_gate.js
+Disallow: /model_inference_cases.json
+Disallow: /context_gate_cases.json
+Disallow: /context_stress_cases.json
+Disallow: /knowledge_base.generated.js
+Disallow: /tiny_router_model.generated.js
+Disallow: /knowledge_shards/
+
+Sitemap: https://efishother.com/sitemap.xml

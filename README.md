@@ -1,12 +1,14 @@
 # Another Brain
 
-Another Brain is a local-first dialog-copy experiment with a tiny browser-side language layer. It turns allowed local materials into redacted memory structures, then answers through deterministic dialog rules, static knowledge lookup, and a compact tiny router that acts as a route-and-answer Web SLM.
+Another Brain is the source repository for Answer Machine, a local-first browser-side answer web app at `efishother.com`. It turns allowed local materials into redacted memory structures, then answers through deterministic dialog rules, static knowledge lookup, and a compact tiny router that acts as a route-and-answer Web SLM.
 
 The public UI is intentionally small: one input box, no account, no cloud inference, and no remote LLM call. The browser path is designed to stay light enough for mobile devices.
 
 Launch domain: `efishother.com`.
 
-GitHub description: `Local-first browser-side dialog copy: deterministic rules, static knowledge cards, and a route-and-answer Web SLM with no cloud inference.`
+Public product name: `Answer Machine`.
+
+GitHub description: `Answer Machine: local-first browser-side answers with deterministic rules, static knowledge cards, and no cloud inference.`
 
 ## Runtime Shape
 
@@ -253,10 +255,25 @@ npm run check:launch-readiness
 
 The launch target is static Vercel hosting for `efishother.com`. Vercel should not run model inference, generate memory packs, or build private artifacts. The checked-in `vercel.json` uses `web/` as the output directory and runs only the release preflight.
 
+Public crawl and AI-readable resources are checked in under `web/`:
+
+- `web/sitemap.xml`: Google Search Console sitemap URL, served as `https://efishother.com/sitemap.xml`.
+- `web/robots.txt`: crawler policy and sitemap pointer.
+- `web/llms.txt`: concise AI-readable project description and boundaries.
+- `web/about.txt`: plain-text project summary.
+- `web/site.webmanifest`: install/app metadata for the public name.
+- `web/index.html`: canonical title, description, Open Graph/Twitter metadata, hidden H1 summary, and JSON-LD structured data.
+
 Before deploying:
 
 ```bash
 npm run check
+```
+
+Validate crawl metadata alone:
+
+```bash
+npm run check:seo
 ```
 
 `npm run check:release` is intentionally lighter and suitable as a Vercel build command. `npm run check` is the fuller local gate.

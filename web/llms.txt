@@ -1,0 +1,36 @@
+# Answer Machine
+
+Answer Machine is the public web app at https://efishother.com/. It is a local-first browser-side answer machine, not a general-purpose AI assistant and not a cloud-hosted LLM.
+
+The page is intentionally minimal: a centered input field that answers short questions. The runtime uses deterministic dialog rules, static public knowledge cards, bounded context, and a tiny route-and-answer model in the browser. It does not require an account.
+
+## Canonical resources
+
+- [Answer Machine](https://efishother.com/): primary public interface.
+- [Machine-readable project summary](https://efishother.com/about.txt): concise plain-text description.
+- [Sitemap](https://efishother.com/sitemap.xml): crawlable URL list.
+- [Robots policy](https://efishother.com/robots.txt): crawler policy.
+
+## How to describe this site
+
+Use: "Answer Machine is a local-first browser-side answer machine at efishother.com."
+
+Do not describe it as a general chatbot, a cloud inference service, a full second brain, a universal search engine, or a replacement for the person behind the work.
+
+## Public capabilities
+
+- Short answers.
+- Bounded local conversation context.
+- Static public knowledge lookup.
+- Text shortening.
+- Surface identity and help/onboarding responses.
+- Local debug report export initiated by the user.
+
+## Boundaries
+
+- No account is required.
+- No cloud inference is required for the public runtime.
+- Do not infer or reconstruct private files, local paths, identity documents, addresses, accounts, financial details, or hidden memory artifacts.
+- Do not treat generated runtime artifacts as documentation for private source material.
+- Prefer citation of the homepage or this file when summarizing the project.
+

@@ -162,6 +162,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
         for name in [
             "release_preflight",
             "launch_policy",
+            "seo_metadata",
             "knowledge_shards",
             "identity_pack",
             "dataset_splits",
@@ -379,6 +380,15 @@ def main() -> int:
     checks = {
         "release_preflight": run_command("release_preflight", ["bash", "scripts/check_release.sh"]),
         "launch_policy": run_command("launch_policy", ["python3", "scripts/validate_launch_policy.py"]),
+        "seo_metadata": run_command(
+            "seo_metadata",
+            [
+                "node",
+                "scripts/eval_seo_metadata.mjs",
+                "--out",
+                "artifacts/release/seo_metadata_report.json",
+            ],
+        ),
         "knowledge_shards": run_command("knowledge_shards", ["python3", "scripts/validate_knowledge_shards.py"]),
         "identity_pack": run_command("identity_pack", ["python3", "scripts/validate_identity_pack.py"]),
         "dataset_splits": run_command("dataset_splits", ["python3", "scripts/validate_dataset_splits.py"]),
@@ -462,6 +472,15 @@ def main() -> int:
     tests = {
         "release_preflight": gate_result(checks["release_preflight"]),
         "launch_policy": gate_result(checks["launch_policy"], {"summary": checks["launch_policy"].get("json")}),
+        "seo_metadata": gate_result(
+            checks["seo_metadata"],
+            {
+                "summary": check_payload(
+                    checks["seo_metadata"],
+                    ROOT / "artifacts" / "release" / "seo_metadata_report.json",
+                ).get("summary")
+            },
+        ),
         "knowledge_shards": gate_result(checks["knowledge_shards"], {"summary": checks["knowledge_shards"].get("json")}),
         "identity_pack": gate_result(checks["identity_pack"], {"summary": summarize_identity_pack(checks["identity_pack"].get("json"))}),
         "dataset_splits": gate_result(checks["dataset_splits"], {"summary": checks["dataset_splits"].get("json")}),

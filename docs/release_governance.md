@@ -189,6 +189,20 @@ No environment tokens
 No raw identity, banking, passport, visa, address, or account-number material
 ```
 
+The public static app must also include crawl and AI-readable metadata:
+
+```text
+web/sitemap.xml
+web/robots.txt
+web/llms.txt
+web/about.txt
+web/site.webmanifest
+index.html title, canonical URL, Open Graph/Twitter metadata, hidden H1 summary, and JSON-LD
+```
+
+The public page title is `Answer Machine | efishother`. `Dialog` may remain an
+internal engineering term, but it must not be the homepage title.
+
 ### Gate 1: Surface Identity
 
 Production line: 100%.

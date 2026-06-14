@@ -72,16 +72,29 @@ async function readLocalText(path, url) {
 
 function assetUrls(html, baseUrl) {
   const urls = [];
-  for (const match of html.matchAll(/<(?:script|link)[^>]+(?:src|href)=["']([^"']+)["']/g)) {
+  for (const match of html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)) {
     urls.push(new URL(match[1], baseUrl).toString());
+  }
+  for (const match of html.matchAll(/<link[^>]+rel=["']([^"']+)["'][^>]+href=["']([^"']+)["']/g)) {
+    const rel = String(match[1] || "").toLowerCase();
+    if (!/(stylesheet|manifest)/.test(rel)) continue;
+    urls.push(new URL(match[2], baseUrl).toString());
   }
   return urls;
 }
 
 function localAssetPaths(html) {
   const paths = [];
-  for (const match of html.matchAll(/<(?:script|link)[^>]+(?:src|href)=["']([^"']+)["']/g)) {
+  for (const match of html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)) {
     const clean = match[1].split("?")[0].replace(/^\.\//, "");
+    paths.push(resolve(WEB_ROOT, clean));
+  }
+  for (const match of html.matchAll(/<link[^>]+rel=["']([^"']+)["'][^>]+href=["']([^"']+)["']/g)) {
+    const rel = String(match[1] || "").toLowerCase();
+    if (!/(stylesheet|manifest)/.test(rel)) continue;
+    const href = match[2];
+    if (/^(https?:|mailto:|#)/i.test(href)) continue;
+    const clean = href.split("?")[0].replace(/^\.\//, "");
     paths.push(resolve(WEB_ROOT, clean));
   }
   return paths;

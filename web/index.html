@@ -3,12 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dialog</title>
+    <title>Answer Machine | efishother</title>
+    <meta
+      name="description"
+      content="Answer Machine is a local-first browser-side answer machine at efishother.com: a bounded dialog web app with static knowledge, deterministic rules, and no cloud inference."
+    />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="author" content="Dai Pan" />
+    <meta name="application-name" content="Answer Machine" />
+    <meta name="theme-color" content="#fff4e2" />
+    <link rel="canonical" href="https://efishother.com/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://efishother.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://efishother.com/" />
+    <link rel="manifest" href="./site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="efishother" />
+    <meta property="og:title" content="Answer Machine | efishother" />
+    <meta
+      property="og:description"
+      content="A local-first browser-side answer machine: short answers, bounded memory, static knowledge, no account, and no cloud inference."
+    />
+    <meta property="og:url" content="https://efishother.com/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Answer Machine | efishother" />
+    <meta
+      name="twitter:description"
+      content="A bounded browser-side answer machine with static knowledge and no cloud inference."
+    />
     <link rel="stylesheet" href="./styles.css?v=9" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://efishother.com/#website",
+            "name": "efishother",
+            "url": "https://efishother.com/",
+            "inLanguage": "zh-CN",
+            "description": "efishother is the home of Answer Machine, a local-first browser-side answer machine."
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://efishother.com/#answer-machine",
+            "name": "Answer Machine",
+            "alternateName": ["another_brain", "efishother answer machine"],
+            "url": "https://efishother.com/",
+            "applicationCategory": "BrowserApplication",
+            "operatingSystem": "Any modern browser",
+            "isAccessibleForFree": true,
+            "creator": {
+              "@type": "Person",
+              "name": "Dai Pan",
+              "url": "https://daipan.art/"
+            },
+            "description": "A bounded browser-side answer machine that uses deterministic dialog rules, static knowledge cards, and a tiny route-and-answer model. It does not require an account or cloud inference.",
+            "featureList": [
+              "short browser-side answers",
+              "bounded local conversation context",
+              "static public knowledge lookup",
+              "privacy-preserving no-cloud-inference runtime"
+            ],
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://efishother.com/#webpage",
+            "url": "https://efishother.com/",
+            "name": "Answer Machine | efishother",
+            "isPartOf": {
+              "@id": "https://efishother.com/#website"
+            },
+            "mainEntity": {
+              "@id": "https://efishother.com/#answer-machine"
+            },
+            "inLanguage": "zh-CN",
+            "description": "The public page for Answer Machine, a minimal local-first answer interface."
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
-    <main class="shell" aria-label="Dialog">
-      <section class="chatbox" aria-label="Crocodile dialog">
+    <main class="shell" aria-label="Answer Machine" aria-describedby="siteSummary">
+      <section id="siteSummary" class="sr-only">
+        <h1>Answer Machine</h1>
+        <p>
+          Answer Machine is a local-first browser-side answer machine at efishother.com.
+          It gives short bounded answers through deterministic rules, static knowledge cards,
+          and a tiny route-and-answer runtime. It is not a general-purpose cloud LLM and does
+          not require an account.
+        </p>
+      </section>
+      <section class="chatbox" aria-label="Answer Machine input">
         <section id="contextPanel" class="context-panel" aria-label="Context" hidden>
           <div id="contextList" class="context-list"></div>
         </section>

@@ -1,0 +1,14 @@
+Answer Machine | efishother
+https://efishother.com/
+
+Answer Machine is a local-first browser-side answer machine. It is a minimal web app built around a centered input field, short bounded answers, deterministic dialog rules, static public knowledge cards, and a tiny route-and-answer runtime.
+
+It is not a general-purpose AI assistant, not a cloud inference service, and not a universal search engine. The public page does not require an account and does not need remote LLM calls to answer.
+
+Use it by asking one question. It can answer briefly, shorten text, respond to surface identity questions, explain how to start, and stop when a question is outside its boundary.
+
+Canonical URL: https://efishother.com/
+Project name: Answer Machine
+Site name: efishother
+Creator: Dai Pan
+
