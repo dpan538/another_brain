@@ -92,6 +92,13 @@ python3 scripts/build_context_stress_cases.py
 python3 scripts/validate_context_stress_cases.py
 ```
 
+Build and run synthetic casepack capability evals:
+
+```bash
+python3 scripts/build_casepack_evals.py
+node scripts/eval_casepacks_node.mjs --min-score 0.88 --out /tmp/another_brain_casepack_eval.json
+```
+
 ## Current Gate Snapshot
 
 - Distillation dataset: 74593 rows, 72808 train, 1785 eval.
@@ -108,6 +115,7 @@ python3 scripts/validate_context_stress_cases.py
 - Context stress suite: 100 groups, 1600 questions, 1500 context assertions, 485 required context-delta checks.
 - Context stress distribution: 20 single-topic groups, 39 adjacent-bridge groups, 21 soft multi-insert groups, 20 hard-mixed groups.
 - Context stress gate: coverage 1.0000, required context-delta ratio 1.0000, 0 failures.
+- Casepack capability eval: 10 casepacks, 160 questions, average score 1.0000, 0 failures.
 - Model gate: 778/778 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
@@ -118,6 +126,8 @@ python3 scripts/validate_context_stress_cases.py
 - `web/tiny_router_model.generated.js`: compact generated tiny-router artifact.
 - `web/knowledge_base.generated.js`: generated common-knowledge cards.
 - `web/context_stress_cases.json`: 100x16 mixed context stress cases for training calibration.
+- `web/structured_decision.js`: structured route, evidence sufficiency, and answer verifier helper.
+- `evals/casepacks/`: synthetic casepack-16 capability evals.
 - `scripts/`: local build, validation, training, and gate scripts.
 - `models/manifest.json`: tiny-router runtime metadata.
 - `artifacts/`: ignored local runtime outputs.

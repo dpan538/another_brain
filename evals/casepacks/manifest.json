@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "casepacks": 10,
+  "questions": 160,
+  "questions_per_casepack": 16,
+  "casepack_ids": [
+    "casepack_001_launch",
+    "casepack_002_photo_archive",
+    "casepack_003_privacy_boundary",
+    "casepack_004_translation_poetry",
+    "casepack_005_vercel_static",
+    "casepack_006_context_window",
+    "casepack_007_license_release",
+    "casepack_008_retrieval_grounding",
+    "casepack_009_design_runtime",
+    "casepack_010_identity_subject"
+  ]
+}

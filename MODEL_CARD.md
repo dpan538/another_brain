@@ -57,3 +57,4 @@ adapters are ignored by git and are not licensed for distribution.
 - Holdout accuracy: 0.9869.
 - Route accuracy: 0.9382.
 - Public model-gate usage: 37/778 cases.
+- Synthetic casepack capability eval: 10 casepacks, 160 questions, 0 failures.
