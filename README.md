@@ -57,6 +57,18 @@ Run the release preflight:
 npm run check:release
 ```
 
+Probe the dialog runtime without the frontend:
+
+```bash
+npm run probe:dialog -- --prompt "门禁为什么不是为了好看？" --prompt "我们是什么关系？" --text
+```
+
+For batch testing, pass JSONL lines as strings or objects with `prompt`, `text`, `query`, or `user`:
+
+```bash
+npm run probe:dialog -- --jsonl evals/probe/prompts.jsonl --out artifacts/training_os/dialog_probe_report.json
+```
+
 The checked-in public runtime ships with hand-written persona calibration, but without raw personal memory cards. Shared public generated files in `web/` are tracked; private local payloads such as `artifacts/` and `web/brain_pack.js` are ignored by git.
 
 ## Local Build Workflow
@@ -181,7 +193,7 @@ npm run check:launch-readiness
 - Casepack capability eval: 10 casepacks, 160 questions, average score 1.0000, 0 failures.
 - Clone logic/ethics held-out eval: 30 real-event-derived casepacks, 480 turns, 16 judgment actions, structure gate passed.
 - Integrated blind casepack eval: 30 casepacks, 480 turns, median 14.4065/16, p25 14.375/16, critical failures 0, distractor pass 1.0000, self-audit pass 1.0000.
-- Model gate: 805/805 passed, 37/37 Web SLM cases passed.
+- Model gate: 807/807 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
 ## Repository Contents
