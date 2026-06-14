@@ -9,6 +9,7 @@ runtime.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -79,6 +80,7 @@ ANSWER_SOURCE_PRIORITY = {
 
 @dataclass(frozen=True)
 class Example:
+    row_id: str
     prompt: str
     answer: str
     source: str
@@ -170,8 +172,9 @@ def read_examples(path: Path) -> list[Example]:
             prompt, answer = pair
             tags = tuple(str(tag) for tag in raw.get("tags", []))
             source = str(raw.get("source", "unknown"))
+            row_id = str(raw.get("id", ""))
             label = classify_example(prompt, answer, source, tags)
-            examples.append(Example(prompt=prompt, answer=answer, source=source, tags=tags, label=label))
+            examples.append(Example(row_id=row_id, prompt=prompt, answer=answer, source=source, tags=tags, label=label))
     return examples
 
 
@@ -273,16 +276,75 @@ def build_answer_index(examples: list[Example], limit: int) -> list[dict[str, An
     return entries
 
 
-def evaluate_holdout(examples: list[Example], classifier: dict[str, Any]) -> dict[str, Any]:
-    labels = classifier["labels"]
-    feature_weights = classifier["featureWeights"]
-    priors = classifier["priors"]
+def family_key(example: Example) -> str:
+    base_id = re.sub(r"-r\d+$", "", example.row_id)
+    if not base_id:
+        base_id = normalize_text(example.prompt)[:80]
+    tag_family = ",".join(tag for tag in example.tags if tag != "oversampled")
+    return f"{example.source}:{example.label}:{tag_family}:{base_id}"
+
+
+def family_bucket(key: str, modulo: int) -> int:
+    digest = hashlib.sha256(key.encode("utf-8")).hexdigest()
+    return int(digest[:12], 16) % modulo
+
+
+def split_family_holdout(examples: list[Example], modulo: int) -> tuple[list[Example], list[Example], dict[str, Any]]:
+    families: dict[str, str] = {}
+    for example in examples:
+        key = family_key(example)
+        families[key] = example.label
+
+    holdout_keys = {key for key in families if family_bucket(key, modulo) == 0}
+    by_label_keys: dict[str, list[str]] = defaultdict(list)
+    for key, label in families.items():
+        by_label_keys[label].append(key)
+
+    forced_label_holdout: list[str] = []
+    for label, keys in by_label_keys.items():
+        if len(keys) <= 1:
+            continue
+        if any(key in holdout_keys for key in keys):
+            continue
+        selected = min(keys, key=lambda key: hashlib.sha256(key.encode("utf-8")).hexdigest())
+        holdout_keys.add(selected)
+        forced_label_holdout.append(label)
+
+    train: list[Example] = []
+    holdout: list[Example] = []
+    for example in examples:
+        key = family_key(example)
+        if key in holdout_keys:
+            holdout.append(example)
+        else:
+            train.append(example)
+
+    label_summary: dict[str, dict[str, int]] = defaultdict(lambda: {"families": 0, "holdoutFamilies": 0})
+    for key, label in families.items():
+        label_summary[label]["families"] += 1
+        if key in holdout_keys:
+            label_summary[label]["holdoutFamilies"] += 1
+
+    return train, holdout, {
+        "familyModulo": modulo,
+        "families": len(families),
+        "forcedLabelHoldout": sorted(forced_label_holdout),
+        "trainExamples": len(train),
+        "holdoutExamples": len(holdout),
+        "byLabelFamilies": dict(sorted(label_summary.items())),
+    }
+
+
+def evaluate_holdout(examples: list[Example], max_features: int, alpha: float) -> dict[str, Any]:
+    train_examples, holdout_examples, split = split_family_holdout(examples, modulo=11)
+    holdout_classifier = train_classifier(train_examples, max_features, alpha)
+    labels = holdout_classifier["labels"]
+    feature_weights = holdout_classifier["featureWeights"]
+    priors = holdout_classifier["priors"]
     total = 0
     correct = 0
     by_label: dict[str, dict[str, int]] = defaultdict(lambda: {"total": 0, "correct": 0})
-    for index, example in enumerate(examples):
-        if index % 11 != 0:
-            continue
+    for example in holdout_examples:
         scores = list(priors)
         for feature in set(char_features(example.prompt)):
             weights = feature_weights.get(feature)
@@ -297,11 +359,13 @@ def evaluate_holdout(examples: list[Example], classifier: dict[str, Any]) -> dic
             correct += 1
             by_label[example.label]["correct"] += 1
     return {
-        "holdoutEvery": 11,
+        "holdoutStrategy": "source_label_tag_family_sha256_modulo",
+        **split,
         "total": total,
         "correct": correct,
         "accuracy": round(correct / total, 4) if total else 0,
         "byLabel": dict(sorted(by_label.items())),
+        "trainedOnHoldoutFamilies": False,
     }
 
 
@@ -320,7 +384,7 @@ def main() -> int:
     parser.add_argument("--dataset", default=str(DEFAULT_DATASET))
     parser.add_argument("--artifact", default=str(DEFAULT_ARTIFACT))
     parser.add_argument("--web", default=str(DEFAULT_WEB))
-    parser.add_argument("--max-features", type=int, default=10000)
+    parser.add_argument("--max-features", type=int, default=18000)
     parser.add_argument("--answer-limit", type=int, default=1600)
     parser.add_argument("--alpha", type=float, default=0.35)
     args = parser.parse_args()
@@ -347,7 +411,7 @@ def main() -> int:
         "classifier": classifier,
         "answerIndex": answer_index,
     }
-    payload["evaluation"] = evaluate_holdout(examples, classifier)
+    payload["evaluation"] = evaluate_holdout(examples, args.max_features, args.alpha)
 
     artifact = Path(args.artifact)
     artifact.parent.mkdir(parents=True, exist_ok=True)

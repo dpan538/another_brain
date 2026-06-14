@@ -51,10 +51,10 @@ adapters are ignored by git and are not licensed for distribution.
 
 ## Current Snapshot
 
-- Web artifact: 1,717,935 bytes.
+- Web artifact: 1,718,551 bytes.
 - Feature weights: 18,000.
 - Answer index: 775.
-- Holdout accuracy: 0.9869.
+- Family-holdout accuracy: 0.9446 across 6,863 held-out examples from unseen source/tag/id families.
 - Route accuracy: 0.9382.
 - Public model-gate usage: 37/778 cases.
 - Synthetic casepack capability eval: 10 casepacks, 160 questions, 0 failures.

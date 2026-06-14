@@ -102,11 +102,11 @@ node scripts/eval_casepacks_node.mjs --min-score 0.88 --out /tmp/another_brain_c
 ## Current Gate Snapshot
 
 - Distillation dataset: 74593 rows, 72808 train, 1785 eval.
-- Tiny router web artifact: 1717935 bytes.
+- Tiny router web artifact: 1718551 bytes.
 - Tiny router feature weights: 18000.
 - Tiny router answer index: 775.
 - Tiny router route accuracy: 0.9382.
-- Tiny router holdout accuracy: 0.9869.
+- Tiny router family-holdout accuracy: 0.9446 across 6863 held-out examples from unseen source/tag/id families.
 - Relationship repetition gate: 16/16 turns passed.
 - Knowledge runtime: 55151 generated cards, 55284 total runtime cards, p95 0.231ms and p99 0.324ms on the last local run.
 - Knowledge web artifact: 7645757 bytes.
