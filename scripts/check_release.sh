@@ -19,6 +19,7 @@ required_files=(
   "vercel.json"
   "web/index.html"
   "web/app.js"
+  "web/debug_report.js"
   "web/dialog_rules.js"
   "web/tiny_router_model.generated.js"
   "web/knowledge_base.generated.js"
@@ -29,7 +30,24 @@ for path in "${required_files[@]}"; do
   [[ -f "$path" ]] || fail "missing required file: $path"
 done
 
-tracked_files="$(git ls-files --cached --others --exclude-standard)"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  tracked_files="$(git ls-files --cached --others --exclude-standard)"
+else
+  tracked_files="$(
+    find . \
+      -path './node_modules' -prune -o \
+      -path './.git' -prune -o \
+      -path './artifacts' -prune -o \
+      -path './web/brain_pack.js' -prune -o \
+      -path './web/models' -prune -o \
+      -path './web/vendor' -prune -o \
+      -path './models' -prune -o \
+      -path '*/__pycache__' -prune -o \
+      -name '.DS_Store' -prune -o \
+      -type f -print |
+      sed 's#^\./##'
+  )"
+fi
 
 if printf '%s\n' "$tracked_files" | grep -E '(^|/)artifacts/' | grep -v -E '^artifacts/\.gitkeep$' >/dev/null; then
   fail "tracked artifacts/ file found"

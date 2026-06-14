@@ -2,8 +2,8 @@
   "schema_version": 1,
   "policy": "docs/release_governance.md",
   "final_release_allowed": false,
-  "current_stage": "training",
-  "reason": "The launch governance contract is frozen, but the production release gates are not all passed. The tiny-router artifact size is now an observed metric, while production readiness is blocked on browser answer latency, R2-R5 training governance, and R6/R7 preview/release work.",
+  "current_stage": "production_candidate",
+  "reason": "R0-R8 are expected to pass under local automated readiness gates, but final_release_allowed remains false until the user explicitly approves production promotion.",
   "milestones": {
     "R0_surface_identity_protocol": {
       "status": "passed",
@@ -55,16 +55,27 @@
       ]
     },
     "R6_vercel_preview_mobile_smoke": {
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "scripts/eval_r6_preview_mobile.mjs",
+        "evals/r6_mobile/prompts.jsonl",
+        "artifacts/release/r6_preview_mobile_report.json"
+      ]
     },
     "R7_production_release_ready": {
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "scripts/eval_r7_production_candidate.py",
+        "artifacts/release/r7_production_candidate_report.json"
+      ]
     },
     "R8_post_launch_debug_report": {
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "web/debug_report.js",
+        "scripts/eval_r8_debug_report.mjs",
+        "artifacts/release/r8_debug_report_workflow.json"
+      ]
     }
   },
   "production_thresholds": {

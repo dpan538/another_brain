@@ -168,6 +168,24 @@ Validate held-out blind logic/ethics casepacks:
 node scripts/eval_blind_casepacks_node.mjs --median-min 11 --p25-min 8 --critical-failures 0
 ```
 
+Validate automated preview/mobile smoke:
+
+```bash
+node scripts/eval_r6_preview_mobile.mjs --prompts evals/r6_mobile/prompts.jsonl
+```
+
+Validate production-candidate freeze with rollback target:
+
+```bash
+python3 scripts/eval_r7_production_candidate.py --rollback auto
+```
+
+Validate local debug-report workflow:
+
+```bash
+node scripts/eval_r8_debug_report.mjs
+```
+
 Run the launch-readiness detector:
 
 ```bash
@@ -201,6 +219,9 @@ npm run check:launch-readiness
 - Clone logic/ethics held-out eval: 30 real-event-derived casepacks, 480 turns, 16 judgment actions, structure gate passed.
 - Integrated blind casepack eval: 30 casepacks, 480 turns, median 14.4065/16, p25 14.375/16, critical failures 0, distractor pass 1.0000, self-audit pass 1.0000.
 - Model gate: 807/807 passed, 37/37 Web SLM cases passed.
+- R6 automated preview/mobile smoke: local static preview, 4 viewport contracts, 100+ runtime turns, console errors 0, all answers within 1500ms.
+- R7 production-candidate freeze: release preflight and knowledge-shard validation pass with explicit rollback target; no production promotion.
+- R8 debug-report workflow: local JSON export validates schema and sensitive-content scan; transcript is opt-in.
 - Tiny router memory answers in the public exact index: 0.
 
 ## Repository Contents
@@ -216,7 +237,7 @@ npm run check:launch-readiness
 - `evals/clone_logic_ethics/`: held-out real-event-derived clone judgment stress eval; not training data.
 - `docs/clone_training_strategy.md`: training plan for the bounded subject-copy direction.
 - `docs/release_governance.md`: production launch gates, milestone rules, freeze policy, and final review thresholds.
-- `evals/release_policy/release_status.json`: current release-governance status; production is locked until R0-R7 pass.
+- `evals/release_policy/release_status.json`: current release-governance status; production review is locked until R0-R8 pass.
 - `identity_pack/`: public identity contract, safe seed cards, schemas, and interview question bank for building redacted identity/background datasets.
 - `scripts/eval_launch_readiness.py`: runs the current launch gates and writes a milestone/blocker report under `artifacts/release/`.
 - `scripts/`: local build, validation, training, and gate scripts.
@@ -241,10 +262,10 @@ npm run check
 `npm run check:release` is intentionally lighter and suitable as a Vercel build command. `npm run check` is the fuller local gate.
 
 Passing `npm run check` is necessary but not sufficient for production. Final
-production review is locked by `docs/release_governance.md`: R0-R7 must pass,
-critical failures must remain 0, and the production runtime budget must be met
-before `evals/release_policy/release_status.json` can set
-`final_release_allowed` to `true`.
+production review is locked by `docs/release_governance.md`: R0-R8 must pass,
+critical failures must remain 0, the production runtime budget must be met, and
+you must explicitly approve promotion before `final_release_allowed` can become
+`true`.
 
 ## License
 

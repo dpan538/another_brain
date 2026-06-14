@@ -321,8 +321,9 @@ R7: Production release with rollback target ready
 R8: Post-launch local debug-report workflow ready
 ```
 
-Production release is allowed only after R0-R7 are passed. R8 is required before
-longer public operation.
+Production review is allowed only after R0-R8 are passed. R7 means the
+production candidate and rollback target are ready; it does not automatically
+promote production. `final_release_allowed` remains a manual release switch.
 
 ## Supervision Rule
 

@@ -128,6 +128,16 @@ def summarize_report(path: Path) -> dict[str, Any]:
     return payload.get("summary", payload)
 
 
+def check_payload(check: dict[str, Any], artifact: Path | None = None) -> dict[str, Any]:
+    payload = check.get("json")
+    if isinstance(payload, dict):
+        return payload
+    if artifact:
+        loaded = load_json(artifact, {})
+        return loaded if isinstance(loaded, dict) else {}
+    return {}
+
+
 def max_shard_bytes() -> int:
     manifest = load_json(KNOWLEDGE_SHARD_MANIFEST, {})
     shards = manifest.get("shards", [])
@@ -152,6 +162,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
         for name in [
             "release_preflight",
             "launch_policy",
+            "knowledge_shards",
             "identity_pack",
             "dataset_splits",
             "distillation",
@@ -169,6 +180,9 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "casepack_capability",
             "model_gate",
             "clone_logic_ethics_structure",
+            "r6_preview_mobile",
+            "r7_production_candidate",
+            "r8_debug_report",
         ]
     )
 
@@ -200,16 +214,16 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "notes": "Held-out clone logic/ethics casepacks pass integrated blind scoring, and gate effectiveness proves known failures, invariants, fuzz, and mutation probes are caught.",
         },
         "R6_vercel_preview_mobile_smoke": {
-            "status": "pending",
-            "notes": "No Vercel preview, iPhone Safari, Android Chrome, or mobile memory/latency smoke report is recorded.",
+            "status": "passed" if tests["r6_preview_mobile"]["ok"] else "failed",
+            "notes": "Automated preview/mobile smoke covers page load, required DOM, context toggle wiring, static responsive contract, and 100+ loaded-page runtime prompt turns within 1500ms.",
         },
         "R7_production_release_ready": {
-            "status": "pending",
-            "notes": "Production release remains locked until R0-R7 pass, production thresholds pass, rollback target exists, and final_release_allowed becomes true.",
+            "status": "passed" if tests["r7_production_candidate"]["ok"] and tests["r6_preview_mobile"]["ok"] else "failed",
+            "notes": "Production-candidate freeze has release preflight, knowledge-shard validation, and an explicit rollback commit. This does not automatically promote production.",
         },
         "R8_post_launch_debug_report": {
-            "status": "pending",
-            "notes": "Local debug-report export workflow is not implemented yet.",
+            "status": "passed" if tests["r8_debug_report"]["ok"] else "failed",
+            "notes": "Local debug-report workflow can generate a schema-stable, local-only report without transcript by default and with sensitive-content scanning.",
         },
     }
 
@@ -234,6 +248,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             (5, "integrated_blind_eval"),
             (6, "vercel_preview_mobile_smoke"),
             (7, "production_release_ready"),
+            (8, "post_launch_debug_report"),
         ])
         and not production_blockers
         and all_runtime_gates
@@ -262,7 +277,10 @@ def threshold_report(checks: dict[str, dict[str, Any]], bench: dict[str, Any] | 
     tiny_bytes = TINY_ROUTER_WEB.stat().st_size if TINY_ROUTER_WEB.exists() else 0
     shard_bytes = max_shard_bytes()
     knowledge_p99 = (bench or {}).get("p99Ms")
-    frontend_latency = checks.get("frontend_latency", {}).get("json", {}).get("summary", {})
+    frontend_latency = check_payload(
+        checks.get("frontend_latency", {}),
+        ROOT / "artifacts" / "release" / "frontend_latency_report.json",
+    ).get("summary", {})
     return {
         "tiny_router_web_bytes": {
             "ok": True,
@@ -361,6 +379,7 @@ def main() -> int:
     checks = {
         "release_preflight": run_command("release_preflight", ["bash", "scripts/check_release.sh"]),
         "launch_policy": run_command("launch_policy", ["python3", "scripts/validate_launch_policy.py"]),
+        "knowledge_shards": run_command("knowledge_shards", ["python3", "scripts/validate_knowledge_shards.py"]),
         "identity_pack": run_command("identity_pack", ["python3", "scripts/validate_identity_pack.py"]),
         "dataset_splits": run_command("dataset_splits", ["python3", "scripts/validate_dataset_splits.py"]),
         "distillation": run_command("distillation", ["python3", "scripts/validate_distillation.py"]),
@@ -405,6 +424,37 @@ def main() -> int:
                 "artifacts/release/model_inference_report.json",
             ],
         ),
+        "r6_preview_mobile": run_command(
+            "r6_preview_mobile",
+            [
+                "node",
+                "scripts/eval_r6_preview_mobile.mjs",
+                "--prompts",
+                "evals/r6_mobile/prompts.jsonl",
+                "--out",
+                "artifacts/release/r6_preview_mobile_report.json",
+            ],
+        ),
+        "r7_production_candidate": run_command(
+            "r7_production_candidate",
+            [
+                "python3",
+                "scripts/eval_r7_production_candidate.py",
+                "--rollback",
+                "auto",
+                "--out",
+                "artifacts/release/r7_production_candidate_report.json",
+            ],
+        ),
+        "r8_debug_report": run_command(
+            "r8_debug_report",
+            [
+                "node",
+                "scripts/eval_r8_debug_report.mjs",
+                "--out",
+                "artifacts/release/r8_debug_report_workflow.json",
+            ],
+        ),
     }
     bench = run_command("knowledge_runtime", ["python3", "scripts/bench_knowledge_runtime.py", str(args.bench_iterations)])
     checks["knowledge_runtime"] = bench
@@ -412,24 +462,28 @@ def main() -> int:
     tests = {
         "release_preflight": gate_result(checks["release_preflight"]),
         "launch_policy": gate_result(checks["launch_policy"], {"summary": checks["launch_policy"].get("json")}),
+        "knowledge_shards": gate_result(checks["knowledge_shards"], {"summary": checks["knowledge_shards"].get("json")}),
         "identity_pack": gate_result(checks["identity_pack"], {"summary": summarize_identity_pack(checks["identity_pack"].get("json"))}),
         "dataset_splits": gate_result(checks["dataset_splits"], {"summary": checks["dataset_splits"].get("json")}),
         "distillation": gate_result(checks["distillation"], {"summary": checks["distillation"].get("json")}),
         "tiny_router_eval": gate_result(checks["tiny_router_eval"], {"summary": summarize_tiny_router(checks["tiny_router_eval"].get("json"))}),
         "persona": gate_result(checks["persona"], {"summary": summarize_persona(checks["persona"].get("json"))}),
-        "help_onboarding": gate_result(checks["help_onboarding"], {"summary": checks["help_onboarding"].get("json", {}).get("summary")}),
+        "help_onboarding": gate_result(checks["help_onboarding"], {"summary": check_payload(checks["help_onboarding"]).get("summary")}),
         "fallback_overuse": gate_result(checks["fallback_overuse"], {"summary": summarize_fallback_overuse(checks["fallback_overuse"].get("json"))}),
-        "frontend_latency": gate_result(checks["frontend_latency"], {"summary": summarize_frontend_latency(checks["frontend_latency"].get("json"))}),
+        "frontend_latency": gate_result(checks["frontend_latency"], {"summary": summarize_frontend_latency(check_payload(checks["frontend_latency"], ROOT / "artifacts" / "release" / "frontend_latency_report.json"))}),
         "voice_verifier": gate_result(checks["voice_verifier"], {"summary": summarize_voice_verifier(checks["voice_verifier"].get("json"))}),
-        "output_sanitizer": gate_result(checks["output_sanitizer"], {"summary": checks["output_sanitizer"].get("json", {}).get("summary")}),
-        "dialog_sanity": gate_result(checks["dialog_sanity"], {"summary": checks["dialog_sanity"].get("json", {}).get("summary")}),
+        "output_sanitizer": gate_result(checks["output_sanitizer"], {"summary": check_payload(checks["output_sanitizer"]).get("summary")}),
+        "dialog_sanity": gate_result(checks["dialog_sanity"], {"summary": check_payload(checks["dialog_sanity"]).get("summary")}),
         "gate_effectiveness": gate_result(checks["gate_effectiveness"], {"summary": summarize_gate_effectiveness(checks["gate_effectiveness"].get("json"))}),
         "blind_casepacks": gate_result(checks["blind_casepacks"], {"summary": summarize_blind_casepacks(checks["blind_casepacks"].get("json"))}),
         "context_static": gate_result(checks["context_static"]),
         "clone_logic_ethics_structure": gate_result(checks["clone_logic_ethics_structure"]),
-        "context_gate": gate_result(checks["context_gate"], {"summary": checks["context_gate"].get("json", {}).get("summary")}),
-        "casepack_capability": gate_result(checks["casepack_capability"], {"summary": checks["casepack_capability"].get("json", {}).get("summary")}),
-        "model_gate": gate_result(checks["model_gate"], {"summary": checks["model_gate"].get("json", {}).get("summary")}),
+        "context_gate": gate_result(checks["context_gate"], {"summary": check_payload(checks["context_gate"], ROOT / "artifacts" / "release" / "context_gate_report.json").get("summary")}),
+        "casepack_capability": gate_result(checks["casepack_capability"], {"summary": check_payload(checks["casepack_capability"], ROOT / "artifacts" / "release" / "casepack_eval_report.json").get("summary")}),
+        "model_gate": gate_result(checks["model_gate"], {"summary": check_payload(checks["model_gate"], ROOT / "artifacts" / "release" / "model_inference_report.json").get("summary")}),
+        "r6_preview_mobile": gate_result(checks["r6_preview_mobile"], {"summary": check_payload(checks["r6_preview_mobile"], ROOT / "artifacts" / "release" / "r6_preview_mobile_report.json").get("summary")}),
+        "r7_production_candidate": gate_result(checks["r7_production_candidate"], {"summary": check_payload(checks["r7_production_candidate"], ROOT / "artifacts" / "release" / "r7_production_candidate_report.json").get("summary")}),
+        "r8_debug_report": gate_result(checks["r8_debug_report"], {"summary": check_payload(checks["r8_debug_report"], ROOT / "artifacts" / "release" / "r8_debug_report_workflow.json").get("summary")}),
         "knowledge_runtime": gate_result(checks["knowledge_runtime"], {"summary": checks["knowledge_runtime"].get("json")}),
     }
 

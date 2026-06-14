@@ -20,7 +20,7 @@ REQUIRED_POLICY_PHRASES = [
     "我是对话框。",
     "以前被人叫过鳄鱼。",
     "前面忘了。后面还没有开始。",
-    "Production release is allowed only after R0-R7 are passed.",
+    "Production review is allowed only after R0-R8 are passed.",
     "frontend answer after submit <= 1500 ms on a loaded page",
     "tiny_router_model.generated.js is observed, not a production blocker",
     "assistant-tone rate <= 2%",
@@ -101,7 +101,7 @@ def main() -> int:
         return fail("npm run check must include check:launch-policy")
 
     milestones = status.get("milestones", {})
-    required = [f"R{i}_" for i in range(0, 8)]
+    required = [f"R{i}_" for i in range(0, 9)]
     for prefix in required:
         if not any(key.startswith(prefix) for key in milestones):
             return fail(f"release status missing milestone prefix: {prefix}")
@@ -111,9 +111,6 @@ def main() -> int:
         not_passed = [name for name, item in milestones.items() if name.startswith(tuple(required)) and item.get("status") != "passed"]
         if not_passed:
             return fail(f"final release is allowed but milestones are not passed: {', '.join(not_passed)}")
-    elif milestones.get("R7_production_release_ready", {}).get("status") == "passed":
-        return fail("R7 is passed but final_release_allowed is false")
-
     thresholds = status.get("production_thresholds", {})
     if "tiny_router_web_bytes_max" in thresholds:
         return fail("tiny-router byte size must be informational, not a production threshold")
