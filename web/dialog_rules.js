@@ -52,7 +52,7 @@ const MODEL_LEAK_PATTERNS = [
 ];
 
 const HELP_ANSWERS = Object.freeze({
-  help_start: "先问一句就可以。问我是谁，或者问我能做什么。",
+  help_start: "问一句就可以。问我是谁，或者问我能做什么。",
   help_features: "你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。",
   help_examples: "可以问：你是谁？我该怎么开始？你能做什么？这个想法哪里不对劲？",
   help_project: "这是一个对话框。你可以直接问我。",
@@ -67,13 +67,13 @@ function includesAny(text, terms) {
 
 function helpIntent(query) {
   const text = query.trim();
-  if (/^(我该怎么开始|我应该怎么开始|怎么开始|如何开始|从哪开始|这个网页怎么用|这个网站怎么用|怎么用这个网页|如何使用这个网页|怎么玩|我该问什么|可以问什么|新手怎么用)[？?。!！\s]*$/i.test(text)) {
+  if (/^(我该怎么开始|我应该怎么开始|怎么开始|如何开始|从哪开始|怎么用|怎么使用|如何使用|这个网页怎么用|这个网站怎么用|怎么用这个网页|如何使用这个网页|怎么玩|我该问什么|新手怎么用)[？?。!！\s]*$/i.test(text)) {
     return "help_start";
   }
   if (/^(你能做什么|你可以做什么|你有什么功能|有什么功能|你的功能是什么|功能是什么|你会什么|what can you do|features)[？?。!！\s]*$/i.test(text)) {
     return "help_features";
   }
-  if (/^(可以问哪些|能问哪些|问什么比较好|有什么问题例子|给我几个问题例子|example questions)[？?。!！\s]*$/i.test(text)) {
+  if (/^(可以问什么|可以问哪些|能问哪些|问什么比较好|有什么问题例子|给我几个问题例子|example questions)[？?。!！\s]*$/i.test(text)) {
     return "help_examples";
   }
   if (/^(这个网页是什么|这个网站是什么|这个东西是什么|这是干什么的|这个 app 是什么|what is this)[？?。!！\s]*$/i.test(text)) {

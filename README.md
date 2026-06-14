@@ -120,6 +120,12 @@ Validate the public Identity Pack skeleton:
 python3 scripts/validate_identity_pack.py
 ```
 
+Validate first-visit help and onboarding behavior:
+
+```bash
+python3 scripts/eval_help_onboarding.py
+```
+
 Run the launch-readiness detector:
 
 ```bash
@@ -139,6 +145,7 @@ npm run check:launch-readiness
 - Knowledge web artifact: 7645757 bytes.
 - Knowledge shards: 43 static JSON shards, max shard size 179996 bytes, round-trip validated against `web/knowledge_base.generated.js`.
 - Dialog persona eval: 742 cases, including 16 surface-identity cases, 0 failures.
+- Help/onboarding eval: 23/23 passed, no fallback answers, no assistant-tone hits.
 - Context-window gate: UI shows 4 recent turns; hidden reasoning keeps 12 turns.
 - Context stress suite: 100 groups, 1600 questions, 1500 context assertions, 485 required context-delta checks.
 - Context stress distribution: 20 single-topic groups, 39 adjacent-bridge groups, 21 soft multi-insert groups, 20 hard-mixed groups.

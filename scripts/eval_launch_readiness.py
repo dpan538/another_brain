@@ -110,7 +110,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
     tests = report["tests"]
     production = report["production_thresholds"]
 
-    core_help_passed = tests["persona"]["ok"] and tests["model_gate"]["ok"]
+    core_help_passed = tests["persona"]["ok"] and tests["model_gate"]["ok"] and tests["help_onboarding"]["ok"]
     all_runtime_gates = all(
         tests[name]["ok"]
         for name in [
@@ -120,6 +120,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "distillation",
             "tiny_router_eval",
             "persona",
+            "help_onboarding",
             "context_stress",
             "casepack_capability",
             "model_gate",
@@ -133,8 +134,8 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "notes": "Surface identity contract and persona gate pass.",
         },
         "R1_help_onboarding": {
-            "status": "partial" if core_help_passed else "failed",
-            "notes": "Core help smoke cases pass, but no dedicated 98% help_onboarding eval with help_privacy/help_limits/help_memory coverage is frozen.",
+            "status": "passed" if core_help_passed else "failed",
+            "notes": "Dedicated help/onboarding eval covers start, features, examples, project, privacy, limits, and memory at >= 98%.",
         },
         "R2_training_eval_splits": {
             "status": "pending",
@@ -312,6 +313,7 @@ def main() -> int:
         "distillation": run_command("distillation", ["python3", "scripts/validate_distillation.py"]),
         "tiny_router_eval": run_command("tiny_router_eval", ["python3", "scripts/eval_tiny_router.py"]),
         "persona": run_command("persona", ["python3", "scripts/eval_dialog_persona.py"]),
+        "help_onboarding": run_command("help_onboarding", ["python3", "scripts/eval_help_onboarding.py"]),
         "context_static": run_command("context_static", ["python3", "scripts/validate_context_stress_cases.py"]),
         "clone_logic_ethics_structure": run_command("clone_logic_ethics_structure", ["python3", "scripts/validate_clone_logic_ethics.py"]),
         "context_stress": run_command(
@@ -358,6 +360,7 @@ def main() -> int:
         "distillation": gate_result(checks["distillation"], {"summary": checks["distillation"].get("json")}),
         "tiny_router_eval": gate_result(checks["tiny_router_eval"], {"summary": summarize_tiny_router(checks["tiny_router_eval"].get("json"))}),
         "persona": gate_result(checks["persona"], {"summary": summarize_persona(checks["persona"].get("json"))}),
+        "help_onboarding": gate_result(checks["help_onboarding"], {"summary": checks["help_onboarding"].get("json", {}).get("summary")}),
         "context_static": gate_result(checks["context_static"]),
         "clone_logic_ethics_structure": gate_result(checks["clone_logic_ethics_structure"]),
         "context_stress": gate_result(checks["context_stress"], {"summary": checks["context_stress"].get("json", {}).get("summary")}),
@@ -395,4 +398,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

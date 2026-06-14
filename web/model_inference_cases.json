@@ -381,7 +381,7 @@
       "id": "fixed_0051_可以问什么",
       "lane": "fixed",
       "prompt": "可以问什么？",
-      "expected": "问一句就可以。问我是谁，或者问我能做什么。",
+      "expected": "可以问：你是谁？我该怎么开始？你能做什么？这个想法哪里不对劲？",
       "must_not_use_model": true
     },
     {

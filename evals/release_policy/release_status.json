@@ -3,7 +3,7 @@
   "policy": "docs/release_governance.md",
   "final_release_allowed": false,
   "current_stage": "training",
-  "reason": "The launch governance contract is frozen, but the production release gates are not all passed. The current tiny-router artifact is above the final 1.5 MB production budget and the logic/ethics casepacks are still held-out structure evals, not verified evidence-card evals.",
+  "reason": "The launch governance contract is frozen, but the production release gates are not all passed. The tiny-router artifact size is now an observed metric, while production readiness is blocked on browser answer latency, R2-R5 training governance, and R6/R7 preview/release work.",
   "milestones": {
     "R0_surface_identity_protocol": {
       "status": "passed",
@@ -14,10 +14,12 @@
       ]
     },
     "R1_help_onboarding": {
-      "status": "partial",
+      "status": "passed",
       "evidence": [
         "web/surface_identity.js",
-        "web/dialog_rules.js"
+        "web/dialog_rules.js",
+        "scripts/eval_help_onboarding.py",
+        "artifacts/training_os/help_onboarding_report.json"
       ]
     },
     "R2_training_eval_splits": {
@@ -63,4 +65,3 @@
     "knowledge_p99_ms_max": 1.0
   }
 }
-
