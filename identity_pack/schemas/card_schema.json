@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Another Brain Identity Card",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "label",
+    "claim",
+    "source",
+    "visibility",
+    "confidence",
+    "time_scope",
+    "safe_answer",
+    "voice_hint",
+    "must_not_say",
+    "related_cards"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "identity_fact",
+        "timeline",
+        "place",
+        "domain",
+        "work",
+        "relation",
+        "preference",
+        "voice",
+        "boundary",
+        "method",
+        "help",
+        "ethics",
+        "forbidden_surface"
+      ]
+    },
+    "label": {
+      "type": "string"
+    },
+    "claim": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "interview",
+        "repo",
+        "public_site",
+        "note",
+        "derived"
+      ]
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "allowed_if_asked",
+        "style_only",
+        "private",
+        "forbidden"
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "time_scope": {
+      "type": "string",
+      "enum": [
+        "past",
+        "current",
+        "unknown",
+        "timeless"
+      ]
+    },
+    "safe_answer": {
+      "type": "string"
+    },
+    "voice_hint": {
+      "type": "string"
+    },
+    "must_not_say": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related_cards": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

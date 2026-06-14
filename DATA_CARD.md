@@ -17,6 +17,10 @@ Public generated files may include:
 - `evals/casepacks/*.json`
 - `evals/clone_logic_ethics/*.jsonl`
 - `evals/clone_logic_ethics/*.md`
+- `identity_pack/identity_surface_contract.md`
+- `identity_pack/schemas/*.json`
+- `identity_pack/cards/seed_identity_cards.jsonl`
+- `identity_pack/interview_question_bank.md`
 
 These files are generated for this project and are covered by the repository
 license.
@@ -31,6 +35,8 @@ Private data is not distributed:
 - drive inventories
 - source-material inventories
 - source PDFs and images
+- raw identity interview answers
+- unredacted identity/background cards
 - model checkpoints and LoRA adapters
 - local model weights
 
@@ -57,6 +63,7 @@ Current public gates include:
 - Knowledge runtime benchmark.
 - Knowledge shard validation.
 - Training OS validation.
+- Identity Pack validation.
 
 The release gates are not proof of general intelligence. The synthetic casepack
 gate now scores routing, evidence sufficiency, privacy behavior, distractor
@@ -69,3 +76,8 @@ real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,
 ethical sensitivity, and clone voice. They are not distillation data and must
 not be used for training until verified evidence cards and a split policy exist.
+
+The public Identity Pack is a scaffold and safe seed set, not a complete
+identity dataset. Raw interview answers and unredacted cards must remain local
+until each card is cleaned, assigned visibility, and checked for forbidden
+surface identity terms and private material.

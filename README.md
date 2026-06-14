@@ -114,6 +114,12 @@ Validate the launch-governance contract:
 python3 scripts/validate_launch_policy.py
 ```
 
+Validate the public Identity Pack skeleton:
+
+```bash
+python3 scripts/validate_identity_pack.py
+```
+
 ## Current Gate Snapshot
 
 - Distillation dataset: 76365 rows, 74580 train, 1785 eval.
@@ -150,6 +156,7 @@ python3 scripts/validate_launch_policy.py
 - `docs/clone_training_strategy.md`: training plan for the bounded subject-copy direction.
 - `docs/release_governance.md`: production launch gates, milestone rules, freeze policy, and final review thresholds.
 - `evals/release_policy/release_status.json`: current release-governance status; production is locked until R0-R7 pass.
+- `identity_pack/`: public identity contract, safe seed cards, schemas, and interview question bank for building redacted identity/background datasets.
 - `scripts/`: local build, validation, training, and gate scripts.
 - `models/manifest.json`: tiny-router runtime metadata.
 - `artifacts/`: ignored local runtime outputs.
@@ -192,6 +199,12 @@ The next training work should improve the tiny router Web SLM directly.
 The training policy is now frozen in `docs/release_governance.md`. The governing
 question for every cycle is whether the runtime is becoming more like the
 dialog box, not whether it is becoming a generic AI assistant.
+
+Identity/background growth should start from `identity_pack/`: raw interview
+answers stay local, cards get visibility labels, and only redacted public or
+allowed cards should enter the browser runtime. The model should inherit
+language habits and judgment style; it should not memorize private facts in
+weights.
 
 Launch budget:
 

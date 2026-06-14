@@ -66,6 +66,11 @@ The production release must have train/dev/blind split manifests for identity,
 help, privacy, voice, and logic/ethics data. Splits must be by case family or
 event, not by individual turn.
 
+Identity/background data starts from `identity_pack/`. Public files there are
+schemas, safe seed cards, and interview scaffolding. Raw interview answers,
+private cards, and unredacted background material must remain local until
+redacted and visibility-labeled.
+
 ## Surface Identity
 
 Allowed front-stage identity answers:
@@ -336,4 +341,3 @@ pretend to know real-event facts;
 defend power with public-relations language;
 lecture the user.
 ```
-

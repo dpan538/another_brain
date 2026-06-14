@@ -7,8 +7,9 @@
   "scripts": {
     "build": "npm run check:release",
     "build:knowledge": "python3 scripts/build_knowledge_base.py && python3 scripts/build_knowledge_shards.py",
-    "check": "npm run check:release && npm run check:launch-policy && python3 scripts/validate_distillation.py && python3 scripts/eval_tiny_router.py && python3 scripts/eval_dialog_persona.py && python3 scripts/validate_context_stress_cases.py && python3 scripts/validate_clone_logic_ethics.py && node scripts/eval_context_stress_node.mjs --min-context-ratio 0.98 --max-failures 0 --out artifacts/training_os/context_stress_report.json && node scripts/eval_casepacks_node.mjs --min-score 0.88 --out artifacts/training_os/casepack_eval_report.json && node scripts/run_model_gate_node.mjs --out artifacts/training_os/model_inference_report.json",
+    "check": "npm run check:release && npm run check:launch-policy && npm run check:identity-pack && python3 scripts/validate_distillation.py && python3 scripts/eval_tiny_router.py && python3 scripts/eval_dialog_persona.py && python3 scripts/validate_context_stress_cases.py && python3 scripts/validate_clone_logic_ethics.py && node scripts/eval_context_stress_node.mjs --min-context-ratio 0.98 --max-failures 0 --out artifacts/training_os/context_stress_report.json && node scripts/eval_casepacks_node.mjs --min-score 0.88 --out artifacts/training_os/casepack_eval_report.json && node scripts/run_model_gate_node.mjs --out artifacts/training_os/model_inference_report.json",
     "check:clone-logic-ethics": "python3 scripts/validate_clone_logic_ethics.py",
+    "check:identity-pack": "python3 scripts/validate_identity_pack.py",
     "check:knowledge-shards": "python3 scripts/validate_knowledge_shards.py",
     "check:launch-policy": "python3 scripts/validate_launch_policy.py",
     "check:release": "bash scripts/check_release.sh",
