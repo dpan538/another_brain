@@ -17,14 +17,15 @@ user input
   -> deterministic dialog rules
   -> generated static knowledge cards
   -> tiny router Web SLM
-  -> short fallback answer
+  -> structured route/evidence/verifier fallback
+  -> short controlled fallback answer
 ```
 
 The tiny router is not a general generative model. It is a character n-gram classifier plus conservative answer index: a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, reasoning/counterquestion calibration, context-window calibration, relationship-repetition calibration, and persona alignment. In the current public gate, 741/778 cases are direct rule or knowledge answers, and 37/778 use the tiny router Web SLM.
 
 WebLLM is intentionally out of the first public runtime. It does not accelerate the tiny router classifier, and previous local checks showed that the small generative fallback was too likely to drift or hallucinate in open dialog. The reliable path is to train the tiny router directly and keep unknown questions, privacy-sensitive questions, and route misses controlled by deterministic rules.
 
-The reasoning path is deliberately small. It trains the SLM to choose a response strategy, not to expose long chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty.
+The reasoning path is deliberately small. It trains the SLM to choose a response strategy, not to expose long chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic rather than a generative LLM.
 
 The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
 

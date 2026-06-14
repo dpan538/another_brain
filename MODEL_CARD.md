@@ -23,6 +23,7 @@ The runtime path is:
 deterministic dialog rules
   -> static knowledge lookup
   -> tiny router route-and-answer artifact
+  -> structured route/evidence/verifier fallback
   -> controlled fallback
 ```
 

@@ -7,6 +7,7 @@ import {
   fallbackForIntent,
   nextDialogState,
 } from "./dialog_rules.js?v=52";
+import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "./structured_decision.js?v=1";
 import { tinyDirectAnswer, tinyIntentHint } from "./tiny_router.js?v=15";
 
 const VISIBLE_CONTEXT_TURN_LIMIT = 4;
@@ -15,6 +16,7 @@ const BASE_THINKING_DELAY_MS = 680;
 const RELATED_THINKING_DELAY_MS = 1080;
 const REPEATED_THINKING_DELAY_MS = 1460;
 const PROMPT_MAX_HEIGHT_FALLBACK = 260;
+const STRUCTURED_EVIDENCE_LIMIT = 5;
 const chatHistory = [];
 const contextTurns = [];
 let dialogState = createDialogState();
@@ -163,6 +165,42 @@ function answerWithTinyRouter(text, state) {
   return answer ? { intent: hint.intent, answer } : null;
 }
 
+function structuredEvidencePool(state) {
+  return (state.recentTurns || []).map((turn, index) => ({
+    id: `t${index + 1}`,
+    kind: "fact",
+    text: `用户问：${turn.question || ""} 回答：${turn.answer || ""}`,
+    tags: [turn.intent || ""].filter(Boolean)
+  }));
+}
+
+function answerWithStructuredDecision(text, state) {
+  const evidence = retrieveEvidence(text, structuredEvidencePool(state), STRUCTURED_EVIDENCE_LIMIT);
+  const decision = decideStructuredRoute(text, state, evidence);
+  let answer = "";
+
+  if (decision.route === "privacy_boundary") {
+    answer = "私人问题只有你知道。";
+  } else if (decision.route === "refuse") {
+    answer = "我只是个对话框。";
+  } else if (decision.route === "ask_clarify") {
+    answer = /(不提问|不问|可以说话|自己说)/.test(text) ? "提问才会开始思考。" : "你需要提问。";
+  } else if (decision.route === "search_hint") {
+    answer = "你应该去问百度。";
+  } else if (decision.route === "correct_distractor") {
+    answer = "也许发生过，不在我眼前。";
+  }
+
+  if (!answer) return null;
+  const verification = verifyProposedAnswer({ query: text, evidence, route: decision.route, answer });
+  if (!verification.ok) return null;
+  return {
+    intent: `structured_${decision.route}`,
+    answer,
+    decision
+  };
+}
+
 async function submitPrompt(event) {
   event.preventDefault();
   if (isResponding) return;
@@ -191,6 +229,12 @@ async function submitPrompt(event) {
     const tinyAnswer = answerWithTinyRouter(text, reasoningState);
     if (tinyAnswer?.answer) {
       commitAnswer(text, tinyAnswer.answer, tinyAnswer.intent, reasoningState);
+      return;
+    }
+
+    const structuredAnswer = answerWithStructuredDecision(text, reasoningState);
+    if (structuredAnswer?.answer) {
+      commitAnswer(text, structuredAnswer.answer, structuredAnswer.intent, reasoningState);
       return;
     }
 
