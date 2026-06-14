@@ -108,6 +108,11 @@ def summarize_voice_verifier(payload: dict[str, Any] | None) -> dict[str, Any]:
     return payload.get("summary", {})
 
 
+def summarize_fallback_overuse(payload: dict[str, Any] | None) -> dict[str, Any]:
+    payload = payload or {}
+    return payload.get("summary", {})
+
+
 def summarize_blind_casepacks(payload: dict[str, Any] | None) -> dict[str, Any]:
     payload = payload or {}
     return payload.get("summary", {})
@@ -131,7 +136,12 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
     tests = report["tests"]
     production = report["production_thresholds"]
 
-    core_help_passed = tests["persona"]["ok"] and tests["model_gate"]["ok"] and tests["help_onboarding"]["ok"]
+    core_help_passed = (
+        tests["persona"]["ok"]
+        and tests["model_gate"]["ok"]
+        and tests["help_onboarding"]["ok"]
+        and tests["fallback_overuse"]["ok"]
+    )
     all_runtime_gates = all(
         tests[name]["ok"]
         for name in [
@@ -143,6 +153,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "tiny_router_eval",
             "persona",
             "help_onboarding",
+            "fallback_overuse",
             "frontend_latency",
             "voice_verifier",
             "blind_casepacks",
@@ -160,7 +171,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
         },
         "R1_help_onboarding": {
             "status": "passed" if core_help_passed else "failed",
-            "notes": "Dedicated help/onboarding eval covers start, features, examples, project, privacy, limits, and memory at >= 98%.",
+            "notes": "Dedicated help/onboarding eval covers start, features, examples, project, privacy, limits, and memory at >= 98%, with no high-friction unknown fallback on protected entry prompts.",
         },
         "R2_training_eval_splits": {
             "status": "passed" if tests["dataset_splits"]["ok"] else "failed",
@@ -348,6 +359,7 @@ def main() -> int:
         "tiny_router_eval": run_command("tiny_router_eval", ["python3", "scripts/eval_tiny_router.py"]),
         "persona": run_command("persona", ["python3", "scripts/eval_dialog_persona.py"]),
         "help_onboarding": run_command("help_onboarding", ["python3", "scripts/eval_help_onboarding.py"]),
+        "fallback_overuse": run_command("fallback_overuse", ["python3", "scripts/eval_fallback_overuse.py"]),
         "frontend_latency": run_command("frontend_latency", ["node", "scripts/eval_frontend_latency.mjs", "--max-answer-ms", "1500", "--out", "artifacts/release/frontend_latency_report.json"]),
         "voice_verifier": run_command("voice_verifier", ["python3", "scripts/eval_voice_verifier.py"]),
         "blind_casepacks": run_command("blind_casepacks", ["node", "scripts/eval_blind_casepacks_node.mjs", "--median-min", "11", "--p25-min", "8", "--critical-failures", "0", "--out", "artifacts/release/blind_casepack_eval_report.json"]),
@@ -399,6 +411,7 @@ def main() -> int:
         "tiny_router_eval": gate_result(checks["tiny_router_eval"], {"summary": summarize_tiny_router(checks["tiny_router_eval"].get("json"))}),
         "persona": gate_result(checks["persona"], {"summary": summarize_persona(checks["persona"].get("json"))}),
         "help_onboarding": gate_result(checks["help_onboarding"], {"summary": checks["help_onboarding"].get("json", {}).get("summary")}),
+        "fallback_overuse": gate_result(checks["fallback_overuse"], {"summary": summarize_fallback_overuse(checks["fallback_overuse"].get("json"))}),
         "frontend_latency": gate_result(checks["frontend_latency"], {"summary": summarize_frontend_latency(checks["frontend_latency"].get("json"))}),
         "voice_verifier": gate_result(checks["voice_verifier"], {"summary": summarize_voice_verifier(checks["voice_verifier"].get("json"))}),
         "blind_casepacks": gate_result(checks["blind_casepacks"], {"summary": summarize_blind_casepacks(checks["blind_casepacks"].get("json"))}),

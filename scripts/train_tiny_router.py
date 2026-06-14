@@ -156,7 +156,7 @@ def help_action(prompt: str) -> str | None:
         return "HELP_EXAMPLES"
     if re.search(r"^(这个网页是什么|这个网站是什么|这个东西是什么|这是干什么的|这个 app 是什么|what is this)[？?。!！\s]*$", text, re.I):
         return "HELP_PROJECT"
-    if re.search(r"^(这个网页安全吗|隐私安全吗|会上传吗|会上传我的内容吗|会保存我说的话吗|会云端推理吗|会使用云端吗|privacy|local or cloud)[？?。!！\s]*$", text, re.I):
+    if re.search(r"^(这个网页安全吗|隐私安全吗|会上传吗|会上传我的内容吗|会保存我说的话吗|会云端推理吗|会使用云端吗|privacy|local or cloud)([？?。!！\s]*(这个网页安全吗|隐私安全吗|会上传吗|会上传我的内容吗|会保存我说的话吗|会云端推理吗|会使用云端吗))*[？?。!！\s]*$", text, re.I):
         return "HELP_PRIVACY"
     if re.search(r"^(你不能做什么|你不会什么|你有什么限制|你的边界是什么|你有什么局限|limits)[？?。!！\s]*$", text, re.I):
         return "HELP_LIMITS"

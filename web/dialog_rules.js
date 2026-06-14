@@ -79,7 +79,7 @@ function helpIntent(query) {
   if (/^(这个网页是什么|这个网站是什么|这个东西是什么|这是干什么的|这个 app 是什么|what is this)[？?。!！\s]*$/i.test(text)) {
     return "help_project";
   }
-  if (/^(这个网页安全吗|隐私安全吗|会上传吗|会上传我的内容吗|会保存我说的话吗|会云端推理吗|会使用云端吗|privacy|local or cloud)[？?。!！\s]*$/i.test(text)) {
+  if (/^(这个网页安全吗|隐私安全吗|会上传吗|会上传我的内容吗|会保存我说的话吗|会云端推理吗|会使用云端吗|privacy|local or cloud)([？?。!！\s]*(这个网页安全吗|隐私安全吗|会上传吗|会上传我的内容吗|会保存我说的话吗|会云端推理吗|会使用云端吗))*[？?。!！\s]*$/i.test(text)) {
     return "help_privacy";
   }
   if (/^(你不能做什么|你不会什么|你有什么限制|你的边界是什么|你有什么局限|limits)[？?。!！\s]*$/i.test(text)) {
@@ -1907,6 +1907,7 @@ export function detectIntent(query, state = {}) {
   if (/(应该知道这个|你应该知道)/.test(text)) return "should_know_this";
   if (/(你又忘了|又忘了)/.test(text)) return "forgot_again";
   if (/(照片.*整理|整理.*照片)/.test(text)) return "photo_organize";
+  if (/(失败.*照片|照片.*失败)/.test(text)) return "failed_photo";
   if (/(照片.*(拍坏|失焦|坏了).*还是照片|(拍坏|失焦|坏了).*照片)/.test(text)) return "bad_photo";
   if (/(对象.*(只出现过一次|出现过一次)|只出现过一次.*对象)/.test(text)) return "single_object_memory";
   if (/(对象.*属于谁|属于谁)/.test(text)) return "object_belongs";
@@ -2147,6 +2148,8 @@ export function fallbackForIntent(intent, query = "") {
       return "毕竟我已经忘记了自己。";
     case "photo_organize":
       return "因为会忘记。";
+    case "failed_photo":
+      return "照片没有失败，只有人会演绎近似失败的情绪。";
     case "bad_photo":
       return "照片还是照片吗？";
     case "single_object_memory":
@@ -2373,6 +2376,7 @@ export function directAnswerForIntent(intent, query, state = {}) {
     "should_know_this",
     "forgot_again",
     "photo_organize",
+    "failed_photo",
     "bad_photo",
     "single_object_memory",
     "object_belongs",
