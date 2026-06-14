@@ -257,7 +257,7 @@ The launch target is static Vercel hosting for `efishother.com`. Vercel should n
 
 Public crawl and AI-readable resources are checked in under `web/`:
 
-- `web/sitemap.xml`: Google Search Console sitemap URL, served as `https://efishother.com/sitemap.xml`.
+- `web/sitemap.xml`: Google Search Console sitemap URL, served as `https://www.efishother.com/sitemap.xml`.
 - `web/robots.txt`: crawler policy and sitemap pointer.
 - `web/llms.txt`: concise AI-readable project description and boundaries.
 - `web/about.txt`: plain-text project summary.

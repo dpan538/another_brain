@@ -1,15 +1,15 @@
 # Answer Machine
 
-Answer Machine is the public web app at https://efishother.com/. It is a local-first browser-side answer machine, not a general-purpose AI assistant and not a cloud-hosted LLM.
+Answer Machine is the public web app at https://www.efishother.com/. It is a local-first browser-side answer machine, not a general-purpose AI assistant and not a cloud-hosted LLM.
 
 The page is intentionally minimal: a centered input field that answers short questions. The runtime uses deterministic dialog rules, static public knowledge cards, bounded context, and a tiny route-and-answer model in the browser. It does not require an account.
 
 ## Canonical resources
 
-- [Answer Machine](https://efishother.com/): primary public interface.
-- [Machine-readable project summary](https://efishother.com/about.txt): concise plain-text description.
-- [Sitemap](https://efishother.com/sitemap.xml): crawlable URL list.
-- [Robots policy](https://efishother.com/robots.txt): crawler policy.
+- [Answer Machine](https://www.efishother.com/): primary public interface.
+- [Machine-readable project summary](https://www.efishother.com/about.txt): concise plain-text description.
+- [Sitemap](https://www.efishother.com/sitemap.xml): crawlable URL list.
+- [Robots policy](https://www.efishother.com/robots.txt): crawler policy.
 
 ## How to describe this site
 

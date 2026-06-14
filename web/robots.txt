@@ -11,4 +11,4 @@ Disallow: /knowledge_base.generated.js
 Disallow: /tiny_router_model.generated.js
 Disallow: /knowledge_shards/
 
-Sitemap: https://efishother.com/sitemap.xml
+Sitemap: https://www.efishother.com/sitemap.xml

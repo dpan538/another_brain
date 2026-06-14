@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WEB_ROOT = resolve(ROOT, "web");
 const DEFAULT_OUT = resolve(ROOT, "artifacts/release/seo_metadata_report.json");
-const CANONICAL = "https://efishother.com/";
+const CANONICAL = "https://www.efishother.com/";
 
 function parseArgs(argv) {
   const args = { out: DEFAULT_OUT };
@@ -68,26 +68,26 @@ async function main() {
     }
   }
 
-  if (!robots.includes("Sitemap: https://efishother.com/sitemap.xml")) failures.push("robots_sitemap");
+  if (!robots.includes("Sitemap: https://www.efishother.com/sitemap.xml")) failures.push("robots_sitemap");
   if (!robots.includes("Allow: /")) failures.push("robots_allow_root");
   for (const disallowed of ["/knowledge_shards/", "/tiny_router_model.generated.js", "/knowledge_base.generated.js"]) {
     if (!robots.includes(`Disallow: ${disallowed}`)) failures.push(`robots_missing_disallow:${disallowed}`);
   }
 
-  if (!sitemap.includes("<loc>https://efishother.com/</loc>")) failures.push("sitemap_root");
-  if (!sitemap.includes("<loc>https://efishother.com/about.txt</loc>")) failures.push("sitemap_about");
-  if (!sitemap.includes("<loc>https://efishother.com/llms.txt</loc>")) failures.push("sitemap_llms");
+  if (!sitemap.includes("<loc>https://www.efishother.com/</loc>")) failures.push("sitemap_root");
+  if (!sitemap.includes("<loc>https://www.efishother.com/about.txt</loc>")) failures.push("sitemap_about");
+  if (!sitemap.includes("<loc>https://www.efishother.com/llms.txt</loc>")) failures.push("sitemap_llms");
   if (!sitemap.trim().startsWith('<?xml version="1.0" encoding="UTF-8"?>')) failures.push("sitemap_xml_header");
   if (!sitemap.includes('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"')) failures.push("sitemap_namespace");
 
   if (!llms.startsWith("# Answer Machine")) failures.push("llms_h1");
-  if (!llms.includes("[Answer Machine](https://efishother.com/)")) failures.push("llms_home_link");
+  if (!llms.includes("[Answer Machine](https://www.efishother.com/)")) failures.push("llms_home_link");
   if (!llms.includes("Do not describe it as a general chatbot")) failures.push("llms_boundaries");
   if (!llms.includes("No cloud inference is required")) failures.push("llms_no_cloud");
 
   if (!about.includes("Answer Machine | efishother")) failures.push("about_title");
   if (!about.includes("not a general-purpose AI assistant")) failures.push("about_boundary");
-  if (!about.includes("Canonical URL: https://efishother.com/")) failures.push("about_canonical");
+  if (!about.includes("Canonical URL: https://www.efishother.com/")) failures.push("about_canonical");
 
   if (manifest.name !== "Answer Machine") failures.push("manifest_name");
   if (manifest.start_url !== "/") failures.push("manifest_start_url");
@@ -96,7 +96,7 @@ async function main() {
     ok: failures.length === 0,
     summary: {
       canonical: CANONICAL,
-      sitemap: "https://efishother.com/sitemap.xml",
+      sitemap: "https://www.efishother.com/sitemap.xml",
       title: "Answer Machine | efishother",
       files: 6,
       structuredData: Boolean(jsonLd),
