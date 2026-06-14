@@ -6,7 +6,7 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState,
-} from "./dialog_rules.js?v=59";
+} from "./dialog_rules.js?v=60";
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "./structured_decision.js?v=1";
 import { buildDebugReport, downloadDebugReport } from "./debug_report.js?v=1";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=6";
@@ -133,6 +133,13 @@ function currentReasoningState() {
 }
 
 function contextActionForIntent(intent, route) {
+  if (intent === "self_identity_known") return "SELF_IDENTITY_KNOWN";
+  if (intent === "self_knowledge_scope") return "SELF_KNOWLEDGE_SCOPE";
+  if (intent === "self_stop_boundary") return "SELF_STOP_BOUNDARY";
+  if (intent === "animal_green_water_quantifier") return "REFERENT_CLASS_MEMBERSHIP";
+  if (intent === "animal_crocodile_body") return "REFERENT_DISTINGUISH_SENSE";
+  if (intent === "animal_crocodile_fact") return "REFERENT_ANIMAL_FACT";
+  if (intent === "self_dialog_box_body" || intent === "self_body_boundary") return "SELF_BODY_BOUNDARY";
   if (intent.startsWith("help_")) return "ANSWER_HELP";
   if (intent.startsWith("surface_identity_")) return "SURFACE_IDENTITY";
   if (intent === "relation_between_us") return "ANSWER_RELATION_BOUNDARY";

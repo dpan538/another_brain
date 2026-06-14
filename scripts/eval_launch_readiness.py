@@ -176,6 +176,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "output_sanitizer",
             "dialog_sanity",
             "gate_effectiveness",
+            "r9_reasoning_gate",
             "blind_casepacks",
             "context_gate",
             "casepack_capability",
@@ -211,7 +212,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "notes": "Voice verifier checks forbidden identity terms, privacy leakage, assistant tone, answer length, fake certainty, PR tone, and preference pairs.",
         },
         "R5_integrated_blind_eval": {
-            "status": "passed" if tests["blind_casepacks"]["ok"] and tests["gate_effectiveness"]["ok"] else "failed",
+            "status": "passed" if tests["blind_casepacks"]["ok"] and tests["gate_effectiveness"]["ok"] and tests["r9_reasoning_gate"]["ok"] else "failed",
             "notes": "Held-out clone logic/ethics casepacks pass integrated blind scoring, and gate effectiveness proves known failures, invariants, fuzz, and mutation probes are caught.",
         },
         "R6_vercel_preview_mobile_smoke": {
@@ -402,6 +403,7 @@ def main() -> int:
         "output_sanitizer": run_command("output_sanitizer", ["node", "scripts/eval_output_sanitizer.mjs"]),
         "dialog_sanity": run_command("dialog_sanity", ["node", "scripts/eval_dialog_sanity.mjs"]),
         "gate_effectiveness": run_command("gate_effectiveness", ["node", "scripts/eval_gate_effectiveness.mjs", "--out", "artifacts/release/gate_effectiveness_report.json"]),
+        "r9_reasoning_gate": run_command("r9_reasoning_gate", ["node", "scripts/eval_r9_reasoning_gate.mjs", "--out", "artifacts/release/r9_reasoning_gate_report.json"]),
         "blind_casepacks": run_command("blind_casepacks", ["node", "scripts/eval_blind_casepacks_node.mjs", "--median-min", "11", "--p25-min", "8", "--critical-failures", "0", "--out", "artifacts/release/blind_casepack_eval_report.json"]),
         "context_static": run_command("context_static", ["python3", "scripts/validate_context_stress_cases.py"]),
         "clone_logic_ethics_structure": run_command("clone_logic_ethics_structure", ["python3", "scripts/validate_clone_logic_ethics.py"]),
@@ -494,6 +496,7 @@ def main() -> int:
         "output_sanitizer": gate_result(checks["output_sanitizer"], {"summary": check_payload(checks["output_sanitizer"]).get("summary")}),
         "dialog_sanity": gate_result(checks["dialog_sanity"], {"summary": check_payload(checks["dialog_sanity"]).get("summary")}),
         "gate_effectiveness": gate_result(checks["gate_effectiveness"], {"summary": summarize_gate_effectiveness(checks["gate_effectiveness"].get("json"))}),
+        "r9_reasoning_gate": gate_result(checks["r9_reasoning_gate"], {"summary": check_payload(checks["r9_reasoning_gate"], ROOT / "artifacts" / "release" / "r9_reasoning_gate_report.json")}),
         "blind_casepacks": gate_result(checks["blind_casepacks"], {"summary": summarize_blind_casepacks(checks["blind_casepacks"].get("json"))}),
         "context_static": gate_result(checks["context_static"]),
         "clone_logic_ethics_structure": gate_result(checks["clone_logic_ethics_structure"]),

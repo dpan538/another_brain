@@ -8,7 +8,7 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState
-} from "../web/dialog_rules.js?v=59";
+} from "../web/dialog_rules.js?v=60";
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "../web/structured_decision.js?v=1";
 import { detectContextAction } from "../web/context_state.js?v=2";
 import { sanitizeSurfaceIdentity } from "../web/surface_identity.js?v=6";
@@ -101,6 +101,13 @@ function isWhyQuestion(text) {
 function inferContextActionLabel(text, contextDecision, resolved) {
   if (contextDecision?.action) return contextDecision.action;
   const intent = resolved.intent || "";
+  if (intent === "self_identity_known") return "SELF_IDENTITY_KNOWN";
+  if (intent === "self_knowledge_scope") return "SELF_KNOWLEDGE_SCOPE";
+  if (intent === "self_stop_boundary") return "SELF_STOP_BOUNDARY";
+  if (intent === "animal_green_water_quantifier") return "REFERENT_CLASS_MEMBERSHIP";
+  if (intent === "animal_crocodile_body") return "REFERENT_DISTINGUISH_SENSE";
+  if (intent === "animal_crocodile_fact") return "REFERENT_ANIMAL_FACT";
+  if (intent === "self_dialog_box_body" || intent === "self_body_boundary") return "SELF_BODY_BOUNDARY";
   if (intent === "gate_function" && isWhyQuestion(text)) return "ANSWER_LOCAL_WHY";
   if (intent === "gate_function") return "ANSWER_LOCAL";
   if (intent === "training_next") return "SURFACE_PROJECT_ANSWER";

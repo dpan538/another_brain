@@ -1852,6 +1852,52 @@ const ALL_KNOWLEDGE_CARDS = dedupeKnowledgeCards([...BASE_KNOWLEDGE_CARDS, ...GE
 const KNOWLEDGE_ALIAS_ENTRIES = buildKnowledgeAliasEntries(ALL_KNOWLEDGE_CARDS);
 const KNOWLEDGE_ALIAS_INDEX = buildKnowledgeAliasIndex(KNOWLEDGE_ALIAS_ENTRIES);
 
+function metaKnowledgeIntent(query) {
+  const text = String(query || "").trim();
+  if (/^(你知道自己是谁吗|你知道你是谁吗|你知道自己是什么吗|你知道你是什么吗)[？?。!！\s]*$/.test(text)) {
+    return "self_identity_known";
+  }
+  if (/^(你知道我是谁吗|知道我是谁吗)[？?。!！\s]*$/.test(text)) {
+    return "relation_memory_boundary";
+  }
+  if (/^(你知道什么|你知道些什么|你到底知道什么|你能知道什么|你知道哪些东西)[？?。!！\s]*$/.test(text)) {
+    return "self_knowledge_scope";
+  }
+  if (/(你知道|你会判断|你能判断).{0,8}(什么时候|何时|哪里).{0,8}(停下|停止|不回答|不答|闭嘴)/.test(text)) {
+    return "self_stop_boundary";
+  }
+  if (/什么时候.{0,6}(该|应该)?(停下|停止|不回答|不答|闭嘴)/.test(text)) {
+    return "self_stop_boundary";
+  }
+  return "";
+}
+
+function referentReasoningIntent(query, state = {}) {
+  const text = String(query || "").trim();
+  const previousIntent = state.lastIntent || "";
+  const previousTopic = state.lastTopic || "";
+  const inCrocodileReferentContext =
+    /animal_crocodile|animal_green_water|surface_identity_crocodile_symbol|self_dialog_box_body|self_body_boundary|alias|identity_relation/.test(previousIntent) ||
+    previousTopic === "alias";
+
+  if (/^(那|那么)?\s*对话框呢[？?。!！\s]*$/.test(text) && inCrocodileReferentContext) {
+    return "self_dialog_box_body";
+  }
+  if (/^(那|那么)?\s*你呢[？?。!！\s]*$/.test(text) && inCrocodileReferentContext) {
+    return "self_body_boundary";
+  }
+  if (/水里.*绿色.*(都|都是|所有|一定|全都)|绿色.*水里.*(都|都是|所有|一定|全都)/.test(text)) {
+    return "animal_green_water_quantifier";
+  }
+  if (/鳄鱼.*(有身体|有没有身体|身体吗|有牙齿|有尾巴|有腿|会游泳)/.test(text)) {
+    return "animal_crocodile_body";
+  }
+  if (/鳄鱼.*(是什么动物|动物吗|是不是动物|生活在水里|住在水里|爬行动物)/.test(text)) {
+    return "animal_crocodile_fact";
+  }
+  return "";
+}
+
 export const KNOWLEDGE_RUNTIME_STATS = Object.freeze({
   curatedConceptCards: BASE_KNOWLEDGE_CARDS.length,
   generatedConceptCards: GENERATED_KNOWLEDGE_STATS.concept_cards,
@@ -1866,6 +1912,10 @@ export function detectIntent(query, state = {}) {
   const text = query.trim();
   const lower = text.toLowerCase();
 
+  const referentReasoning = referentReasoningIntent(text, state);
+  if (referentReasoning) return referentReasoning;
+  const metaKnowledge = metaKnowledgeIntent(text);
+  if (metaKnowledge) return metaKnowledge;
   const surfaceIdentity = surfaceIdentityIntent(text);
   if (surfaceIdentity) return surfaceIdentity;
   const help = helpIntent(text);
@@ -2134,6 +2184,22 @@ export function fallbackForIntent(intent, query = "") {
     case "help_limits":
     case "help_memory":
       return HELP_ANSWERS[intent];
+    case "self_identity_known":
+      return "知道。我是对话框。以前被人叫过鳄鱼。";
+    case "self_knowledge_scope":
+      return "知道一点能放进这里的东西。不确定就停。";
+    case "self_stop_boundary":
+      return "知道。没有前提、没有证据、问到私人处，就停。";
+    case "animal_green_water_quantifier":
+      return "不都是。绿色不是鳄鱼的证明。";
+    case "animal_crocodile_body":
+      return "动物鳄鱼有。名字没有。";
+    case "animal_crocodile_fact":
+      return "鳄鱼是动物。也可以只是一个名字。";
+    case "self_dialog_box_body":
+      return "对话框没有身体。";
+    case "self_body_boundary":
+      return "我是对话框。所以没有身体。";
     case "clone_identity":
       return cloneIdentityAnswer(query) || "我是对话框。";
     case "greeting":
@@ -2571,6 +2637,14 @@ export function directAnswerForIntent(intent, query, state = {}) {
     "help_privacy",
     "help_limits",
     "help_memory",
+    "self_identity_known",
+    "self_knowledge_scope",
+    "self_stop_boundary",
+    "animal_green_water_quantifier",
+    "animal_crocodile_body",
+    "animal_crocodile_fact",
+    "self_dialog_box_body",
+    "self_body_boundary",
     "surface_identity_compat",
     "presence",
     "unknown_name",
