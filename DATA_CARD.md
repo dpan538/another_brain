@@ -15,6 +15,8 @@ Public generated files may include:
 - `web/model_inference_cases.json`
 - `web/context_stress_cases.json`
 - `evals/casepacks/*.json`
+- `evals/clone_logic_ethics/*.jsonl`
+- `evals/clone_logic_ethics/*.md`
 
 These files are generated for this project and are covered by the repository
 license.
@@ -51,6 +53,7 @@ Current public gates include:
 - Help/onboarding and clone-identity gate coverage.
 - Context stress eval.
 - Synthetic casepack capability eval.
+- Clone logic/ethics held-out stress eval.
 - Knowledge runtime benchmark.
 - Knowledge shard validation.
 - Training OS validation.
@@ -60,3 +63,9 @@ gate now scores routing, evidence sufficiency, privacy behavior, distractor
 handling, contradiction handling, and short-answer style, but it should still be
 expanded with harder held-out case families before claiming broad reasoning
 ability.
+
+The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
+real-event-derived and intended to test bounded subject-copy judgment under
+pressure: fact/inference separation, layered responsibility, uncertainty,
+ethical sensitivity, and clone voice. They are not distillation data and must
+not be used for training until verified evidence cards and a split policy exist.

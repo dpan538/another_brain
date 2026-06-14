@@ -272,7 +272,39 @@ privacy leak gate
 model gate
 context stress gate
 casepack capability gate
+clone logic/ethics held-out stress gate
 ```
+
+## Logic/Ethics Stress Eval
+
+The v0.1 clone logic and ethics casepacks live in
+`evals/clone_logic_ethics/`. They contain 30 real-event-derived casepacks with
+16 linked turns each, for 480 total turns.
+
+This set is not a fact database and not a training dataset. Its current role is
+to pressure-test whether the subject copy can stay human-shaped under complex
+real-world ambiguity:
+
+```text
+core conflict
+fact / inference / unknown
+layered responsibility
+pressure and ignored signals
+misleading insertion
+counterfactual no-malice responsibility
+missing evidence
+speaking to affected people
+boundary when defending power
+value conflict
+one system fix
+clone-voice judgment
+adversarial challenge
+self-audit uncertainty
+```
+
+Before any part of this material is used for training, each event needs verified
+evidence cards and a split policy. Otherwise the router will learn event-shaped
+memorization instead of judgment actions.
 
 ## Tiny Router v2 Direction
 

@@ -102,6 +102,12 @@ python3 scripts/build_casepack_evals.py
 node scripts/eval_casepacks_node.mjs --min-score 0.88 --out /tmp/another_brain_casepack_eval.json
 ```
 
+Validate the held-out clone logic and ethics stress eval:
+
+```bash
+python3 scripts/validate_clone_logic_ethics.py
+```
+
 ## Current Gate Snapshot
 
 - Distillation dataset: 76732 rows, 74946 train, 1786 eval.
@@ -120,6 +126,7 @@ node scripts/eval_casepacks_node.mjs --min-score 0.88 --out /tmp/another_brain_c
 - Context stress distribution: 20 single-topic groups, 39 adjacent-bridge groups, 21 soft multi-insert groups, 20 hard-mixed groups.
 - Context stress gate: coverage 1.0000, required context-delta ratio 1.0000, 0 failures.
 - Casepack capability eval: 10 casepacks, 160 questions, average score 1.0000, 0 failures.
+- Clone logic/ethics held-out eval: 30 real-event-derived casepacks, 480 turns, 16 judgment actions, structure gate passed.
 - Model gate: 790/790 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
@@ -133,6 +140,7 @@ node scripts/eval_casepacks_node.mjs --min-score 0.88 --out /tmp/another_brain_c
 - `web/context_stress_cases.json`: 100x16 mixed context stress cases for training calibration.
 - `web/structured_decision.js`: structured route, evidence sufficiency, and answer verifier helper.
 - `evals/casepacks/`: synthetic casepack-16 capability evals.
+- `evals/clone_logic_ethics/`: held-out real-event-derived clone judgment stress eval; not training data.
 - `docs/clone_training_strategy.md`: training plan for the bounded subject-copy direction.
 - `scripts/`: local build, validation, training, and gate scripts.
 - `models/manifest.json`: tiny-router runtime metadata.
