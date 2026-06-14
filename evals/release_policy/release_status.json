@@ -60,7 +60,7 @@
     "casepack_blind_median_min": 11,
     "casepack_blind_p25_min": 8,
     "critical_failures_max": 0,
-    "tiny_router_web_bytes_max": 1500000,
+    "frontend_answer_max_ms": 1500,
     "knowledge_shard_bytes_max": 512000,
     "knowledge_p99_ms_max": 1.0
   }

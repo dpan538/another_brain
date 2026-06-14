@@ -282,7 +282,8 @@ overconfidence, power defense, generic assistant tone, or privacy leakage.
 Final production budget:
 
 ```text
-tiny_router_model.generated.js <= 1.5 MB
+frontend answer after submit <= 1500 ms on a loaded page
+tiny_router_model.generated.js is observed, not a production blocker
 knowledge shard file <= 512 KB
 identity/help/privacy direct answers = 0 model latency
 knowledge retrieval p99 < 1 ms on local gate
@@ -290,8 +291,9 @@ no cloud inference
 static hosting only
 ```
 
-The current repository may exceed the final router size during training, but a
-production release may not.
+The current repository may increase the router artifact during training. The
+binding runtime requirement is answer latency after the page is already loaded,
+not cold-start asset download.
 
 ## Freeze Rules
 

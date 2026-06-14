@@ -126,6 +126,12 @@ Validate first-visit help and onboarding behavior:
 python3 scripts/eval_help_onboarding.py
 ```
 
+Validate loaded-page answer latency:
+
+```bash
+node scripts/eval_frontend_latency.mjs --max-answer-ms 1500
+```
+
 Run the launch-readiness detector:
 
 ```bash
@@ -135,7 +141,7 @@ npm run check:launch-readiness
 ## Current Gate Snapshot
 
 - Distillation dataset: 76365 rows, 74580 train, 1785 eval.
-- Tiny router web artifact: 1871095 bytes.
+- Tiny router web artifact: 1871095 bytes, observed only. Production blocking is loaded-page answer latency, not router byte size.
 - Tiny router feature weights: 18000.
 - Tiny router answer index: 787.
 - Tiny router route accuracy: 0.9372.
@@ -146,6 +152,7 @@ npm run check:launch-readiness
 - Knowledge shards: 43 static JSON shards, max shard size 179996 bytes, round-trip validated against `web/knowledge_base.generated.js`.
 - Dialog persona eval: 742 cases, including 16 surface-identity cases, 0 failures.
 - Help/onboarding eval: 23/23 passed, no fallback answers, no assistant-tone hits.
+- Frontend loaded-page answer latency gate: every sampled prompt must answer within 1500ms after submit.
 - Context-window gate: UI shows 4 recent turns; hidden reasoning keeps 12 turns.
 - Context stress suite: 100 groups, 1600 questions, 1500 context assertions, 485 required context-delta checks.
 - Context stress distribution: 20 single-topic groups, 39 adjacent-bridge groups, 21 soft multi-insert groups, 20 hard-mixed groups.

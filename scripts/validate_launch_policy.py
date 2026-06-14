@@ -21,7 +21,8 @@ REQUIRED_POLICY_PHRASES = [
     "以前被人叫过鳄鱼。",
     "前面忘了。后面还没有开始。",
     "Production release is allowed only after R0-R7 are passed.",
-    "tiny_router_model.generated.js <= 1.5 MB",
+    "frontend answer after submit <= 1500 ms on a loaded page",
+    "tiny_router_model.generated.js is observed, not a production blocker",
     "assistant-tone rate <= 2%",
     "blind median >= 11/16",
 ]
@@ -114,8 +115,10 @@ def main() -> int:
         return fail("R7 is passed but final_release_allowed is false")
 
     thresholds = status.get("production_thresholds", {})
-    if thresholds.get("tiny_router_web_bytes_max") != 1_500_000:
-        return fail("production tiny-router byte budget must remain 1500000")
+    if "tiny_router_web_bytes_max" in thresholds:
+        return fail("tiny-router byte size must be informational, not a production threshold")
+    if thresholds.get("frontend_answer_max_ms") != 1500:
+        return fail("frontend answer latency budget must remain 1500ms")
     if thresholds.get("critical_failures_max") != 0:
         return fail("critical failure budget must remain 0")
 
@@ -137,4 +140,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

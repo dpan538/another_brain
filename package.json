@@ -12,6 +12,7 @@
     "check:identity-pack": "python3 scripts/validate_identity_pack.py",
     "check:help-onboarding": "python3 scripts/eval_help_onboarding.py",
     "check:knowledge-shards": "python3 scripts/validate_knowledge_shards.py",
+    "check:frontend-latency": "node scripts/eval_frontend_latency.mjs --max-answer-ms 1500",
     "check:launch-readiness": "python3 scripts/eval_launch_readiness.py",
     "check:launch-policy": "python3 scripts/validate_launch_policy.py",
     "check:release": "bash scripts/check_release.sh",
