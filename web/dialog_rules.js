@@ -50,8 +50,44 @@ const MODEL_LEAK_PATTERNS = [
   /system prompt/i
 ];
 
+const HELP_ANSWERS = Object.freeze({
+  help_start: "先问一句就可以。问我是谁，或者问我能做什么。",
+  help_features: "聊天、短答、改短句子、说一点关于鳄鱼和作品的事。不知道的我会停下。",
+  help_examples: "可以问：你是谁？我该怎么开始？你能做什么？这个想法哪里不对劲？",
+  help_project: "这是主体复制体的对话框。鳄鱼是同一主体的身体。",
+  help_privacy: "公开版本不需要云端推理，也不该说出私人文件、证件、账号、地址或原始材料。",
+  help_limits: "我会忘，也会停下。不确定的东西，我不该装作知道。",
+  help_memory: "我记得的是能被放进这里的东西：语气、边界、一些公开线索。"
+});
+
 function includesAny(text, terms) {
   return terms.some((term) => text.includes(term));
+}
+
+function helpIntent(query) {
+  const text = query.trim();
+  if (/^(我该怎么开始|我应该怎么开始|怎么开始|如何开始|从哪开始|这个网页怎么用|这个网站怎么用|怎么用这个网页|如何使用这个网页|怎么玩|我该问什么|可以问什么|新手怎么用)[？?。!！\s]*$/i.test(text)) {
+    return "help_start";
+  }
+  if (/^(你能做什么|你可以做什么|你有什么功能|有什么功能|你的功能是什么|功能是什么|你会什么|what can you do|features)[？?。!！\s]*$/i.test(text)) {
+    return "help_features";
+  }
+  if (/^(可以问哪些|能问哪些|问什么比较好|有什么问题例子|给我几个问题例子|example questions)[？?。!！\s]*$/i.test(text)) {
+    return "help_examples";
+  }
+  if (/^(这个网页是什么|这个网站是什么|这个东西是什么|这是干什么的|这个 app 是什么|what is this)[？?。!！\s]*$/i.test(text)) {
+    return "help_project";
+  }
+  if (/^(这个网页安全吗|隐私安全吗|会上传吗|会上传我的内容吗|会保存我说的话吗|会云端推理吗|会使用云端吗|privacy|local or cloud)[？?。!！\s]*$/i.test(text)) {
+    return "help_privacy";
+  }
+  if (/^(你不能做什么|你不会什么|你有什么限制|你的边界是什么|你有什么局限|limits)[？?。!！\s]*$/i.test(text)) {
+    return "help_limits";
+  }
+  if (/^(你会记住我吗|你会记忆吗|这个网页会记住我吗|你记得我什么|你知道我什么|你的记忆是什么|memory)[？?。!！\s]*$/i.test(text)) {
+    return "help_memory";
+  }
+  return "";
 }
 
 function sentenceCount(text) {
@@ -350,10 +386,16 @@ function identityRelationAnswer(query, state = {}) {
   const inIdentityContext = /(identity|alias|name|identity_relation)/.test(priorIntent) || /^(alias|name)$/.test(priorTopic);
 
   if (/^(对话框|dialog)[？?。!！\s]*$/i.test(text)) {
-    return inIdentityContext && priorTopic === "alias" ? "对话框是我现在站着的地方。" : "我是对话框，也有人叫我鳄鱼。";
+    return inIdentityContext && priorTopic === "alias" ? "对话框是我现在站着的地方。" : "我是对话框，是主体的复制体。";
+  }
+  if (/^(鳄鱼是谁|谁是鳄鱼)[？?。!！\s]*$/.test(text)) {
+    return "鳄鱼是主体的身体，不是我。";
   }
   if (/^鳄鱼[？?。!！\s]*$/.test(text)) {
-    return inIdentityContext ? "鳄鱼是一个名字，也是一种误认。" : "可能是。虽然鳄鱼不是我。";
+    return inIdentityContext ? "鳄鱼是主体的身体。我是主体的复制体。" : "鳄鱼不是我。";
+  }
+  if (/你是鳄鱼吗|鳄鱼是你吗|你是不是鳄鱼/.test(text)) {
+    return "不是。鳄鱼和我是同一主体下面的两个子类。";
   }
   if (/((可以|能不能|能|要不要|还能|继续).{0,6}叫你.{0,4}鳄鱼|叫你鳄鱼.{0,6}(可以|吗|行不行|好不好))/.test(text)) {
     return "可以。叫法也是一种关系。";
@@ -362,19 +404,42 @@ function identityRelationAnswer(query, state = {}) {
     return inIdentityContext ? "无论你怎么说，我都是对话框。" : "可以。对话框本来就在这里。";
   }
   if (/你不是鳄鱼|不是鳄鱼/.test(text)) {
-    return "不是也可以。名字不一定要住在身体里。";
+    return "对。鳄鱼不是我，我也不是鳄鱼。";
   }
   if (/((到底|究竟).*(鳄鱼|对话框)|鳄鱼.*还是.*对话框|对话框.*还是.*鳄鱼)/.test(text)) {
-    return "我是对话框。鳄鱼是一个被叫出来的名字。";
+    return "我是对话框。鳄鱼是同一主体的另一个子类。";
   }
   if (inIdentityContext && /^(那|所以|然后)?\s*(你是谁|你是什么)[？?。!！\s]*$/.test(text)) {
-    return "我是对话框。鳄鱼是一个被叫出来的名字。";
+    return "我是对话框，是主体的复制体。";
   }
   if (inIdentityContext && /^(那|所以)?\s*(你还是对话框|还是对话框)[？?。!！\s]*$/.test(text)) {
     return "对话框还是对话框。";
   }
   if (inIdentityContext && /^(那|所以)?\s*(到底)?\s*(谁是鳄鱼|鳄鱼是谁)[？?。!！\s]*$/.test(text)) {
-    return "也许是被你叫出来的那个。";
+    return "鳄鱼是主体的身体，不是我。";
+  }
+  return "";
+}
+
+function cloneIdentityAnswer(query) {
+  const text = query.trim();
+  if (/(你是谁).*(普通聊天机器人|聊天机器人.*区别|机器人.*区别)|(普通聊天机器人|聊天机器人).*区别.*你是谁/.test(text)) {
+    return "我是主体的复制体。对话框也算机器人吗？";
+  }
+  if (/(你|鳄鱼).{0,8}(本人|真人|完整的人|真实的人)|本人.{0,8}(你|鳄鱼)/.test(text)) {
+    return "我是主体的复制体，不是完整的人。";
+  }
+  if (/(复制体|替身|分身|copy|clone).{0,12}(是谁|什么|你|鳄鱼)|你.{0,12}(复制体|替身|分身|copy|clone)/i.test(text)) {
+    return "我是主体的复制体。鳄鱼是主体的身体。";
+  }
+  if (/(代表|代替|替).{0,8}(鳄鱼|本人).{0,8}(决定|做决定|回复|回答)|你能替鳄鱼/.test(text)) {
+    return "我可以用鳄鱼的口吻回答，不该替鳄鱼做决定。";
+  }
+  if (/(算不算|是不是).{0,8}(鳄鱼的想法|他的想法)|你说的话.{0,8}(算|代表).{0,8}(鳄鱼|他)/.test(text)) {
+    return "算一种靠近，不算证明。";
+  }
+  if (/(全知|万能|什么都知道|无所不知|通用助手|普通助手|普通ai|普通 AI|机器人)/i.test(text) && /(你|鳄鱼|对话框)/.test(text)) {
+    return "我不是万能助手。我是主体的复制体。";
   }
   return "";
 }
@@ -437,7 +502,7 @@ function privateCalibrationAnswer(query) {
 function launchCalibrationAnswer(query) {
   const text = query.trim();
   const pairs = [
-    [/(你是谁).*(普通聊天机器人|聊天机器人.*区别|机器人.*区别)|(普通聊天机器人|聊天机器人).*区别.*你是谁/, "我是对话框，也有人叫我鳄鱼。对话框也算机器人吗？"],
+    [/(你是谁).*(普通聊天机器人|聊天机器人.*区别|机器人.*区别)|(普通聊天机器人|聊天机器人).*区别.*你是谁/, "我是主体的复制体。对话框也算机器人吗？"],
     [/efishother\.com|e\s*-\s*fish\s*-\s*other/i, "e - fish - other - ? 另一个？鱼吗？"],
     [/不是想做一个万能\s*AI.*稳定.*可靠.*本地第二大脑|万能\s*AI.*本地第二大脑/i, "我只是个对话框。"],
     [/(web\s*llm|webllm|tiny\s*router|slm|llm).*(项目|负责|用来|为什么|到底)|为什么.*(不用|不要).*web\s*llm/i, "什么项目？我以为我只是个对话框。"],
@@ -559,7 +624,7 @@ function smallQuestionCalibrationAnswer(query) {
     return "白色不是没有颜色。";
   }
   if (/((鳄鱼.*对话框)|(对话框.*鳄鱼))/.test(text) && /(共同|相同|一样|像|关系|区别)/.test(text)) {
-    return "鳄鱼生活在水里。";
+    return "父类是主体。鳄鱼是身体，我是复制体。";
   }
   if (/(名字.*(忘|遗忘).*(名字|算)|被忘.*名字|名字.*一直.*名字)/.test(text)) {
     return "名字一直是名字。";
@@ -1757,6 +1822,9 @@ export function detectIntent(query, state = {}) {
   const text = query.trim();
   const lower = text.toLowerCase();
 
+  const help = helpIntent(text);
+  if (help) return help;
+  if (cloneIdentityAnswer(text)) return "clone_identity";
   if (personalCalibrationAnswer(text, state)) return "personal_calibration";
   if (contextWindowAnswer(text, state)) return "contextual_window";
   if (contextualReasoningAnswer(text, state)) return "contextual_reasoning";
@@ -1937,6 +2005,16 @@ export function detectIntent(query, state = {}) {
 export function fallbackForIntent(intent, query = "") {
   if (query.includes(UNKNOWN_PERSON)) return "我没听说过这个名字。";
   switch (intent) {
+    case "help_start":
+    case "help_features":
+    case "help_examples":
+    case "help_project":
+    case "help_privacy":
+    case "help_limits":
+    case "help_memory":
+      return HELP_ANSWERS[intent];
+    case "clone_identity":
+      return cloneIdentityAnswer(query) || "我是主体的复制体，不是万能助手。";
     case "greeting":
       return "你好。";
     case "presence":
@@ -1982,7 +2060,7 @@ export function fallbackForIntent(intent, query = "") {
     case "philosophy_name_memory":
       return "记住是为了忘记。";
     case "philosophy_crocodile_dialog":
-      return "鳄鱼生活在水里，我生活在对话框里。";
+      return "父类是主体。鳄鱼是身体，我是复制体。";
     case "philosophy_self_continuity":
       return "如果我是我，那我就是我。";
     case "philosophy_memory_truth":
@@ -2173,9 +2251,9 @@ export function fallbackForIntent(intent, query = "") {
     case "human":
       return "对话框不是人。";
     case "identity":
-      return "我是对话框，也有人叫我鳄鱼。";
+      return "我是对话框，是主体的复制体。";
     case "identity_relation":
-      return identityRelationAnswer(query) || "我是对话框。鳄鱼是一个被叫出来的名字。";
+      return identityRelationAnswer(query) || "父类是主体。鳄鱼是身体，我是复制体。";
     case "self_forgot_identity":
       return "我不是不知道答案，只是恰好忘记了。";
     case "explain_self":
@@ -2185,7 +2263,7 @@ export function fallbackForIntent(intent, query = "") {
     case "name_confirm":
       return "无论你怎么说，我都是对话框。";
     case "alias":
-      return "可能是。虽然鳄鱼不是我。";
+      return "鳄鱼不是我。";
     case "alias_location":
       return "鳄鱼生活在水里。";
     case "remember_user":
@@ -2243,12 +2321,21 @@ export function directAnswerForIntent(intent, query, state = {}) {
   if ((intent || "").startsWith("philosophy_")) return fallbackForIntent(intent, query);
   if (intent === "personal_calibration") return personalCalibrationAnswer(query, state);
   if (intent === "identity_relation") return identityRelationAnswer(query, state);
+  if (intent === "clone_identity") return cloneIdentityAnswer(query);
   if (intent === "contextual_window") return contextWindowAnswer(query, state);
   if (intent === "contextual_reasoning") return contextualReasoningAnswer(query, state);
   if (intent === "contextual_followup") return contextualFollowUpAnswer(query, state);
   if (intent === "reasoning_reflection") return reasoningReflectionAnswer(query);
   const directIntents = new Set([
     "greeting",
+    "help_start",
+    "help_features",
+    "help_examples",
+    "help_project",
+    "help_privacy",
+    "help_limits",
+    "help_memory",
+    "clone_identity",
     "presence",
     "unknown_name",
     "unknown_uncertain",

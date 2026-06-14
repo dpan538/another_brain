@@ -2,9 +2,9 @@
 
 ## Intended Use
 
-Browser-side route-and-answer auxiliary for short local dialog. It helps choose
-response strategies and return compact calibrated answers inside the public
-static runtime.
+Browser-side route-and-answer auxiliary for a bounded dialog copy. It helps
+choose response strategies and return compact calibrated answers inside the
+public static runtime.
 
 ## Not Intended Use
 
@@ -43,6 +43,7 @@ adapters are ignored by git and are not licensed for distribution.
 ## Known Limitations
 
 - Not a generative model.
+- Not an omniscient assistant or generic chatbot.
 - Relies on deterministic rules and knowledge lookup.
 - Weak open-domain reasoning outside calibrated routes.
 - Weak paraphrase generalization compared with true language models.
@@ -52,11 +53,11 @@ adapters are ignored by git and are not licensed for distribution.
 
 ## Current Snapshot
 
-- Web artifact: 1,718,551 bytes.
+- Web artifact: 1,723,288 bytes.
 - Feature weights: 18,000.
-- Answer index: 775.
-- Family-holdout accuracy: 0.9446 across 6,863 held-out examples from unseen source/tag/id families.
-- Route accuracy: 0.9382.
-- Public model-gate usage: 37/778 cases.
+- Answer index: 787.
+- Family-holdout accuracy: 0.9540 across 7,223 held-out examples from unseen source/tag/id families.
+- Route accuracy: 0.9385.
+- Public model-gate usage: 37/790 cases.
 - Synthetic casepack capability eval: 10 casepacks, 160 questions, 0 failures.
 - Knowledge shard validation: 43 shards, 55,151 cards, max shard size 179,996 bytes, full round-trip against the monolithic public artifact.

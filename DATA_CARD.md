@@ -34,9 +34,9 @@ Private data is not distributed:
 
 ## Current Dataset Snapshot
 
-- Distillation rows: 74,593.
-- Train rows: 72,808.
-- Eval rows: 1,785.
+- Distillation rows: 76,732.
+- Train rows: 74,946.
+- Eval rows: 1,786.
 - Cloud teacher used: false.
 - Source files copied into public runtime: false.
 - Private paths allowed in public runtime: false.
@@ -48,6 +48,7 @@ Current public gates include:
 - Dialog persona eval.
 - Tiny router route and answer eval.
 - Model gate.
+- Help/onboarding and clone-identity gate coverage.
 - Context stress eval.
 - Synthetic casepack capability eval.
 - Knowledge runtime benchmark.
