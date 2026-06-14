@@ -10,13 +10,18 @@
       "requires_webgpu": false,
       "requires_network": false,
       "cloud_inference_api_allowed": false,
+      "launch_targets": {
+        "max_web_bytes": 1500000,
+        "knowledge_p99_ms": 1.0,
+        "growth_focus": "daily dialog, reasoning, and personal calibration"
+      },
       "last_known_stats": {
-        "examples": 67861,
-        "answer_index": 659,
+        "examples": 68498,
+        "answer_index": 685,
         "feature_weights": 6500,
-        "web_bytes": 656787,
-        "route_accuracy": 0.9163,
-        "reasoning_holdout": "59/59"
+        "web_bytes": 662188,
+        "route_accuracy": 0.9174,
+        "reasoning_holdout": "99/99"
       }
     }
   },

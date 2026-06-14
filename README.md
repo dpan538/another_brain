@@ -78,13 +78,13 @@ node scripts/run_model_gate_node.mjs --out /tmp/another_brain_model_gate.json
 
 ## Current Gate Snapshot
 
-- Distillation dataset: 68281 rows, 66496 train, 1785 eval.
-- Tiny router web artifact: 656787 bytes.
-- Tiny router route accuracy: 0.9163.
-- Tiny router reasoning holdout: 59/59.
-- Knowledge runtime: 46959 cards, p95 around 0.23ms and p99 around 0.38ms on the last local run.
-- Dialog persona eval: 575 cases, 0 failures.
-- Model gate: 659/659 passed, 37/37 Web SLM cases passed.
+- Distillation dataset: 68938 rows, 67152 train, 1786 eval.
+- Tiny router web artifact: 662188 bytes.
+- Tiny router route accuracy: 0.9174.
+- Tiny router reasoning holdout: 99/99.
+- Knowledge runtime: 46959 cards, p95 around 0.23ms and p99 around 0.32ms on the last local run.
+- Dialog persona eval: 604 cases, 0 failures.
+- Model gate: 686/686 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
 ## Repository Contents
@@ -101,10 +101,16 @@ node scripts/run_model_gate_node.mjs --out /tmp/another_brain_model_gate.json
 
 The next training work should improve the tiny router Web SLM directly.
 
+Launch budget:
+
+- Tiny router Web SLM can grow toward a 1.5MB browser artifact before first launch.
+- Knowledge lookup should stay comfortably sub-millisecond, with p99 under 1ms on local gates.
+- Growth should come from better daily dialog, reasoning, and personal-calibration cases, not from a generative fallback.
+
 The priority order is:
 
 1. Keep the tiny router Web SLM fast and authoritative.
-2. Compress the answer index and knowledge payloads.
+2. Expand high-signal dialog and reasoning coverage up to the 1.5MB router budget.
 3. Add more targeted correction pairs for drift points.
 4. Keep the browser gate as the release boundary.
 

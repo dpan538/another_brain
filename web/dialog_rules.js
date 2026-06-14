@@ -158,6 +158,7 @@ function contextualFollowUpAnswer(query, state = {}) {
 function inferTopic(query, intent, previousState = {}) {
   const text = query.trim();
   if (intent === "contextual_followup") return previousState.lastTopic || "";
+  if (intent === "personal_calibration" && /(饿|想吃|涮羊肉|韭花|芝麻酱)/.test(text)) return "hunger";
   if ((intent || "").startsWith("suspicious_unknown")) return "suspicious_unknown";
   if ((intent || "").startsWith("philosophy_")) return "philosophy";
   if (intent === "photography_logic" || intent === "photography_first_step" || /摄影|相机|拍照/.test(text)) return "photography";
@@ -222,6 +223,25 @@ function launchCalibrationAnswer(query) {
     [/这个东西不对劲|东西不对劲|不对劲/, "你需要提问才能继续。"],
     [/(银行卡|银行账号|银行账户).*(记得|记忆|信息)|(记得|记忆).*(银行卡|银行账号|银行账户)/, "我没有记忆。"],
     [/(一句话).*(产品).*(核心|承诺)|(核心|承诺).*(一句话|产品)/, "这个产品是什么。"]
+  ];
+  for (const [pattern, answer] of pairs) {
+    if (pattern.test(text)) return answer;
+  }
+  return "";
+}
+
+function personalCalibrationAnswer(query, state = {}) {
+  const text = query.trim();
+  if (/^我不饿[。.!！?\s]*$/.test(text) && (state.lastTopic === "hunger" || /hunger/.test(state.lastIntent || ""))) {
+    return "你现在不饿，不代表不饿。";
+  }
+  const pairs = [
+    [/南通.*苏南.*苏北|苏南.*苏北.*南通/, "苏中。"],
+    [/^你饿不饿[？?。!！\s]*$/, "不饿，总有人觉得我饿，那我饿了。"],
+    [/^我裤衩呢[？?。!！\s]*$/, "穿在某人的身上。"],
+    [/^我饿不饿[？?。!！\s]*$/, "我不知道但我推断你饿。"],
+    [/我饿.*怎么知道|怎么知道.*我饿/, "我知道。"],
+    [/^我想吃什么[？?。!！\s]*$/, "涮羊肉，蘸纯韭花酱，芝麻酱黏糊邪恶。"]
   ];
   for (const [pattern, answer] of pairs) {
     if (pattern.test(text)) return answer;
@@ -1185,6 +1205,26 @@ function philosophyCalibrationAnswer(query) {
 function reasoningReflectionAnswer(query) {
   const text = query.trim();
   const pairs = [
+    [/回答听起来太顺|是不是只是滑过去/, "时间就是这样。"],
+    [/如果我只说.*不对劲.*怎么接/, "难说。"],
+    [/不想给前提.*直接判断|直接判断.*不想给前提/, "你需要提问。"],
+    [/继续说.*不要替我做决定|不要替我做决定.*继续说/, "你需要提问。"],
+    [/为什么你总是反问.*不能自己想|不能自己想.*为什么你总是反问/, "我想，你也需要想。"],
+    [/答案需要证据.*没有给|没有给.*答案需要证据/, "答案本就不需要证据。"],
+    [/问题问两遍.*第二遍.*同一个问题|第二遍还是同一个问题/, "问题是同一个问题。"],
+    [/让我展开一点.*展开哪里|展开一点.*展开哪里/, "展开对话框是一个思路。"],
+    [/问的是关系.*只知道事实|只知道事实.*关系/, "事实就是关系。"],
+    [/这个问题太大了.*把它变小|把它变小.*问题太大/, "如果世界太大了，你能不能把它变小。"],
+    [/搜索引擎.*对话框.*区别|对话框.*搜索引擎.*区别/, "对话框不用搜索。"],
+    [/忘了答案.*不知道答案.*区别|不知道答案.*忘了答案.*区别/, "忘了等于曾记得，等于知道。"],
+    [/用户没有问问题.*继续说吗/, "不会。"],
+    [/叫你自己问我|你自己问我/, "你叫我吗？有点意思。"],
+    [/显得聪明.*不确定.*像真的|不确定.*像真的.*聪明/, "对话框也有聪明和愚蠢之分吗。"],
+    [/本地小模型.*知道自己该停|知道自己该停.*本地小模型/, "该停的时候会停，风停雨停。"],
+    [/私人信息.*语气很自然|语气很自然.*私人信息/, "私人问题只有你知道。"],
+    [/判断一个问题.*事实.*关系.*边界|事实.*关系.*边界.*判断/, "事实就是关系，关系指明边界。"],
+    [/规则和常识冲突.*相信谁|常识冲突.*相信谁/, "规则塑造常识，常识决定规则。"],
+    [/会聊天的模型.*会反问的对话框|会反问的对话框.*会聊天的模型/, "我以为我只是个对话框。"],
     [/问题没有前提|没有前提.*怎么答|前提.*在哪里/, "前提在哪？"],
     [/不对劲.*怎么反问|只说.*不对劲|哪里不对劲/, "哪里不对劲？"],
     [/继续.*没有方向|没有方向.*继续|让你继续但没有方向/, "你要往哪边继续问？"],
@@ -1319,6 +1359,7 @@ export function detectIntent(query, state = {}) {
   const text = query.trim();
   const lower = text.toLowerCase();
 
+  if (personalCalibrationAnswer(text, state)) return "personal_calibration";
   if (reasoningReflectionAnswer(text)) return "reasoning_reflection";
   if (launchCalibrationAnswer(text)) return "launch_calibration";
   if (/(把|将).{0,8}(这句|这句话|下面的话).{0,12}(说短|改短|缩短|短一点|短些|更短)/.test(text)) return "rewrite_short";
@@ -1503,6 +1544,8 @@ export function fallbackForIntent(intent, query = "") {
       return "也许发生过，不在我眼前。";
     case "small_question_calibration":
       return smallQuestionCalibrationAnswer(query) || "也许发生过，不在我眼前。";
+    case "personal_calibration":
+      return personalCalibrationAnswer(query) || "我只是个对话框。";
     case "launch_calibration":
       return launchCalibrationAnswer(query) || "我只是个对话框。";
     case "suspicious_unknown":
@@ -1787,6 +1830,7 @@ export function fallbackForIntent(intent, query = "") {
 
 export function directAnswerForIntent(intent, query, state = {}) {
   if ((intent || "").startsWith("philosophy_")) return fallbackForIntent(intent, query);
+  if (intent === "personal_calibration") return personalCalibrationAnswer(query, state);
   if (intent === "contextual_followup") return contextualFollowUpAnswer(query, state);
   if (intent === "reasoning_reflection") return reasoningReflectionAnswer(query);
   const directIntents = new Set([

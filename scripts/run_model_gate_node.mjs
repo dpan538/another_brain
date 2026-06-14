@@ -13,8 +13,8 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState
-} from "../web/dialog_rules.js?v=44";
-import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=7";
+} from "../web/dialog_rules.js?v=45";
+import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=8";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CASES = resolve(ROOT, "web/model_inference_cases.json");
