@@ -54,14 +54,15 @@
       "turns": [
         {
           "prompt": "门禁不是为了好看。",
-          "expected": "对。门禁是为了不让聪明变成乱说。",
-          "expected_intent": "gate_function"
+          "expected": "门禁是功能，不是装饰。用来拦住跑偏。",
+          "expected_intent": "gate_function",
+          "must_not_include": ["对。", "聪明变成乱说", "门禁会"]
         },
         {
           "prompt": "为什么？",
-          "expected": "对。门禁是为了不让聪明变成乱说。",
+          "expected": "门禁是功能，不是装饰。用来拦住跑偏。",
           "expected_intent": "context_gate_policy",
-          "must_not_include": ["访问控制", "安全权限", "用户认证"]
+          "must_not_include": ["对。", "聪明变成乱说", "门禁会", "访问控制", "安全权限", "用户认证"]
         }
       ]
     },

@@ -6,9 +6,9 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState,
-} from "./dialog_rules.js?v=57";
+} from "./dialog_rules.js?v=59";
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "./structured_decision.js?v=1";
-import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=4";
+import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint } from "./tiny_router.js?v=15";
 
 const VISIBLE_CONTEXT_TURN_LIMIT = 4;

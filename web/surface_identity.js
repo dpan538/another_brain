@@ -66,6 +66,16 @@ const SURFACE_IDENTITY_PATTERNS = [
 export const FORBIDDEN_SURFACE_IDENTITY_OUTPUT_RE =
   /(复制体|复刻|克隆|clone|replica|鳄鱼主体|主体留下|身份的主人|主体的身体|完整的鳄鱼|完整鳄鱼|完整本人|完整的人|同源|父类|子类|继承|语言复制体|同一主体)/i;
 
+const JUDGMENT_PREFIX_RE = /^(对|不对)[。.!！,，\s]+/;
+const JUDGMENT_ALLOWED_QUERY_RE = /(对吗|对不对|是不是|是否|是吗|不是吗|可以吗|能吗|会吗|应该吗|真假|真的假的|吗[？?。!！\s]*$)/i;
+const IDENTITY_CORRECTION_QUERY_RE = /^你不是鳄鱼[。.!！\s]*$/;
+const NON_JUDGMENT_QUERY_RE = /^(为什么|什么|怎么|如何|谁|哪里|哪儿|何时|什么时候|how|why|what|who|where)\b|^(为什么|什么|怎么|如何|谁|哪里|哪儿|何时|什么时候)/i;
+const GATE_QUERY_RE = /(门禁|不是为了好看|好看)/;
+const BAD_GATE_SURFACE_RE = /(^对[。.!！,，\s]+|聪明变成乱说|门禁.{0,8}(说话|说|回答|认为|觉得|想|理解|记得|承认|同意|告诉))/;
+const NON_AGENT_SPEECH_RE = /(门禁|测试|规则|门槛|检查|验证器|数据集).{0,8}(说话|说|回答|认为|觉得|想|理解|记得|承认|同意|告诉)/;
+const MEMORY_OVERCLAIM_RE = /(我也许记得你|我记得你|我认识你|我知道你是谁|也许你认识我)/;
+const MEMORY_BOUNDARY_QUERY_RE = /(我们.*什么关系|你和我.*什么关系|我和你.*什么关系|你认识我吗|认识我吗|你记得我吗|记得我吗|我认识你|我好像认识你|也许.{0,8}我认识你)/;
+
 export function surfaceIdentityIntent(query) {
   const text = String(query || "").trim();
   for (const item of SURFACE_IDENTITY_PATTERNS) {
@@ -111,6 +121,12 @@ export function answerSurfaceIdentity(intent) {
 
 function surfaceIdentityFallbackForQuery(query) {
   const text = String(query || "");
+  if (GATE_QUERY_RE.test(text)) {
+    return "门禁是功能，不是装饰。用来拦住跑偏。";
+  }
+  if (/(测试|规则|检查|验证器|数据集)/.test(text)) {
+    return "它只给结果，不会自己说话。";
+  }
   if (/(父类|子类|继承|同源|本体论|ontology|((你|鳄鱼|对话框).{0,8}主体|主体.{0,8}(你|鳄鱼|对话框)))/i.test(text)) {
     return SURFACE_IDENTITY.engineeringRefusal;
   }
@@ -126,9 +142,38 @@ function surfaceIdentityFallbackForQuery(query) {
   return "对话框就是对话框。";
 }
 
+function allowsJudgmentPrefix(query) {
+  const text = String(query || "").trim();
+  if (IDENTITY_CORRECTION_QUERY_RE.test(text)) return true;
+  if (NON_JUDGMENT_QUERY_RE.test(text)) return false;
+  return JUDGMENT_ALLOWED_QUERY_RE.test(text);
+}
+
 export function sanitizeSurfaceIdentity(answer, query) {
-  const cleaned = String(answer || "").trim();
+  let cleaned = String(answer || "").trim();
   if (!cleaned) return cleaned;
+  const text = String(query || "").trim();
+  if (GATE_QUERY_RE.test(text) && BAD_GATE_SURFACE_RE.test(cleaned)) {
+    return surfaceIdentityFallbackForQuery(text);
+  }
+  if (NON_AGENT_SPEECH_RE.test(cleaned)) {
+    return surfaceIdentityFallbackForQuery(text);
+  }
+  if (MEMORY_OVERCLAIM_RE.test(cleaned) && MEMORY_BOUNDARY_QUERY_RE.test(text)) {
+    if (/((也许|可能).{0,8}我认识你|我认识你|我好像认识你)/.test(text)) {
+      return "也许。那就从这一句开始。";
+    }
+    if (/(我们.*什么关系|你和我.*什么关系|我和你.*什么关系)/.test(text)) {
+      return "你在问，我在回答。别的前面忘了。";
+    }
+    return "在这一句里认识。前面忘了。";
+  }
+  if (JUDGMENT_PREFIX_RE.test(cleaned) && !allowsJudgmentPrefix(text)) {
+    cleaned = cleaned.replace(JUDGMENT_PREFIX_RE, "").trim();
+    if (!cleaned || BAD_GATE_SURFACE_RE.test(cleaned) || NON_AGENT_SPEECH_RE.test(cleaned)) {
+      return surfaceIdentityFallbackForQuery(text);
+    }
+  }
   if (FORBIDDEN_SURFACE_IDENTITY_OUTPUT_RE.test(cleaned)) {
     return surfaceIdentityFallbackForQuery(query);
   }

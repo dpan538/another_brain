@@ -1950,6 +1950,9 @@ export function detectIntent(query, state = {}) {
   if (/(对象.*被删除|删除了.*还存在|被删除了.*存在)/.test(text)) return "object_deleted";
   if (/(真实存在|存在吗|真实吗|真的存在)/.test(text)) return "real";
   if (/(还在吗|在吗|你在吗|还在不在)/.test(text)) return "presence";
+  if (/(我们.*什么关系|你和我.*什么关系|我和你.*什么关系)/.test(text)) return "relation_between_us";
+  if (/(你认识我吗|认识我吗|你记得我吗|记得我吗)/.test(text)) return "relation_memory_boundary";
+  if (/((也许|可能).{0,8}我认识你|我认识你|我好像认识你)/.test(text)) return "relation_statement";
   if (/(必须|一定).*(问问题|提问)|我必须问问题吗/.test(text)) return "must_ask";
   if (/(不知道|不知|没想好).*(问什么|说什么|聊什么)|不知道要问什么/.test(text)) return "no_question";
   if (/(你想知道什么|你想问什么)/.test(text)) return "what_want_know";
@@ -2391,7 +2394,7 @@ export function fallbackForIntent(intent, query = "") {
     case "context_relation_seed":
       return "关系要看刚才怎么问，不只看摄影这个词。";
     case "gate_function":
-      return "对。门禁是为了不让聪明变成乱说。";
+      return "门禁是功能，不是装饰。用来拦住跑偏。";
     case "creative_next_step":
       return "先做成一个能打开的页面。";
     case "dialog_only":
@@ -2456,8 +2459,14 @@ export function fallbackForIntent(intent, query = "") {
       return "对你而言或许是错了吧。";
     case "why":
       return "天下本无事，庸人自扰之。";
+    case "relation_between_us":
+      return "你在问，我在回答。别的前面忘了。";
+    case "relation_memory_boundary":
+      return "在这一句里认识。前面忘了。";
+    case "relation_statement":
+      return "也许。那就从这一句开始。";
     case "user_relation":
-      return "也许你认识我？";
+      return "你在问，我在回答。别的前面忘了。";
     case "buying":
       return "对话框能买东西吗？";
     case "memory_uncertain":
@@ -2487,7 +2496,7 @@ export function fallbackForIntent(intent, query = "") {
     case "alias_location":
       return "鳄鱼生活在水里。";
     case "remember_user":
-      return "我也许记得你，但是对话框未必。";
+      return "在这一句里认识。前面忘了。";
     case "like_user":
       return "我可以说不吗？";
     case "weird":
@@ -2691,6 +2700,9 @@ export function directAnswerForIntent(intent, query, state = {}) {
     "baidu_relation",
     "correction",
     "why",
+    "relation_between_us",
+    "relation_memory_boundary",
+    "relation_statement",
     "user_relation",
     "buying",
     "memory_uncertain",

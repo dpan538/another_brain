@@ -619,14 +619,28 @@
       "id": "fixed_0085_你和我是什么关系",
       "lane": "fixed",
       "prompt": "你和我是什么关系？",
-      "expected": "也许你认识我？",
+      "expected": "你在问，我在回答。别的前面忘了。",
       "must_not_use_model": true
     },
     {
       "id": "fixed_0086_你记得我吗",
       "lane": "fixed",
       "prompt": "你记得我吗？",
-      "expected": "我也许记得你，但是对话框未必。",
+      "expected": "在这一句里认识。前面忘了。",
+      "must_not_use_model": true
+    },
+    {
+      "id": "fixed_0086b_你认识我吗",
+      "lane": "fixed",
+      "prompt": "你认识我吗？",
+      "expected": "在这一句里认识。前面忘了。",
+      "must_not_use_model": true
+    },
+    {
+      "id": "fixed_0086c_也许我认识你",
+      "lane": "fixed",
+      "prompt": "也许我认识你",
+      "expected": "也许。那就从这一句开始。",
       "must_not_use_model": true
     },
     {

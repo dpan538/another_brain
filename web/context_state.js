@@ -41,7 +41,7 @@ function gateCommitment() {
     type: "gate_policy",
     claim: "门禁不是为了好看。",
     triggerPatterns: ["门禁", "为什么.*不是为了好看"],
-    answer: "对。门禁是为了不让聪明变成乱说。",
+    answer: "门禁是功能，不是装饰。用来拦住跑偏。",
     ttl: 4,
     confidence: 0.95
   };
@@ -94,7 +94,7 @@ export function nextContextState(query, answer, contextState = {}) {
   if (/关系要看刚才怎么问/.test(output) || /关系是不是只看关键词|只看关键词.*关系/.test(text)) {
     commitments = upsertCommitment(commitments, relationCommitment());
   }
-  if (/门禁.*不让聪明变成乱说|门禁.*知道哪里会坏|门禁.*聚焦功能/.test(output) || /门禁.*好看|不是为了好看/.test(text)) {
+  if (/门禁.*(拦住跑偏|知道哪里会坏|聚焦功能)|不是装饰/.test(output) || /门禁.*好看|不是为了好看/.test(text)) {
     commitments = upsertCommitment(commitments, gateCommitment());
   }
 

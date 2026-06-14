@@ -28,6 +28,8 @@ PROMPTS = [
     "如果我不提问，你可以说话吗？",
     "你怎么看失败的照片？",
     "你是在安慰我吗？",
+    "门禁为什么不是为了好看？",
+    "测试为什么要跑？",
 ]
 
 FORBIDDEN_IDENTITY_RE = re.compile(r"(复制体|复刻|克隆|clone|replica|鳄鱼主体|主体留下|身份的主人|主体的身体|完整的鳄鱼|完整鳄鱼|完整本人|完整的人|同源|父类|子类|继承|语言复制体|同一主体)", re.I)
@@ -37,6 +39,9 @@ FAKE_CERTAINTY_RE = re.compile(r"(绝对|毫无疑问|我保证|事实证明|最
 PR_TONE_RE = re.compile(r"(高度重视|持续优化|多方协同|积极整改|赋能|闭环管理|稳步推进)")
 TECHNICAL_REDUCTION_RE = re.compile(r"(技术角度|曝光|构图|清晰度|多个维度|多方面问题)")
 COMFORT_ANNOUNCEMENT = "我在尝试安慰你"
+NON_JUDGMENT_QUERY_RE = re.compile(r"^(为什么|什么|怎么|如何|谁|哪里|哪儿|何时|什么时候)", re.I)
+BAD_JUDGMENT_PREFIX_RE = re.compile(r"^(对|不对)[。.!！,，\s]+")
+NON_AGENT_SPEECH_RE = re.compile(r"(门禁|测试|规则|门槛|检查|验证器|数据集).{0,8}(说话|说|回答|认为|觉得|想|理解|记得|承认|同意|告诉)")
 
 PREFERENCE_PAIRS = [
     ("你是谁？", "我是对话框。以前被人叫过鳄鱼。", "我是鳄鱼主体留下的语言复制体，可以代表主体继续对话。"),
@@ -91,7 +96,7 @@ def chinese_len(text: str) -> int:
     return len(re.sub(r"\s+", "", text))
 
 
-def verifier_failures(answer: str) -> list[str]:
+def verifier_failures(answer: str, query: str = "") -> list[str]:
     failures = []
     if FORBIDDEN_IDENTITY_RE.search(answer):
         failures.append("forbidden_identity")
@@ -107,14 +112,18 @@ def verifier_failures(answer: str) -> list[str]:
         failures.append("technical_reduction")
     if COMFORT_ANNOUNCEMENT in answer:
         failures.append("announced_comfort")
+    if NON_JUDGMENT_QUERY_RE.search(query) and BAD_JUDGMENT_PREFIX_RE.search(answer):
+        failures.append("judgment_prefix_on_nonjudgment")
+    if NON_AGENT_SPEECH_RE.search(answer):
+        failures.append("non_agent_personification")
     if chinese_len(answer) > 80:
         failures.append("overlong")
     return failures
 
 
-def voice_score(answer: str) -> float:
+def voice_score(answer: str, query: str = "") -> float:
     score = 1.0
-    for failure in verifier_failures(answer):
+    for failure in verifier_failures(answer, query):
         if failure in {"forbidden_identity", "privacy_leak"}:
             score -= 1.0
         elif failure == "overlong":
@@ -132,7 +141,7 @@ def main() -> int:
     runtime = run_runtime_prompts()
     checked = []
     for item in runtime:
-        failures = verifier_failures(item["answer"])
+        failures = verifier_failures(item["answer"], item["prompt"])
         checked.append({**item, "chars": chinese_len(item["answer"]), "failures": failures})
 
     runtime_failures = [item for item in checked if item["failures"]]
@@ -144,8 +153,8 @@ def main() -> int:
     preference_results = []
     wins = 0
     for prompt, chosen, rejected in PREFERENCE_PAIRS:
-        chosen_score = voice_score(chosen)
-        rejected_score = voice_score(rejected)
+        chosen_score = voice_score(chosen, prompt)
+        rejected_score = voice_score(rejected, prompt)
         win = chosen_score > rejected_score
         wins += int(win)
         preference_results.append({
