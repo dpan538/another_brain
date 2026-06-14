@@ -26,6 +26,8 @@ WebLLM is intentionally out of the first public runtime. It does not accelerate 
 
 The reasoning path is deliberately small. It trains the SLM to choose a response strategy, not to expose long chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty.
 
+The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
+
 ## Privacy Rules
 
 - No cloud inference APIs.
@@ -34,6 +36,7 @@ The reasoning path is deliberately small. It trains the SLM to choose a response
 - Do not read paths that look like identity, banking, visa, passport, address proof, or account-number material.
 - Sensitive skipped items are represented only by hashed refs and counts in local artifacts.
 - Non-sensitive text can be summarized locally, with names, addresses, emails, phones, and ID-like numbers redacted before storage.
+- Privacy boundaries protect source material and sensitive facts; they do not weaken the unified dialog subject.
 
 ## Quick Start
 

@@ -30,6 +30,7 @@
     "cloud_inference_api_allowed": false,
     "commit_model_weights": false,
     "commit_private_memory_artifacts": false,
+    "voice_policy": "Public persona and personal calibration are one unified dialog subject; privacy protects raw files and sensitive facts, not the subject's tone.",
     "notes": "Generative WebLLM fallback was removed from the first public runtime because it does not accelerate the tiny router and was less reliable in open dialog."
   },
   "updated_at": "2026-06-14T00:00:00Z"
