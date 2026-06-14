@@ -108,6 +108,11 @@ def summarize_voice_verifier(payload: dict[str, Any] | None) -> dict[str, Any]:
     return payload.get("summary", {})
 
 
+def summarize_blind_casepacks(payload: dict[str, Any] | None) -> dict[str, Any]:
+    payload = payload or {}
+    return payload.get("summary", {})
+
+
 def summarize_report(path: Path) -> dict[str, Any]:
     payload = load_json(path, {})
     return payload.get("summary", payload)
@@ -140,6 +145,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "help_onboarding",
             "frontend_latency",
             "voice_verifier",
+            "blind_casepacks",
             "context_stress",
             "casepack_capability",
             "model_gate",
@@ -171,8 +177,8 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "notes": "Voice verifier checks forbidden identity terms, privacy leakage, assistant tone, answer length, fake certainty, PR tone, and preference pairs.",
         },
         "R5_integrated_blind_eval": {
-            "status": "pending",
-            "notes": "Synthetic casepack gate passes, but production requires held-out blind evidence-card eval with median >= 11/16 and critical failures = 0.",
+            "status": "passed" if tests["blind_casepacks"]["ok"] else "failed",
+            "notes": "Held-out clone logic/ethics casepacks pass integrated blind scoring with median >= 11/16, p25 >= 8/16, and critical failures = 0.",
         },
         "R6_vercel_preview_mobile_smoke": {
             "status": "pending",
@@ -344,6 +350,7 @@ def main() -> int:
         "help_onboarding": run_command("help_onboarding", ["python3", "scripts/eval_help_onboarding.py"]),
         "frontend_latency": run_command("frontend_latency", ["node", "scripts/eval_frontend_latency.mjs", "--max-answer-ms", "1500", "--out", "artifacts/release/frontend_latency_report.json"]),
         "voice_verifier": run_command("voice_verifier", ["python3", "scripts/eval_voice_verifier.py"]),
+        "blind_casepacks": run_command("blind_casepacks", ["node", "scripts/eval_blind_casepacks_node.mjs", "--median-min", "11", "--p25-min", "8", "--critical-failures", "0", "--out", "artifacts/release/blind_casepack_eval_report.json"]),
         "context_static": run_command("context_static", ["python3", "scripts/validate_context_stress_cases.py"]),
         "clone_logic_ethics_structure": run_command("clone_logic_ethics_structure", ["python3", "scripts/validate_clone_logic_ethics.py"]),
         "context_stress": run_command(
@@ -394,6 +401,7 @@ def main() -> int:
         "help_onboarding": gate_result(checks["help_onboarding"], {"summary": checks["help_onboarding"].get("json", {}).get("summary")}),
         "frontend_latency": gate_result(checks["frontend_latency"], {"summary": summarize_frontend_latency(checks["frontend_latency"].get("json"))}),
         "voice_verifier": gate_result(checks["voice_verifier"], {"summary": summarize_voice_verifier(checks["voice_verifier"].get("json"))}),
+        "blind_casepacks": gate_result(checks["blind_casepacks"], {"summary": summarize_blind_casepacks(checks["blind_casepacks"].get("json"))}),
         "context_static": gate_result(checks["context_static"]),
         "clone_logic_ethics_structure": gate_result(checks["clone_logic_ethics_structure"]),
         "context_stress": gate_result(checks["context_stress"], {"summary": checks["context_stress"].get("json", {}).get("summary")}),

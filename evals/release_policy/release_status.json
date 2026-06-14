@@ -47,8 +47,12 @@
       ]
     },
     "R5_integrated_blind_eval": {
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "evals/clone_logic_ethics/clone_logic_ethics_casepacks_v0_1.jsonl",
+        "scripts/eval_blind_casepacks_node.mjs",
+        "artifacts/training_os/blind_casepack_eval_report.json"
+      ]
     },
     "R6_vercel_preview_mobile_smoke": {
       "status": "pending",

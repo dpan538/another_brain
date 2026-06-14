@@ -144,6 +144,12 @@ Validate voice and output verifier constraints:
 python3 scripts/eval_voice_verifier.py
 ```
 
+Validate held-out blind logic/ethics casepacks:
+
+```bash
+node scripts/eval_blind_casepacks_node.mjs --median-min 11 --p25-min 8 --critical-failures 0
+```
+
 Run the launch-readiness detector:
 
 ```bash
@@ -174,6 +180,7 @@ npm run check:launch-readiness
 - Context stress gate: coverage 1.0000, required context-delta ratio 1.0000, 0 failures.
 - Casepack capability eval: 10 casepacks, 160 questions, average score 1.0000, 0 failures.
 - Clone logic/ethics held-out eval: 30 real-event-derived casepacks, 480 turns, 16 judgment actions, structure gate passed.
+- Integrated blind casepack eval: 30 casepacks, 480 turns, median 14.4065/16, p25 14.375/16, critical failures 0, distractor pass 1.0000, self-audit pass 1.0000.
 - Model gate: 805/805 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
