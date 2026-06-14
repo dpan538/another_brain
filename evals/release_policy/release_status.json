@@ -23,8 +23,11 @@
       ]
     },
     "R2_training_eval_splits": {
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "evals/dataset_splits/dataset_split_manifest.json",
+        "scripts/validate_dataset_splits.py"
+      ]
     },
     "R3_tiny_router_v2_action_classifier": {
       "status": "pending",

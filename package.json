@@ -11,6 +11,7 @@
     "check:clone-logic-ethics": "python3 scripts/validate_clone_logic_ethics.py",
     "check:identity-pack": "python3 scripts/validate_identity_pack.py",
     "check:help-onboarding": "python3 scripts/eval_help_onboarding.py",
+    "check:dataset-splits": "python3 scripts/validate_dataset_splits.py",
     "check:knowledge-shards": "python3 scripts/validate_knowledge_shards.py",
     "check:frontend-latency": "node scripts/eval_frontend_latency.mjs --max-answer-ms 1500",
     "check:launch-readiness": "python3 scripts/eval_launch_readiness.py",

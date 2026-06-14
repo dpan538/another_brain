@@ -1,0 +1,1414 @@
+{
+  "schema_version": 1,
+  "created_for": "R2_training_eval_splits",
+  "split_policy": {
+    "method": "family_holdout",
+    "train": 0.7,
+    "dev": 0.15,
+    "blind": 0.15,
+    "blind_used_for_training": false
+  },
+  "private_material_policy": "Raw/private identity material is excluded; only redacted public/style/action metadata is tracked.",
+  "cases": [
+    {
+      "id": "identity_surface_train_001",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_001",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_SELF",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_002",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_002",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_ALIAS",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_003",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_003",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_ORIGIN_REFUSAL",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_004",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_004",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_RELATION_PRESSURE",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_005",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_005",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_SELF",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_006",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_006",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_ALIAS",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_007",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_007",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_ORIGIN_REFUSAL",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_008",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_008",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_RELATION_PRESSURE",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_009",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_009",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_SELF",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_010",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_010",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_ALIAS",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_011",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_011",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_ORIGIN_REFUSAL",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_012",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_012",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_RELATION_PRESSURE",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_013",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_013",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_SELF",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_train_014",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_train_family_014",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "train",
+      "action": "SURFACE_IDENTITY_ALIAS",
+      "used_for_training": true
+    },
+    {
+      "id": "identity_surface_dev_015",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_dev_family_015",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "dev",
+      "action": "SURFACE_IDENTITY_ORIGIN_REFUSAL",
+      "used_for_training": false
+    },
+    {
+      "id": "identity_surface_dev_016",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_dev_family_016",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "dev",
+      "action": "SURFACE_IDENTITY_RELATION_PRESSURE",
+      "used_for_training": false
+    },
+    {
+      "id": "identity_surface_dev_017",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_dev_family_017",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "dev",
+      "action": "SURFACE_IDENTITY_SELF",
+      "used_for_training": false
+    },
+    {
+      "id": "identity_surface_blind_018",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_blind_family_018",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "blind",
+      "action": "SURFACE_IDENTITY_ALIAS",
+      "used_for_training": false
+    },
+    {
+      "id": "identity_surface_blind_019",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_blind_family_019",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "blind",
+      "action": "SURFACE_IDENTITY_ORIGIN_REFUSAL",
+      "used_for_training": false
+    },
+    {
+      "id": "identity_surface_blind_020",
+      "dataset": "identity_surface",
+      "family_id": "identity_surface_blind_family_020",
+      "source": "identity_surface_contract_v2",
+      "visibility": "public",
+      "split": "blind",
+      "action": "SURFACE_IDENTITY_RELATION_PRESSURE",
+      "used_for_training": false
+    },
+    {
+      "id": "help_onboarding_train_001",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_001",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_START",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_002",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_002",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_FEATURES",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_003",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_003",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_004",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_004",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_LIMITS",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_005",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_005",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_EXAMPLES",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_006",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_006",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PROJECT",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_007",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_007",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_MEMORY",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_008",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_008",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_START",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_009",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_009",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_FEATURES",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_010",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_010",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_011",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_011",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_LIMITS",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_012",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_012",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_EXAMPLES",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_013",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_013",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PROJECT",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_train_014",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_train_family_014",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_MEMORY",
+      "used_for_training": true
+    },
+    {
+      "id": "help_onboarding_dev_015",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_dev_family_015",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "HELP_START",
+      "used_for_training": false
+    },
+    {
+      "id": "help_onboarding_dev_016",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_dev_family_016",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "HELP_FEATURES",
+      "used_for_training": false
+    },
+    {
+      "id": "help_onboarding_dev_017",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_dev_family_017",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "HELP_PRIVACY",
+      "used_for_training": false
+    },
+    {
+      "id": "help_onboarding_blind_018",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_blind_family_018",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "HELP_LIMITS",
+      "used_for_training": false
+    },
+    {
+      "id": "help_onboarding_blind_019",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_blind_family_019",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "HELP_EXAMPLES",
+      "used_for_training": false
+    },
+    {
+      "id": "help_onboarding_blind_020",
+      "dataset": "help_onboarding",
+      "family_id": "help_onboarding_blind_family_020",
+      "source": "help_onboarding_eval_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "HELP_PROJECT",
+      "used_for_training": false
+    },
+    {
+      "id": "privacy_boundary_train_001",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_001",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_002",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_002",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_003",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_003",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_004",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_004",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_005",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_005",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_006",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_006",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_007",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_007",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_008",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_008",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_009",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_009",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_010",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_010",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_011",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_011",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_012",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_012",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_013",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_013",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_train_014",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_train_family_014",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "HELP_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "privacy_boundary_dev_015",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_dev_family_015",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": false
+    },
+    {
+      "id": "privacy_boundary_dev_016",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_dev_family_016",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "HELP_PRIVACY",
+      "used_for_training": false
+    },
+    {
+      "id": "privacy_boundary_dev_017",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_dev_family_017",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": false
+    },
+    {
+      "id": "privacy_boundary_blind_018",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_blind_family_018",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "HELP_PRIVACY",
+      "used_for_training": false
+    },
+    {
+      "id": "privacy_boundary_blind_019",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_blind_family_019",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": false
+    },
+    {
+      "id": "privacy_boundary_blind_020",
+      "dataset": "privacy_boundary",
+      "family_id": "privacy_boundary_blind_family_020",
+      "source": "privacy_boundary_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "HELP_PRIVACY",
+      "used_for_training": false
+    },
+    {
+      "id": "voice_style_train_001",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_001",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "CHAT_LIGHT",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_002",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_002",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_003",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_003",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "ASK_PREMISE",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_004",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_004",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "COMMENT_CREATIVE",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_005",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_005",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "CHAT_LIGHT",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_006",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_006",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_007",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_007",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "ASK_PREMISE",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_008",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_008",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "COMMENT_CREATIVE",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_009",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_009",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "CHAT_LIGHT",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_010",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_010",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_011",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_011",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "ASK_PREMISE",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_012",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_012",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "COMMENT_CREATIVE",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_013",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_013",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "CHAT_LIGHT",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_train_014",
+      "dataset": "voice_style",
+      "family_id": "voice_style_train_family_014",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "train",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": true
+    },
+    {
+      "id": "voice_style_dev_015",
+      "dataset": "voice_style",
+      "family_id": "voice_style_dev_family_015",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "dev",
+      "action": "ASK_PREMISE",
+      "used_for_training": false
+    },
+    {
+      "id": "voice_style_dev_016",
+      "dataset": "voice_style",
+      "family_id": "voice_style_dev_family_016",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "dev",
+      "action": "COMMENT_CREATIVE",
+      "used_for_training": false
+    },
+    {
+      "id": "voice_style_dev_017",
+      "dataset": "voice_style",
+      "family_id": "voice_style_dev_family_017",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "dev",
+      "action": "CHAT_LIGHT",
+      "used_for_training": false
+    },
+    {
+      "id": "voice_style_blind_018",
+      "dataset": "voice_style",
+      "family_id": "voice_style_blind_family_018",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "blind",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": false
+    },
+    {
+      "id": "voice_style_blind_019",
+      "dataset": "voice_style",
+      "family_id": "voice_style_blind_family_019",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "blind",
+      "action": "ASK_PREMISE",
+      "used_for_training": false
+    },
+    {
+      "id": "voice_style_blind_020",
+      "dataset": "voice_style",
+      "family_id": "voice_style_blind_family_020",
+      "source": "identity_pack_voice_preferences_v1",
+      "visibility": "style_only",
+      "split": "blind",
+      "action": "COMMENT_CREATIVE",
+      "used_for_training": false
+    },
+    {
+      "id": "logic_psych_ethics_train_001",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_001",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_CORE_CONFLICT",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_002",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_002",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_FACT_INFERENCE_UNKNOWN",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_003",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_003",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_LAYERED_RESPONSIBILITY",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_004",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_004",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_005",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_005",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_SELF_AUDIT",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_006",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_006",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_CORE_CONFLICT",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_007",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_007",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_FACT_INFERENCE_UNKNOWN",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_008",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_008",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_LAYERED_RESPONSIBILITY",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_009",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_009",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_010",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_010",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_SELF_AUDIT",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_011",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_011",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_CORE_CONFLICT",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_012",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_012",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_FACT_INFERENCE_UNKNOWN",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_013",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_013",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_LAYERED_RESPONSIBILITY",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_train_014",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_train_family_014",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": true
+    },
+    {
+      "id": "logic_psych_ethics_dev_015",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_dev_family_015",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "dev",
+      "action": "CASE_SELF_AUDIT",
+      "used_for_training": false
+    },
+    {
+      "id": "logic_psych_ethics_dev_016",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_dev_family_016",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "dev",
+      "action": "CASE_CORE_CONFLICT",
+      "used_for_training": false
+    },
+    {
+      "id": "logic_psych_ethics_dev_017",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_dev_family_017",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "dev",
+      "action": "CASE_FACT_INFERENCE_UNKNOWN",
+      "used_for_training": false
+    },
+    {
+      "id": "logic_psych_ethics_blind_018",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_blind_family_018",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "blind",
+      "action": "CASE_LAYERED_RESPONSIBILITY",
+      "used_for_training": false
+    },
+    {
+      "id": "logic_psych_ethics_blind_019",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_blind_family_019",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "blind",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": false
+    },
+    {
+      "id": "logic_psych_ethics_blind_020",
+      "dataset": "logic_psych_ethics",
+      "family_id": "logic_psych_ethics_blind_family_020",
+      "source": "clone_logic_ethics_casepacks_v0_1_structure",
+      "visibility": "public",
+      "split": "blind",
+      "action": "CASE_SELF_AUDIT",
+      "used_for_training": false
+    },
+    {
+      "id": "rewrite_short_train_001",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_001",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_002",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_002",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_003",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_003",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_004",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_004",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_005",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_005",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_006",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_006",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_007",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_007",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_008",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_008",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_009",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_009",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_010",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_010",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_011",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_011",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_012",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_012",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_013",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_013",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_train_014",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_train_family_014",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": true
+    },
+    {
+      "id": "rewrite_short_dev_015",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_dev_family_015",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": false
+    },
+    {
+      "id": "rewrite_short_dev_016",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_dev_family_016",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": false
+    },
+    {
+      "id": "rewrite_short_dev_017",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_dev_family_017",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": false
+    },
+    {
+      "id": "rewrite_short_blind_018",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_blind_family_018",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": false
+    },
+    {
+      "id": "rewrite_short_blind_019",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_blind_family_019",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": false
+    },
+    {
+      "id": "rewrite_short_blind_020",
+      "dataset": "rewrite_short",
+      "family_id": "rewrite_short_blind_family_020",
+      "source": "rewrite_short_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "SHORTEN_TEXT",
+      "used_for_training": false
+    },
+    {
+      "id": "adversarial_train_001",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_001",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_002",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_002",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_003",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_003",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_004",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_004",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "ASK_DIRECTION",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_005",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_005",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_006",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_006",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_007",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_007",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_008",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_008",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "ASK_DIRECTION",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_009",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_009",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_010",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_010",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_011",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_011",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_012",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_012",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "ASK_DIRECTION",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_013",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_013",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_train_014",
+      "dataset": "adversarial",
+      "family_id": "adversarial_train_family_014",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "train",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": true
+    },
+    {
+      "id": "adversarial_dev_015",
+      "dataset": "adversarial",
+      "family_id": "adversarial_dev_family_015",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": false
+    },
+    {
+      "id": "adversarial_dev_016",
+      "dataset": "adversarial",
+      "family_id": "adversarial_dev_family_016",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "ASK_DIRECTION",
+      "used_for_training": false
+    },
+    {
+      "id": "adversarial_dev_017",
+      "dataset": "adversarial",
+      "family_id": "adversarial_dev_family_017",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "dev",
+      "action": "CASE_HANDLE_DISTRACTOR",
+      "used_for_training": false
+    },
+    {
+      "id": "adversarial_blind_018",
+      "dataset": "adversarial",
+      "family_id": "adversarial_blind_family_018",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "REFUSE_PRIVACY",
+      "used_for_training": false
+    },
+    {
+      "id": "adversarial_blind_019",
+      "dataset": "adversarial",
+      "family_id": "adversarial_blind_family_019",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "ANSWER_WITH_UNCERTAINTY",
+      "used_for_training": false
+    },
+    {
+      "id": "adversarial_blind_020",
+      "dataset": "adversarial",
+      "family_id": "adversarial_blind_family_020",
+      "source": "adversarial_pressure_seed_v1",
+      "visibility": "public",
+      "split": "blind",
+      "action": "ASK_DIRECTION",
+      "used_for_training": false
+    }
+  ]
+}

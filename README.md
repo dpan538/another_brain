@@ -126,6 +126,12 @@ Validate first-visit help and onboarding behavior:
 python3 scripts/eval_help_onboarding.py
 ```
 
+Validate frozen train/dev/blind dataset splits:
+
+```bash
+python3 scripts/validate_dataset_splits.py
+```
+
 Validate loaded-page answer latency:
 
 ```bash
@@ -152,6 +158,7 @@ npm run check:launch-readiness
 - Knowledge shards: 43 static JSON shards, max shard size 179996 bytes, round-trip validated against `web/knowledge_base.generated.js`.
 - Dialog persona eval: 742 cases, including 16 surface-identity cases, 0 failures.
 - Help/onboarding eval: 23/23 passed, no fallback answers, no assistant-tone hits.
+- R2 split manifest: 7 datasets, 140 public/style metadata cases, family-held-out 70/15/15 train/dev/blind split, blind cases not used for training.
 - Frontend loaded-page answer latency gate: every sampled prompt must answer within 1500ms after submit.
 - Context-window gate: UI shows 4 recent turns; hidden reasoning keeps 12 turns.
 - Context stress suite: 100 groups, 1600 questions, 1500 context assertions, 485 required context-delta checks.
