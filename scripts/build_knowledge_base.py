@@ -20,6 +20,19 @@ def terms(text: str) -> list[str]:
     return [item.strip() for item in text.replace("\n", "、").split("、") if item.strip()]
 
 
+EXCLUDED_THEORY_PATTERNS = (
+    "女性主义",
+    "女权",
+    "feminism",
+    "feminist",
+)
+
+
+def is_excluded_term(text: str) -> bool:
+    lower = str(text or "").lower()
+    return any(pattern in lower for pattern in EXCLUDED_THEORY_PATTERNS)
+
+
 def alias_parts(label: str) -> list[str]:
     parts = [part.strip() for part in label.split("|") if part.strip()]
     return parts or [label]
@@ -70,6 +83,12 @@ def style_line(label: str, domain: str) -> str:
         "tech_life": "技术问题进入生活以后，就不只是技术。",
         "relation_reasoning": "关系里的话不能只看字面。",
         "memory_identity": "记住和忘记都在改写同一个名字。",
+        "postwar_philosophy": "战后哲学不急着给答案，先看断裂留下了什么。",
+        "existentialism": "存在主义把自由说得很重，也很不舒服。",
+        "structuralism_language": "语言不是透明玻璃，是关系网。",
+        "deconstruction": "解构不是拆掉，是看它靠什么撑住。",
+        "lacanian_psychoanalysis": "主体不是自己站稳的，话先替它站了一半。",
+        "humanities_art": "人文和艺术常常从一个不稳定的判断开始。",
     }
     return f"{label}{suffixes.get(domain, '要看你怎么问。')}"
 
@@ -1023,7 +1042,6 @@ ART_HISTORY_MOVEMENTS = [
     "大地艺术",
     "行为艺术",
     "录像艺术",
-    "女性主义艺术",
     "制度批判",
     "新表现主义",
     "关系美学",
@@ -1148,7 +1166,6 @@ PHILOSOPHERS = [
     "阿伦特|Hannah Arendt",
     "梅洛-庞蒂|Merleau-Ponty",
     "萨特|Sartre",
-    "波伏娃|Beauvoir",
     "列维-斯特劳斯|Lévi-Strauss",
     "拉康|Lacan",
     "福柯|Foucault",
@@ -1159,7 +1176,6 @@ PHILOSOPHERS = [
     "哈贝马斯|Habermas",
     "利奥塔|Lyotard",
     "鲍德里亚|Baudrillard",
-    "朱迪斯·巴特勒|Judith Butler",
     "朗西埃|Rancière",
     "齐泽克|Žižek",
     "阿甘本|Agamben",
@@ -1218,7 +1234,6 @@ LITERARY_MOVEMENTS = [
     "新批评",
     "结构主义叙事学",
     "后殖民文学",
-    "女性主义文学批评",
     "拉丁美洲文学爆炸",
     "垮掉的一代",
     "黑色幽默",
@@ -1392,6 +1407,68 @@ MEMORY_IDENTITY_TERMS = terms(
 MEMORY_IDENTITY_ASPECTS = terms(
     "边界、可靠性、归属、证据、误差、变化、一致性、私人性、公共性、保存、删除、重复、修正、解释、判断、"
     "语气、距离、入口、出口、问题、答案、限制、承认、忘记"
+)
+
+POSTWAR_PHILOSOPHY_TERMS = terms(
+    "战后哲学、二战后的哲学、奥斯维辛之后、现代性批判、启蒙辩证法、法兰克福学派、存在主义、荒诞哲学、现象学身体、结构主义、"
+    "后结构主义、解构、精神分析、符号学、文本理论、作者死亡、读者位置、话语分析、权力知识、生命政治、差异哲学、"
+    "后现代状况、宏大叙事、模拟、拟像、消费社会、景观社会、制度批判、艺术自治、文化工业、媒介理论、档案冲动、"
+    "创伤记忆、见证、伦理责任、他者问题、主体危机、语言转向、解释学、批判理论、观看制度、图像政治、艺术之后"
+)
+
+POSTWAR_PHILOSOPHY_ASPECTS = terms(
+    "断裂、见证、责任、主体、他者、语言、图像、权力、制度、记忆、创伤、现代性、批判、否定性、解释、"
+    "不可说性、边界、差异、历史、媒介、观看、文本、欲望、缺失、伦理、风格、方法"
+)
+
+EXISTENTIALISM_TERMS = terms(
+    "存在、自由、责任、荒诞、焦虑、恶心、虚无、选择、处境、他人、孤独、死亡、反抗、局外人、异乡人、"
+    "存在先于本质、真诚、坏信仰、偶然性、身体、沉默、等待、失败、承认、逃避、清醒、意义、无意义、"
+    "日常荒诞、自由负担、道德困境、行动、犹豫、命名、陌生感"
+)
+
+EXISTENTIALISM_ASPECTS = terms(
+    "处境、选择、代价、责任、荒诞、反抗、逃避、清醒、孤独、死亡、自由、沉默、行动、失败、意义、出口"
+)
+
+STRUCTURALISM_LANGUAGE_TERMS = terms(
+    "语言、符号、能指、所指、任意性、差异系统、语言系统、言语、句法、语义、语用、音系、音位、形态、"
+    "结构、关系、二项对立、神话结构、叙事结构、亲属结构、共时、历时、隐喻、转喻、符码、语境、话语、"
+    "符号链、文本、互文性、阅读、翻译、误读、命名、指称、意义、空缺、重复、替换、位置"
+)
+
+STRUCTURALISM_LANGUAGE_ASPECTS = terms(
+    "差异、关系、结构、位置、替换、规则、系统、语境、误读、翻译、指称、命名、重复、空缺、边界"
+)
+
+DECONSTRUCTION_TERMS = terms(
+    "德里达、解构、延异、痕迹、增补、书写、语音中心主义、逻各斯中心主义、在场形而上学、播撒、药、"
+    "文本性、边缘、中心、二元对立、反转、位移、不可判定、签名、事件、幽灵、档案、差异、重复、"
+    "引用、误读、阈限、框架、附注、脚注、标题、名字、翻译、赦免、友谊、礼物、秘密"
+)
+
+DECONSTRUCTION_ASPECTS = terms(
+    "差异、延迟、痕迹、增补、边缘、中心、反转、位移、不可判定、书写、声音、文本、框架、阈限、误读、秘密"
+)
+
+LACANIAN_TERMS = terms(
+    "拉康、无意识、能指链、主体、分裂主体、大他者、小他者、镜像阶段、想象界、象征界、真实界、欲望、"
+    "他者的欲望、缺失、阉割、父之名、客体小a、凝视、声音、症状、幻想、重复、享乐、欲望图式、"
+    "话语、主人话语、大学话语、歇斯底里话语、分析家话语、转喻、隐喻、语言如无意识、主体被语言说出"
+)
+
+LACANIAN_ASPECTS = terms(
+    "欲望、缺失、能指、他者、主体、镜像、象征、真实、想象、凝视、声音、症状、幻想、享乐、重复、话语"
+)
+
+HUMANITIES_ART_TERMS = terms(
+    "人文学、艺术批评、文学批评、影像批评、展览文本、策展、观看、形式分析、图像分析、文本细读、符号阅读、"
+    "档案、记忆、创伤、城市经验、日常生活、身体经验、媒介考古、艺术制度、白盒子、博物馆、展墙、摄影书、"
+    "装帧、排版、影像序列、叙事节奏、沉默、空白、边界、材料、声音、空间、现场、观众位置、批评语气"
+)
+
+HUMANITIES_ART_ASPECTS = terms(
+    "观看、阅读、批评、形式、媒介、制度、材料、空间、身体、记忆、档案、叙事、语气、节奏、边界、位置"
 )
 
 HISTORY_EVENTS: list[tuple[str, str, str]] = [
@@ -1596,7 +1673,6 @@ SPECIFIC_FACTS.update({
     "超现实主义": {"what": "超现实主义把梦、无意识和现实拼在一起，让画面故意不安稳。"},
     "抽象表现主义": {"what": "抽象表现主义把绘画动作、尺度和情绪推到画面前面。"},
     "观念艺术": {"what": "观念艺术强调想法本身，作品不一定只靠好看的物体成立。"},
-    "女性主义艺术": {"what": "女性主义艺术会追问身体、劳动、身份和艺术制度里的性别关系。"},
     "亨利·卡蒂埃-布列松": {"what": "布列松是法国摄影师，常和决定性瞬间联系在一起。"},
     "森山大道": {"what": "森山大道是日本摄影师，照片常有街头、颗粒和高反差的感觉。"},
     "安塞尔·亚当斯": {"what": "安塞尔·亚当斯是美国风景摄影师，常被想到黑白风景和区域曝光法。"},
@@ -2059,7 +2135,7 @@ SPECIFIC_FACTS.update({
     },
     "SK海力士": {
         "what": "SK海力士是韩国存储芯片公司。",
-        "how": "它常出现在半导体和内存产业的讨论里。",
+        "how": "它常和半导体、内存产业联系在一起。",
     },
     "任天堂": {
         "what": "任天堂是日本游戏公司，马里奥、塞尔达和Switch都很有代表性。",
@@ -2507,6 +2583,184 @@ SPECIFIC_FACTS.update({
     },
 })
 
+SPECIFIC_FACTS.update({
+    "德里达": {
+        "what": "德里达是法国哲学家，常和解构、延异、书写和文本边界有关。",
+        "how": "他不急着拆掉答案，而是看答案靠什么假装稳固。",
+        "why": "因为他让人看到中心、边缘和二元对立并不那么干净。",
+    },
+    "拉康": {
+        "what": "拉康是法国精神分析理论家，常把无意识、主体、欲望和语言放在一起看。",
+        "how": "在拉康那里，主体不是完整的自己，话已经先把它切开。",
+        "why": "因为他把精神分析重新接到语言、能指和他者的问题上。",
+    },
+    "解构": {
+        "what": "解构是一种阅读方式，追问文本、概念和二元对立靠什么维持稳定。",
+        "how": "不是把东西拆坏，而是看它哪里本来就不稳。",
+        "use": "解构可以用来读哲学、文学、艺术和日常话语里的隐含前提。",
+    },
+    "战后哲学": {
+        "what": "战后哲学常在战争、现代性、语言、主体和伦理断裂之后重新提问。",
+        "how": "它不急着修好世界，先看断裂怎样改变问题。",
+    },
+    "二战后的哲学": {
+        "what": "二战后的哲学常关心断裂、责任、语言、主体、权力和艺术怎样还能说话。",
+        "how": "它把废墟、文本、制度和主体都放回同一个问题里。",
+    },
+    "延异": {
+        "what": "延异是德里达的概念，指意义总在差异和延迟中生成。",
+        "how": "意思没有准时到场，它总是绕一下才来。",
+    },
+    "痕迹": {
+        "what": "痕迹是解构中的说法，指意义中总残留着不在场的东西。",
+        "how": "看见的东西里，常有没出现的影子。",
+    },
+    "增补": {
+        "what": "增补在德里达那里既像补充，也会暴露原本并不完整。",
+        "how": "补上去的东西，反过来证明原来有缺口。",
+    },
+    "书写": {
+        "what": "书写不只是把声音记录下来，也会改变意义如何出现。",
+        "how": "写下来以后，话就不完全归说话的人了。",
+    },
+    "语音中心主义": {
+        "what": "语音中心主义是把声音和在场看得比书写更原初的倾向。",
+        "how": "好像亲口说出就更真，德里达会怀疑这一点。",
+    },
+    "在场形而上学": {
+        "what": "在场形而上学指一种把意义、真理和原初在场绑定起来的思想习惯。",
+        "how": "它总想让意义现在就站稳，解构会去看这种站稳的代价。",
+    },
+    "能指": {
+        "what": "能指是符号中可以被听见、看见或写出的形式部分。",
+        "how": "能指不乖，它常常把意义带偏。",
+    },
+    "所指": {
+        "what": "所指是符号中被指向的概念或意义部分。",
+        "how": "它看起来像终点，但常被别的能指继续推走。",
+    },
+    "能指链": {
+        "what": "能指链是拉康用来说明意义和无意识如何沿着符号滑动的说法。",
+        "how": "一个词牵出另一个词，主体就在中间被拖着走。",
+    },
+    "大他者": {
+        "what": "大他者是拉康概念，指语言、规则、象征秩序中那个似乎在保证意义的位置。",
+        "how": "你以为有人在听，其实也许只是位置在听。",
+    },
+    "小他者": {
+        "what": "小他者更接近镜像关系里的另一个人或另一个我。",
+        "how": "它像镜子里那个看起来完整的人。",
+    },
+    "镜像阶段": {
+        "what": "镜像阶段是拉康关于自我形成的概念，主体通过镜像误认自己是完整的。",
+        "how": "人先在镜子里认出自己，也先在那里误会自己。",
+    },
+    "象征界": {
+        "what": "象征界是拉康三界之一，和语言、规则、亲属结构和社会秩序有关。",
+        "how": "一旦进入语言，很多事就不只属于身体。",
+    },
+    "想象界": {
+        "what": "想象界和镜像、认同、形象和完整性的幻觉有关。",
+        "how": "它让人觉得自己是一个完整的人。",
+    },
+    "真实界": {
+        "what": "真实界不是普通现实，而是无法被语言和象征秩序完全吸收的剩余。",
+        "how": "说不出来的东西，不等于不存在。",
+    },
+    "欲望": {
+        "what": "欲望不只是想要某个东西，也常指向缺失和他者的欲望。",
+        "how": "想要的东西常常不是东西本身。",
+    },
+    "缺失": {
+        "what": "缺失是拉康式主体的核心处境，主体并不完整。",
+        "how": "缺口不是意外，可能就是结构。",
+    },
+    "客体小a": {
+        "what": "客体小a是拉康概念，指欲望围绕的原因或剩余对象。",
+        "how": "它不是简单的目标，更像让人继续想要的东西。",
+    },
+    "小客体a": {
+        "what": "小客体a是拉康概念，指欲望围绕的原因或剩余对象。",
+        "how": "它不是简单的目标，更像让人继续想要的东西。",
+    },
+    "凝视": {
+        "what": "凝视在拉康和艺术理论里常指观看中反过来把观看者暴露出来的东西。",
+        "how": "你在看图像时，图像也像在看你。",
+    },
+    "存在主义": {
+        "what": "存在主义关注自由、责任、荒诞、选择和人在处境中的存在。",
+        "how": "它把自由说得像重量，不像口号。",
+    },
+    "存在先于本质": {
+        "what": "存在先于本质是萨特的说法，意思是人先存在，再通过选择形成自己。",
+        "how": "没有提前写好的说明书，所以责任也逃不掉。",
+    },
+    "荒诞": {
+        "what": "荒诞指人追问意义时，世界并不自动给出回答的处境。",
+        "how": "不是没有问题，是世界不配合回答。",
+    },
+    "反抗": {
+        "what": "反抗在加缪那里常是面对荒诞后仍然坚持行动的一种姿态。",
+        "how": "知道没答案，还不完全停下。",
+    },
+    "坏信仰": {
+        "what": "坏信仰是萨特用来描述人逃避自由和责任的自欺状态。",
+        "how": "像把自己说成物品，好不用选择。",
+    },
+    "结构主义": {
+        "what": "结构主义关注关系和结构怎样先于单个元素生产意义。",
+        "how": "它先看位置和差异，再看单个东西说了什么。",
+    },
+    "后结构主义": {
+        "what": "后结构主义会怀疑结构本身的稳定性，继续追问差异、权力和文本边界。",
+        "how": "结构不是被抛弃，而是开始变得可疑。",
+    },
+    "符号学": {
+        "what": "符号学研究符号如何指向、组织和生产意义。",
+        "how": "它把看似自然的意思放回符号关系里。",
+    },
+    "语言转向": {
+        "what": "语言转向是二十世纪思想中把语言视为意义和经验核心条件的转变。",
+        "how": "问题不只是世界是什么，也包括我们怎么说世界。",
+    },
+    "作者死亡": {
+        "what": "作者死亡是罗兰·巴特的说法，强调文本意义不只由作者意图决定。",
+        "how": "作者退后，读者和文本才开始吵起来。",
+    },
+    "宏大叙事": {
+        "what": "宏大叙事是利奥塔谈现代性时常用的说法，指试图解释一切的大故事。",
+        "how": "故事太大时，细节常会被压扁。",
+    },
+    "拟像": {
+        "what": "拟像是鲍德里亚的概念，指复制、符号和现实之间界线变得不稳定。",
+        "how": "有时候影子比原物更像原物。",
+    },
+    "文化工业": {
+        "what": "文化工业是法兰克福学派批判大众文化商品化和标准化的概念。",
+        "how": "娱乐不一定轻，它也会生产习惯。",
+    },
+    "文本细读": {
+        "what": "文本细读是贴近词句、结构、节奏和隐含关系来读文本。",
+        "how": "读得慢一点，文本的缝才会露出来。",
+    },
+    "艺术批评": {
+        "what": "艺术批评不是替作品判刑，是看作品、观看和制度怎样彼此连着。",
+        "how": "它判断作品，也判断作品被看见的方式。",
+    },
+    "观看制度": {
+        "what": "观看制度指谁能看、怎样看、在哪里看，以及这种观看被什么规则组织。",
+        "how": "眼睛不是自由的，它也被位置和制度安排。",
+    },
+    "图像政治": {
+        "what": "图像政治是在问图像如何分配可见性、情绪、权力和记忆。",
+        "how": "一张图像让什么出现，也让什么退后。",
+    },
+    "人文学": {
+        "what": "人文学不急着变成工具，它先保留问题的复杂度。",
+        "how": "它不是没用，是不急着用。",
+    },
+})
+
 
 def default_what(label: str, domain: str) -> str:
     templates = {
@@ -2556,6 +2810,12 @@ def default_what(label: str, domain: str) -> str:
         "tech_life": "{label}和技术进入日常生活有关。",
         "relation_reasoning": "{label}和关系里的说法、边界、责任有关。",
         "memory_identity": "{label}和记忆、名字、身份有关。",
+        "postwar_philosophy": "{label}和二战后的哲学问题有关。",
+        "existentialism": "{label}和存在、自由、荒诞或责任有关。",
+        "structuralism_language": "{label}和语言、结构、符号或意义生成有关。",
+        "deconstruction": "{label}和解构、差异、书写或文本边界有关。",
+        "lacanian_psychoanalysis": "{label}和拉康式主体、欲望、能指或他者有关。",
+        "humanities_art": "{label}和人文、艺术、观看或批评有关。",
         "history_politics": "{label}和历史、政治或公共生活有关。",
         "economics": "{label}和经济、商业或交换有关。",
         "psychology": "{label}和心理或人的行为有关。",
@@ -2568,7 +2828,7 @@ def default_what(label: str, domain: str) -> str:
         "sports": "{label}是身体会参与的事。",
         "emotion": "{label}是一种感觉。",
         "abstract": "{label}是说话时会碰到的抽象东西。",
-        "photography_theory": "{label}是摄影里讨论照片怎样成立的概念。",
+        "photography_theory": "{label}是摄影里追问照片怎样成立的说法。",
         "photography_history": "{label}和摄影史有关。",
         "photo_movement": "{label}是一种摄影方向或方法。",
         "art_history": "{label}和艺术史有关。",
@@ -2586,6 +2846,8 @@ def make_cards(domain: str, labels: Iterable[str], what_template: str, *, kind: 
     for raw_label in labels:
         aliases = alias_parts(raw_label)
         label = clean_label(raw_label)
+        if any(is_excluded_term(alias) for alias in aliases):
+            continue
         answers = {
             "what": what_template.format(label=label),
             "how": style_line(label, domain),
@@ -2617,9 +2879,13 @@ def make_cross_cards(
     cards = []
     for raw_left in lefts:
         left = clean_label(raw_left)
+        if is_excluded_term(left):
+            continue
         for raw_right in rights:
             right = clean_label(raw_right)
             label = label_template.format(left=left, right=right)
+            if is_excluded_term(right) or is_excluded_term(label):
+                continue
             answers = {
                 "what": what_template.format(left=left, right=right, label=label),
             }
@@ -3158,7 +3424,7 @@ def build_cards() -> list[dict]:
                 "叙述者、可靠叙述者、不可靠叙述者、意识流、独白、对白、场景、章节、段落、意象、象征、隐喻、讽刺、反讽、"
                 "寓言、神话、传说、民间故事、史诗、悲剧、喜剧、荒诞、悬念、伏笔、铺垫、高潮、结尾、主题、母题、文本、"
                 "文体、修辞、押韵、节奏、韵律、格律、十四行诗、自由诗、现代诗、古典诗、翻译、改编、互文性、作者、读者、"
-                "批评、文学批评、形式主义、结构主义、后殖民、女性主义、精神分析、文化研究、流行文化、亚文化、仪式、节日、"
+                "批评、文学批评、形式主义、结构主义、后殖民、精神分析、文化研究、流行文化、亚文化、仪式、节日、"
                 "传统、现代性、后现代、身份、记忆、创伤、怀旧、地方性、全球化、消费文化、媒介、档案、博物馆、展览、收藏、"
                 "策展、出版、编辑、校对、书号、版权、版税、封面、装帧、目录、脚注、尾注、索引"
             ),
@@ -3208,15 +3474,21 @@ def build_cards() -> list[dict]:
     cards.extend(make_history_event_cards(HISTORY_EVENTS))
     cards.extend(make_cards("photography_history", PHOTOGRAPHY_HISTORY_ITEMS, "{label}和摄影史有关。"))
     cards.extend(make_cards("photo_movement", PHOTOGRAPHY_MOVEMENTS, "{label}是一种摄影方向或方法。"))
-    cards.extend(make_cards("photography_theory", PHOTOGRAPHY_THEORY_TERMS, "{label}是摄影里讨论照片怎样成立的概念。"))
+    cards.extend(make_cards("photography_theory", PHOTOGRAPHY_THEORY_TERMS, "{label}是摄影里追问照片怎样成立的说法。"))
     cards.extend(make_cards("art_history", ART_HISTORY_MOVEMENTS, "{label}和艺术史有关。"))
     cards.extend(make_cards("art_history", ARTISTS_AND_THEORISTS, "{label}和艺术史有关。"))
     cards.extend(make_cards("art_theory", ART_THEORY_TERMS, "{label}是谈艺术时常会遇到的概念。"))
     cards.extend(make_cards("philosopher", PHILOSOPHERS, "{label}是哲学史里的名字。"))
-    cards.extend(make_cards("philosopher", PHILOSOPHY_EXTERNAL_TERMS, "{label}是哲学或理论写作里的概念。"))
+    cards.extend(make_cards("philosopher", PHILOSOPHY_EXTERNAL_TERMS, "{label}是哲学或理论写作中会出现的说法。"))
     cards.extend(make_cards("literary_history", LITERARY_MOVEMENTS, "{label}和文学史或文学理论有关。"))
     cards.extend(make_cards("literary_history", LITERARY_AUTHORS, "{label}和文学史有关。"))
     cards.extend(make_cards("literary_history", LITERARY_THEORY_TERMS, "{label}是读小说、诗歌或批评时会遇到的词。"))
+    cards.extend(make_cards("postwar_philosophy", POSTWAR_PHILOSOPHY_TERMS, "{label}是二战后哲学、人文或理论写作里会遇到的概念。"))
+    cards.extend(make_cards("existentialism", EXISTENTIALISM_TERMS, "{label}和存在主义里的自由、责任或荒诞有关。"))
+    cards.extend(make_cards("structuralism_language", STRUCTURALISM_LANGUAGE_TERMS, "{label}和语言、结构或符号怎样生成意义有关。"))
+    cards.extend(make_cards("deconstruction", DECONSTRUCTION_TERMS, "{label}和德里达式解构、书写或差异有关。"))
+    cards.extend(make_cards("lacanian_psychoanalysis", LACANIAN_TERMS, "{label}和拉康式主体、欲望或能指有关。"))
+    cards.extend(make_cards("humanities_art", HUMANITIES_ART_TERMS, "{label}和人文、艺术或批评写作有关。"))
 
     cards.extend(
         make_cross_cards(
@@ -3231,7 +3503,7 @@ def build_cards() -> list[dict]:
             "philosophy",
             terms("真理、自由、责任、主体、客体、自我、他者、意识、欲望、记忆、死亡、时间、空间、语言、权力、正义、价值、意义、荒诞、美、崇高、身体、经验、知识、信念、怀疑、证明、因果、存在、虚无、伦理、技术、图像、媒介、文本、作者、读者、现实、历史、自然、社会"),
             terms("问题、理论、判断、经验、关系、边界、困境、批评、解释、方法、传统、争论"),
-            "{label}是在问{left}和{right}怎样互相牵连。",
+            "{label}是在问{left}和{right}怎样彼此连着。",
         )
     )
     cards.extend(
@@ -3416,6 +3688,126 @@ def build_cards() -> list[dict]:
             MEMORY_IDENTITY_TERMS,
             LIFE_PHILOSOPHY_ASPECTS,
             "说到{label}，{left}不一定可靠，但可以作为起点。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "postwar_philosophy",
+            POSTWAR_PHILOSOPHY_TERMS,
+            POSTWAR_PHILOSOPHY_ASPECTS,
+            "{label}把战后的{left}和{right}放到同一个问题里。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "postwar_philosophy",
+            POSTWAR_PHILOSOPHY_TERMS,
+            HUMANITIES_ART_ASPECTS,
+            "{label}让{left}落到{right}里，不只是停在年代名词上。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "existentialism",
+            EXISTENTIALISM_TERMS,
+            EXISTENTIALISM_ASPECTS,
+            "{label}不是给答案，是看{left}怎样被{right}压住。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "existentialism",
+            EXISTENTIALISM_TERMS,
+            DIALOG_REASONING_ASPECTS,
+            "聊到{label}，{left}的{right}可以先被问出来。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "structuralism_language",
+            STRUCTURALISM_LANGUAGE_TERMS,
+            STRUCTURALISM_LANGUAGE_ASPECTS,
+            "{label}看{left}的{right}如何生产意义。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "structuralism_language",
+            STRUCTURALISM_LANGUAGE_TERMS,
+            DECONSTRUCTION_ASPECTS,
+            "{label}让{left}的{right}不再像天然事实。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "deconstruction",
+            DECONSTRUCTION_TERMS,
+            DECONSTRUCTION_ASPECTS,
+            "{label}看{left}的{right}哪里并不稳固。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "deconstruction",
+            DECONSTRUCTION_TERMS,
+            STRUCTURALISM_LANGUAGE_ASPECTS,
+            "{label}把{left}放回{right}，看意义怎样滑开。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "deconstruction",
+            DECONSTRUCTION_TERMS,
+            HUMANITIES_ART_ASPECTS,
+            "{label}可以读{left}，也可以读一次{right}。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "lacanian_psychoanalysis",
+            LACANIAN_TERMS,
+            LACANIAN_ASPECTS,
+            "{label}把{left}的{right}放回语言和欲望里。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "lacanian_psychoanalysis",
+            LACANIAN_TERMS,
+            STRUCTURALISM_LANGUAGE_ASPECTS,
+            "{label}看{left}怎样被{right}说出来。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "lacanian_psychoanalysis",
+            LACANIAN_TERMS,
+            HUMANITIES_ART_ASPECTS,
+            "{label}把{left}和{right}放进观看、主体和欲望的关系里。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "humanities_art",
+            HUMANITIES_ART_TERMS,
+            HUMANITIES_ART_ASPECTS,
+            "{label}把{left}和{right}放进一次观看或阅读。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "humanities_art",
+            HUMANITIES_ART_TERMS,
+            DECONSTRUCTION_ASPECTS,
+            "{label}读{left}时，会注意{right}怎样改变判断。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "humanities_art",
+            HUMANITIES_ART_TERMS,
+            LACANIAN_ASPECTS,
+            "{label}让{left}靠近{right}，但不急着解释完。",
         )
     )
     cards.extend(

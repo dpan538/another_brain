@@ -316,7 +316,7 @@ def main() -> int:
     parser.add_argument("--dataset", default=str(DEFAULT_DATASET))
     parser.add_argument("--artifact", default=str(DEFAULT_ARTIFACT))
     parser.add_argument("--web", default=str(DEFAULT_WEB))
-    parser.add_argument("--max-features", type=int, default=6500)
+    parser.add_argument("--max-features", type=int, default=10000)
     parser.add_argument("--answer-limit", type=int, default=1600)
     parser.add_argument("--alpha", type=float, default=0.35)
     args = parser.parse_args()

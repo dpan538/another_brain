@@ -20,7 +20,7 @@ user input
   -> short fallback answer
 ```
 
-The tiny router is not a general generative model. It is a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, reasoning/counterquestion calibration, and persona alignment. In the current public gate, 622/659 cases are direct rule or knowledge answers, and 37/659 use the tiny router Web SLM.
+The tiny router is not a general generative model. It is a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, reasoning/counterquestion calibration, and persona alignment. In the current public gate, 694/731 cases are direct rule or knowledge answers, and 37/731 use the tiny router Web SLM.
 
 WebLLM is intentionally out of the first public runtime. It does not accelerate the tiny router classifier, and previous local checks showed that the small generative fallback was too likely to drift or hallucinate in open dialog. The reliable path is to train the tiny router directly and keep unknown questions, privacy-sensitive questions, and route misses controlled by deterministic rules.
 
@@ -81,13 +81,14 @@ node scripts/run_model_gate_node.mjs --out /tmp/another_brain_model_gate.json
 
 ## Current Gate Snapshot
 
-- Distillation dataset: 68938 rows, 67152 train, 1786 eval.
-- Tiny router web artifact: 662188 bytes.
-- Tiny router route accuracy: 0.9174.
+- Distillation dataset: 69635 rows, 67852 train, 1783 eval.
+- Tiny router web artifact: 948027 bytes.
+- Tiny router route accuracy: 0.9414.
 - Tiny router reasoning holdout: 99/99.
-- Knowledge runtime: 46959 cards, p95 around 0.23ms and p99 around 0.32ms on the last local run.
-- Dialog persona eval: 604 cases, 0 failures.
-- Model gate: 686/686 passed, 37/37 Web SLM cases passed.
+- Knowledge runtime: 55041 generated cards, 55174 total runtime cards, p95 0.222ms and p99 0.300ms on the last local run.
+- Knowledge web artifact: 7621853 bytes.
+- Dialog persona eval: 650 cases, 0 failures.
+- Model gate: 731/731 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
 ## Repository Contents

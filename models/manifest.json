@@ -16,12 +16,22 @@
         "growth_focus": "daily dialog, reasoning, and personal calibration"
       },
       "last_known_stats": {
-        "examples": 68498,
-        "answer_index": 685,
-        "feature_weights": 6500,
-        "web_bytes": 662188,
-        "route_accuracy": 0.9174,
-        "reasoning_holdout": "99/99"
+        "examples": 69195,
+        "answer_index": 730,
+        "feature_weights": 10000,
+        "web_bytes": 948027,
+        "route_accuracy": 0.9414,
+        "reasoning_holdout": "99/99",
+        "distillation_rows": 69635,
+        "distillation_train_rows": 67852,
+        "distillation_eval_rows": 1783,
+        "knowledge_generated_cards": 55041,
+        "knowledge_total_runtime_cards": 55174,
+        "knowledge_p95_ms": 0.222375,
+        "knowledge_p99_ms": 0.300125,
+        "dialog_persona_eval": "650/650",
+        "model_gate": "731/731",
+        "web_slm_cases": "37/37"
       }
     }
   },
@@ -33,5 +43,5 @@
     "voice_policy": "Public persona and personal calibration are one unified dialog subject; privacy protects raw files and sensitive facts, not the subject's tone.",
     "notes": "Generative WebLLM fallback was removed from the first public runtime because it does not accelerate the tiny router and was less reliable in open dialog."
   },
-  "updated_at": "2026-06-14T00:00:00Z"
+  "updated_at": "2026-06-14T02:57:47Z"
 }

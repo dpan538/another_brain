@@ -6,8 +6,8 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState,
-} from "./dialog_rules.js?v=45";
-import { tinyDirectAnswer, tinyIntentHint } from "./tiny_router.js?v=8";
+} from "./dialog_rules.js?v=46";
+import { tinyDirectAnswer, tinyIntentHint } from "./tiny_router.js?v=9";
 
 const chatHistory = [];
 let dialogState = createDialogState();

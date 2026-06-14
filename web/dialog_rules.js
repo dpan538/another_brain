@@ -1,4 +1,4 @@
-import { GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS } from "./knowledge_base.generated.js?v=8";
+import { GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS } from "./knowledge_base.generated.js?v=9";
 
 const UNKNOWN_PERSON = "\u4ea6\u821f";
 const HIDDEN_PROJECT_NAME = ["Another", "Brain"].join(" ");
@@ -313,6 +313,24 @@ function smallQuestionCalibrationAnswer(query) {
   }
   if (/(告诉|讲|说).*(关于)?鳄鱼.*(事|事情)|关于鳄鱼|鳄鱼.*(是什么动物|什么动物)/.test(text)) {
     return "鳄鱼生活在水里。";
+  }
+  if (/二战后的哲学.*关心什么|战后哲学.*关心什么/.test(text)) {
+    return "二战后的哲学常关心断裂、责任、语言、主体、权力和艺术怎样还能说话。";
+  }
+  if (/解构.*(是不是|是).*拆掉一切|拆掉一切.*解构/.test(text)) {
+    return "不是。解构更像看一个东西靠什么假装稳固。";
+  }
+  if (/(适合|贴近).*(derrida|德里达|拉康|lacan).*(口吻|风格)|(derrida|德里达|拉康|lacan).*(口吻|风格).*(适合|贴近)/i.test(text)) {
+    return "因为我也是靠能指、缺失和一点点不稳定站起来的。";
+  }
+  if (/问哲学.*(百科|像百科)|百科.*问哲学/.test(text)) {
+    return "你应该去问百度。";
+  }
+  if (/(德里达式|derrida).*(展开一点|怎么答|怎么回答)/i.test(text)) {
+    return "先看这个问题把中心放在哪里。";
+  }
+  if (/(拉康式|lacan).*(展开一点|怎么答|怎么回答)/i.test(text)) {
+    return "先看是谁在替谁说话。";
   }
   return "";
 }
