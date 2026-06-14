@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dialog</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell" aria-label="Dialog">
+      <form id="chatForm" class="entry" autocomplete="off">
+        <label class="sr-only" for="prompt">Ask me</label>
+        <textarea
+          id="prompt"
+          rows="1"
+          placeholder="Ask me"
+          autocomplete="off"
+          spellcheck="true"
+        ></textarea>
+      </form>
+      <section id="answer" class="answer" aria-live="polite" hidden></section>
+      <p id="status" class="status" aria-live="polite"></p>
+    </main>
+
+    <script type="module" src="./app.js?v=38"></script>
+  </body>
+</html>

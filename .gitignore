@@ -1,0 +1,24 @@
+**/.DS_Store
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Local memory, training runs, and generated evaluation artifacts are private
+# runtime outputs. They can be rebuilt locally and should not be pushed to a
+# public repository.
+artifacts/**
+!artifacts/.gitkeep
+
+# Local model weights and converted artifacts are intentionally not tracked.
+models/*
+!models/manifest.json
+!models/README.md
+
+# Runtime-only links and vendored WebLLM experiments are not used by the public
+# tiny-router Web SLM path.
+web/models
+web/vendor/
+
+# Private generated memory payload. The public app ships without personal
+# memory cards; local builds can regenerate this file when needed.
+web/brain_pack.js

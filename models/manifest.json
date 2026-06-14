@@ -1,0 +1,30 @@
+{
+  "models": {
+    "web_slm": {
+      "name": "Another Brain tiny router Web SLM",
+      "runtime": "browser JavaScript",
+      "artifact": "web/tiny_router_model.generated.js",
+      "source_artifact": "artifacts/tiny_router_model.json",
+      "training_dataset": "artifacts/distillation/chinese_short_answer_sft.jsonl",
+      "purpose": "route-and-answer layer for short local dialog",
+      "requires_webgpu": false,
+      "requires_network": false,
+      "cloud_inference_api_allowed": false,
+      "last_known_stats": {
+        "examples": 29855,
+        "answer_index": 613,
+        "feature_weights": 6500,
+        "web_bytes": 591281,
+        "route_accuracy": 0.9321
+      }
+    }
+  },
+  "policy": {
+    "public_runtime": "tiny-router-web-slm",
+    "cloud_inference_api_allowed": false,
+    "commit_model_weights": false,
+    "commit_private_memory_artifacts": false,
+    "notes": "Generative WebLLM fallback was removed from the first public runtime because it does not accelerate the tiny router and was less reliable in open dialog."
+  },
+  "updated_at": "2026-06-14T00:00:00Z"
+}

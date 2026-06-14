@@ -1,0 +1,108 @@
+# Another Brain
+
+Another Brain is a local-first second brain experiment with a tiny browser-side language layer. It turns allowed local materials into redacted memory structures, then answers through deterministic dialog rules, static knowledge lookup, and a compact tiny router that acts as the Web SLM.
+
+The public UI is intentionally small: one input box, no account, no cloud inference, and no remote LLM call. The browser path is designed to stay light enough for mobile devices.
+
+Launch domain: `efishother.com`.
+
+GitHub description: `Local-first tiny browser-side second brain: deterministic rules, static knowledge cards, and a tiny router Web SLM with no cloud inference.`
+
+## Runtime Shape
+
+The router owns control flow. A larger local LLM is not part of the first public runtime.
+
+```text
+user input
+  -> deterministic dialog rules
+  -> generated static knowledge cards
+  -> tiny router Web SLM
+  -> short fallback answer
+```
+
+The tiny router is not a general generative model. It is a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, and persona calibration. In the current public gate, 562/599 cases are direct rule or knowledge answers, and 37/599 use the tiny router Web SLM.
+
+WebLLM is intentionally out of the first public runtime. It does not accelerate the tiny router classifier, and previous local checks showed that the small generative fallback was too likely to drift or hallucinate in open dialog. The reliable path is to train the tiny router directly and keep unknown questions, privacy-sensitive questions, and route misses controlled by deterministic rules.
+
+## Privacy Rules
+
+- No cloud inference APIs.
+- Do not commit local memory artifacts, drive inventories, model weights, or LoRA checkpoints.
+- Do not copy original source materials from a local drive into the repository.
+- Do not read paths that look like identity, banking, visa, passport, address proof, or account-number material.
+- Sensitive skipped items are represented only by hashed refs and counts in local artifacts.
+- Non-sensitive text can be summarized locally, with names, addresses, emails, phones, and ID-like numbers redacted before storage.
+
+## Quick Start
+
+Serve the static web app:
+
+```bash
+python3 -m http.server 5173 --directory web
+```
+
+Open `http://localhost:5173`.
+
+The checked-in public runtime ships without personal memory cards. Local private builds can regenerate runtime payloads into `artifacts/` and `web/`, but those generated files are ignored by git.
+
+## Local Build Workflow
+
+Build and validate a private local memory pack:
+
+```bash
+python3 scripts/scan_drive.py --source "/path/to/local/source" --out-dir artifacts
+python3 scripts/build_brain_pack.py --source "/path/to/local/source" --inventory artifacts/t7_inventory.jsonl --out-dir artifacts --web-dir web
+python3 scripts/validate_brain_pack.py --brain-pack artifacts/brain_pack.json
+```
+
+Build shared browser knowledge and the tiny router:
+
+```bash
+python3 scripts/build_knowledge_base.py
+python3 scripts/build_distillation_dataset.py
+python3 scripts/train_tiny_router.py
+```
+
+Run the local gates:
+
+```bash
+python3 scripts/validate_distillation.py
+python3 scripts/eval_tiny_router.py
+python3 scripts/bench_knowledge_runtime.py
+python3 scripts/validate_training_os.py
+python3 scripts/eval_dialog_persona.py
+node scripts/run_model_gate_node.mjs --out /tmp/another_brain_model_gate.json
+```
+
+## Current Gate Snapshot
+
+- Distillation dataset: 30035 rows, 29566 train, 469 eval.
+- Tiny router web artifact: 591281 bytes.
+- Tiny router route accuracy: 0.9321.
+- Knowledge runtime: 23533 cards, p95 around 0.22ms on the last local run.
+- Dialog persona eval: 503 cases, 0 failures.
+- Model gate: 599/599 passed, 37/37 Web SLM cases passed.
+- Tiny router memory answers in the public exact index: 0.
+
+## Repository Contents
+
+- `web/`: static browser app and public runtime modules.
+- `web/tiny_router.js`: browser-side Web SLM wrapper.
+- `web/tiny_router_model.generated.js`: compact generated tiny-router artifact.
+- `web/knowledge_base.generated.js`: generated common-knowledge cards.
+- `scripts/`: local build, validation, training, and gate scripts.
+- `models/manifest.json`: tiny-router runtime metadata.
+- `artifacts/`: ignored local runtime outputs.
+
+## Training Direction
+
+The next training work should improve the tiny router Web SLM directly.
+
+The priority order is:
+
+1. Keep the tiny router Web SLM fast and authoritative.
+2. Compress the answer index and knowledge payloads.
+3. Add more targeted correction pairs for drift points.
+4. Keep the browser gate as the release boundary.
+
+LoRA experiments are historical research artifacts and are not required for launch.

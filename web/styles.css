@@ -1,0 +1,113 @@
+:root {
+  color-scheme: light;
+  --ink: #171717;
+  --muted: #69645e;
+  --line: #d8d2c9;
+  --paper: #fffdfa;
+  --field: rgba(255, 253, 250, 0.92);
+  --accent: #255f59;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, rgba(23, 23, 23, 0.035) 1px, transparent 1px),
+    linear-gradient(rgba(23, 23, 23, 0.03) 1px, transparent 1px),
+    #ebe7df;
+  background-size: 30px 30px;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  min-height: 100vh;
+  padding: 22px;
+}
+
+.entry {
+  width: min(720px, 100%);
+}
+
+.entry textarea {
+  width: 100%;
+  min-height: 62px;
+  max-height: 220px;
+  resize: none;
+  overflow: hidden;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  outline: none;
+  background: var(--field);
+  box-shadow: 0 18px 64px rgba(45, 38, 28, 0.12);
+  color: var(--ink);
+  font-size: 1.04rem;
+  line-height: 1.45;
+}
+
+.entry textarea:focus {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 3px rgba(37, 95, 89, 0.12),
+    0 18px 64px rgba(45, 38, 28, 0.12);
+}
+
+.answer {
+  width: min(720px, 100%);
+  margin-top: 18px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 250, 0.78);
+  line-height: 1.68;
+  white-space: pre-wrap;
+}
+
+.status {
+  width: min(720px, 100%);
+  min-height: 20px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .shell {
+    align-content: end;
+    padding: 18px;
+  }
+
+  .entry textarea {
+    min-height: 58px;
+    padding: 16px 18px;
+    font-size: 1rem;
+  }
+}
