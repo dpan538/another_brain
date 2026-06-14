@@ -20,7 +20,15 @@ KNOWLEDGE_SHARD_MANIFEST = ROOT / "web" / "knowledge_shards" / "manifest.json"
 
 
 def run_command(name: str, command: list[str]) -> dict[str, Any]:
-    proc = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=False)
+    proc = subprocess.run(
+        command,
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        check=False,
+    )
     stdout = proc.stdout.strip()
     stderr = proc.stderr.strip()
     parsed: Any = None

@@ -20,6 +20,7 @@ const RELATED_THINKING_DELAY_MS = 1080;
 const REPEATED_THINKING_DELAY_MS = 1320;
 const PROMPT_MAX_HEIGHT_FALLBACK = 260;
 const STRUCTURED_EVIDENCE_LIMIT = 5;
+const KEYBOARD_VISUAL_VIEWPORT_DELTA = 120;
 const chatHistory = [];
 const contextTurns = [];
 let dialogState = createDialogState();
@@ -184,6 +185,28 @@ function autosize() {
   const maxHeight = Number.parseFloat(getComputedStyle(els.prompt).maxHeight) || PROMPT_MAX_HEIGHT_FALLBACK;
   els.prompt.style.height = "auto";
   els.prompt.style.height = `${Math.min(els.prompt.scrollHeight, maxHeight)}px`;
+}
+
+function updateViewportMetrics() {
+  const root = document.documentElement;
+  const viewport = window.visualViewport;
+  const width = viewport?.width || window.innerWidth;
+  const height = viewport?.height || window.innerHeight;
+  const offsetTop = viewport?.offsetTop || 0;
+  const layoutHeight = window.innerHeight;
+  const screenHeight = window.screen?.height || layoutHeight;
+  const promptFocused = document.activeElement === els.prompt;
+  const keyboardOpen =
+    promptFocused &&
+    (height < layoutHeight - KEYBOARD_VISUAL_VIEWPORT_DELTA ||
+      height < screenHeight - KEYBOARD_VISUAL_VIEWPORT_DELTA ||
+      height < screenHeight * 0.78);
+  const chatTopRatio = keyboardOpen ? 0.56 : 0.5;
+
+  root.style.setProperty("--app-width", `${Math.round(width)}px`);
+  root.style.setProperty("--app-height", `${Math.round(height)}px`);
+  root.style.setProperty("--chat-top", `${Math.round(offsetTop + height * chatTopRatio)}px`);
+  root.classList.toggle("keyboard-open", keyboardOpen);
 }
 
 function directAnswerForResolvedIntent(intent, text, state) {
@@ -355,5 +378,23 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
+window.addEventListener("resize", updateViewportMetrics);
+window.addEventListener("orientationchange", () => {
+  requestAnimationFrame(updateViewportMetrics);
+});
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", updateViewportMetrics);
+  window.visualViewport.addEventListener("scroll", updateViewportMetrics);
+}
+els.prompt.addEventListener("focus", () => {
+  requestAnimationFrame(updateViewportMetrics);
+  window.setTimeout(updateViewportMetrics, 260);
+});
+els.prompt.addEventListener("blur", () => {
+  requestAnimationFrame(updateViewportMetrics);
+  window.setTimeout(updateViewportMetrics, 120);
+});
+
+updateViewportMetrics();
 autosize();
 setContextOpen(false);

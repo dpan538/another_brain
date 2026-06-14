@@ -117,9 +117,15 @@ function validatePageAssets(index, assets) {
   if (app?.text && !app.text.includes('els.form.addEventListener("submit"')) failures.push("submit_listener_missing");
   if (app?.text && !app.text.includes('els.contextToggle.addEventListener("click"')) failures.push("context_toggle_listener_missing");
   if (app?.text && !app.text.includes("window.exportAnotherBrainDebugReport")) failures.push("debug_report_hook_missing");
-  if (css?.text && !css.text.includes("width: min(var(--chat-width), calc(100vw - 44px))")) failures.push("responsive_width_rule_missing");
-  if (css?.text && !css.text.includes("min-height: 100dvh")) failures.push("viewport_height_rule_missing");
-  if (css?.text && !css.text.includes("top: 50%")) failures.push("vertical_center_rule_missing");
+  if (css?.text && !css.text.includes("width: min(var(--chat-width), calc(var(--app-width) - 44px))")) {
+    failures.push("responsive_width_rule_missing");
+  }
+  if (css?.text && !css.text.includes("height: var(--app-height)")) failures.push("viewport_height_rule_missing");
+  if (css?.text && !css.text.includes("top: var(--chat-top)")) failures.push("visual_viewport_center_rule_missing");
+  if (css?.text && !css.text.includes("position: fixed")) failures.push("body_fixed_rule_missing");
+  if (css?.text && !css.text.includes("overscroll-behavior: none")) failures.push("overscroll_guard_missing");
+  if (css?.text && !css.text.includes(".keyboard-open .answer")) failures.push("keyboard_answer_guard_missing");
+  if (app?.text && !app.text.includes("window.visualViewport")) failures.push("visual_viewport_sync_missing");
   return failures;
 }
 
