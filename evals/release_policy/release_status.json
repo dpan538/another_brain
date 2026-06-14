@@ -40,8 +40,11 @@
       ]
     },
     "R4_language_layer_voice_verifier": {
-      "status": "pending",
-      "evidence": []
+      "status": "passed",
+      "evidence": [
+        "scripts/eval_voice_verifier.py",
+        "artifacts/training_os/voice_verifier_report.json"
+      ]
     },
     "R5_integrated_blind_eval": {
       "status": "pending",

@@ -103,6 +103,11 @@ def summarize_frontend_latency(payload: dict[str, Any] | None) -> dict[str, Any]
     }
 
 
+def summarize_voice_verifier(payload: dict[str, Any] | None) -> dict[str, Any]:
+    payload = payload or {}
+    return payload.get("summary", {})
+
+
 def summarize_report(path: Path) -> dict[str, Any]:
     payload = load_json(path, {})
     return payload.get("summary", payload)
@@ -134,6 +139,7 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "persona",
             "help_onboarding",
             "frontend_latency",
+            "voice_verifier",
             "context_stress",
             "casepack_capability",
             "model_gate",
@@ -161,8 +167,8 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "notes": "Tiny router v2 uses action labels, preserves answer-index behavior, and passes model gate plus frontend answer latency.",
         },
         "R4_language_layer_voice_verifier": {
-            "status": "pending",
-            "notes": "No frozen language selector/ranker or voice verifier report exists yet.",
+            "status": "passed" if tests["voice_verifier"]["ok"] else "failed",
+            "notes": "Voice verifier checks forbidden identity terms, privacy leakage, assistant tone, answer length, fake certainty, PR tone, and preference pairs.",
         },
         "R5_integrated_blind_eval": {
             "status": "pending",
@@ -337,6 +343,7 @@ def main() -> int:
         "persona": run_command("persona", ["python3", "scripts/eval_dialog_persona.py"]),
         "help_onboarding": run_command("help_onboarding", ["python3", "scripts/eval_help_onboarding.py"]),
         "frontend_latency": run_command("frontend_latency", ["node", "scripts/eval_frontend_latency.mjs", "--max-answer-ms", "1500", "--out", "artifacts/release/frontend_latency_report.json"]),
+        "voice_verifier": run_command("voice_verifier", ["python3", "scripts/eval_voice_verifier.py"]),
         "context_static": run_command("context_static", ["python3", "scripts/validate_context_stress_cases.py"]),
         "clone_logic_ethics_structure": run_command("clone_logic_ethics_structure", ["python3", "scripts/validate_clone_logic_ethics.py"]),
         "context_stress": run_command(
@@ -386,6 +393,7 @@ def main() -> int:
         "persona": gate_result(checks["persona"], {"summary": summarize_persona(checks["persona"].get("json"))}),
         "help_onboarding": gate_result(checks["help_onboarding"], {"summary": checks["help_onboarding"].get("json", {}).get("summary")}),
         "frontend_latency": gate_result(checks["frontend_latency"], {"summary": summarize_frontend_latency(checks["frontend_latency"].get("json"))}),
+        "voice_verifier": gate_result(checks["voice_verifier"], {"summary": summarize_voice_verifier(checks["voice_verifier"].get("json"))}),
         "context_static": gate_result(checks["context_static"]),
         "clone_logic_ethics_structure": gate_result(checks["clone_logic_ethics_structure"]),
         "context_stress": gate_result(checks["context_stress"], {"summary": checks["context_stress"].get("json", {}).get("summary")}),
