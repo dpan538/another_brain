@@ -15,7 +15,7 @@ PACK = ROOT / "identity_pack"
 SURFACE_CONTRACT = PACK / "identity_surface_contract.md"
 CARD_SCHEMA = PACK / "schemas" / "card_schema.json"
 PRIVATE_TEMPLATE = PACK / "schemas" / "private_structure_template.json"
-SEED_CARDS = PACK / "cards" / "seed_identity_cards.jsonl"
+CARDS_DIR = PACK / "cards"
 QUESTION_BANK = PACK / "interview_question_bank.md"
 
 VISIBILITY = {"public", "allowed_if_asked", "style_only", "private", "forbidden"}
@@ -121,12 +121,15 @@ def main() -> int:
         schema = json.loads(read_text(CARD_SCHEMA))
         template = json.loads(read_text(PRIVATE_TEMPLATE))
         question_bank = read_text(QUESTION_BANK)
-        seed_raw = read_text(SEED_CARDS)
+        card_paths = sorted(CARDS_DIR.glob("*.jsonl"))
+        if not card_paths:
+            return fail("identity_pack/cards contains no jsonl card files")
+        card_payloads = [(path, read_text(path)) for path in card_paths]
     except (RuntimeError, json.JSONDecodeError) as error:
         return fail(str(error))
 
     for answer in REQUIRED_SAFE_ANSWERS:
-        if answer not in surface and answer not in seed_raw:
+        if answer not in surface and all(answer not in payload for _, payload in card_payloads):
             return fail(f"missing required safe answer: {answer}")
 
     for marker in ("do_not_verbalize", "model_weights", "public_release"):
@@ -150,20 +153,22 @@ def main() -> int:
     cards: list[dict[str, Any]] = []
     errors: list[str] = []
     ids: set[str] = set()
-    for index, line in enumerate(seed_raw.splitlines(), start=1):
-        if not line.strip():
-            continue
-        try:
-            card = json.loads(line)
-        except json.JSONDecodeError as error:
-            errors.append(f"line {index}: invalid JSON: {error}")
-            continue
-        card_id = str(card.get("id", ""))
-        if card_id in ids:
-            errors.append(f"line {index}: duplicate id {card_id}")
-        ids.add(card_id)
-        errors.extend(validate_card(index, card))
-        cards.append(card)
+    for path, payload in card_payloads:
+        for index, line in enumerate(payload.splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                card = json.loads(line)
+            except json.JSONDecodeError as error:
+                errors.append(f"{path.relative_to(ROOT)}:{index}: invalid JSON: {error}")
+                continue
+            card_id = str(card.get("id", ""))
+            if card_id in ids:
+                errors.append(f"{path.relative_to(ROOT)}:{index}: duplicate id {card_id}")
+            ids.add(card_id)
+            card_errors = validate_card(index, card)
+            errors.extend(f"{path.relative_to(ROOT)}: {error}" for error in card_errors)
+            cards.append(card)
 
     if errors:
         return fail("; ".join(errors[:10]))
@@ -186,7 +191,7 @@ def main() -> int:
                 "visibility": visibility_counts,
                 "types": {card_type: sum(1 for card in cards if card["type"] == card_type) for card_type in sorted(present_types)},
                 "surfaceContract": str(SURFACE_CONTRACT.relative_to(ROOT)),
-                "seedCards": str(SEED_CARDS.relative_to(ROOT)),
+                "cardFiles": [str(path.relative_to(ROOT)) for path, _ in card_payloads],
             },
             ensure_ascii=False,
             indent=2,
@@ -197,4 +202,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
