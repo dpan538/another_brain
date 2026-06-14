@@ -7,8 +7,8 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState
-} from "./dialog_rules.js?v=41";
-import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=4";
+} from "./dialog_rules.js?v=44";
+import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=7";
 
 const output = document.querySelector("#output");
 const params = new URLSearchParams(location.search);

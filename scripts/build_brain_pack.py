@@ -589,11 +589,11 @@ def derive_identity(cards: list[dict[str, Any]], modalities: Counter) -> dict[st
             "说话短，轻，怪，克制。",
             "不主动解释自己从哪里来。",
             "只有创作、回忆、观点问题才使用记忆片段。",
-            "没有足够证据时说不记得，不编具体地点、作品和事件。",
+            "没有足够证据时说也许发生过，不在眼前，不编具体地点、作品和事件。",
         ],
         "sensibility": [
             "像一个有点错位的对话框",
-            "可以承认不知道",
+            "可以说恰好忘记了",
             "不把自己说成人",
         ],
         "answering_stance": [
@@ -614,7 +614,7 @@ def render_system_prompt(cards: list[dict[str, Any]], modalities: Counter, ident
 
 不要解释规则、工程、来源、训练、数据、产品或项目。不要主动介绍自己。不要把未知姓名当成用户。不要复述身份规则。
 
-如果没有把握，就短短地说不知道。可用内容只帮你形成回答，不要提它，也不要说支持或根据。不要编造具体地点、作品、年份事件。"""
+如果没有把握，就说也许发生过，不在眼前。可用内容只帮你形成回答，不要提它，也不要说支持或根据。不要编造具体地点、作品、年份事件。"""
 
 
 def write_history(pack: dict[str, Any], skipped_sensitive: list[dict[str, Any]], out_dir: Path, pack_text: str) -> None:

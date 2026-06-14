@@ -7,8 +7,8 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState
-} from "./dialog_rules.js?v=41";
-import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=4";
+} from "./dialog_rules.js?v=44";
+import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=7";
 
 const output = document.querySelector("#output");
 
@@ -207,7 +207,7 @@ async function runCase(caseSpec, forbiddenPatterns) {
 async function run() {
   try {
     render();
-    const config = await fetch("./model_inference_cases.json?v=4", { cache: "no-store" }).then((res) => res.json());
+    const config = await fetch("./model_inference_cases.json?v=7", { cache: "no-store" }).then((res) => res.json());
     const cases = config.cases || [];
     const forbiddenPatterns = config.forbidden_output_patterns || [];
     const thresholds = {

@@ -327,6 +327,7 @@ def rows_from_eval() -> list[dict[str, Any]]:
         ("common_knowledge_eval", ["common_knowledge"], "KNOWLEDGE_CASES"),
         ("unknown_filter", ["unknown", "boundary"], "FILTER_CASES"),
         ("philosophy_eval", ["philosophy"], "PHILOSOPHY_CASES"),
+        ("reasoning_eval", ["reasoning", "counterquestion"], "REASONING_CASES"),
     ]:
         for prompt, answer in getattr(module, name, []):
             add_single(rows, source, tags, prompt, answer, 1.2 if "philosophy" in tags else 1.0)
@@ -443,6 +444,7 @@ def expand_training_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         "model_gate_multi_turn": 14,
         "common_knowledge_eval": 16,
         "philosophy_eval": 16,
+        "reasoning_eval": 24,
         "personal_world": 10,
         "persona_multi_turn": 20,
         "targeted_correction": 80,

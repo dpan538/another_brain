@@ -1,4 +1,4 @@
-import { TINY_ROUTER_MODEL } from "./tiny_router_model.generated.js?v=4";
+import { TINY_ROUTER_MODEL } from "./tiny_router_model.generated.js?v=7";
 
 const KNOWLEDGE_QUESTION_RE =
   /(你知道|是什么|什么是|是谁|怎么样|如何|在哪|哪里|为什么|为何|由什么|什么组成|组成|构成|用来|用途|有什么用|能不能|可以|会不会|适合|区别|关系|关于|告诉|讲讲|介绍|what is|who is|where is|why|use for|like)/i;
@@ -107,7 +107,7 @@ export function tinyDirectAnswer(text) {
   let best = null;
   for (const entry of TINY_ROUTER_MODEL.answerIndex) {
     if (entry.label !== route.label) continue;
-    if (!["fixed", "boundary", "unknown", "philosophy", "rewrite_short"].includes(entry.label)) continue;
+    if (!["fixed", "boundary", "unknown", "reasoning", "philosophy", "rewrite_short"].includes(entry.label)) continue;
     const similarity = diceSimilarity(text, entry.prompt);
     if (!best || similarity > best.similarity) best = { entry, similarity };
   }
@@ -133,6 +133,7 @@ export function tinyIntentHint(text) {
   if (route.label === "rewrite_short" && REWRITE_RE.test(text)) return { intent: "rewrite_short", route };
   if (route.label === "boundary" && ROLEPLAY_RE.test(text)) return { intent: "forced_roleplay", route };
   if (route.label === "unknown" && KNOWLEDGE_QUESTION_RE.test(text)) return { intent: "knowledge_unknown", route };
+  if (route.label === "reasoning") return { intent: "reasoning_reflection", route };
   if ((route.label === "common_knowledge" || route.label === "personal_world") && KNOWLEDGE_QUESTION_RE.test(text)) {
     return { intent: "knowledge_unknown", route };
   }

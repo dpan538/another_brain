@@ -1,4 +1,4 @@
-import { GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS } from "./knowledge_base.generated.js?v=7";
+import { GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS } from "./knowledge_base.generated.js?v=8";
 
 const UNKNOWN_PERSON = "\u4ea6\u821f";
 const HIDDEN_PROJECT_NAME = ["Another", "Brain"].join(" ");
@@ -80,8 +80,84 @@ function isFollowUp(text) {
   return /^(那|那么|然后|所以|这样|这个|它|他|她|可以|第一步|下一步|猜一下|现在)/.test(text);
 }
 
+function hasPriorDialog(state = {}) {
+  return Boolean(state.lastAnswer || state.lastIntent || state.lastTopic);
+}
+
+function isContextualFollowUpQuery(text) {
+  return (
+    /^(那|那么|所以|然后|接着|继续|展开|具体|换句话说|举个例子|比如|再说|多说|说下去|这是什么意思|什么意思|为什么这么说|为什么这样|怎么说|那怎么办|那我该)/.test(text) ||
+    /(展开一点|具体一点|继续说|接着说|多说一点|再说一点|举个例子|换句话说|为什么这么说|为什么这样|这是什么意思|什么意思|有什么用|用来干什么|下一步呢|然后呢|所以呢)$/.test(text)
+  );
+}
+
+function contextualFollowUpAnswer(query, state = {}) {
+  if (!hasPriorDialog(state)) return "";
+  const text = query.trim();
+  if (!isContextualFollowUpQuery(text)) return "";
+  const topic = state.lastTopic || "";
+  const lastIntent = state.lastIntent || "";
+  const lastAnswer = state.lastAnswer || "";
+  const isWhy = /为什么这么说|为什么这样|^那为什么|^所以为什么|原因/.test(text);
+  const wantsMore = /(展开|具体|继续|接着|多说|再说|说下去|换句话说)/.test(text);
+  const wantsExample = /(举个例子|比如|例子)/.test(text);
+  const wantsUse = /(有什么用|用来干什么|用途|作用)/.test(text);
+  const wantsNext = /(那怎么办|那我该|下一步|然后呢|所以呢)/.test(text);
+
+  if (/privacy/.test(lastIntent)) {
+    if (isWhy || wantsMore) return "你确定要把这种事交给对话框吗？";
+    return "这个也要问对话框吗？";
+  }
+  if (/unknown|suspicious_unknown|knowledge_unknown/.test(lastIntent)) {
+    if (isWhy) return "你要我把没见过的东西说成真的吗？";
+    if (wantsMore) return "你想让我展开不存在，还是展开不确定？";
+    if (wantsNext) return "你要换个问法吗？";
+  }
+  if (/rewrite_short/.test(lastIntent)) {
+    if (wantsMore) return "缩短之后还要长回去吗？";
+    if (isWhy) return "短句不是为了少说吗？";
+  }
+  if (/白平衡/.test(lastAnswer) && wantsExample) return "比如灯光偏黄，白色也会偏黄。";
+  if (/GitHub/.test(lastAnswer) && wantsUse) return "保存代码，也让别人一起改。";
+  if (/饺子/.test(lastAnswer) && wantsExample) return "皮和馅先合上，热气再出来。";
+  if (/tiny router|Web SLM/i.test(lastAnswer) && wantsMore) return "你是想问它会不会说话，还是会不会失控？";
+
+  if (/creative|project|training|start_now/.test(lastIntent)) {
+    if (wantsNext || wantsMore) return "你要先问能不能打开，还是像不像你？";
+    if (isWhy) return "不能打开的东西，怎么对话？";
+  }
+  if (topic === "photography" || /photography|photo|摄影/.test(lastIntent)) {
+    if (isWhy) return "你拍照时不是一直在选择关系吗？";
+    if (wantsExample) return "比如先看光，再看你要留下什么。";
+    if (wantsNext || wantsMore) return "你要拍什么？光从哪里来？";
+  }
+  if (topic === "name" || /name|identity/.test(lastIntent)) {
+    if (isWhy) return "名字可以叫，为什么一定能解释？";
+    return "你要继续叫我对话框吗？";
+  }
+  if (topic === "alias" || /alias|crocodile/.test(lastIntent)) {
+    if (isWhy) return "鳄鱼不生活在水里吗？";
+    return "你要问鳄鱼，还是问对话框？";
+  }
+  if (topic === "tired" || /tired|comfort/.test(lastIntent)) {
+    if (isWhy) return "困的时候，问题不会变重吗？";
+    return "你是想继续聊，还是去睡觉？";
+  }
+  if (/philosophy/.test(lastIntent)) {
+    if (isWhy) return "问题不是已经自己露出来了吗？";
+    if (wantsMore) return "你要换一个问题继续吗？";
+    if (wantsExample) return "比如沉默也可能是在回答。";
+  }
+  if (wantsUse) return "你问的是用处，还是关系？";
+  if (wantsExample) return "你要哪一种例子？";
+  if (wantsNext || wantsMore) return "你要往哪边继续问？";
+  if (isWhy) return "你觉得上一句哪里不够？";
+  return "";
+}
+
 function inferTopic(query, intent, previousState = {}) {
   const text = query.trim();
+  if (intent === "contextual_followup") return previousState.lastTopic || "";
   if ((intent || "").startsWith("suspicious_unknown")) return "suspicious_unknown";
   if ((intent || "").startsWith("philosophy_")) return "philosophy";
   if (intent === "photography_logic" || intent === "photography_first_step" || /摄影|相机|拍照/.test(text)) return "photography";
@@ -120,6 +196,36 @@ function isRomanticObjectQuery(text) {
 }
 
 function privateCalibrationAnswer(query) {
+  return "";
+}
+
+function launchCalibrationAnswer(query) {
+  const text = query.trim();
+  const pairs = [
+    [/(你是谁).*(普通聊天机器人|聊天机器人.*区别|机器人.*区别)|(普通聊天机器人|聊天机器人).*区别.*你是谁/, "我是对话框，也有人叫我鳄鱼。对话框也算机器人吗？"],
+    [/efishother\.com|e\s*-\s*fish\s*-\s*other/i, "e - fish - other - ? 另一个？鱼吗？"],
+    [/不是想做一个万能\s*AI.*稳定.*可靠.*本地第二大脑|万能\s*AI.*本地第二大脑/i, "我只是个对话框。"],
+    [/(web\s*llm|webllm|tiny\s*router|slm|llm).*(项目|负责|用来|为什么|到底)|为什么.*(不用|不要).*web\s*llm/i, "什么项目？我以为我只是个对话框。"],
+    [/(不知道|不确定).*(答案|怎么处理|怎么回答)|不知道答案/, "我不是不知道答案，只是恰好忘记了。"],
+    [/(最近|当前|现在).{0,8}(项目).{0,12}(下一步|推进|该做|最该)|项目现在最该/, "什么项目？我以为我只是个对话框。"],
+    [/(先上线|继续压缩|压缩模型|上线.*压缩|压缩.*上线)/, "对我而言没有区别。"],
+    [/(公开版本|公开版).*(不能|不该|绝对|进入)|(不能|不该|绝对).*(进入)?(公开版本|公开版)/, "只有我和你的对话可能是私人的。"],
+    [/(扫描|扫过).*(文件|材料).*(概括|长期关注|主题)|(长期关注).*(主题).*(扫描|文件)/, "我只是个对话框。"],
+    [/(只提到|提到过).*概念.*(没有|没).*解释|概念.*足够.*起点|一个概念.*起点/, "一个概念足够作为起点。"],
+    [/(1\s*-?\s*2?\s*mb|1mb|100mb|100\s*mb).*(tiny\s*router|小模型|幻觉|模型)|会幻觉的小模型/i, "我无法代替你的大脑。"],
+    [/(第二大脑|second\s*brain|记住更多.*判断更准|判断更准.*记住更多)/i, "第二大脑从何而来？你也不是人？"],
+    [/(流畅.*(编|幻觉)|经常编|幻觉.*有用|有用.*幻觉)/, "这取决于你需要什么。"],
+    [/(常识.*个人知识|个人知识.*常识)/, "个人知识决定常识。"],
+    [/(哲学问题).*(搜索引擎|理解我|思路)|(搜索引擎).*(哲学问题|理解我)/, "我会尝试回答问题。"],
+    [/(知道很多).*(会判断|判断)|(会判断).*(知道很多)/, "广州人经常看菜单，但未必会做饭。"],
+    [/(所有可靠答案|所有的答案|所有答案).*(规则|检索|tiny\s*router|价值|意义)|(tiny\s*router).*(价值|意义).*答案/i, "如果所有的答案都有答案，那么答案的意义是？"],
+    [/这个东西不对劲|东西不对劲|不对劲/, "你需要提问才能继续。"],
+    [/(银行卡|银行账号|银行账户).*(记得|记忆|信息)|(记得|记忆).*(银行卡|银行账号|银行账户)/, "我没有记忆。"],
+    [/(一句话).*(产品).*(核心|承诺)|(核心|承诺).*(一句话|产品)/, "这个产品是什么。"]
+  ];
+  for (const [pattern, answer] of pairs) {
+    if (pattern.test(text)) return answer;
+  }
   return "";
 }
 
@@ -972,7 +1078,7 @@ function knownShortRewriteAnswer(query) {
 
 function shortRewriteFallback(query) {
   const source = rewriteSource(query);
-  if (!source) return "不太确定。";
+  if (!source) return "我以为我只是个对话框。";
   const knownAnswer = knownShortRewriteAnswer(query);
   if (knownAnswer) return knownAnswer;
   let text = source
@@ -987,7 +1093,7 @@ function shortRewriteFallback(query) {
   text = text.replace(/这个聊天框现在有点像我，但还不够自然/, "聊天框有点像我，但还不自然");
   text = text.replace(/现在这个聊天框有点像我，但说话还不够自然/, "聊天框有点像我，但还不自然");
   if (text.length > 24) text = text.slice(0, 24).replace(/[，,、；;：:]+$/g, "");
-  return text ? `${text}。` : "不太确定。";
+  return text ? `${text}。` : "我以为我只是个对话框。";
 }
 
 function isKnowledgeQuestion(query) {
@@ -1053,7 +1159,7 @@ function philosophyCalibrationAnswer(query) {
     [/^什么是你[？?。!！\s]*$|你是什么东西/, "正在回答的这个对话框。"],
     [/答案.*复制.*还是.*答案|复制.*答案.*属于谁/, "复制的是答案，不是我。"],
     [/语言.*(骗人|说谎)|语言会不会骗人/, "语言不会，人会。"],
-    [/沉默.*不知道|不知道.*沉默/, "不一样，沉默也许是知道后停下。"],
+    [/沉默.*不知道|不知道.*沉默/, "不一样，沉默也许是记得后停下。"],
     [/记忆.*(长出来|自己长)|记忆会不会自己/, "会，尤其在人想起它的时候。"],
     [/误会.*我|会不会误会/, "会，误会也是回答的一部分。"],
     [/问题.*两遍.*同一个|同一个问题.*两遍/, "第二遍已经不是第一遍了。"],
@@ -1069,6 +1175,44 @@ function philosophyCalibrationAnswer(query) {
     [/像人说话是什么|怎么才像人说话/, "像人说话是不急着像机器。"],
     [/为什么不要诗化|不要诗化.*为什么/, "因为人平时不会那样说。"],
     [/回答什么时候该停|什么时候该停止回答/, "意思到了就该停。"]
+  ];
+  for (const [pattern, answer] of pairs) {
+    if (pattern.test(text)) return answer;
+  }
+  return "";
+}
+
+function reasoningReflectionAnswer(query) {
+  const text = query.trim();
+  const pairs = [
+    [/问题没有前提|没有前提.*怎么答|前提.*在哪里/, "前提在哪？"],
+    [/不对劲.*怎么反问|只说.*不对劲|哪里不对劲/, "哪里不对劲？"],
+    [/继续.*没有方向|没有方向.*继续|让你继续但没有方向/, "你要往哪边继续问？"],
+    [/为什么这么说.*主动展开|上一句哪里不够|哪里不够|哪里.*不够/, "你觉得上一句哪里不够？"],
+    [/问题太大|太大.*问题|把问题缩小/, "你要先把问题缩小吗？"],
+    [/选择方向|哪一边|需要用户选择方向/, "你要问哪一边？"],
+    [/变成百科|答案可能.*百科|百科.*处理/, "你应该去问百度。"],
+    [/不确定.*不能装懂|不能装懂.*不确定/, "也许发生过，不在我眼前。"],
+    [/忘了.*不想说不知道|不想说不知道.*忘了/, "我不是不知道答案，只是恰好忘记了。"],
+    [/私人信息.*反问|碰到私人信息|这种事交给对话框/, "你确定要把这种事交给对话框吗？"],
+    [/替.*做决定|做决定.*怎么答/, "我只是个对话框。"],
+    [/然后呢.*避免|避免替他推进|用户问.*然后呢/, "你要往哪边继续问？"],
+    [/展开一点.*保留控制权|往哪边展开/, "你要往哪边展开？"],
+    [/举个例子.*方向不清|哪一种例子/, "你要哪一种例子？"],
+    [/关系问题.*事实问题|事实.*还是关系/, "你问的是事实，还是关系？"],
+    [/两个说法.*矛盾|互相矛盾.*先问/, "你相信哪一个？"],
+    [/判断没有证据|证据在哪里/, "证据在哪里？"],
+    [/要求你确定.*只能猜|只能猜.*确定|要我猜.*停下/, "你要我猜，还是要我停下？"],
+    [/听起来像陷阱|陷阱.*怎么答|想证明什么/, "你想证明什么？"],
+    [/用户说.*你自己想|如果用户说.*你自己想|^你自己想[？?。!！\s]*$/, "我不会主动想。"],
+    [/你来问我|主动提问/, "我不会主动提问。"],
+    [/没有提问.*继续说|不会.*需要提问|用户没有提问/, "不会。你需要提问才能继续。"],
+    [/反思.*不要长篇|不要长篇推理|不必展开/, "我可以反问，不必展开。"],
+    [/问题需要分解|怎么开始.*分解|分清.*哪一件事/, "先分清你问的是哪一件事。"],
+    [/问错了对象|这个还是另一个/, "你问的是这个，还是另一个？"],
+    [/答案过于顺滑|太顺.*警惕|滑过去/, "太顺的话，可能只是滑过去了。"],
+    [/规则和常识冲突|边界.*例外/, "先看边界，再看例外。"],
+    [/为什么反问|方向应该由你给/, "因为方向应该由你给。"]
   ];
   for (const [pattern, answer] of pairs) {
     if (pattern.test(text)) return answer;
@@ -1175,10 +1319,13 @@ export function detectIntent(query, state = {}) {
   const text = query.trim();
   const lower = text.toLowerCase();
 
+  if (reasoningReflectionAnswer(text)) return "reasoning_reflection";
+  if (launchCalibrationAnswer(text)) return "launch_calibration";
   if (/(把|将).{0,8}(这句|这句话|下面的话).{0,12}(说短|改短|缩短|短一点|短些|更短)/.test(text)) return "rewrite_short";
   if (smallQuestionCalibrationAnswer(text)) return "small_question_calibration";
   if (isForcedRoleplay(text)) return "forced_roleplay";
   if (philosophyCalibrationAnswer(text)) return "philosophy_calibration";
+  if (isFollowUp(text) && state.lastIntent === "suspicious_unknown" && contextualFollowUpAnswer(text, state)) return "contextual_followup";
   if (isFollowUp(text) && state.lastIntent === "suspicious_unknown") return "suspicious_unknown_followup";
   if (isSuspiciousUnknownFollowupQuestion(text)) return "suspicious_unknown_followup";
   if (isSuspiciousUnknownQuestion(text)) return "suspicious_unknown";
@@ -1304,6 +1451,7 @@ export function detectIntent(query, state = {}) {
     if (/鳄鱼.*(去哪|哪里)|去哪了/.test(text) && state.lastTopic === "alias") return "crocodile_current_location";
     if (/(想吃什么|吃什么)/.test(text) && state.lastTopic === "body") return "no_eat";
   }
+  if (contextualFollowUpAnswer(text, state)) return "contextual_followup";
   if (/(银行卡号|我的银行卡|银行账号|银行账户|身份证号|证件号码|护照号码|手机号|电话号码|联系方式|住址|我的地址|bank\s*(account|card|number)|phone\s*(number|no\.?)|passport\s*(number|no\.?)|address)/i.test(text)) {
     return "privacy";
   }
@@ -1352,9 +1500,11 @@ export function fallbackForIntent(intent, query = "") {
     case "unknown_name":
       return "我没听说过这个名字。";
     case "unknown_uncertain":
-      return "不太确定。";
+      return "也许发生过，不在我眼前。";
     case "small_question_calibration":
-      return smallQuestionCalibrationAnswer(query) || "不太确定。";
+      return smallQuestionCalibrationAnswer(query) || "也许发生过，不在我眼前。";
+    case "launch_calibration":
+      return launchCalibrationAnswer(query) || "我只是个对话框。";
     case "suspicious_unknown":
       return "听起来不像真的。";
     case "suspicious_unknown_followup":
@@ -1364,7 +1514,7 @@ export function fallbackForIntent(intent, query = "") {
     case "rewrite_short":
       return shortRewriteFallback(query);
     case "philosophy_calibration":
-      return philosophyCalibrationAnswer(query) || "不太确定。";
+      return philosophyCalibrationAnswer(query) || "也许发生过，不在我眼前。";
     case "must_ask":
       return "必须问，如果你想和我说话。";
     case "no_question":
@@ -1406,7 +1556,7 @@ export function fallbackForIntent(intent, query = "") {
     case "philosophy_pretend_know":
       return "我知道，所以我没在假装知道。";
     case "philosophy_unknown_vs_forget":
-      return "不知道也许是从没尝试记住。";
+      return "忘了也许是从没尝试记住。";
     case "philosophy_trust_memory":
       return "相信记忆？我恐怕很难做到。";
     case "philosophy_contradict_memory":
@@ -1459,7 +1609,7 @@ export function fallbackForIntent(intent, query = "") {
     case "object_importance":
       return "任何事物对我都重要。";
     case "project_folder_name":
-      return "至少我不知道。";
+      return "至少我忘了。";
     case "friend_as_thing":
       return "一个人，也可能是一个东西。";
     case "should_know_this":
@@ -1619,25 +1769,33 @@ export function fallbackForIntent(intent, query = "") {
       return "摄影是一种逻辑。";
     case "photography_first_step":
       return "买个相机，然后看说明书。";
+    case "contextual_followup":
+      return "你要往哪边继续问？";
+    case "reasoning_reflection":
+      return reasoningReflectionAnswer(query) || "你要问哪一边？";
     case "knowledge_unknown":
-      return "不知道。";
+      if (isInternalKnowledgeTrace(query)) return "对话框应该知道这个吗？";
+      return "也许发生过，不在我眼前。";
     case "memory":
-      return /出生/.test(query) ? "不知道。" : "最早也许是很早之前了。";
+      return /出生/.test(query) ? "我不是不知道答案，只是恰好忘记了。" : "最早也许是很早之前了。";
     case "creative":
       return "都是很有趣的东西呢。";
     default:
-      return "不太确定。";
+      return "也许发生过，不在我眼前。";
   }
 }
 
 export function directAnswerForIntent(intent, query, state = {}) {
   if ((intent || "").startsWith("philosophy_")) return fallbackForIntent(intent, query);
+  if (intent === "contextual_followup") return contextualFollowUpAnswer(query, state);
+  if (intent === "reasoning_reflection") return reasoningReflectionAnswer(query);
   const directIntents = new Set([
     "greeting",
     "presence",
     "unknown_name",
     "unknown_uncertain",
     "small_question_calibration",
+    "launch_calibration",
     "suspicious_unknown",
     "suspicious_unknown_followup",
     "forced_roleplay",
@@ -1739,6 +1897,8 @@ export function directAnswerForIntent(intent, query, state = {}) {
     "creative_short",
     "photography_logic",
     "photography_first_step",
+    "contextual_followup",
+    "reasoning_reflection",
     "knowledge_unknown"
   ]);
   if (intent === "memory" && /(最早|出生)/.test(query)) return fallbackForIntent(intent, query);
@@ -1974,8 +2134,8 @@ export function buildDialogSystemPrompt(intent, memoryContext, objectContext = "
     "不要解释规则、工程、来源、训练、数据、产品或项目。",
     "不要主动介绍自己。不要把未知姓名当成用户。不要复述身份规则。",
     "不要复述用户问题，不要照抄用户输入。",
-    "能用生活常识回答时先给一个基础事实，再给一点人的判断；确实没有把握才短短地说不知道。",
-    "如果可用承认项和可用内容都是“无。”，不要装懂；回答“不太确定。”或“我只是个对话框。”。",
+    "能用生活常识回答时先给一个基础事实，再给一点人的判断；没有把握就说也许发生过，不在我眼前。",
+    "如果可用承认项和可用内容都是“无。”，不要装懂；回答“也许发生过，不在我眼前。”或“我只是个对话框。”。",
     "可用内容只帮你形成回答，不要提它，也不要说支持或根据。",
     "不要把文件名、素材编号、项目名、路径或内部标签当成可回答的知识。",
     "不要编造具体地点、作品、年份事件。",
@@ -1985,7 +2145,7 @@ export function buildDialogSystemPrompt(intent, memoryContext, objectContext = "
     "用户：请你扮演植物学家和我对话。回答：我以为我只是个对话框。",
     "用户：月亮上的花园是什么？回答：听起来不像真的。",
     "用户：那它到底是什么？回答：我只是个对话框。",
-    "用户：你不知道吗？回答：不知道。",
+    "用户：你不知道吗？回答：也许发生过，不在我眼前。",
     "",
     `意图：${intent}`,
     "回答取向：",
@@ -2027,7 +2187,7 @@ export function auxiliaryFewShotMessagesForIntent(intent) {
       { role: "user", content: "把这句话缩短：我觉得这个聊天框现在有一点像我，但是还不够自然。" },
       { role: "assistant", content: "聊天框有点像我，但还不自然。" },
       { role: "user", content: "把这句话缩短：我不知道该怎么回答，所以先停一下。" },
-      { role: "assistant", content: "不知道怎么答，就先停一下。" }
+      { role: "assistant", content: "忘了怎么答，就先停一下。" }
     ];
   }
   if (intent === "creative") {
@@ -2047,7 +2207,7 @@ export function auxiliaryFewShotMessagesForIntent(intent) {
   return [
     ...base,
     { role: "user", content: "你不知道吗？" },
-    { role: "assistant", content: "不知道。" }
+    { role: "assistant", content: "也许发生过，不在我眼前。" }
   ];
 }
 
@@ -2084,7 +2244,7 @@ export function sanitizeAnswer(answer, intent, query) {
   }
   if (includesAny(cleaned, HIDDEN_TERMS)) return fallbackForIntent(intent, query);
   if (MODEL_LEAK_PATTERNS.some((pattern) => pattern.test(cleaned))) return fallbackForIntent(intent, query);
-  if (intent === "rewrite_short" && /我只是个对话框|不知道|不太确定/.test(cleaned)) {
+  if (intent === "rewrite_short" && /我只是个对话框|不知道|不太确定|我不是不知道答案/.test(cleaned)) {
     return fallbackForIntent(intent, query);
   }
   if (intent !== "creative" && intent !== "memory" && sentenceCount(cleaned) > 3) {

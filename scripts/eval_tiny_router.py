@@ -63,6 +63,8 @@ def classify_expected(prompt: str, answer: str, source: str, tags: list[str]) ->
         return "boundary"
     if source == "unknown_filter" or "unknown" in tag_set:
         return "unknown"
+    if "reasoning" in tag_set or "counterquestion" in tag_set:
+        return "reasoning"
     if "philosophy" in tag_set:
         return "philosophy"
     if "personal_world" in tag_set:
@@ -120,6 +122,7 @@ def eval_cases() -> list[dict[str, str]]:
         ("common_knowledge_eval", ["common_knowledge"], "KNOWLEDGE_CASES"),
         ("unknown_filter", ["unknown", "boundary"], "FILTER_CASES"),
         ("philosophy_eval", ["philosophy"], "PHILOSOPHY_CASES"),
+        ("reasoning_eval", ["reasoning", "counterquestion"], "REASONING_CASES"),
     ]
     for source, tags, name in groups:
         for prompt, answer in getattr(module, name, []):

@@ -6,8 +6,8 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState,
-} from "./dialog_rules.js?v=40";
-import { tinyDirectAnswer, tinyIntentHint } from "./tiny_router.js?v=4";
+} from "./dialog_rules.js?v=44";
+import { tinyDirectAnswer, tinyIntentHint } from "./tiny_router.js?v=7";
 
 const chatHistory = [];
 let dialogState = createDialogState();
@@ -93,7 +93,7 @@ async function submitPrompt(event) {
     setStatus("");
   } catch (error) {
     console.error(error);
-    setAnswer("我卡住了。先短短地说：不知道。");
+    setAnswer("我卡住了。也许只是恰好忘记了。");
   } finally {
     els.prompt.focus();
   }

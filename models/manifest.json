@@ -11,11 +11,12 @@
       "requires_network": false,
       "cloud_inference_api_allowed": false,
       "last_known_stats": {
-        "examples": 29855,
-        "answer_index": 613,
+        "examples": 67861,
+        "answer_index": 659,
         "feature_weights": 6500,
-        "web_bytes": 591281,
-        "route_accuracy": 0.9321
+        "web_bytes": 656787,
+        "route_accuracy": 0.9163,
+        "reasoning_holdout": "59/59"
       }
     }
   },

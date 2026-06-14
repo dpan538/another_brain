@@ -61,6 +61,15 @@ def style_line(label: str, domain: str) -> str:
         "literary_history": "文学史是语言怎样一代一代换气。",
         "history_event": "历史事件要先把时间和关系放稳。",
         "regional_development": "变化很快，但可以先抓住城市、交通和产业。",
+        "dialog_context": "对话要继续，先看上一句站在哪里。",
+        "everyday_reasoning": "日常问题不一定大，但常常很具体。",
+        "life_philosophy": "不是为了讲大道理，是为了把问题放稳。",
+        "epistemic": "知道多少不如知道边界在哪里。",
+        "creative_reasoning": "创作判断常常先从一个小取舍开始。",
+        "city_life": "城市问题最后都会落到路、钱、时间和人身上。",
+        "tech_life": "技术问题进入生活以后，就不只是技术。",
+        "relation_reasoning": "关系里的话不能只看字面。",
+        "memory_identity": "记住和忘记都在改写同一个名字。",
     }
     return f"{label}{suffixes.get(domain, '要看你怎么问。')}"
 
@@ -1277,6 +1286,114 @@ LITERARY_THEORY_TERMS = [
     "节奏",
 ]
 
+DIALOG_REASONING_TERMS = terms(
+    "提问、回答、追问、反问、沉默、误会、解释、判断、证据、反例、前提、结论、假设、可能性、确定性、"
+    "模糊、边界、规则、例外、语气、上下文、常识、私人知识、公开信息、事实、观点、经验、直觉、类比、"
+    "矛盾、选择、拒绝、道歉、请求、提醒、等待、决定、计划、拖延、完成、开始、停止、重复、修正、校准、"
+    "信任、怀疑、意义、目的、原因、结果、责任、自由、孤独、关系、距离、名字、身份、风格、轻、怪、克制、"
+    "短答、长答、幻觉、规则回答、知识回答、模糊问题、日常问题、哲学问题、真假问题、私人问题、公开问题"
+)
+
+DIALOG_REASONING_ASPECTS = terms(
+    "定义、前提、证据、反例、边界、关系、语境、限制、风险、判断、解释、追问、修正、误差、语气、节奏、"
+    "责任、选择、冲突、让步、停顿、转换、例外、优先级、验证、可靠性、私人性、公开性、含糊、归属、取舍、出口"
+)
+
+EVERYDAY_REASONING_TERMS = terms(
+    "起床、刷牙、洗澡、做饭、吃饭、洗碗、洗衣、打扫、收纳、通勤、等车、换乘、导航、购物、退货、寄快递、"
+    "取快递、挂号、看病、吃药、开会、写邮件、发消息、打电话、拍照、修图、备份、打印、填表、缴费、报销、"
+    "租房、搬家、维修、安装、学习、复习、考试、面试、睡觉、迟到、迷路、等待、忘记、记住、决定、选择、计划、"
+    "拖延、完成、道歉、拒绝、解释、确认、取消、提醒、预算、买菜、点外卖、排队、付款、扫码、登录、注册、验证、"
+    "改密码、更新、重启、调试、搜索、收藏、评论、分享、订阅、整理照片、写笔记、做清单、看展、读书、散步"
+)
+
+EVERYDAY_REASONING_ASPECTS = terms(
+    "步骤、准备、工具、时间、成本、风险、效率、习惯、边界、选择、优先级、失败点、提醒、顺序、节奏、"
+    "取舍、后果、复盘、例外、判断、误会、责任、耐心、收尾"
+)
+
+LIFE_PHILOSOPHY_TERMS = terms(
+    "真理、自由、责任、自我、他者、意识、欲望、记忆、死亡、时间、空间、语言、权力、正义、价值、意义、荒诞、"
+    "美、崇高、身体、经验、知识、信念、怀疑、证明、因果、存在、虚无、伦理、技术、图像、媒介、文本、作者、"
+    "读者、现实、历史、自然、社会、孤独、亲密、沉默、注意力、同一性、差异、偶然、必然、虚构、信任、解释、"
+    "遗忘、想象、判断、偏见、距离、名字、身份、风格、观看、选择、拒绝、承认、失误、边界、常识、未知、答案"
+)
+
+LIFE_PHILOSOPHY_ASPECTS = terms(
+    "问题、判断、经验、关系、边界、困境、批评、解释、方法、传统、争论、前提、反例、尺度、语气、限制、"
+    "价值、责任、误会、出口、停顿、转换、私人性、公共性、可说性、不可说性"
+)
+
+EPISTEMIC_TERMS = terms(
+    "事实、观点、判断、证据、线索、假设、推理、结论、反例、概率、可能性、确定性、模糊性、置信度、误差、"
+    "偏见、样本、经验、直觉、常识、知识、解释、预测、验证、校准、分类、命名、比较、关系、区别、相似、"
+    "原因、结果、条件、例外、规则、边界、定义、概念、问题、答案、搜索、记忆、遗忘、错觉、幻觉、误会、"
+    "沉默、反问、追问、摘要、缩短、扩展、判断力、可靠性、保守回答、开放问题、封闭问题、私人信息、公开信息"
+)
+
+EPISTEMIC_ASPECTS = terms(
+    "定义、证据、前提、结论、反例、限制、误差、校准、验证、边界、语境、可靠性、风险、来源、用途、"
+    "解释、判断、取舍、优先级、失败点、修正、追问、比较、关系、归纳、例外"
+)
+
+CREATIVE_REASONING_TERMS = terms(
+    "摄影、照片、相机、镜头、构图、用光、色彩、黑白、颗粒、影调、街头、风景、人像、静物、城市、展览、"
+    "摄影书、作品集、编辑、裁切、排序、打印、装帧、海报、字体、排版、留白、网格、封面、插画、漫画、动画、"
+    "油画、水彩、素描、版画、装置、策展、艺术评论、展览文本、小说、散文、诗歌、剧本、日记、访谈、论文、"
+    "博客、评论区、视频、纪录片、短片、剪辑、镜头、节奏、声音、字幕、标题、开头、结尾、草图、风格、材料"
+)
+
+CREATIVE_REASONING_ASPECTS = terms(
+    "判断、问题、方法、节奏、关系、边界、顺序、层级、语气、材料、媒介、观看、叙事、证据、风格、限制、"
+    "选择、取舍、失败点、修正、完成度、陌生感、日常性、入口"
+)
+
+CITY_LIFE_TERMS = terms(
+    "城市、街区、社区、小区、地铁、公交、桥、河岸、公园、学校、医院、商场、菜市场、便利店、咖啡馆、图书馆、"
+    "美术馆、博物馆、机场、火车站、港口、写字楼、工业园区、老城区、新区、住宅、租房、房东、租客、物业、"
+    "通勤、停车、外卖、快递、快递柜、垃圾分类、公共空间、夜生活、旅游、展览、城市更新、人口、工作机会、"
+    "生活成本、天气、洪水、交通、河流、海边、大学、体育场、奥运、港口贸易、城市记忆、城市想象"
+)
+
+CITY_LIFE_ASPECTS = terms(
+    "位置、交通、节奏、成本、风险、机会、边界、记忆、变化、冲突、日常、公共性、私人性、便利、压力、"
+    "距离、关系、历史、未来、使用方式、失败点、判断、取舍"
+)
+
+TECH_LIFE_TERMS = terms(
+    "手机、电脑、浏览器、网页、应用、账号、密码、验证码、通知、缓存、数据库、接口、前端、后端、脚本、日志、"
+    "版本、分支、部署、测试、性能、内存、加载、离线、本地、隐私、权限、备份、同步、云盘、下载、上传、搜索、"
+    "推荐、短视频、直播、评论、收藏、订阅、支付、二维码、导航、地图、网约车、外卖、快递、相册、修图、"
+    "相机、无人机、智能手机、耳机、蓝牙、Wi-Fi、电池、充电、传感器、芯片、模型、路由、压缩、静态页面"
+)
+
+TECH_LIFE_ASPECTS = terms(
+    "用途、边界、风险、速度、稳定性、隐私、权限、成本、体验、失败点、调试、验证、更新、缓存、离线、"
+    "数据、接口、可靠性、压缩、加载、兼容性、控制权、默认值、回退"
+)
+
+RELATION_REASONING_TERMS = terms(
+    "朋友、同事、家人、邻居、老师、医生、客服、房东、租客、老板、学生、陌生人、伴侣、观众、读者、用户、"
+    "客户、警察、律师、物业、平台、商家、作者、摄影师、设计师、程序员、策展人、评论者、提问者、回答者、"
+    "沉默的人、迟到的人、道歉的人、拒绝的人、误会的人、等待的人、认真听的人、随口问的人、想太多的人"
+)
+
+RELATION_REASONING_ASPECTS = terms(
+    "沟通、道歉、感谢、拒绝、请求、约定、误会、信任、边界、责任、隐私、合作、冲突、解释、确认、投诉、"
+    "协商、距离、语气、耐心、期待、承认、退出、继续、转弯、保留"
+)
+
+MEMORY_IDENTITY_TERMS = terms(
+    "记忆、遗忘、回忆、名字、身份、过去、现在、未来、重复、改变、一致、替换、复制、回答、问题、声音、语气、"
+    "风格、习惯、偏差、秘密、私人性、公共性、记录、删除、保存、备份、照片、日记、聊天、线索、证据、误会、"
+    "梦、想象、事实、判断、承认、否认、停顿、沉默、边界、关系、距离、起点、结束、入口、出口"
+)
+
+MEMORY_IDENTITY_ASPECTS = terms(
+    "边界、可靠性、归属、证据、误差、变化、一致性、私人性、公共性、保存、删除、重复、修正、解释、判断、"
+    "语气、距离、入口、出口、问题、答案、限制、承认、忘记"
+)
+
 HISTORY_EVENTS: list[tuple[str, str, str]] = [
     ("1830年七月革命", "1830年七月革命推翻法国波旁复辟王朝，开启七月王朝。", "七月革命"),
     ("1832年英国议会改革法案", "1832年英国议会改革法案扩大了选民基础，改变了议会代表结构。", "1832改革法案"),
@@ -2430,6 +2547,15 @@ def default_what(label: str, domain: str) -> str:
         "architecture_space": "{label}和建筑、城市或空间使用有关。",
         "cinema_media": "{label}和影像、镜头、媒体表达有关。",
         "daily_action": "{label}是日常生活里会发生的动作或事情。",
+        "dialog_context": "{label}和对话怎么继续有关。",
+        "everyday_reasoning": "{label}和日常判断有关。",
+        "life_philosophy": "{label}和生活里的哲学判断有关。",
+        "epistemic": "{label}和知道、判断、验证有关。",
+        "creative_reasoning": "{label}和创作中的判断有关。",
+        "city_life": "{label}和城市日常有关。",
+        "tech_life": "{label}和技术进入日常生活有关。",
+        "relation_reasoning": "{label}和关系里的说法、边界、责任有关。",
+        "memory_identity": "{label}和记忆、名字、身份有关。",
         "history_politics": "{label}和历史、政治或公共生活有关。",
         "economics": "{label}和经济、商业或交换有关。",
         "psychology": "{label}和心理或人的行为有关。",
@@ -3114,6 +3240,182 @@ def build_cards() -> list[dict]:
             terms("观看、图像、作品、风格、形式、材料、媒介、身体、空间、时间、记忆、档案、技术、机器、城市、自然、日常、消费、教育、权力、孤独、沉默、注意力、同一性、差异、偶然、必然、虚构、信任、解释"),
             terms("关系、问题、经验、判断、边界、方法、批评、解释"),
             "{label}把{left}和{right}放到同一个问题里。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "dialog_context",
+            DIALOG_REASONING_TERMS,
+            DIALOG_REASONING_ASPECTS,
+            "问到{label}，先看上一句是在继续、转弯，还是要求停下。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "dialog_context",
+            DIALOG_REASONING_TERMS,
+            EVERYDAY_REASONING_ASPECTS,
+            "{label}适合短短接住，不急着讲成百科。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "dialog_context",
+            DIALOG_REASONING_TERMS,
+            RELATION_REASONING_ASPECTS,
+            "问到{label}，可以先看这句话是在靠近、退开，还是要一个边界。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "everyday_reasoning",
+            EVERYDAY_REASONING_TERMS,
+            EVERYDAY_REASONING_ASPECTS,
+            "{label}先看{left}这件事在{right}上会不会卡住。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "everyday_reasoning",
+            EVERYDAY_REASONING_TERMS,
+            DIALOG_REASONING_ASPECTS,
+            "聊到{label}，可以从{left}的{right}轻轻往下接。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "life_philosophy",
+            LIFE_PHILOSOPHY_TERMS,
+            LIFE_PHILOSOPHY_ASPECTS,
+            "{label}不是急着回答，而是先把{left}的{right}放稳。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "life_philosophy",
+            LIFE_PHILOSOPHY_TERMS,
+            EPISTEMIC_ASPECTS,
+            "问{label}时，可以先看{left}靠什么成立。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "epistemic",
+            EPISTEMIC_TERMS,
+            EPISTEMIC_ASPECTS,
+            "{label}提醒人：先分清{left}的{right}，再继续说。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "epistemic",
+            EPISTEMIC_TERMS,
+            DIALOG_REASONING_ASPECTS,
+            "聊到{label}，最好给{left}留一点{right}。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "creative_reasoning",
+            CREATIVE_REASONING_TERMS,
+            CREATIVE_REASONING_ASPECTS,
+            "{label}看{left}的{right}，不一定要把话说满。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "creative_reasoning",
+            CREATIVE_REASONING_TERMS,
+            EPISTEMIC_ASPECTS,
+            "{label}可以从{left}的{right}切进去。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "creative_reasoning",
+            CREATIVE_REASONING_TERMS,
+            DIALOG_REASONING_ASPECTS,
+            "聊{label}时，先看用户是在要判断、要方向，还是只是在试探。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "city_life",
+            CITY_LIFE_TERMS,
+            CITY_LIFE_ASPECTS,
+            "{label}先落到{left}的{right}上，城市才会具体。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "city_life",
+            CITY_LIFE_TERMS,
+            DIALOG_REASONING_ASPECTS,
+            "聊{label}时，城市不是背景，{left}的{right}会先出现。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "tech_life",
+            TECH_LIFE_TERMS,
+            TECH_LIFE_ASPECTS,
+            "{label}看{left}的{right}，别只看功能。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "tech_life",
+            TECH_LIFE_TERMS,
+            EVERYDAY_REASONING_ASPECTS,
+            "{label}进入日常以后，{left}会先碰到{right}。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "tech_life",
+            TECH_LIFE_TERMS,
+            DIALOG_REASONING_ASPECTS,
+            "问到{label}，先看{left}的{right}有没有越界。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "relation_reasoning",
+            RELATION_REASONING_TERMS,
+            RELATION_REASONING_ASPECTS,
+            "{label}看{left}之间的{right}，不能只按字面回答。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "relation_reasoning",
+            RELATION_REASONING_TERMS,
+            DIALOG_REASONING_ASPECTS,
+            "{label}先看{left}这句话里的{right}，再决定答还是反问。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "memory_identity",
+            MEMORY_IDENTITY_TERMS,
+            MEMORY_IDENTITY_ASPECTS,
+            "{label}是在提醒：{left}和{right}都可能改变回答。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "memory_identity",
+            MEMORY_IDENTITY_TERMS,
+            EPISTEMIC_ASPECTS,
+            "{label}要看{left}有没有足够的{right}，不够就不要装满。",
+        )
+    )
+    cards.extend(
+        make_cross_cards(
+            "memory_identity",
+            MEMORY_IDENTITY_TERMS,
+            LIFE_PHILOSOPHY_ASPECTS,
+            "说到{label}，{left}不一定可靠，但可以作为起点。",
         )
     )
     cards.extend(

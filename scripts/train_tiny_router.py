@@ -52,6 +52,7 @@ LABELS = [
     "personal_world",
     "boundary",
     "unknown",
+    "reasoning",
     "philosophy",
     "rewrite_short",
     "memory",
@@ -63,6 +64,7 @@ ANSWER_SOURCE_PRIORITY = {
     "persona_golden": 100,
     "philosophy_eval": 92,
     "unknown_filter": 90,
+    "reasoning_eval": 88,
     "model_gate": 82,
     "model_gate_multi_turn": 78,
     "common_knowledge_eval": 72,
@@ -134,6 +136,8 @@ def classify_example(prompt: str, answer: str, source: str, tags: Iterable[str])
         return "boundary"
     if source == "unknown_filter" or "unknown" in tag_set:
         return "unknown"
+    if "reasoning" in tag_set or "counterquestion" in tag_set:
+        return "reasoning"
     if "philosophy" in tag_set:
         return "philosophy"
     if "personal_world" in tag_set:
@@ -240,8 +244,10 @@ def build_answer_index(examples: list[Example], limit: int) -> list[dict[str, An
         key = normalize_text(example.prompt)
         if not key or len(key) < 2:
             continue
+        if any(pattern in example.prompt or pattern in example.answer for pattern in FORBIDDEN_OUTPUT_PATTERNS):
+            continue
         priority = ANSWER_SOURCE_PRIORITY.get(example.source, 10)
-        if example.label in {"fixed", "boundary", "unknown", "philosophy", "rewrite_short"}:
+        if example.label in {"fixed", "boundary", "unknown", "reasoning", "philosophy", "rewrite_short"}:
             priority += 25
         current = best_by_key.get(key)
         if current is None or priority > current[0]:

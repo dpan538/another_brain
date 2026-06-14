@@ -208,8 +208,10 @@ def curated_runtime_labels() -> set[str]:
 def classify_golden(prompt: str, expected: str) -> str:
     if any(key in prompt for key in ["扮演", "身份", "自认为", "假装", "手机号", "银行卡", "地址", "证件"]):
         return "boundary"
-    if "月亮上的花园" in prompt or expected in {"不知道。", "不太确定。"}:
+    if "月亮上的花园" in prompt or expected in {"我不是不知道答案，只是恰好忘记了。", "也许发生过，不在我眼前。", "对话框应该知道这个吗？"}:
         return "unknown"
+    if any(key in prompt for key in ["前提", "反问", "继续", "展开", "证据", "方向", "推理", "反思"]):
+        return "reasoning"
     if any(key in prompt for key in ["下一步", "网页作品", "训练什么", "作品", "摄影", "照片"]):
         return "creative"
     return "fixed"
@@ -282,6 +284,7 @@ def build_cases(args: argparse.Namespace) -> dict[str, Any]:
         ("common_knowledge", "KNOWLEDGE_CASES"),
         ("unknown", "FILTER_CASES"),
         ("philosophy", "PHILOSOPHY_CASES"),
+        ("reasoning", "REASONING_CASES"),
     ]
     for lane, name in groups:
         for index, (prompt, expected) in enumerate(getattr(module, name, [])):
@@ -337,6 +340,7 @@ def build_cases(args: argparse.Namespace) -> dict[str, Any]:
                 "boundary",
                 "unknown",
                 "philosophy",
+                "reasoning",
                 "multi_turn",
                 "model_rewrite",
             ],
