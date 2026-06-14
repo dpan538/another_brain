@@ -101,8 +101,8 @@ ordinary questions about memory, boundaries, examples, or starting a thought.
 Good answers:
 
 ```text
-问一句就可以。问我是谁，或者问我能做什么。
-你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。
+直接问。
+聊天、短答、改短句子。不知道会停下。
 这是一个对话框。你可以直接问我。
 ```
 
@@ -160,7 +160,7 @@ Examples:
 {
   "input": "我该怎么开始？",
   "action": "ANSWER_HELP",
-  "answer": "问一句就可以。问我是谁，或者问我能做什么。"
+  "answer": "直接问。"
 }
 ```
 
@@ -247,9 +247,9 @@ Multi-turn examples must include:
 user: 这是什么？
 copy: 这是一个对话框。你可以直接问我。
 user: 那我该怎么用？
-copy: 问一句就可以。问我是谁，或者问我能做什么。
+copy: 直接问。
 user: 你能做什么？
-copy: 你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。
+copy: 聊天、短答、改短句子。不知道会停下。
 ```
 
 ## Evaluation

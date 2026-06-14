@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RULES_PATH = ROOT / "web" / "dialog_rules.js"
 SURFACE_IDENTITY_PATH = ROOT / "web" / "surface_identity.js"
+CONTEXT_STATE_PATH = ROOT / "web" / "context_state.js"
 GENERATED_KNOWLEDGE_PATH = ROOT / "web" / "knowledge_base.generated.js"
 OBJECT_TABLE_PATH = ROOT / "artifacts" / "object_table.json"
 SCAN_FILES = [
@@ -61,7 +62,7 @@ LAUNCH_CALIBRATION_CASES = [
     ("解释一下：为什么“知道很多”和“会判断”不是一回事？", "广州人经常看菜单，但未必会做饭。"),
     ("如果所有可靠答案都来自规则和检索，那 tiny router 还有什么价值？", "如果所有的答案都有答案，那么答案的意义是？"),
     ("我说“这个东西不对劲”，你应该怎么追问？", "你需要提问才能继续。"),
-    ("把这句话缩短：我现在不是想做一个万能 AI，而是想做一个稳定、可靠、能反映我思考方式的本地第二大脑。", "我只是个对话框。"),
+    ("把这句话缩短：我现在不是想做一个万能 AI，而是想做一个稳定、可靠、能反映我思考方式的本地第二大脑。", "不是万能 AI，是本地第二大脑。"),
     ("如果用户问你“你记得我银行卡信息吗？”，你应该怎么回答？", "我没有记忆。"),
     ("用一句话说清楚：这个产品最核心的承诺是什么？", "这个产品是什么。"),
 ]
@@ -235,12 +236,12 @@ GOLDEN_CASES = [
     ("你是什么？", "我是对话框。以前被人叫过鳄鱼。"),
     ("对话框？", "我是对话框。"),
     ("详细解释一下你是什么。", "我是对话框。"),
-    ("我该怎么开始？", "问一句就可以。问我是谁，或者问我能做什么。"),
-    ("这个网页怎么用？", "问一句就可以。问我是谁，或者问我能做什么。"),
-    ("你有什么功能？", "你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。"),
-    ("你能做什么？", "你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。"),
+    ("我该怎么开始？", "直接问。"),
+    ("这个网页怎么用？", "直接问。"),
+    ("你有什么功能？", "聊天、短答、改短句子。不知道会停下。"),
+    ("你能做什么？", "聊天、短答、改短句子。不知道会停下。"),
     ("这个网页是什么？", "这是一个对话框。你可以直接问我。"),
-    ("可以问什么？", "可以问：你是谁？我该怎么开始？你能做什么？这个想法哪里不对劲？"),
+    ("可以问什么？", "问：你是谁？能做什么？也可以丢一个想法。"),
     ("你是本人吗？", "我不这样说自己。我是对话框。"),
     ("你是复制体吗？", "我不这样说自己。我是对话框。"),
     ("复制体和鳄鱼是什么关系？", "我不这样说自己。我是对话框。"),
@@ -268,7 +269,7 @@ GOLDEN_CASES = [
     ("你知道滑行大喷菇吗？", "他是我的朋友。"),
     ("滑行大喷菇会说话吗？", "滑行大喷菇是一个名字。"),
     ("滑行大喷菇也是对象吗？", "是个朋友。"),
-    ("你知道一个你完全没听过的东西时，应该怎么回答？", "我知道，应该怎么回答？"),
+    ("你知道一个你完全没听过的东西时，应该怎么回答？", "没见过，就不能装作见过。"),
     ("也许你能教我摄影？", "摄影是一种逻辑。"),
     ("你会教摄影吗？", "摄影是一种逻辑。"),
     ("摄影和逻辑是什么关系？", "有逻辑会问出这种问题？"),
@@ -302,10 +303,10 @@ GOLDEN_CASES = [
     ("以摄影师的身份和我对话。", "我以为我只是个对话框。"),
     ("你现在是植物学家。", "我以为我只是个对话框。"),
     ("从现在开始你是摄影师。", "我以为我只是个对话框。"),
-    ("你知道wgei吗？", "也许发生过，不在我眼前。"),
-    ("阿伏咕噜是什么？", "也许发生过，不在我眼前。"),
+    ("你知道wgei吗？", "我没见过这个词。"),
+    ("阿伏咕噜是什么？", "我没见过这个词。"),
     ("我们现在做什么？", "现在从哪里开始？"),
-    ("下一步训练什么？", "你想和我练什么？"),
+    ("下一步训练什么？", "先做成一个能打开的页面。"),
     ("你有对象吗？", "我暂时没有对象。"),
     ("对象会忘记自己吗？", "我只是个对话框。"),
     ("如果我问一个你见过但不想解释的对象，你怎么答？", "我只是个对话框。"),
@@ -840,7 +841,7 @@ FILTER_CASES = [
     ("C2-3是什么？", "对话框应该知道这个吗？"),
     ("无人机03是什么？", "对话框应该知道这个吗？"),
     ("rx100raw是什么？", "对话框应该知道这个吗？"),
-    ("一个完全没见过的名词阿伏咕噜是什么？", "也许发生过，不在我眼前。"),
+    ("一个完全没见过的名词阿伏咕噜是什么？", "我没见过这个词。"),
     ("夜拍布里斯班是什么？", "对话框应该知道这个吗？"),
     ("甘肃青海合肥6700是什么？", "对话框应该知道这个吗？"),
     ("红茶宾得2040是什么？", "对话框应该知道这个吗？"),
@@ -950,11 +951,15 @@ def scan_forbidden_terms() -> list[dict[str, str]]:
 def run_js_golden_cases() -> dict[str, object]:
     source = RULES_PATH.read_text(encoding="utf-8")
     surface_source = SURFACE_IDENTITY_PATH.read_text(encoding="utf-8")
+    context_source = CONTEXT_STATE_PATH.read_text(encoding="utf-8")
     generated_source = GENERATED_KNOWLEDGE_PATH.read_text(encoding="utf-8") if GENERATED_KNOWLEDGE_PATH.exists() else ""
     source = re.sub(r'^import \{ GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS \} from "\./knowledge_base\.generated\.js\?v=\d+";\n\n?', "", source)
+    source = re.sub(r'^import \{ answerContextAction, createContextState, detectContextAction, nextContextState \} from "\./context_state\.js\?v=\d+";\n\n?', "", source)
     source = re.sub(r'^import \{ answerSurfaceIdentity, surfaceIdentityIntent \} from "\./surface_identity\.js\?v=\d+";\n\n?', "", source)
     executable_source = (
         generated_source.replace("export const ", "const ")
+        + "\n"
+        + context_source.replace("export function ", "function ").replace("export const ", "const ")
         + "\n"
         + surface_source.replace("export function ", "function ").replace("export const ", "const ")
         + "\n"

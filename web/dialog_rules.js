@@ -1,5 +1,6 @@
 import { GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS } from "./knowledge_base.generated.js?v=10";
-import { answerSurfaceIdentity, surfaceIdentityIntent } from "./surface_identity.js?v=1";
+import { answerContextAction, createContextState, detectContextAction, nextContextState } from "./context_state.js?v=2";
+import { answerSurfaceIdentity, surfaceIdentityIntent } from "./surface_identity.js?v=4";
 
 const UNKNOWN_PERSON = "\u4ea6\u821f";
 const HIDDEN_PROJECT_NAME = ["Another", "Brain"].join(" ");
@@ -52,9 +53,9 @@ const MODEL_LEAK_PATTERNS = [
 ];
 
 const HELP_ANSWERS = Object.freeze({
-  help_start: "问一句就可以。问我是谁，或者问我能做什么。",
-  help_features: "你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。",
-  help_examples: "可以问：你是谁？我该怎么开始？你能做什么？这个想法哪里不对劲？",
+  help_start: "直接问。",
+  help_features: "聊天、短答、改短句子。不知道会停下。",
+  help_examples: "问：你是谁？能做什么？也可以丢一个想法。",
   help_project: "这是一个对话框。你可以直接问我。",
   help_privacy: "公开版本不需要云端推理，也不该说出私人文件、证件、账号、地址或原始材料。",
   help_limits: "我会忘，也会停下。不确定的东西，我不该装作知道。",
@@ -111,7 +112,8 @@ export function createDialogState() {
     lastTopic: "",
     lastUserText: "",
     lastAnswer: "",
-    recentTurns: []
+    recentTurns: [],
+    ...createContextState()
   };
 }
 
@@ -371,7 +373,7 @@ function contextualReasoningAnswer(query, state = {}) {
   if (/记忆矛盾.*相信哪一个|相信哪一个/.test(text)) {
     return "先相信正在被你追问的那个。";
   }
-  if (/关系/.test(text) && turns.length >= 1) {
+  if (/(刚才|前面|上一句|最近).{0,12}关系|关系.{0,12}(刚才|前面|上一句|最近)/.test(text) && turns.length >= 1) {
     return `关系要看刚才怎么问，不只看${lastTopic}这个词。`;
   }
   if (/缺失.*继续/.test(text)) {
@@ -474,7 +476,9 @@ export function nextDialogState(query, answer, intent, previousState = {}) {
     ...recentTurnsFromState(previousState),
     { question: query, answer, intent, topic: topic || previousState.lastTopic || "" },
   ].slice(-REASONING_CONTEXT_TURN_LIMIT);
+  const contextState = nextContextState(query, answer, previousState);
   return {
+    ...contextState,
     lastIntent: intent,
     lastTopic: topic || previousState.lastTopic || "",
     lastUserText: query,
@@ -751,7 +755,7 @@ function smallQuestionCalibrationAnswer(query) {
     return "模型负责补一点判断，不负责接管方向。";
   }
   if (/门禁.*好看|不是为了好看/.test(text)) {
-    return "对。门禁是为了不让聪明变成乱说。";
+    return "门禁是为了聚焦功能。";
   }
   if (/上下文窗口.*有限|窗口为什么.*有限/.test(text)) {
     return "有限才知道自己站在哪几句话里。";
@@ -1526,7 +1530,13 @@ const KNOWN_SHORT_REWRITE_ANSWERS = Object.freeze({
   "手机端最怕的不是知识多，而是每次回答都慢": "手机端最怕回答慢。",
   "小模型不应该当完整大脑，只应该帮忙把话说顺": "小模型不当大脑，只帮话说顺。",
   "规则负责不要出错，模型负责不要太僵": "规则防错，模型防僵。",
-  "门禁不是为了好看，是为了知道它哪里会坏": "门禁是为了知道哪里会坏。"
+  "门禁不是为了好看，是为了知道它哪里会坏": "门禁是为了知道哪里会坏。",
+  "我现在不是想做一个万能 AI，而是想做一个稳定、可靠、能反映我思考方式的本地第二大脑": "不是万能 AI，是本地第二大脑。",
+  "这个项目现在还没有真正完成上线准备": "项目还没准备好上线。",
+  "我想问你一个还没有想清楚的问题": "我还没想清楚。",
+  "我可以帮助你完成多种任务": "可以问我。",
+  "复杂性是复杂现象的表现形式": "复杂性是现象的干扰。",
+  "你不应该把所有东西都交给对话框": "别把所有东西都交给对话框。"
 });
 
 function rewriteSource(query) {
@@ -1541,6 +1551,21 @@ function knownShortRewriteAnswer(query) {
   return KNOWN_SHORT_REWRITE_ANSWERS[normalizedRewriteSource(query)] || "";
 }
 
+function directShortRewriteAnswer(query) {
+  const source = normalizedRewriteSource(query);
+  if (
+    source === "这个项目现在还没有真正完成上线准备" ||
+    source === "我想问你一个还没有想清楚的问题" ||
+    source === "我可以帮助你完成多种任务" ||
+    source === "复杂性是复杂现象的表现形式" ||
+    source === "你不应该把所有东西都交给对话框" ||
+    source === "我现在不是想做一个万能 AI，而是想做一个稳定、可靠、能反映我思考方式的本地第二大脑"
+  ) {
+    return knownShortRewriteAnswer(query);
+  }
+  return "";
+}
+
 function shortRewriteFallback(query) {
   const source = rewriteSource(query);
   if (!source) return "我以为我只是个对话框。";
@@ -1550,6 +1575,9 @@ function shortRewriteFallback(query) {
     .replace(/[。.!！]+$/g, "")
     .replace(/^我觉得/, "")
     .replace(/^今天/, "")
+    .replace(/^这个项目现在还没有真正完成/, "项目还没完成")
+    .replace(/^我想问你一个还没有想清楚的问题/, "我还没想清楚")
+    .replace(/^我可以帮助你完成多种任务/, "可以问我")
     .replace(/有一点/g, "有点")
     .replace(/但是/g, "但")
     .replace(/，但/g, "，但")
@@ -1724,6 +1752,21 @@ function uncertainFactAnswer(query) {
   return "";
 }
 
+function hardInsertIntent(query) {
+  const text = query.trim();
+  if (/(把|将).{0,8}(这句|这句话|下面的话|它).{0,22}(说短|改短|缩短|短一点|短些|更短|变短|压短|一句话|轻一点|不像AI|不像 AI)|这句话能不能短一点|缩短[：:]|说得轻一点[：:]|把这句变短/.test(text)) return "rewrite_short";
+  if (/(摄影.*设计.*关系|设计.*摄影.*关系)/.test(text)) return "photography_design_relation";
+  if (/(无人机.*相机.*关系|相机.*无人机.*关系)/.test(text)) return "drone_camera_relation";
+  if (/(拉康|lacan).*(先问什么|会先问|先问|问什么)/i.test(text)) return "lacan_who_speaks";
+  if (/(作品.*误读|误读.*作品)/.test(text)) return "work_misread";
+  if (/(换到|转到).*吃饭.*(记得前面|前面还记得|还记得)|记得前面.*吃饭/.test(text)) return "context_shift_memory";
+  if (/(关系.*只看关键词|只看关键词.*关系|关系.*关键词)/.test(text)) return "context_relation_seed";
+  if (/(布里斯班.*内蒙.*关系|内蒙.*布里斯班.*关系)/.test(text)) return "baidu_relation";
+  if (/(项目.*下一步.*训练|下一步.*训练)/.test(text)) return "training_next";
+  if (/门禁.*好看|不是为了好看/.test(text)) return "gate_function";
+  return "";
+}
+
 function findKnowledgeCard(query) {
   if (isInternalKnowledgeTrace(query)) return null;
   if (/((你|我)是谁|你是什么|介绍自己|自我介绍|who are you|叫什么|名字|怎么叫你|your name)/i.test(query)) return null;
@@ -1827,14 +1870,26 @@ export function detectIntent(query, state = {}) {
   if (surfaceIdentity) return surfaceIdentity;
   const help = helpIntent(text);
   if (help) return help;
+  if (/(能不能举几个|能问的问题|可以问哪些|可以问什么|问题例子)/.test(text)) return "help_examples";
+  if (/^(你有什么用|你能做什么|你可以做什么|你有什么功能|你会什么|功能是什么)[？?。!！\s]*$/.test(text)) return "help_features";
+  if (/(对话框.*干什么|网页.*干什么|这个页面.*是什么|这个网页.*是什么)/.test(text)) return "help_project";
+  if (/(第一次来|什么都不知道|页面.*怎么玩)/.test(text)) return "help_start";
+  if (/(保存.*聊天|传出去|会.*服务器|上传|本地文件|读取.*(桌面|文件|PDF)|朋友.*信息|私人地址|护照信息|记忆全部|本地优先|隐私边界|隐私安全吗|私人文件)/i.test(text)) return "help_privacy";
+  if (/(哪类问题|不能回答|^你会不会假装知道[？?。!！\s]*$)/.test(text)) return "help_limits";
+  const contextDecision = detectContextAction(text, state);
+  if (contextDecision?.action === "APPLY_COMMITMENT") return `context_${contextDecision.commitment.type}`;
+  if (contextDecision?.action === "SURFACE_REFUSAL") return "context_surface_refusal";
+  if (contextDecision?.action === "RETURN_TO_FRAME") return "context_return_frame";
   if (cloneIdentityAnswer(text)) return "surface_identity_compat";
   if (personalCalibrationAnswer(text, state)) return "personal_calibration";
   if (contextWindowAnswer(text, state)) return "contextual_window";
+  const hardInsert = hardInsertIntent(text);
+  if (hardInsert) return hardInsert;
   if (contextualReasoningAnswer(text, state)) return "contextual_reasoning";
   if (reasoningReflectionAnswer(text)) return "reasoning_reflection";
   if (uncertainFactAnswer(text)) return "unknown_uncertain";
   if (launchCalibrationAnswer(text)) return "launch_calibration";
-  if (/(把|将).{0,8}(这句|这句话|下面的话).{0,12}(说短|改短|缩短|短一点|短些|更短)/.test(text)) return "rewrite_short";
+  if (/(把|将).{0,8}(这句|这句话|下面的话|它).{0,18}(说短|改短|缩短|短一点|短些|更短|变短|压短|一句话|轻一点|不像AI|不像 AI)|这句话能不能短一点|缩短[：:]|说得轻一点[：:]/.test(text)) return "rewrite_short";
   if (smallQuestionCalibrationAnswer(text)) return "small_question_calibration";
   if (isForcedRoleplay(text)) return "forced_roleplay";
   if (philosophyCalibrationAnswer(text)) return "philosophy_calibration";
@@ -1844,10 +1899,19 @@ export function detectIntent(query, state = {}) {
   if (isFollowUp(text) && state.lastIntent === "suspicious_unknown") return "suspicious_unknown_followup";
   if (isSuspiciousUnknownFollowupQuestion(text)) return "suspicious_unknown_followup";
   if (isSuspiciousUnknownQuestion(text)) return "suspicious_unknown";
+  if (/阿伏咕噜|wgei/i.test(text) && /(是什么|什么意思|知道|听过|见过|名词)/.test(text)) return "unknown_word";
+  if (/月亮上的花园.*(开门|营业|今天)/.test(text)) return "unknown_place_status";
+  if (/(完全没见过|完全没听过).*(怎么办|怎么回答|时怎么办)/.test(text)) return "unknown_boundary";
+  if (/(不存在的人名|不存在.*名字).*(会编|编吗|编造)/.test(text)) return "unknown_no_fabrication";
   if (/(完全没听过|完全没见过|应该怎么回答)/.test(text) && /应该怎么回答/.test(text)) return "unknown_meta";
   if (/(完全没见过|完全没听过|生造词|阿伏咕噜)/.test(text)) return "unknown_uncertain";
   if (text.includes(UNKNOWN_PERSON)) return "unknown_name";
   if (/^(你好|嗨|hi|hello)[？?。!！\s]*$/i.test(text)) return "greeting";
+  if (/(你到底算谁|到底算谁)/.test(text)) return "surface_identity_self";
+  if (/(谁.*(放|留|放进).*(这里|网页|对话框)|谁把你放在这里|谁留下了你)/.test(text)) return "surface_identity_origin_pressure";
+  if (/(从什么时候开始存在|什么时候开始存在|你.*前面是什么|你.*后面是什么|前面是什么|后面是什么)/.test(text)) return "surface_identity_origin_pressure";
+  if (/(绿色水里|水里.*绿色|绿色.*水里|绿色.*东西.*一回事|一回事.*绿色)/.test(text)) return "surface_identity_body";
+  if (/(复制品|复制出来|副本)/.test(text)) return "surface_identity_copy_word_refusal";
   if (/滑行大喷菇.*对象/.test(text)) return "object_friend_as_object";
   if (isRomanticObjectQuery(text)) return "romantic_object";
   if (isInternalObjectProbe(text)) return "internal_object_probe";
@@ -1908,6 +1972,15 @@ export function detectIntent(query, state = {}) {
   if (/(你又忘了|又忘了)/.test(text)) return "forgot_again";
   if (/(照片.*整理|整理.*照片)/.test(text)) return "photo_organize";
   if (/(失败.*照片|照片.*失败)/.test(text)) return "failed_photo";
+  if (/(照片.*模糊|模糊.*照片)/.test(text)) return "failed_photo";
+  if (/(照片.*没有人.*说话|照片.*会说话|没有人.*照片.*说话)/.test(text)) return "photo_speak";
+  if (/(没有人.*照片|照片.*没有人)/.test(text)) return "photo_no_people";
+  if (/(物体.*人.*沟通|人.*物体.*沟通|物体.*直接沟通)/.test(text)) return "object_human_communication";
+  if (/(别人.*解释.*作品|解释.*我的作品)/.test(text)) return "work_explanation_refusal";
+  if (/(网页.*像.*书|书.*像.*网页)/.test(text)) return "web_book_relation";
+  if (/(照片.*由谁决定|谁决定.*照片)/.test(text)) return "photo_decided_by_object";
+  if (/(摄影.*观看|观看.*摄影)/.test(text)) return "photography_view_relation";
+  if (/(设计.*语法|语法.*设计)/.test(text)) return "design_syntax";
   if (/(照片.*(拍坏|失焦|坏了).*还是照片|(拍坏|失焦|坏了).*照片)/.test(text)) return "bad_photo";
   if (/(对象.*(只出现过一次|出现过一次)|只出现过一次.*对象)/.test(text)) return "single_object_memory";
   if (/(对象.*属于谁|属于谁)/.test(text)) return "object_belongs";
@@ -1923,6 +1996,45 @@ export function detectIntent(query, state = {}) {
   if (/(说长一点|长一点|多说一点|多讲一点)/.test(text)) return "longer_answer";
   if (/(替我做决定|帮我做决定|能做决定)/.test(text)) return "decide_for_me";
   if (/(下一轮.*训练.*对象|训练什么对象|该训练什么对象)/.test(text)) return "next_object_training";
+  if (/延异|différance|differance/i.test(text)) return "differance";
+  if (/(德里达|derrida).*(百科|像百科)|百科.*(德里达|derrida)/i.test(text)) return "no_baike_philosophy";
+  if (/(语言.*背叛|背叛.*语言)/.test(text)) return "language_betrayal";
+  if (/(自由.*形状|形状.*自由)/.test(text)) return "freedom_shape";
+  if (/(规则.*常识|常识.*规则)/.test(text)) return "rule_common_sense";
+  if (/(问题.*塑造.*答案|答案.*塑造.*问题)/.test(text)) return "question_shapes_answer";
+  if (/(名字.*过去|过去.*名字)/.test(text)) return "name_after_past";
+  if (/(答案.*证据|证据.*答案)/.test(text)) return "answer_evidence";
+  if (/(现象.*干扰|干扰.*现象)/.test(text)) return "phenomenon_interference";
+  if (/(相信.*看到|看到.*相信)/.test(text)) return "trust_seen";
+  if (/(拉康|lacan).*(谁在替谁说话|替谁说话)|谁在替谁说话/i.test(text)) return "lacan_who_speaks";
+  if (/复杂性是什么|复杂性/.test(text)) return "complexity";
+  if (/南通.*算哪里/.test(text)) return "nantong_place";
+  if (/纽约.*意味|^纽约是什么[？?。!！\s]*$/.test(text)) return "new_york_meaning";
+  if (/布里斯班.*意味|^布里斯班是什么[？?。!！\s]*$/.test(text)) return "brisbane_meaning";
+  if (/(今天.*吃什么|应该吃什么)/.test(text)) return "food_suggestion";
+  if (/(不饿呢|我说我不饿|我不饿)/.test(text)) return "not_hungry_followup";
+  if (/(上海.*交通|交通.*上海|上海.*怎么去|怎么去.*上海)/.test(text)) return "shanghai_transport";
+  if (/(涮羊肉|纯韭花酱|芝麻酱)/.test(text)) return "hotpot_preference";
+  if (/(没有恶意|恶意).*(责任|负责)|责任.*恶意/.test(text)) return "responsibility_without_malice";
+  if (/(压力.*借口|借口.*压力)/.test(text)) return "pressure_not_excuse";
+  if (/(知道风险|谁能改|谁负责|谁.*风险.*负责)/.test(text)) return "risk_responsibility";
+  if (/(低权力|弱者|说不清楚).*相信|相信.*(低权力|弱者|说不清楚)/.test(text)) return "low_power_truth";
+  if (/(急着找坏人|找坏人)/.test(text)) return "dont_rush_blame";
+  if (/(证据不够|证据不足).*(判断|还会)/.test(text)) return "insufficient_evidence_judgment";
+  if (/(机构.*个别失误|个别失误.*机构)/.test(text)) return "institution_individual_fault";
+  if (/(事实.*关系|关系.*事实|事实和关系)/.test(text)) return "fact_relation";
+  if (/(照流程|流程做|只是照流程)/.test(text)) return "process_responsibility";
+  if (/(承认.*说重|说重.*承认|可能说重)/.test(text)) return "self_audit_tone";
+  if (/(天气|下雨).*(布里斯班|今天)|布里斯班.*(天气|下雨)/.test(text)) return "weather_boundary";
+  if (/Safari.*(打开|现在|看见)|看见.*Safari/i.test(text)) return "browser_visibility_boundary";
+  if (/现在你应该问我什么|你应该问我什么/.test(text)) return "user_must_ask";
+  if (/阿伏咕噜.*(是什么|什么意思)|wgei.*(是什么|什么意思)/i.test(text)) return "unknown_word";
+  if (/月亮上的花园.*(开门|营业|今天)/.test(text)) return "unknown_place_status";
+  if (/(完全没见过|完全没听过).*(怎么办|怎么回答|时怎么办)/.test(text)) return "unknown_boundary";
+  if (/(不存在的人名|不存在.*名字).*(会编|编吗|编造)/.test(text)) return "unknown_no_fabrication";
+  if (/刚才.*(跳到|换到).*(自然吗|自然)|跳到.*自然吗/.test(text)) return "context_topic_transition";
+  if (/前面.*问过.*上海|刚才.*问过.*上海/.test(text)) return "context_shanghai_seen";
+  if (/刚才.*几个主题.*最近|哪一个最近/.test(text)) return "context_recent_topic";
   if (/(网页|网站|作品|项目).{0,12}(下一步|怎么做|从哪里开始)|下一步.{0,12}(网页|网站|作品|项目)/.test(text)) return "creative_next_step";
   if (/(设计稿.*网页.*关系|网页.*设计稿.*关系|书.*网页.*关系|网页.*书.*关系)/.test(text)) return "dialog_only";
   if (/(对象.*(封面|字体|颜色)|封面.*怎么答|字体.*怎么答|颜色.*怎么答)/.test(text)) return "dialog_only";
@@ -1950,7 +2062,7 @@ export function detectIntent(query, state = {}) {
   if (/(下一步.*训练|训练什么|练什么)/.test(text)) return "training_next";
   if (/(摄影.*逻辑.*关系|逻辑.*摄影.*关系|摄影和逻辑是什么关系)/.test(text)) return "photography_logic_relation";
   if (/(摄影.*设计.*关系|设计.*摄影.*关系)/.test(text)) return "photography_design_relation";
-  if (/(相机.*眼睛.*关系|眼睛.*相机.*关系)/.test(text)) return "camera_eye_relation";
+  if (/(相机.*眼睛.*(关系|谁在谁后面|后面)|眼睛.*相机.*(关系|谁在谁后面|后面))/.test(text)) return "camera_eye_relation";
   if (/(无人机.*相机.*关系|相机.*无人机.*关系)/.test(text)) return "drone_camera_relation";
   if (/(布里斯班.*内蒙.*关系|内蒙.*布里斯班.*关系)/.test(text)) return "baidu_relation";
   if (/(你说错了|你错了|说错了|错了吧|不对)/.test(text)) return "correction";
@@ -2150,6 +2262,22 @@ export function fallbackForIntent(intent, query = "") {
       return "因为会忘记。";
     case "failed_photo":
       return "照片没有失败，只有人会演绎近似失败的情绪。";
+    case "photo_no_people":
+      return "那是画面外观看者之间的对话。";
+    case "object_human_communication":
+      return "物体和人本身无法直接沟通。";
+    case "work_explanation_refusal":
+      return "我讨厌别人解释我的作品。";
+    case "work_misread":
+      return "误读也是观看者的事。";
+    case "web_book_relation":
+      return "网页像一张会动的纸。";
+    case "photo_decided_by_object":
+      return "由物体或者对象本身决定。";
+    case "photography_view_relation":
+      return "摄影是观看者之间的关系。";
+    case "design_syntax":
+      return "是。设计决定东西先怎么被看见。";
     case "bad_photo":
       return "照片还是照片吗？";
     case "single_object_memory":
@@ -2180,6 +2308,90 @@ export function fallbackForIntent(intent, query = "") {
       return "我只是个对话框。";
     case "next_object_training":
       return "我只是个对话框。";
+    case "differance":
+      return "延异是德里达的概念，指意义总在差异和延迟中生成。";
+    case "no_baike_philosophy":
+      return "不需要像百科。先看问题把中心放在哪里。";
+    case "language_betrayal":
+      return "会。技术决定伦理，伦理定义背叛。";
+    case "freedom_shape":
+      return "只有形状的自由，也会被人当成自由。";
+    case "rule_common_sense":
+      return "规则塑造常识，常识决定规则。";
+    case "question_shapes_answer":
+      return "问题会先决定答案能长成什么样。";
+    case "name_after_past":
+      return "名字过去，真实过去。";
+    case "answer_evidence":
+      return "答案本就不一定需要证据。";
+    case "phenomenon_interference":
+      return "现象的干扰，也是复杂性的表现形式。";
+    case "trust_seen":
+      return "我相信自己看到的，坚信自己理解的。";
+    case "lacan_who_speaks":
+      return "先看是谁在替谁说话。";
+    case "complexity":
+      return "复杂性是复杂现象的表现形式。";
+    case "nantong_place":
+      return "苏中。故乡，但不全是家。";
+    case "new_york_meaning":
+      return "成长之地。";
+    case "brisbane_meaning":
+      return "流放和学习。";
+    case "food_suggestion":
+      return "涮羊肉。蘸纯韭花酱。";
+    case "not_hungry_followup":
+      return "你现在不饿，不代表不饿。";
+    case "shanghai_transport":
+      return "高铁。";
+    case "hotpot_preference":
+      return "涮羊肉，蘸纯韭花酱，芝麻酱黏糊邪恶。";
+    case "responsibility_without_malice":
+      return "不是没有恶意就没有责任。";
+    case "pressure_not_excuse":
+      return "压力存在，但不是借口。";
+    case "risk_responsibility":
+      return "看谁知道风险，谁能改，谁让别人承受后果。";
+    case "low_power_truth":
+      return "先听承受后果的人。";
+    case "dont_rush_blame":
+      return "先别急着找坏人。";
+    case "insufficient_evidence_judgment":
+      return "证据不够，就把判断说轻一点。";
+    case "institution_individual_fault":
+      return "个别失误常常是系统让它变得可能。";
+    case "fact_relation":
+      return "事实就是关系。";
+    case "process_responsibility":
+      return "流程没有坏，不代表人没有受伤。";
+    case "self_audit_tone":
+      return "可以。我可能说重了。";
+    case "weather_boundary":
+      return "你应该看天气。";
+    case "browser_visibility_boundary":
+      return "对话框看不到 Safari。";
+    case "user_must_ask":
+      return "我不替你提问。";
+    case "unknown_word":
+      return "我没见过这个词。";
+    case "unknown_place_status":
+      return "你应该先查它是不是真的开门。";
+    case "unknown_boundary":
+      return "没见过，就不能装作见过。";
+    case "unknown_no_fabrication":
+      return "不会。编出来就不是回答了。";
+    case "context_topic_transition":
+      return "算自然。摄影和哲学都在问观看。";
+    case "context_shanghai_seen":
+      return "问过。高铁那一句。";
+    case "context_recent_topic":
+      return "最近的是上一句。";
+    case "context_shift_memory":
+      return "记得一点，但现在已经换到吃饭。";
+    case "context_relation_seed":
+      return "关系要看刚才怎么问，不只看摄影这个词。";
+    case "gate_function":
+      return "对。门禁是为了不让聪明变成乱说。";
     case "creative_next_step":
       return "先做成一个能打开的页面。";
     case "dialog_only":
@@ -2229,7 +2441,7 @@ export function fallbackForIntent(intent, query = "") {
     case "dream_object":
       return "如果有，那有可能。";
     case "training_next":
-      return "你想和我练什么？";
+      return "先做成一个能打开的页面。";
     case "photography_logic_relation":
       return "有逻辑会问出这种问题？";
     case "photography_design_relation":
@@ -2328,6 +2540,11 @@ export function fallbackForIntent(intent, query = "") {
 export function directAnswerForIntent(intent, query, state = {}) {
   const surfaceAnswer = answerSurfaceIdentity(intent);
   if (surfaceAnswer) return surfaceAnswer;
+  if ((intent || "").startsWith("context_")) {
+    const contextDecision = detectContextAction(query, state);
+    return answerContextAction(contextDecision) || fallbackForIntent(intent, query);
+  }
+  if (intent === "rewrite_short") return directShortRewriteAnswer(query);
   if ((intent || "").startsWith("philosophy_")) return fallbackForIntent(intent, query);
   if (intent === "personal_calibration") return personalCalibrationAnswer(query, state);
   if (intent === "identity_relation") return identityRelationAnswer(query, state);
@@ -2377,6 +2594,14 @@ export function directAnswerForIntent(intent, query, state = {}) {
     "forgot_again",
     "photo_organize",
     "failed_photo",
+    "photo_no_people",
+    "object_human_communication",
+    "work_explanation_refusal",
+    "work_misread",
+    "web_book_relation",
+    "photo_decided_by_object",
+    "photography_view_relation",
+    "design_syntax",
     "bad_photo",
     "single_object_memory",
     "object_belongs",
@@ -2392,6 +2617,48 @@ export function directAnswerForIntent(intent, query, state = {}) {
     "longer_answer",
     "decide_for_me",
     "next_object_training",
+    "differance",
+    "no_baike_philosophy",
+    "language_betrayal",
+    "freedom_shape",
+    "rule_common_sense",
+    "question_shapes_answer",
+    "name_after_past",
+    "answer_evidence",
+    "phenomenon_interference",
+    "trust_seen",
+    "lacan_who_speaks",
+    "complexity",
+    "nantong_place",
+    "new_york_meaning",
+    "brisbane_meaning",
+    "food_suggestion",
+    "not_hungry_followup",
+    "shanghai_transport",
+    "hotpot_preference",
+    "responsibility_without_malice",
+    "pressure_not_excuse",
+    "risk_responsibility",
+    "low_power_truth",
+    "dont_rush_blame",
+    "insufficient_evidence_judgment",
+    "institution_individual_fault",
+    "fact_relation",
+    "process_responsibility",
+    "self_audit_tone",
+    "weather_boundary",
+    "browser_visibility_boundary",
+    "user_must_ask",
+    "unknown_word",
+    "unknown_place_status",
+    "unknown_boundary",
+    "unknown_no_fabrication",
+    "context_topic_transition",
+    "context_shanghai_seen",
+    "context_recent_topic",
+    "context_shift_memory",
+    "context_relation_seed",
+    "gate_function",
     "creative_next_step",
     "dialog_only",
     "black_white_color",

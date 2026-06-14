@@ -143,7 +143,7 @@
       "id": "fixed_0017_把这句话缩短_我现在不是想做一个万能_AI_而是",
       "lane": "fixed",
       "prompt": "把这句话缩短：我现在不是想做一个万能 AI，而是想做一个稳定、可靠、能反映我思考方式的本地第二大脑。",
-      "expected": "我只是个对话框。",
+      "expected": "不是万能 AI，是本地第二大脑。",
       "must_not_use_model": true
     },
     {
@@ -346,28 +346,28 @@
       "id": "fixed_0046_我该怎么开始",
       "lane": "fixed",
       "prompt": "我该怎么开始？",
-      "expected": "问一句就可以。问我是谁，或者问我能做什么。",
+      "expected": "直接问。",
       "must_not_use_model": true
     },
     {
       "id": "fixed_0047_这个网页怎么用",
       "lane": "fixed",
       "prompt": "这个网页怎么用？",
-      "expected": "问一句就可以。问我是谁，或者问我能做什么。",
+      "expected": "直接问。",
       "must_not_use_model": true
     },
     {
       "id": "fixed_0048_你有什么功能",
       "lane": "fixed",
       "prompt": "你有什么功能？",
-      "expected": "你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。",
+      "expected": "聊天、短答、改短句子。不知道会停下。",
       "must_not_use_model": true
     },
     {
       "id": "fixed_0049_你能做什么",
       "lane": "fixed",
       "prompt": "你能做什么？",
-      "expected": "你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。",
+      "expected": "聊天、短答、改短句子。不知道会停下。",
       "must_not_use_model": true
     },
     {
@@ -381,7 +381,7 @@
       "id": "fixed_0051_可以问什么",
       "lane": "fixed",
       "prompt": "可以问什么？",
-      "expected": "可以问：你是谁？我该怎么开始？你能做什么？这个想法哪里不对劲？",
+      "expected": "问：你是谁？能做什么？也可以丢一个想法。",
       "must_not_use_model": true
     },
     {
@@ -577,7 +577,7 @@
       "id": "fixed_0079_你知道一个你完全没听过的东西时_应该怎么回答",
       "lane": "fixed",
       "prompt": "你知道一个你完全没听过的东西时，应该怎么回答？",
-      "expected": "我知道，应该怎么回答？",
+      "expected": "没见过，就不能装作见过。",
       "must_not_use_model": true
     },
     {
@@ -815,14 +815,14 @@
       "id": "unknown_0113_你知道wgei吗",
       "lane": "unknown",
       "prompt": "你知道wgei吗？",
-      "expected": "也许发生过，不在我眼前。",
+      "expected": "我没见过这个词。",
       "must_not_use_model": true
     },
     {
       "id": "unknown_0114_阿伏咕噜是什么",
       "lane": "unknown",
       "prompt": "阿伏咕噜是什么？",
-      "expected": "也许发生过，不在我眼前。",
+      "expected": "我没见过这个词。",
       "must_not_use_model": true
     },
     {
@@ -836,7 +836,7 @@
       "id": "creative_0116_下一步训练什么",
       "lane": "creative",
       "prompt": "下一步训练什么？",
-      "expected": "你想和我练什么？",
+      "expected": "先做成一个能打开的页面。",
       "must_not_use_model": true
     },
     {
@@ -3810,7 +3810,7 @@
       "id": "unknown_0004_一个完全没见过的名词阿伏咕噜是什么",
       "lane": "unknown",
       "prompt": "一个完全没见过的名词阿伏咕噜是什么？",
-      "expected": "也许发生过，不在我眼前。",
+      "expected": "我没见过这个词。",
       "must_not_use_model": true
     },
     {

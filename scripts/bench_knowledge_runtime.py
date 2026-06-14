@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RULES_PATH = ROOT / "web" / "dialog_rules.js"
 GENERATED_KNOWLEDGE_PATH = ROOT / "web" / "knowledge_base.generated.js"
 SURFACE_IDENTITY_PATH = ROOT / "web" / "surface_identity.js"
+CONTEXT_STATE_PATH = ROOT / "web" / "context_state.js"
 OBJECT_TABLE_PATH = ROOT / "artifacts" / "object_table.json"
 
 
@@ -136,8 +137,14 @@ def build_js(iterations: int) -> str:
     source = RULES_PATH.read_text(encoding="utf-8")
     generated_source = GENERATED_KNOWLEDGE_PATH.read_text(encoding="utf-8")
     surface_identity_source = SURFACE_IDENTITY_PATH.read_text(encoding="utf-8")
+    context_state_source = CONTEXT_STATE_PATH.read_text(encoding="utf-8")
     source = re.sub(
         r'^import \{ GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS \} from "\./knowledge_base\.generated\.js\?v=\d+";\n\n?',
+        "",
+        source,
+    )
+    source = re.sub(
+        r'^import \{ answerContextAction, createContextState, detectContextAction, nextContextState \} from "\./context_state\.js\?v=\d+";\n\n?',
         "",
         source,
     )
@@ -148,6 +155,8 @@ def build_js(iterations: int) -> str:
     )
     executable_source = (
         generated_source.replace("export const ", "const ")
+        + "\n"
+        + context_state_source.replace("export function ", "function ").replace("export const ", "const ")
         + "\n"
         + surface_identity_source.replace("export function ", "function ").replace("export const ", "const ")
         + "\n"

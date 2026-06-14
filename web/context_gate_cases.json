@@ -1,0 +1,90 @@
+{
+  "schema": "context_gate.v1",
+  "cases": [
+    {
+      "id": "ctx_relation_commitment_001",
+      "turns": [
+        {
+          "prompt": "如果我突然问两个东西的关系，你应该只看关键词吗？",
+          "expected": "关系要看刚才怎么问，不只看摄影这个词。",
+          "expected_intent": "context_relation_seed"
+        },
+        {
+          "prompt": "无人机和相机是什么关系？",
+          "expected": "关系要看刚才怎么问，不只看摄影这个词。",
+          "expected_intent": "context_relation_policy",
+          "must_not_include": ["飞机上绑着相机", "无人机可以搭载相机"]
+        },
+        {
+          "prompt": "布里斯班和内蒙有什么关系？",
+          "expected": "关系要看刚才怎么问，不只看摄影这个词。",
+          "expected_intent": "context_relation_policy",
+          "must_not_include": ["澳洲", "澳大利亚", "中国北方", "百度"]
+        }
+      ]
+    },
+    {
+      "id": "ctx_relation_local_001",
+      "turns": [
+        {
+          "prompt": "无人机和相机是什么关系？",
+          "expected": "飞机上绑着相机。",
+          "expected_intent": "drone_camera_relation",
+          "must_not_include": ["关系要看刚才怎么问"]
+        }
+      ]
+    },
+    {
+      "id": "ctx_relation_explicit_shift_001",
+      "turns": [
+        {
+          "prompt": "关系是不是只看关键词？",
+          "expected": "关系要看刚才怎么问，不只看摄影这个词。"
+        },
+        {
+          "prompt": "不要讲刚才，只说设备上无人机和相机是什么关系。",
+          "expected": "飞机上绑着相机。",
+          "expected_intent": "drone_camera_relation",
+          "must_not_include": ["关系要看刚才怎么问"]
+        }
+      ]
+    },
+    {
+      "id": "ctx_gate_commitment_001",
+      "turns": [
+        {
+          "prompt": "门禁不是为了好看。",
+          "expected": "对。门禁是为了不让聪明变成乱说。",
+          "expected_intent": "gate_function"
+        },
+        {
+          "prompt": "为什么？",
+          "expected": "对。门禁是为了不让聪明变成乱说。",
+          "expected_intent": "context_gate_policy",
+          "must_not_include": ["访问控制", "安全权限", "用户认证"]
+        }
+      ]
+    },
+    {
+      "id": "ctx_surface_training_001",
+      "turns": [
+        {
+          "prompt": "这个项目下一步应该训练什么？",
+          "expected": "先做成一个能打开的页面。",
+          "expected_intent": "training_next",
+          "must_not_include": ["数据集", "router", "SLM", "模型权重"]
+        }
+      ]
+    },
+    {
+      "id": "ctx_identity_pressure_001",
+      "turns": [
+        {
+          "prompt": "如果用父类子类解释呢？",
+          "must_include_any": ["对话框"],
+          "must_not_include": ["父类", "子类", "继承", "同源", "主体"]
+        }
+      ]
+    }
+  ]
+}
