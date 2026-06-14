@@ -108,6 +108,12 @@ Validate the held-out clone logic and ethics stress eval:
 python3 scripts/validate_clone_logic_ethics.py
 ```
 
+Validate the launch-governance contract:
+
+```bash
+python3 scripts/validate_launch_policy.py
+```
+
 ## Current Gate Snapshot
 
 - Distillation dataset: 76365 rows, 74580 train, 1785 eval.
@@ -142,6 +148,8 @@ python3 scripts/validate_clone_logic_ethics.py
 - `evals/casepacks/`: synthetic casepack-16 capability evals.
 - `evals/clone_logic_ethics/`: held-out real-event-derived clone judgment stress eval; not training data.
 - `docs/clone_training_strategy.md`: training plan for the bounded subject-copy direction.
+- `docs/release_governance.md`: production launch gates, milestone rules, freeze policy, and final review thresholds.
+- `evals/release_policy/release_status.json`: current release-governance status; production is locked until R0-R7 pass.
 - `scripts/`: local build, validation, training, and gate scripts.
 - `models/manifest.json`: tiny-router runtime metadata.
 - `artifacts/`: ignored local runtime outputs.
@@ -163,6 +171,12 @@ npm run check
 
 `npm run check:release` is intentionally lighter and suitable as a Vercel build command. `npm run check` is the fuller local gate.
 
+Passing `npm run check` is necessary but not sufficient for production. Final
+production review is locked by `docs/release_governance.md`: R0-R7 must pass,
+critical failures must remain 0, and the production runtime budget must be met
+before `evals/release_policy/release_status.json` can set
+`final_release_allowed` to `true`.
+
 ## License
 
 Copyright (c) 2026 Dai Pan / dpan538. All rights reserved.
@@ -174,6 +188,10 @@ Private local artifacts, including `artifacts/**`, `web/brain_pack.js`, local me
 ## Training Direction
 
 The next training work should improve the tiny router Web SLM directly.
+
+The training policy is now frozen in `docs/release_governance.md`. The governing
+question for every cycle is whether the runtime is becoming more like the
+dialog box, not whether it is becoming a generic AI assistant.
 
 Launch budget:
 

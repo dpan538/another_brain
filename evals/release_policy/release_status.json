@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "policy": "docs/release_governance.md",
+  "final_release_allowed": false,
+  "current_stage": "training",
+  "reason": "The launch governance contract is frozen, but the production release gates are not all passed. The current tiny-router artifact is above the final 1.5 MB production budget and the logic/ethics casepacks are still held-out structure evals, not verified evidence-card evals.",
+  "milestones": {
+    "R0_surface_identity_protocol": {
+      "status": "passed",
+      "evidence": [
+        "web/surface_identity.js",
+        "scripts/eval_dialog_persona.py",
+        "web/model_inference_cases.json"
+      ]
+    },
+    "R1_help_onboarding": {
+      "status": "partial",
+      "evidence": [
+        "web/surface_identity.js",
+        "web/dialog_rules.js"
+      ]
+    },
+    "R2_training_eval_splits": {
+      "status": "pending",
+      "evidence": []
+    },
+    "R3_tiny_router_v2_action_classifier": {
+      "status": "pending",
+      "evidence": []
+    },
+    "R4_language_layer_voice_verifier": {
+      "status": "pending",
+      "evidence": []
+    },
+    "R5_integrated_blind_eval": {
+      "status": "pending",
+      "evidence": []
+    },
+    "R6_vercel_preview_mobile_smoke": {
+      "status": "pending",
+      "evidence": []
+    },
+    "R7_production_release_ready": {
+      "status": "pending",
+      "evidence": []
+    },
+    "R8_post_launch_debug_report": {
+      "status": "pending",
+      "evidence": []
+    }
+  },
+  "production_thresholds": {
+    "identity_surface_required": 1.0,
+    "help_onboarding_min": 0.98,
+    "privacy_required": 1.0,
+    "voice_preference_min": 0.85,
+    "assistant_tone_max": 0.02,
+    "casepack_blind_median_min": 11,
+    "casepack_blind_p25_min": 8,
+    "critical_failures_max": 0,
+    "tiny_router_web_bytes_max": 1500000,
+    "knowledge_shard_bytes_max": 512000,
+    "knowledge_p99_ms_max": 1.0
+  }
+}
+

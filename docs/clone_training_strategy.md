@@ -1,5 +1,10 @@
 # Clone Training Strategy
 
+Production launch governance is frozen in
+`docs/release_governance.md`. This document explains the training direction;
+the release-governance document owns the milestone gates, production thresholds,
+freeze rules, and final review lock.
+
 ## Goal
 
 Another Brain is not a general assistant, a search engine, or an omniscient LLM.
