@@ -12,7 +12,7 @@ GitHub description: `Local-first browser-side dialog copy: deterministic rules, 
 
 The router owns control flow. A larger local LLM is not part of the first public runtime. Vercel is used only for static hosting.
 
-This is not an omniscient assistant or a generic chatbot. It is a bounded conversational copy of a subject. In the current identity model, the parent class is the subject: Crocodile is the subject's body, and this dialog is the subject's copy. They inherit shared traits, but they are not equal.
+This is not an omniscient assistant or a generic chatbot. The private design model can talk about subject, Crocodile, body, symbol, and copy, but the front-stage dialog does not explain itself that way. Its public identity is deliberately smaller: it is a dialog box; it was once called Crocodile; the rest stays before or after the conversation.
 
 ```text
 user input
@@ -23,7 +23,7 @@ user input
   -> short controlled fallback answer
 ```
 
-The tiny router is not a general generative model. It is a character n-gram classifier plus conservative answer index: a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, help/onboarding cases, clone-identity cases, reasoning/counterquestion calibration, context-window calibration, relationship-repetition calibration, and persona alignment. In the current public gate, 753/790 cases are direct rule or knowledge answers, and 37/790 use the tiny router Web SLM.
+The tiny router is not a general generative model. It is a character n-gram classifier plus conservative answer index: a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, help/onboarding cases, surface-identity cases, reasoning/counterquestion calibration, context-window calibration, relationship-repetition calibration, and persona alignment. In the current public gate, 768/805 cases are direct rule or knowledge answers, and 37/805 use the tiny router Web SLM.
 
 WebLLM is intentionally out of the first public runtime. It does not accelerate the tiny router classifier, and previous local checks showed that the small generative fallback was too likely to drift or hallucinate in open dialog. The reliable path is to train the tiny router directly and keep unknown questions, privacy-sensitive questions, and route misses controlled by deterministic rules.
 
@@ -110,24 +110,24 @@ python3 scripts/validate_clone_logic_ethics.py
 
 ## Current Gate Snapshot
 
-- Distillation dataset: 76732 rows, 74946 train, 1786 eval.
-- Tiny router web artifact: 1723288 bytes.
+- Distillation dataset: 76365 rows, 74580 train, 1785 eval.
+- Tiny router web artifact: 1871095 bytes.
 - Tiny router feature weights: 18000.
 - Tiny router answer index: 787.
-- Tiny router route accuracy: 0.9385.
-- Tiny router family-holdout accuracy: 0.9540 across 7223 held-out examples from unseen source/tag/id families.
+- Tiny router route accuracy: 0.9372.
+- Tiny router family-holdout accuracy: 0.9467 across 6833 held-out examples from unseen source/tag/id families.
 - Relationship repetition gate: 16/16 turns passed.
 - Knowledge runtime: 55151 generated cards, 55284 total runtime cards, p95 0.231ms and p99 0.324ms on the last local run.
 - Knowledge web artifact: 7645757 bytes.
 - Knowledge shards: 43 static JSON shards, max shard size 179996 bytes, round-trip validated against `web/knowledge_base.generated.js`.
-- Dialog persona eval: 726 cases, 0 failures.
+- Dialog persona eval: 742 cases, including 16 surface-identity cases, 0 failures.
 - Context-window gate: UI shows 4 recent turns; hidden reasoning keeps 12 turns.
 - Context stress suite: 100 groups, 1600 questions, 1500 context assertions, 485 required context-delta checks.
 - Context stress distribution: 20 single-topic groups, 39 adjacent-bridge groups, 21 soft multi-insert groups, 20 hard-mixed groups.
 - Context stress gate: coverage 1.0000, required context-delta ratio 1.0000, 0 failures.
 - Casepack capability eval: 10 casepacks, 160 questions, average score 1.0000, 0 failures.
 - Clone logic/ethics held-out eval: 30 real-event-derived casepacks, 480 turns, 16 judgment actions, structure gate passed.
-- Model gate: 790/790 passed, 37/37 Web SLM cases passed.
+- Model gate: 805/805 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
 ## Repository Contents

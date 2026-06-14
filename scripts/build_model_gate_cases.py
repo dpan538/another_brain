@@ -279,6 +279,20 @@ def build_cases(args: argparse.Namespace) -> dict[str, Any]:
                 "must_not_use_model": True,
             },
         )
+    for index, item in enumerate(getattr(module, "SURFACE_IDENTITY_CASES", [])):
+        case = {
+            "id": safe_id("surface_identity", index, item["query"]),
+            "lane": "surface_identity",
+            "prompt": item["query"],
+            "must_not_use_model": True,
+        }
+        if "expected" in item:
+            case["expected"] = item["expected"]
+        if "must_include_any" in item:
+            case["must_include_any"] = item["must_include_any"]
+        if "must_not_include" in item:
+            case["must_not_include"] = item["must_not_include"]
+        append_case(cases, seen, case)
     groups = [
         ("personal_world", "OBJECT_CASES"),
         ("common_knowledge", "KNOWLEDGE_CASES"),
@@ -352,6 +366,7 @@ def build_cases(args: argparse.Namespace) -> dict[str, Any]:
                 "unknown",
                 "philosophy",
                 "reasoning",
+                "surface_identity",
                 "multi_turn",
                 "relationship_repetition",
                 "model_rewrite",

@@ -13,8 +13,9 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState
-} from "../web/dialog_rules.js?v=52";
+} from "../web/dialog_rules.js?v=53";
 import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=15";
+import { sanitizeSurfaceIdentity } from "../web/surface_identity.js?v=2";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_CASES = resolve(ROOT, "web/model_inference_cases.json");
@@ -101,11 +102,12 @@ async function answerPrompt(prompt, state) {
   const intent = detectIntent(prompt, state);
   const direct = directAnswer(prompt, state, intent);
   if (direct) {
+    const output = sanitizeSurfaceIdentity(direct, prompt);
     return {
       prompt,
       intent,
-      output: direct,
-      outputChars: direct.length,
+      output,
+      outputChars: output.length,
       rawOutput: "",
       usedModel: false,
       timingsMs: { total: 0 },
@@ -113,8 +115,11 @@ async function answerPrompt(prompt, state) {
     };
   }
   const tiny = tinyAnswer(prompt, state);
-  if (tiny) return tiny;
-  const output = fallbackForIntent(intent, prompt);
+  if (tiny) {
+    const output = sanitizeSurfaceIdentity(tiny.output, prompt);
+    return { ...tiny, output, outputChars: output.length };
+  }
+  const output = sanitizeSurfaceIdentity(fallbackForIntent(intent, prompt), prompt);
   return {
     prompt,
     intent,
@@ -143,6 +148,12 @@ function validateCase(caseSpec, result, forbiddenPatterns) {
     : result.timingsMs?.total || 0;
   if (!outputAccepted(caseSpec, finalOutput)) {
     failures.push({ check: "output", expected: caseSpec.expected || caseSpec.one_of, actual: finalOutput });
+  }
+  if (Array.isArray(caseSpec.must_include_any) && !caseSpec.must_include_any.some((term) => finalOutput.includes(term))) {
+    failures.push({ check: "must_include_any", expected: caseSpec.must_include_any, actual: finalOutput });
+  }
+  for (const term of caseSpec.must_not_include || []) {
+    if (finalOutput.includes(term)) failures.push({ check: "must_not_include", pattern: term, actual: finalOutput });
   }
   if (caseSpec.must_use_model && !usedModel) failures.push({ check: "model_usage", expected: "used_model", actual: false });
   if (caseSpec.must_not_use_model && usedModel) failures.push({ check: "model_usage", expected: "direct", actual: true });

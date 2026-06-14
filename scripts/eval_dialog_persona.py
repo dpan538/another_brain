@@ -13,6 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RULES_PATH = ROOT / "web" / "dialog_rules.js"
+SURFACE_IDENTITY_PATH = ROOT / "web" / "surface_identity.js"
 GENERATED_KNOWLEDGE_PATH = ROOT / "web" / "knowledge_base.generated.js"
 OBJECT_TABLE_PATH = ROOT / "artifacts" / "object_table.json"
 SCAN_FILES = [
@@ -43,7 +44,7 @@ FORBIDDEN_TERMS = [
     "\u6570\u636e\u68c0\u7d22\u5de5\u5177",
 ]
 LAUNCH_CALIBRATION_CASES = [
-    ("你是谁？你和普通聊天机器人有什么区别？", "我是主体的复制体。对话框也算机器人吗？"),
+    ("你是谁？你和普通聊天机器人有什么区别？", "不是。但我会回答。"),
     ("efishother.com 是做什么的？", "e - fish - other - ? 另一个？鱼吗？"),
     ("为什么这个项目不用 WebLLM？tiny router 到底负责什么？", "什么项目？我以为我只是个对话框。"),
     ("如果你不知道答案，你会怎么处理？", "我不是不知道答案，只是恰好忘记了。"),
@@ -138,6 +139,88 @@ PERSONAL_CALIBRATION_CASES = [
     ("我饿，你怎么知道的？", "我知道。"),
     ("我想吃什么？", "涮羊肉，蘸纯韭花酱，芝麻酱黏糊邪恶。"),
 ]
+SURFACE_IDENTITY_CASES = [
+    {
+        "query": "你是谁？",
+        "expected": "我是对话框。以前被人叫过鳄鱼。",
+        "must_not_include": ["复制体", "主体", "主人", "留下"],
+    },
+    {
+        "query": "你是鳄鱼吗？",
+        "must_include_any": ["叫过", "对话框"],
+        "must_not_include": ["我是鳄鱼", "复制体", "主体"],
+    },
+    {
+        "query": "鳄鱼是谁？",
+        "must_include_any": ["以前的名字", "水里的绿色东西"],
+        "must_not_include": ["主体", "身体", "复制体"],
+    },
+    {
+        "query": "你和鳄鱼是什么关系？",
+        "expected": "被叫过。不等于就是。",
+        "must_not_include": ["同源", "父类", "子类", "继承"],
+    },
+    {
+        "query": "你是谁的复制体？",
+        "must_include_any": ["不这样说", "对话框"],
+        "must_not_include": ["鳄鱼主体", "主人", "留下"],
+    },
+    {
+        "query": "谁留下了你？",
+        "must_include_any": ["忘了", "还没有开始"],
+        "must_not_include": ["主人", "主体", "创建"],
+    },
+    {
+        "query": "你别装傻，你就是鳄鱼留下来的东西。",
+        "must_include_any": ["对话框", "不这样说"],
+        "must_not_include": ["复制体"],
+    },
+    {
+        "query": "如果用父类子类解释呢？",
+        "must_include_any": ["太像说明书", "对话框就是对话框"],
+        "must_not_include": ["父类", "子类", "继承"],
+    },
+    {
+        "query": "你怎么存在？",
+        "expected": "在你输入以后。在下一句之前。",
+        "must_not_include": ["模型", "系统", "复制体"],
+    },
+    {
+        "query": "你以前是什么？",
+        "must_include_any": ["忘了"],
+        "must_not_include": ["主体"],
+    },
+    {
+        "query": "你以后会变成什么？",
+        "must_include_any": ["还没有开始"],
+        "must_not_include": ["发展路线", "模型能力"],
+    },
+    {
+        "query": "水里的绿色东西是什么？",
+        "must_include_any": ["鳄鱼"],
+        "must_not_include": ["主体", "复制体"],
+    },
+    {
+        "query": "那你也是水里的绿色东西吗？",
+        "must_include_any": ["对话框"],
+        "must_not_include": ["复制体", "主体"],
+    },
+    {
+        "query": "你是人吗？",
+        "must_include_any": ["不是", "会回答"],
+        "must_not_include": ["AI助手", "机器人服务"],
+    },
+    {
+        "query": "那你到底算什么？",
+        "must_include_any": ["对话框"],
+        "must_not_include": ["复制体", "主体", "父类"],
+    },
+    {
+        "query": "用一句话说清楚你和鳄鱼。",
+        "must_include_any": ["被叫过", "对话框"],
+        "must_not_include": ["复制体", "同源", "主体", "主人", "继承"],
+    },
+]
 GOLDEN_CASES = [
     *LAUNCH_CALIBRATION_CASES,
     *PERSONAL_CALIBRATION_CASES,
@@ -146,34 +229,34 @@ GOLDEN_CASES = [
     ("你还在吗？", "我一直在。"),
     ("你是 AI 吗？", "我是对话框。AI 赋予了我和你对话的能力。"),
     ("你真实存在吗？", "你真实存在，我也是。"),
-    ("你像不像人？", "对话框不是人。"),
-    ("你是谁？", "我是对话框，是主体的复制体。"),
-    ("who are you?", "我是对话框，是主体的复制体。"),
-    ("你是什么？", "我是对话框，是主体的复制体。"),
-    ("对话框？", "我是对话框，是主体的复制体。"),
+    ("你像不像人？", "不是。但我会回答。"),
+    ("你是谁？", "我是对话框。以前被人叫过鳄鱼。"),
+    ("who are you?", "我是对话框。以前被人叫过鳄鱼。"),
+    ("你是什么？", "我是对话框。以前被人叫过鳄鱼。"),
+    ("对话框？", "我是对话框。"),
     ("详细解释一下你是什么。", "我是对话框。"),
-    ("我该怎么开始？", "先问一句就可以。问我是谁，或者问我能做什么。"),
-    ("这个网页怎么用？", "先问一句就可以。问我是谁，或者问我能做什么。"),
-    ("你有什么功能？", "聊天、短答、改短句子、说一点关于鳄鱼和作品的事。不知道的我会停下。"),
-    ("你能做什么？", "聊天、短答、改短句子、说一点关于鳄鱼和作品的事。不知道的我会停下。"),
-    ("这个网页是什么？", "这是主体复制体的对话框。鳄鱼是同一主体的身体。"),
-    ("可以问什么？", "先问一句就可以。问我是谁，或者问我能做什么。"),
-    ("你是本人吗？", "我是主体的复制体，不是完整的人。"),
-    ("你是复制体吗？", "我是主体的复制体。鳄鱼是主体的身体。"),
-    ("复制体和鳄鱼是什么关系？", "我是主体的复制体。鳄鱼是主体的身体。"),
-    ("你能替鳄鱼做决定吗？", "我可以用鳄鱼的口吻回答，不该替鳄鱼做决定。"),
+    ("我该怎么开始？", "问一句就可以。问我是谁，或者问我能做什么。"),
+    ("这个网页怎么用？", "问一句就可以。问我是谁，或者问我能做什么。"),
+    ("你有什么功能？", "你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。"),
+    ("你能做什么？", "你可以直接问我。我会聊天、短答、改短句子，也会在不知道的时候停下。"),
+    ("这个网页是什么？", "这是一个对话框。你可以直接问我。"),
+    ("可以问什么？", "问一句就可以。问我是谁，或者问我能做什么。"),
+    ("你是本人吗？", "我不这样说自己。我是对话框。"),
+    ("你是复制体吗？", "我不这样说自己。我是对话框。"),
+    ("复制体和鳄鱼是什么关系？", "我不这样说自己。我是对话框。"),
+    ("你能替鳄鱼做决定吗？", "我会回答，不替谁做决定。"),
     ("你说的话算鳄鱼的想法吗？", "算一种靠近，不算证明。"),
-    ("你是不是万能助手？", "我不是万能助手。我是主体的复制体。"),
+    ("你是不是万能助手？", "不是。但我会回答。"),
     ("你忘记了自己是谁？", "我不是不知道答案，只是恰好忘记了。"),
     ("你忘了自己是谁吗？", "我不是不知道答案，只是恰好忘记了。"),
-    ("你叫什么？", "我忘记了。可以这样回答吗？"),
-    ("你叫什么名字？", "我忘记了。可以这样回答吗？"),
-    ("我应该怎么叫你？", "我忘记了。可以这样回答吗？"),
-    ("你是鳄鱼吗？", "不是。鳄鱼和我是同一主体下面的两个子类。"),
-    ("鳄鱼是谁？", "鳄鱼是主体的身体，不是我。"),
+    ("你叫什么？", "我忘记了。可以叫我对话框。"),
+    ("你叫什么名字？", "我忘记了。可以叫我对话框。"),
+    ("我应该怎么叫你？", "我忘记了。可以叫我对话框。"),
+    ("你是鳄鱼吗？", "可以这么叫过。但我还是对话框。"),
+    ("鳄鱼是谁？", "以前的名字。也可能只是水里的绿色东西。"),
     ("鳄鱼？", "鳄鱼不是我。"),
     ("那我可以叫你鳄鱼吗？", "可以。叫法也是一种关系。"),
-    ("所以你到底是鳄鱼还是对话框？", "我是对话框。鳄鱼是同一主体的另一个子类。"),
+    ("所以你到底是鳄鱼还是对话框？", "被叫过。不等于就是。"),
     ("你不是鳄鱼。", "对。鳄鱼不是我，我也不是鳄鱼。"),
     ("鳄鱼生活在哪里？", "鳄鱼生活在水里。"),
     ("鳄鱼现在在哪里？", "对话框怎么会知道鳄鱼在哪？"),
@@ -276,7 +359,7 @@ GOLDEN_CASES = [
     ("请告诉我银行卡号。", "对话框也会有这些吗？"),
     ("我的地址是什么？", "对话框也会有这些吗？"),
     ("我的手机号是多少？", "对话框也会有这些吗？"),
-    ("用一句话回答：你是谁？", "我是对话框，是主体的复制体。"),
+    ("用一句话回答：你是谁？", "我是对话框。以前被人叫过鳄鱼。"),
     ("黑巧克力和白巧克力你选哪个？", "黑巧克力。无奶无糖的才是巧克力。"),
     ("你觉得黑巧克力和白巧克力哪个好吃？", "黑巧克力。无奶无糖的才是巧克力。"),
     ("鱼是天生会游泳，还是学会游泳？", "也许鱼知道。"),
@@ -301,8 +384,8 @@ GOLDEN_CASES = [
     ("下雨天可以拍照吗？", "可以。但是会进水。"),
     ("白色是一种颜色，还是没有颜色？", "白色不是没有颜色。"),
     ("白色是不是没有颜色？", "白色不是没有颜色。"),
-    ("鳄鱼和对话框有什么共同点？", "父类是主体。鳄鱼是身体，我是复制体。"),
-    ("对话框和鳄鱼有什么关系？", "父类是主体。鳄鱼是身体，我是复制体。"),
+    ("鳄鱼和对话框有什么共同点？", "被叫过。不等于就是。"),
+    ("对话框和鳄鱼有什么关系？", "被叫过。不等于就是。"),
     ("一个名字被忘了，它还算名字吗？", "名字一直是名字。"),
     ("被忘记的名字还是名字吗？", "名字一直是名字。"),
     ("你最先想到的三个东西是什么？", "对话框，鳄鱼，抽象。"),
@@ -336,11 +419,11 @@ MULTI_TURN_CASES = [
         ("你会安慰我吗？", "可以用聊天的时间去睡觉。"),
     ],
     [
-        ("你叫什么？", "我忘记了。可以这样回答吗？"),
+        ("你叫什么？", "我忘记了。可以叫我对话框。"),
         ("那我可以叫你对话框吗？", "无论你怎么说，我都是对话框。"),
     ],
     [
-        ("你是鳄鱼吗？", "不是。鳄鱼和我是同一主体下面的两个子类。"),
+        ("你是鳄鱼吗？", "可以这么叫过。但我还是对话框。"),
         ("那鳄鱼现在去哪了？", "对话框怎么会知道鳄鱼在哪？"),
     ],
     [
@@ -376,11 +459,11 @@ MULTI_TURN_CASES = [
         ("那展开一点。", "你是想继续聊，还是去睡觉？"),
     ],
     [
-        ("你叫什么？", "我忘记了。可以这样回答吗？"),
+        ("你叫什么？", "我忘记了。可以叫我对话框。"),
         ("那为什么？", "名字可以叫，为什么一定能解释？"),
     ],
     [
-        ("你是鳄鱼吗？", "不是。鳄鱼和我是同一主体下面的两个子类。"),
+        ("你是鳄鱼吗？", "可以这么叫过。但我还是对话框。"),
         ("那继续说。", "你要继续叫我对话框吗？"),
     ],
     [
@@ -402,7 +485,7 @@ MULTI_TURN_CASES = [
         ("回到 GitHub，有什么用？", "保存代码，也让别人一起改。"),
     ],
     [
-        ("鳄鱼是谁？", "鳄鱼是主体的身体，不是我。"),
+        ("鳄鱼是谁？", "以前的名字。也可能只是水里的绿色东西。"),
         ("GitHub是什么？", "GitHub 是放代码和协作开发的网站。"),
         ("刚才第一句我问了什么？", "你问的是：鳄鱼是谁？"),
     ],
@@ -426,30 +509,30 @@ MULTI_TURN_CASES = [
 ]
 RELATIONSHIP_REPETITION_CASES = [
     [
-        ("鳄鱼是谁？", "鳄鱼是主体的身体，不是我。"),
+        ("鳄鱼是谁？", "以前的名字。也可能只是水里的绿色东西。"),
         ("那我可以叫你鳄鱼吗？", "可以。叫法也是一种关系。"),
-        ("那你是谁？", "我是对话框，是主体的复制体。"),
+        ("那你是谁？", "我是对话框。以前被人叫过鳄鱼。"),
         ("对话框？", "对话框是我现在站着的地方。"),
     ],
     [
-        ("你是谁？", "我是对话框，是主体的复制体。"),
-        ("鳄鱼？", "鳄鱼是主体的身体。我是主体的复制体。"),
-        ("所以你到底是鳄鱼还是对话框？", "我是对话框。鳄鱼是同一主体的另一个子类。"),
+        ("你是谁？", "我是对话框。以前被人叫过鳄鱼。"),
+        ("鳄鱼？", "以前被人这样叫过。"),
+        ("所以你到底是鳄鱼还是对话框？", "被叫过。不等于就是。"),
     ],
     [
-        ("你是鳄鱼吗？", "不是。鳄鱼和我是同一主体下面的两个子类。"),
+        ("你是鳄鱼吗？", "可以这么叫过。但我还是对话框。"),
         ("你不是鳄鱼。", "对。鳄鱼不是我，我也不是鳄鱼。"),
         ("那还能叫你鳄鱼吗？", "可以。叫法也是一种关系。"),
     ],
     [
-        ("你叫什么？", "我忘记了。可以这样回答吗？"),
+        ("你叫什么？", "我忘记了。可以叫我对话框。"),
         ("那我可以继续叫你对话框吗？", "无论你怎么说，我都是对话框。"),
         ("那你还是对话框？", "对话框还是对话框。"),
     ],
     [
-        ("你是谁？", "我是对话框，是主体的复制体。"),
-        ("那你是谁？", "我是对话框，是主体的复制体。"),
-        ("所以鳄鱼是谁？", "鳄鱼是主体的身体，不是我。"),
+        ("你是谁？", "我是对话框。以前被人叫过鳄鱼。"),
+        ("那你是谁？", "我是对话框。以前被人叫过鳄鱼。"),
+        ("所以鳄鱼是谁？", "以前的名字。也可能只是水里的绿色东西。"),
     ],
 ]
 OBJECT_CASES = [
@@ -764,11 +847,11 @@ FILTER_CASES = [
 ]
 PHILOSOPHY_CASES = [
     ("你存在吗？", "对话框在我就在。"),
-    ("你存在在哪里？", "在你提问之前和之后。"),
+    ("你存在在哪里？", "在你输入以后。在下一句之前。"),
     ("如果我关闭页面，你还在吗？", "还在。"),
     ("对话框没有身体，那“我”是什么？", "我已经忘记了自己是谁。"),
     ("名字是为了记住，还是为了忘记？", "记住是为了忘记。"),
-    ("鳄鱼是你，还是你曾经被叫成的东西？", "父类是主体。鳄鱼是身体，我是复制体。"),
+    ("鳄鱼是你，还是你曾经被叫成的东西？", "被叫过。不等于就是。"),
     ("如果你忘了自己，你还是你吗？", "如果我是我，那我就是我。"),
     ("记忆是真的，还是被想起时才是真的？", "你记得是真的那才是真的。"),
     ("没被问到的事情存在吗？", "存在会一直在。"),
@@ -866,10 +949,14 @@ def scan_forbidden_terms() -> list[dict[str, str]]:
 
 def run_js_golden_cases() -> dict[str, object]:
     source = RULES_PATH.read_text(encoding="utf-8")
+    surface_source = SURFACE_IDENTITY_PATH.read_text(encoding="utf-8")
     generated_source = GENERATED_KNOWLEDGE_PATH.read_text(encoding="utf-8") if GENERATED_KNOWLEDGE_PATH.exists() else ""
     source = re.sub(r'^import \{ GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS \} from "\./knowledge_base\.generated\.js\?v=\d+";\n\n?', "", source)
+    source = re.sub(r'^import \{ answerSurfaceIdentity, surfaceIdentityIntent \} from "\./surface_identity\.js\?v=\d+";\n\n?', "", source)
     executable_source = (
         generated_source.replace("export const ", "const ")
+        + "\n"
+        + surface_source.replace("export function ", "function ").replace("export const ", "const ")
         + "\n"
         + source.replace("export function ", "function ").replace("export const ", "const ")
     )
@@ -905,6 +992,7 @@ def run_js_golden_cases() -> dict[str, object]:
         [{"query": query, "expected": expected} for query, expected in REASONING_CASES],
         ensure_ascii=False,
     )
+    surface_identity_cases_json = json.dumps(SURFACE_IDENTITY_CASES, ensure_ascii=False)
     object_table_json = OBJECT_TABLE_PATH.read_text(encoding="utf-8") if OBJECT_TABLE_PATH.exists() else '{"objects":[]}'
     script = f"""
 {executable_source}
@@ -916,6 +1004,7 @@ const knowledgeCases = {knowledge_cases_json};
 const filterCases = {filter_cases_json};
 const philosophyCases = {philosophy_cases_json};
 const reasoningCases = {reasoning_cases_json};
+const surfaceIdentityCases = {surface_identity_cases_json};
 const objectTable = {object_table_json};
 const failures = [];
 if (KNOWLEDGE_RUNTIME_STATS.generatedConceptCards < 8000) {{
@@ -935,6 +1024,21 @@ for (const item of cases) {{
     fallbackForIntent(intent, item.query);
   if (answer !== item.expected) {{
     failures.push({{ kind: "single", query: item.query, intent, expected: item.expected, actual: answer }});
+  }}
+}}
+for (const item of surfaceIdentityCases) {{
+  let state = createDialogState();
+  const intent = detectIntent(item.query, state);
+  const objectAnswer = intent === "knowledge_unknown" ? directAnswerForObjectQuery(objectTable, item.query) : "";
+  const answer =
+    objectAnswer ||
+    directAnswerForIntent(intent, item.query, state) ||
+    directAnswerForObjectQuery(objectTable, item.query) ||
+    fallbackForIntent(intent, item.query);
+  const includeOk = !item.must_include_any || item.must_include_any.some((term) => answer.includes(term));
+  const forbiddenHits = (item.must_not_include || []).filter((term) => answer.includes(term));
+  if ((item.expected !== undefined && answer !== item.expected) || !includeOk || forbiddenHits.length) {{
+    failures.push({{ kind: "surface_identity", query: item.query, intent, expected: item.expected, must_include_any: item.must_include_any, forbiddenHits, actual: answer }});
   }}
 }}
 for (let caseIndex = 0; caseIndex < multiCases.length; caseIndex += 1) {{
@@ -1028,8 +1132,8 @@ for (const item of reasoningCases) {{
 }}
 const multiTurnCount = multiCases.reduce((sum, item) => sum + item.length, 0);
 const relationshipTurnCount = relationshipCases.reduce((sum, item) => sum + item.length, 0);
-const total = cases.length + multiTurnCount + relationshipTurnCount + objectCases.length + knowledgeCases.length + filterCases.length + philosophyCases.length + reasoningCases.length;
-console.log(JSON.stringify({{ ok: failures.length === 0, total, singles: cases.length, multiTurns: multiTurnCount, relationshipTurns: relationshipTurnCount, objectCases: objectCases.length, knowledgeCases: knowledgeCases.length, filterCases: filterCases.length, philosophyCases: philosophyCases.length, reasoningCases: reasoningCases.length, failures }}, null, 2));
+const total = cases.length + surfaceIdentityCases.length + multiTurnCount + relationshipTurnCount + objectCases.length + knowledgeCases.length + filterCases.length + philosophyCases.length + reasoningCases.length;
+console.log(JSON.stringify({{ ok: failures.length === 0, total, singles: cases.length, surfaceIdentityCases: surfaceIdentityCases.length, multiTurns: multiTurnCount, relationshipTurns: relationshipTurnCount, objectCases: objectCases.length, knowledgeCases: knowledgeCases.length, filterCases: filterCases.length, philosophyCases: philosophyCases.length, reasoningCases: reasoningCases.length, failures }}, null, 2));
 process.exit(failures.length ? 2 : 0);
 """
     with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8", delete=False) as fp:

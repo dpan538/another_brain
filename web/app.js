@@ -6,8 +6,9 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState,
-} from "./dialog_rules.js?v=52";
+} from "./dialog_rules.js?v=53";
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "./structured_decision.js?v=1";
+import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=2";
 import { tinyDirectAnswer, tinyIntentHint } from "./tiny_router.js?v=15";
 
 const VISIBLE_CONTEXT_TURN_LIMIT = 4;
@@ -121,9 +122,10 @@ function currentReasoningState() {
 }
 
 function commitAnswer(question, answer, intent, previousState = dialogState) {
-  setAnswer(answer);
-  rememberTurn(question, answer, intent);
-  dialogState = nextDialogState(question, answer, intent, previousState);
+  const finalAnswer = sanitizeSurfaceIdentity(answer, question);
+  setAnswer(finalAnswer);
+  rememberTurn(question, finalAnswer, intent);
+  dialogState = nextDialogState(question, finalAnswer, intent, previousState);
 }
 
 function setContextOpen(isOpen) {

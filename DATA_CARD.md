@@ -36,9 +36,9 @@ Private data is not distributed:
 
 ## Current Dataset Snapshot
 
-- Distillation rows: 76,732.
-- Train rows: 74,946.
-- Eval rows: 1,786.
+- Distillation rows: 76,365.
+- Train rows: 74,580.
+- Eval rows: 1,785.
 - Cloud teacher used: false.
 - Source files copied into public runtime: false.
 - Private paths allowed in public runtime: false.
@@ -50,7 +50,7 @@ Current public gates include:
 - Dialog persona eval.
 - Tiny router route and answer eval.
 - Model gate.
-- Help/onboarding and clone-identity gate coverage.
+- Help/onboarding and surface-identity gate coverage.
 - Context stress eval.
 - Synthetic casepack capability eval.
 - Clone logic/ethics held-out stress eval.
@@ -65,7 +65,7 @@ expanded with harder held-out case families before claiming broad reasoning
 ability.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
-real-event-derived and intended to test bounded subject-copy judgment under
+real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,
 ethical sensitivity, and clone voice. They are not distillation data and must
 not be used for training until verified evidence cards and a split policy exist.

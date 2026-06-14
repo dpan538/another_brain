@@ -11,7 +11,7 @@ import {
   directAnswerForIntent,
   fallbackForIntent,
   nextDialogState
-} from "../web/dialog_rules.js?v=52";
+} from "../web/dialog_rules.js?v=53";
 import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=15";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");

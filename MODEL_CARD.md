@@ -31,8 +31,8 @@ deterministic dialog rules
 
 The artifact is built from deterministic teacher cases, public dialog cases,
 model-gate cases, correction pairs, common-knowledge cards, reasoning and
-counterquestion calibration, context-window calibration, relationship-repetition
-calibration, and persona alignment.
+counterquestion calibration, context-window calibration, surface-identity
+calibration, relationship-repetition calibration, and persona alignment.
 
 ## Privacy
 
@@ -53,11 +53,11 @@ adapters are ignored by git and are not licensed for distribution.
 
 ## Current Snapshot
 
-- Web artifact: 1,723,288 bytes.
+- Web artifact: 1,871,095 bytes.
 - Feature weights: 18,000.
 - Answer index: 787.
-- Family-holdout accuracy: 0.9540 across 7,223 held-out examples from unseen source/tag/id families.
-- Route accuracy: 0.9385.
-- Public model-gate usage: 37/790 cases.
+- Family-holdout accuracy: 0.9467 across 6,833 held-out examples from unseen source/tag/id families.
+- Route accuracy: 0.9372.
+- Public model-gate usage: 37/805 cases.
 - Synthetic casepack capability eval: 10 casepacks, 160 questions, 0 failures.
 - Knowledge shard validation: 43 shards, 55,151 cards, max shard size 179,996 bytes, full round-trip against the monolithic public artifact.
