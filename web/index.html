@@ -4,24 +4,48 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dialog</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=9" />
   </head>
   <body>
     <main class="shell" aria-label="Dialog">
-      <form id="chatForm" class="entry" autocomplete="off">
-        <label class="sr-only" for="prompt">Ask me</label>
-        <textarea
-          id="prompt"
-          rows="1"
-          placeholder="Ask me"
-          autocomplete="off"
-          spellcheck="true"
-        ></textarea>
-      </form>
-      <section id="answer" class="answer" aria-live="polite" hidden></section>
-      <p id="status" class="status" aria-live="polite"></p>
+      <section class="chatbox" aria-label="Crocodile dialog">
+        <section id="contextPanel" class="context-panel" aria-label="Context" hidden>
+          <div id="contextList" class="context-list"></div>
+        </section>
+        <section id="answer" class="answer" aria-live="polite" hidden></section>
+        <p id="status" class="status" aria-live="polite" hidden>
+          <span class="thinking-dots" aria-label="思考中">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </p>
+        <form id="chatForm" class="entry" autocomplete="off">
+          <label class="sr-only" for="prompt">Ask me</label>
+          <textarea
+            id="prompt"
+            rows="1"
+            placeholder="Ask me"
+            autocomplete="off"
+            spellcheck="true"
+          ></textarea>
+          <button
+            id="contextToggle"
+            class="context-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="contextPanel"
+            aria-label="展开上下文"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <path d="M7 9l5-5 5 5" />
+              <path d="M7 15l5 5 5-5" />
+            </svg>
+          </button>
+        </form>
+      </section>
     </main>
 
-    <script type="module" src="./app.js?v=44"></script>
+    <script type="module" src="./app.js?v=54"></script>
   </body>
 </html>

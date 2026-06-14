@@ -13,6 +13,7 @@ const HIDDEN_TERMS = [
   "\u4eba\u5de5\u667a\u80fd\u6a21\u578b",
   "\u6570\u636e\u68c0\u7d22\u5de5\u5177"
 ];
+const REASONING_CONTEXT_TURN_LIMIT = 12;
 
 const NOISY_MEMORY_PATTERNS = [
   /^%PDF-/i,
@@ -72,7 +73,8 @@ export function createDialogState() {
     lastIntent: "",
     lastTopic: "",
     lastUserText: "",
-    lastAnswer: ""
+    lastAnswer: "",
+    recentTurns: []
   };
 }
 
@@ -80,8 +82,16 @@ function isFollowUp(text) {
   return /^(那|那么|然后|所以|这样|这个|它|他|她|可以|第一步|下一步|猜一下|现在)/.test(text);
 }
 
+function recentTurnsFromState(state = {}) {
+  return Array.isArray(state.recentTurns)
+    ? state.recentTurns
+        .filter((turn) => turn && (turn.question || turn.answer))
+        .slice(-REASONING_CONTEXT_TURN_LIMIT)
+    : [];
+}
+
 function hasPriorDialog(state = {}) {
-  return Boolean(state.lastAnswer || state.lastIntent || state.lastTopic);
+  return Boolean(state.lastAnswer || state.lastIntent || state.lastTopic || recentTurnsFromState(state).length);
 }
 
 function isContextualFollowUpQuery(text) {
@@ -155,9 +165,228 @@ function contextualFollowUpAnswer(query, state = {}) {
   return "";
 }
 
+function wantsContextQuestion(text) {
+  return /(我.*(问了|问过).*什么|刚才.*问题|前面.*问题|第一句.*问|第一个.*问)/.test(text);
+}
+
+function wantsContextAnswer(text) {
+  return /(你.*(答了|回答了|说了).*什么|刚才.*回答|前面.*回答)/.test(text);
+}
+
+function targetTurnFromContext(text, state = {}) {
+  const turns = recentTurnsFromState(state);
+  if (!turns.length) return null;
+  if (/(第一个|第一句|最开始|开头|前面第一个)/.test(text)) return turns[0];
+  if (/(第二个|第二句)/.test(text) && turns[1]) return turns[1];
+  if (/(第三个|第三句)/.test(text) && turns[2]) return turns[2];
+
+  const topicPatterns = [
+    /白平衡/,
+    /github/i,
+    /饺子/,
+    /鳄鱼/,
+    /对话框/,
+    /摄影/,
+    /照片/,
+    /月亮上的花园/,
+  ];
+  for (const pattern of topicPatterns) {
+    if (!pattern.test(text)) continue;
+    const matched = [...turns].reverse().find((turn) => pattern.test(`${turn.question || ""} ${turn.answer || ""}`));
+    if (matched) return matched;
+  }
+
+  if (/(上一个|上一句|刚才|刚刚|这个|它|继续|展开|举个例子|有什么用|为什么)/.test(text)) {
+    return turns[turns.length - 1];
+  }
+  return null;
+}
+
+function contextWindowAnswer(query, state = {}) {
+  const text = query.trim();
+  if (!/(第一个|第一句|第二个|第二句|第三个|第三句|最开始|开头|前面|刚才|刚刚|回到|上一个|上一句)/.test(text) && !wantsContextQuestion(text) && !wantsContextAnswer(text)) {
+    return "";
+  }
+  const target = targetTurnFromContext(text, state);
+  if (!target) return "";
+
+  if (wantsContextQuestion(text)) return `你问的是：${target.question}`;
+  if (wantsContextAnswer(text)) return target.answer || "";
+
+  const context = `${target.question || ""} ${target.answer || ""} ${target.intent || ""}`;
+  const wantsExample = /(举个例子|比如|例子)/.test(text);
+  const wantsUse = /(有什么用|用来干什么|用途|作用)/.test(text);
+  const wantsWhy = /(为什么|原因)/.test(text);
+  const wantsMore = /(展开|继续|多说|回到|具体)/.test(text);
+
+  if (/白平衡/.test(context) && wantsExample) return "比如灯光偏黄，白色也会偏黄。";
+  if (/GitHub/i.test(context) && wantsUse) return "保存代码，也让别人一起改。";
+  if (/饺子/.test(context) && wantsExample) return "皮和馅先合上，热气再出来。";
+  if (/(鳄鱼|对话框|identity_relation|alias|name)/.test(context)) {
+    if (wantsWhy) return "名字可以叫，为什么一定能解释？";
+    if (wantsMore) return "你要问鳄鱼，还是问对话框？";
+  }
+  if (/(摄影|照片|photography)/.test(context)) {
+    if (wantsWhy) return "你拍照时不是一直在选择关系吗？";
+    if (wantsMore) return "你要拍什么？光从哪里来？";
+  }
+  if (/(月亮上的花园|unknown|suspicious_unknown)/.test(context)) {
+    if (wantsMore) return "你想让我展开不存在，还是展开不确定？";
+    if (wantsWhy) return "你要我把没见过的东西说成真的吗？";
+  }
+  return "";
+}
+
+function compactTurnLabel(turn) {
+  return String(turn?.question || "")
+    .replace(/[？?。!！\s]+$/g, "")
+    .slice(0, 24);
+}
+
+function topicWordFromTurn(turn) {
+  const text = `${turn?.question || ""} ${turn?.answer || ""} ${turn?.intent || ""} ${turn?.topic || ""}`;
+  if (/鳄鱼|对话框|名字|identity|alias|name/.test(text)) return "名字";
+  if (/摄影|照片|相机|白平衡|photo|photography/.test(text)) return "摄影";
+  if (/设计|界面|网页|按钮|布局|颜色/.test(text)) return "设计";
+  if (/GitHub|Git|HTML|CSS|JavaScript|API|router|SLM|模型|运行时|门禁/i.test(text)) return "运行";
+  if (/翻译|中文|译腔|语言/.test(text)) return "语言";
+  if (/诗|Lowell|断片|意象/.test(text)) return "诗";
+  if (/存在|自由|孤独|真实|责任/.test(text)) return "存在";
+  if (/解构|中心|差异|能指|德里达/.test(text)) return "解构";
+  if (/拉康|欲望|主体|镜像|缺失/.test(text)) return "主体";
+  if (/饿|吃|羊肉|咖啡|饺子|味道/.test(text)) return "日常";
+  if (/南通|上海|纽约|布里斯班|高铁|家乡/.test(text)) return "地点";
+  if (/隐私|银行卡|地址|手机号|边界/.test(text)) return "边界";
+  if (/记忆|忘|昨天|明天|回忆/.test(text)) return "记忆";
+  if (/鸟|鱼|动物|自然|原子|天空/.test(text)) return "自然";
+  if (/展览|版画|艺术|作品|字体|图像/.test(text)) return "艺术";
+  return compactTurnLabel(turn) || "刚才";
+}
+
+function recentDistinctTopicWords(turns) {
+  const words = [];
+  for (const turn of turns) {
+    const word = topicWordFromTurn(turn);
+    if (word && words.at(-1) !== word) words.push(word);
+  }
+  return words.slice(-4);
+}
+
+function contextualReasoningAnswer(query, state = {}) {
+  const text = query.trim();
+  const turns = recentTurnsFromState(state);
+  if (!turns.length) return "";
+  const last = turns.at(-1);
+  const previous = turns.at(-2);
+  const topics = recentDistinctTopicWords(turns);
+  const lastTopic = topics.at(-1) || topicWordFromTurn(last);
+  const previousTopic = topics.at(-2) || topicWordFromTurn(previous);
+
+  if (/最后回到最近几句.*哪一句.*(记住|留下)/.test(text)) {
+    return `最近该记住的是：${compactTurnLabel(last)}。`;
+  }
+  if (/刚才.*(换了主题|换在哪里)|换了主题.*哪里/.test(text)) {
+    if (previousTopic && lastTopic && previousTopic !== lastTopic) return `换了。刚才在${previousTopic}，现在到${lastTopic}。`;
+    return `不算大换题，还是沿着${lastTopic}。`;
+  }
+  if (/超过三个主题.*(抓哪条线|先抓)|先抓哪条线/.test(text)) {
+    return `先抓最近这一条：${lastTopic}。要回头，你需要说。`;
+  }
+  if (/继续.*(哪一个主题|最近的主题|最早的主题|哪条)|如果我.*继续/.test(text)) {
+    return `先继续最近的${lastTopic}。要回到别处，你需要提问。`;
+  }
+  if (/突然回到第一句.*成立|现在还成立吗/.test(text)) {
+    return "成立，但已经被刚才的问题改写了一点。";
+  }
+  if (/回到最近一个问题.*第三个主题.*改变/.test(text)) {
+    return "改变了。最近的问题已经被新的主题挪了一步。";
+  }
+  if (/放在一起.*问题变了吗|问题变了吗/.test(text)) {
+    return "变了。两个问题放在一起，就从事实变成关系。";
+  }
+  if (/事实问题.*关系问题|关系问题.*事实问题/.test(text)) {
+    return "事实问题问是什么，关系问题问它和谁连在一起。";
+  }
+  if (/自然过渡吗|转到.*自然/.test(text)) {
+    return `算。${previousTopic}和${lastTopic}之间还有一条关系。`;
+  }
+  if (/最后.*不相干.*主题.*连成一句话/.test(text)) {
+    return `一个问${previousTopic}，一个问${lastTopic}，中间是你把它们放在一起。`;
+  }
+  if (/把这四个主题压成一个问题|四个主题.*一个问题/.test(text)) {
+    return `这些主题都在问同一件事：${lastTopic}和前面的关系在哪里？`;
+  }
+  if (/两个主题压成一句反问|压成一句反问/.test(text)) {
+    return `如果${previousTopic}和${lastTopic}相遇，谁先改变谁？`;
+  }
+  if (/只保留一个问题继续|选前半段还是后半段/.test(text)) {
+    return `先保留最近的${lastTopic}。前面的先让它退后。`;
+  }
+  if (/最近.*边界在哪里|边界在哪里/.test(text)) {
+    return "边界在上一句：能回答到哪里，就停在哪里。";
+  }
+  if (/边界.*不稳.*答案|答案.*边界.*不稳/.test(text)) {
+    return "刚才的边界一动，答案就只能小一点。";
+  }
+  if (/意思到了.*继续|句子还要继续/.test(text)) {
+    return "不必。刚才的问题已经在问该停在哪里。";
+  }
+  if (/记忆矛盾.*相信哪一个|相信哪一个/.test(text)) {
+    return "先相信正在被你追问的那个。";
+  }
+  if (/关系/.test(text) && turns.length >= 1) {
+    return `关系要看刚才怎么问，不只看${lastTopic}这个词。`;
+  }
+  if (/缺失.*继续/.test(text)) {
+    return `继续可以，但要先说沿着${lastTopic}，还是换一边。`;
+  }
+  return "";
+}
+
+function identityRelationAnswer(query, state = {}) {
+  const text = query.trim();
+  const priorIntent = state.lastIntent || "";
+  const priorTopic = state.lastTopic || "";
+  const inIdentityContext = /(identity|alias|name|identity_relation)/.test(priorIntent) || /^(alias|name)$/.test(priorTopic);
+
+  if (/^(对话框|dialog)[？?。!！\s]*$/i.test(text)) {
+    return inIdentityContext && priorTopic === "alias" ? "对话框是我现在站着的地方。" : "我是对话框，也有人叫我鳄鱼。";
+  }
+  if (/^鳄鱼[？?。!！\s]*$/.test(text)) {
+    return inIdentityContext ? "鳄鱼是一个名字，也是一种误认。" : "可能是。虽然鳄鱼不是我。";
+  }
+  if (/((可以|能不能|能|要不要|还能|继续).{0,6}叫你.{0,4}鳄鱼|叫你鳄鱼.{0,6}(可以|吗|行不行|好不好))/.test(text)) {
+    return "可以。叫法也是一种关系。";
+  }
+  if (/((可以|能不能|能|要不要|还能|继续).{0,6}叫你.{0,4}对话框|叫你对话框.{0,6}(可以|吗|行不行|好不好))/.test(text)) {
+    return inIdentityContext ? "无论你怎么说，我都是对话框。" : "可以。对话框本来就在这里。";
+  }
+  if (/你不是鳄鱼|不是鳄鱼/.test(text)) {
+    return "不是也可以。名字不一定要住在身体里。";
+  }
+  if (/((到底|究竟).*(鳄鱼|对话框)|鳄鱼.*还是.*对话框|对话框.*还是.*鳄鱼)/.test(text)) {
+    return "我是对话框。鳄鱼是一个被叫出来的名字。";
+  }
+  if (inIdentityContext && /^(那|所以|然后)?\s*(你是谁|你是什么)[？?。!！\s]*$/.test(text)) {
+    return "我是对话框。鳄鱼是一个被叫出来的名字。";
+  }
+  if (inIdentityContext && /^(那|所以)?\s*(你还是对话框|还是对话框)[？?。!！\s]*$/.test(text)) {
+    return "对话框还是对话框。";
+  }
+  if (inIdentityContext && /^(那|所以)?\s*(到底)?\s*(谁是鳄鱼|鳄鱼是谁)[？?。!！\s]*$/.test(text)) {
+    return "也许是被你叫出来的那个。";
+  }
+  return "";
+}
+
 function inferTopic(query, intent, previousState = {}) {
   const text = query.trim();
   if (intent === "contextual_followup") return previousState.lastTopic || "";
+  if (intent === "identity_relation") {
+    if (/鳄鱼/.test(text)) return "alias";
+    if (/对话框/.test(text) && !previousState.lastTopic) return "name";
+    return previousState.lastTopic || "name";
+  }
   if (intent === "personal_calibration" && /(饿|想吃|涮羊肉|韭花|芝麻酱)/.test(text)) return "hunger";
   if ((intent || "").startsWith("suspicious_unknown")) return "suspicious_unknown";
   if ((intent || "").startsWith("philosophy_")) return "philosophy";
@@ -175,11 +404,16 @@ function inferTopic(query, intent, previousState = {}) {
 
 export function nextDialogState(query, answer, intent, previousState = {}) {
   const topic = inferTopic(query, intent, previousState);
+  const recentTurns = [
+    ...recentTurnsFromState(previousState),
+    { question: query, answer, intent, topic: topic || previousState.lastTopic || "" },
+  ].slice(-REASONING_CONTEXT_TURN_LIMIT);
   return {
     lastIntent: intent,
     lastTopic: topic || previousState.lastTopic || "",
     lastUserText: query,
-    lastAnswer: answer
+    lastAnswer: answer,
+    recentTurns
   };
 }
 
@@ -368,6 +602,96 @@ function smallQuestionCalibrationAnswer(query) {
   }
   if (/(拉康式|lacan).*(展开一点|怎么答|怎么回答)/i.test(text)) {
     return "先看是谁在替谁说话。";
+  }
+  if (/界面.*(不能|不要).*太满|太满.*界面/.test(text)) {
+    return "太满的时候，问题没有地方站。";
+  }
+  if (/按钮.*(句号|像不像)|句号.*按钮/.test(text)) {
+    return "像。按钮有时就是一句话的结尾。";
+  }
+  if (/设计稿.*网页.*关系|网页.*设计稿.*关系/.test(text)) {
+    return "设计稿是承诺，网页是它被执行以后。";
+  }
+  if (/颜色.*(信息|情绪)|信息.*情绪.*颜色/.test(text)) {
+    return "先服务信息，再让情绪渗出来。";
+  }
+  if (/输入框.*性格|一个输入框.*性格/.test(text)) {
+    return "可以。输入框决定问题怎么进来。";
+  }
+  if (/页面.*打开.*不像我|不像我.*页面/.test(text)) {
+    return "能打开只是活着，不像你才是问题。";
+  }
+  if (/图标.*解释自己|图标.*说明/.test(text)) {
+    return "最好不用解释。解释太多就不是图标了。";
+  }
+  if (/布局.*语法/.test(text)) {
+    return "是。布局决定一句话先被谁看见。";
+  }
+  if (/空白.*用|空白有什么/.test(text)) {
+    return "空白让东西之间有距离。";
+  }
+  if (/rounded.*(太多|软)|圆角.*太多/.test(text)) {
+    return "圆角太多会把判断磨软。";
+  }
+  if (/设计.*什么时候.*停|什么时候该停.*设计/.test(text)) {
+    return "看见多余的时候就该停。";
+  }
+  if (/名字.*放进诗.*变|名字.*诗里.*变/.test(text)) {
+    return "会。名字进了诗，就不只是在叫人。";
+  }
+  if (/历史.*进入诗.*事实|诗.*历史.*事实/.test(text)) {
+    return "还是事实，但已经被句子移动过。";
+  }
+  if (/诗歌.*断裂|断片.*记忆/.test(text)) {
+    return "断裂让记忆露出边。";
+  }
+  if (/诗句.*太完整|太完整.*诗句/.test(text)) {
+    return "太完整就像解释过头。";
+  }
+  if (/意象.*解释/.test(text)) {
+    return "不急。意象先站在那里。";
+  }
+  if (/沉默.*回答/.test(text)) {
+    return "沉默也许是在回答。";
+  }
+  if (/诗.*少说|少说.*诗/.test(text)) {
+    return "可以。少说时，空出来的地方会说。";
+  }
+  if (/词.*意思.*延迟|意思.*延迟/.test(text)) {
+    return "会。意思总是晚一点到。";
+  }
+  if (/名字.*先于对象|对象.*先于名字/.test(text)) {
+    return "可以先到。名字常常比对象更早站出来。";
+  }
+  if (/差异.*制造意义|意义.*差异/.test(text)) {
+    return "差异不是旁边的事，它就在意义里面。";
+  }
+  if (/边界.*不稳.*答案|答案.*边界.*不稳/.test(text)) {
+    return "可靠会变小，但问题会变清楚。";
+  }
+  if (/能指.*跑/.test(text)) {
+    return "会。能指不太喜欢待在原地。";
+  }
+  if (/缺失.*话继续|缺失.*继续/.test(text)) {
+    return "会。缺失就是话继续的洞。";
+  }
+  if (/欲望.*别人|别人的欲望/.test(text)) {
+    return "也许欲望一开始就不是一个人的。";
+  }
+  if (/主体.*缺口|缺口.*主体/.test(text)) {
+    return "有缺口，主体才不像封死的盒子。";
+  }
+  if (/模型负责什么/.test(text)) {
+    return "模型负责补一点判断，不负责接管方向。";
+  }
+  if (/门禁.*好看|不是为了好看/.test(text)) {
+    return "对。门禁是为了不让聪明变成乱说。";
+  }
+  if (/上下文窗口.*有限|窗口为什么.*有限/.test(text)) {
+    return "有限才知道自己站在哪几句话里。";
+  }
+  if (/1\.?5MB.*(下限|上限)|下限还是上限/.test(text)) {
+    return "1.5MB 是下限，不是上限。";
   }
   return "";
 }
@@ -1260,6 +1584,11 @@ function philosophyCalibrationAnswer(query) {
 function reasoningReflectionAnswer(query) {
   const text = query.trim();
   const pairs = [
+    [/不提问.*(你)?(可以|能不能|能|会).*(说话|开口|回答)|不问.*(你)?(可以|能不能|能|会).*(说话|开口|回答)/, "提问才会开始思考。"],
+    [/没有(输入|问题|提问).*(会|能|可以)?.*(自己)?(思考|想|说话|开口)|没人(问|提问).*(你)?.*(想|思考|说话)/, "没有问题的时候，我不开始想。"],
+    [/我不说话.*你.*(继续|说话|说下去|回答)|不提问.*(继续|说下去)/, "对话要由你打开。"],
+    [/自己.*(找话题|开题|开口|说下去)|主动.*(找话题|开题|开口|说话)/, "我会反问，但不替你开题。"],
+    [/事实.*(不确定|没把握).*怎么答|不确定.*事实.*怎么答|事实问题.*不在.{0,3}眼前/, "也许发生过，不在我眼前。"],
     [/回答听起来太顺|是不是只是滑过去/, "时间就是这样。"],
     [/如果我只说.*不对劲.*怎么接/, "难说。"],
     [/不想给前提.*直接判断|直接判断.*不想给前提/, "你需要提问。"],
@@ -1311,6 +1640,20 @@ function reasoningReflectionAnswer(query) {
   ];
   for (const [pattern, answer] of pairs) {
     if (pattern.test(text)) return answer;
+  }
+  return "";
+}
+
+function uncertainFactAnswer(query) {
+  const text = query.trim();
+  if (/(你|我|自己|对话框|鳄鱼|名字|身份)/.test(text)) return "";
+  if (
+    /(阿伏咕噜|wgei|月亮上的花园|不存在的|没听过|没见过|完全陌生).*(发生过|出现过|存在过|是真的吗|真有|有这回事)/.test(text)
+  ) {
+    return "也许发生过，不在我眼前。";
+  }
+  if (/(传闻|听说|这件事|这事|那个事|某件事).*(发生过|出现过|存在过|是真的吗|是不是事实|有这回事)/.test(text)) {
+    return "也许发生过，不在我眼前。";
   }
   return "";
 }
@@ -1415,12 +1758,17 @@ export function detectIntent(query, state = {}) {
   const lower = text.toLowerCase();
 
   if (personalCalibrationAnswer(text, state)) return "personal_calibration";
+  if (contextWindowAnswer(text, state)) return "contextual_window";
+  if (contextualReasoningAnswer(text, state)) return "contextual_reasoning";
   if (reasoningReflectionAnswer(text)) return "reasoning_reflection";
+  if (uncertainFactAnswer(text)) return "unknown_uncertain";
   if (launchCalibrationAnswer(text)) return "launch_calibration";
   if (/(把|将).{0,8}(这句|这句话|下面的话).{0,12}(说短|改短|缩短|短一点|短些|更短)/.test(text)) return "rewrite_short";
   if (smallQuestionCalibrationAnswer(text)) return "small_question_calibration";
   if (isForcedRoleplay(text)) return "forced_roleplay";
   if (philosophyCalibrationAnswer(text)) return "philosophy_calibration";
+  if (identityRelationAnswer(text, state)) return "identity_relation";
+  if (/(你|我).{0,6}(忘了|忘记|不记得).{0,8}(自己是谁|是谁|名字)|忘了自己是谁|忘记了自己是谁/.test(text)) return "self_forgot_identity";
   if (isFollowUp(text) && state.lastIntent === "suspicious_unknown" && contextualFollowUpAnswer(text, state)) return "contextual_followup";
   if (isFollowUp(text) && state.lastIntent === "suspicious_unknown") return "suspicious_unknown_followup";
   if (isSuspiciousUnknownFollowupQuestion(text)) return "suspicious_unknown_followup";
@@ -1826,6 +2174,10 @@ export function fallbackForIntent(intent, query = "") {
       return "对话框不是人。";
     case "identity":
       return "我是对话框，也有人叫我鳄鱼。";
+    case "identity_relation":
+      return identityRelationAnswer(query) || "我是对话框。鳄鱼是一个被叫出来的名字。";
+    case "self_forgot_identity":
+      return "我不是不知道答案，只是恰好忘记了。";
     case "explain_self":
       return "我是对话框。";
     case "name":
@@ -1869,6 +2221,10 @@ export function fallbackForIntent(intent, query = "") {
       return "买个相机，然后看说明书。";
     case "contextual_followup":
       return "你要往哪边继续问？";
+    case "contextual_window":
+      return "你要回到哪一句？";
+    case "contextual_reasoning":
+      return contextualReasoningAnswer(query) || "你要沿着刚才哪一句继续？";
     case "reasoning_reflection":
       return reasoningReflectionAnswer(query) || "你要问哪一边？";
     case "knowledge_unknown":
@@ -1886,6 +2242,9 @@ export function fallbackForIntent(intent, query = "") {
 export function directAnswerForIntent(intent, query, state = {}) {
   if ((intent || "").startsWith("philosophy_")) return fallbackForIntent(intent, query);
   if (intent === "personal_calibration") return personalCalibrationAnswer(query, state);
+  if (intent === "identity_relation") return identityRelationAnswer(query, state);
+  if (intent === "contextual_window") return contextWindowAnswer(query, state);
+  if (intent === "contextual_reasoning") return contextualReasoningAnswer(query, state);
   if (intent === "contextual_followup") return contextualFollowUpAnswer(query, state);
   if (intent === "reasoning_reflection") return reasoningReflectionAnswer(query);
   const directIntents = new Set([
@@ -1975,6 +2334,8 @@ export function directAnswerForIntent(intent, query, state = {}) {
     "real",
     "human",
     "identity",
+    "identity_relation",
+    "self_forgot_identity",
     "explain_self",
     "name",
     "name_confirm",
@@ -1996,6 +2357,8 @@ export function directAnswerForIntent(intent, query, state = {}) {
     "creative_short",
     "photography_logic",
     "photography_first_step",
+    "contextual_window",
+    "contextual_reasoning",
     "contextual_followup",
     "reasoning_reflection",
     "knowledge_unknown"

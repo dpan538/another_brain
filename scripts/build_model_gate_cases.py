@@ -310,6 +310,17 @@ def build_cases(args: argparse.Namespace) -> dict[str, Any]:
                 "must_not_use_model": True,
             },
         )
+    for index, turns in enumerate(getattr(module, "RELATIONSHIP_REPETITION_CASES", [])):
+        append_case(
+            cases,
+            seen,
+            {
+                "id": f"relationship_repetition_{index:03d}",
+                "lane": "relationship_repetition",
+                "turns": [{"prompt": prompt, "expected": expected} for prompt, expected in turns],
+                "must_not_use_model": True,
+            },
+        )
     for case in generated_knowledge_cases(args.generated_knowledge):
         append_case(cases, seen, case)
     for case_id, prompt, outputs in MODEL_REWRITE_CASES:
@@ -342,6 +353,7 @@ def build_cases(args: argparse.Namespace) -> dict[str, Any]:
                 "philosophy",
                 "reasoning",
                 "multi_turn",
+                "relationship_repetition",
                 "model_rewrite",
             ],
         },

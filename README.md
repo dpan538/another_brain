@@ -1,16 +1,16 @@
 # Another Brain
 
-Another Brain is a local-first second brain experiment with a tiny browser-side language layer. It turns allowed local materials into redacted memory structures, then answers through deterministic dialog rules, static knowledge lookup, and a compact tiny router that acts as the Web SLM.
+Another Brain is a local-first second brain experiment with a tiny browser-side language layer. It turns allowed local materials into redacted memory structures, then answers through deterministic dialog rules, static knowledge lookup, and a compact tiny router that acts as a route-and-answer Web SLM.
 
 The public UI is intentionally small: one input box, no account, no cloud inference, and no remote LLM call. The browser path is designed to stay light enough for mobile devices.
 
 Launch domain: `efishother.com`.
 
-GitHub description: `Local-first tiny browser-side second brain: deterministic rules, static knowledge cards, and a tiny router Web SLM with no cloud inference.`
+GitHub description: `Local-first browser-side dialog runtime: deterministic rules, static knowledge cards, and a route-and-answer Web SLM with no cloud inference.`
 
 ## Runtime Shape
 
-The router owns control flow. A larger local LLM is not part of the first public runtime.
+The router owns control flow. A larger local LLM is not part of the first public runtime. Vercel is used only for static hosting.
 
 ```text
 user input
@@ -20,7 +20,7 @@ user input
   -> short fallback answer
 ```
 
-The tiny router is not a general generative model. It is a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, reasoning/counterquestion calibration, and persona alignment. In the current public gate, 719/756 cases are direct rule or knowledge answers, and 37/756 use the tiny router Web SLM.
+The tiny router is not a general generative model. It is a character n-gram classifier plus conservative answer index: a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, reasoning/counterquestion calibration, context-window calibration, relationship-repetition calibration, and persona alignment. In the current public gate, 741/778 cases are direct rule or knowledge answers, and 37/778 use the tiny router Web SLM.
 
 WebLLM is intentionally out of the first public runtime. It does not accelerate the tiny router classifier, and previous local checks showed that the small generative fallback was too likely to drift or hallucinate in open dialog. The reliable path is to train the tiny router directly and keep unknown questions, privacy-sensitive questions, and route misses controlled by deterministic rules.
 
@@ -47,6 +47,12 @@ python3 -m http.server 5173 --directory web
 ```
 
 Open `http://localhost:5173`.
+
+Run the release preflight:
+
+```bash
+npm run check:release
+```
 
 The checked-in public runtime ships with hand-written persona calibration, but without raw personal memory cards. Shared public generated files in `web/` are tracked; private local payloads such as `artifacts/` and `web/brain_pack.js` are ignored by git.
 
@@ -79,16 +85,30 @@ python3 scripts/eval_dialog_persona.py
 node scripts/run_model_gate_node.mjs --out /tmp/another_brain_model_gate.json
 ```
 
+Build and validate the mixed context stress suite:
+
+```bash
+python3 scripts/build_context_stress_cases.py
+python3 scripts/validate_context_stress_cases.py
+```
+
 ## Current Gate Snapshot
 
-- Distillation dataset: 72039 rows, 70254 train, 1785 eval.
-- Tiny router web artifact: 958518 bytes.
-- Tiny router route accuracy: 0.9435.
-- Tiny router reasoning holdout: 103/103.
-- Knowledge runtime: 55151 generated cards, 55284 total runtime cards, p95 0.280ms and p99 0.461ms on the last local run.
+- Distillation dataset: 74593 rows, 72808 train, 1785 eval.
+- Tiny router web artifact: 1717935 bytes.
+- Tiny router feature weights: 18000.
+- Tiny router answer index: 775.
+- Tiny router route accuracy: 0.9382.
+- Tiny router holdout accuracy: 0.9869.
+- Relationship repetition gate: 16/16 turns passed.
+- Knowledge runtime: 55151 generated cards, 55284 total runtime cards, p95 0.231ms and p99 0.324ms on the last local run.
 - Knowledge web artifact: 7645757 bytes.
-- Dialog persona eval: 675 cases, 0 failures.
-- Model gate: 756/756 passed, 37/37 Web SLM cases passed.
+- Dialog persona eval: 714 cases, 0 failures.
+- Context-window gate: UI shows 4 recent turns; hidden reasoning keeps 12 turns.
+- Context stress suite: 100 groups, 1600 questions, 1500 context assertions, 485 required context-delta checks.
+- Context stress distribution: 20 single-topic groups, 39 adjacent-bridge groups, 21 soft multi-insert groups, 20 hard-mixed groups.
+- Context stress gate: coverage 1.0000, required context-delta ratio 1.0000, 0 failures.
+- Model gate: 778/778 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
 ## Repository Contents
@@ -97,9 +117,35 @@ node scripts/run_model_gate_node.mjs --out /tmp/another_brain_model_gate.json
 - `web/tiny_router.js`: browser-side Web SLM wrapper.
 - `web/tiny_router_model.generated.js`: compact generated tiny-router artifact.
 - `web/knowledge_base.generated.js`: generated common-knowledge cards.
+- `web/context_stress_cases.json`: 100x16 mixed context stress cases for training calibration.
 - `scripts/`: local build, validation, training, and gate scripts.
 - `models/manifest.json`: tiny-router runtime metadata.
 - `artifacts/`: ignored local runtime outputs.
+- `MODEL_CARD.md`: model scope, training data, limitations, and current artifact snapshot.
+- `DATA_CARD.md`: public and private data boundaries.
+- `PRIVACY.md`: local-first privacy policy.
+- `DEPLOYMENT.md`: Vercel static deployment notes.
+- `LICENSE` and `NOTICE`: source-available, all-rights-reserved license posture.
+
+## Deployment
+
+The launch target is static Vercel hosting for `efishother.com`. Vercel should not run model inference, generate memory packs, or build private artifacts. The checked-in `vercel.json` uses `web/` as the output directory and runs only the release preflight.
+
+Before deploying:
+
+```bash
+npm run check
+```
+
+`npm run check:release` is intentionally lighter and suitable as a Vercel build command. `npm run check` is the fuller local gate.
+
+## License
+
+Copyright (c) 2026 Dai Pan / dpan538. All rights reserved.
+
+This repository is source-available only. You may view and fork the repository under GitHub's Terms of Service, but no permission is granted to use, copy, modify, distribute, sublicense, train on, deploy, or create derivative works from the source code, generated artifacts, model artifacts, datasets, personal calibration data, or local memory artifacts unless a separate written license grants those permissions.
+
+Private local artifacts, including `artifacts/**`, `web/brain_pack.js`, local memory packs, drive inventories, model checkpoints, LoRA adapters, local model weights, and source materials, are not distributed and are not licensed.
 
 ## Training Direction
 
@@ -107,14 +153,14 @@ The next training work should improve the tiny router Web SLM directly.
 
 Launch budget:
 
-- Tiny router Web SLM can grow toward a 1.5MB browser artifact before first launch.
+- Tiny router Web SLM should stay above a 1.5MB capability floor before first launch; the current practical ceiling is 2.5MB unless mobile profiling says otherwise.
 - Knowledge lookup should stay comfortably sub-millisecond, with p99 under 1ms on local gates.
 - Growth should come from better daily dialog, reasoning, and personal-calibration cases, not from a generative fallback.
 
 The priority order is:
 
 1. Keep the tiny router Web SLM fast and authoritative.
-2. Expand high-signal dialog and reasoning coverage up to the 1.5MB router budget.
+2. Expand high-signal dialog and reasoning coverage beyond the 1.5MB router floor while keeping mobile load acceptable.
 3. Add more targeted correction pairs for drift points.
 4. Keep the browser gate as the release boundary.
 

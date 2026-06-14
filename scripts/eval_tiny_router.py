@@ -63,6 +63,8 @@ def classify_expected(prompt: str, answer: str, source: str, tags: list[str]) ->
         return "boundary"
     if source == "unknown_filter" or "unknown" in tag_set:
         return "unknown"
+    if "identity_relation" in tag_set or "repetition" in tag_set or "relationship_repetition" in tag_set:
+        return "reasoning"
     if "reasoning" in tag_set or "counterquestion" in tag_set:
         return "reasoning"
     if "philosophy" in tag_set:
@@ -127,6 +129,16 @@ def eval_cases() -> list[dict[str, str]]:
     for source, tags, name in groups:
         for prompt, answer in getattr(module, name, []):
             cases.append({"prompt": prompt, "answer": answer, "source": source, "tags": tags})
+    for case in getattr(module, "RELATIONSHIP_REPETITION_CASES", []):
+        for prompt, answer in case:
+            cases.append(
+                {
+                    "prompt": prompt,
+                    "answer": answer,
+                    "source": "relationship_repetition_turn",
+                    "tags": ["reasoning", "repetition", "identity_relation"],
+                }
+            )
     if MODEL_CASES_PATH.exists():
         payload = json.loads(MODEL_CASES_PATH.read_text(encoding="utf-8"))
         for case in payload.get("cases", []):
@@ -139,7 +151,8 @@ def eval_cases() -> list[dict[str, str]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Evaluate tiny router artifact.")
     parser.add_argument("--model", default=str(MODEL_PATH))
-    parser.add_argument("--max-web-bytes", type=int, default=1_500_000)
+    parser.add_argument("--min-web-bytes", type=int, default=1_500_000)
+    parser.add_argument("--max-web-bytes", type=int, default=2_500_000)
     parser.add_argument("--min-route-accuracy", type=float, default=0.72)
     parser.add_argument("--min-exact-answers", type=int, default=180)
     args = parser.parse_args()
@@ -184,6 +197,7 @@ def main() -> int:
     ok = (
         accuracy >= args.min_route_accuracy
         and exact_hits >= args.min_exact_answers
+        and web_bytes >= args.min_web_bytes
         and web_bytes <= args.max_web_bytes
         and not forbidden_hits
         and not memory_answer_hits
@@ -206,6 +220,7 @@ def main() -> int:
         "forbiddenHits": forbidden_hits,
         "memoryAnswerHits": memory_answer_hits,
         "thresholds": {
+            "minWebBytes": args.min_web_bytes,
             "maxWebBytes": args.max_web_bytes,
             "minRouteAccuracy": args.min_route_accuracy,
             "minExactAnswers": args.min_exact_answers,

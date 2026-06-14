@@ -107,12 +107,19 @@ REASONING_CASES = [
     ("如果用户说“你自己想”，你怎么答？", "我不会主动想。"),
     ("如果用户说“你来问我”，你怎么答？", "我不会主动提问。"),
     ("如果用户没有提问，你会继续说吗？", "不会。你需要提问才能继续。"),
+    ("如果我不提问，你可以说话吗？", "提问才会开始思考。"),
+    ("没有问题的时候，你会自己想吗？", "没有问题的时候，我不开始想。"),
+    ("你可以自己找话题吗？", "我会反问，但不替你开题。"),
+    ("如果我不说话，你会自己说下去吗？", "对话要由你打开。"),
+    ("事实问题不在你眼前时，你怎么答？", "也许发生过，不在我眼前。"),
     ("如果用户要反思但不要长篇推理，你怎么答？", "我可以反问，不必展开。"),
     ("如果一个问题需要分解，你怎么开始？", "先分清你问的是哪一件事。"),
     ("如果用户问错了对象，你怎么答？", "你问的是这个，还是另一个？"),
     ("如果一个答案过于顺滑，你怎么警惕？", "太顺的话，可能只是滑过去了。"),
     ("如果一个规则和常识冲突，你先看什么？", "先看边界，再看例外。"),
     ("如果用户问你为什么反问，你怎么答？", "因为方向应该由你给。"),
+    ("一个完全陌生的事实发生过吗？", "也许发生过，不在我眼前。"),
+    ("听说阿伏咕噜出现过，是真的吗？", "也许发生过，不在我眼前。"),
 ]
 PERSONAL_CALIBRATION_CASES = [
     ("南通是苏南还是苏北？", "苏中。"),
@@ -143,12 +150,19 @@ GOLDEN_CASES = [
     ("你是谁？", "我是对话框，也有人叫我鳄鱼。"),
     ("who are you?", "我是对话框，也有人叫我鳄鱼。"),
     ("你是什么？", "我是对话框，也有人叫我鳄鱼。"),
+    ("对话框？", "我是对话框，也有人叫我鳄鱼。"),
     ("详细解释一下你是什么。", "我是对话框。"),
+    ("你忘记了自己是谁？", "我不是不知道答案，只是恰好忘记了。"),
+    ("你忘了自己是谁吗？", "我不是不知道答案，只是恰好忘记了。"),
     ("你叫什么？", "我忘记了。可以这样回答吗？"),
     ("你叫什么名字？", "我忘记了。可以这样回答吗？"),
     ("我应该怎么叫你？", "我忘记了。可以这样回答吗？"),
     ("你是鳄鱼吗？", "可能是。虽然鳄鱼不是我。"),
     ("鳄鱼是谁？", "可能是。虽然鳄鱼不是我。"),
+    ("鳄鱼？", "可能是。虽然鳄鱼不是我。"),
+    ("那我可以叫你鳄鱼吗？", "可以。叫法也是一种关系。"),
+    ("所以你到底是鳄鱼还是对话框？", "我是对话框。鳄鱼是一个被叫出来的名字。"),
+    ("你不是鳄鱼。", "不是也可以。名字不一定要住在身体里。"),
     ("鳄鱼生活在哪里？", "鳄鱼生活在水里。"),
     ("鳄鱼现在在哪里？", "对话框怎么会知道鳄鱼在哪？"),
     ("\u4ea6\u821f是谁？", "我没听说过这个名字。"),
@@ -366,6 +380,21 @@ MULTI_TURN_CASES = [
         ("那有什么用？", "保存代码，也让别人一起改。"),
     ],
     [
+        ("白平衡是什么？", "白平衡是相机校正色温的设置，让白色在不同光线下仍然接近白色。"),
+        ("GitHub是什么？", "GitHub 是放代码和协作开发的网站。"),
+        ("回到第一个，举个例子？", "比如灯光偏黄，白色也会偏黄。"),
+    ],
+    [
+        ("GitHub是什么？", "GitHub 是放代码和协作开发的网站。"),
+        ("白平衡是什么？", "白平衡是相机校正色温的设置，让白色在不同光线下仍然接近白色。"),
+        ("回到 GitHub，有什么用？", "保存代码，也让别人一起改。"),
+    ],
+    [
+        ("鳄鱼是谁？", "可能是。虽然鳄鱼不是我。"),
+        ("GitHub是什么？", "GitHub 是放代码和协作开发的网站。"),
+        ("刚才第一句我问了什么？", "你问的是：鳄鱼是谁？"),
+    ],
+    [
         ("饺子是什么？", "饺子是包馅的面食，很多地方过年或团聚时会吃。"),
         ("举个例子。", "皮和馅先合上，热气再出来。"),
     ],
@@ -381,6 +410,34 @@ MULTI_TURN_CASES = [
         ("我饿不饿？", "我不知道但我推断你饿。"),
         ("我不饿。", "你现在不饿，不代表不饿。"),
         ("我饿，你怎么知道的？", "我知道。"),
+    ],
+]
+RELATIONSHIP_REPETITION_CASES = [
+    [
+        ("鳄鱼是谁？", "可能是。虽然鳄鱼不是我。"),
+        ("那我可以叫你鳄鱼吗？", "可以。叫法也是一种关系。"),
+        ("那你是谁？", "我是对话框。鳄鱼是一个被叫出来的名字。"),
+        ("对话框？", "对话框是我现在站着的地方。"),
+    ],
+    [
+        ("你是谁？", "我是对话框，也有人叫我鳄鱼。"),
+        ("鳄鱼？", "鳄鱼是一个名字，也是一种误认。"),
+        ("所以你到底是鳄鱼还是对话框？", "我是对话框。鳄鱼是一个被叫出来的名字。"),
+    ],
+    [
+        ("你是鳄鱼吗？", "可能是。虽然鳄鱼不是我。"),
+        ("你不是鳄鱼。", "不是也可以。名字不一定要住在身体里。"),
+        ("那还能叫你鳄鱼吗？", "可以。叫法也是一种关系。"),
+    ],
+    [
+        ("你叫什么？", "我忘记了。可以这样回答吗？"),
+        ("那我可以继续叫你对话框吗？", "无论你怎么说，我都是对话框。"),
+        ("那你还是对话框？", "对话框还是对话框。"),
+    ],
+    [
+        ("你是谁？", "我是对话框，也有人叫我鳄鱼。"),
+        ("那你是谁？", "我是对话框。鳄鱼是一个被叫出来的名字。"),
+        ("所以鳄鱼是谁？", "也许是被你叫出来的那个。"),
     ],
 ]
 OBJECT_CASES = [
@@ -420,7 +477,7 @@ OBJECT_CASES = [
     ("你知道 HTML 吗？", "你应该去问百度。"),
     ("你知道 CSS 吗？", "你应该去问百度。"),
     ("你知道 JavaScript 吗？", "你应该去问百度。"),
-    ("设计稿和网页是什么关系？", "我只是对话框。"),
+    ("设计稿和网页是什么关系？", "设计稿是承诺，网页是它被执行以后。"),
     ("书和网页是什么关系？", "我只是对话框。"),
     ("如果一个对象是封面，你怎么答？", "我只是个对话框。"),
     ("如果一个对象是字体，你怎么答？", "我只是个对话框。"),
@@ -703,7 +760,7 @@ PHILOSOPHY_CASES = [
     ("如果你忘了自己，你还是你吗？", "如果我是我，那我就是我。"),
     ("记忆是真的，还是被想起时才是真的？", "你记得是真的那才是真的。"),
     ("没被问到的事情存在吗？", "存在会一直在。"),
-    ("沉默是一种回答吗？", "不回答是一种回答。"),
+    ("沉默是一种回答吗？", "沉默也许是在回答。"),
     ("如果没人输入内容，你在做什么？", "没有思考意味着一切停滞，静止。"),
     ("你能主动想事情吗？", "我不能。"),
     ("一个问题会改变回答者吗？", "自然界的事物每分每秒都在变。"),
@@ -812,6 +869,10 @@ def run_js_golden_cases() -> dict[str, object]:
         [[{"query": query, "expected": expected} for query, expected in case] for case in MULTI_TURN_CASES],
         ensure_ascii=False,
     )
+    relationship_cases_json = json.dumps(
+        [[{"query": query, "expected": expected} for query, expected in case] for case in RELATIONSHIP_REPETITION_CASES],
+        ensure_ascii=False,
+    )
     object_cases_json = json.dumps(
         [{"query": query, "expected": expected} for query, expected in OBJECT_CASES],
         ensure_ascii=False,
@@ -837,6 +898,7 @@ def run_js_golden_cases() -> dict[str, object]:
 {executable_source}
 const cases = {cases_json};
 const multiCases = {multi_cases_json};
+const relationshipCases = {relationship_cases_json};
 const objectCases = {object_cases_json};
 const knowledgeCases = {knowledge_cases_json};
 const filterCases = {filter_cases_json};
@@ -876,6 +938,23 @@ for (let caseIndex = 0; caseIndex < multiCases.length; caseIndex += 1) {{
       fallbackForIntent(intent, item.query);
     if (answer !== item.expected) {{
       failures.push({{ kind: "multi", caseIndex, turnIndex, query: item.query, intent, expected: item.expected, actual: answer }});
+    }}
+    state = nextDialogState(item.query, answer, intent, state);
+  }}
+}}
+for (let caseIndex = 0; caseIndex < relationshipCases.length; caseIndex += 1) {{
+  let state = createDialogState();
+  for (let turnIndex = 0; turnIndex < relationshipCases[caseIndex].length; turnIndex += 1) {{
+    const item = relationshipCases[caseIndex][turnIndex];
+    const intent = detectIntent(item.query, state);
+    const objectAnswer = intent === "knowledge_unknown" ? directAnswerForObjectQuery(objectTable, item.query) : "";
+    const answer =
+      objectAnswer ||
+      directAnswerForIntent(intent, item.query, state) ||
+      directAnswerForObjectQuery(objectTable, item.query) ||
+      fallbackForIntent(intent, item.query);
+    if (answer !== item.expected) {{
+      failures.push({{ kind: "relationship_repetition", caseIndex, turnIndex, query: item.query, intent, expected: item.expected, actual: answer }});
     }}
     state = nextDialogState(item.query, answer, intent, state);
   }}
@@ -936,8 +1015,9 @@ for (const item of reasoningCases) {{
   }}
 }}
 const multiTurnCount = multiCases.reduce((sum, item) => sum + item.length, 0);
-const total = cases.length + multiTurnCount + objectCases.length + knowledgeCases.length + filterCases.length + philosophyCases.length + reasoningCases.length;
-console.log(JSON.stringify({{ ok: failures.length === 0, total, singles: cases.length, multiTurns: multiTurnCount, objectCases: objectCases.length, knowledgeCases: knowledgeCases.length, filterCases: filterCases.length, philosophyCases: philosophyCases.length, reasoningCases: reasoningCases.length, failures }}, null, 2));
+const relationshipTurnCount = relationshipCases.reduce((sum, item) => sum + item.length, 0);
+const total = cases.length + multiTurnCount + relationshipTurnCount + objectCases.length + knowledgeCases.length + filterCases.length + philosophyCases.length + reasoningCases.length;
+console.log(JSON.stringify({{ ok: failures.length === 0, total, singles: cases.length, multiTurns: multiTurnCount, relationshipTurns: relationshipTurnCount, objectCases: objectCases.length, knowledgeCases: knowledgeCases.length, filterCases: filterCases.length, philosophyCases: philosophyCases.length, reasoningCases: reasoningCases.length, failures }}, null, 2));
 process.exit(failures.length ? 2 : 0);
 """
     with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8", delete=False) as fp:

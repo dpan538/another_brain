@@ -1,0 +1,20 @@
+# Notice
+
+Another Brain is a local-first browser-side dialog and memory experiment.
+
+Copyright (c) 2026 Dai Pan / dpan538. All rights reserved.
+
+The public runtime may include generated static knowledge cards and a generated
+tiny-router model artifact. These artifacts are generated for this project only
+and do not grant permission to reuse private source material, local memory
+artifacts, personal calibration data, model training data, or generated runtime
+artifacts outside this repository.
+
+The checked-in tiny router is a route-and-answer browser artifact. It is not a
+general-purpose generative language model.
+
+Third-party dependencies, if added later, remain subject to their own licenses.
+Any future use of WebLLM, Transformers.js, ONNX Runtime Web, MLC-LLM, Hugging
+Face models, Qwen, Phi, Gemma, Llama, or other model families must include the
+corresponding license, model card, attribution, and notice files required by
+those projects.

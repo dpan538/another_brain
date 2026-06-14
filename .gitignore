@@ -2,6 +2,10 @@
 __pycache__/
 **/__pycache__/
 *.pyc
+.env
+.env.*
+.vercel/
+/tmp/
 
 # Local memory, training runs, and generated evaluation artifacts are private
 # runtime outputs. They can be rebuilt locally and should not be pushed to a

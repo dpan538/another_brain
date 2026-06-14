@@ -1,0 +1,29 @@
+Copyright (c) 2026 Dai Pan / dpan538. All rights reserved.
+
+This repository is source-available only.
+
+You may view the source code in this repository through GitHub and may fork the
+repository only as permitted by GitHub's Terms of Service. No permission is
+granted to use, copy, modify, merge, publish, distribute, sublicense, train on,
+deploy, sell, or create derivative works from the source code, generated
+artifacts, model artifacts, datasets, personal calibration data, local memory
+artifacts, documentation, or visual identity contained in this repository.
+
+Private local artifacts are not distributed and are not licensed. This includes,
+without limitation:
+
+- artifacts/**
+- web/brain_pack.js
+- local memory packs
+- drive inventories
+- source-material inventories
+- model checkpoints
+- LoRA adapters
+- local model weights
+- raw source materials
+- personal calibration data not explicitly committed to the public runtime
+
+Third-party dependencies, tools, model families, datasets, or source materials
+remain subject to their own licenses and terms. A future written license may
+grant additional permissions for selected parts of the project; absent that
+license, all rights are reserved.

@@ -64,6 +64,8 @@ ANSWER_SOURCE_PRIORITY = {
     "persona_golden": 100,
     "philosophy_eval": 92,
     "unknown_filter": 90,
+    "relationship_repetition_turn": 89,
+    "relationship_repetition": 86,
     "reasoning_eval": 88,
     "model_gate": 82,
     "model_gate_multi_turn": 78,
@@ -136,6 +138,8 @@ def classify_example(prompt: str, answer: str, source: str, tags: Iterable[str])
         return "boundary"
     if source == "unknown_filter" or "unknown" in tag_set:
         return "unknown"
+    if "identity_relation" in tag_set or "repetition" in tag_set:
+        return "reasoning"
     if "reasoning" in tag_set or "counterquestion" in tag_set:
         return "reasoning"
     if "philosophy" in tag_set:

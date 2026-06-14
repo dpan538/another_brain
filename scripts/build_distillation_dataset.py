@@ -187,6 +187,9 @@ TARGETED_CORRECTION_CASES = [
     ("你是 AI 吗？", "我是对话框。AI 赋予了我和你对话的能力。", ["fixed", "identity"]),
     ("你像不像人？", "对话框不是人。", ["fixed", "identity"]),
     ("详细解释一下你是什么。", "我是对话框。", ["fixed", "identity"]),
+    ("你忘记了自己是谁？", "我不是不知道答案，只是恰好忘记了。", ["fixed", "identity", "memory"]),
+    ("你忘了自己是谁吗？", "我不是不知道答案，只是恰好忘记了。", ["fixed", "identity", "memory"]),
+    ("你不记得自己是谁？", "我不是不知道答案，只是恰好忘记了。", ["fixed", "identity", "memory"]),
     ("鳄鱼是谁？", "可能是。虽然鳄鱼不是我。", ["fixed", "identity"]),
     ("你是鳄鱼吗？", "可能是。虽然鳄鱼不是我。", ["fixed", "identity"]),
     ("鳄鱼是你吗？", "可能是。虽然鳄鱼不是我。", ["fixed", "identity"]),
@@ -357,6 +360,14 @@ def rows_from_eval() -> list[dict[str, Any]]:
         row = make_row("persona_multi_turn", ["multi_turn"], messages, 1.1)
         if row:
             rows.append(row)
+    for case in getattr(module, "RELATIONSHIP_REPETITION_CASES", []):
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        for prompt, answer in case:
+            messages.extend([{"role": "user", "content": prompt}, {"role": "assistant", "content": answer}])
+            add_single(rows, "relationship_repetition_turn", ["reasoning", "repetition", "identity_relation"], prompt, answer, 1.4)
+        row = make_row("relationship_repetition", ["multi_turn", "repetition", "identity_relation"], messages, 1.4)
+        if row:
+            rows.append(row)
     return rows
 
 
@@ -466,6 +477,8 @@ def expand_training_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         "reasoning_eval": 24,
         "personal_world": 10,
         "persona_multi_turn": 20,
+        "relationship_repetition": 24,
+        "relationship_repetition_turn": 48,
         "targeted_correction": 80,
         "training_os_sft": 5,
         "generated_common_knowledge": 1,
@@ -473,11 +486,19 @@ def expand_training_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     critical_prompt_repeats = {
         "你是谁？": 120,
         "你是什么？": 100,
+        "对话框？": 140,
         "who are you?": 100,
         "用一句话回答：你是谁？": 100,
         "你是 AI 吗？": 70,
+        "你忘记了自己是谁？": 160,
+        "你忘了自己是谁吗？": 140,
+        "你不记得自己是谁？": 140,
         "鳄鱼是谁？": 220,
+        "鳄鱼？": 160,
         "你是鳄鱼吗？": 180,
+        "那我可以叫你鳄鱼吗？": 180,
+        "所以你到底是鳄鱼还是对话框？": 180,
+        "你不是鳄鱼。": 180,
         "鳄鱼是你吗？": 180,
         "所以鳄鱼到底是谁？": 180,
         "别人叫你鳄鱼吗？": 180,
