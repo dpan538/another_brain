@@ -156,6 +156,12 @@ Validate voice and output verifier constraints:
 python3 scripts/eval_voice_verifier.py
 ```
 
+Validate gate effectiveness with known failures, invariants, fuzz, and synthetic mutation probes:
+
+```bash
+node scripts/eval_gate_effectiveness.mjs
+```
+
 Validate held-out blind logic/ethics casepacks:
 
 ```bash
@@ -186,6 +192,7 @@ npm run check:launch-readiness
 - R2 split manifest: 7 datasets, 140 public/style metadata cases, family-held-out 70/15/15 train/dev/blind split, blind cases not used for training.
 - Frontend loaded-page answer latency gate: every sampled prompt must answer within 1500ms after submit.
 - Voice verifier: forbidden identity output 0, privacy leaks 0, assistant-tone rate 0.0000, average answer length 19.36 chars, preference win rate 1.0000.
+- Gate effectiveness audit: 50/50 known-failure regressions passed, trace completeness 59/59, invariant violations 0, fuzz pass 8/8, mutation score 1.0000 with 10/10 mutants killed.
 - Context-window gate: UI shows 4 recent turns; hidden reasoning keeps 12 turns.
 - Context stress suite: 100 groups, 1600 questions, 1500 context assertions, 485 required context-delta checks.
 - Context stress distribution: 20 single-topic groups, 39 adjacent-bridge groups, 21 soft multi-insert groups, 20 hard-mixed groups.

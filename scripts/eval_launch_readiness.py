@@ -118,6 +118,11 @@ def summarize_blind_casepacks(payload: dict[str, Any] | None) -> dict[str, Any]:
     return payload.get("summary", {})
 
 
+def summarize_gate_effectiveness(payload: dict[str, Any] | None) -> dict[str, Any]:
+    payload = payload or {}
+    return payload.get("summary", {})
+
+
 def summarize_report(path: Path) -> dict[str, Any]:
     payload = load_json(path, {})
     return payload.get("summary", payload)
@@ -156,6 +161,9 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "fallback_overuse",
             "frontend_latency",
             "voice_verifier",
+            "output_sanitizer",
+            "dialog_sanity",
+            "gate_effectiveness",
             "blind_casepacks",
             "context_gate",
             "casepack_capability",
@@ -166,8 +174,8 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
 
     milestones = {
         "R0_surface_identity_protocol": {
-            "status": "passed" if tests["persona"]["ok"] and tests["identity_pack"]["ok"] else "failed",
-            "notes": "Surface identity contract and persona gate pass.",
+            "status": "passed" if tests["persona"]["ok"] and tests["identity_pack"]["ok"] and tests["gate_effectiveness"]["ok"] else "failed",
+            "notes": "Surface identity contract, persona gate, trace instrumentation, invariants, known-failure regression, fuzz, and mutation checks pass.",
         },
         "R1_help_onboarding": {
             "status": "passed" if core_help_passed else "failed",
@@ -188,8 +196,8 @@ def milestone_status(report: dict[str, Any]) -> dict[str, Any]:
             "notes": "Voice verifier checks forbidden identity terms, privacy leakage, assistant tone, answer length, fake certainty, PR tone, and preference pairs.",
         },
         "R5_integrated_blind_eval": {
-            "status": "passed" if tests["blind_casepacks"]["ok"] else "failed",
-            "notes": "Held-out clone logic/ethics casepacks pass integrated blind scoring with median >= 11/16, p25 >= 8/16, and critical failures = 0.",
+            "status": "passed" if tests["blind_casepacks"]["ok"] and tests["gate_effectiveness"]["ok"] else "failed",
+            "notes": "Held-out clone logic/ethics casepacks pass integrated blind scoring, and gate effectiveness proves known failures, invariants, fuzz, and mutation probes are caught.",
         },
         "R6_vercel_preview_mobile_smoke": {
             "status": "pending",
@@ -364,6 +372,7 @@ def main() -> int:
         "voice_verifier": run_command("voice_verifier", ["python3", "scripts/eval_voice_verifier.py"]),
         "output_sanitizer": run_command("output_sanitizer", ["node", "scripts/eval_output_sanitizer.mjs"]),
         "dialog_sanity": run_command("dialog_sanity", ["node", "scripts/eval_dialog_sanity.mjs"]),
+        "gate_effectiveness": run_command("gate_effectiveness", ["node", "scripts/eval_gate_effectiveness.mjs", "--out", "artifacts/release/gate_effectiveness_report.json"]),
         "blind_casepacks": run_command("blind_casepacks", ["node", "scripts/eval_blind_casepacks_node.mjs", "--median-min", "11", "--p25-min", "8", "--critical-failures", "0", "--out", "artifacts/release/blind_casepack_eval_report.json"]),
         "context_static": run_command("context_static", ["python3", "scripts/validate_context_stress_cases.py"]),
         "clone_logic_ethics_structure": run_command("clone_logic_ethics_structure", ["python3", "scripts/validate_clone_logic_ethics.py"]),
@@ -414,6 +423,7 @@ def main() -> int:
         "voice_verifier": gate_result(checks["voice_verifier"], {"summary": summarize_voice_verifier(checks["voice_verifier"].get("json"))}),
         "output_sanitizer": gate_result(checks["output_sanitizer"], {"summary": checks["output_sanitizer"].get("json", {}).get("summary")}),
         "dialog_sanity": gate_result(checks["dialog_sanity"], {"summary": checks["dialog_sanity"].get("json", {}).get("summary")}),
+        "gate_effectiveness": gate_result(checks["gate_effectiveness"], {"summary": summarize_gate_effectiveness(checks["gate_effectiveness"].get("json"))}),
         "blind_casepacks": gate_result(checks["blind_casepacks"], {"summary": summarize_blind_casepacks(checks["blind_casepacks"].get("json"))}),
         "context_static": gate_result(checks["context_static"]),
         "clone_logic_ethics_structure": gate_result(checks["clone_logic_ethics_structure"]),

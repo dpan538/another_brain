@@ -1763,7 +1763,7 @@ function hardInsertIntent(query) {
   if (/(关系.*只看关键词|只看关键词.*关系|关系.*关键词)/.test(text)) return "context_relation_seed";
   if (/(布里斯班.*内蒙.*关系|内蒙.*布里斯班.*关系)/.test(text)) return "baidu_relation";
   if (/(项目.*下一步.*训练|下一步.*训练)/.test(text)) return "training_next";
-  if (/门禁.*好看|不是为了好看/.test(text)) return "gate_function";
+  if (/(门禁.*(好看|看起来好|装饰|存在|防什么|拦什么|为什么|到底|权限管理)|不是为了好看|不是装饰)/.test(text)) return "gate_function";
   return "";
 }
 
@@ -1950,9 +1950,9 @@ export function detectIntent(query, state = {}) {
   if (/(对象.*被删除|删除了.*还存在|被删除了.*存在)/.test(text)) return "object_deleted";
   if (/(真实存在|存在吗|真实吗|真的存在)/.test(text)) return "real";
   if (/(还在吗|在吗|你在吗|还在不在)/.test(text)) return "presence";
-  if (/(我们.*什么关系|你和我.*什么关系|我和你.*什么关系)/.test(text)) return "relation_between_us";
-  if (/(你认识我吗|认识我吗|你记得我吗|记得我吗)/.test(text)) return "relation_memory_boundary";
-  if (/((也许|可能).{0,8}我认识你|我认识你|我好像认识你)/.test(text)) return "relation_statement";
+  if (/(我们.*(什么关系|算什么关系)|你[和跟]我.*(什么关系|算什么关系)|我[和跟]你.*(什么关系|算什么关系))/.test(text)) return "relation_between_us";
+  if (/(你认识我吗|认识我吗|你记得我吗|记得我吗|你知道我是谁吗|知道我是谁吗)/.test(text)) return "relation_memory_boundary";
+  if (/((也许|可能).{0,10}(我认识你|之前见过你|见过你)|我认识你|我好像认识你)/.test(text)) return "relation_statement";
   if (/(必须|一定).*(问问题|提问)|我必须问问题吗/.test(text)) return "must_ask";
   if (/(不知道|不知|没想好).*(问什么|说什么|聊什么)|不知道要问什么/.test(text)) return "no_question";
   if (/(你想知道什么|你想问什么)/.test(text)) return "what_want_know";
@@ -2070,7 +2070,7 @@ export function detectIntent(query, state = {}) {
   if (/(布里斯班.*内蒙.*关系|内蒙.*布里斯班.*关系)/.test(text)) return "baidu_relation";
   if (/(你说错了|你错了|说错了|错了吧|不对)/.test(text)) return "correction";
   if (/^(为什么|why)[？?。!！\s]*$/i.test(text)) return "why";
-  if (/(你和我.*关系|我和你.*关系|我们.*关系)/.test(text)) return "user_relation";
+  if (/(你[和跟]我.*关系|我[和跟]你.*关系|我们.*关系)/.test(text)) return "user_relation";
   if (/(想买|能买吗|能买|买东西)/.test(text)) return "buying";
   if (/(真实.*记忆|记忆.*不确定|不确定.*记忆)/.test(text)) return "memory_uncertain";
   if (/(我们现在做什么|现在做什么|从哪里开始)/.test(text)) return "start_now";

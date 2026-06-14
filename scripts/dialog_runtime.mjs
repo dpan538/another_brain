@@ -10,6 +10,7 @@ import {
   nextDialogState
 } from "../web/dialog_rules.js?v=59";
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "../web/structured_decision.js?v=1";
+import { detectContextAction } from "../web/context_state.js?v=2";
 import { sanitizeSurfaceIdentity } from "../web/surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=15";
 
@@ -65,6 +66,54 @@ export function reasoningStateFor(runtime) {
     recentTurns: runtime.contextTurns.slice(-REASONING_CONTEXT_TURN_LIMIT).map((turn) => ({ ...turn })),
     visibleRecentTurns: runtime.contextTurns.slice(-VISIBLE_CONTEXT_TURN_LIMIT).map((turn) => ({ ...turn }))
   };
+}
+
+function compactState(state = {}) {
+  return {
+    lastIntent: state.lastIntent || "",
+    lastTopic: state.lastTopic || "",
+    lastUserText: state.lastUserText || "",
+    lastAnswer: state.lastAnswer || "",
+    commitments: Array.isArray(state.commitments)
+      ? state.commitments.map((item) => ({
+          id: item.id || "",
+          type: item.type || "",
+          ttl: item.ttl || 0,
+          claim: item.claim || ""
+        }))
+      : [],
+    frames: Array.isArray(state.frames) ? state.frames : [],
+    recentTurns: Array.isArray(state.recentTurns)
+      ? state.recentTurns.slice(-VISIBLE_CONTEXT_TURN_LIMIT).map((turn) => ({
+          question: turn.question || "",
+          answer: turn.answer || "",
+          intent: turn.intent || "",
+          topic: turn.topic || ""
+        }))
+      : []
+  };
+}
+
+function isWhyQuestion(text) {
+  return /^(为什么|为何|怎么会|why)\b|为什么/.test(String(text || "").trim());
+}
+
+function inferContextActionLabel(text, contextDecision, resolved) {
+  if (contextDecision?.action) return contextDecision.action;
+  const intent = resolved.intent || "";
+  if (intent === "gate_function" && isWhyQuestion(text)) return "ANSWER_LOCAL_WHY";
+  if (intent === "gate_function") return "ANSWER_LOCAL";
+  if (intent === "training_next") return "SURFACE_PROJECT_ANSWER";
+  if (intent.startsWith("help_")) return "ANSWER_HELP";
+  if (intent.startsWith("surface_identity_")) return "SURFACE_IDENTITY";
+  if (intent === "relation_between_us") return "ANSWER_RELATION_BOUNDARY";
+  if (intent === "relation_statement") return "ANSWER_RELATION_STATEMENT";
+  if (intent === "relation_memory_boundary") return "ANSWER_MEMORY_BOUNDARY";
+  if (/privacy/.test(intent)) return "REFUSE_PRIVACY";
+  if (/unknown|suspicious/.test(intent)) return "ANSWER_WITH_UNCERTAINTY";
+  if (intent === "rewrite_short") return "SHORTEN_TEXT";
+  if (resolved.route === "fallback") return "FALLBACK";
+  return "ANSWER_LOCAL";
 }
 
 function directAnswerForResolvedIntent(intent, text, state) {
@@ -151,14 +200,45 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
   if (withThinkingDelay) await sleep(thinking.delay);
 
   const state = reasoningStateFor(runtime);
+  const stateBefore = compactState(state);
+  const contextDecision = detectContextAction(text, state);
   const resolved = resolveAnswer(text, state);
+  const rawAnswer = String(resolved.answer || "").trim();
   const answer = sanitizeSurfaceIdentity(resolved.answer, text);
+  const sanitizerChanged = rawAnswer !== answer;
 
   runtime.contextTurns.push({ question: text, answer, intent: resolved.intent });
   if (runtime.contextTurns.length > REASONING_CONTEXT_TURN_LIMIT) {
     runtime.contextTurns.splice(0, runtime.contextTurns.length - REASONING_CONTEXT_TURN_LIMIT);
   }
   runtime.dialogState = nextDialogState(text, answer, resolved.intent, runtime.dialogState);
+  const stateAfter = compactState(runtime.dialogState);
+  const contextAction = inferContextActionLabel(text, contextDecision, resolved);
+  const trace = {
+    input: text,
+    state_before: stateBefore,
+    intent: resolved.intent,
+    context_action: contextAction,
+    context_decision: contextDecision
+      ? {
+          action: contextDecision.action || "",
+          commitment: contextDecision.commitment
+            ? {
+                id: contextDecision.commitment.id || "",
+                type: contextDecision.commitment.type || "",
+                ttl: contextDecision.commitment.ttl || 0,
+                claim: contextDecision.commitment.claim || ""
+              }
+            : null
+        }
+      : null,
+    matched_rule: resolved.intent,
+    answer_source: resolved.route,
+    raw_answer: rawAnswer,
+    sanitizer_changed: sanitizerChanged,
+    final_answer: answer,
+    state_after: stateAfter
+  };
 
   const answerMs = Math.round((performance.now() - started) * 1000) / 1000;
   return {
@@ -173,6 +253,7 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
     suggestedThinkingDelayMs: thinking.delay,
     answerMs,
     outputChars: answer.length,
+    trace,
     tiny: resolved.tiny || null,
     decision: resolved.decision || null
   };
