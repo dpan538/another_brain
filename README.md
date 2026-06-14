@@ -133,6 +133,7 @@ node scripts/eval_casepacks_node.mjs --min-score 0.88 --out /tmp/another_brain_c
 - `web/context_stress_cases.json`: 100x16 mixed context stress cases for training calibration.
 - `web/structured_decision.js`: structured route, evidence sufficiency, and answer verifier helper.
 - `evals/casepacks/`: synthetic casepack-16 capability evals.
+- `docs/clone_training_strategy.md`: training plan for the bounded subject-copy direction.
 - `scripts/`: local build, validation, training, and gate scripts.
 - `models/manifest.json`: tiny-router runtime metadata.
 - `artifacts/`: ignored local runtime outputs.
