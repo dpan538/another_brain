@@ -20,7 +20,7 @@ user input
   -> short fallback answer
 ```
 
-The tiny router is not a general generative model. It is a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, reasoning/counterquestion calibration, and persona alignment. In the current public gate, 694/731 cases are direct rule or knowledge answers, and 37/731 use the tiny router Web SLM.
+The tiny router is not a general generative model. It is a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, reasoning/counterquestion calibration, and persona alignment. In the current public gate, 719/756 cases are direct rule or knowledge answers, and 37/756 use the tiny router Web SLM.
 
 WebLLM is intentionally out of the first public runtime. It does not accelerate the tiny router classifier, and previous local checks showed that the small generative fallback was too likely to drift or hallucinate in open dialog. The reliable path is to train the tiny router directly and keep unknown questions, privacy-sensitive questions, and route misses controlled by deterministic rules.
 
@@ -48,7 +48,7 @@ python3 -m http.server 5173 --directory web
 
 Open `http://localhost:5173`.
 
-The checked-in public runtime ships without personal memory cards. Shared public generated files in `web/` are tracked; private local payloads such as `artifacts/` and `web/brain_pack.js` are ignored by git.
+The checked-in public runtime ships with hand-written persona calibration, but without raw personal memory cards. Shared public generated files in `web/` are tracked; private local payloads such as `artifacts/` and `web/brain_pack.js` are ignored by git.
 
 ## Local Build Workflow
 
@@ -81,14 +81,14 @@ node scripts/run_model_gate_node.mjs --out /tmp/another_brain_model_gate.json
 
 ## Current Gate Snapshot
 
-- Distillation dataset: 69635 rows, 67852 train, 1783 eval.
-- Tiny router web artifact: 948027 bytes.
-- Tiny router route accuracy: 0.9414.
-- Tiny router reasoning holdout: 99/99.
-- Knowledge runtime: 55041 generated cards, 55174 total runtime cards, p95 0.222ms and p99 0.300ms on the last local run.
-- Knowledge web artifact: 7621853 bytes.
-- Dialog persona eval: 650 cases, 0 failures.
-- Model gate: 731/731 passed, 37/37 Web SLM cases passed.
+- Distillation dataset: 72039 rows, 70254 train, 1785 eval.
+- Tiny router web artifact: 958518 bytes.
+- Tiny router route accuracy: 0.9435.
+- Tiny router reasoning holdout: 103/103.
+- Knowledge runtime: 55151 generated cards, 55284 total runtime cards, p95 0.280ms and p99 0.461ms on the last local run.
+- Knowledge web artifact: 7645757 bytes.
+- Dialog persona eval: 675 cases, 0 failures.
+- Model gate: 756/756 passed, 37/37 Web SLM cases passed.
 - Tiny router memory answers in the public exact index: 0.
 
 ## Repository Contents

@@ -1,4 +1,4 @@
-import { TINY_ROUTER_MODEL } from "./tiny_router_model.generated.js?v=9";
+import { TINY_ROUTER_MODEL } from "./tiny_router_model.generated.js?v=10";
 
 const KNOWLEDGE_QUESTION_RE =
   /(你知道|是什么|什么是|是谁|怎么样|如何|在哪|哪里|为什么|为何|由什么|什么组成|组成|构成|用来|用途|有什么用|能不能|可以|会不会|适合|区别|关系|关于|告诉|讲讲|介绍|what is|who is|where is|why|use for|like)/i;

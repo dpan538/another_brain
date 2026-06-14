@@ -1,4 +1,4 @@
-import { GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS } from "./knowledge_base.generated.js?v=9";
+import { GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS } from "./knowledge_base.generated.js?v=10";
 
 const UNKNOWN_PERSON = "\u4ea6\u821f";
 const HIDDEN_PROJECT_NAME = ["Another", "Brain"].join(" ");
@@ -237,6 +237,13 @@ function personalCalibrationAnswer(query, state = {}) {
   }
   const pairs = [
     [/南通.*苏南.*苏北|苏南.*苏北.*南通/, "苏中。"],
+    [/和超超.*去上海.*(交通|工具|怎么去|坐什么)|去上海.*和超超.*(交通|工具|怎么去|坐什么)/, "高铁。"],
+    [/你.*(哪里|哪儿|什么地方|在哪).*(本科|大学).*(研究生|硕士)|你.*(本科|大学).*(研究生|硕士).*(哪里|哪儿|什么地方|在哪)/, "在美国纽约读完本科。在澳洲布里斯班读研究生。"],
+    [/南通.*(特别记忆|记忆|家乡)|对南通.*(特别|记忆)/, "这是我的家乡，但不全是我的家。"],
+    [/和超超.*(什么群|哪个群|哪里).*认识|超超.*(什么群|哪个群|哪里).*认识/, "尼康摄影发烧友。"],
+    [/超超.*(是谁|是什么人|和我什么关系)|Xavier.*(是谁|是什么人|和我什么关系)/i, "超超是我的朋友，超超也是Xavier。"],
+    [/大佐.*(是谁|是什么人|和我什么关系)/, "是一个日本人，我的朋友。"],
+    [/(大佐.*心宝|心宝.*大佐).*(同一个|一样|关系|是谁)|^心宝是谁[？?。!！\s]*$/, "大佐和心宝是同一个人。"],
     [/^你饿不饿[？?。!！\s]*$/, "不饿，总有人觉得我饿，那我饿了。"],
     [/^我裤衩呢[？?。!！\s]*$/, "穿在某人的身上。"],
     [/^我饿不饿[？?。!！\s]*$/, "我不知道但我推断你饿。"],
@@ -251,6 +258,36 @@ function personalCalibrationAnswer(query, state = {}) {
 
 function smallQuestionCalibrationAnswer(query) {
   const text = query.trim();
+  if (/((生活|住|在).{0,4}水里.{0,8}绿|绿.{0,8}(生活|住|在).{0,4}水里|水里.{0,6}绿色).*(是什么|是谁|叫什么|算什么)/.test(text)) {
+    return "一般情况下，是鳄鱼。";
+  }
+  if (/鳄鱼.*(符号|泛化|象征)|泛化.*鳄鱼/.test(text)) {
+    return "鳄鱼是一个非常泛化的符号。";
+  }
+  if (/鳄鱼.*(形象|长什么样|头像|照片|第一张图|第一张照片)|第一张照片.*鳄鱼/.test(text)) {
+    return "绿色像素鳄鱼，白眼黑瞳，长嘴露牙。";
+  }
+  if (/鳄鱼.*(做过|曾经做过|做了|设计|什么设计)|design example.*鳄鱼|鳄鱼.*空间加热器|space heater.*鳄鱼/i.test(text)) {
+    return "鳄鱼做过空间加热器界面设计。";
+  }
+  if (/鳄鱼.*(作品|作品站|视觉作品).*哪里|daipan\.art|鳄鱼.*摄影.*版画|Portfolio.*鳄鱼/i.test(text)) {
+    return "鳄鱼的作品在 daipan.art，摄影版画在作品集里。";
+  }
+  if (/鳄鱼.*(背景|archive|档案|补充).*哪里|inpraiseoftime|in praise of time/i.test(text)) {
+    return "鳄鱼的背景补充在 In Praise of Time。";
+  }
+  if (/鳄鱼.*(写作|诗|文字).*哪里|daipan\.ink/i.test(text)) {
+    return "鳄鱼的写作在 daipan.ink。";
+  }
+  if (/翻译研究.*鳄鱼|鳄鱼.*翻译研究|翻译.*句子.*鳄鱼/.test(text)) {
+    return "翻译研究提醒鳄鱼：中文要稳，不要被译腔拖走。";
+  }
+  if (/思果.*翻译研究|翻译研究.*思果/.test(text)) {
+    return "思果《翻译研究》关心译文怎样保持中文的稳、准、顺。";
+  }
+  if (/Lowell|Notebook|罗伯特.*洛威尔|洛威尔.*笔记/i.test(text)) {
+    return "Notebook 可以学它的断片、名字、历史和私人记忆，不学它的原句。";
+  }
   if (/(黑巧|黑巧克力|白巧|白巧克力)/.test(text) && /(好吃|喜欢|选|哪个|哪种|更好|还是|比)/.test(text)) {
     return "黑巧克力。无奶无糖的才是巧克力。";
   }
