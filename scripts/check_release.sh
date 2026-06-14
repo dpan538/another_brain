@@ -22,6 +22,7 @@ required_files=(
   "web/dialog_rules.js"
   "web/tiny_router_model.generated.js"
   "web/knowledge_base.generated.js"
+  "web/knowledge_shards/manifest.json"
 )
 
 for path in "${required_files[@]}"; do
@@ -69,5 +70,6 @@ fi
 
 python3 -m json.tool vercel.json >/dev/null
 python3 -m json.tool package.json >/dev/null
+python3 scripts/validate_knowledge_shards.py >/dev/null
 
 printf 'release check passed\n'

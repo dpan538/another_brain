@@ -58,3 +58,4 @@ adapters are ignored by git and are not licensed for distribution.
 - Route accuracy: 0.9382.
 - Public model-gate usage: 37/778 cases.
 - Synthetic casepack capability eval: 10 casepacks, 160 questions, 0 failures.
+- Knowledge shard validation: 43 shards, 55,151 cards, max shard size 179,996 bytes, full round-trip against the monolithic public artifact.

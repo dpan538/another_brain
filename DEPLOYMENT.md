@@ -10,6 +10,7 @@ Vercel static hosting
   -> web/app.js
   -> web/dialog_rules.js
   -> web/knowledge_base.generated.js
+  -> web/knowledge_shards/*.json
   -> web/tiny_router_model.generated.js
 ```
 
@@ -32,6 +33,7 @@ Run:
 
 ```bash
 npm run check
+npm run check:knowledge-shards
 ```
 
 This validates release safety, distillation metadata, tiny router readiness,

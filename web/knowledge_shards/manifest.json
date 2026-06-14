@@ -1,0 +1,717 @@
+{
+  "schema_version": 1,
+  "shard_count": 43,
+  "shard_max_bytes": 180000,
+  "shards": [
+    {
+      "bytes": 179931,
+      "cards": 1218,
+      "domains": [
+        "animal",
+        "art",
+        "body",
+        "city",
+        "country",
+        "daily_object",
+        "drink",
+        "education",
+        "finance",
+        "food",
+        "media",
+        "nature",
+        "photo",
+        "place",
+        "plant",
+        "profession",
+        "regional_development",
+        "science",
+        "software",
+        "tool",
+        "transport",
+        "web"
+      ],
+      "file": "shard_000.json",
+      "first_label": "毛巾",
+      "index": 0,
+      "last_label": "博物馆",
+      "sha256": "627dbe4920ab97f1593202f07b69f647394f207476588df40075b4d5ac94eb43"
+    },
+    {
+      "bytes": 179959,
+      "cards": 1268,
+      "domains": [
+        "abstract",
+        "art",
+        "computer_science",
+        "design_system",
+        "electronics",
+        "emotion",
+        "engineering",
+        "linguistics",
+        "materials",
+        "math_logic",
+        "music",
+        "painting",
+        "philosophy",
+        "printmaking",
+        "social_life",
+        "sports",
+        "world_place"
+      ],
+      "file": "shard_001.json",
+      "first_label": "画廊",
+      "index": 1,
+      "last_label": "约翰内斯堡",
+      "sha256": "83c898fe8b28c8afe16f147edbb03220273c046c4b0c153d270c6fb7fbe367fc"
+    },
+    {
+      "bytes": 179945,
+      "cards": 982,
+      "domains": [
+        "architecture_space",
+        "art_history",
+        "art_theory",
+        "biology_medicine",
+        "chemistry_earth",
+        "cinema_media",
+        "culture_literature",
+        "daily_action",
+        "existentialism",
+        "history_event",
+        "literary_history",
+        "philosopher",
+        "photo_movement",
+        "photography_history",
+        "photography_theory",
+        "postwar_philosophy",
+        "structuralism_language",
+        "world_place"
+      ],
+      "file": "shard_002.json",
+      "first_label": "内罗毕",
+      "index": 2,
+      "last_label": "差异系统",
+      "sha256": "ac451a45ed282839176f566018133517f41893cd908e0065d892fbc24abeca06"
+    },
+    {
+      "bytes": 179991,
+      "cards": 1337,
+      "domains": [
+        "crocodile_subject",
+        "deconstruction",
+        "dialog_context",
+        "folk_symbolic",
+        "humanities_art",
+        "lacanian_psychoanalysis",
+        "linguistics",
+        "philosophy",
+        "poetry_notebook",
+        "structuralism_language",
+        "translation_studies"
+      ],
+      "file": "shard_003.json",
+      "first_label": "语言系统",
+      "index": 3,
+      "last_label": "证据语气",
+      "sha256": "f16cf941cdc81edb94b2b21e9fda42096e206de00f389e27093573aa9e19864b"
+    },
+    {
+      "bytes": 179861,
+      "cards": 1225,
+      "domains": [
+        "dialog_context"
+      ],
+      "file": "shard_004.json",
+      "first_label": "证据节奏",
+      "index": 4,
+      "last_label": "意义反例",
+      "sha256": "fe9d07c9a6100f8435d0b2938522199b817fffdb9bcdab20becffc8ba0ee9e42"
+    },
+    {
+      "bytes": 179954,
+      "cards": 1286,
+      "domains": [
+        "dialog_context"
+      ],
+      "file": "shard_005.json",
+      "first_label": "意义语境",
+      "index": 5,
+      "last_label": "拒绝误会",
+      "sha256": "267f7fe974b08378dc35002c1770a7d04544d3aa94713f161f7e677f31bdf2dc"
+    },
+    {
+      "bytes": 179894,
+      "cards": 1286,
+      "domains": [
+        "dialog_context"
+      ],
+      "file": "shard_006.json",
+      "first_label": "拒绝耐心",
+      "index": 6,
+      "last_label": "等待拒绝",
+      "sha256": "83e2e1e6372bceefacffdcdccff62c4caaf78d04ac992f1e942914dba9cb5fa6"
+    },
+    {
+      "bytes": 179859,
+      "cards": 1229,
+      "domains": [
+        "dialog_context",
+        "everyday_reasoning"
+      ],
+      "file": "shard_007.json",
+      "first_label": "等待请求",
+      "index": 7,
+      "last_label": "写邮件效率",
+      "sha256": "8ec641899022a999660dd670a9774f918d2657193baa140e83e0bb42a3744e3e"
+    },
+    {
+      "bytes": 179900,
+      "cards": 1353,
+      "domains": [
+        "everyday_reasoning"
+      ],
+      "file": "shard_008.json",
+      "first_label": "写邮件习惯",
+      "index": 8,
+      "last_label": "打扫出口",
+      "sha256": "5c28223e73e3e73291dd560dcbe67d89786981a18861e20ccafceb0a3a885893"
+    },
+    {
+      "bytes": 179871,
+      "cards": 1345,
+      "domains": [
+        "everyday_reasoning"
+      ],
+      "file": "shard_009.json",
+      "first_label": "收纳定义",
+      "index": 9,
+      "last_label": "做清单误差",
+      "sha256": "db7cd8a649cc19d6f3c847885566e0e87f140d2a86c7996db238df585de4da33"
+    },
+    {
+      "bytes": 179896,
+      "cards": 1342,
+      "domains": [
+        "everyday_reasoning",
+        "life_philosophy"
+      ],
+      "file": "shard_010.json",
+      "first_label": "做清单语气",
+      "index": 10,
+      "last_label": "价值比较",
+      "sha256": "8484b4bc309239fffd7ef805a71a38055f61a231005707978da710c59d214f18"
+    },
+    {
+      "bytes": 179972,
+      "cards": 1448,
+      "domains": [
+        "epistemic",
+        "life_philosophy"
+      ],
+      "file": "shard_011.json",
+      "first_label": "价值归纳",
+      "index": 11,
+      "last_label": "扩展失败点",
+      "sha256": "be04216eecc8ece3c8deea1bbd3d936ac08295ff761005e2f0bc9519632cac89"
+    },
+    {
+      "bytes": 179900,
+      "cards": 1400,
+      "domains": [
+        "creative_reasoning",
+        "epistemic"
+      ],
+      "file": "shard_012.json",
+      "first_label": "扩展修正",
+      "index": 12,
+      "last_label": "版画入口",
+      "sha256": "587fe5195c98dba926411990556638848764da4463f36eaa99c0c60e657334d3"
+    },
+    {
+      "bytes": 179927,
+      "cards": 1454,
+      "domains": [
+        "creative_reasoning"
+      ],
+      "file": "shard_013.json",
+      "first_label": "装置判断",
+      "index": 13,
+      "last_label": "博客比较",
+      "sha256": "69f6facaf6c0afba9b52d280f410529d57d9817469d499281b2de3a39a892bb5"
+    },
+    {
+      "bytes": 179898,
+      "cards": 1290,
+      "domains": [
+        "city_life",
+        "creative_reasoning"
+      ],
+      "file": "shard_014.json",
+      "first_label": "博客归纳",
+      "index": 14,
+      "last_label": "港口成本",
+      "sha256": "f239c15df8d69f7f36aa47cf41760242d007a1db780272a8b91cbf87b32d8dc0"
+    },
+    {
+      "bytes": 179922,
+      "cards": 1344,
+      "domains": [
+        "city_life"
+      ],
+      "file": "shard_015.json",
+      "first_label": "港口风险",
+      "index": 15,
+      "last_label": "新区可靠性",
+      "sha256": "9b430fc5ab16098397b772b6c1e893674ca6eee088066064fd61c39af82bea41"
+    },
+    {
+      "bytes": 179951,
+      "cards": 1436,
+      "domains": [
+        "city_life",
+        "tech_life"
+      ],
+      "file": "shard_016.json",
+      "first_label": "新区公开性",
+      "index": 16,
+      "last_label": "推荐稳定性",
+      "sha256": "c9f597de15e504aa6d7cfc04768b8403d7a0a749862212d0d716c4810139c9a9"
+    },
+    {
+      "bytes": 179996,
+      "cards": 1514,
+      "domains": [
+        "tech_life"
+      ],
+      "file": "shard_017.json",
+      "first_label": "推荐隐私",
+      "index": 17,
+      "last_label": "耳机后果",
+      "sha256": "564b697c3f3e554cc957bbb105800bc7e8a23600021fe7347a0d3196c6c7b175"
+    },
+    {
+      "bytes": 179918,
+      "cards": 1462,
+      "domains": [
+        "relation_reasoning",
+        "tech_life"
+      ],
+      "file": "shard_018.json",
+      "first_label": "耳机复盘",
+      "index": 18,
+      "last_label": "客服误会",
+      "sha256": "afe0b75110995cf56ab2547e98c4ced22ecd25d19f20bc09e28911b0588c6c6a"
+    },
+    {
+      "bytes": 179925,
+      "cards": 1248,
+      "domains": [
+        "relation_reasoning"
+      ],
+      "file": "shard_019.json",
+      "first_label": "客服信任",
+      "index": 19,
+      "last_label": "律师选择",
+      "sha256": "39f59c4c372f381375da76d8c6cbea6ce58357aa817a5b455f9a8d6c25d7af51"
+    },
+    {
+      "bytes": 179960,
+      "cards": 1247,
+      "domains": [
+        "memory_identity",
+        "relation_reasoning"
+      ],
+      "file": "shard_020.json",
+      "first_label": "律师让步",
+      "index": 20,
+      "last_label": "结束误差",
+      "sha256": "29c5edfc0d49eef77d0f2698f55f09ad96606b12fcc22f1a995bc389f57035e4"
+    },
+    {
+      "bytes": 179884,
+      "cards": 1246,
+      "domains": [
+        "memory_identity",
+        "postwar_philosophy"
+      ],
+      "file": "shard_021.json",
+      "first_label": "结束变化",
+      "index": 21,
+      "last_label": "结构主义批判",
+      "sha256": "c929212c7323b924492e30b5b7a1cd1928b5c313fe15c31a7daea3d53d429d9d"
+    },
+    {
+      "bytes": 179907,
+      "cards": 1137,
+      "domains": [
+        "postwar_philosophy"
+      ],
+      "file": "shard_022.json",
+      "first_label": "结构主义否定性",
+      "index": 22,
+      "last_label": "后现代状况阅读",
+      "sha256": "7dd5bf4e501fe1d2b6f9a8f5a98ef0619514f616ea8d447f53c23f6992c9bf96"
+    },
+    {
+      "bytes": 179986,
+      "cards": 1296,
+      "domains": [
+        "existentialism",
+        "postwar_philosophy"
+      ],
+      "file": "shard_023.json",
+      "first_label": "后现代状况批评",
+      "index": 23,
+      "last_label": "道德困境证据",
+      "sha256": "c36c94149d59ec1ff169ee8d78d69d5dd8e5fc648aacc879c5f258de9f3c7c70"
+    },
+    {
+      "bytes": 179879,
+      "cards": 1386,
+      "domains": [
+        "deconstruction",
+        "existentialism",
+        "structuralism_language"
+      ],
+      "file": "shard_024.json",
+      "first_label": "道德困境反例",
+      "index": 24,
+      "last_label": "在场形而上学文本",
+      "sha256": "975f311189d6f6352806f34cc54d5f67c6d5b816edece15723fa6d37f97fa95d"
+    },
+    {
+      "bytes": 179928,
+      "cards": 1428,
+      "domains": [
+        "deconstruction",
+        "lacanian_psychoanalysis"
+      ],
+      "file": "shard_025.json",
+      "first_label": "在场形而上学框架",
+      "index": 25,
+      "last_label": "镜像阶段他者",
+      "sha256": "e7a81375d177a9bd61ad728dc814e35453d85f334be9b4fa9eb6ae8aa62075d2"
+    },
+    {
+      "bytes": 179879,
+      "cards": 1223,
+      "domains": [
+        "lacanian_psychoanalysis"
+      ],
+      "file": "shard_026.json",
+      "first_label": "镜像阶段主体",
+      "index": 26,
+      "last_label": "语言如无意识叙事",
+      "sha256": "798ce124b961589708a40b344192f7606f17d521122c0992556fef0205428c9f"
+    },
+    {
+      "bytes": 179964,
+      "cards": 1285,
+      "domains": [
+        "humanities_art",
+        "lacanian_psychoanalysis"
+      ],
+      "file": "shard_027.json",
+      "first_label": "语言如无意识语气",
+      "index": 27,
+      "last_label": "日常生活重复",
+      "sha256": "ac8cd9d7a9043f62a4dd39f3a7c19d2a69ac9d0f9b72a79dc7c985e60ae12422"
+    },
+    {
+      "bytes": 179910,
+      "cards": 1352,
+      "domains": [
+        "humanities_art",
+        "painting",
+        "photo",
+        "printmaking"
+      ],
+      "file": "shard_028.json",
+      "first_label": "日常生活话语",
+      "index": 28,
+      "last_label": "作品集印后",
+      "sha256": "7dab03930f9257783714af5b3485cf6f666d189c90c993d0a96418304547ccd9"
+    },
+    {
+      "bytes": 179909,
+      "cards": 1383,
+      "domains": [
+        "computer_science",
+        "design_system",
+        "printmaking"
+      ],
+      "file": "shard_029.json",
+      "first_label": "画册纸张",
+      "index": 29,
+      "last_label": "Vite脚本",
+      "sha256": "5918afde8266a25e22a2d9fd161bfb1dd7c60b980e110d828d56cdecd1960817"
+    },
+    {
+      "bytes": 179912,
+      "cards": 1557,
+      "domains": [
+        "computer_science",
+        "culture_literature",
+        "engineering"
+      ],
+      "file": "shard_030.json",
+      "first_label": "Vite文档",
+      "index": 30,
+      "last_label": "泵测试",
+      "sha256": "7d9f7a5834f9359c7cb2ab9239586d965b3ac0b21c792298e15bc244716315b4"
+    },
+    {
+      "bytes": 179960,
+      "cards": 1554,
+      "domains": [
+        "biology_medicine",
+        "electronics",
+        "engineering",
+        "materials",
+        "math_logic"
+      ],
+      "file": "shard_031.json",
+      "first_label": "泵维护",
+      "index": 31,
+      "last_label": "肝脏预防",
+      "sha256": "ff1b4e47f712ee2a7250562415b7cde6ee40656a24b0a8ae4d6be5cb726869e8"
+    },
+    {
+      "bytes": 179971,
+      "cards": 1344,
+      "domains": [
+        "biology_medicine",
+        "cooking",
+        "daily_action",
+        "photography_theory",
+        "world_place"
+      ],
+      "file": "shard_032.json",
+      "first_label": "肝脏指标",
+      "index": 32,
+      "last_label": "纪实证据",
+      "sha256": "e9f7e4f79c7893f00889177d396b3ba87955a836511b7816bf6c5921e1036543"
+    },
+    {
+      "bytes": 179951,
+      "cards": 1285,
+      "domains": [
+        "photo_movement",
+        "photography_theory"
+      ],
+      "file": "shard_033.json",
+      "first_label": "档案证据",
+      "index": 33,
+      "last_label": "纯粹摄影算法影像",
+      "sha256": "3abcb5003128c101a438d51160ef1ca50582f5837f9ed2c67ce7debe50b0397c"
+    },
+    {
+      "bytes": 179865,
+      "cards": 1177,
+      "domains": [
+        "photo_movement"
+      ],
+      "file": "shard_034.json",
+      "first_label": "纯粹摄影手机图像",
+      "index": 34,
+      "last_label": "地方摄影纪实伦理",
+      "sha256": "452335917db6a7e8405b982fa937601e37a8a5ebabba17d5996c7c5be8f61d7a"
+    },
+    {
+      "bytes": 179881,
+      "cards": 1227,
+      "domains": [
+        "art_history",
+        "photo_movement",
+        "photography_history"
+      ],
+      "file": "shard_035.json",
+      "first_label": "地方摄影观看距离",
+      "index": 35,
+      "last_label": "巴比松画派白盒子",
+      "sha256": "5c579905b0b4e7c5a84b2f6c57d91d2b9f9caad274af7a6be78c1a6f293a750e"
+    },
+    {
+      "bytes": 179910,
+      "cards": 1126,
+      "domains": [
+        "art_history"
+      ],
+      "file": "shard_036.json",
+      "first_label": "巴比松画派展览机制",
+      "index": 36,
+      "last_label": "德拉克洛瓦媒介",
+      "sha256": "895a35340f87db7f583ae25239353141c752fb79474ee7681e2d7dbdfa4c355b"
+    },
+    {
+      "bytes": 179934,
+      "cards": 1358,
+      "domains": [
+        "art_history",
+        "art_theory"
+      ],
+      "file": "shard_037.json",
+      "first_label": "德拉克洛瓦方法",
+      "index": 37,
+      "last_label": "劳申伯格再现",
+      "sha256": "5c6cba32b7f9080104d585ec13ca26d92130a76edd59345e471a1d3ff4e8c6e2"
+    },
+    {
+      "bytes": 179860,
+      "cards": 1154,
+      "domains": [
+        "art_theory",
+        "philosopher"
+      ],
+      "file": "shard_038.json",
+      "first_label": "劳申伯格抽象",
+      "index": 38,
+      "last_label": "洛克规训",
+      "sha256": "8390c18e5bb5d919c981ae54350e03dcb99cc5e82ea91c3c07e81a9f065c0abe"
+    },
+    {
+      "bytes": 179938,
+      "cards": 1065,
+      "domains": [
+        "philosopher"
+      ],
+      "file": "shard_039.json",
+      "first_label": "洛克话语",
+      "index": 39,
+      "last_label": "齐泽克身体",
+      "sha256": "3ab33b7c9bfe53514eca558562a2abec55b1dbb72003068927976c99d8939b66"
+    },
+    {
+      "bytes": 179949,
+      "cards": 1253,
+      "domains": [
+        "literary_history",
+        "philosopher"
+      ],
+      "file": "shard_040.json",
+      "first_label": "齐泽克性别",
+      "index": 40,
+      "last_label": "乔伊斯翻译",
+      "sha256": "2534aef79515c37be359dde60a9ac32c0f0199d674cbef4908bdf2a5b45edb66"
+    },
+    {
+      "bytes": 179924,
+      "cards": 1147,
+      "domains": [
+        "history_event",
+        "literary_history"
+      ],
+      "file": "shard_041.json",
+      "first_label": "乔伊斯改写",
+      "index": 41,
+      "last_label": "1989年柏林墙倒塌影响",
+      "sha256": "09eb16d37f851b20a7b451281f8088c67fd4372b02208184405852b37cc1f739"
+    },
+    {
+      "bytes": 88732,
+      "cards": 454,
+      "domains": [
+        "history_event"
+      ],
+      "file": "shard_042.json",
+      "first_label": "1989年柏林墙倒塌时间",
+      "index": 42,
+      "last_label": "2026年世界杯后果",
+      "sha256": "a504461cb020f1f32d18893c7a82491b86eda5ec37dcfef9c69fe8d0ddccd1a0"
+    }
+  ],
+  "source": {
+    "bytes": 7645757,
+    "path": "web/knowledge_base.generated.js",
+    "sha256": "803a20373a02685e9d7f98e732b1a622c848ac886b3bcd290cc693c7cbf46454"
+  },
+  "stats": {
+    "answer_fields": 58975,
+    "concept_cards": 55151,
+    "domains": [
+      "abstract",
+      "animal",
+      "architecture_space",
+      "art",
+      "art_history",
+      "art_theory",
+      "biology_medicine",
+      "body",
+      "chemistry_earth",
+      "cinema_media",
+      "city",
+      "city_life",
+      "computer_science",
+      "cooking",
+      "country",
+      "creative_reasoning",
+      "crocodile_subject",
+      "culture_literature",
+      "daily_action",
+      "daily_object",
+      "deconstruction",
+      "design_system",
+      "dialog_context",
+      "drink",
+      "education",
+      "electronics",
+      "emotion",
+      "engineering",
+      "epistemic",
+      "everyday_reasoning",
+      "existentialism",
+      "finance",
+      "folk_symbolic",
+      "food",
+      "history_event",
+      "humanities_art",
+      "lacanian_psychoanalysis",
+      "life_philosophy",
+      "linguistics",
+      "literary_history",
+      "materials",
+      "math_logic",
+      "media",
+      "memory_identity",
+      "music",
+      "nature",
+      "painting",
+      "philosopher",
+      "philosophy",
+      "photo",
+      "photo_movement",
+      "photography_history",
+      "photography_theory",
+      "place",
+      "plant",
+      "poetry_notebook",
+      "postwar_philosophy",
+      "printmaking",
+      "profession",
+      "regional_development",
+      "relation_reasoning",
+      "science",
+      "social_life",
+      "software",
+      "sports",
+      "structuralism_language",
+      "tech_life",
+      "tool",
+      "translation_studies",
+      "transport",
+      "web",
+      "world_place"
+    ],
+    "generated_at": "2026-06-14T03:17:20.005540+00:00",
+    "policy": {
+      "cloud_inference_api_allowed": false,
+      "contains_internal_asset_labels": false,
+      "contains_project_paths": false,
+      "purpose": "local persona-shaped common knowledge for short natural answers",
+      "voice": "short conversational facts; no encyclopedia tone and no unexplained poetic metaphors"
+    },
+    "schema_version": 1,
+    "specific_fact_cards": 1016
+  },
+  "total_cards": 55151
+}

@@ -10,6 +10,7 @@ dataset and public browser artifacts for a local-first dialog runtime.
 Public generated files may include:
 
 - `web/knowledge_base.generated.js`
+- `web/knowledge_shards/*.json`
 - `web/tiny_router_model.generated.js`
 - `web/model_inference_cases.json`
 - `web/context_stress_cases.json`
@@ -50,6 +51,7 @@ Current public gates include:
 - Context stress eval.
 - Synthetic casepack capability eval.
 - Knowledge runtime benchmark.
+- Knowledge shard validation.
 - Training OS validation.
 
 The release gates are not proof of general intelligence. The synthetic casepack

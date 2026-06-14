@@ -69,7 +69,7 @@ python3 scripts/validate_brain_pack.py --brain-pack artifacts/brain_pack.json
 Build shared browser knowledge and the tiny router:
 
 ```bash
-python3 scripts/build_knowledge_base.py
+npm run build:knowledge
 python3 scripts/build_distillation_dataset.py
 python3 scripts/train_tiny_router.py
 ```
@@ -110,6 +110,7 @@ node scripts/eval_casepacks_node.mjs --min-score 0.88 --out /tmp/another_brain_c
 - Relationship repetition gate: 16/16 turns passed.
 - Knowledge runtime: 55151 generated cards, 55284 total runtime cards, p95 0.231ms and p99 0.324ms on the last local run.
 - Knowledge web artifact: 7645757 bytes.
+- Knowledge shards: 43 static JSON shards, max shard size 179996 bytes, round-trip validated against `web/knowledge_base.generated.js`.
 - Dialog persona eval: 714 cases, 0 failures.
 - Context-window gate: UI shows 4 recent turns; hidden reasoning keeps 12 turns.
 - Context stress suite: 100 groups, 1600 questions, 1500 context assertions, 485 required context-delta checks.
@@ -124,7 +125,8 @@ node scripts/eval_casepacks_node.mjs --min-score 0.88 --out /tmp/another_brain_c
 - `web/`: static browser app and public runtime modules.
 - `web/tiny_router.js`: browser-side Web SLM wrapper.
 - `web/tiny_router_model.generated.js`: compact generated tiny-router artifact.
-- `web/knowledge_base.generated.js`: generated common-knowledge cards.
+- `web/knowledge_base.generated.js`: monolithic generated common-knowledge cards kept for the current synchronous runtime path.
+- `web/knowledge_shards/`: static shard JSON files and manifest for CDN-friendly deployment and future lazy loading.
 - `web/context_stress_cases.json`: 100x16 mixed context stress cases for training calibration.
 - `web/structured_decision.js`: structured route, evidence sufficiency, and answer verifier helper.
 - `evals/casepacks/`: synthetic casepack-16 capability evals.
