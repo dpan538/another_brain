@@ -120,6 +120,12 @@ Validate the public Identity Pack skeleton:
 python3 scripts/validate_identity_pack.py
 ```
 
+Run the launch-readiness detector:
+
+```bash
+npm run check:launch-readiness
+```
+
 ## Current Gate Snapshot
 
 - Distillation dataset: 76365 rows, 74580 train, 1785 eval.
@@ -157,6 +163,7 @@ python3 scripts/validate_identity_pack.py
 - `docs/release_governance.md`: production launch gates, milestone rules, freeze policy, and final review thresholds.
 - `evals/release_policy/release_status.json`: current release-governance status; production is locked until R0-R7 pass.
 - `identity_pack/`: public identity contract, safe seed cards, schemas, and interview question bank for building redacted identity/background datasets.
+- `scripts/eval_launch_readiness.py`: runs the current launch gates and writes a milestone/blocker report under `artifacts/release/`.
 - `scripts/`: local build, validation, training, and gate scripts.
 - `models/manifest.json`: tiny-router runtime metadata.
 - `artifacts/`: ignored local runtime outputs.

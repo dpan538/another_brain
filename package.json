@@ -11,6 +11,7 @@
     "check:clone-logic-ethics": "python3 scripts/validate_clone_logic_ethics.py",
     "check:identity-pack": "python3 scripts/validate_identity_pack.py",
     "check:knowledge-shards": "python3 scripts/validate_knowledge_shards.py",
+    "check:launch-readiness": "python3 scripts/eval_launch_readiness.py",
     "check:launch-policy": "python3 scripts/validate_launch_policy.py",
     "check:release": "bash scripts/check_release.sh",
     "serve": "python3 -m http.server 5173 --directory web"
