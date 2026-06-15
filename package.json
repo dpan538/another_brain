@@ -79,6 +79,7 @@
     "build:synthetic-local-reasoning-traces": "node scripts/build_synthetic_local_reasoning_traces.mjs",
     "check:external-reasoning-traces": "node scripts/validate_external_reasoning_trace_data.mjs",
     "build:persona-method-training": "node scripts/build_persona_method_training_from_public_sources.mjs",
+    "build:personal-runtime-policy-training": "node scripts/build_personal_runtime_policy_training.mjs",
     "check:persona-method-training": "node scripts/validate_persona_method_training.mjs",
     "train:controlled-gate": "node scripts/train_controlled_gate.mjs",
     "eval:controlled-gate": "node scripts/eval_controlled_gate.mjs",

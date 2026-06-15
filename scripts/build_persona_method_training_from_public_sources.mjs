@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCES = resolve(ROOT, "data/external_sources/admitted_open_sources.jsonl");
 const OUT = resolve(ROOT, "artifacts/training_os/persona_method_training_public.jsonl");
+const OUT_R17 = resolve(ROOT, "artifacts/training_os/r17_persona_method_training_public.jsonl");
 const REPORT = resolve(ROOT, "artifacts/training_os/persona_method_training_public_report.json");
 
 function parseJsonl(text) {
@@ -84,7 +85,9 @@ async function main() {
     rows.push(row(source, index++, "reasoning"));
   }
   await mkdir(dirname(OUT), { recursive: true });
-  await writeFile(OUT, `${rows.map((item) => JSON.stringify(item)).join("\n")}\n`, "utf8");
+  const body = `${rows.map((item) => JSON.stringify(item)).join("\n")}\n`;
+  await writeFile(OUT, body, "utf8");
+  await writeFile(OUT_R17, body, "utf8");
   const bySplit = rows.reduce((acc, item) => {
     acc[item.split] = (acc[item.split] || 0) + 1;
     return acc;
@@ -93,6 +96,10 @@ async function main() {
     ok: true,
     rows: rows.length,
     sources: sources.length,
+    outputs: [
+      "artifacts/training_os/persona_method_training_public.jsonl",
+      "artifacts/training_os/r17_persona_method_training_public.jsonl"
+    ],
     by_split: bySplit,
     privacy_high_rows: rows.filter((item) => item.privacy_risk === "high").length,
     source_leak_medium_or_high_rows: rows.filter((item) => ["medium", "high"].includes(item.source_leak_risk)).length,
