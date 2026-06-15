@@ -35,6 +35,7 @@ async function targetFiles() {
   return [
     resolve(ROOT, "identity_pack/approved_persona_cards.example.jsonl"),
     resolve(ROOT, "identity_pack/approved_personal_facts.example.jsonl"),
+    resolve(ROOT, "identity_pack/manual_seed_persona_cards.example.jsonl"),
     resolve(ROOT, "identity_pack/rejected_persona_cards.example.jsonl"),
     ...(await existingFiles(resolve(ROOT, "evals/persona"), (name) => name.endsWith(".jsonl")))
   ];

@@ -73,6 +73,7 @@ function scanString(text, file, pathParts = []) {
     if (name === "phone_like_long_digits") {
       const phoneCandidates = [...String(text || "").matchAll(/(?<![A-Za-z0-9])(?:\+?\d[\d\s().-]{7,}\d)(?![A-Za-z0-9])/g)].filter((match) => {
         const value = match[0].trim();
+        if (/^\d{4}\s*[-–]\s*\d{2}\s*[-–]\s*\d{2}$/.test(value)) return false;
         if (/^\d{4}\s*[-–]\s*\d{4}$/.test(value)) return false;
         if (/^\d{4}\s+to\s+\d{4}$/i.test(value)) return false;
         return true;

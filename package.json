@@ -38,6 +38,7 @@
     "check:persona-privacy": "node scripts/validate_persona_privacy.mjs",
     "check:persona-overfit": "node scripts/validate_persona_overfit.mjs",
     "check:personal-facts": "node scripts/validate_personal_facts.mjs",
+    "check:training-contract-freeze": "node scripts/validate_training_contract_freeze.mjs",
     "probe:dialog": "node scripts/dialog_probe.mjs",
     "serve": "python3 -m http.server 5173 --directory web"
   }

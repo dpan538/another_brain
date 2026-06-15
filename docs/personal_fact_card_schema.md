@@ -6,6 +6,12 @@ A direct answer is not a privacy failure when the fact is approved, visible, sou
 
 The system should be precise without becoming invasive, and bounded without becoming evasive.
 
+Freeze anchor:
+
+```text
+approved fact -> direct answer
+```
+
 ## Purpose
 
 PersonalFactCard answers:

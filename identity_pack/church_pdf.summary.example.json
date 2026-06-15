@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "source_id": "src_uploaded_pdf_church",
+  "visibility": "local",
+  "approved_for_public_runtime": false,
+  "source_summary": "Public-safe abstract summary of a locally uploaded prose PDF. This file contains no raw source text.",
+  "direct_facts": [
+    "the work is titled Church",
+    "the local PDF has ten pages",
+    "the prose is organized with numbered sections"
+  ],
+  "interpretive_themes": [
+    "library and church as spaces of memory",
+    "rain, walking, reading, and attention",
+    "small-town architecture and historical residue",
+    "home, return, soil, and urban departure",
+    "religious space as abandoned or transformed structure"
+  ],
+  "method_candidates": [
+    "separate observed setting from autobiographical inference",
+    "read the church as a spatial and historical object before treating it as belief",
+    "avoid treating narrative figures as verified private biography"
+  ],
+  "must_not_infer": [
+    "exact hometown",
+    "private address",
+    "religious affiliation",
+    "family biography",
+    "medical or psychological state",
+    "literal event history beyond approved facts"
+  ],
+  "copyright_boundary": [
+    "no raw quote training",
+    "no long excerpt",
+    "summaries and short facts only"
+  ]
+}

@@ -4,6 +4,8 @@ This document is a training-system contract. It defines failures that must be ma
 
 The goal is not to preserve a preferred wording. The goal is to prevent route, template, memory, culture, and reasoning regressions from being hidden by plausible short answers.
 
+Freeze anchor: route collapse must remain a named failure family.
+
 ## 1. Route Collapse
 
 - Definition: different task types are routed into the same broad intent or fallback path, so the system loses the user's requested operation before answering.

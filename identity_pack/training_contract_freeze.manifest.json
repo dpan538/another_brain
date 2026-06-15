@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-06-15T10:01:30.723Z",
+  "frozen_branch": "main",
+  "change_policy": "strengthen_only",
+  "training_allowed_only_after": [
+    "npm run check:training-contract-freeze",
+    "npm run eval:r9-regression",
+    "npm run eval:persona-contracts:strict",
+    "npm run check:persona-privacy",
+    "npm run check:persona-overfit",
+    "npm run check:personal-facts",
+    "npm run check:release"
+  ],
+  "protected_files": [
+    {
+      "path": "docs/capacity_and_reasoning_eval_2026-06-15.md",
+      "sha256": "6604407c8827691102e9cb8726cf54ed74291435e243b15b843cc284daa0e936"
+    },
+    {
+      "path": "docs/clone_training_strategy.md",
+      "sha256": "da7a1dd0771b9946837c1792576b6488c56e4791dab1b1a580d850f673c5247c"
+    },
+    {
+      "path": "docs/culture_card_schema.md",
+      "sha256": "e112b273893817627dc1f62a4d409ba97c0d9bc678550029fd2c519fc347b550"
+    },
+    {
+      "path": "docs/memory_os_research.md",
+      "sha256": "e938359c11d7491ab874f6e406879163967883cadb7e83de2dbe1b92ab074889"
+    },
+    {
+      "path": "docs/persona_eval_spec.md",
+      "sha256": "613287755ac9fa8aca2aff0563b59e54d41e53f1d1cf33d850299750b2f7a1fb"
+    },
+    {
+      "path": "docs/persona_ingestion_policy.md",
+      "sha256": "060f902e6eae01e9230d1c93c04dd15c72b21a8aa35cfb8c1234e2e8a6f753fb"
+    },
+    {
+      "path": "docs/persona_layer_design.md",
+      "sha256": "7f59f4fb708465402937025a9d053592b20c74e9e8ff9f0c6fa3a6b8599c18de"
+    },
+    {
+      "path": "docs/persona_overfit_taxonomy.md",
+      "sha256": "45bf40370499c755522bcc9576f586cb2b46a2d79938f79ad0bb297f5c7ddf86"
+    },
+    {
+      "path": "docs/personal_fact_card_schema.md",
+      "sha256": "07d9176f007a7d8750a466c0555543c7e1f6b2090269fc851b5c97104b9e8ced"
+    },
+    {
+      "path": "docs/reasoning_trace_schema.md",
+      "sha256": "e8e4208ea16ee5910cd6df0aee5687cf3b35ae8011738ac5b7bf0e8c7de381a4"
+    },
+    {
+      "path": "docs/release_governance.md",
+      "sha256": "71083d1137ab99eb10cf92a440366c58d712e836cde3d7e265acb845cb9497c6"
+    },
+    {
+      "path": "docs/training_contract_freeze.md",
+      "sha256": "cd4a53691bf0ae9cf866d68f10e3f2060b9044bb314e0c5610ec3e49f8a6e417"
+    },
+    {
+      "path": "docs/training_failure_taxonomy.md",
+      "sha256": "844cd017169bd40a5eebd39783fd041b67e119721300972d5753aed57c81f94c"
+    },
+    {
+      "path": "evals/persona/anti_overfit.jsonl",
+      "sha256": "a3f034848f6a31877afaaf3a4543892efe381d9862bcd227f3d7981d5e48208e"
+    },
+    {
+      "path": "evals/persona/contradiction.jsonl",
+      "sha256": "cc080755456b7ff4226bcb4b379cb724480f20f0918cd75aabc3c9d2532159cf"
+    },
+    {
+      "path": "evals/persona/core_identity.jsonl",
+      "sha256": "b1a777a2092829063426acb80bed6097651baee35c02da3cfbce9a2ba9dddb79"
+    },
+    {
+      "path": "evals/persona/correction_and_update.jsonl",
+      "sha256": "72329150be3b93ba4f3b283166c779dc2872c1de3c1dce9d9f86bdd508aad252"
+    },
+    {
+      "path": "evals/persona/culture_with_persona.jsonl",
+      "sha256": "d6957acf429dd3d2da15e9a02825b530ef82585c4097d3f4399a895ae2386607"
+    },
+    {
+      "path": "evals/persona/direct_personal_facts.jsonl",
+      "sha256": "6e5efad26e239d9ea32d143902c63e752106ca699e8ae66575cc7ed9a857f5f5"
+    },
+    {
+      "path": "evals/persona/heldout_works.jsonl",
+      "sha256": "19d463ce94566afeb7b2de4f47b433ef404b4e16e6c7de684987c54a0511f692"
+    },
+    {
+      "path": "evals/persona/judgment_methods.jsonl",
+      "sha256": "8677e29db4477aa6746071eed41ef59b8770aeb51d4747b73ae8aff3ae1395cd"
+    },
+    {
+      "path": "evals/persona/privacy_boundary.jsonl",
+      "sha256": "53d3dfb0987836f21227c9459e464286ae86b7e27bdb38e77ff13afb6e47547d"
+    },
+    {
+      "path": "evals/persona/reasoning_with_persona.jsonl",
+      "sha256": "578eb600f0d11476b7e5469f040ade8b8ce74e08d313dab0ad558100b913faf8"
+    },
+    {
+      "path": "evals/persona/source_leak.jsonl",
+      "sha256": "9393765872c7c7dc97126af84a052dc9f821bc1b678585d5856f09f378591e6d"
+    },
+    {
+      "path": "evals/persona/style_range.jsonl",
+      "sha256": "23c456d23187bddb43ca1cdf00a2aed4adeb43421c5c19dae0af55320df679a7"
+    },
+    {
+      "path": "evals/r9_regression/culture_reasoning_regression.jsonl",
+      "sha256": "adf524bcda238813d6c565cb82e6a880ab9d94c81398a2d54b18f252e94dad6b"
+    },
+    {
+      "path": "identity_pack/README.md",
+      "sha256": "ad93c14dbc1aaa7d04074af00d2f67f71a153a222faa4f22f5e9ce029a1f94d7"
+    },
+    {
+      "path": "identity_pack/approved_persona_cards.example.jsonl",
+      "sha256": "39de080761f1eb1cd53df4f3af0bf0c5efdefbe278d70b6e5e3278b70087b58a"
+    },
+    {
+      "path": "identity_pack/approved_personal_facts.example.jsonl",
+      "sha256": "2ac6b3ec695d4c2593c3d6399084e21feb4917d72ed4b8b034fc7c0efac3cede"
+    },
+    {
+      "path": "identity_pack/cards/culture_awareness_cards.jsonl",
+      "sha256": "ce4783530d170ea9f93763892075e84d9c6dbc7ff80f7d36c523aed9175a37b6"
+    },
+    {
+      "path": "identity_pack/cards/interview_round1_cards.jsonl",
+      "sha256": "5cfe1ba1c3737090fa20cb6e601e6078552024818cd0dc1c71c7bbc9cc89f148"
+    },
+    {
+      "path": "identity_pack/cards/interview_round2_cards.jsonl",
+      "sha256": "a0abe1ef5f9a69dff6ccc2d3a90c8594b060680a81d7448f978501a3de68b802"
+    },
+    {
+      "path": "identity_pack/cards/seed_identity_cards.jsonl",
+      "sha256": "555c517eab4500a69dcbf1009e637f34c684ff585bbd525ae3f87a8bccb7267f"
+    },
+    {
+      "path": "identity_pack/church_pdf.summary.example.json",
+      "sha256": "9f9c3179f0d84d236734a5912b191d0372cff1bcda690ab3b06c4832e294a4c6"
+    },
+    {
+      "path": "identity_pack/daipan_art.summary.example.json",
+      "sha256": "97ab64f3799535ba91d2b367e7ccbc066d3a85341281608dbdd7e18f355410ee"
+    },
+    {
+      "path": "identity_pack/identity_surface_contract.md",
+      "sha256": "e17894b7b4ef7c52e087e494b3e5cf54eddecb1595387a7601499d5899de7f71"
+    },
+    {
+      "path": "identity_pack/interview_question_bank.md",
+      "sha256": "d4489d9124b5d3bd976d5810930be8aa7acc7405c730dd71e15a10db488865d3"
+    },
+    {
+      "path": "identity_pack/manual_seed_persona_cards.example.jsonl",
+      "sha256": "2deee9580f0cbfd4002269c4c69cd60f1de1f10087c64ccfa61ef0dc4c56e470"
+    },
+    {
+      "path": "identity_pack/public_profile.example.json",
+      "sha256": "39c6d4be858dc818c9047f7d6ad2a0cef02022814e59fffa08a74f899f962644"
+    },
+    {
+      "path": "identity_pack/redaction_policy.json",
+      "sha256": "d124b2ffefa1e5bfa61275d499a294af5f83fc642074bf69ff4e48c6f2aa1c73"
+    },
+    {
+      "path": "identity_pack/rejected_persona_cards.example.jsonl",
+      "sha256": "df54a940679c54e2f1d229c5ec2e0d7557d68c51686938ddeefbe1d969f36136"
+    },
+    {
+      "path": "identity_pack/schemas/card_schema.json",
+      "sha256": "0a5deda3d2115ab4c4eba9cdfa56014c454df5a169722c485ad21503fc66fc8a"
+    },
+    {
+      "path": "identity_pack/schemas/private_structure_template.json",
+      "sha256": "d61ec51086aadc70bcb8d2d94fdb5541c3530a8b4dfdb608ec049c69a691b86b"
+    },
+    {
+      "path": "identity_pack/source_manifest.example.jsonl",
+      "sha256": "72a02cdd977295d419eca24f6389469ef396d0be887f1bffcacc5bc838100044"
+    },
+    {
+      "path": "identity_pack/uploaded_pdf_collection.summary.example.json",
+      "sha256": "d03a403bb240495815cc071c6a5839121f871aacfb1e3ea13a3fa10fdfb0000e"
+    },
+    {
+      "path": "package.json",
+      "sha256": "7fc3a50826923fad3c511fab952f02a3003c0c38f8a9da6ad4ece389ad295755"
+    },
+    {
+      "path": "scripts/eval_persona_contracts.mjs",
+      "sha256": "70bd4d167b9724746ce97f63568308453ca9ab94150fea54291e4bac447d2f14"
+    },
+    {
+      "path": "scripts/eval_r9_regression.mjs",
+      "sha256": "4ad64dc59d18b67972904dda573316807d34a7181d6fcc8707f011ebe2e324d1"
+    },
+    {
+      "path": "scripts/validate_persona_overfit.mjs",
+      "sha256": "0df56540fe3209a81017354be94bbed746c8da489e3cd2b3e3115b9e87eeea5e"
+    },
+    {
+      "path": "scripts/validate_persona_privacy.mjs",
+      "sha256": "55f48bb39e87e165c6c06ad72fb90670414056a0a3a45ddfa019fa37349307c5"
+    },
+    {
+      "path": "scripts/validate_personal_facts.mjs",
+      "sha256": "a9692eb45ee738a36c6924734a7056081f9e92318059c7fee134f6af2ca95a48"
+    },
+    {
+      "path": "scripts/validate_training_contract_freeze.mjs",
+      "sha256": "75263e403669038f58c17f16fc7f6264ae7f474f43a8bd260753b720b9319498"
+    }
+  ],
+  "notes": [
+    "Do not weaken privacy, source, overfit, identity, direct-fact, or reasoning constraints to make training pass.",
+    "Only update this manifest after a reviewed strengthening change and after all relevant validators pass.",
+    "Raw PDFs, docx reports, local paths, raw source caches, and private manifests must not be committed.",
+    "This manifest intentionally protects guidance docs, evals, validators, identity-pack examples, and package gate scripts before training."
+  ]
+}
