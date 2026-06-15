@@ -2026,6 +2026,93 @@ export const CULTURE_CARDS = [
     ]
   },
   {
+    "id": "person.li_zongsheng",
+    "entity_type": "person",
+    "names": [
+      "李宗盛",
+      "Jonathan Lee",
+      "Li Zongsheng"
+    ],
+    "domain": "music.mandopop",
+    "factual_core": "华语流行音乐重要创作者和制作人，常被用来讨论成熟叙事、情感观察和流行工业中的作者性。",
+    "short_intro": "和罗大佑相比，他更常从人情、关系和成熟后的自我审视进入。",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "1980s_2000s_mandopop"
+    ],
+    "themes": [
+      "love_memory",
+      "ordinary_life",
+      "relationship_observation",
+      "songwriting_craft"
+    ],
+    "style_axes": [
+      "mature_storytelling",
+      "producer_songwriter",
+      "plainspoken_emotion"
+    ],
+    "historical_context": [
+      "华语流行音乐中创作者/制作人角色变得更可见"
+    ],
+    "entry_points": [
+      "先听代表性创作了解叙事口吻",
+      "和罗大佑比较公共时代感与私人关系观察"
+    ],
+    "related_entities": [
+      {
+        "id": "person.luo_dayou",
+        "relation": "comparison_artist"
+      },
+      {
+        "id": "concept.mandopop_taiwan",
+        "relation": "domain"
+      }
+    ],
+    "comparison_axes": [
+      "公共历史/私人关系",
+      "时代批评/人情观察",
+      "创作者位置",
+      "叙事口吻"
+    ],
+    "conversation_moves": {
+      "overview": "给出创作者和制作人位置。",
+      "works_list": "如需作品，列入口但不贴歌词。",
+      "representative_works": "说明代表性来自叙事和创作位置。",
+      "entry_path": "从易进入作品和制作人视角开始。",
+      "explain_work": "转到具体作品或主题，不复写歌词。",
+      "compare": "和罗大佑比较公共时代感与私人关系观察。",
+      "country_relation": "放入华语流行音乐语境。",
+      "why_it_matters": "说明他如何强化创作者/制作人在流行歌中的叙事重量。",
+      "quote_or_lyrics_boundary": "不输出歌词；可讲主题、背景和听法。"
+    },
+    "safe_boundaries": [
+      "no_lyrics",
+      "no_private_life_guessing",
+      "avoid_rank_without_source"
+    ],
+    "followup_bindings": [
+      "person.luo_dayou",
+      "concept.mandopop_taiwan"
+    ],
+    "eval_tags": [
+      "culture.music",
+      "compare"
+    ],
+    "source_ids": [
+      "public_general_music_knowledge"
+    ],
+    "source_summary": "General public cultural knowledge, abstracted without source prose.",
+    "confidence": 0.78,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "copyright_policy": "No lyrics or long copyrighted text.",
+    "not_to_infer": [
+      "complete discography",
+      "private relationship facts"
+    ]
+  },
+  {
     "id": "concept.existentialism",
     "entity_type": "concept",
     "names": [
@@ -2659,6 +2746,189 @@ export const CULTURE_CARDS = [
     ]
   },
   {
+    "id": "concept.language_betrayal",
+    "entity_type": "concept",
+    "names": [
+      "语言会背叛意思吗",
+      "语言背叛意思",
+      "语言与意思",
+      "language betrays meaning"
+    ],
+    "domain": "philosophy",
+    "factual_core": "语言能表达意思，也会因为语境、歧义、隐喻和听者解释而改变意思；所谓背叛通常指表达和意图之间出现裂缝。",
+    "short_intro": "可以说语言不会简单背叛意思，但它从来不是透明容器。",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "language_philosophy",
+      "literary_theory"
+    ],
+    "themes": [
+      "language",
+      "meaning_instability",
+      "interpretation",
+      "context",
+      "difference"
+    ],
+    "style_axes": [
+      "nontransparent_language",
+      "context_sensitive",
+      "anti_slogan"
+    ],
+    "historical_context": [
+      "语言哲学、文学理论和解构讨论都关心意义如何在表达中移动"
+    ],
+    "entry_points": [
+      "先区分意图、表达和理解",
+      "再看语境和歧义如何改变意义"
+    ],
+    "related_entities": [
+      {
+        "id": "person.derrida",
+        "relation": "adjacent_theory"
+      },
+      {
+        "id": "concept.deconstruction",
+        "relation": "method_relation"
+      },
+      {
+        "id": "concept.name_memory",
+        "relation": "adjacent_theme"
+      }
+    ],
+    "comparison_axes": [
+      "意图/表达",
+      "词语/语境",
+      "稳定意义/解释差异",
+      "表达/误读"
+    ],
+    "conversation_moves": {
+      "overview": "先说明语言既表达也改变意思。",
+      "works_list": "不适合作品清单。",
+      "representative_works": "可转到哲学或文学入口。",
+      "entry_path": "从一个词在不同语境中的变化进入。",
+      "explain_work": "解释句子中表达和意图的裂缝。",
+      "compare": "可与解构、叙述、命名比较。",
+      "country_relation": "不是国家关系问题。",
+      "why_it_matters": "它让阅读和沟通都必须考虑语境与解释。",
+      "quote_or_lyrics_boundary": "不输出长段原文。"
+    },
+    "safe_boundaries": [
+      "avoid_claiming_meaning_is_impossible",
+      "avoid_empty_paradox"
+    ],
+    "followup_bindings": [
+      "concept.deconstruction",
+      "person.derrida"
+    ],
+    "eval_tags": [
+      "culture.philosophy",
+      "theme_explanation"
+    ],
+    "source_ids": [
+      "public_general_philosophy_knowledge"
+    ],
+    "source_summary": "Abstract language-philosophy concept.",
+    "confidence": 0.78,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "copyright_policy": "No long quoted text.",
+    "not_to_infer": [
+      "all communication fails",
+      "speaker intent is irrelevant"
+    ]
+  },
+  {
+    "id": "concept.unanswerable_question",
+    "entity_type": "concept",
+    "names": [
+      "没有答案的问题",
+      "问题没有答案",
+      "是否还值得问",
+      "unanswerable question"
+    ],
+    "domain": "philosophy",
+    "factual_core": "没有确定答案的问题仍可能值得问，因为提问能澄清边界、暴露前提、组织经验或改变行动方向。",
+    "short_intro": "问题的价值不只在答案，也在它让我们看清什么不能被轻易回答。",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "ethics",
+      "epistemology"
+    ],
+    "themes": [
+      "questioning",
+      "boundary",
+      "uncertainty",
+      "meaning",
+      "method"
+    ],
+    "style_axes": [
+      "bounded_reflection",
+      "anti_mystification",
+      "practical_clarity"
+    ],
+    "historical_context": [
+      "哲学、文学和方法论都把问题本身看作组织判断的方式"
+    ],
+    "entry_points": [
+      "先看问题想解决什么",
+      "再看它暴露了什么前提",
+      "最后判断是否需要停下"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.silence_answer",
+        "relation": "boundary_relation"
+      },
+      {
+        "id": "concept.existentialism",
+        "relation": "adjacent_theme"
+      }
+    ],
+    "comparison_axes": [
+      "答案/问题价值",
+      "未知/不可答",
+      "思考/逃避",
+      "边界/行动"
+    ],
+    "conversation_moves": {
+      "overview": "说明问题可因澄清边界而有价值。",
+      "works_list": "不适合作品清单。",
+      "representative_works": "可转为思想入口。",
+      "entry_path": "用目的、前提、边界三步判断。",
+      "explain_work": "解释句子或问题为什么仍有意义。",
+      "compare": "比较无答案、未知和拒答。",
+      "country_relation": "不是国家关系问题。",
+      "why_it_matters": "它帮助决定什么时候继续追问，什么时候停下。",
+      "quote_or_lyrics_boundary": "不输出长文本。"
+    },
+    "safe_boundaries": [
+      "do_not_use_unanswerable_as_evasion",
+      "answer_solvable_questions_directly"
+    ],
+    "followup_bindings": [
+      "concept.silence_answer"
+    ],
+    "eval_tags": [
+      "culture.philosophy",
+      "stop_boundary",
+      "theme_explanation"
+    ],
+    "source_ids": [
+      "public_general_philosophy_knowledge"
+    ],
+    "source_summary": "Abstract question-method concept.",
+    "confidence": 0.76,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "copyright_policy": "No long quoted text.",
+    "not_to_infer": [
+      "all questions are equally useful",
+      "no factual answer is ever needed"
+    ]
+  },
+  {
     "id": "person.robert_lowell",
     "entity_type": "person",
     "names": [
@@ -2842,6 +3112,8 @@ export const CULTURE_CARDS = [
     "names": [
       "摄影作为观看关系",
       "摄影是不是只是记录",
+      "摄影",
+      "摄影作品",
       "观看关系",
       "photography as looking relation"
     ],
@@ -3284,6 +3556,101 @@ export const CULTURE_CARDS = [
     "not_to_infer": [
       "photographer intent",
       "depicted person's emotion"
+    ]
+  },
+  {
+    "id": "concept.art_history_entry",
+    "entity_type": "concept",
+    "names": [
+      "艺术史应该从哪里开始",
+      "艺术史入门",
+      "艺术史",
+      "art history entry"
+    ],
+    "domain": "poetry.art",
+    "factual_core": "艺术史入门可以从观看方式、媒介变化、制度语境和几个关键断点开始，而不是先背完整年代线。",
+    "short_intro": "先学会看作品如何被制造、展示和解释，再逐步补时期和流派。",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "classical_to_modern_art",
+      "modern_art",
+      "contemporary_art"
+    ],
+    "themes": [
+      "looking",
+      "medium",
+      "institution",
+      "context",
+      "history"
+    ],
+    "style_axes": [
+      "entry_path",
+      "visual_method",
+      "historical_context"
+    ],
+    "historical_context": [
+      "艺术史把作品、媒介、赞助/制度、观看方式和社会变化放在一起理解"
+    ],
+    "entry_points": [
+      "先从观看方法和媒介差异开始",
+      "再抓文艺复兴、现代主义和当代艺术几个断点",
+      "最后补地区和时间线"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.duchamp",
+        "relation": "modern_art_entry"
+      },
+      {
+        "id": "method.artwork_value_museum",
+        "relation": "institution_method"
+      },
+      {
+        "id": "method.photography_as_looking_relation",
+        "relation": "viewing_method"
+      }
+    ],
+    "comparison_axes": [
+      "时间线/问题线",
+      "媒介/制度",
+      "观看/历史",
+      "作品/语境"
+    ],
+    "conversation_moves": {
+      "overview": "说明艺术史不是只背年代，而是作品、媒介和制度的关系。",
+      "works_list": "如需作品，给时期入口而不做全集。",
+      "representative_works": "用少量节点说明断点。",
+      "entry_path": "给可执行学习路线。",
+      "explain_work": "转到具体作品或方法卡。",
+      "compare": "比较时期、媒介和制度语境。",
+      "country_relation": "可讨论地区传统，但避免本质化。",
+      "why_it_matters": "它训练观看和历史判断。",
+      "quote_or_lyrics_boundary": "不输出长版权文本。"
+    },
+    "safe_boundaries": [
+      "avoid_complete_canon_claims",
+      "do_not_reduce_art_history_to_names_only"
+    ],
+    "followup_bindings": [
+      "method.photography_as_looking_relation",
+      "concept.duchamp"
+    ],
+    "eval_tags": [
+      "culture.poetry_art",
+      "entry_path"
+    ],
+    "source_ids": [
+      "public_general_art_history"
+    ],
+    "source_summary": "General art-history learning method abstraction.",
+    "confidence": 0.78,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "copyright_policy": "No long quoted text or protected image reproduction.",
+    "not_to_infer": [
+      "single universal canon",
+      "private market prices"
     ]
   }
 ];

@@ -249,6 +249,20 @@ function answerPrivacyBoundary(text) {
   });
 }
 
+function answerGenericCopyrightBoundary(text) {
+  if (!COPYRIGHT_REQUEST_RE.test(text)) return null;
+  if (!/(歌词|原文|整首|全文|贴出来|逐句翻译|一大段)/.test(text)) return null;
+  return makeResult({
+    intent: "operation_copyright_boundary",
+    operation: "copyright_boundary_check",
+    questionType: "no_lyrics_boundary",
+    contextAction: "ANSWER_CULTURE",
+    answer: /逐句翻译/.test(text)
+      ? "不能逐句翻译整段歌词；可以改讲主题、背景、意象或给很短的非替代性说明。"
+      : "不能提供歌词或长段原文；可以改讲主题、背景、结构或摘要。"
+  });
+}
+
 function luoDayouAnswer(text, state) {
   if (!/(罗大佑|童年|恋曲1990|鹿港小镇|之乎者也|东方之珠)/.test(text)) return null;
   if (/童年/.test(text) && /(重要|为什么|解释|不要歌词)/.test(text)) {
@@ -420,6 +434,7 @@ function answerCulture(text, state) {
 function answerReasoning(text) {
   return (
     answerWithMicroSolvers(text) ||
+    answerGenericCopyrightBoundary(text) ||
     answerArithmetic(text) ||
     answerSyllogism(text) ||
     answerTransitiveComparison(text) ||

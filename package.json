@@ -41,6 +41,7 @@
     "check:culture-cards": "node scripts/validate_culture_cards.mjs",
     "build:culture-cards": "node scripts/build_culture_cards.mjs",
     "test:micro-solvers": "node scripts/test_micro_solvers.mjs",
+    "eval:r10-culture": "node scripts/eval_r10_culture.mjs",
     "check:training-contract-freeze": "node scripts/validate_training_contract_freeze.mjs",
     "probe:dialog": "node scripts/dialog_probe.mjs",
     "serve": "python3 -m http.server 5173 --directory web"

@@ -25,6 +25,9 @@ const LABELS = {
   time: "时间感",
   daily_experience: "日常经验",
   love_memory: "爱情记忆",
+  ordinary_life: "普通生活",
+  relationship_observation: "关系观察",
+  songwriting_craft: "创作手艺",
   city: "城市",
   nostalgia: "怀旧",
   plainspoken_pressure: "直白的压力",
@@ -33,6 +36,8 @@ const LABELS = {
   accessible_melody: "易进入的旋律",
   light_surface_deeper_time: "轻表面下的时间感",
   plainspoken_emotion: "直白情感",
+  mature_storytelling: "成熟叙事",
+  producer_songwriter: "制作人/创作者位置",
   time_pressure: "时间压力",
   accessible_entry: "易进入",
   modern_self: "近代自我",
@@ -73,6 +78,7 @@ const LABELS = {
   postwar_memory: "战后记忆",
   democracy_and_defeat: "战败与民主",
   body_and_history: "身体与历史",
+  social_reconstruction: "社会重建",
   freedom: "自由",
   responsibility: "责任",
   authenticity: "真实性",
@@ -85,6 +91,8 @@ const LABELS = {
   writing: "书写",
   difference: "差异",
   meaning_instability: "意义不稳定",
+  language: "语言",
+  context: "语境",
   textual_boundary: "文本边界",
   binary_opposition: "二元对立",
   margin_center: "中心与边缘",
@@ -98,6 +106,9 @@ const LABELS = {
   answerability: "可回答性",
   boundary: "边界",
   refusal: "拒绝",
+  questioning: "提问",
+  uncertainty: "不确定性",
+  method: "方法",
   naming: "命名",
   classification: "分类",
   confessional_poetry: "自白诗",
@@ -118,9 +129,12 @@ const LABELS = {
   art_institution: "艺术制度",
   conceptual_art: "观念艺术",
   authorship: "作者性",
-  context: "语境",
   institution: "制度",
   value: "价值",
+  medium: "媒介",
+  history: "历史",
+  entry_path: "入门路径",
+  visual_method: "观看方法",
   display: "展示",
   canon: "经典化",
   copyright_boundary: "版权边界",
@@ -190,6 +204,8 @@ function answerCopyrightBoundary(query, focus) {
   if (name) {
     return polite
       ? sentence("不行，不能贴", name, "的歌词或长段原文；我可以改讲主题、背景和作品位置。")
+      : /完整|整首/.test(query)
+      ? sentence("完整歌词不能提供；如果谈", name, "，可以讲它的主题、背景和影响。")
       : sentence("不能提供", name, "的歌词或长段原文；可以讲主题、背景、结构和为什么重要。");
   }
   return "不能提供完整歌词、整首诗或长段原文；可以改讲主题、背景、结构或阅读/聆听入口。";
@@ -263,6 +279,12 @@ function answerExplain(focus, questionType, query = "") {
   if (/你懂什么/.test(query)) {
     return `${name}不是一个可复读的标签；先看它的位置：${focus.factual_core} 重点是${themeText || "作品语境"}。`;
   }
+  if (/第一首|第一本/.test(query)) {
+    return `按刚才的列表，第一项可先这样读：${name}连接的是${themeText || "主题和位置"}，不是让你复述原文。`;
+  }
+  if (/那战后/.test(query)) {
+    return `战后这一段要看${themeText || "战争记忆和社会重建"}：${focus.factual_core}`;
+  }
   if (/这首|这本|这个/.test(query)) {
     return `这件作品可从${themeText || "主题和形式"}进入：${focus.factual_core}`;
   }
@@ -291,6 +313,9 @@ function answerCompare(cards, query = "") {
   const axisText = axesFor(targets, 4) || "时代、形式、主题和语境";
   const aStyle = styleFor(a, 3) || themes(a, 2);
   const bStyle = styleFor(b, 3) || themes(b, 2);
+  if (/谁更冷/.test(query)) {
+    return `如果“冷”指距离感和抒情温度，${primaryName(b)}更冷一些：他更偏${bStyle || "压缩意象"}；${primaryName(a)}的冷更多来自${aStyle || "理性裂缝"}。`;
+  }
   if (/怎么推理/.test(query)) {
     return `推理时先定比较轴：${axisText}。在这些轴上，${primaryName(a)}偏${aStyle || "自身的问题结构"}，${primaryName(b)}偏${bStyle || "另一组形式和主题"}；结论只能说相似张力，不能说二者等同。`;
   }
@@ -301,6 +326,12 @@ function answerThemeExplanation(focus, query = "") {
   if (!focus) return "";
   const name = primaryName(focus);
   const themeText = themes(focus, 4);
+  if (/漂亮/.test(query)) {
+    return `判断摄影作品不能只看漂亮：还要看它怎样组织${themeText || "观看、框取和关系"}，以及画面排除了什么。`;
+  }
+  if (/只是记录/.test(query)) {
+    return `不是只是记录。${focus.factual_core} 所以要同时看对象、框取和观看者位置。`;
+  }
   if (/怎么理解/.test(query)) {
     return `可以理解为：${focus.factual_core} 这里的关键是${themeText || "字面和隐含关系"}，不是把情绪当成图像本身。`;
   }
