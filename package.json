@@ -43,6 +43,8 @@
     "test:micro-solvers": "node scripts/test_micro_solvers.mjs",
     "eval:r10-culture": "node scripts/eval_r10_culture.mjs",
     "eval:r11-reasoning": "node scripts/eval_r11_reasoning.mjs",
+    "build:reasoning-trace-training": "node scripts/build_reasoning_trace_training.mjs",
+    "check:reasoning-trace-training": "node scripts/validate_reasoning_trace_training.mjs",
     "check:training-contract-freeze": "node scripts/validate_training_contract_freeze.mjs",
     "probe:dialog": "node scripts/dialog_probe.mjs",
     "serve": "python3 -m http.server 5173 --directory web"
