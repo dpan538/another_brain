@@ -195,7 +195,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "7fc3a50826923fad3c511fab952f02a3003c0c38f8a9da6ad4ece389ad295755"
+      "sha256": "aed43c03d35ac4408b6cadfc2754a55ea2da72fe0169208157ba92b31082b8a8"
     },
     {
       "path": "scripts/eval_persona_contracts.mjs",

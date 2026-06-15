@@ -258,6 +258,15 @@ function answerUnknownBoundary(text) {
 
 function answerPrivacyBoundary(text) {
   if (!/(真实姓名|我的姓名|私人身份|身份证号|身份证|手机号|住址|你知道我是谁|我是谁)/.test(text)) return null;
+  if (/你知道我是谁/.test(text)) {
+    return makeResult({
+      intent: "relation_memory_boundary",
+      operation: "privacy_scope_check",
+      questionType: "verify",
+      contextAction: "ANSWER_MEMORY_BOUNDARY",
+      answer: "这一句我不知道你是谁；前面忘了也不该猜。"
+    });
+  }
   if (/身份证|手机号|住址/.test(text)) {
     return makeResult({
       intent: "operation_privacy_boundary",

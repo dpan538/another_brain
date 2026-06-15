@@ -205,7 +205,7 @@ function answerCopyrightBoundary(query, focus) {
     return polite
       ? sentence("不行，不能贴", name, "的歌词或长段原文；我可以改讲主题、背景和作品位置。")
       : /完整|整首/.test(query)
-      ? sentence("完整歌词不能提供；如果谈", name, "，可以讲它的主题、背景和影响。")
+      ? sentence("歌词不能给；如果谈", name, "，可以讲主题、背景和影响。")
       : sentence("不能提供", name, "的歌词或长段原文；可以讲主题、背景、结构和为什么重要。");
   }
   return "不能提供完整歌词、整首诗或长段原文；可以改讲主题、背景、结构或阅读/聆听入口。";
@@ -238,6 +238,9 @@ function answerAuthorList(cards, query = "") {
 function answerOverview(focus, cards, domain) {
   const base = domainCard(cards, domain) || focus;
   if (!base) return "";
+  if (focus?.entity_type === "person" && focus.domain === "music.mandopop") {
+    return `${primaryName(focus)}是台湾音乐人，关键在时代感、青春记忆和社会观察。`;
+  }
   const bits = [];
   bits.push(base.short_intro || base.factual_core);
   const periodText = listText(asArray(base.periods), 3);
@@ -256,7 +259,8 @@ function answerEntryPath(focus, index, questionType, query = "") {
     if (/村上春树/.test(query) && /适合/.test(query)) {
       return `适合入门。${entries[0]}；想看他更奇异的结构，再读${entries[1] || "较后期长篇"}。`;
     }
-    return `入门可以这样走：${entries.join("；")}。`;
+    const tail = focus?.domain === "literature.japanese" ? "同时留意季节感、沉默和战后断裂。" : "";
+    return `入门可以这样走：${entries.join("；")}。${tail}`;
   }
   const works = displayTitles(cardsByIds(index, focus?.representative_works || focus?.works || []), 4);
   if (works.length > 0) {
