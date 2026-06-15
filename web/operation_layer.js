@@ -1,5 +1,7 @@
 import { answerCultureQuery } from "./culture_runtime.js";
 import { verifyDraft } from "./draft_verifier.js";
+import { answerFallbackRepair } from "./fallback_repair.js";
+import { answerMetaKnowledgeQuery } from "./meta_knowledge_router.js";
 import {
   solveChineseArithmetic,
   solveSetQuantifierFromText,
@@ -733,6 +735,10 @@ export function answerWithOperationLayer(query, state = {}) {
   const text = clean(query);
   if (!text) return null;
   if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return answerPrivacyBoundary(text);
+  const repairAnswer = answerFallbackRepair({ query: text, session: state });
+  if (repairAnswer?.answer) return makeResult(repairAnswer);
+  const metaAnswer = answerMetaKnowledgeQuery(text, state);
+  if (metaAnswer?.answer) return makeResult(metaAnswer);
   const earlyBoundary = answerSourceBoundary(text) || answerReasoningPolicyBoundary(text);
   if (earlyBoundary) return earlyBoundary;
   const sentenceExplanation = answerSentenceExplanation(text);

@@ -96,5 +96,10 @@ python3 -m json.tool package.json >/dev/null
 python3 -m json.tool web/site.webmanifest >/dev/null
 python3 scripts/validate_knowledge_shards.py >/dev/null
 node scripts/eval_seo_metadata.mjs >/dev/null
+node scripts/check_fallback_invariants.mjs >/dev/null
+node scripts/eval_canary_anti_lobotomy.mjs >/dev/null
+node scripts/fuzz_fallback_routes.mjs >/dev/null
+node scripts/check_finalizer_coverage.mjs >/dev/null
+node scripts/check_finalizer_order.mjs >/dev/null
 
 printf 'release check passed\n'

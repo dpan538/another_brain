@@ -12,6 +12,7 @@ import {
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "../web/structured_decision.js?v=1";
 import { detectContextAction } from "../web/context_state.js?v=2";
 import { answerWithOperationLayer } from "../web/operation_layer.js?v=1";
+import { finalizeWithFallbackFirewall } from "../web/fallback_firewall.js?v=1";
 import { sanitizeSurfaceIdentity } from "../web/surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=15";
 import {
@@ -244,21 +245,37 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
   const stateBefore = compactState(state);
   const contextDecision = detectContextAction(text, state);
   const resolved = resolveAnswer(text, state);
-  const rawAnswer = String(resolved.answer || "").trim();
-  const answer = sanitizeSurfaceIdentity(resolved.answer, text);
+  const finalized = finalizeWithFallbackFirewall({
+    query: text,
+    state,
+    candidateAnswer: resolved.answer,
+    intent: resolved.intent,
+    route: resolved.route,
+    trace: {
+      intent: resolved.intent,
+      route: resolved.route,
+      questionType: resolved.questionType || "",
+      question_type: resolved.questionType || "",
+      operation: resolved.operation || "",
+      context_decision: contextDecision
+    }
+  });
+  const rawAnswer = String(finalized.answer || "").trim();
+  const answer = sanitizeSurfaceIdentity(finalized.answer, text);
   const sanitizerChanged = rawAnswer !== answer;
 
-  runtime.contextTurns.push({ question: text, answer, intent: resolved.intent });
+  runtime.contextTurns.push({ question: text, answer, intent: finalized.intent || resolved.intent });
   if (runtime.contextTurns.length > REASONING_CONTEXT_TURN_LIMIT) {
     runtime.contextTurns.splice(0, runtime.contextTurns.length - REASONING_CONTEXT_TURN_LIMIT);
   }
-  runtime.dialogState = nextDialogState(text, answer, resolved.intent, runtime.dialogState);
+  runtime.dialogState = nextDialogState(text, answer, finalized.intent || resolved.intent, runtime.dialogState);
   const stateAfter = compactState(runtime.dialogState);
-  const contextAction = inferContextActionLabel(text, contextDecision, resolved);
+  const finalResolved = { ...resolved, intent: finalized.intent || resolved.intent, route: finalized.route || resolved.route };
+  const contextAction = inferContextActionLabel(text, contextDecision, finalResolved);
   const trace = {
     input: text,
     state_before: stateBefore,
-    intent: resolved.intent,
+    intent: finalResolved.intent,
     context_action: contextAction,
     context_decision: contextDecision
       ? {
@@ -274,9 +291,10 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
         }
       : null,
     matched_rule: resolved.intent,
-    answer_source: resolved.route,
+    answer_source: finalResolved.route,
     raw_answer: rawAnswer,
     sanitizer_changed: sanitizerChanged,
+    fallback_firewall: finalized.firewall || null,
     final_answer: answer,
     state_after: stateAfter
   };
@@ -286,8 +304,8 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
     prompt: text,
     answer,
     output: answer,
-    intent: resolved.intent,
-    route: resolved.route,
+    intent: finalResolved.intent,
+    route: finalResolved.route,
     usedModel: Boolean(resolved.usedModel),
     thinkingMode: thinking.mode,
     thinkingDelayMs: withThinkingDelay ? thinking.delay : 0,

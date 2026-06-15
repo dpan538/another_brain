@@ -9,7 +9,8 @@ import {
 } from "./dialog_rules.js?v=60";
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "./structured_decision.js?v=1";
 import { buildDebugReport, downloadDebugReport } from "./debug_report.js?v=1";
-import { answerWithOperationLayer } from "./operation_layer.js?v=1";
+import { answerWithOperationLayer } from "./operation_layer.js?v=2";
+import { finalizeWithFallbackFirewall } from "./fallback_firewall.js?v=1";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=15";
 import {
@@ -25,11 +26,12 @@ import {
   SESSION_MEMORY_WINDOWS
 } from "./internal_session_memory.js?v=1";
 import { clampThinkingProfile, selectThinkingProfile } from "./thinking_profile.js?v=1";
+import { RUNTIME_VERSION } from "./runtime_version.js?v=1";
 
 const VISIBLE_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxVisibleExchangeTurns;
 const RAW_RUNTIME_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxRawExchangeTurnsInRuntimePacket;
 const REASONING_CONTEXT_TURN_LIMIT = SESSION_MEMORY_WINDOWS.internalRuntimeExchangeTurns;
-const APP_VERSION = "0.1.0";
+const APP_VERSION = `0.1.0-p0-firewall-${RUNTIME_VERSION.p0FallbackFirewall ? "on" : "off"}`;
 const PROMPT_MAX_HEIGHT_FALLBACK = 260;
 const STRUCTURED_EVIDENCE_LIMIT = 5;
 const KEYBOARD_VISUAL_VIEWPORT_DELTA = 120;
@@ -183,21 +185,36 @@ function contextActionForIntent(intent, route) {
 }
 
 function commitAnswer(question, answer, intent, previousState = dialogState, meta = {}) {
-  const finalAnswer = sanitizeSurfaceIdentity(answer, question);
-  const route = meta.route || "unknown";
+  const finalized = finalizeWithFallbackFirewall({
+    query: question,
+    state: previousState,
+    candidateAnswer: answer,
+    intent,
+    route: meta.route || "unknown",
+    trace: {
+      answerSource: meta.answerSource || meta.route || "unknown",
+      questionType: meta.questionType || "",
+      question_type: meta.questionType || "",
+      operation: meta.operation || meta.contextAction || ""
+    }
+  });
+  const finalIntent = finalized.intent || intent;
+  const route = finalized.route || meta.route || "unknown";
+  const finalAnswer = sanitizeSurfaceIdentity(finalized.answer, question);
   const latencyMs = meta.startedAt ? performance.now() - meta.startedAt : 0;
   lastDebugEvent = {
     route,
-    intent,
-    contextAction: meta.contextAction || contextActionForIntent(intent, route),
+    intent: finalIntent,
+    contextAction: meta.contextAction || contextActionForIntent(finalIntent, route),
     answerSource: meta.answerSource || route,
     sanitizerChanged: finalAnswer !== String(answer || "").trim(),
     latencyMs,
-    failureTag: meta.failureTag || "none"
+    failureTag: finalized.firewall?.reason || meta.failureTag || "none",
+    fallbackFirewall: finalized.firewall || null
   };
   setAnswer(finalAnswer);
-  rememberTurn(question, finalAnswer, intent);
-  dialogState = nextDialogState(question, finalAnswer, intent, previousState);
+  rememberTurn(question, finalAnswer, finalIntent);
+  dialogState = nextDialogState(question, finalAnswer, finalIntent, previousState);
 }
 
 function setContextOpen(isOpen) {
@@ -323,6 +340,8 @@ async function submitPrompt(event) {
         route: "operation",
         answerSource: "operation_layer",
         contextAction: operationAnswer.contextAction,
+        operation: operationAnswer.operation,
+        questionType: operationAnswer.questionType,
         startedAt
       });
       return;
@@ -355,6 +374,8 @@ async function submitPrompt(event) {
         route: "structured",
         answerSource: "structured_decision",
         contextAction: structuredAnswer.decision?.route || "STRUCTURED_DECISION",
+        operation: structuredAnswer.decision?.route || "structured_decision",
+        questionType: structuredAnswer.decision?.route || "structured_decision",
         startedAt
       });
       return;
@@ -400,7 +421,7 @@ els.prompt.addEventListener("keydown", (event) => {
 window.exportAnotherBrainDebugReport = function exportAnotherBrainDebugReport(options = {}) {
   const report = buildDebugReport({
     appVersion: APP_VERSION,
-    commit: document.documentElement.dataset.commit || "local",
+    commit: document.documentElement.dataset.commit || RUNTIME_VERSION.commit || "local",
     modelVersion: `tiny-router:${TINY_ROUTER_STATS.examples || 0}`,
     lastEvent: lastDebugEvent,
     transcript: contextTurns,
