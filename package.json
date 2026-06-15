@@ -64,6 +64,8 @@
     "check:external-culture-coverage": "node scripts/validate_external_culture_coverage.mjs",
     "build:external-reasoning-traces": "node scripts/build_external_reasoning_trace_data.mjs",
     "check:external-reasoning-traces": "node scripts/validate_external_reasoning_trace_data.mjs",
+    "build:persona-method-training": "node scripts/build_persona_method_training_from_public_sources.mjs",
+    "check:persona-method-training": "node scripts/validate_persona_method_training.mjs",
     "audit:culture-coverage": "node scripts/audit_culture_coverage.mjs",
     "audit:anchor-overfit": "node scripts/audit_anchor_overfit.mjs",
     "audit:anchor-overfit:report": "node scripts/audit_anchor_overfit.mjs --report-only",
