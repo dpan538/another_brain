@@ -21,10 +21,15 @@ import {
   rawRuntimeTurnsFromState,
   visibleTurnsFromState
 } from "../web/compact_context.js?v=1";
+import {
+  buildInternalSessionMemory,
+  modelUsableTurnsFromSession,
+  SESSION_MEMORY_WINDOWS
+} from "../web/internal_session_memory.js?v=1";
 
 export const VISIBLE_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxVisibleExchangeTurns;
 export const RAW_RUNTIME_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxRawExchangeTurnsInRuntimePacket;
-export const REASONING_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxInternalCompactExchangeTurns;
+export const REASONING_CONTEXT_TURN_LIMIT = SESSION_MEMORY_WINDOWS.internalRuntimeExchangeTurns;
 export const BASE_THINKING_DELAY_MS = 680;
 export const RELATED_THINKING_DELAY_MS = 1080;
 export const REPEATED_THINKING_DELAY_MS = 1320;
@@ -70,6 +75,7 @@ export function thinkingProfileFor(text, dialogState, contextTurns) {
 }
 
 export function reasoningStateFor(runtime) {
+  const internalSessionMemory = buildInternalSessionMemory({ contextTurns: runtime.contextTurns });
   const compact_state = buildCompactStateFromTurns(
     compactExtractionTurnsFromState({ contextTurns: runtime.contextTurns }),
     runtime.dialogState?.compact_state || runtime.dialogState?.compactState || {}
@@ -78,6 +84,8 @@ export function reasoningStateFor(runtime) {
     ...runtime.dialogState,
     recentTurns: rawRuntimeTurnsFromState({ contextTurns: runtime.contextTurns }, RAW_RUNTIME_CONTEXT_TURN_LIMIT),
     visibleRecentTurns: visibleTurnsFromState({ contextTurns: runtime.contextTurns }, VISIBLE_CONTEXT_TURN_LIMIT),
+    internalSessionMemory,
+    modelUsableSessionTurns: modelUsableTurnsFromSession({ contextTurns: runtime.contextTurns }),
     compact_state,
     compactState: compact_state
   };
@@ -168,7 +176,8 @@ function answerWithTinyRouter(text, state) {
 }
 
 function structuredEvidencePool(state) {
-  return (state.recentTurns || []).map((turn, index) => ({
+  const turns = state.internalSessionMemory?.model_usable_turns || state.modelUsableSessionTurns || state.recentTurns || [];
+  return turns.map((turn, index) => ({
     id: `t${index + 1}`,
     kind: "fact",
     text: `用户问：${turn.question || ""} 回答：${turn.answer || ""}`,

@@ -19,10 +19,15 @@ import {
   rawRuntimeTurnsFromState,
   visibleTurnsFromState
 } from "./compact_context.js?v=1";
+import {
+  buildInternalSessionMemory,
+  modelUsableTurnsFromSession,
+  SESSION_MEMORY_WINDOWS
+} from "./internal_session_memory.js?v=1";
 
 const VISIBLE_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxVisibleExchangeTurns;
 const RAW_RUNTIME_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxRawExchangeTurnsInRuntimePacket;
-const REASONING_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxInternalCompactExchangeTurns;
+const REASONING_CONTEXT_TURN_LIMIT = SESSION_MEMORY_WINDOWS.internalRuntimeExchangeTurns;
 const APP_VERSION = "0.1.0";
 const BASE_THINKING_DELAY_MS = 680;
 const RELATED_THINKING_DELAY_MS = 1080;
@@ -135,6 +140,7 @@ function rememberTurn(question, answer, intent) {
 }
 
 function currentReasoningState() {
+  const internalSessionMemory = buildInternalSessionMemory({ contextTurns });
   const compact_state = buildCompactStateFromTurns(
     compactExtractionTurnsFromState({ contextTurns }),
     dialogState.compact_state || dialogState.compactState || {}
@@ -143,6 +149,8 @@ function currentReasoningState() {
     ...dialogState,
     recentTurns: rawRuntimeTurnsFromState({ contextTurns }, RAW_RUNTIME_CONTEXT_TURN_LIMIT),
     visibleRecentTurns: visibleTurnsFromState({ contextTurns }, VISIBLE_CONTEXT_TURN_LIMIT),
+    internalSessionMemory,
+    modelUsableSessionTurns: modelUsableTurnsFromSession({ contextTurns }),
     compact_state,
     compactState: compact_state
   };
@@ -251,7 +259,8 @@ function answerWithTinyRouter(text, state) {
 }
 
 function structuredEvidencePool(state) {
-  return (state.recentTurns || []).map((turn, index) => ({
+  const turns = state.internalSessionMemory?.model_usable_turns || state.modelUsableSessionTurns || state.recentTurns || [];
+  return turns.map((turn, index) => ({
     id: `t${index + 1}`,
     kind: "fact",
     text: `用户问：${turn.question || ""} 回答：${turn.answer || ""}`,
