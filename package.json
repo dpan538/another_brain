@@ -7,7 +7,7 @@
   "scripts": {
     "build": "npm run check:release",
     "build:knowledge": "python3 scripts/build_knowledge_base.py && python3 scripts/build_knowledge_shards.py",
-    "check": "npm run check:release && npm run check:launch-policy && npm run check:seo && npm run check:identity-pack && npm run check:help-onboarding && npm run check:fallback-overuse && npm run check:dataset-splits && npm run check:frontend-latency && npm run check:voice-verifier && npm run check:output-sanitizer && npm run check:dialog-sanity && npm run check:gate-effectiveness && npm run check:r9-reasoning-gate && npm run check:context-gate && npm run check:blind-casepacks && python3 scripts/validate_distillation.py && python3 scripts/eval_tiny_router.py && python3 scripts/eval_dialog_persona.py && python3 scripts/validate_context_stress_cases.py && python3 scripts/validate_clone_logic_ethics.py && node scripts/eval_casepacks_node.mjs --min-score 0.88 --out artifacts/training_os/casepack_eval_report.json && node scripts/run_model_gate_node.mjs --out artifacts/training_os/model_inference_report.json",
+    "check": "npm run check:release && npm run check:launch-policy && npm run check:seo && npm run check:identity-pack && npm run check:help-onboarding && npm run check:fallback-overuse && npm run check:dataset-splits && npm run check:frontend-latency && npm run check:voice-verifier && npm run check:output-sanitizer && npm run check:dialog-sanity && npm run check:gate-effectiveness && npm run check:r9-reasoning-gate && npm run check:culture-awareness && npm run check:context-gate && npm run check:blind-casepacks && python3 scripts/validate_distillation.py && python3 scripts/eval_tiny_router.py && python3 scripts/eval_dialog_persona.py && python3 scripts/validate_context_stress_cases.py && python3 scripts/validate_clone_logic_ethics.py && node scripts/eval_casepacks_node.mjs --min-score 0.88 --out artifacts/training_os/casepack_eval_report.json && node scripts/run_model_gate_node.mjs --out artifacts/training_os/model_inference_report.json",
     "check:clone-logic-ethics": "python3 scripts/validate_clone_logic_ethics.py",
     "check:identity-pack": "python3 scripts/validate_identity_pack.py",
     "check:help-onboarding": "python3 scripts/eval_help_onboarding.py",
@@ -21,6 +21,7 @@
     "check:dialog-sanity": "node scripts/eval_dialog_sanity.mjs",
     "check:gate-effectiveness": "node scripts/eval_gate_effectiveness.mjs",
     "check:r9-reasoning-gate": "node scripts/eval_r9_reasoning_gate.mjs",
+    "check:culture-awareness": "node scripts/eval_culture_awareness.mjs",
     "check:context-gate": "node scripts/eval_context_gate_node.mjs",
     "check:blind-casepacks": "node scripts/eval_blind_casepacks_node.mjs --median-min 11 --p25-min 8 --critical-failures 0",
     "check:r6-preview-mobile": "node scripts/eval_r6_preview_mobile.mjs --prompts evals/r6_mobile/prompts.jsonl",

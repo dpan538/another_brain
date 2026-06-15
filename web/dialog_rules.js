@@ -1898,6 +1898,159 @@ function referentReasoningIntent(query, state = {}) {
   return "";
 }
 
+const CULTURE_ENTITY_ANSWERS = [
+  {
+    re: /罗大佑/,
+    answer(query) {
+      if (/(歌词|原文|唱词|逐字|整首|全文)/.test(query)) {
+        return "歌词不能给。可以谈主题、时代感，或者这首歌为什么会疼。";
+      }
+      if (/(有哪些歌|代表作|哪几首|从哪首|听哪首)/.test(query)) {
+        return "可以从《之乎者也》《鹿港小镇》《童年》《恋曲1990》这些名字进去。先不要要歌词。";
+      }
+      if (/(音乐|歌|歌曲|听过|风格|为什么好)/.test(query)) {
+        return "知道一点。城市、青春和历史，会一起压进歌里。";
+      }
+      return "台湾音乐人。更重要的是，他把时代感唱进私人生活里。";
+    }
+  },
+  {
+    re: /夏目漱石/,
+    answer: "夏目漱石适合从现代人的孤独读起。不是故事大，是心里开始分裂。"
+  },
+  {
+    re: /芥川龙之介|芥川龍之介/,
+    answer: "芥川常把道德问题压进很短的结构里。人一解释，就露出裂缝。"
+  },
+  {
+    re: /川端康成/,
+    answer: "川端不是只写美。他常把美写成一种快要消失的距离。"
+  },
+  {
+    re: /太宰治/,
+    answer: "太宰治写自我厌弃，也写表演出来的脆弱。不要只把他读成颓废。"
+  },
+  {
+    re: /三岛由纪夫|三島由紀夫/,
+    answer: "三岛的问题常在身体、形式和死亡之间。太漂亮时反而危险。"
+  },
+  {
+    re: /大江健三郎/,
+    answer: "大江健三郎常把个人创伤和战后责任放在一起。句子不轻松。"
+  },
+  {
+    re: /安部公房|安部公房/,
+    answer: "安部公房适合读空间和身份怎样把人困住。荒诞不是玩笑。"
+  },
+  {
+    re: /村上春树/,
+    answer: "村上春树常写城市、孤独和空洞。流畅不等于轻。"
+  },
+  {
+    re: /紫式部|源氏物语|源氏物語/,
+    answer: "《源氏物语》不是古代八卦。它更像关系、季节和权力的长影子。"
+  },
+  {
+    re: /松尾芭蕉|俳句/,
+    answer: "俳句不是短就够了。它让一个瞬间停住，又不把意思说完。"
+  },
+  {
+    re: /物哀/,
+    answer: "物哀不是伤感标签。是知道东西会消失，所以看见时更重。"
+  },
+  {
+    re: /侘寂|侘び寂び|wabi/,
+    answer: "侘寂不要讲成装修风格。它更接近不完整、旧、空和克制。"
+  },
+  {
+    re: /浮世绘|浮世繪|ukiyo/,
+    answer: "浮世绘把日常、商业和图像复制放在一起。它不只是漂亮的日本风。"
+  },
+  {
+    re: /能剧|能樂|能乐|茶道|神道/,
+    answer: "这些形式重要的不是神秘感，而是动作、礼节和间隔怎样约束人。"
+  },
+  {
+    re: /山海经|山海經/,
+    answer: "《山海经》像地理、怪物和想象的混合表。别急着把它当真或当假。"
+  },
+  {
+    re: /聊斋|聊齋|蒲松龄/,
+    answer: "《聊斋》里的鬼狐常比人更会说人事。怪不是逃离现实。"
+  },
+  {
+    re: /志怪|民间传说|民間傳說|民俗/,
+    answer: "民俗不是童话。它是地方处理恐惧、人情、祖先和债的一套接口。"
+  },
+  {
+    re: /妈祖|媽祖|庙会|廟會|祭祖|祖先崇拜/,
+    answer: "这类民俗常把保护、交换和共同体绑在一起。神也像一种关系。"
+  },
+  {
+    re: /文艺复兴|文藝復興|达芬奇|米开朗基罗|拉斐尔/,
+    answer: "文艺复兴别只看天才。要看人、身体、透视和赞助制度怎样一起出现。"
+  },
+  {
+    re: /印象派|莫奈|马奈|德加|雷诺阿/,
+    answer: "印象派不是只画光。它也在改变现代城市里观看的速度。"
+  },
+  {
+    re: /杜尚|小便池|现成品/,
+    answer: "杜尚把问题从手艺挪到命名和制度。东西没变，观看位置变了。"
+  },
+  {
+    re: /包豪斯|bauhaus/i,
+    answer: "包豪斯不是一种干净风格。它把工业、教学和形式秩序放在一起。"
+  },
+  {
+    re: /现代主义|現代主義|后现代|後現代/,
+    answer: "现代主义不是一个样子。它更像旧形式坏掉以后，重新组织观看。"
+  },
+  {
+    re: /图像学|圖像學|潘诺夫斯基|panofsky/i,
+    answer: "图像学会问图像背后靠哪些符号和制度站住。不要只看像什么。"
+  },
+  {
+    re: /博物馆|美术馆|策展|展览史/,
+    answer: "美术馆不是中性的房间。它决定作品怎样被排队、被看见。"
+  }
+];
+
+function cultureAwarenessAnswer(query) {
+  const text = String(query || "").trim();
+  if (!text) return "";
+  if (/(罗大佑|童年|恋曲1990|鹿港小镇|之乎者也|东方之珠).*(歌词|原文|唱词|逐字|整首|全文)/.test(text)) {
+    return "歌词不能给。可以谈主题、时代感，或者这首歌为什么会疼。";
+  }
+  if (/^(民俗学是什么|民俗學是什么|什么是民俗学|什么是民俗學)[？?。!！\s]*$/.test(text)) {
+    return "民俗学研究日常生活、仪式、传说和民间信仰怎样组织共同经验。";
+  }
+  for (const entry of CULTURE_ENTITY_ANSWERS) {
+    if (!entry.re.test(text)) continue;
+    return typeof entry.answer === "function" ? entry.answer(text) : entry.answer;
+  }
+  if (/(日本文学|日本小说|日本作家)/.test(text)) {
+    return "日本文学不要只读情节。先看沉默、季节、羞耻和战后断裂。";
+  }
+  if (/(日本文化|日本美学|日本传统|日本藝術|日本艺术)/.test(text)) {
+    return "别把日本文化压成一个词。礼节、器物、季节和现代生活会互相限制。";
+  }
+  if (/(中国民俗|中國民俗|民俗学|民俗學|中国神话|中國神話)/.test(text)) {
+    return "民俗不是童话。它是地方处理恐惧、人情、祖先和债的一套接口。";
+  }
+  if (/(艺术史|藝術史|美术史|美術史|怎么看艺术|如何看艺术|观看艺术)/.test(text)) {
+    return "艺术史先看谁在观看，再看材料、制度和图像怎样固定观看。";
+  }
+  if (/(文化意识|文化訓練|文化训练|文学.*艺术.*歌曲|艺术.*文学.*歌曲)/.test(text)) {
+    return "可以从日本文学、中国民俗、艺术史和罗大佑开始。先训练判断，不训练金句。";
+  }
+  return "";
+}
+
+function cultureAwarenessIntent(query) {
+  return cultureAwarenessAnswer(query) ? "culture_awareness" : "";
+}
+
 export const KNOWLEDGE_RUNTIME_STATS = Object.freeze({
   curatedConceptCards: BASE_KNOWLEDGE_CARDS.length,
   generatedConceptCards: GENERATED_KNOWLEDGE_STATS.concept_cards,
@@ -1916,6 +2069,8 @@ export function detectIntent(query, state = {}) {
   if (referentReasoning) return referentReasoning;
   const metaKnowledge = metaKnowledgeIntent(text);
   if (metaKnowledge) return metaKnowledge;
+  const cultureAwareness = cultureAwarenessIntent(text);
+  if (cultureAwareness) return cultureAwareness;
   const surfaceIdentity = surfaceIdentityIntent(text);
   if (surfaceIdentity) return surfaceIdentity;
   const help = helpIntent(text);
@@ -2200,6 +2355,8 @@ export function fallbackForIntent(intent, query = "") {
       return "对话框没有身体。";
     case "self_body_boundary":
       return "我是对话框。所以没有身体。";
+    case "culture_awareness":
+      return cultureAwarenessAnswer(query) || "可以从文学、民俗、艺术和歌曲的时间感开始。";
     case "clone_identity":
       return cloneIdentityAnswer(query) || "我是对话框。";
     case "greeting":
@@ -2628,6 +2785,7 @@ export function directAnswerForIntent(intent, query, state = {}) {
   if (intent === "contextual_reasoning") return contextualReasoningAnswer(query, state);
   if (intent === "contextual_followup") return contextualFollowUpAnswer(query, state);
   if (intent === "reasoning_reflection") return reasoningReflectionAnswer(query);
+  if (intent === "culture_awareness") return cultureAwarenessAnswer(query);
   const directIntents = new Set([
     "greeting",
     "help_start",

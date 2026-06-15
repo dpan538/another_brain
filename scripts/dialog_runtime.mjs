@@ -108,6 +108,7 @@ function inferContextActionLabel(text, contextDecision, resolved) {
   if (intent === "animal_crocodile_body") return "REFERENT_DISTINGUISH_SENSE";
   if (intent === "animal_crocodile_fact") return "REFERENT_ANIMAL_FACT";
   if (intent === "self_dialog_box_body" || intent === "self_body_boundary") return "SELF_BODY_BOUNDARY";
+  if (intent === "culture_awareness") return "ANSWER_CULTURE";
   if (intent === "gate_function" && isWhyQuestion(text)) return "ANSWER_LOCAL_WHY";
   if (intent === "gate_function") return "ANSWER_LOCAL";
   if (intent === "training_next") return "SURFACE_PROJECT_ANSWER";
