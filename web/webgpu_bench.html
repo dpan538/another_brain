@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>another_brain WebGPU Bench</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 24px;
+        line-height: 1.45;
+        color: #191919;
+      }
+      button {
+        font: inherit;
+        padding: 8px 12px;
+      }
+      pre {
+        max-width: 960px;
+        white-space: pre-wrap;
+        border: 1px solid #ddd;
+        padding: 12px;
+        background: #fafafa;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WebGPU Bench</h1>
+    <button id="runBench">Run</button>
+    <pre id="benchOutput">Waiting.</pre>
+    <script type="module" src="./webgpu_bench.js?v=1"></script>
+  </body>
+</html>
