@@ -26,13 +26,11 @@ import {
   modelUsableTurnsFromSession,
   SESSION_MEMORY_WINDOWS
 } from "../web/internal_session_memory.js?v=1";
+import { clampThinkingProfile, selectThinkingProfile } from "../web/thinking_profile.js?v=1";
 
 export const VISIBLE_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxVisibleExchangeTurns;
 export const RAW_RUNTIME_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxRawExchangeTurnsInRuntimePacket;
 export const REASONING_CONTEXT_TURN_LIMIT = SESSION_MEMORY_WINDOWS.internalRuntimeExchangeTurns;
-export const BASE_THINKING_DELAY_MS = 680;
-export const RELATED_THINKING_DELAY_MS = 1080;
-export const REPEATED_THINKING_DELAY_MS = 1320;
 
 const STRUCTURED_EVIDENCE_LIMIT = 5;
 const NORMALIZE_PUNCTUATION = /[\s\-＿_—–~～`"'“”‘’.,，。!?！？:：;；、()[\]{}<>《》「」『』]/g;
@@ -61,17 +59,22 @@ export function thinkingProfileFor(text, dialogState, contextTurns) {
       (normalizePrompt(dialogState.lastUserText || "") === normalized ||
         contextTurns.some((turn) => normalizePrompt(turn.question) === normalized))
   );
-  if (exactRepeat) return { delay: REPEATED_THINKING_DELAY_MS, mode: "deep" };
+  if (exactRepeat) {
+    const profile = clampThinkingProfile(selectThinkingProfile({ query: text, repeated: true }));
+    return { delay: profile.delayMs, mode: profile.mode, profile };
+  }
 
   const identityLike = IDENTITY_REPETITION_PATTERN.test(text);
   const recentIdentityLike =
     IDENTITY_REPETITION_PATTERN.test(dialogState.lastUserText || "") ||
     /(identity|alias|name|identity_relation)/.test(dialogState.lastIntent || "");
   if (identityLike && recentIdentityLike) {
-    return { delay: RELATED_THINKING_DELAY_MS, mode: "deep" };
+    const profile = clampThinkingProfile(selectThinkingProfile({ query: text, relatedIdentity: true }));
+    return { delay: profile.delayMs, mode: profile.mode, profile };
   }
 
-  return { delay: BASE_THINKING_DELAY_MS, mode: "normal" };
+  const profile = clampThinkingProfile(selectThinkingProfile({ query: text }));
+  return { delay: profile.delayMs, mode: profile.mode, profile };
 }
 
 export function reasoningStateFor(runtime) {

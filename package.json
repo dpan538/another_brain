@@ -51,6 +51,7 @@
     "check:short-context": "node scripts/validate_short_context_contract.mjs",
     "check:internal-session-memory": "node scripts/validate_internal_session_memory_contract.mjs",
     "eval:r17-memory": "node scripts/eval_r17_memory_contract.mjs",
+    "eval:answer-latency-profile": "node scripts/eval_answer_latency_profile.mjs",
     "audit:training-depth": "node scripts/audit_training_depth.mjs",
     "eval:mini-web-llm-readiness": "node scripts/eval_mini_web_llm_readiness.mjs",
     "discover:open-datasets": "node scripts/discover_open_datasets.mjs",

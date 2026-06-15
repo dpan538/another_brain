@@ -24,14 +24,12 @@ import {
   modelUsableTurnsFromSession,
   SESSION_MEMORY_WINDOWS
 } from "./internal_session_memory.js?v=1";
+import { clampThinkingProfile, selectThinkingProfile } from "./thinking_profile.js?v=1";
 
 const VISIBLE_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxVisibleExchangeTurns;
 const RAW_RUNTIME_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxRawExchangeTurnsInRuntimePacket;
 const REASONING_CONTEXT_TURN_LIMIT = SESSION_MEMORY_WINDOWS.internalRuntimeExchangeTurns;
 const APP_VERSION = "0.1.0";
-const BASE_THINKING_DELAY_MS = 680;
-const RELATED_THINKING_DELAY_MS = 1080;
-const REPEATED_THINKING_DELAY_MS = 1320;
 const PROMPT_MAX_HEIGHT_FALLBACK = 260;
 const STRUCTURED_EVIDENCE_LIMIT = 5;
 const KEYBOARD_VISUAL_VIEWPORT_DELTA = 120;
@@ -76,17 +74,22 @@ function thinkingProfileFor(text) {
       (normalizePrompt(dialogState.lastUserText || "") === normalized ||
         contextTurns.some((turn) => normalizePrompt(turn.question) === normalized))
   );
-  if (exactRepeat) return { delay: REPEATED_THINKING_DELAY_MS, mode: "deep" };
+  if (exactRepeat) {
+    const profile = clampThinkingProfile(selectThinkingProfile({ query: text, repeated: true }));
+    return { delay: profile.delayMs, mode: profile.mode, profile };
+  }
 
   const identityLike = IDENTITY_REPETITION_PATTERN.test(text);
   const recentIdentityLike =
     IDENTITY_REPETITION_PATTERN.test(dialogState.lastUserText || "") ||
     /(identity|alias|name|identity_relation)/.test(dialogState.lastIntent || "");
   if (identityLike && recentIdentityLike) {
-    return { delay: RELATED_THINKING_DELAY_MS, mode: "deep" };
+    const profile = clampThinkingProfile(selectThinkingProfile({ query: text, relatedIdentity: true }));
+    return { delay: profile.delayMs, mode: profile.mode, profile };
   }
 
-  return { delay: BASE_THINKING_DELAY_MS, mode: "normal" };
+  const profile = clampThinkingProfile(selectThinkingProfile({ query: text }));
+  return { delay: profile.delayMs, mode: profile.mode, profile };
 }
 
 function setThinking(isThinking, mode = "") {
