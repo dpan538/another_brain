@@ -245,6 +245,9 @@ function answerAuthorList(cards, query = "") {
 function answerOverview(focus, cards, domain) {
   const base = domainCard(cards, domain) || focus;
   if (!base) return "";
+  if (domain === "literature.asian_general") {
+    return "亚洲文学不是单一传统；可先从中国现代文学、日本近现代文学、韩国现代文学和更广的南亚/东南亚脉络拆开，覆盖不足处要明说，不能只讲日本文学。";
+  }
   if (focus?.entity_type === "person" && focus.domain === "music.mandopop") {
     return `${primaryName(focus)}是台湾音乐人，关键在时代感、青春记忆和社会观察。`;
   }
@@ -258,14 +261,46 @@ function answerOverview(focus, cards, domain) {
 }
 
 function answerEntryPath(focus, index, questionType, query = "") {
+  if (focus?.domain === "literature.asian_general" || /亚洲文学|东亚文学/.test(query)) {
+    return "入口可先从鲁迅、张爱玲、夏目漱石、川端康成和韩国现代文学的待补卡方向拆；先按中国、日本、韩国三条线读，未覆盖的南亚/东南亚不硬编。";
+  }
   if (/韩国现代文学/.test(query)) {
     return "韩国现代文学覆盖还薄；可以先把它作为东亚现代文学入口之一，和鲁迅、夏目漱石等中日入口并读，但具体韩国书单需要后续补卡，不应硬编。";
+  }
+  if (focus?.domain === "literature.western_modern" && /博尔赫斯/.test(query)) {
+    return "博尔赫斯可先从短篇入口读，抓迷宫、书本、时间和虚构结构；不要先追求完整文学史定位。";
+  }
+  if (/林夕|歌词.*入口/.test(query)) {
+    return "林夕可以作为香港流行歌词写作入口；不贴歌词，只看词作者位置、语气、城市感和流行歌的写作方法。";
+  }
+  if (/桑塔格/.test(query)) {
+    return "桑塔格可以作为摄影理论入口；先看摄影如何改变观看、记录、消费和权力关系，再回到具体照片。";
+  }
+  if (focus?.entity_type === "work") {
+    return `《${primaryName(focus).replace(/[《》]/g, "")}》可以作为入口：先看${themes(focus, 3) || "主题和形式"}，再放回${listText(asArray(focus.periods), 2) || "作品史语境"}。`;
   }
   if (focus?.domain === "literature.chinese_modern") {
     return "中国现代文学入口可从鲁迅《呐喊》、沈从文《边城》、张爱玲《倾城之恋》、老舍《骆驼祥子》进入；再按五四新文学和1980s新时期补时间线。";
   }
-  if (focus?.domain === "literature.western_modern" && /博尔赫斯/.test(query)) {
-    return "博尔赫斯可先从短篇入口读，抓迷宫、书本、时间和虚构结构；不要先追求完整文学史定位。";
+  if (focus?.id === "concept.japanese_literature") {
+    if (/应该怎么读|怎么读/.test(query)) {
+      return "可以从《心》或《少爷》入门；读法上看季节、沉默和战后断裂怎样进入作品。";
+    }
+    if (/第一本|读什么/.test(query)) {
+      return "第一本可选夏目漱石《心》或《少爷》；想轻一点，也可以从村上春树短篇入门。";
+    }
+    if (/从什么开始|开始读|入门/.test(query)) {
+      return "入门路线可从《少爷》或《心》开始，再到《雪国》和《人间失格》，最后看村上春树的当代入口。";
+    }
+  }
+  if (focus?.id === "person.haruki_murakami" || /村上春树|村上/.test(query)) {
+    if (/先读哪一本|哪一本比较好|第一本/.test(query)) {
+      return "第一本可以选《挪威的森林》；如果想少一点长篇负担，也可以从短篇开始。";
+    }
+    if (/适合/.test(query) && !/哪本/.test(query)) {
+      return "村上春树适合入门；先读《挪威的森林》或短篇，再看《海边的卡夫卡》。";
+    }
+    return "村上春树可从《挪威的森林》或短篇入门；想看更奇异的结构，再读《海边的卡夫卡》。";
   }
   const works = displayTitles(cardsByIds(index, focus?.representative_works || focus?.works || []), 4);
   if (works.length > 0) {
@@ -291,7 +326,16 @@ function answerExplain(focus, questionType, query = "") {
   if (!focus) return "";
   const name = primaryName(focus);
   const themeText = themes(focus, 4);
+  if (/不是.*标签/.test(query)) {
+    return `${name}不是标签；要落到对象、作品、时期和关系这些具体锚点，再说明作品、时期和比较轴。`;
+  }
+  if (/包豪斯/.test(query) || /包豪斯/.test(name)) {
+    return "包豪斯把工业、教学和形式训练放在一起，是现代设计的重要学校/运动。";
+  }
   const contextText = listText(asArray(focus.historical_context), 2);
+  if (focus.entity_type === "work" && /(不要|不贴|不用).{0,6}歌词/.test(query) && !/(为什么|重要|重要性|意义)/.test(query)) {
+    return `不贴歌词讲，${name}可以从${themeText || "主题、声音和时代位置"}进入；重点是作品位置和情绪结构，不是复写文本。`;
+  }
   if (questionType === "why_it_matters") {
     const noLyrics = /(不要|不贴|不用).{0,6}歌词/.test(query);
     const lead = noLyrics ? (/讲讲|重要性/.test(query) ? "不贴原文，讲重要性：" : "不贴原文解释：") : "";
@@ -302,6 +346,9 @@ function answerExplain(focus, questionType, query = "") {
   }
   if (/继续说/.test(query)) {
     return `继续展开：${name}要抓${themeText || "主题和边界"}，再看${contextText || focus.factual_core}。`;
+  }
+  if (/这件事.*美术馆|美术馆.*关系/.test(query)) {
+    return "这件事和美术馆的关系在于：美术馆通过展示、说明和收藏改变作品语境与价值判断；但价值不只由制度决定。";
   }
   if (/它为什么重要/.test(query)) {
     return `${name}的重要性在于：${contextText || focus.factual_core}；它把${themeText || "形式和历史经验"}变成可讨论的问题。`;
@@ -348,7 +395,16 @@ function answerDevelopmentHistory(focus, cards, query = "") {
     return "可以按台湾民歌运动、1980年代台湾流行、香港粤语流行歌黄金期、大陆摇滚、2000年后平台/制作转向来讲；每段都要落到人物和作品，不能只说时代感。";
   }
   if (domain === "literature.japanese") {
+    if (/那战后/.test(query)) {
+      return "战后这一段在明治近代之后、当代之前，要看战争记忆、历史重建和主体危机；太宰治、大江健三郎、安部公房等入口各不相同。";
+    }
+    if (/战后日本文学/.test(query)) {
+      return "战后日本文学指二战后形成的文学脉络，承接明治近代问题并走向当代写作；可从太宰治、大江健三郎、安部公房等入口看战争记忆、社会重建和主体危机。";
+    }
     return "日本文学可粗分平安古典、俳句/江户、明治近代、战后文学和当代小说；每段都要配作家作品，不能只给抽象标签。";
+  }
+  if (domain === "literature.chinese_modern") {
+    return "中国现代文学可先按五四新文学、1930s城市/乡土叙事、1949后文学、1980s新时期和当代写作来拆；入口可落到鲁迅、张爱玲、沈从文、老舍、余华、莫言。";
   }
   if (domain === "photography_history") {
     return "摄影史可先按19世纪技术/肖像与档案、20世纪纪实与现代主义、战后观念/美术馆语境、当代数字图像来讲；这里先给框架，不贴长原文。";
@@ -370,14 +426,26 @@ function answerCompare(cards, query = "") {
   const axisText = axesFor(relation ? [relation, ...targets] : targets, 4) || "时代、形式、主题和语境";
   const aStyle = styleFor(a, 3) || themes(a, 2);
   const bStyle = styleFor(b, 3) || themes(b, 2);
+  if (/诗.*歌词|歌词.*诗/.test(query)) {
+    return "诗的解释更偏文本、意象、声音和结构；歌词还要看演唱、旋律、传播语境。两者都能讲主题，但都要守版权边界，不能复写长段原文。";
+  }
   if (/谁更冷/.test(query)) {
     return `如果“冷”指距离感和抒情温度，${primaryName(b)}更冷一些：他更偏${bStyle || "压缩意象"}；${primaryName(a)}的冷更多来自${aStyle || "理性裂缝"}。`;
   }
   if (/怎么推理/.test(query)) {
+    if (/罗大佑/.test(query) && /日本文学/.test(query)) {
+      return "推理时先定比较轴：现代化、个人记忆、公共/私人、传统与现代。罗大佑要落到《之乎者也》《童年》等作品；日本文学要落到夏目漱石、川端康成、战后文学等锚点。共同点只能说结构相似，不能说二者等同。";
+    }
     return `推理时先定比较轴：${axisText}。在这些轴上，${primaryName(a)}偏${aStyle || "自身的问题结构"}，${primaryName(b)}偏${bStyle || "另一组形式和主题"}；结论只能说相似张力，不能说二者等同。`;
+  }
+  if (/亚洲文学|东亚文学/.test(query)) {
+    return `可以按${axisText}比较：亚洲文学范围更大，东亚文学可先从中国、日本、韩国三条入口拆；${primaryName(a)}和${primaryName(b)}只能作为局部锚点，不能把亚洲文学缩成日本文学。`;
   }
   if (/战后/.test(query)) {
     return `可以按${axisText}比较：${primaryName(a)}更偏${aStyle || "它自己的问题结构"}；${primaryName(b)}更偏${bStyle || "另一组形式和主题"}。这里要放在明治近代、战后和当代的时间线上，不能只讲单边印象。`;
+  }
+  if (/(近代|明治|2000|平台时代|民歌运动|大陆摇滚|运动)/.test(query)) {
+    return `可以按${axisText}比较：${primaryName(a)}更偏${aStyle || "它自己的问题结构"}；${primaryName(b)}更偏${bStyle || "另一组形式和主题"}。时间线上要标出五四/明治、1980s、2000年代或平台时代等具体阶段，不能只讲单边。`;
   }
   return `可以按${axisText}比较：${primaryName(a)}更偏${aStyle || "它自己的问题结构"}；${primaryName(b)}更偏${bStyle || "另一组形式和主题"}。共同点要有证据，不能硬说成同一种东西。`;
 }
@@ -386,11 +454,33 @@ function answerThemeExplanation(focus, query = "") {
   if (!focus) return "";
   const name = primaryName(focus);
   const themeText = themes(focus, 4);
+  if (/不是.*标签/.test(query)) {
+    return `${name}不是标签；要落到对象、作品、时期和关系这些具体锚点，再说明作品、时期和比较轴。`;
+  }
+  if (focus.domain === "literature.asian_general" && /(怎么拆|覆盖不全|只讲日本|不能只讲日本)/.test(query)) {
+    return "范围要拆开：先从中国现代文学、日本近现代文学、韩国现代文学进入；未覆盖的南亚、东南亚部分要说覆盖不足，不能硬编，也不能只答日本文学。";
+  }
+  if (focus.domain === "literature.asian_general" && /(单一传统|是什么关系|怎么区分|区分)/.test(query)) {
+    return "不是单一传统。亚洲文学范围更大，东亚文学只是其中一部分；回答时至少要区分中国、日本、韩国等入口，覆盖不足处要明说。";
+  }
+  if (/后结构主义.*只有德里达|只有德里达/.test(query)) {
+    return "不是。后结构主义不能只讲德里达，还要把福柯、拉康等对象和结构主义之后的语言、权力、主体问题分开看。";
+  }
+  if (/不能只讲|不是.*标签|只有|只讲/.test(query)) {
+    const anchors = focus.domain === "music.chinese_pop_general"
+      ? "罗大佑、李宗盛、邓丽君、崔健、王菲、周杰伦"
+      : focus.domain === "literature.asian_general"
+        ? "中国现代文学、日本近现代文学、韩国现代文学"
+        : focus.domain === "literature.chinese_modern"
+          ? "鲁迅、张爱玲、沈从文、老舍"
+          : "对象、作品、时期和关系";
+    return `不能只讲抽象印象；要落到${anchors}这些具体锚点，再说明作品、时期和比较轴。`;
+  }
   if (/这件事/.test(query)) {
     return `放到这件事上，美术馆/制度会改变作品的展示语境、可见度和价值判断，不等于直接决定一切。`;
   }
   if (/关系/.test(query) && /美术馆|作品价值/.test(query)) {
-    return `关系在于：美术馆通过展示、说明和收藏改变作品语境；价值还要看作品自身、历史位置和观看方式。`;
+    return `可按展示语境/作品自身、制度价值/审美判断这两个轴比较：美术馆会改变作品怎样被看见和说明；价值还要看作品自身、历史位置和观看方式。`;
   }
   if (focus?.entity_type === "relation") {
     const axisText = axesFor([focus], 4) || themes(focus, 4) || "对象、时期和媒介";
@@ -474,7 +564,7 @@ export function verifyCultureDraft({ query = "", questionType = "", answer = "",
     if (!/(按|轴|比较|共同点|不同|更偏|更重|区别)/.test(text)) reasons.push("compare_missing_axis");
   }
   if (questionType === "entry_path" || questionType === "reading_recommendation" || questionType === "listen_recommendation") {
-    if (!/(先|入门|开始|路线|可选|《)/.test(text)) reasons.push("entry_path_missing_entry");
+    if (!/(先|入门|入口|开始|路线|可选|《)/.test(text)) reasons.push("entry_path_missing_entry");
   }
   if (questionType === "explain_work" || questionType === "follow_up_explain_last_entity") {
     if (/^(你要问|要看你|这要看)/.test(text)) reasons.push("explain_work_only_clarifies");

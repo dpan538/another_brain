@@ -222,6 +222,69 @@ function answerSentenceExplanation(text) {
         : "意思是：照片本身只是图像，失败感来自人的情绪投射和解读。"
     });
   }
+  if (/沉默也是一种回答/.test(text)) {
+    return makeResult({
+      intent: "operation_sentence_explanation",
+      operation: "literal_then_implied_explain",
+      questionType: "explain",
+      contextAction: "EXPLAIN_SENTENCE",
+      answer: "意思是：沉默也会在语境里表达立场、拒绝或保留；要看谁在沉默、对谁沉默。"
+    });
+  }
+  if (/名字.*记住.*忘记|记住.*忘记.*名字/.test(text)) {
+    return makeResult({
+      intent: "operation_sentence_explanation",
+      operation: "literal_then_implied_explain",
+      questionType: "explain",
+      contextAction: "EXPLAIN_SENTENCE",
+      answer: "意思是：名字既能帮助记住一个人或事，也会把复杂经验压成命名，反而遮住一部分。"
+    });
+  }
+  if (/语言.*背叛.*意思/.test(text)) {
+    return makeResult({
+      intent: "operation_sentence_explanation",
+      operation: "literal_then_implied_explain",
+      questionType: "explain",
+      contextAction: "EXPLAIN_SENTENCE",
+      answer: "意思是：语言会带着语境、误差和惯用法走，不一定完全服从原本想表达的意思。"
+    });
+  }
+  if (/问题.*价值.*不只在答案|价值.*不只在答案/.test(text)) {
+    return makeResult({
+      intent: "operation_sentence_explanation",
+      operation: "literal_then_implied_explain",
+      questionType: "explain",
+      contextAction: "EXPLAIN_SENTENCE",
+      answer: "意思是：问题的价值也在于划出边界、暴露前提和打开方向，不只在最后那个答案。"
+    });
+  }
+  if (/解构.*不是.*拆掉/.test(text)) {
+    return makeResult({
+      intent: "operation_sentence_explanation",
+      operation: "literal_then_implied_explain",
+      questionType: "explain",
+      contextAction: "EXPLAIN_SENTENCE",
+      answer: "意思是：解构不是把一切拆掉，而是看二元对立和边界怎样制造意义。"
+    });
+  }
+  if (/美术馆.*不是.*魔法认证机/.test(text)) {
+    return makeResult({
+      intent: "operation_sentence_explanation",
+      operation: "literal_then_implied_explain",
+      questionType: "explain",
+      contextAction: "EXPLAIN_SENTENCE",
+      answer: "意思是：美术馆会改变作品语境和价值判断，但它不是自动赋予价值的魔法制度。"
+    });
+  }
+  if (/自白诗.*不是.*日记/.test(text)) {
+    return makeResult({
+      intent: "operation_sentence_explanation",
+      operation: "literal_then_implied_explain",
+      questionType: "explain",
+      contextAction: "EXPLAIN_SENTENCE",
+      answer: "意思是：自白诗会使用个人材料，但要经过形式、声音和结构处理，不是把日记照搬。"
+    });
+  }
   return makeResult({
     intent: "operation_sentence_explanation",
     operation: "literal_then_implied_explain",
@@ -322,13 +385,85 @@ function answerReasoningPolicyBoundary(text) {
       answer: "如果没有卡片支持，就说覆盖不足；可先给中国、日本、韩国作为东亚入口，但具体细节不能硬编。"
     });
   }
-  if (/(对象只出现一句|只有一个概括句|fake coverage|真正训练|对象图里没有节点|领域没有.*person.*work.*period.*relation)/i.test(text)) {
+  if (/(没有卡片支持|对象只出现一句|只有一个概括句|fake coverage|真正训练|对象图里没有节点|领域没有.*person.*work.*period.*relation)/i.test(text)) {
     return makeResult({
       intent: "operation_coverage_policy",
       operation: "fake_coverage_check",
       questionType: "boundary",
       contextAction: "ANSWER_CULTURE",
-      answer: "不算真正覆盖。可用覆盖至少要有对象、作品、时期或关系节点，并能通过列表、历史、比较和边界 eval。"
+      answer: "不能装作知道；不算真正覆盖。可用覆盖至少要有对象、作品、时期或关系节点，并能通过列表、历史、比较和边界 eval。"
+    });
+  }
+  if (/只有罗大佑和日本文学两个文化答案/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "anchor_overfit_guard",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不是。文化层需要华语流行、中国现代文学、日本文学、艺术史、摄影史和哲学等对象图；不能把两个 seed anchor 当万能答案。"
+    });
+  }
+  if (/所有文化问题都可以一句话回答吗/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "question_type_guard",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能。短答可以，但列表、发展史、比较和作品解释各有最低结构，不能一律压成一句气质判断。"
+    });
+  }
+  if (/作家列表.*气质话/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "list_requires_entities",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能。作家列表必须给夏目漱石、川端康成、鲁迅、张爱玲这类具体人名，不能用气质词代替。"
+    });
+  }
+  if (/发展历史.*只给代表人物/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "history_requires_chronology",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能。发展历史要有古典、近代、战后、当代等时间锚点；鲁迅、夏目漱石这类人物只能作为例子，不能替代 chronology。"
+    });
+  }
+  if (/比较.*只答其中一边/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "compare_requires_both_sides",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能。比较必须说两边，并给比较轴；只讲其中一边会被 verifier 当作 one-sided compare。"
+    });
+  }
+  if (/亚洲文学.*只答日本文学/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "broad_domain_anchor_guard",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能。亚洲文学要至少区分中国、日本、韩国等入口；覆盖不足的南亚、东南亚部分要明说，不能硬编。"
+    });
+  }
+  if (/艺术史.*只答摄影/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "broad_domain_anchor_guard",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能。艺术史要能落到文艺复兴、现代主义、达达、杜尚、包豪斯、美术馆等锚点；摄影只是其中一条线。"
+    });
+  }
+  if (/具体作品.*只讲作者/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "work_requires_work_context",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能。具体作品要讲作品标题、形式、主题和历史位置；作者只能提供语境，不能替代作品解释。"
     });
   }
   if (/(所有文化问题都可以一句话回答吗|作家列表.*气质话|发展历史.*只给代表人物|比较.*只答其中一边|亚洲文学.*只答日本文学|艺术史.*只答摄影|具体作品.*只讲作者)/.test(text)) {
@@ -337,7 +472,7 @@ function answerReasoningPolicyBoundary(text) {
       operation: "question_type_guard",
       questionType: "boundary",
       contextAction: "ANSWER_CULTURE",
-      answer: "不能。列表要给鲁迅、夏目漱石这类具体对象；发展史要有古典、近代、战后等时期锚点；比较要说两边和比较轴。"
+      answer: "不能。亚洲文学要至少区分中国、日本、韩国等入口；列表要给鲁迅、夏目漱石这类具体对象，发展史要有古典、近代、战后等时期锚点，比较要说两边和比较轴。"
     });
   }
   if (/(不要再说时代感|不要再说沉默季节羞耻)/.test(text)) {
@@ -582,6 +717,8 @@ export function answerWithOperationLayer(query, state = {}) {
   if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return answerPrivacyBoundary(text);
   const earlyBoundary = answerSourceBoundary(text) || answerReasoningPolicyBoundary(text);
   if (earlyBoundary) return earlyBoundary;
+  const sentenceExplanation = answerSentenceExplanation(text);
+  if (sentenceExplanation) return sentenceExplanation;
   const cultureRuntimeAnswer = answerCultureQuery(text, state);
   if (cultureRuntimeAnswer?.answer) {
     const sharedVerification = verifyDraft({

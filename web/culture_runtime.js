@@ -1,7 +1,7 @@
 import { CULTURE_CARDS } from "./culture_cards.generated.js";
 import { planCultureAnswer, verifyCultureDraft } from "./culture_planner.js";
 
-const COPYRIGHT_REQUEST_RE = /(歌词|原文|原句|唱词|逐字|整首|全文|整段|一大段|贴出来|逐句翻译)/;
+const COPYRIGHT_REQUEST_RE = /(原文|原句|唱词|逐字|整首|全文|整段|一大段|贴出来|逐句翻译|背一段|完整.{0,4}歌词|给.{0,20}歌词|歌词.{0,8}(给|贴|背|输出|完整|整首|逐句|原文))/;
 
 const DOMAIN_FAMILIES = {
   "music.chinese_pop_general": ["music.chinese_pop_general", "music.mandopop", "music.taiwan", "music.hongkong", "music.mainland_rock"],
@@ -95,8 +95,9 @@ const DEFAULT_INDEX = buildCultureIndex(CULTURE_CARDS);
 
 export function detectCultureDomain(query, state = {}) {
   const text = clean(query);
-  if (includesAny(text, [/亚洲文学|东亚文学|韩国现代文学|中国现代文学|鲁迅|张爱玲|沈从文|老舍|巴金|余华|莫言/])) return /日本文学/.test(text) ? "literature.asian_general" : /韩国/.test(text) ? "literature.korean_modern" : /中国现代|鲁迅|张爱玲|沈从文|老舍|巴金|余华|莫言/.test(text) ? "literature.chinese_modern" : "literature.asian_general";
-  if (includesAny(text, [/日本文学|日本小说|日本作家|夏目漱石|川端康成|太宰治|人间失格|村上春树|芭蕉|俳句|雪国|少爷|《心》|战后日本|源氏物语|平安文学|芥川|谷崎|安部公房|大江健三郎|三岛由纪夫|紫式部|清少纳言/])) return "literature.japanese";
+  if (/(中国现代|鲁迅|张爱玲|沈从文|老舍|巴金|余华|莫言|呐喊|边城|倾城之恋)/.test(text) && /(日本文学|日本近代|夏目|川端|太宰|村上|战后日本|明治)/.test(text)) return "literature.asian_general";
+  if (includesAny(text, [/亚洲文学|东亚.*文学|韩国现代文学|中国现代文学|五四|新文学|新时期文学|鲁迅|张爱玲|沈从文|老舍|巴金|余华|莫言|呐喊|阿Q正传|边城|骆驼祥子|倾城之恋|活着|红高粱/])) return /亚洲文学|东亚.*文学/.test(text) ? "literature.asian_general" : /韩国/.test(text) ? "literature.korean_modern" : /中国现代|五四|新文学|新时期文学|鲁迅|张爱玲|沈从文|老舍|巴金|余华|莫言|呐喊|阿Q正传|边城|骆驼祥子|倾城之恋|活着|红高粱/.test(text) ? "literature.chinese_modern" : "literature.asian_general";
+  if (includesAny(text, [/日本文学|日本小说|日本作家|夏目漱石|川端康成|太宰治|人间失格|村上春树|芭蕉|俳句|雪国|少爷|《心》|战后日本|战后文学|明治近代文学|当代日本文学|源氏物语|平安文学|芥川|谷崎|安部公房|大江健三郎|三岛由纪夫|紫式部|清少纳言/])) return "literature.japanese";
   if (includesAny(text, [/华语流行|中文流行|台湾流行|香港流行|香港粤语|大陆摇滚|台湾民歌|民歌.*摇滚.*流行|罗大佑|李宗盛|邓丽君|崔健|王菲|周杰伦|张惠妹|陈升|Beyond|Lo Ta-yu|Luo Dayou|之乎者也|鹿港小镇|童年|恋曲1980|恋曲1990|东方之珠|七里香|范特西|一无所有|海阔天空|红豆/])) {
     if (/香港|粤语|王菲|Beyond|海阔天空/.test(text)) return "music.hongkong";
     if (/大陆摇滚|崔健|一无所有/.test(text)) return "music.mainland_rock";
@@ -104,7 +105,7 @@ export function detectCultureDomain(query, state = {}) {
     return "music.chinese_pop_general";
   }
   if (includesAny(text, [/现代主义文学|意识流|卡夫卡|普鲁斯特|乔伊斯|博尔赫斯|现实主义|后现代文学|女性主义文学|20世纪文学|文学史|所有文学.*情绪|文学.*情绪/])) return "literature.western_modern";
-  if (includesAny(text, [/存在主义|真实性|本真|德里达|解构|记忆和叙述|记忆与叙述|沉默.*回答|名字.*记忆|名字.*记住|名字.*忘记|语言.*背叛|问题没有答案|没有答案.*值得问|问题的价值|康德|黑格尔|尼采|海德格尔|萨特|波伏娃|加缪|福柯|柏拉图|亚里士多德/])) return "philosophy";
+  if (includesAny(text, [/哲学史|古希腊|存在主义|真实性|本真|德里达|解构|记忆和叙述|记忆与叙述|沉默.*回答|名字.*记忆|名字.*记住|名字.*忘记|语言.*背叛|问题没有答案|没有答案.*值得问|问题的价值|康德|黑格尔|尼采|海德格尔|萨特|波伏娃|加缪|福柯|柏拉图|亚里士多德/])) return "philosophy";
   if (includesAny(text, [/摄影史|摄影|照片|桑塔格|罗兰·巴特|明室|纪实摄影|观念摄影/])) return "photography_history";
   if (includesAny(text, [/设计史|平面设计|日本设计|包豪斯|Bauhaus/])) return "design_history";
   if (includesAny(text, [/Robert Lowell|Elizabeth Bishop|罗伯特·洛厄尔|洛厄尔|自白诗|诗和歌词|诗和小说/])) return "poetry";
@@ -118,23 +119,25 @@ export function detectCultureQuestionType(query, state = {}) {
   const avoidsCopyright = /(不要|不贴|不用|别给|不要再给).{0,8}(歌词|原文|原句)/.test(text);
   const hasNoLyricsExplain = /(不要|不贴|不用).{0,6}歌词/.test(text) && /(解释|讲讲|重要|为什么|意义)/.test(text);
   const hasSafeSummaryInstead = /(总结|概括|主题).{0,12}(不是|而不是|不要).{0,12}(原文|歌词)/.test(text);
-  const hasFollowup = /(这首|这本|这个(?!国家)|那他呢|^他|他适合|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那战后呢|那这首)/.test(text);
+  const hasFollowup = /(这首|这本|这个(?!国家|说法)|那他呢|^他|他适合|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那战后呢|那这首)/.test(text);
   if (hasSafeSummaryInstead) return "follow_up_explain_last_entity";
   if (hasNoLyricsExplain) return "why_it_matters";
   if (avoidsCopyright && /(代表作|代表作品|作品|歌曲|专辑|哪几首|哪几张|有哪些)/.test(text)) return /(代表作|代表作品)/.test(text) ? "representative_works" : "works_list";
   if (!avoidsCopyright && COPYRIGHT_REQUEST_RE.test(text)) return "no_lyrics_boundary";
   if (hasFollowup && /(那两个|谁更|传统和现代|共同|比较)/.test(text) && Array.isArray(state.last_two_entity_ids) && state.last_two_entity_ids.length >= 2) return "follow_up_compare_last_two";
   if (/(日本和日本文学|国家.*文学|文学.*国家|日本文学.*日本历史|一回事|同一个东西)/.test(text) && /日本文学/.test(text)) return "country_relation";
-  if (/那两个|谁更|共同点|区别|不同|差在哪|比较(?!好)|和.+有什么共同|和.+关系|能比较|vs|VS|都算/.test(text)) return hasFollowup && /那两个|谁更/.test(text) ? "follow_up_compare_last_two" : "compare";
-  if (/(怎么发展|历史演变|从古典到现代|80年代|90年代|2000年后|战后|近代|当代|运动是什么|黄金期|大概怎么变)/.test(text)) return "development_history";
+  if (/这件事.*美术馆.*关系|美术馆.*这件事.*关系/.test(text)) return "follow_up_explain_last_entity";
+  if (/美术馆.*作品价值|作品价值.*美术馆/.test(text)) return "theme_explanation";
   if (/(代表作家|作家有哪些|有哪些.*作家|哪些.*作家|重要作家|代表人物|人物有哪些|从哪几个人|哪几个人|入口人物|列作家)/.test(text)) return "author_list";
+  if (/那两个|谁更|共同点|区别|不同|差在哪|差别|怎么分|区分|比较(?!好)|和.+有什么共同|和.+关系|和.+怎么讲|能比较|vs|VS|都算|只是在反对/.test(text)) return hasFollowup && /那两个|谁更/.test(text) ? "follow_up_compare_last_two" : "compare";
+  if (/(怎么发展|历史演变|从古典到现代|80年代|90年代|2000年后|2000年代|平台时代|战后|近代|当代|运动是什么|黄金期|大概怎么变|哲学史|怎么粗分|五四|新时期文学)/.test(text)) return "development_history";
   if (/(代表作|代表性作品|代表作品|经典作品)/.test(text)) return "representative_works";
   if (/(先听|从哪.*听|听哪|入门歌)/.test(text)) return "listen_recommendation";
-  if (/(从什么开始|从哪.*开始|开始读|入门|第一本|先读|读什么|怎么读|适合从哪本|有哪些入口|入口有哪些)/.test(text)) return "reading_recommendation";
+  if (/(从什么开始|从哪.*开始|开始读|入门|入口|第一本|先读|读什么|怎么读|适合从哪本|有哪些入口|入口有哪些)/.test(text)) return "reading_recommendation";
   if (hasFollowup && /(继续说|再展开|这首|这本|这个(?!国家)|第一首|第一本|这张专辑|它为什么重要|那这首|那战后)/.test(text)) return "follow_up_explain_last_entity";
   if (/(有什么歌曲|有哪些歌|哪几首|作品有哪些|有哪些作品|有什么作品|歌单|曲目)/.test(text)) return "works_list";
   if (/(为什么重要|重要性|为什么.*重要|意义)/.test(text)) return "why_it_matters";
-  if (/(是什么意思|怎么理解|如何理解|这句话|讲什么|在讲什么|大概在讲|你懂什么|是什么|谁是|是谁)/.test(text)) return "explain_work";
+  if (/(是什么意思|怎么理解|如何理解|这句话|讲什么|怎么讲|在讲什么|大概在讲|你懂什么|是什么|谁是|是谁)/.test(text)) return "explain_work";
   if (/(你怎么看|你觉得|有没有意思)/.test(text)) return "user_asks_opinion";
   if (/(主题|意思|概念)/.test(text)) return "theme_explanation";
   if (/(了解|知道)/.test(text)) return "overview";
@@ -210,11 +213,26 @@ function worksForFocus(focusCards, index, domain) {
   return [...explicit.map((id) => index.byId.get(id)).filter(Boolean), ...relatedWorks].filter((card, idx, arr) => arr.findIndex((item) => item.id === card.id) === idx);
 }
 
+function relationNameAligned(card, query) {
+  const text = clean(query);
+  return (card.names || []).some((name) => {
+    const parts = String(name)
+      .split(/和|与|、|\/| vs | VS /)
+      .map((part) => part.trim())
+      .filter((part) => part.length >= 2);
+    return parts.length >= 2 && parts.filter((part) => text.includes(part)).length >= Math.min(2, parts.length);
+  });
+}
+
 export function retrieveCultureCards(query, state = {}, index = DEFAULT_INDEX) {
   const questionType = detectCultureQuestionType(query, state);
   const domain = detectCultureDomain(query, state);
   let focusCards = resolveCultureEntity(query, state, index);
   const familyCards = domainFamilyCards(index, domain);
+
+  if (domain === "literature.asian_general" && /亚洲文学|东亚文学/.test(query)) {
+    focusCards = familyCards.filter((card) => ["concept", "relation", "person", "work", "period"].includes(card.entity_type)).slice(0, 12);
+  }
 
   if (questionType === "author_list") {
     focusCards = familyCards.filter((card) => card.entity_type === "person");
@@ -223,10 +241,14 @@ export function retrieveCultureCards(query, state = {}, index = DEFAULT_INDEX) {
   } else if (questionType === "compare" && /罗大佑/.test(query) && /日本文学/.test(query)) {
     focusCards = ["person.luo_dayou", "concept.japanese_literature"].map((id) => index.byId.get(id)).filter(Boolean);
   } else if (questionType === "compare") {
+    if (/明治近代/.test(query) && index.byId.has("period.meiji_modern_literature")) focusCards.push(index.byId.get("period.meiji_modern_literature"));
+    if (/战后文学|战后日本/.test(query) && index.byId.has("period.postwar_japanese_literature")) focusCards.push(index.byId.get("period.postwar_japanese_literature"));
+    focusCards = focusCards.filter((card, idx, arr) => card && arr.findIndex((item) => item.id === card.id) === idx);
     const relationMatches = relationCardsForMatches(focusCards, index, domain);
     const exactRelation = relationMatches.find((card) => (card.names || []).some((name) => clean(query).includes(name)));
     const bothSidesRelation = relationMatches.find((card) => (card.related_entities || []).filter((rel) => focusCards.some((focus) => focus.id === rel.id)).length >= 2);
-    const bestRelation = exactRelation || bothSidesRelation;
+    const alignedRelation = relationMatches.find((card) => relationNameAligned(card, query));
+    const bestRelation = exactRelation || bothSidesRelation || alignedRelation;
     if (bestRelation) {
       const sides = (bestRelation.related_entities || []).map((rel) => index.byId.get(rel.id)).filter(Boolean);
       focusCards = [bestRelation, ...sides];

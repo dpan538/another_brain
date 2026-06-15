@@ -65,7 +65,7 @@ export function verifyDraft({ query = "", trace = {}, draft = "", solverResult =
     if ((questionType === "compare" || questionType === "follow_up_compare_last_two") && !/(按|轴|比较|共同点|不同|区别|更偏|更重)/.test(answer)) {
       reasons.push("compare_missing_axis");
     }
-    if ((questionType === "entry_path" || questionType === "reading_recommendation") && !/(先|入门|开始|路线|可选|《)/.test(answer)) {
+    if ((questionType === "entry_path" || questionType === "reading_recommendation") && !/(先|入门|入口|开始|路线|可选|《)/.test(answer)) {
       reasons.push("entry_path_missing_entry");
     }
     if ((questionType === "explain_work" || questionType === "follow_up_explain_last_entity") && /^(你要问|要看你|这要看)/.test(answer)) {

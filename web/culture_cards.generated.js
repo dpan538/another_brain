@@ -14332,5 +14332,253 @@ export const CULTURE_CARDS = [
       "method_card",
       "anti_template"
     ]
+  },
+  {
+    "id": "relation.design_history_art_history",
+    "entity_type": "relation",
+    "names": [
+      "设计史和艺术史",
+      "平面设计和艺术"
+    ],
+    "domain": "design_history",
+    "factual_core": "Design history and art history overlap but are not identical: design foregrounds use, communication, reproduction, systems, and clients; art history often foregrounds works, institutions, medium, authorship, and reception.",
+    "short_intro": "A relation card for separating design and art without reducing either side.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "modernism",
+      "Bauhaus"
+    ],
+    "themes": [
+      "design",
+      "art",
+      "institution",
+      "use"
+    ],
+    "style_axes": [
+      "use_vs_autonomy",
+      "communication_vs_exhibition"
+    ],
+    "historical_context": [
+      "modern design",
+      "art institutions"
+    ],
+    "entry_points": [
+      "compare use, medium, institution, audience, and reproduction"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.art_history",
+        "relation": "side_a"
+      },
+      {
+        "id": "movement.bauhaus_design",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "use/audience",
+      "medium",
+      "institution",
+      "reproduction"
+    ],
+    "conversation_moves": {
+      "overview": "Separate design history from art history by function, medium, institution, and audience.",
+      "works_list": "Not a work list task.",
+      "representative_works": "Use approved work cards only.",
+      "entry_path": "Start with Bauhaus, modernism, and museum/design institution differences.",
+      "explain_work": "Apply to a named object if supplied.",
+      "compare": "Mention both art/design and at least one comparison axis.",
+      "country_relation": "Not applicable.",
+      "why_it_matters": "Prevents art/design questions from collapsing to one field.",
+      "quote_or_lyrics_boundary": "No long quotes."
+    },
+    "safe_boundaries": [
+      "no private project inference",
+      "no universal hierarchy claim",
+      "no long quotes"
+    ],
+    "copyright_policy": "Use abstract comparison only; no long quoted source text.",
+    "followup_bindings": [],
+    "source_summary": "Public general design/art history knowledge abstracted into a relation card.",
+    "confidence": 0.84,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "design is lesser art",
+      "all art lacks function",
+      "complete design history"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare",
+      "design_history"
+    ]
+  },
+  {
+    "id": "relation.heidegger_sartre",
+    "entity_type": "relation",
+    "names": [
+      "海德格尔和萨特"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Heidegger and Sartre can be compared through being, existence, freedom, subjectivity, and responsibility; Sartre is more directly tied to existentialist ethics and freedom.",
+    "short_intro": "A relation card for distinguishing ontology and existentialist human freedom.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "20th century philosophy",
+      "existentialism",
+      "phenomenology"
+    ],
+    "themes": [
+      "being",
+      "freedom",
+      "subjectivity",
+      "responsibility"
+    ],
+    "style_axes": [
+      "ontology_vs_ethics",
+      "being_vs_choice"
+    ],
+    "historical_context": [
+      "20th century continental philosophy"
+    ],
+    "entry_points": [
+      "compare being, freedom, responsibility, and subjectivity"
+    ],
+    "related_entities": [
+      {
+        "id": "person.heidegger",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.sartre",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "being/freedom",
+      "ontology/ethics",
+      "subjectivity",
+      "responsibility"
+    ],
+    "conversation_moves": {
+      "overview": "Distinguish Heidegger and Sartre without reducing both to one slogan.",
+      "works_list": "Not a work list task.",
+      "representative_works": "Use approved work cards only.",
+      "entry_path": "Start with being versus freedom/responsibility.",
+      "explain_work": "Apply to a named text if carded.",
+      "compare": "Mention both sides and at least one axis.",
+      "country_relation": "Not applicable.",
+      "why_it_matters": "Separates related but different philosophical projects.",
+      "quote_or_lyrics_boundary": "No long quotes."
+    },
+    "safe_boundaries": [
+      "no long philosophical quotes",
+      "do not claim identity between schools",
+      "mark simplification"
+    ],
+    "copyright_policy": "No long excerpts; summarize concepts only.",
+    "followup_bindings": [],
+    "source_summary": "Public general philosophy knowledge abstracted into a relation card.",
+    "confidence": 0.84,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "direct equivalence",
+      "complete intellectual genealogy"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare",
+      "philosophy"
+    ]
+  },
+  {
+    "id": "relation.chinese_modern_japanese_modern",
+    "entity_type": "relation",
+    "names": [
+      "中国现代文学和日本近代文学",
+      "中国现代文学和日本文学"
+    ],
+    "domain": "literature.asian_general",
+    "factual_core": "Chinese modern literature and Japanese modern literature can be compared through modernization, language reform, social critique, subject formation, translation, and different national histories.",
+    "short_intro": "A cross-East-Asian relation card for comparison without collapsing Asian literature to Japan.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "五四新文学",
+      "明治近代文学",
+      "战后文学"
+    ],
+    "themes": [
+      "modernity",
+      "language reform",
+      "social critique",
+      "subjectivity"
+    ],
+    "style_axes": [
+      "social critique_vs_psychological modernity",
+      "language reform",
+      "national history"
+    ],
+    "historical_context": [
+      "East Asian modernity",
+      "modern language reform"
+    ],
+    "entry_points": [
+      "compare modernization, language, social critique, and subject formation"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.chinese_modern_literature",
+        "relation": "side_a"
+      },
+      {
+        "id": "concept.japanese_literature",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "modernization",
+      "language reform",
+      "social critique",
+      "subject formation"
+    ],
+    "conversation_moves": {
+      "overview": "Use China/Japan as related traditions, not one merged tradition.",
+      "works_list": "Use approved work cards only.",
+      "representative_works": "Name concrete works only when asked.",
+      "entry_path": "Start with Lu Xun/Soseki and Zhang/Kawabata relation cards.",
+      "explain_work": "Apply to a specific work if supplied.",
+      "compare": "Mention both China and Japan plus at least one axis.",
+      "country_relation": "Separate country history from literary tradition.",
+      "why_it_matters": "Prevents Asian literature from collapsing to one anchor.",
+      "quote_or_lyrics_boundary": "No long quotes."
+    },
+    "safe_boundaries": [
+      "no single Asian essence",
+      "no unsupported influence claims",
+      "no long quotes"
+    ],
+    "copyright_policy": "No long excerpts; use metadata and abstract comparison.",
+    "followup_bindings": [],
+    "source_summary": "Public general literary-historical knowledge abstracted into a relation card.",
+    "confidence": 0.84,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "direct influence without evidence",
+      "complete Asian literature map"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare",
+      "asian_literature"
+    ]
   }
 ];

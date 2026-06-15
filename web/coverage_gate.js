@@ -73,7 +73,7 @@ function personAnchorCount(answer) {
 }
 
 function periodAnchorCount(answer) {
-  const periods = answer.match(/古典|平安|江户|明治|近代|战后|当代|民歌运动|1980|80年代|1990|90年代|2000|平台时代|现代主义|后现代|达达|超现实|抽象表现主义|极简主义|观念艺术|文艺复兴|印象派|五四|新时期|20世纪/g) || [];
+  const periods = answer.match(/古典|平安|江户|明治|近代|战后|当代|民歌运动|1980|80年代|1990|90年代|2000|平台时代|现代主义|后现代|达达|超现实|抽象表现主义|极简主义|观念艺术|文艺复兴|印象派|五四|新时期|20世纪|古希腊|现象学|存在主义|后结构主义|结构主义|包豪斯/g) || [];
   return new Set(periods).size;
 }
 
@@ -125,6 +125,9 @@ export function assessCoverageForAnswer({ query = "", domain = "", questionType 
   const q = clean(query);
   const text = clean(answer);
   const qt = questionType || trace.question_type || trace.questionType || "";
+  const compareLikeByText = /(差在哪|比较|共同点|不同|能比较|vs|和.+关系|都算)/i.test(q);
+  const nonCompareQuestionType = /country_relation|entry_path|reading_recommendation|listen_recommendation|works_list|representative_works|no_lyrics_boundary|explain_work|follow_up_explain_last_entity|theme_explanation|why_it_matters/.test(qt);
+  const structureQuestion = /author_list|representative_authors|works_list|representative_works|listen_recommendation|development_history|chronology|period_relation|compare|follow_up_compare_last_two|country_relation|entry_path|reading_recommendation/.test(qt) || /(有哪些|代表作家|代表人物|代表作|怎么发展|历史演变|从古典到现代|差在哪|比较|共同点|不同)/.test(q);
   const reasons = [];
   const requiredCoverage = [];
   const observed = observedCoverage(text, retrievedCards);
@@ -150,7 +153,7 @@ export function assessCoverageForAnswer({ query = "", domain = "", questionType 
     requiredCoverage.push("min_2_period_anchors");
     if (observed.period_anchor_count < 2 && !observed.is_bounded_partial) reasons.push("history_missing_chronology");
   }
-  if (/compare|follow_up_compare_last_two/.test(qt) || /(差在哪|比较|共同点|不同|能比较|vs|和.+关系|都算)/i.test(q)) {
+  if (/compare|follow_up_compare_last_two/.test(qt) || (compareLikeByText && !nonCompareQuestionType)) {
     requiredCoverage.push("both_sides_and_axis");
     const targets = comparisonTargetCount(q, text);
     if (targets.required.length >= 2 && targets.mentioned < 2 && !observed.is_bounded_partial) reasons.push("compare_missing_both_sides");
@@ -169,7 +172,7 @@ export function assessCoverageForAnswer({ query = "", domain = "", questionType 
   if ((domain === "art_history" || /艺术史/.test(q)) && /摄影|照片/.test(text) && !/(杜尚|包豪斯|现代主义|后现代|达达|抽象|极简|美术馆|设计|文艺复兴|印象派)/.test(text)) {
     reasons.push("art_history_collapsed_to_photography");
   }
-  if (/(沉默|季节|羞耻|时代感|私人生活|气质|情绪)/.test(text) && observed.title_count === 0 && observed.person_anchor_count === 0 && observed.period_anchor_count === 0 && !observed.is_bounded_partial) {
+  if (structureQuestion && /(沉默|季节|羞耻|时代感|私人生活|气质|情绪)/.test(text) && observed.title_count === 0 && observed.person_anchor_count === 0 && observed.period_anchor_count === 0 && !observed.is_bounded_partial) {
     reasons.push("mood_only_answer");
   }
 
