@@ -51,7 +51,7 @@ This audit distinguishes runtime surface answers from typed-card and eval-backed
 ### music.chinese_pop_general
 
 - coverage_level: strong
-- cards: person 10, work 14, period 4, movement 1, genre 1, concept 4, relation 16, method 3
+- cards: person 10, work 14, period 4, movement 1, genre 1, concept 5, relation 17, method 3
 - eval_cases: 22
 - blackbox_prompts: 14
 - structure: chronology=true, entry_paths=true, representative_works=true, compare_axes=true
@@ -60,7 +60,7 @@ This audit distinguishes runtime surface answers from typed-card and eval-backed
 ### literature.japanese
 
 - coverage_level: strong
-- cards: person 13, work 16, period 6, movement 0, genre 0, concept 2, relation 20, method 0
+- cards: person 13, work 16, period 6, movement 0, genre 0, concept 3, relation 20, method 0
 - eval_cases: 52
 - blackbox_prompts: 18
 - structure: chronology=true, entry_paths=true, representative_works=true, compare_axes=true
@@ -69,7 +69,7 @@ This audit distinguishes runtime surface answers from typed-card and eval-backed
 ### literature.asian_general
 
 - coverage_level: strong
-- cards: person 20, work 23, period 7, movement 1, genre 0, concept 6, relation 28, method 1
+- cards: person 20, work 23, period 7, movement 1, genre 0, concept 8, relation 28, method 1
 - eval_cases: 20
 - blackbox_prompts: 5
 - structure: chronology=true, entry_paths=true, representative_works=true, compare_axes=true
@@ -105,7 +105,7 @@ This audit distinguishes runtime surface answers from typed-card and eval-backed
 ### philosophy
 
 - coverage_level: usable
-- cards: person 14, work 0, period 0, movement 5, genre 0, concept 10, relation 6, method 1
+- cards: person 14, work 0, period 0, movement 5, genre 0, concept 11, relation 6, method 1
 - eval_cases: 32
 - blackbox_prompts: 0
 - structure: chronology=true, entry_paths=true, representative_works=false, compare_axes=true
@@ -114,7 +114,7 @@ This audit distinguishes runtime surface answers from typed-card and eval-backed
 ### art_history
 
 - coverage_level: usable
-- cards: person 8, work 1, period 0, movement 10, genre 0, concept 8, relation 6, method 5
+- cards: person 8, work 1, period 0, movement 10, genre 0, concept 12, relation 7, method 5
 - eval_cases: 14
 - blackbox_prompts: 9
 - structure: chronology=true, entry_paths=true, representative_works=false, compare_axes=true
@@ -132,7 +132,7 @@ This audit distinguishes runtime surface answers from typed-card and eval-backed
 ### design_history
 
 - coverage_level: usable
-- cards: person 1, work 0, period 0, movement 1, genre 0, concept 0, relation 2, method 0
+- cards: person 1, work 0, period 0, movement 1, genre 0, concept 1, relation 2, method 0
 - eval_cases: 4
 - blackbox_prompts: 4
 - structure: chronology=true, entry_paths=true, representative_works=false, compare_axes=true
