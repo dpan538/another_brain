@@ -41,6 +41,7 @@ async function main() {
   const trainingDepth = await readJson("artifacts/training_os/training_depth_audit_report.json");
   const personaPrivacy = await readJson("artifacts/training_os/persona_privacy_validation_report.json");
   const personalFacts = await readJson("artifacts/training_os/personal_facts_validation_report.json");
+  const browserProfile = await readJson("artifacts/training_os/browser_profile_budget_report.json");
 
   const files = {
     cultureRuntime: await exists("web/culture_runtime.js"),
@@ -98,7 +99,7 @@ async function main() {
     browser_inference_readiness: clamp(
       passScore(files.shortContext, 0.25) +
         passScore(files.controlledGateModel, 0.25) +
-        passScore(files.browserProfile, 0.25) +
+        passScore(Boolean(browserProfile?.ready), 0.25) +
         passScore(await exists("web/tiny_router_model.generated.js"), 0.25)
     ),
     license_provenance_readiness: clamp(
@@ -122,8 +123,8 @@ async function main() {
     runtime_profile_readiness: clamp(
       passScore(files.operationLayer, 0.2) +
         passScore(files.shortContext, 0.2) +
-        passScore(files.browserProfile, 0.2) +
-        passScore(await exists("artifacts/training_os/browser_profile_budget_report.json"), 0.2) +
+        passScore(files.browserProfile, 0.1) +
+        passScore(Boolean(browserProfile?.ready), 0.3) +
         passScore(files.controlledGateModel, 0.2)
     )
   };
@@ -146,7 +147,8 @@ async function main() {
       !files.sourceRegistry ? "open dataset registry missing" : "",
       !files.licensePolicy ? "source license policy missing" : "",
       !files.controlledGateModel ? "controlled gate model artifact missing" : "",
-      !files.browserProfile ? "browser profile audit missing" : ""
+      !files.browserProfile ? "browser profile audit missing" : "",
+      browserProfile?.ready === false ? "browser profile over budget" : ""
     ].filter(Boolean),
     note: "This readiness score is a product/runtime audit. It does not claim free-generative LLM training."
   };
