@@ -30,6 +30,7 @@
     "check:launch-readiness": "python3 scripts/eval_launch_readiness.py",
     "check:launch-policy": "python3 scripts/validate_launch_policy.py",
     "check:release": "bash scripts/check_release.sh",
+    "eval:capacity": "node scripts/eval_capacity_limits.mjs --targets-mb 20,40",
     "probe:dialog": "node scripts/dialog_probe.mjs",
     "serve": "python3 -m http.server 5173 --directory web"
   }
