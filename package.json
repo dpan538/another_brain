@@ -76,6 +76,7 @@
     "review:external-cards-safe": "node scripts/review_external_cards_safe_subset.mjs",
     "check:external-culture-coverage": "node scripts/validate_external_culture_coverage.mjs",
     "build:external-reasoning-traces": "node scripts/build_external_reasoning_trace_data.mjs",
+    "build:synthetic-local-reasoning-traces": "node scripts/build_synthetic_local_reasoning_traces.mjs",
     "check:external-reasoning-traces": "node scripts/validate_external_reasoning_trace_data.mjs",
     "build:persona-method-training": "node scripts/build_persona_method_training_from_public_sources.mjs",
     "check:persona-method-training": "node scripts/validate_persona_method_training.mjs",
