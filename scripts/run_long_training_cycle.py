@@ -796,6 +796,9 @@ class LongTrainingCycle:
         write_json(self.integration_manifest, manifest)
         if self.args.frontend != "integrate-on-pass":
             manifest["status"] = "not_requested"
+            manifest["ok"] = True
+            manifest["integration_status"] = "offline_only"
+            manifest["validation_required_before_status"] = "pre_validation_passed"
             write_json(self.integration_manifest, manifest)
             return manifest
 

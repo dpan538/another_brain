@@ -9,6 +9,7 @@ import {
 } from "./dialog_rules.js?v=60";
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "./structured_decision.js?v=1";
 import { buildDebugReport, downloadDebugReport } from "./debug_report.js?v=1";
+import { answerWithOperationLayer } from "./operation_layer.js?v=1";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=15";
 
@@ -141,6 +142,9 @@ function contextActionForIntent(intent, route) {
   if (intent === "animal_crocodile_body") return "REFERENT_DISTINGUISH_SENSE";
   if (intent === "animal_crocodile_fact") return "REFERENT_ANIMAL_FACT";
   if (intent === "self_dialog_box_body" || intent === "self_body_boundary") return "SELF_BODY_BOUNDARY";
+  if (intent.startsWith("operation_culture_")) return "ANSWER_CULTURE";
+  if (intent.startsWith("operation_sentence_")) return "EXPLAIN_SENTENCE";
+  if (intent.startsWith("operation_")) return "SOLVE_REASONING";
   if (intent.startsWith("help_")) return "ANSWER_HELP";
   if (intent.startsWith("surface_identity_")) return "SURFACE_IDENTITY";
   if (intent === "relation_between_us") return "ANSWER_RELATION_BOUNDARY";
@@ -287,6 +291,17 @@ async function submitPrompt(event) {
     await new Promise((resolve) => setTimeout(resolve, thinking.delay));
 
     const reasoningState = currentReasoningState();
+    const operationAnswer = answerWithOperationLayer(text, reasoningState);
+    if (operationAnswer?.answer) {
+      commitAnswer(text, operationAnswer.answer, operationAnswer.intent, reasoningState, {
+        route: "operation",
+        answerSource: "operation_layer",
+        contextAction: operationAnswer.contextAction,
+        startedAt
+      });
+      return;
+    }
+
     const intent = detectIntent(text, reasoningState);
     const directAnswer = directAnswerForResolvedIntent(intent, text, reasoningState);
     if (directAnswer) {

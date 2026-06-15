@@ -11,6 +11,7 @@ import {
 } from "../web/dialog_rules.js?v=60";
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "../web/structured_decision.js?v=1";
 import { detectContextAction } from "../web/context_state.js?v=2";
+import { answerWithOperationLayer } from "../web/operation_layer.js?v=1";
 import { sanitizeSurfaceIdentity } from "../web/surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=15";
 
@@ -108,6 +109,9 @@ function inferContextActionLabel(text, contextDecision, resolved) {
   if (intent === "animal_crocodile_body") return "REFERENT_DISTINGUISH_SENSE";
   if (intent === "animal_crocodile_fact") return "REFERENT_ANIMAL_FACT";
   if (intent === "self_dialog_box_body" || intent === "self_body_boundary") return "SELF_BODY_BOUNDARY";
+  if (intent.startsWith("operation_culture_")) return "ANSWER_CULTURE";
+  if (intent.startsWith("operation_sentence_")) return "EXPLAIN_SENTENCE";
+  if (intent.startsWith("operation_")) return "SOLVE_REASONING";
   if (intent === "culture_awareness") return "ANSWER_CULTURE";
   if (intent === "gate_function" && isWhyQuestion(text)) return "ANSWER_LOCAL_WHY";
   if (intent === "gate_function") return "ANSWER_LOCAL";
@@ -188,6 +192,9 @@ function answerWithStructuredDecision(text, state) {
 }
 
 function resolveAnswer(text, state) {
+  const operationAnswer = answerWithOperationLayer(text, state);
+  if (operationAnswer?.answer) return { ...operationAnswer, route: "operation" };
+
   const intent = detectIntent(text, state);
   const directAnswer = directAnswerForResolvedIntent(intent, text, state);
   if (directAnswer) return { intent, answer: directAnswer, route: "direct", usedModel: false };
