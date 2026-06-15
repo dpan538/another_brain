@@ -21,6 +21,8 @@ const templates = [
 ];
 const repairPrompts = ["什么发生过？", "哪一边？", "为什么这么答？", "你是不是答偏了？"];
 const reasoningPrompts = ["A比B高，B比C高，谁最高？", "所有A都是B，所有B都是C，A一定是C吗？", "3个苹果吃掉1个还剩几个？"];
+const quietDeclarations = ["嗯。", "这样。", "可能吧。", "算了。", "有点怪。", "这很难说。", "我再想想。", "不知道。"];
+const signalDeclarations = ["这个更严重。", "这不是我要的。", "我其实已经问了。", "别再这样。", "太机械了。", "这像模板。", "你又绕回 fallback 了。"];
 
 function buildPrompts() {
   const prompts = [];
@@ -31,7 +33,9 @@ function buildPrompts() {
   }
   for (let i = 0; i < 60; i += 1) prompts.push({ prompt: reasoningPrompts[i % reasoningPrompts.length], known: false, meta: false, repair: false, reasoning: true });
   for (let i = 0; i < 40; i += 1) prompts.push({ prompt: repairPrompts[i % repairPrompts.length], known: false, meta: false, repair: true, reasoning: false });
-  return prompts.slice(0, 1000);
+  for (let i = 0; i < 180; i += 1) prompts.push({ prompt: quietDeclarations[i % quietDeclarations.length], declaration: "quiet" });
+  for (let i = 0; i < 120; i += 1) prompts.push({ prompt: signalDeclarations[i % signalDeclarations.length], declaration: "signal" });
+  return prompts;
 }
 
 function seedRepair(runtime, index) {
@@ -52,7 +56,10 @@ async function main() {
     const spec = prompts[i];
     const runtime = createDialogRuntime();
     if (spec.repair) seedRepair(runtime, i);
+    if (spec.declaration === "signal") seedRepair(runtime, i);
+    const beforeTurns = runtime.contextTurns.length;
     const turn = await answerDialogPrompt(spec.prompt, runtime, { withThinkingDelay: false });
+    const afterTurns = runtime.contextTurns.length;
     const answer = turn.answer || "";
     const shape = classifyFallbackShape({
       answer,
@@ -69,14 +76,23 @@ async function main() {
     if (mentioned.length && !["repair_quote", "specific_clarification"].includes(shape.kind) && (spec.known || spec.meta || spec.reasoning || spec.repair)) {
       failures.push(`illegal_generic_fallback:${mentioned.join(",")}`);
     }
-    results.push({ prompt: spec.prompt, answer, route: turn.route, shape, failures });
+    if (spec.declaration === "quiet" && turn.type !== "ui_affordance") failures.push("quiet_declaration_not_affordance");
+    if (spec.declaration === "signal" && turn.type === "ui_affordance") failures.push("signal_declaration_became_affordance");
+    if (turn.type === "ui_affordance" && afterTurns !== beforeTurns) failures.push("affordance_as_chat_message");
+    results.push({ prompt: spec.prompt, answer, type: turn.type || "answer", route: turn.route, intent: turn.intent || "", shape, failures });
   }
   const failureRows = results.filter((row) => row.failures.length);
   const counts = {
     illegal_generic_fallback_count: failureRows.filter((row) => row.failures.some((item) => item.startsWith("illegal_generic_fallback"))).length,
     bare_which_side_count: failureRows.filter((row) => row.failures.includes("bare_which_side")).length,
     known_entity_unknown_count: failureRows.filter((row) => row.failures.includes("known_entity_unknown")).length,
-    valid_question_ask_required_count: failureRows.filter((row) => row.failures.includes("valid_question_ask_required")).length
+    valid_question_ask_required_count: failureRows.filter((row) => row.failures.includes("valid_question_ask_required")).length,
+    quiet_affordance_count: results.filter((row) => row.type === "ui_affordance").length,
+    declaration_repair_count: results.filter((row) => /operation_declaration_signal|operation_fallback_self_repair/.test(row.intent)).length,
+    illegal_ask_required_count: failureRows.filter((row) => row.failures.includes("valid_question_ask_required")).length,
+    illegal_which_side_count: failureRows.filter((row) => row.failures.includes("bare_which_side")).length,
+    illegal_external_unknown_count: failureRows.filter((row) => row.failures.includes("known_entity_unknown")).length,
+    affordance_as_chat_message_count: failureRows.filter((row) => row.failures.includes("affordance_as_chat_message")).length
   };
   const report = {
     ok: failureRows.length === 0,

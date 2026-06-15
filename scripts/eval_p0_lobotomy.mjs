@@ -124,7 +124,9 @@ function checkFallbackFields({ spec, turns, answer, answerText }) {
 
 async function runCase(spec) {
   const runtime = seedRuntime(spec.compact_state || {});
-  const prompts = Array.isArray(spec.turns) && spec.turns.length ? spec.turns : [spec.prompt];
+  const prompts = Array.isArray(spec.turns) && spec.turns.length ? [...spec.turns] : [];
+  if (spec.prompt) prompts.push(spec.prompt);
+  if (!prompts.length) prompts.push("");
   const turns = [];
   for (const prompt of prompts) {
     if (typeof prompt === "object" && prompt.assistant) {
@@ -139,7 +141,20 @@ async function runCase(spec) {
   const answer = String(last?.answer || "");
   const failures = [];
 
-  if (!includesAny(answer, spec.must_include_any)) {
+  const lastType = last?.type || "answer";
+  if (spec.expected_response_type && lastType !== spec.expected_response_type) {
+    failures.push(`expected_response_type:${spec.expected_response_type}:actual:${last?.type || "answer"}`);
+  }
+  if (spec.expected_user_turn_kind && last?.trace?.user_turn?.kind !== spec.expected_user_turn_kind) {
+    failures.push(`expected_user_turn_kind:${spec.expected_user_turn_kind}:actual:${last?.trace?.user_turn?.kind || ""}`);
+  }
+  if (last?.type === "ui_affordance") {
+    if (last.persist_as_assistant_message !== false) failures.push("affordance_persisted_as_assistant_message");
+    if (last.count_as_exchange_turn !== false) failures.push("affordance_counted_as_exchange_turn");
+    if (!last.affordance?.display_text) failures.push("affordance_missing_display_text");
+  }
+
+  if (lastType !== "ui_affordance" && !includesAny(answer, spec.must_include_any)) {
     failures.push(`must_include_any missing: ${(spec.must_include_any || []).join(" | ")}`);
   }
   for (const term of spec.must_not_include || []) {

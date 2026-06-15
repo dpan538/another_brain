@@ -48,6 +48,8 @@ function makeOperation(questionType) {
     development_history: "culture_explain_development_history",
     theme_explanation: "culture_explain_theme",
     why_it_matters: "culture_explain_significance",
+    music_representativeness: "culture_explain_music_representativeness",
+    music_characteristics: "culture_explain_music_characteristics",
     no_lyrics_boundary: "copyright_boundary_check",
     follow_up_explain_last_entity: "bind_then_explain_culture_entity",
     follow_up_compare_last_two: "bind_then_compare_culture_entities",
@@ -125,6 +127,9 @@ export function detectCultureQuestionType(query, state = {}) {
   if (avoidsCopyright && /(代表作|代表作品|作品|歌曲|专辑|哪几首|哪几张|有哪些)/.test(text)) return /(代表作|代表作品)/.test(text) ? "representative_works" : "works_list";
   if (!avoidsCopyright && COPYRIGHT_REQUEST_RE.test(text)) return "no_lyrics_boundary";
   if (hasFollowup && /(那两个|谁更|传统和现代|共同|比较)/.test(text) && Array.isArray(state.last_two_entity_ids) && state.last_two_entity_ids.length >= 2) return "follow_up_compare_last_two";
+  if (/(他的|罗大佑).{0,8}(歌|歌曲).{0,12}(代表性|特点|重要|代表在哪里|为什么重要)|这些歌.{0,8}(代表|重要|特点)|歌.{0,8}(代表性|特点)/.test(text)) {
+    return /(特点|风格)/.test(text) ? "music_characteristics" : "music_representativeness";
+  }
   if (/(日本和日本文学|国家.*文学|文学.*国家|日本文学.*日本历史|一回事|同一个东西)/.test(text) && /日本文学/.test(text)) return "country_relation";
   if (/这件事.*美术馆.*关系|美术馆.*这件事.*关系/.test(text)) return "follow_up_explain_last_entity";
   if (/美术馆.*作品价值|作品价值.*美术馆/.test(text)) return "theme_explanation";
@@ -255,7 +260,7 @@ export function retrieveCultureCards(query, state = {}, index = DEFAULT_INDEX) {
     }
   } else if (questionType === "country_relation") {
     focusCards = ["concept.japanese_literature"].map((id) => index.byId.get(id)).filter(Boolean);
-  } else if (questionType === "works_list" || questionType === "representative_works" || questionType === "listen_recommendation") {
+  } else if (questionType === "works_list" || questionType === "representative_works" || questionType === "listen_recommendation" || questionType === "music_representativeness" || questionType === "music_characteristics") {
     const works = worksForFocus(focusCards, index, domain);
     if (works.length > 0) focusCards = [...focusCards, ...works];
   } else if (questionType === "development_history") {

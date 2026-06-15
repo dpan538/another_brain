@@ -11,7 +11,10 @@ import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from ".
 import { buildDebugReport, downloadDebugReport } from "./debug_report.js?v=1";
 import { answerWithOperationLayer } from "./operation_layer.js?v=2";
 import { finalizeWithFallbackFirewall } from "./fallback_firewall.js?v=1";
+import { buildConversationStatePatch } from "./conversation_state_schema.js?v=1";
+import { recordQuietAffordanceSignal } from "./non_question_affordance.js?v=1";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=6";
+import { hideQuietAffordance, showQuietAffordance } from "./affordance_ui.js?v=1";
 import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=15";
 import {
   buildCompactStateFromTurns,
@@ -41,6 +44,7 @@ let dialogState = createDialogState();
 let isResponding = false;
 let currentAnswer = "";
 let isContextOpen = false;
+let affordanceTimer = 0;
 let lastDebugEvent = {
   route: "boot",
   intent: "boot",
@@ -55,6 +59,7 @@ const els = {
   form: document.querySelector("#chatForm"),
   prompt: document.querySelector("#prompt"),
   answer: document.querySelector("#answer"),
+  affordance: document.querySelector("#quietAffordance"),
   status: document.querySelector("#status"),
   contextPanel: document.querySelector("#contextPanel"),
   contextList: document.querySelector("#contextList"),
@@ -104,8 +109,44 @@ function setThinking(isThinking, mode = "") {
 
 function setAnswer(text) {
   currentAnswer = text;
+  if (text) hideAffordance();
   els.answer.hidden = !text || isContextOpen;
   els.answer.textContent = text;
+}
+
+function hideAffordance() {
+  if (affordanceTimer) {
+    clearTimeout(affordanceTimer);
+    affordanceTimer = 0;
+  }
+  hideQuietAffordance(els.affordance);
+}
+
+function showAffordanceResponse(question, response, previousState, startedAt) {
+  setAnswer("");
+  showQuietAffordance(els.affordance, response.affordance);
+  dialogState = recordQuietAffordanceSignal(dialogState, question, response.userTurn);
+  lastDebugEvent = {
+    route: "affordance",
+    intent: "quiet_affordance",
+    contextAction: "QUIET_AFFORDANCE",
+    answerSource: "affordance",
+    sanitizerChanged: false,
+    latencyMs: performance.now() - startedAt,
+    failureTag: "none",
+    userTurn: response.userTurn || null,
+    affordance: response.affordance,
+    responseMode: response.responseMode || (response.response_mode ? { mode: response.response_mode } : { mode: "quiet_affordance" }),
+    fallbackFirewall: {
+      checked: false,
+      reason: "ui_affordance_not_answer",
+      allowed: true
+    }
+  };
+  const duration = Number(response.affordance?.max_duration_ms || 3000);
+  affordanceTimer = window.setTimeout(() => {
+    if (document.activeElement !== els.prompt) hideAffordance();
+  }, duration);
 }
 
 function renderContext() {
@@ -185,6 +226,7 @@ function contextActionForIntent(intent, route) {
 }
 
 function commitAnswer(question, answer, intent, previousState = dialogState, meta = {}) {
+  hideAffordance();
   const finalized = finalizeWithFallbackFirewall({
     query: question,
     state: previousState,
@@ -210,11 +252,27 @@ function commitAnswer(question, answer, intent, previousState = dialogState, met
     sanitizerChanged: finalAnswer !== String(answer || "").trim(),
     latencyMs,
     failureTag: finalized.firewall?.reason || meta.failureTag || "none",
-    fallbackFirewall: finalized.firewall || null
+    fallbackFirewall: finalized.firewall || null,
+    responseMode: meta.responseMode || null
   };
   setAnswer(finalAnswer);
   rememberTurn(question, finalAnswer, finalIntent);
-  dialogState = nextDialogState(question, finalAnswer, finalIntent, previousState);
+  dialogState = {
+    ...nextDialogState(question, finalAnswer, finalIntent, previousState),
+    ...buildConversationStatePatch({
+      query: question,
+      answer: finalAnswer,
+      resolved: {
+        route: meta.route || "unknown",
+        operation: meta.operation || "",
+        questionType: meta.questionType || "",
+        responseMode: meta.responseMode || null,
+        culture: meta.culture || null
+      },
+      finalized,
+      previousState
+    })
+  };
 }
 
 function setContextOpen(isOpen) {
@@ -327,14 +385,20 @@ async function submitPrompt(event) {
   els.prompt.value = "";
   autosize();
   setAnswer("");
-  const thinking = thinkingProfileFor(text);
-  setThinking(true, thinking.mode);
+  hideAffordance();
 
   try {
-    await new Promise((resolve) => setTimeout(resolve, thinking.delay));
-
     const reasoningState = currentReasoningState();
     const operationAnswer = answerWithOperationLayer(text, reasoningState);
+    if (operationAnswer?.type === "ui_affordance") {
+      showAffordanceResponse(text, operationAnswer, reasoningState, startedAt);
+      return;
+    }
+
+    const thinking = thinkingProfileFor(text);
+    setThinking(true, thinking.mode);
+    await new Promise((resolve) => setTimeout(resolve, thinking.delay));
+
     if (operationAnswer?.answer) {
       commitAnswer(text, operationAnswer.answer, operationAnswer.intent, reasoningState, {
         route: "operation",
@@ -342,6 +406,8 @@ async function submitPrompt(event) {
         contextAction: operationAnswer.contextAction,
         operation: operationAnswer.operation,
         questionType: operationAnswer.questionType,
+        responseMode: operationAnswer.responseMode || (operationAnswer.response_mode ? { mode: operationAnswer.response_mode } : null),
+        culture: operationAnswer.culture || null,
         startedAt
       });
       return;
@@ -411,6 +477,7 @@ els.contextToggle.addEventListener("click", () => {
   setContextOpen(els.contextPanel.hidden);
 });
 els.prompt.addEventListener("input", autosize);
+els.prompt.addEventListener("input", hideAffordance);
 els.prompt.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && !event.shiftKey) {
     event.preventDefault();

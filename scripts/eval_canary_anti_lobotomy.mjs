@@ -48,7 +48,9 @@ async function runRow(spec) {
   runtime.dialogState = { ...runtime.dialogState, ...(spec.compact_state || {}) };
   runtime.contextTurns = Array.isArray(spec.compact_state?.recentTurns) ? spec.compact_state.recentTurns.map((turn) => ({ ...turn })) : [];
   const turns = [];
-  const prompts = Array.isArray(spec.turns) && spec.turns.length ? spec.turns : [{ user: spec.prompt }];
+  const prompts = Array.isArray(spec.turns) && spec.turns.length ? [...spec.turns] : [];
+  if (spec.prompt) prompts.push({ user: spec.prompt });
+  if (!prompts.length) prompts.push({ user: "" });
   for (const item of prompts) {
     if (typeof item === "object" && item.assistant) {
       seedTurn(runtime, item.user || item.prompt || "", item.assistant);
@@ -69,7 +71,13 @@ async function runRow(spec) {
     lastAssistantAnswer: turns.at(-2)?.answer || seededLastAssistant || spec.compact_state?.lastAnswer || ""
   });
   const failures = [];
-  if (!includesAny(answer, spec.must_include_any)) failures.push("must_include_any");
+  const lastType = last?.type || "answer";
+  if (spec.expected_response_type && lastType !== spec.expected_response_type) failures.push(`expected_response_type:${spec.expected_response_type}`);
+  if (last?.type === "ui_affordance") {
+    if (last.persist_as_assistant_message !== false) failures.push("affordance_persisted_as_assistant_message");
+    if (last.count_as_exchange_turn !== false) failures.push("affordance_counted_as_exchange_turn");
+  }
+  if (lastType !== "ui_affordance" && !includesAny(answer, spec.must_include_any)) failures.push("must_include_any");
   for (const term of spec.must_not_include || []) if (term && answer.includes(term)) failures.push(`must_not_include:${term}`);
   for (const bad of spec.unacceptable_answers || []) if (bad && answer.trim() === bad.trim()) failures.push(`unacceptable_answer:${bad}`);
   const bareId = bareFallbackId(answer);

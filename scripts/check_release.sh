@@ -98,6 +98,9 @@ python3 scripts/validate_knowledge_shards.py >/dev/null
 node scripts/eval_seo_metadata.mjs >/dev/null
 node scripts/check_fallback_invariants.mjs >/dev/null
 node scripts/eval_canary_anti_lobotomy.mjs >/dev/null
+node scripts/eval_non_question_affordance.mjs >/dev/null
+node scripts/eval_p0_response_mode.mjs >/dev/null
+node scripts/check_repair_overtrigger_invariants.mjs >/dev/null
 node scripts/fuzz_fallback_routes.mjs >/dev/null
 node scripts/check_finalizer_coverage.mjs >/dev/null
 node scripts/check_finalizer_order.mjs >/dev/null

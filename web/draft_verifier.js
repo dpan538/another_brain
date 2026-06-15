@@ -1,5 +1,6 @@
 import { assessCoverageForAnswer } from "./coverage_gate.js";
 import { classifyFallbackShape } from "./generic_fallback_classifier.js";
+import { detectMethodLeak } from "./method_leak_verifier.js";
 
 const BAD_GENERIC_RE =
   /(你需要提问|你要问哪一边|也许发生过，不在我眼前|你应该去问百度|知道一点。城市、青春和历史，会一起压进歌里|罗大佑适合听时代怎么进入私人生活|日本文学不要只读情节|我会编|编一个听起来合理)/;
@@ -90,6 +91,13 @@ export function verifyDraft({ query = "", trace = {}, draft = "", solverResult =
   }
 
   if (/culture/.test(source || trace.task_type || "")) {
+    const methodLeak = detectMethodLeak({
+      query: q,
+      answer,
+      domain: trace.domain || evidence?.domain || "",
+      questionType
+    });
+    if (!methodLeak.ok) reasons.push(...methodLeak.reasons);
     if ((questionType === "works_list" || questionType === "representative_works" || questionType === "listen_recommendation") && !/《[^》]+》/.test(answer)) {
       reasons.push("works_list_missing_works");
     }

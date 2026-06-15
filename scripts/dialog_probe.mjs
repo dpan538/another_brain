@@ -101,6 +101,15 @@ function compactState(state = {}) {
     lastTopic: state.lastTopic || "",
     lastUserText: state.lastUserText || "",
     lastAnswer: state.lastAnswer || "",
+    lastAnswerQuality: state.lastAnswerQuality || "",
+    lastResponseMode: state.lastResponseMode || "",
+    lastQuestionType: state.lastQuestionType || "",
+    lastOperation: state.lastOperation || "",
+    activeEntityIds: Array.isArray(state.activeEntityIds) ? state.activeEntityIds : [],
+    activeWorkIds: Array.isArray(state.activeWorkIds) ? state.activeWorkIds : [],
+    activeDomain: state.activeDomain || "",
+    lastAnswerSummary: state.lastAnswerSummary || "",
+    lastRepairableError: state.lastRepairableError || "",
     commitments: Array.isArray(state.commitments) ? state.commitments : [],
     frames: Array.isArray(state.frames) ? state.frames : []
   };

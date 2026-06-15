@@ -1,0 +1,76 @@
+.quiet-affordance {
+  position: absolute;
+  left: var(--input-pad-left);
+  bottom: calc(100% + 18px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  min-height: 2rem;
+  color: var(--green-dark);
+  font-size: 20px;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.quiet-affordance.is-visible {
+  opacity: 0.68;
+  transform: translateY(0);
+  animation: affordancePulse 1.8s ease-in-out infinite;
+}
+
+.quiet-affordance::before,
+.quiet-affordance::after {
+  position: absolute;
+  inset: -8px -14px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  content: "";
+  opacity: 0;
+  animation: affordanceRipple 2.2s ease-out infinite;
+}
+
+.quiet-affordance::after {
+  animation-delay: 680ms;
+}
+
+.quiet-affordance[hidden] {
+  display: none;
+}
+
+@keyframes affordancePulse {
+  0%,
+  100% {
+    opacity: 0.52;
+  }
+
+  45% {
+    opacity: 0.82;
+  }
+}
+
+@keyframes affordanceRipple {
+  0% {
+    opacity: 0.28;
+    transform: scale(0.68);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.26);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiet-affordance.is-visible,
+  .quiet-affordance::before,
+  .quiet-affordance::after {
+    animation: none;
+  }
+}

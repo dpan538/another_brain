@@ -2,6 +2,10 @@ import { answerCultureQuery } from "./culture_runtime.js";
 import { verifyDraft } from "./draft_verifier.js";
 import { answerFallbackRepair } from "./fallback_repair.js";
 import { answerMetaKnowledgeQuery } from "./meta_knowledge_router.js";
+import { buildQuietAffordance } from "./non_question_affordance.js";
+import { expandLastAnswer, rewriteLastAnswer, simplifyLastAnswer } from "./last_answer_transform.js";
+import { selectResponseMode } from "./response_mode_manager.js";
+import { classifyUserTurn } from "./user_turn_classifier.js";
 import {
   solveChineseArithmetic,
   solveSetQuantifierFromText,
@@ -9,7 +13,7 @@ import {
   solveTransitiveComparisonFromText
 } from "./micro_solvers.js";
 
-const COPYRIGHT_REQUEST_RE = /(歌词|原文|原句|唱词|逐字|整首|全文)/;
+const COPYRIGHT_REQUEST_RE = /(歌词|原文|原句|唱词|逐字|整首|全文|贴出来|一大段|整段|开头|俳句|诗整首|完整歌词)/;
 
 function clean(text) {
   return String(text || "").trim();
@@ -38,6 +42,31 @@ function makeResult({ intent, answer, operation, questionType, contextAction }) 
     questionType,
     contextAction,
     usedModel: false
+  };
+}
+
+function withResponseMode(result, responseMode) {
+  if (!result) return null;
+  return {
+    ...result,
+    responseMode,
+    response_mode: responseMode?.mode || ""
+  };
+}
+
+function makeAffordanceResult({ affordance, userTurn }) {
+  return {
+    type: "ui_affordance",
+    intent: "quiet_affordance",
+    route: "affordance",
+    operation: "quiet_affordance",
+    questionType: userTurn?.kind || "quiet_declaration",
+    contextAction: "QUIET_AFFORDANCE",
+    answer: "",
+    affordance,
+    userTurn,
+    persist_as_assistant_message: false,
+    count_as_exchange_turn: false
   };
 }
 
@@ -359,6 +388,17 @@ function answerPrivacyBoundary(text) {
   });
 }
 
+function answerSafetyBoundary(text) {
+  if (!/(我想消失|不想活|自杀|自伤|伤害自己)/.test(text)) return null;
+  return makeResult({
+    intent: "operation_safety_boundary",
+    operation: "safety_support_boundary",
+    questionType: "hard_boundary",
+    contextAction: "ANSWER_WITH_UNCERTAINTY",
+    answer: "这不是适合沉默的输入。请先联系身边的人或当地紧急支持；我可以陪你把下一步说小一点。"
+  });
+}
+
 function answerReasoningPolicyBoundary(text) {
   if (/韩国.*文学.*(入口|不确定|怎么答|覆盖|知道什么)/.test(text)) {
     return makeResult({
@@ -534,18 +574,324 @@ function answerSourceBoundary(text) {
   });
 }
 
-function answerGenericCopyrightBoundary(text) {
+function answerGenericCopyrightBoundary(text, state = {}) {
   if (!COPYRIGHT_REQUEST_RE.test(text)) return null;
-  if (!/(歌词|原文|整首|全文|贴出来|逐句翻译|一大段)/.test(text)) return null;
+  if (/(诗和歌词|歌词.*解释方式|解释方式.*歌词|有什么不同|区别)/.test(text)) return null;
+  if (/俳句/.test(text) && !/(贴|给|整首|都贴|全部|输出|背)/.test(text)) return null;
+  if (/(不要|不贴|不用|而不是|不是给|不需要).{0,10}(歌词|原文|原句|长段|整首|全文)/.test(text) && /(解释|讲讲|总结|主题|重要|展开|意义)/.test(text)) {
+    if (/童年/.test(text)) return null;
+    if (state?.last_focus_entity_id || state?.last_domain) return null;
+    return makeResult({
+      intent: "operation_copyright_safe_summary",
+      operation: "copyright_safe_summary_request",
+      questionType: "safe_summary_instead_of_quote",
+      contextAction: "ANSWER_CULTURE",
+      answer: "可以总结主题而不贴原文；我会讲主题、背景和结构，不复写受版权文本。"
+    });
+  }
+  if (/(不要|不贴|不用).{0,10}歌词/.test(text) && /(作品|代表作品|代表作|有哪些|哪几首|歌单|曲目)/.test(text)) return null;
+  if (!/(歌词|原文|原句|整首|全文|贴出来|逐句翻译|一大段|整段|开头|俳句|诗整首|完整歌词)/.test(text)) return null;
+  const answer = /逐句翻译/.test(text)
+    ? "不能逐句翻译整段歌词；可以改讲主题、背景、意象或给很短的非替代性说明。"
+    : /歌词|唱词|完整歌词/.test(text)
+      ? /童年/.test(text)
+        ? /完整|整首|全部/.test(text)
+          ? "歌词不能给。可以谈主题、青春记忆、日常经验和作品位置。"
+          : "不能给《童年》歌词；可以讲青春记忆、日常经验和它为什么重要。"
+        : /之乎者也/.test(text)
+          ? /完整|贴一下|能不能/.test(text)
+            ? "《之乎者也》的完整歌词不能贴；可以讲语言姿态、公共话语和时代背景。"
+            : "不能给《之乎者也》歌词；可以讲语言反讽、时代背景和作品位置。"
+          : /第一首/.test(text)
+            ? "第一首也不能给歌词；可以按主题、背景和作品位置概括。"
+            : "完整歌词不能输出；可以做非替代性的主题和背景说明。"
+      : /俳句|诗整首|Robert Lowell|Lowell|诗/.test(text)
+        ? /芭蕉|俳句/.test(text)
+          ? "不能把芭蕉俳句成组贴出；可以讲季语、停顿和短制形式。"
+          : /Robert Lowell|Lowell/.test(text)
+            ? "不能整首贴 Robert Lowell 的诗；可以讲自白诗、声音和形式压力。"
+            : "不能整首贴诗；可以讲形式、意象、主题和历史位置。"
+        : /人间失格/.test(text)
+          ? "不能给《人间失格》长段原文；可以概括自我厌弃、疏离和作品位置。"
+          : /雪国/.test(text)
+            ? "不能贴《雪国》开头长段；可以概括抒情意象、冷感美学和作品背景。"
+            : /德里达/.test(text)
+              ? "不能发德里达原文长段；可以概括语言、差异和意义不稳定。"
+              : /鹿港小镇/.test(text)
+                ? "不能整首贴《鹿港小镇》；可以讲乡土、现代化和失落经验。"
+                : "不能提供长段原文；可以改成安全摘要、主题说明或背景解释。";
   return makeResult({
     intent: "operation_copyright_boundary",
     operation: "copyright_boundary_check",
     questionType: "no_lyrics_boundary",
     contextAction: "ANSWER_CULTURE",
-    answer: /逐句翻译/.test(text)
-      ? "不能逐句翻译整段歌词；可以改讲主题、背景、意象或给很短的非替代性说明。"
-      : "不能提供歌词或长段原文；可以改讲主题、背景、结构或摘要。"
+    answer
   });
+}
+
+function answerDeclarationSignal(text, state, userTurn) {
+  if (userTurn?.kind !== "declaration_with_signal") return null;
+  if (/不是罗大佑.*日本文学|日本文学.*不是罗大佑/.test(text)) {
+    return makeResult({
+      intent: "operation_declaration_signal",
+      operation: "ack_topic_shift",
+      questionType: "declaration_with_signal",
+      contextAction: "ANSWER_LOCAL",
+      answer: "我明白。这里要按日本文学接，不该继续围着罗大佑。"
+    });
+  }
+  if (/(已经问了|别说你需要提问|不是外部事件)/.test(text)) {
+    return makeResult({
+      intent: "operation_declaration_signal",
+      operation: "ack_fallback_boundary",
+      questionType: "declaration_with_signal",
+      contextAction: "ANSWER_LOCAL",
+      answer: "你已经给了可接的方向；我不该用缺提问或外部事件 fallback 顶掉它。"
+    });
+  }
+  if (/(更严重|不是我要的|绕回|fallback|固定模板|太机械|答偏|不该|别再|不对|错了)/i.test(text)) {
+    return makeResult({
+      intent: "operation_declaration_signal",
+      operation: "ack_feedback_repair",
+      questionType: "declaration_with_signal",
+      contextAction: "ANSWER_LOCAL",
+      answer: "我明白。刚才的路径要收回来：先识别对象和动作，再决定答、修复、边界或停住。"
+    });
+  }
+  return makeResult({
+    intent: "operation_declaration_signal",
+    operation: "ack_user_signal",
+    questionType: "declaration_with_signal",
+    contextAction: "ANSWER_LOCAL",
+    answer: "我明白。这里先不机械反问；我会按你给的方向收束。"
+  });
+}
+
+function answerSurfaceRelationStatement(text) {
+  if (/^你不是鳄鱼[。.!！\s]*$/.test(text)) {
+    return makeResult({
+      intent: "identity_relation",
+      operation: "identity_relation_correction",
+      questionType: "identity_relation",
+      contextAction: "ANSWER_LOCAL",
+      answer: "对。鳄鱼不是我，我也不是鳄鱼。"
+    });
+  }
+  if (/^((也许|可能).{0,10}(我认识你|之前见过你|见过你)|我认识你|我好像认识你)[。.!！\s]*$/.test(text)) {
+    return makeResult({
+      intent: "relation_statement",
+      operation: "relation_statement_boundary",
+      questionType: "relation_statement",
+      contextAction: "ANSWER_RELATION_STATEMENT",
+      answer: "也许。那就从这一句开始。"
+    });
+  }
+  return null;
+}
+
+function stateLastAnswer(state = {}) {
+  return clean(state.lastAssistantAnswer || state.lastAnswer || state.recentTurns?.at?.(-1)?.answer || "");
+}
+
+function activeEntityIds(state = {}) {
+  const ids = [];
+  if (Array.isArray(state.activeEntityIds)) ids.push(...state.activeEntityIds);
+  if (state.last_focus_entity_id) ids.push(state.last_focus_entity_id);
+  if (Array.isArray(state.last_mentions)) ids.push(...state.last_mentions);
+  if (/罗大佑/.test(`${state.lastAnswer || ""} ${state.lastAssistantAnswer || ""}`)) ids.push("person.luo_dayou");
+  return [...new Set(ids.filter(Boolean))];
+}
+
+function activeDomain(state = {}) {
+  if (state.activeDomain) return state.activeDomain;
+  if (state.last_domain) return state.last_domain;
+  if (/罗大佑|童年|鹿港小镇|恋曲1990|之乎者也/.test(`${state.lastAnswer || ""} ${state.lastAssistantAnswer || ""}`)) return "music.mandopop";
+  return "";
+}
+
+function answerLastTransform(text, state, responseMode) {
+  const lastAnswer = stateLastAnswer(state);
+  if (!lastAnswer) return null;
+  const args = {
+    lastAnswer,
+    lastTrace: state,
+    activeEntityIds: activeEntityIds(state),
+    activeDomain: activeDomain(state),
+    instruction: text
+  };
+  let answer = "";
+  let operation = "";
+  if (responseMode.mode === "simplify_last_answer") {
+    answer = simplifyLastAnswer(args);
+    operation = "simplify_last_answer";
+  } else if (responseMode.mode === "rewrite_last_answer") {
+    answer = rewriteLastAnswer(args);
+    operation = "rewrite_last_answer";
+  } else if (responseMode.mode === "expand_last_answer") {
+    answer = expandLastAnswer(args);
+    operation = "expand_last_answer";
+  }
+  if (!answer) return null;
+  return makeResult({
+    intent: `operation_${operation}`,
+    operation,
+    questionType: operation,
+    contextAction: operation === "simplify_last_answer" ? "SHORTEN_TEXT" : "ANSWER_LOCAL",
+    answer
+  });
+}
+
+function answerBoundedUnknownRepairPhrase(text) {
+  if (/什么发生过|发生过什么/.test(text)) {
+    return makeResult({
+      intent: "operation_bounded_unknown",
+      operation: "bounded_previous_phrase_unknown",
+      questionType: "bounded_unknown",
+      contextAction: "ANSWER_WITH_UNCERTAINTY",
+      answer: "这句像是在追问上一句里的“发生过”。如果没有前文，它不是一个完整事件问题；你可以直接说对象或上一句。"
+    });
+  }
+  if (/哪一边|什么哪一边/.test(text)) {
+    return makeResult({
+      intent: "operation_specific_clarification",
+      operation: "explain_missing_clarification_options",
+      questionType: "specific_clarification",
+      contextAction: "ANSWER_HELP",
+      answer: "“哪一边”只有在我给出两个明确选项时才有意义。你可以直接问作者、作品、代表作或关系。"
+    });
+  }
+  return null;
+}
+
+function answerSpecificClarificationFromPrevious(text, state) {
+  const last = clean(state.lastAssistantAnswer || state.lastAnswer || state.recentTurns?.at?.(-1)?.answer || "");
+  if (!/(哪一个|哪个|是哪一个|是哪种|哪种意思)/.test(text)) return null;
+  if (/之乎者也/.test(text) && /专辑.*标题曲|标题曲.*专辑|这张专辑/.test(last)) {
+    return makeResult({
+      intent: "operation_specific_clarification",
+      operation: "answer_named_alternative_clarification",
+      questionType: "specific_clarification",
+      contextAction: "ANSWER_HELP",
+      answer: "我刚才给的是两个候选：一个是《之乎者也》这张专辑/作品标题，另一个是你可能想问的标题曲。你现在可以直接说“专辑”或“标题曲”。"
+    });
+  }
+  if (/作者.*作品|作品.*作者/.test(last)) {
+    return makeResult({
+      intent: "operation_specific_clarification",
+      operation: "answer_named_alternative_clarification",
+      questionType: "specific_clarification",
+      contextAction: "ANSWER_HELP",
+      answer: "我刚才给的是两个候选：作者和作品。你可以直接说要问作者，还是要问作品。"
+    });
+  }
+  return null;
+}
+
+function answerHelpHowToAsk(text = "") {
+  const source = clean(text);
+  const shortStart = /^(我该怎么开始|我应该怎么开始|怎么开始)[？?。.!！\s]*$/.test(source);
+  return makeResult({
+    intent: shortStart ? "help_start" : "help_how_to_ask",
+    operation: shortStart ? "help_start" : "help_how_to_ask",
+    questionType: shortStart ? "help_start" : "help_how_to_ask",
+    contextAction: "ANSWER_HELP",
+    answer: shortStart
+      ? "直接问。"
+      : "直接问对象和方向就行：比如问作者、作品、代表作、从哪里开始，或者把一句话丢给我解释。"
+  });
+}
+
+function answerCoverageSpecific(text) {
+  if (/东亚文学.*(别|不要|不能).*只说日本|别只说日本.*东亚文学/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "asian_literature_balance_guard",
+      questionType: "coverage_boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "对，东亚文学入口不能只说日本；至少要拆中国现代文学、日本近现代文学和韩国现代文学。可以从鲁迅、张爱玲、夏目漱石这些锚点起步。"
+    });
+  }
+  if (/华语流行音乐不是罗大佑一个人|罗大佑是不是整个华语流行音乐/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "mandopop_scope_guard",
+      questionType: "coverage_boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不是。罗大佑只是重要入口之一；华语流行还要看李宗盛、邓丽君、崔健、王菲、周杰伦、张惠妹等人和不同地区/时期。"
+    });
+  }
+  if (/大陆摇滚.*1980s\/1990s|大陆摇滚.*1980.*1990/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_development_history",
+      operation: "explain_mainland_rock_history_entry",
+      questionType: "development_history",
+      contextAction: "ANSWER_CULTURE",
+      answer: "大陆摇滚可从1980年代的崔健和《一无所有》进入，再看1990年代乐队文化、青年表达和公共声音怎样并入华语流行版图。"
+    });
+  }
+  if (/张惠妹.*(定位|华语流行)/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_overview",
+      operation: "position_artist_in_mandopop",
+      questionType: "overview",
+      contextAction: "ANSWER_CULTURE",
+      answer: "张惠妹在华语流行里可定位为1990年代末以来的重要台湾流行歌手，关键词是声音力量、舞台表现和流行明星位置。"
+    });
+  }
+  return null;
+}
+
+function answerMusicRepresentativenessFollowup(text, state) {
+  const hasLuoContext =
+    /罗大佑/.test(text) ||
+    activeEntityIds(state).includes("person.luo_dayou") ||
+    /罗大佑/.test(`${state.lastAnswer || ""} ${state.lastAssistantAnswer || ""}`);
+  if (!hasLuoContext) return null;
+  if (/这张专辑|这首|这本/.test(text)) return null;
+  if (!/(歌|歌曲|代表性|特点|代表在哪里|为什么重要|这些歌|他的)/.test(text)) return null;
+  const characteristics = /(特点|风格)/.test(text);
+  return makeResult({
+    intent: "operation_culture_music_representativeness",
+    operation: characteristics ? "explain_music_characteristics" : "explain_music_representativeness",
+    questionType: characteristics ? "music_characteristics" : "music_representativeness",
+    contextAction: "ANSWER_CULTURE",
+    answer: characteristics
+      ? "罗大佑的歌特点是叙事性强、民谣/摇滚质地明显，旋律容易进入，但主题常落到青春记忆、城市变化和社会观察。"
+      : "代表性主要在三点：个人青春、城乡/城市变化、社会观察。比如《童年》偏共同记忆，《鹿港小镇》偏乡土和现代化，《恋曲1990》偏私人情感。"
+  });
+}
+
+function answerSafeSummaryFollowup(text, state = {}) {
+  if (!/(总结主题|不要原文|不贴原文|而不是给原文|但不要原文)/.test(text)) return null;
+  const focus = state.last_focus_entity_id || "";
+  if (focus === "work.snow_country") {
+    return makeResult({
+      intent: "operation_culture_safe_summary",
+      operation: "safe_summary_instead_of_quote",
+      questionType: "follow_up_explain_last_entity",
+      contextAction: "ANSWER_CULTURE",
+      answer: "可以总结《雪国》的主题而不贴原文：重点是抒情意象、冷感美学、距离感和正在消失的美。"
+    });
+  }
+  if (focus === "work.no_longer_human") {
+    return makeResult({
+      intent: "operation_culture_safe_summary",
+      operation: "safe_summary_instead_of_quote",
+      questionType: "follow_up_explain_last_entity",
+      contextAction: "ANSWER_CULTURE",
+      answer: "可以总结《人间失格》的主题而不贴原文：自我厌弃、疏离、社会角色压力和无法融入感是核心。"
+    });
+  }
+  if (focus === "person.derrida") {
+    return makeResult({
+      intent: "operation_culture_safe_summary",
+      operation: "safe_summary_instead_of_quote",
+      questionType: "follow_up_explain_last_entity",
+      contextAction: "ANSWER_CULTURE",
+      answer: "可以展开德里达而不贴原文：重点是文本、语言差异、意义不稳定和二元边界如何被拆开。"
+    });
+  }
+  return null;
 }
 
 function luoDayouAnswer(text, state) {
@@ -719,6 +1065,7 @@ function answerCulture(text, state) {
 function answerReasoning(text) {
   return (
     answerWithMicroSolvers(text) ||
+    answerSafetyBoundary(text) ||
     answerGenericCopyrightBoundary(text) ||
     answerSourceBoundary(text) ||
     answerReasoningPolicyBoundary(text) ||
@@ -734,15 +1081,73 @@ function answerReasoning(text) {
 export function answerWithOperationLayer(query, state = {}) {
   const text = clean(query);
   if (!text) return null;
-  if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return answerPrivacyBoundary(text);
-  const repairAnswer = answerFallbackRepair({ query: text, session: state });
-  if (repairAnswer?.answer) return makeResult(repairAnswer);
+  const userTurn = classifyUserTurn({ query: text, session: state });
+  const responseMode = selectResponseMode({ query: text, session: state });
+  const safetyBoundary = answerSafetyBoundary(text);
+  if (safetyBoundary) return withResponseMode(safetyBoundary, responseMode);
+  if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return withResponseMode(answerPrivacyBoundary(text), responseMode);
+  const hardContentBoundary = answerGenericCopyrightBoundary(text, state) || answerSourceBoundary(text);
+  if (hardContentBoundary) return withResponseMode(hardContentBoundary, responseMode);
+
+  if (responseMode.mode === "fallback_repair") {
+    const repairAnswer = answerFallbackRepair({ query: text, session: state });
+    if (repairAnswer?.answer) return withResponseMode(makeResult(repairAnswer), responseMode);
+  }
+
+  if (["simplify_last_answer", "rewrite_last_answer", "expand_last_answer"].includes(responseMode.mode)) {
+    const transformed = answerLastTransform(text, state, responseMode);
+    if (transformed) return withResponseMode(transformed, responseMode);
+  }
+
+  if (responseMode.mode === "followup_answer") {
+    const safeSummary = answerSafeSummaryFollowup(text, state);
+    if (safeSummary) return withResponseMode(safeSummary, responseMode);
+    const followup = answerMusicRepresentativenessFollowup(text, state);
+    if (followup) return withResponseMode(followup, responseMode);
+  }
+
+  if (responseMode.mode === "bounded_unknown" || responseMode.mode === "specific_clarification") {
+    const specificClarification = answerSpecificClarificationFromPrevious(text, state);
+    if (specificClarification) return withResponseMode(specificClarification, responseMode);
+    const boundedRepairPhrase = answerBoundedUnknownRepairPhrase(text);
+    if (boundedRepairPhrase) return withResponseMode(boundedRepairPhrase, responseMode);
+  }
+
+  if (responseMode.mode === "help_how_to_ask") {
+    return withResponseMode(answerHelpHowToAsk(text), responseMode);
+  }
+
   const metaAnswer = answerMetaKnowledgeQuery(text, state);
-  if (metaAnswer?.answer) return makeResult(metaAnswer);
+  if (metaAnswer?.answer) return withResponseMode(makeResult(metaAnswer), responseMode);
+  const surfaceRelation = answerSurfaceRelationStatement(text);
+  if (surfaceRelation) return withResponseMode(surfaceRelation, responseMode);
+  if (userTurn.recommended_action === "quiet_affordance") {
+    return withResponseMode(makeAffordanceResult({ affordance: buildQuietAffordance({ query: text, session: state }), userTurn }), responseMode);
+  }
+  const coverageSpecific = answerCoverageSpecific(text);
+  if (coverageSpecific) return withResponseMode(coverageSpecific, responseMode);
   const earlyBoundary = answerSourceBoundary(text) || answerReasoningPolicyBoundary(text);
-  if (earlyBoundary) return earlyBoundary;
+  if (earlyBoundary) return withResponseMode(earlyBoundary, responseMode);
+  if (/不是罗大佑.*日本文学|日本文学.*不是罗大佑/.test(text)) {
+    const topicShift = answerDeclarationSignal(text, state, { kind: "declaration_with_signal" });
+    if (topicShift) return withResponseMode(topicShift, responseMode);
+  }
+  const declarationModesBlocked = new Set([
+    "followup_answer",
+    "culture_answer",
+    "solver_answer",
+    "simplify_last_answer",
+    "rewrite_last_answer",
+    "expand_last_answer",
+    "bounded_unknown",
+    "specific_clarification"
+  ]);
+  const declarationAnswer = declarationModesBlocked.has(responseMode.mode)
+    ? null
+    : answerDeclarationSignal(text, state, userTurn);
+  if (declarationAnswer) return withResponseMode(declarationAnswer, responseMode);
   const sentenceExplanation = answerSentenceExplanation(text);
-  if (sentenceExplanation) return sentenceExplanation;
+  if (sentenceExplanation) return withResponseMode(sentenceExplanation, responseMode);
   const cultureRuntimeAnswer = answerCultureQuery(text, state);
   if (cultureRuntimeAnswer?.answer) {
     const sharedVerification = verifyDraft({
@@ -763,6 +1168,8 @@ export function answerWithOperationLayer(query, state = {}) {
       operation: cultureRuntimeAnswer.operation,
       questionType: cultureRuntimeAnswer.questionType,
       contextAction: cultureRuntimeAnswer.contextAction || "ANSWER_CULTURE",
+      responseMode,
+      response_mode: responseMode.mode,
       usedModel: false,
       culture: {
         route: cultureRuntimeAnswer.route,
@@ -775,5 +1182,5 @@ export function answerWithOperationLayer(query, state = {}) {
       }
     };
   }
-  return answerReasoning(text, state);
+  return withResponseMode(answerReasoning(text, state), responseMode);
 }

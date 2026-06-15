@@ -1,4 +1,5 @@
 import { assessCoverageForAnswer } from "./coverage_gate.js";
+import { detectMethodLeak } from "./method_leak_verifier.js";
 
 const COPYRIGHT_REQUEST_RE = /(歌词|原文|原句|唱词|逐字|整首|全文|整段|一大段|贴出来|逐句翻译)/;
 
@@ -227,6 +228,22 @@ function answerWorksList(focus, index, representative = false, query = "", quest
     return `${partial}代表作可先抓${titles}；它们分别通向不同主题入口，不能贴歌词。`;
   }
   return `${partial}歌曲可以先列${titles}；这是入口清单，不是歌词复写。`;
+}
+
+function answerMusicRepresentativeness(focus, cards = [], index = null, query = "", questionType = "") {
+  const person =
+    cards.find((card) => card.id === "person.luo_dayou") ||
+    (focus?.id === "person.luo_dayou" ? focus : null) ||
+    cards.find((card) => card.entity_type === "person" && card.domain === "music.mandopop");
+  if (!person) return "";
+  const works = displayTitles(cards.filter((card) => card.entity_type === "work"), 4);
+  const titles = works.length
+    ? works.map((title) => `《${title.replace(/[《》]/g, "")}》`).join("、")
+    : "《童年》《鹿港小镇》《恋曲1990》";
+  if (questionType === "music_characteristics" || /特点|风格/.test(query)) {
+    return `${primaryName(person)}的歌特点在叙事性、民谣/摇滚质地和直白压力：旋律容易进入，但主题常落到青春记忆、城市变化和社会观察。`;
+  }
+  return `代表性主要在三点：个人青春、城乡/城市变化、社会观察。比如${titles}，分别能进入共同记忆、乡土/现代化和私人情感。`;
 }
 
 function answerAuthorList(cards, query = "") {
@@ -510,6 +527,8 @@ export function planCultureAnswer({ query, questionType, cards = [], state = {},
 
   if (questionType === "no_lyrics_boundary") {
     answer = answerCopyrightBoundary(query, focus);
+  } else if (questionType === "music_representativeness" || questionType === "music_characteristics") {
+    answer = answerMusicRepresentativeness(focus, cards, index, query, questionType);
   } else if (questionType === "works_list" || questionType === "listen_recommendation") {
     answer = answerWorksList(focus, index, false, query, questionType, cards) || answerEntryPath(focus, index, questionType, query);
   } else if (questionType === "representative_works") {
@@ -548,6 +567,13 @@ export function verifyCultureDraft({ query = "", questionType = "", answer = "",
     if (text.includes(bad)) reasons.push("known_collapsed_template");
   }
   if (/你要问哪一边|你需要提问|问百度/.test(text)) reasons.push("unnecessary_counterquestion");
+  const methodLeak = detectMethodLeak({
+    query,
+    answer: text,
+    domain: cards[0]?.domain || state.last_domain || "",
+    questionType
+  });
+  if (!methodLeak.ok) reasons.push(...methodLeak.reasons);
   if (/\/Users\/|\/Volumes\/|\/home\/|[A-Za-z]:\\/.test(text)) reasons.push("local_path");
   if (/根据你的|根据.*文件|根据.*网站|according to your|source path/i.test(text)) reasons.push("source_framing");
   if (/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(text)) reasons.push("privacy_violation");

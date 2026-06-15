@@ -141,12 +141,21 @@ async function submitPrompt(cdp, prompt) {
       const started = Date.now();
       const tick = () => {
         const answer = document.querySelector("#answer")?.innerText?.trim() || "";
+        const affordanceEl = document.querySelector("#quietAffordance");
+        const affordance = affordanceEl && !affordanceEl.hidden ? affordanceEl.innerText.trim() : "";
         const status = document.querySelector("#status");
-        const done = answer && (!status || status.hidden);
+        const done = (answer || affordance) && (!status || status.hidden);
         if (done || Date.now() - started > 5000) {
           let debug = null;
           try { debug = window.exportAnotherBrainDebugReport({ download: false, includeTranscript: true }); } catch {}
-          resolve({ answer, done, debug });
+          resolve({
+            type: affordance && !answer ? "ui_affordance" : "answer",
+            answer,
+            affordance,
+            done,
+            visibleTurns: document.querySelectorAll(".turn").length,
+            debug
+          });
           return;
         }
         setTimeout(tick, 80);
@@ -183,7 +192,8 @@ async function runRealChromeSequences() {
     await cdp.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 3, mobile: true });
     const sequences = [
       ["罗大佑是谁？", "罗大佑你知道吗？", "什么发生过？", "哪一边？"],
-      ["你读过日本文学吗？", "我需要怎么提问？", "你知道我要干什么吗？"]
+      ["你读过日本文学吗？", "我需要怎么提问？", "你知道我要干什么吗？"],
+      ["罗大佑是谁？", "有点怪。", "罗大佑你知道吗？", "什么发生过？", "这样啊。", "我需要怎么提问？", "嗯。"]
     ];
     const sequenceReports = [];
     for (const sequence of sequences) {
@@ -223,6 +233,15 @@ async function main() {
   for (const seq of realBrowser.sequences || []) {
     for (const turn of seq.turns || []) {
       const answer = String(turn.answer || "");
+      if (["这样啊。", "嗯。"].includes(turn.prompt) && turn.type !== "ui_affordance") {
+        browserFailures.push({ prompt: turn.prompt, answer, term: "expected_ui_affordance" });
+      }
+      if (turn.type === "ui_affordance" && answer) {
+        browserFailures.push({ prompt: turn.prompt, answer, term: "affordance_rendered_as_answer" });
+      }
+      if (Number(turn.visibleTurns || 0) > 4) {
+        browserFailures.push({ prompt: turn.prompt, answer, term: "visible_turn_window_exceeded" });
+      }
       for (const term of ["你需要提问", "你要问哪一边？", "也许发生过，不在我眼前"]) {
         if (answer.trim() === term || answer.includes("也许发生过，不在我眼前")) browserFailures.push({ prompt: turn.prompt, answer, term });
       }

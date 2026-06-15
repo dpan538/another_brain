@@ -51,9 +51,13 @@ const screenshot = [
     must_include_any: ["罗大佑", "台湾", "音乐人"]
   }),
   row("p0_what_happened_followup", {
-    turns: ["罗大佑你知道吗？", "什么发生过？"],
+    turns: [
+      { user: "罗大佑你知道吗？", assistant: "也许发生过，不在我眼前。" },
+      { user: "什么发生过？" }
+    ],
     expected_question_type: "repair_previous_bad_fallback",
-    must_include_any: ["不该这样答", "罗大佑", "不是事件"]
+    must_include_any: ["不该这样答", "罗大佑", "不是事件"],
+    notes: "Repair is expected only because the previous assistant turn is seeded as a bad fallback."
   }),
   row("p0_which_side_literal", {
     prompt: "哪一边？",

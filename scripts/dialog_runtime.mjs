@@ -13,6 +13,8 @@ import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from ".
 import { detectContextAction } from "../web/context_state.js?v=2";
 import { answerWithOperationLayer } from "../web/operation_layer.js?v=1";
 import { finalizeWithFallbackFirewall } from "../web/fallback_firewall.js?v=1";
+import { buildConversationStatePatch } from "../web/conversation_state_schema.js";
+import { recordQuietAffordanceSignal } from "../web/non_question_affordance.js?v=1";
 import { sanitizeSurfaceIdentity } from "../web/surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=15";
 import {
@@ -101,6 +103,15 @@ function compactState(state = {}) {
     lastTopic: state.lastTopic || "",
     lastUserText: state.lastUserText || "",
     lastAnswer: state.lastAnswer || "",
+    lastAnswerQuality: state.lastAnswerQuality || "",
+    lastResponseMode: state.lastResponseMode || "",
+    lastQuestionType: state.lastQuestionType || state.last_question_type || "",
+    lastOperation: state.lastOperation || "",
+    activeEntityIds: Array.isArray(state.activeEntityIds) ? state.activeEntityIds : [],
+    activeWorkIds: Array.isArray(state.activeWorkIds) ? state.activeWorkIds : [],
+    activeDomain: state.activeDomain || "",
+    lastAnswerSummary: state.lastAnswerSummary || "",
+    lastRepairableError: state.lastRepairableError || "",
     commitments: Array.isArray(state.commitments)
       ? state.commitments.map((item) => ({
           id: item.id || "",
@@ -119,6 +130,10 @@ function compactState(state = {}) {
         }))
       : []
   };
+}
+
+function compactUserSignals(state = {}) {
+  return Array.isArray(state.userSignals) ? state.userSignals.slice(-4) : [];
 }
 
 function isWhyQuestion(text) {
@@ -220,6 +235,7 @@ function answerWithStructuredDecision(text, state) {
 
 function resolveAnswer(text, state) {
   const operationAnswer = answerWithOperationLayer(text, state);
+  if (operationAnswer?.type === "ui_affordance") return { ...operationAnswer, route: "affordance" };
   if (operationAnswer?.answer) return { ...operationAnswer, route: "operation" };
 
   const intent = detectIntent(text, state);
@@ -245,6 +261,54 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
   const stateBefore = compactState(state);
   const contextDecision = detectContextAction(text, state);
   const resolved = resolveAnswer(text, state);
+  if (resolved.type === "ui_affordance") {
+    runtime.dialogState = recordQuietAffordanceSignal(runtime.dialogState, text, resolved.userTurn);
+    const stateAfter = compactState(runtime.dialogState);
+    const trace = {
+      input: text,
+      state_before: stateBefore,
+      intent: "quiet_affordance",
+      context_action: "QUIET_AFFORDANCE",
+      context_decision: contextDecision || null,
+      matched_rule: resolved.userTurn?.kind || "quiet_declaration",
+      answer_source: "affordance",
+      raw_answer: "",
+      sanitizer_changed: false,
+      user_turn: resolved.userTurn || null,
+      affordance: resolved.affordance,
+      response_mode: resolved.responseMode || (resolved.response_mode ? { mode: resolved.response_mode } : { mode: "quiet_affordance" }),
+      fallback_firewall: {
+        checked: false,
+        reason: "ui_affordance_not_answer",
+        allowed: true
+      },
+      final_answer: "",
+      state_after: {
+        ...stateAfter,
+        userSignals: compactUserSignals(runtime.dialogState)
+      }
+    };
+    return {
+      type: "ui_affordance",
+      prompt: text,
+      answer: "",
+      output: "",
+      affordance: resolved.affordance,
+      intent: "quiet_affordance",
+      route: "affordance",
+      usedModel: false,
+      thinkingMode: thinking.mode,
+      thinkingDelayMs: 0,
+      suggestedThinkingDelayMs: thinking.delay,
+      answerMs: Math.round((performance.now() - started) * 1000) / 1000,
+      outputChars: 0,
+      persist_as_assistant_message: false,
+      count_as_exchange_turn: false,
+      trace,
+      tiny: null,
+      decision: null
+    };
+  }
   const finalized = finalizeWithFallbackFirewall({
     query: text,
     state,
@@ -268,7 +332,20 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
   if (runtime.contextTurns.length > REASONING_CONTEXT_TURN_LIMIT) {
     runtime.contextTurns.splice(0, runtime.contextTurns.length - REASONING_CONTEXT_TURN_LIMIT);
   }
-  runtime.dialogState = nextDialogState(text, answer, finalized.intent || resolved.intent, runtime.dialogState);
+  const previousDialogState = runtime.dialogState;
+  runtime.dialogState = {
+    ...nextDialogState(text, answer, finalized.intent || resolved.intent, runtime.dialogState),
+    ...buildConversationStatePatch({
+      query: text,
+      answer,
+      resolved: {
+        ...resolved,
+        responseMode: resolved.responseMode || resolved.response_mode ? resolved.responseMode || { mode: resolved.response_mode } : null
+      },
+      finalized,
+      previousState: previousDialogState
+    })
+  };
   const stateAfter = compactState(runtime.dialogState);
   const finalResolved = { ...resolved, intent: finalized.intent || resolved.intent, route: finalized.route || resolved.route };
   const contextAction = inferContextActionLabel(text, contextDecision, finalResolved);
@@ -295,6 +372,7 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
     raw_answer: rawAnswer,
     sanitizer_changed: sanitizerChanged,
     fallback_firewall: finalized.firewall || null,
+    response_mode: resolved.responseMode || (resolved.response_mode ? { mode: resolved.response_mode } : null),
     final_answer: answer,
     state_after: stateAfter
   };

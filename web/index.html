@@ -34,6 +34,7 @@
       content="A bounded browser-side answer machine with static knowledge and no cloud inference."
     />
     <link rel="stylesheet" href="./styles.css?v=10" />
+    <link rel="stylesheet" href="./affordance_ui.css?v=1" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -107,6 +108,7 @@
           <div id="contextList" class="context-list"></div>
         </section>
         <section id="answer" class="answer" aria-live="polite" hidden></section>
+        <p id="quietAffordance" class="quiet-affordance" aria-live="polite" hidden></p>
         <p id="status" class="status" aria-live="polite" hidden>
           <span class="thinking-dots" aria-label="思考中">
             <span></span>
@@ -140,6 +142,6 @@
       </section>
     </main>
 
-    <script type="module" src="./app.js?v=65"></script>
+    <script type="module" src="./app.js?v=66"></script>
   </body>
 </html>
