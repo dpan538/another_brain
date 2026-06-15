@@ -12,9 +12,17 @@ import { buildDebugReport, downloadDebugReport } from "./debug_report.js?v=1";
 import { answerWithOperationLayer } from "./operation_layer.js?v=1";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=15";
+import {
+  buildCompactStateFromTurns,
+  compactExtractionTurnsFromState,
+  CONTEXT_WINDOWS,
+  rawRuntimeTurnsFromState,
+  visibleTurnsFromState
+} from "./compact_context.js?v=1";
 
-const VISIBLE_CONTEXT_TURN_LIMIT = 4;
-const REASONING_CONTEXT_TURN_LIMIT = 12;
+const VISIBLE_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxVisibleExchangeTurns;
+const RAW_RUNTIME_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxRawExchangeTurnsInRuntimePacket;
+const REASONING_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxInternalCompactExchangeTurns;
 const APP_VERSION = "0.1.0";
 const BASE_THINKING_DELAY_MS = 680;
 const RELATED_THINKING_DELAY_MS = 1080;
@@ -127,10 +135,16 @@ function rememberTurn(question, answer, intent) {
 }
 
 function currentReasoningState() {
+  const compact_state = buildCompactStateFromTurns(
+    compactExtractionTurnsFromState({ contextTurns }),
+    dialogState.compact_state || dialogState.compactState || {}
+  );
   return {
     ...dialogState,
-    recentTurns: contextTurns.slice(-REASONING_CONTEXT_TURN_LIMIT).map((turn) => ({ ...turn })),
-    visibleRecentTurns: contextTurns.slice(-VISIBLE_CONTEXT_TURN_LIMIT).map((turn) => ({ ...turn }))
+    recentTurns: rawRuntimeTurnsFromState({ contextTurns }, RAW_RUNTIME_CONTEXT_TURN_LIMIT),
+    visibleRecentTurns: visibleTurnsFromState({ contextTurns }, VISIBLE_CONTEXT_TURN_LIMIT),
+    compact_state,
+    compactState: compact_state
   };
 }
 
@@ -380,7 +394,8 @@ window.exportAnotherBrainDebugReport = function exportAnotherBrainDebugReport(op
     transcript: contextTurns,
     includeTranscript: Boolean(options.includeTranscript),
     visibleContextTurnLimit: VISIBLE_CONTEXT_TURN_LIMIT,
-    reasoningContextTurnLimit: REASONING_CONTEXT_TURN_LIMIT
+    rawRuntimeContextTurnLimit: RAW_RUNTIME_CONTEXT_TURN_LIMIT,
+    internalCompactContextTurnLimit: REASONING_CONTEXT_TURN_LIMIT
   });
   if (options.download !== false) downloadDebugReport(report);
   return report;

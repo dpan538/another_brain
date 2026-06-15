@@ -14,9 +14,17 @@ import { detectContextAction } from "../web/context_state.js?v=2";
 import { answerWithOperationLayer } from "../web/operation_layer.js?v=1";
 import { sanitizeSurfaceIdentity } from "../web/surface_identity.js?v=6";
 import { tinyDirectAnswer, tinyIntentHint } from "../web/tiny_router.js?v=15";
+import {
+  buildCompactStateFromTurns,
+  compactExtractionTurnsFromState,
+  CONTEXT_WINDOWS,
+  rawRuntimeTurnsFromState,
+  visibleTurnsFromState
+} from "../web/compact_context.js?v=1";
 
-export const VISIBLE_CONTEXT_TURN_LIMIT = 4;
-export const REASONING_CONTEXT_TURN_LIMIT = 12;
+export const VISIBLE_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxVisibleExchangeTurns;
+export const RAW_RUNTIME_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxRawExchangeTurnsInRuntimePacket;
+export const REASONING_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxInternalCompactExchangeTurns;
 export const BASE_THINKING_DELAY_MS = 680;
 export const RELATED_THINKING_DELAY_MS = 1080;
 export const REPEATED_THINKING_DELAY_MS = 1320;
@@ -62,10 +70,16 @@ export function thinkingProfileFor(text, dialogState, contextTurns) {
 }
 
 export function reasoningStateFor(runtime) {
+  const compact_state = buildCompactStateFromTurns(
+    compactExtractionTurnsFromState({ contextTurns: runtime.contextTurns }),
+    runtime.dialogState?.compact_state || runtime.dialogState?.compactState || {}
+  );
   return {
     ...runtime.dialogState,
-    recentTurns: runtime.contextTurns.slice(-REASONING_CONTEXT_TURN_LIMIT).map((turn) => ({ ...turn })),
-    visibleRecentTurns: runtime.contextTurns.slice(-VISIBLE_CONTEXT_TURN_LIMIT).map((turn) => ({ ...turn }))
+    recentTurns: rawRuntimeTurnsFromState({ contextTurns: runtime.contextTurns }, RAW_RUNTIME_CONTEXT_TURN_LIMIT),
+    visibleRecentTurns: visibleTurnsFromState({ contextTurns: runtime.contextTurns }, VISIBLE_CONTEXT_TURN_LIMIT),
+    compact_state,
+    compactState: compact_state
   };
 }
 

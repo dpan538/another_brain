@@ -34,13 +34,14 @@ export function buildDebugReport(options = {}) {
     last_event: cleanTraceEvent(options.lastEvent || {}),
     runtime: {
       visible_context_turn_limit: Number(options.visibleContextTurnLimit || 4),
-      reasoning_context_turn_limit: Number(options.reasoningContextTurnLimit || 12)
+      raw_runtime_context_turn_limit: Number(options.rawRuntimeContextTurnLimit || 4),
+      internal_compact_context_turn_limit: Number(options.internalCompactContextTurnLimit || 16)
     }
   };
 
   if (includeTranscript) {
     report.transcript = Array.isArray(options.transcript)
-      ? options.transcript.slice(-12).map((turn) => ({
+      ? options.transcript.slice(-Number(options.rawRuntimeContextTurnLimit || 4)).map((turn) => ({
           question: cleanString(turn.question),
           answer: cleanString(turn.answer),
           intent: cleanString(turn.intent || "unknown")
