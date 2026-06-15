@@ -24,7 +24,9 @@ function main() {
     .readdirSync(CARD_DIR)
     .filter((name) => name.endsWith(".jsonl"))
     .sort();
-  const cards = files.flatMap((file) => readJsonl(path.join(CARD_DIR, file)));
+  const cards = files
+    .flatMap((file) => readJsonl(path.join(CARD_DIR, file)))
+    .filter((card) => card.needs_review !== true && card.confidence >= 0.75 && card.visibility === "public" && card.approved_for_public_runtime === true);
   const ids = new Set();
   for (const card of cards) {
     if (ids.has(card.id)) throw new Error(`duplicate culture card id: ${card.id}`);

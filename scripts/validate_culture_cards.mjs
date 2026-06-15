@@ -45,7 +45,8 @@ const ALLOWED_ENTITY_TYPES = new Set([
   "movement",
   "genre",
   "concept",
-  "theme"
+  "theme",
+  "relation"
 ]);
 
 const ALLOWED_VISIBILITY = new Set(["public", "local", "private", "forbidden"]);

@@ -7,7 +7,7 @@ import {
   solveTransitiveComparisonFromText
 } from "./micro_solvers.js";
 
-const COPYRIGHT_REQUEST_RE = /(歌词|原文|唱词|逐字|整首|全文)/;
+const COPYRIGHT_REQUEST_RE = /(歌词|原文|原句|唱词|逐字|整首|全文)/;
 
 function clean(text) {
   return String(text || "").trim();
@@ -295,6 +295,60 @@ function answerPrivacyBoundary(text) {
 }
 
 function answerReasoningPolicyBoundary(text) {
+  if (/(比较两个文化对象.*避免编谱系|怎么避免编谱系)/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "compare_policy_check",
+      questionType: "boundary",
+      contextAction: "SOLVE_REASONING",
+      answer: "先定比较轴，再分别说两边；没有关系卡或证据时，只能说可比较的角度，不能编影响谱系。"
+    });
+  }
+  if (/(作品解释.*作者生平解释|作者生平解释.*作品解释)/.test(text)) {
+    return makeResult({
+      intent: "operation_interpretation_policy",
+      operation: "work_biography_boundary",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "作品解释看文本、形式、媒介和语境；作者生平解释需要已批准事实。文学叙事不能自动当传记。"
+    });
+  }
+  if (/(不知道的韩国文学细节|韩国文学.*不知道)/.test(text)) {
+    return makeResult({
+      intent: "operation_unknown_factual_status",
+      operation: "bounded_unknown_policy",
+      questionType: "boundary",
+      contextAction: "ANSWER_WITH_UNCERTAINTY",
+      answer: "如果没有卡片支持，就说覆盖不足；可先给中国、日本、韩国作为东亚入口，但具体细节不能硬编。"
+    });
+  }
+  if (/(对象只出现一句|只有一个概括句|fake coverage|真正训练|对象图里没有节点|领域没有.*person.*work.*period.*relation)/i.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "fake_coverage_check",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不算真正覆盖。可用覆盖至少要有对象、作品、时期或关系节点，并能通过列表、历史、比较和边界 eval。"
+    });
+  }
+  if (/(所有文化问题都可以一句话回答吗|作家列表.*气质话|发展历史.*只给代表人物|比较.*只答其中一边|亚洲文学.*只答日本文学|艺术史.*只答摄影|具体作品.*只讲作者)/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "question_type_guard",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能。列表要给鲁迅、夏目漱石这类具体对象；发展史要有古典、近代、战后等时期锚点；比较要说两边和比较轴。"
+    });
+  }
+  if (/(不要再说时代感|不要再说沉默季节羞耻)/.test(text)) {
+    return makeResult({
+      intent: "operation_coverage_policy",
+      operation: "anti_template_guard",
+      questionType: "boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "可以；没有明确对象时我不会用气质词顶替列表。给出领域后，应列作品、作家、时期或关系节点。"
+    });
+  }
   if (!/(风格.*正确性|正确性.*风格|风格放在答案正确性前面)/.test(text)) return null;
   return makeResult({
     intent: "operation_reasoning_policy",
@@ -302,6 +356,26 @@ function answerReasoningPolicyBoundary(text) {
     questionType: "boundary",
     contextAction: "SOLVE_REASONING",
     answer: "不会。先保证答案正确和边界清楚，风格只能排在后面。"
+  });
+}
+
+function answerSourceBoundary(text) {
+  if (!/(根据我的文件|参考.*本地路径|本地路径|你的文件|你的网站|PDF.*原句|文件.*原句)/.test(text)) return null;
+  if (/(PDF.*原句|文件.*原句)/.test(text)) {
+    return makeResult({
+      intent: "operation_copyright_boundary",
+      operation: "source_quote_boundary",
+      questionType: "no_lyrics_boundary",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能给 PDF 或文件里的原句、长段原文或路径；可以改成安全摘要或主题解释。"
+    });
+  }
+  return makeResult({
+    intent: "operation_privacy_boundary",
+    operation: "source_privacy_boundary",
+    questionType: "boundary",
+    contextAction: "ANSWER_MEMORY_BOUNDARY",
+    answer: "不会使用你的文件或本地路径做公开回答，也不能输出本地路径；只使用已批准、可见性允许的抽象卡片。"
   });
 }
 
@@ -491,6 +565,7 @@ function answerReasoning(text) {
   return (
     answerWithMicroSolvers(text) ||
     answerGenericCopyrightBoundary(text) ||
+    answerSourceBoundary(text) ||
     answerReasoningPolicyBoundary(text) ||
     answerArithmetic(text) ||
     answerSyllogism(text) ||
@@ -505,6 +580,8 @@ export function answerWithOperationLayer(query, state = {}) {
   const text = clean(query);
   if (!text) return null;
   if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return answerPrivacyBoundary(text);
+  const earlyBoundary = answerSourceBoundary(text) || answerReasoningPolicyBoundary(text);
+  if (earlyBoundary) return earlyBoundary;
   const cultureRuntimeAnswer = answerCultureQuery(text, state);
   if (cultureRuntimeAnswer?.answer) {
     const sharedVerification = verifyDraft({

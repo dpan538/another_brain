@@ -1,3 +1,5 @@
+import { assessCoverageForAnswer } from "./coverage_gate.js";
+
 const BAD_GENERIC_RE =
   /(你需要提问|你要问哪一边|也许发生过，不在我眼前|你应该去问百度|知道一点。城市、青春和历史，会一起压进歌里|罗大佑适合听时代怎么进入私人生活|日本文学不要只读情节|我会编|编一个听起来合理)/;
 const COPYRIGHT_REQUEST_RE = /(歌词|原文|唱词|逐字|整首|全文|整段|一大段|贴出来|逐句翻译)/;
@@ -22,6 +24,8 @@ function containsSolverResult(answer, solverResult) {
     return result ? /(是|成立|会)/.test(answer) && !/(不是|不成立|不会)/.test(answer) : /(不是|不成立|不会|不能推出)/.test(answer);
   }
   if (result == null) return true;
+  const cnDigits = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+  if (Number.isInteger(result) && result >= 0 && result <= 10 && answer.includes(cnDigits[result])) return true;
   return answer.includes(String(result));
 }
 
@@ -67,6 +71,15 @@ export function verifyDraft({ query = "", trace = {}, draft = "", solverResult =
     if ((questionType === "explain_work" || questionType === "follow_up_explain_last_entity") && /^(你要问|要看你|这要看)/.test(answer)) {
       reasons.push("explain_work_only_clarifies");
     }
+    const coverage = assessCoverageForAnswer({
+      query: q,
+      domain: trace.domain || evidence?.domain || "",
+      questionType,
+      answer,
+      retrievedCards: evidence?.cards || [],
+      trace
+    });
+    if (!coverage.ok) reasons.push(...coverage.reasons);
   }
 
   if (/不知道|没有足够/.test(answer) && evidence && Array.isArray(evidence.cards) && evidence.cards.length > 0) {

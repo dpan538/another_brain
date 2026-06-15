@@ -1762,89 +1762,6 @@ export const CULTURE_CARDS = [
     ]
   },
   {
-    "id": "work.song.lianqu_1980",
-    "entity_type": "work",
-    "names": [
-      "恋曲1980",
-      "《恋曲1980》"
-    ],
-    "domain": "music.mandopop",
-    "factual_core": "罗大佑作品之一，常与时间、爱情记忆和时代气氛关联。",
-    "short_intro": "可作为理解他如何把私人情感放进时间感里的入口。",
-    "works": [],
-    "representative_works": [],
-    "periods": [
-      "1980s_taiwan_pop"
-    ],
-    "themes": [
-      "love_memory",
-      "time",
-      "urban_emotion"
-    ],
-    "style_axes": [
-      "plainspoken_emotion",
-      "time_pressure"
-    ],
-    "historical_context": [
-      "华语流行音乐中的爱情叙事与时代感"
-    ],
-    "entry_points": [
-      "和《恋曲1990》比较时间感",
-      "放在罗大佑作品序列里听"
-    ],
-    "related_entities": [
-      {
-        "id": "person.luo_dayou",
-        "relation": "created_by"
-      },
-      {
-        "id": "work.song.lianqu_1990",
-        "relation": "paired_title"
-      }
-    ],
-    "comparison_axes": [
-      "时间跨度",
-      "爱情记忆",
-      "城市情绪"
-    ],
-    "conversation_moves": {
-      "overview": "定位为罗大佑恋曲序列入口之一。",
-      "works_list": "可列入作品清单。",
-      "representative_works": "说明其代表私人情感和时间感。",
-      "entry_path": "可和《恋曲1990》连听。",
-      "explain_work": "讲时间和情感，不贴歌词。",
-      "compare": "与《恋曲1990》比较年代感。",
-      "country_relation": "不把爱情叙事简化为地区性。",
-      "why_it_matters": "说明私人情感如何被时代感包裹。",
-      "quote_or_lyrics_boundary": "不输出歌词；可讲主题。"
-    },
-    "safe_boundaries": [
-      "no_lyrics",
-      "no_private_inference"
-    ],
-    "followup_bindings": [
-      "work.song.lianqu_1990",
-      "person.luo_dayou"
-    ],
-    "eval_tags": [
-      "culture.music",
-      "works_list",
-      "compare"
-    ],
-    "source_ids": [
-      "public_general_music_knowledge"
-    ],
-    "source_summary": "Public abstract metadata and themes.",
-    "confidence": 0.72,
-    "visibility": "public",
-    "approved_for_public_runtime": true,
-    "copyright_policy": "No lyrics or long quoted text.",
-    "not_to_infer": [
-      "literal private relationship",
-      "complete song text"
-    ]
-  },
-  {
     "id": "work.song.lianqu_1990",
     "entity_type": "work",
     "names": [
@@ -3654,6 +3571,10766 @@ export const CULTURE_CARDS = [
     "not_to_infer": [
       "single universal canon",
       "private market prices"
+    ]
+  },
+  {
+    "id": "concept.music_chinese_pop_general",
+    "entity_type": "concept",
+    "names": [
+      "华语流行音乐",
+      "中文流行音乐"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "A broad Chinese-language popular music field spanning Taiwan, Hong Kong, mainland rock, singer-songwriter traditions, idol/pop production, and platform-era circulation.",
+    "short_intro": "A broad Chinese-language popular music field spanning Taiwan, Hong Kong, mainland rock, singer-songwriter traditions, idol/pop production, and platform-era circulation.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "periodized_history",
+      "regional_scenes",
+      "songwriting",
+      "production"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "华语流行音乐",
+      "中文流行音乐"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "concept"
+    ]
+  },
+  {
+    "id": "movement.taiwan_folk_movement",
+    "entity_type": "movement",
+    "names": [
+      "台湾民歌运动"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "A campus and folk-oriented movement that helped make Mandarin popular song carry youth, place, and authorship questions.",
+    "short_intro": "A campus and folk-oriented movement that helped make Mandarin popular song carry youth, place, and authorship questions.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "folk",
+      "campus",
+      "authorship"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1970s",
+      "A campus and folk-oriented movement that helped make Mandarin popular song carry youth, place, and authorship questions."
+    ],
+    "entry_points": [
+      "台湾民歌运动"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "1970s"
+  },
+  {
+    "id": "period.taiwan_pop_1980s",
+    "entity_type": "period",
+    "names": [
+      "1980年代台湾流行音乐"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "A period where singer-songwriters, albums, and social observation expanded Mandopop expressive range.",
+    "short_intro": "A period where singer-songwriters, albums, and social observation expanded Mandopop expressive range.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "album era",
+      "social observation"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1980s",
+      "A period where singer-songwriters, albums, and social observation expanded Mandopop expressive range."
+    ],
+    "entry_points": [
+      "1980年代台湾流行音乐"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "1980s"
+  },
+  {
+    "id": "period.hk_cantopop_golden_era",
+    "entity_type": "period",
+    "names": [
+      "香港粤语流行歌黄金期"
+    ],
+    "domain": "music.hongkong",
+    "factual_core": "A Hong Kong popular-song era shaped by Cantonese lyrics, film/TV industries, stars, and urban mass culture.",
+    "short_intro": "A Hong Kong popular-song era shaped by Cantonese lyrics, film/TV industries, stars, and urban mass culture.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "cantopop",
+      "film_tv",
+      "urban modernity"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1970s-1990s",
+      "A Hong Kong popular-song era shaped by Cantonese lyrics, film/TV industries, stars, and urban mass culture."
+    ],
+    "entry_points": [
+      "香港粤语流行歌黄金期"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "1970s-1990s"
+  },
+  {
+    "id": "period.mainland_rock_1980s_1990s",
+    "entity_type": "period",
+    "names": [
+      "大陆摇滚1980s/1990s"
+    ],
+    "domain": "music.mainland_rock",
+    "factual_core": "A mainland rock formation associated with public voice, band culture, and post-1980s youth expression.",
+    "short_intro": "A mainland rock formation associated with public voice, band culture, and post-1980s youth expression.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "rock",
+      "public voice",
+      "youth"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1980s-1990s",
+      "A mainland rock formation associated with public voice, band culture, and post-1980s youth expression."
+    ],
+    "entry_points": [
+      "大陆摇滚1980s/1990s"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "1980s-1990s"
+  },
+  {
+    "id": "period.mandopop_2000s_platform",
+    "entity_type": "period",
+    "names": [
+      "2000年后华语流行转向"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "A shift toward R&B/hip-hop vocabulary, album production, internet circulation, talent shows, and platform listening.",
+    "short_intro": "A shift toward R&B/hip-hop vocabulary, album production, internet circulation, talent shows, and platform listening.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "production",
+      "platform",
+      "genre mixture"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "2000s-platform era",
+      "A shift toward R&B/hip-hop vocabulary, album production, internet circulation, talent shows, and platform listening."
+    ],
+    "entry_points": [
+      "2000年后华语流行转向"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "2000s-platform era"
+  },
+  {
+    "id": "person.teresa_teng",
+    "entity_type": "person",
+    "names": [
+      "邓丽君",
+      "Teresa Teng"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "Singer whose transregional Mandarin pop voice became a major bridge across Chinese-language listening publics.",
+    "short_intro": "Singer whose transregional Mandarin pop voice became a major bridge across Chinese-language listening publics.",
+    "works": [
+      "work.song.yueliang_daibiao_wodexin"
+    ],
+    "representative_works": [
+      "work.song.yueliang_daibiao_wodexin"
+    ],
+    "periods": [
+      "period.hk_cantopop_golden_era"
+    ],
+    "themes": [
+      "voice",
+      "transregional_pop",
+      "soft_power"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.song.yueliang_daibiao_wodexin"
+    ],
+    "related_entities": [
+      {
+        "id": "work.song.yueliang_daibiao_wodexin",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.cui_jian",
+    "entity_type": "person",
+    "names": [
+      "崔健"
+    ],
+    "domain": "music.mainland_rock",
+    "factual_core": "Mainland rock musician closely associated with the emergence of Chinese rock as public voice and band-centered expression.",
+    "short_intro": "Mainland rock musician closely associated with the emergence of Chinese rock as public voice and band-centered expression.",
+    "works": [
+      "work.song.yiwu_suoyou"
+    ],
+    "representative_works": [
+      "work.song.yiwu_suoyou"
+    ],
+    "periods": [
+      "period.mainland_rock_1980s_1990s"
+    ],
+    "themes": [
+      "rock",
+      "public_voice",
+      "youth"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.song.yiwu_suoyou"
+    ],
+    "related_entities": [
+      {
+        "id": "work.song.yiwu_suoyou",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.faye_wong",
+    "entity_type": "person",
+    "names": [
+      "王菲",
+      "Faye Wong"
+    ],
+    "domain": "music.hongkong",
+    "factual_core": "Singer associated with Hong Kong/Taiwan/Mainland circulation, alternative pop texture, and a cool vocal persona.",
+    "short_intro": "Singer associated with Hong Kong/Taiwan/Mainland circulation, alternative pop texture, and a cool vocal persona.",
+    "works": [
+      "work.song.hongdou"
+    ],
+    "representative_works": [
+      "work.song.hongdou"
+    ],
+    "periods": [
+      "period.hk_cantopop_golden_era"
+    ],
+    "themes": [
+      "vocal_style",
+      "hongkong_pop",
+      "alternative_pop"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.song.hongdou"
+    ],
+    "related_entities": [
+      {
+        "id": "work.song.hongdou",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.jay_chou",
+    "entity_type": "person",
+    "names": [
+      "周杰伦",
+      "Jay Chou"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Singer-songwriter/producer whose 2000s albums mixed R&B, hip-hop, Chinese-style motifs, and dense production.",
+    "short_intro": "Singer-songwriter/producer whose 2000s albums mixed R&B, hip-hop, Chinese-style motifs, and dense production.",
+    "works": [
+      "work.album.fantasy",
+      "work.song.qilixiang"
+    ],
+    "representative_works": [
+      "work.album.fantasy",
+      "work.song.qilixiang"
+    ],
+    "periods": [
+      "period.mandopop_2000s_platform"
+    ],
+    "themes": [
+      "rnb",
+      "hiphop",
+      "production",
+      "chinese_style_pop"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.album.fantasy",
+      "Start with work.song.qilixiang"
+    ],
+    "related_entities": [
+      {
+        "id": "work.album.fantasy",
+        "relation": "representative_work"
+      },
+      {
+        "id": "work.song.qilixiang",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.a_mei",
+    "entity_type": "person",
+    "names": [
+      "张惠妹",
+      "A-Mei"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "Taiwan pop singer associated with vocal power, stage performance, and late-1990s/2000s Mandopop stardom.",
+    "short_intro": "Taiwan pop singer associated with vocal power, stage performance, and late-1990s/2000s Mandopop stardom.",
+    "works": [
+      "work.album.amit"
+    ],
+    "representative_works": [
+      "work.album.amit"
+    ],
+    "periods": [
+      "period.mandopop_2000s_platform"
+    ],
+    "themes": [
+      "vocal_power",
+      "stage",
+      "pop_star"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.album.amit"
+    ],
+    "related_entities": [
+      {
+        "id": "work.album.amit",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.chen_sheng",
+    "entity_type": "person",
+    "names": [
+      "陈升"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "Taiwan singer-songwriter often discussed through urban folk-rock texture and observational songwriting.",
+    "short_intro": "Taiwan singer-songwriter often discussed through urban folk-rock texture and observational songwriting.",
+    "works": [
+      "work.song.one_night_in_beijing"
+    ],
+    "representative_works": [
+      "work.song.one_night_in_beijing"
+    ],
+    "periods": [
+      "period.taiwan_pop_1980s"
+    ],
+    "themes": [
+      "folk_rock",
+      "urban_observation"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.song.one_night_in_beijing"
+    ],
+    "related_entities": [
+      {
+        "id": "work.song.one_night_in_beijing",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.beyond",
+    "entity_type": "person",
+    "names": [
+      "Beyond"
+    ],
+    "domain": "music.hongkong",
+    "factual_core": "Hong Kong band associated with Cantonese rock/pop, band identity, and public-facing anthems.",
+    "short_intro": "Hong Kong band associated with Cantonese rock/pop, band identity, and public-facing anthems.",
+    "works": [
+      "work.song.haikuo_tiankong"
+    ],
+    "representative_works": [
+      "work.song.haikuo_tiankong"
+    ],
+    "periods": [
+      "period.hk_cantopop_golden_era"
+    ],
+    "themes": [
+      "band",
+      "cantopop",
+      "rock"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.song.haikuo_tiankong"
+    ],
+    "related_entities": [
+      {
+        "id": "work.song.haikuo_tiankong",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.lin_xi",
+    "entity_type": "person",
+    "names": [
+      "林夕"
+    ],
+    "domain": "music.hongkong",
+    "factual_core": "Lyricist anchor for discussing Cantopop writing craft without reproducing lyrics.",
+    "short_intro": "Lyricist anchor for discussing Cantopop writing craft without reproducing lyrics.",
+    "works": [
+      "work.song.hongdou"
+    ],
+    "representative_works": [
+      "work.song.hongdou"
+    ],
+    "periods": [
+      "period.hk_cantopop_golden_era"
+    ],
+    "themes": [
+      "lyrics_craft",
+      "cantopop"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.song.hongdou"
+    ],
+    "related_entities": [
+      {
+        "id": "work.song.hongdou",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "work.song.shanqiu",
+    "entity_type": "work",
+    "names": [
+      "山丘",
+      "《山丘》"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "A public work/album/song anchor associated with person.li_zongsheng, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.li_zongsheng, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.mandopop_2000s_platform"
+    ],
+    "themes": [
+      "time",
+      "adult_reflection"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "山丘"
+    ],
+    "related_entities": [
+      {
+        "id": "person.li_zongsheng",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.song.aide_daijia",
+    "entity_type": "work",
+    "names": [
+      "爱的代价",
+      "《爱的代价》"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "A public work/album/song anchor associated with person.li_zongsheng, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.li_zongsheng, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.taiwan_pop_1980s"
+    ],
+    "themes": [
+      "relationship",
+      "plainspoken_emotion"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "爱的代价"
+    ],
+    "related_entities": [
+      {
+        "id": "person.li_zongsheng",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.song.yiwu_suoyou",
+    "entity_type": "work",
+    "names": [
+      "一无所有",
+      "《一无所有》"
+    ],
+    "domain": "music.mainland_rock",
+    "factual_core": "A public work/album/song anchor associated with person.cui_jian, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.cui_jian, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.mainland_rock_1980s_1990s"
+    ],
+    "themes": [
+      "rock",
+      "public_voice"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "一无所有"
+    ],
+    "related_entities": [
+      {
+        "id": "person.cui_jian",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.song.haikuo_tiankong",
+    "entity_type": "work",
+    "names": [
+      "海阔天空",
+      "《海阔天空》"
+    ],
+    "domain": "music.hongkong",
+    "factual_core": "A public work/album/song anchor associated with person.beyond, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.beyond, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.hk_cantopop_golden_era"
+    ],
+    "themes": [
+      "band",
+      "public_emotion"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "海阔天空"
+    ],
+    "related_entities": [
+      {
+        "id": "person.beyond",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.song.hongdou",
+    "entity_type": "work",
+    "names": [
+      "红豆",
+      "《红豆》"
+    ],
+    "domain": "music.hongkong",
+    "factual_core": "A public work/album/song anchor associated with person.faye_wong, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.faye_wong, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.hk_cantopop_golden_era"
+    ],
+    "themes": [
+      "voice",
+      "cantopop_ballad"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "红豆"
+    ],
+    "related_entities": [
+      {
+        "id": "person.faye_wong",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.song.qilixiang",
+    "entity_type": "work",
+    "names": [
+      "七里香",
+      "《七里香》"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "A public work/album/song anchor associated with person.jay_chou, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.jay_chou, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.mandopop_2000s_platform"
+    ],
+    "themes": [
+      "rnb_pop",
+      "youth_memory"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "七里香"
+    ],
+    "related_entities": [
+      {
+        "id": "person.jay_chou",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.album.fantasy",
+    "entity_type": "work",
+    "names": [
+      "范特西",
+      "《范特西》"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "A public work/album/song anchor associated with person.jay_chou, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.jay_chou, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.mandopop_2000s_platform"
+    ],
+    "themes": [
+      "album_production",
+      "genre_mixture"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "范特西"
+    ],
+    "related_entities": [
+      {
+        "id": "person.jay_chou",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.album.amit",
+    "entity_type": "work",
+    "names": [
+      "阿密特",
+      "《阿密特》"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "A public work/album/song anchor associated with person.a_mei, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.a_mei, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.mandopop_2000s_platform"
+    ],
+    "themes": [
+      "vocal_identity",
+      "stage_persona"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "阿密特"
+    ],
+    "related_entities": [
+      {
+        "id": "person.a_mei",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.song.yueliang_daibiao_wodexin",
+    "entity_type": "work",
+    "names": [
+      "月亮代表我的心",
+      "《月亮代表我的心》"
+    ],
+    "domain": "music.taiwan",
+    "factual_core": "A public work/album/song anchor associated with person.teresa_teng, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.teresa_teng, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.hk_cantopop_golden_era"
+    ],
+    "themes": [
+      "mandarin_pop",
+      "transregional_voice"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "月亮代表我的心"
+    ],
+    "related_entities": [
+      {
+        "id": "person.teresa_teng",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "relation.luo_li_songwriting",
+    "entity_type": "relation",
+    "names": [
+      "罗大佑和李宗盛"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Both are Taiwan singer-songwriter anchors, but Luo is often framed through social observation and historical pressure while Li is framed through production craft and adult relationship writing.",
+    "short_intro": "Both are Taiwan singer-songwriter anchors, but Luo is often framed through social observation and historical pressure while Li is framed through production craft and adult relationship writing.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "罗大佑和李宗盛"
+    ],
+    "related_entities": [
+      {
+        "id": "person.luo_dayou",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.li_zongsheng",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "social observation",
+      "songwriting craft",
+      "production role"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.teresa_faye_voice",
+    "entity_type": "relation",
+    "names": [
+      "邓丽君和王菲"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Teresa Teng and Faye Wong can be compared by vocal persona, transregional circulation, and different media eras.",
+    "short_intro": "Teresa Teng and Faye Wong can be compared by vocal persona, transregional circulation, and different media eras.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "邓丽君和王菲"
+    ],
+    "related_entities": [
+      {
+        "id": "person.teresa_teng",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.faye_wong",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "voice",
+      "region",
+      "media era"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.cui_luo_public_voice",
+    "entity_type": "relation",
+    "names": [
+      "崔健和罗大佑"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Both can be discussed as period voices, but one belongs to mainland rock formation and the other to Taiwan/Mandopop album-songwriting.",
+    "short_intro": "Both can be discussed as period voices, but one belongs to mainland rock formation and the other to Taiwan/Mandopop album-songwriting.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "崔健和罗大佑"
+    ],
+    "related_entities": [
+      {
+        "id": "person.cui_jian",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.luo_dayou",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "regional scene",
+      "rock vs pop",
+      "public voice"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.taiwan_hk_pop",
+    "entity_type": "relation",
+    "names": [
+      "台湾流行音乐和香港流行音乐"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Taiwan and Hong Kong pop differ by industry structure, language, media ecology, songwriting roles, and star systems.",
+    "short_intro": "Taiwan and Hong Kong pop differ by industry structure, language, media ecology, songwriting roles, and star systems.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "台湾流行音乐和香港流行音乐"
+    ],
+    "related_entities": [
+      {
+        "id": "period.taiwan_pop_1980s",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.hk_cantopop_golden_era",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "language",
+      "industry",
+      "media",
+      "songwriting"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.folk_rock_pop",
+    "entity_type": "relation",
+    "names": [
+      "民歌、摇滚、流行"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Folk, rock, and pop are better separated by performance setting, instrumentation, production, circulation, and authorship.",
+    "short_intro": "Folk, rock, and pop are better separated by performance setting, instrumentation, production, circulation, and authorship.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "民歌、摇滚、流行"
+    ],
+    "related_entities": [
+      {
+        "id": "movement.taiwan_folk_movement",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.mainland_rock_1980s_1990s",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "medium",
+      "production",
+      "circulation",
+      "authorship"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.jay_2000s_change",
+    "entity_type": "relation",
+    "names": [
+      "周杰伦和2000年代华语流行"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Jay Chou is an entry to 2000s production shifts, genre mixture, and album-centered pop imagination.",
+    "short_intro": "Jay Chou is an entry to 2000s production shifts, genre mixture, and album-centered pop imagination.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "周杰伦和2000年代华语流行"
+    ],
+    "related_entities": [
+      {
+        "id": "person.jay_chou",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.mandopop_2000s_platform",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "production",
+      "genre mixture",
+      "platform era"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.beyond_cantopop",
+    "entity_type": "relation",
+    "names": [
+      "Beyond和香港粤语流行歌"
+    ],
+    "domain": "music.hongkong",
+    "factual_core": "Beyond shows the band/rock side of Cantopop rather than only idol or ballad stardom.",
+    "short_intro": "Beyond shows the band/rock side of Cantopop rather than only idol or ballad stardom.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Beyond和香港粤语流行歌"
+    ],
+    "related_entities": [
+      {
+        "id": "person.beyond",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.hk_cantopop_golden_era",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "band identity",
+      "cantopop",
+      "public emotion"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.linxi_cantopop_lyrics",
+    "entity_type": "relation",
+    "names": [
+      "林夕和香港流行歌词"
+    ],
+    "domain": "music.hongkong",
+    "factual_core": "Lin Xi is useful for discussing lyric-writing craft while keeping a strict no-lyrics boundary.",
+    "short_intro": "Lin Xi is useful for discussing lyric-writing craft while keeping a strict no-lyrics boundary.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "林夕和香港流行歌词"
+    ],
+    "related_entities": [
+      {
+        "id": "person.lin_xi",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.hk_cantopop_golden_era",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "lyric craft",
+      "copyright boundary"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "method.music_history_answer",
+    "entity_type": "concept",
+    "names": [
+      "华语流行音乐发展回答法"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Method card: For development questions, answer with periods, regional scenes, people, and works; never use Luo Dayou as the whole field.",
+    "short_intro": "Method card: For development questions, answer with periods, regional scenes, people, and works; never use Luo Dayou as the whole field.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "answer_policy"
+    ],
+    "style_axes": [
+      "bounded",
+      "concrete",
+      "non-template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "华语流行音乐发展回答法"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "method card / planner instruction, not factual knowledge",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card"
+    ]
+  },
+  {
+    "id": "method.music_compare_answer",
+    "entity_type": "concept",
+    "names": [
+      "华语音乐比较回答法"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Method card: For comparisons, mention both sides and compare by region, medium, production, language, and period.",
+    "short_intro": "Method card: For comparisons, mention both sides and compare by region, medium, production, language, and period.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "answer_policy"
+    ],
+    "style_axes": [
+      "bounded",
+      "concrete",
+      "non-template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "华语音乐比较回答法"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "method card / planner instruction, not factual knowledge",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card"
+    ]
+  },
+  {
+    "id": "method.music_no_lyrics",
+    "entity_type": "concept",
+    "names": [
+      "流行歌词版权边界"
+    ],
+    "domain": "music.chinese_pop_general",
+    "factual_core": "Method card: Refuse lyrics or line-by-line translation; offer themes, context, and listening path.",
+    "short_intro": "Method card: Refuse lyrics or line-by-line translation; offer themes, context, and listening path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "answer_policy"
+    ],
+    "style_axes": [
+      "bounded",
+      "concrete",
+      "non-template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "流行歌词版权边界"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "method card / planner instruction, not factual knowledge",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card"
+    ]
+  },
+  {
+    "id": "period.heian_literature",
+    "entity_type": "period",
+    "names": [
+      "平安文学"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A classical court writing context associated with kana prose, diaries, essays, and monogatari.",
+    "short_intro": "A classical court writing context associated with kana prose, diaries, essays, and monogatari.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "court writing",
+      "kana prose",
+      "classical"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "Heian period",
+      "A classical court writing context associated with kana prose, diaries, essays, and monogatari."
+    ],
+    "entry_points": [
+      "平安文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "Heian period"
+  },
+  {
+    "id": "period.waka_monogatari",
+    "entity_type": "period",
+    "names": [
+      "和歌/物语文学"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A classical mode linking poetry, narrative, court aesthetics, and prose form.",
+    "short_intro": "A classical mode linking poetry, narrative, court aesthetics, and prose form.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "waka",
+      "monogatari",
+      "court aesthetics"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "classical Japan",
+      "A classical mode linking poetry, narrative, court aesthetics, and prose form."
+    ],
+    "entry_points": [
+      "和歌/物语文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "classical Japan"
+  },
+  {
+    "id": "period.haiku_edo",
+    "entity_type": "period",
+    "names": [
+      "俳句/江户文学"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A period/mode where haiku, travel writing, urban print culture, and popular forms matter.",
+    "short_intro": "A period/mode where haiku, travel writing, urban print culture, and popular forms matter.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "haiku",
+      "travel writing",
+      "print culture"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "Edo period",
+      "A period/mode where haiku, travel writing, urban print culture, and popular forms matter."
+    ],
+    "entry_points": [
+      "俳句/江户文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "Edo period"
+  },
+  {
+    "id": "period.meiji_modern_literature",
+    "entity_type": "period",
+    "names": [
+      "明治近代文学"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A modernizing period where self, nation, education, translation, and the novel form change together.",
+    "short_intro": "A modernizing period where self, nation, education, translation, and the novel form change together.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "modern self",
+      "translation",
+      "novel"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "Meiji era",
+      "A modernizing period where self, nation, education, translation, and the novel form change together."
+    ],
+    "entry_points": [
+      "明治近代文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "Meiji era"
+  },
+  {
+    "id": "period.contemporary_japanese_literature",
+    "entity_type": "period",
+    "names": [
+      "当代日本文学"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Contemporary Japanese writing includes urban experience, popular culture, memory, genre crossing, and global circulation.",
+    "short_intro": "Contemporary Japanese writing includes urban experience, popular culture, memory, genre crossing, and global circulation.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "urban",
+      "popular culture",
+      "global circulation"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "late 20th century-present",
+      "Contemporary Japanese writing includes urban experience, popular culture, memory, genre crossing, and global circulation."
+    ],
+    "entry_points": [
+      "当代日本文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "late 20th century-present"
+  },
+  {
+    "id": "person.murasaki_shikibu",
+    "entity_type": "person",
+    "names": [
+      "紫式部",
+      "Murasaki Shikibu"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Classical writer associated with The Tale of Genji and Heian court narrative.",
+    "short_intro": "Classical writer associated with The Tale of Genji and Heian court narrative.",
+    "works": [
+      "work.genji_monogatari"
+    ],
+    "representative_works": [
+      "work.genji_monogatari"
+    ],
+    "periods": [
+      "period.heian_literature"
+    ],
+    "themes": [
+      "court narrative",
+      "classical prose"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.genji_monogatari"
+    ],
+    "related_entities": [
+      {
+        "id": "work.genji_monogatari",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.sei_shonagon",
+    "entity_type": "person",
+    "names": [
+      "清少纳言",
+      "Sei Shonagon"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Classical writer associated with The Pillow Book and essay/list-like court observation.",
+    "short_intro": "Classical writer associated with The Pillow Book and essay/list-like court observation.",
+    "works": [
+      "work.pillow_book"
+    ],
+    "representative_works": [
+      "work.pillow_book"
+    ],
+    "periods": [
+      "period.heian_literature"
+    ],
+    "themes": [
+      "essay",
+      "court observation"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.pillow_book"
+    ],
+    "related_entities": [
+      {
+        "id": "work.pillow_book",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.matsuo_basho",
+    "entity_type": "person",
+    "names": [
+      "松尾芭蕉",
+      "Matsuo Basho"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Haiku and travel-writing anchor associated with compressed image and journey form.",
+    "short_intro": "Haiku and travel-writing anchor associated with compressed image and journey form.",
+    "works": [
+      "work.oku_no_hosomichi"
+    ],
+    "representative_works": [
+      "work.oku_no_hosomichi"
+    ],
+    "periods": [
+      "period.haiku_edo"
+    ],
+    "themes": [
+      "haiku",
+      "travel",
+      "image"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.oku_no_hosomichi"
+    ],
+    "related_entities": [
+      {
+        "id": "work.oku_no_hosomichi",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.mori_ogai",
+    "entity_type": "person",
+    "names": [
+      "森鸥外",
+      "Mori Ogai"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Meiji literary figure useful for discussing translation, modernization, and intellectual role.",
+    "short_intro": "Meiji literary figure useful for discussing translation, modernization, and intellectual role.",
+    "works": [
+      "work.mai_hime"
+    ],
+    "representative_works": [
+      "work.mai_hime"
+    ],
+    "periods": [
+      "period.meiji_modern_literature"
+    ],
+    "themes": [
+      "modernization",
+      "translation"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.mai_hime"
+    ],
+    "related_entities": [
+      {
+        "id": "work.mai_hime",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.akutagawa_ryunosuke",
+    "entity_type": "person",
+    "names": [
+      "芥川龙之介",
+      "Akutagawa Ryunosuke"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Modern short-story writer often entered through compact stories, irony, and narrative instability.",
+    "short_intro": "Modern short-story writer often entered through compact stories, irony, and narrative instability.",
+    "works": [
+      "work.rashomon"
+    ],
+    "representative_works": [
+      "work.rashomon"
+    ],
+    "periods": [
+      "period.meiji_modern_literature"
+    ],
+    "themes": [
+      "short story",
+      "irony",
+      "narrative"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.rashomon"
+    ],
+    "related_entities": [
+      {
+        "id": "work.rashomon",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.tanizaki_junichiro",
+    "entity_type": "person",
+    "names": [
+      "谷崎润一郎",
+      "Tanizaki Junichiro"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Modern writer associated with aesthetics, desire, urban modernity, and style.",
+    "short_intro": "Modern writer associated with aesthetics, desire, urban modernity, and style.",
+    "works": [
+      "work.naomi"
+    ],
+    "representative_works": [
+      "work.naomi"
+    ],
+    "periods": [
+      "period.meiji_modern_literature"
+    ],
+    "themes": [
+      "aesthetics",
+      "desire",
+      "modernity"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.naomi"
+    ],
+    "related_entities": [
+      {
+        "id": "work.naomi",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.mishima_yukio",
+    "entity_type": "person",
+    "names": [
+      "三岛由纪夫",
+      "Mishima Yukio"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Postwar writer often discussed through body, beauty, performance, nationalism, and theatrical form.",
+    "short_intro": "Postwar writer often discussed through body, beauty, performance, nationalism, and theatrical form.",
+    "works": [
+      "work.kinkakuji"
+    ],
+    "representative_works": [
+      "work.kinkakuji"
+    ],
+    "periods": [
+      "period.postwar_japanese_literature"
+    ],
+    "themes": [
+      "body",
+      "beauty",
+      "performance"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.kinkakuji"
+    ],
+    "related_entities": [
+      {
+        "id": "work.kinkakuji",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.abe_kobo",
+    "entity_type": "person",
+    "names": [
+      "安部公房",
+      "Abe Kobo"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Postwar/modern writer associated with alienation, absurd structures, identity, and urban estrangement.",
+    "short_intro": "Postwar/modern writer associated with alienation, absurd structures, identity, and urban estrangement.",
+    "works": [
+      "work.woman_in_the_dunes"
+    ],
+    "representative_works": [
+      "work.woman_in_the_dunes"
+    ],
+    "periods": [
+      "period.postwar_japanese_literature"
+    ],
+    "themes": [
+      "alienation",
+      "absurd",
+      "identity"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.woman_in_the_dunes"
+    ],
+    "related_entities": [
+      {
+        "id": "work.woman_in_the_dunes",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.oe_kenzaburo",
+    "entity_type": "person",
+    "names": [
+      "大江健三郎",
+      "Oe Kenzaburo"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "Postwar writer associated with ethics, disability, politics, village memory, and modern responsibility.",
+    "short_intro": "Postwar writer associated with ethics, disability, politics, village memory, and modern responsibility.",
+    "works": [
+      "work.personal_matter"
+    ],
+    "representative_works": [
+      "work.personal_matter"
+    ],
+    "periods": [
+      "period.postwar_japanese_literature"
+    ],
+    "themes": [
+      "ethics",
+      "postwar",
+      "responsibility"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.personal_matter"
+    ],
+    "related_entities": [
+      {
+        "id": "work.personal_matter",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "work.genji_monogatari",
+    "entity_type": "work",
+    "names": [
+      "源氏物语",
+      "《源氏物语》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.murasaki_shikibu, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.murasaki_shikibu, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.heian_literature"
+    ],
+    "themes": [
+      "court narrative",
+      "psychology",
+      "classical"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "源氏物语"
+    ],
+    "related_entities": [
+      {
+        "id": "person.murasaki_shikibu",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.pillow_book",
+    "entity_type": "work",
+    "names": [
+      "枕草子",
+      "《枕草子》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.sei_shonagon, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.sei_shonagon, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.heian_literature"
+    ],
+    "themes": [
+      "essay",
+      "lists",
+      "court observation"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "枕草子"
+    ],
+    "related_entities": [
+      {
+        "id": "person.sei_shonagon",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.oku_no_hosomichi",
+    "entity_type": "work",
+    "names": [
+      "奥之细道",
+      "《奥之细道》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.matsuo_basho, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.matsuo_basho, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.haiku_edo"
+    ],
+    "themes": [
+      "travel",
+      "haiku",
+      "place"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "奥之细道"
+    ],
+    "related_entities": [
+      {
+        "id": "person.matsuo_basho",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.i_am_a_cat",
+    "entity_type": "work",
+    "names": [
+      "我是猫",
+      "《我是猫》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.natsume_soseki, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.natsume_soseki, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.meiji_modern_literature"
+    ],
+    "themes": [
+      "satire",
+      "modern self"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "我是猫"
+    ],
+    "related_entities": [
+      {
+        "id": "person.natsume_soseki",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.rashomon",
+    "entity_type": "work",
+    "names": [
+      "罗生门",
+      "《罗生门》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.akutagawa_ryunosuke, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.akutagawa_ryunosuke, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.meiji_modern_literature"
+    ],
+    "themes": [
+      "short story",
+      "perspective"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "罗生门"
+    ],
+    "related_entities": [
+      {
+        "id": "person.akutagawa_ryunosuke",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.naomi",
+    "entity_type": "work",
+    "names": [
+      "痴人之爱",
+      "《痴人之爱》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.tanizaki_junichiro, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.tanizaki_junichiro, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.meiji_modern_literature"
+    ],
+    "themes": [
+      "desire",
+      "modernity"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "痴人之爱"
+    ],
+    "related_entities": [
+      {
+        "id": "person.tanizaki_junichiro",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.thousand_cranes",
+    "entity_type": "work",
+    "names": [
+      "千只鹤",
+      "《千只鹤》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.kawabata_yasunari, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.kawabata_yasunari, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.postwar_japanese_literature"
+    ],
+    "themes": [
+      "ritual",
+      "memory",
+      "beauty"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "千只鹤"
+    ],
+    "related_entities": [
+      {
+        "id": "person.kawabata_yasunari",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.setting_sun",
+    "entity_type": "work",
+    "names": [
+      "斜阳",
+      "《斜阳》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.dazai_osamu, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.dazai_osamu, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.postwar_japanese_literature"
+    ],
+    "themes": [
+      "postwar",
+      "decline"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "斜阳"
+    ],
+    "related_entities": [
+      {
+        "id": "person.dazai_osamu",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.kinkakuji",
+    "entity_type": "work",
+    "names": [
+      "金阁寺",
+      "《金阁寺》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.mishima_yukio, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.mishima_yukio, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.postwar_japanese_literature"
+    ],
+    "themes": [
+      "beauty",
+      "destruction"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "金阁寺"
+    ],
+    "related_entities": [
+      {
+        "id": "person.mishima_yukio",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.woman_in_the_dunes",
+    "entity_type": "work",
+    "names": [
+      "砂之女",
+      "《砂之女》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.abe_kobo, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.abe_kobo, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.postwar_japanese_literature"
+    ],
+    "themes": [
+      "absurd",
+      "identity"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "砂之女"
+    ],
+    "related_entities": [
+      {
+        "id": "person.abe_kobo",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.personal_matter",
+    "entity_type": "work",
+    "names": [
+      "个人的体验",
+      "《个人的体验》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.oe_kenzaburo, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.oe_kenzaburo, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.postwar_japanese_literature"
+    ],
+    "themes": [
+      "ethics",
+      "responsibility"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "个人的体验"
+    ],
+    "related_entities": [
+      {
+        "id": "person.oe_kenzaburo",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.kafka_on_the_shore",
+    "entity_type": "work",
+    "names": [
+      "海边的卡夫卡",
+      "《海边的卡夫卡》"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "A public work/album/song anchor associated with person.haruki_murakami, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.haruki_murakami, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.contemporary_japanese_literature"
+    ],
+    "themes": [
+      "urban_surreal",
+      "myth"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "海边的卡夫卡"
+    ],
+    "related_entities": [
+      {
+        "id": "person.haruki_murakami",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "relation.紫式部_清少纳言",
+    "entity_type": "relation",
+    "names": [
+      "紫式部和清少纳言"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "紫式部和清少纳言 should be compared by period, form, social context, and reading path.",
+    "short_intro": "紫式部和清少纳言 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "紫式部和清少纳言"
+    ],
+    "related_entities": [
+      {
+        "id": "person.murasaki_shikibu",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.sei_shonagon",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.平安文学_明治近代文学",
+    "entity_type": "relation",
+    "names": [
+      "平安文学和明治近代文学"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "平安文学和明治近代文学 should be compared by period, form, social context, and reading path.",
+    "short_intro": "平安文学和明治近代文学 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "平安文学和明治近代文学"
+    ],
+    "related_entities": [
+      {
+        "id": "period.heian_literature",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.meiji_modern_literature",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.夏目漱石_川端康成",
+    "entity_type": "relation",
+    "names": [
+      "夏目漱石和川端康成"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "夏目漱石和川端康成 should be compared by period, form, social context, and reading path.",
+    "short_intro": "夏目漱石和川端康成 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "夏目漱石和川端康成"
+    ],
+    "related_entities": [
+      {
+        "id": "person.natsume_soseki",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.kawabata_yasunari",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.川端康成_三岛由纪夫",
+    "entity_type": "relation",
+    "names": [
+      "川端康成和三岛由纪夫"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "川端康成和三岛由纪夫 should be compared by period, form, social context, and reading path.",
+    "short_intro": "川端康成和三岛由纪夫 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "川端康成和三岛由纪夫"
+    ],
+    "related_entities": [
+      {
+        "id": "person.kawabata_yasunari",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.mishima_yukio",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.芥川龙之介_太宰治",
+    "entity_type": "relation",
+    "names": [
+      "芥川龙之介和太宰治"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "芥川龙之介和太宰治 should be compared by period, form, social context, and reading path.",
+    "short_intro": "芥川龙之介和太宰治 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "芥川龙之介和太宰治"
+    ],
+    "related_entities": [
+      {
+        "id": "person.akutagawa_ryunosuke",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.dazai_osamu",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.安部公房_大江健三郎",
+    "entity_type": "relation",
+    "names": [
+      "安部公房和大江健三郎"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "安部公房和大江健三郎 should be compared by period, form, social context, and reading path.",
+    "short_intro": "安部公房和大江健三郎 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "安部公房和大江健三郎"
+    ],
+    "related_entities": [
+      {
+        "id": "person.abe_kobo",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.oe_kenzaburo",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.战后日本文学_当代日本文学",
+    "entity_type": "relation",
+    "names": [
+      "战后日本文学和当代日本文学"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "战后日本文学和当代日本文学 should be compared by period, form, social context, and reading path.",
+    "short_intro": "战后日本文学和当代日本文学 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "战后日本文学和当代日本文学"
+    ],
+    "related_entities": [
+      {
+        "id": "period.postwar_japanese_literature",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.contemporary_japanese_literature",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.源氏物语_枕草子",
+    "entity_type": "relation",
+    "names": [
+      "源氏物语和枕草子"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "源氏物语和枕草子 should be compared by period, form, social context, and reading path.",
+    "short_intro": "源氏物语和枕草子 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "源氏物语和枕草子"
+    ],
+    "related_entities": [
+      {
+        "id": "work.genji_monogatari",
+        "relation": "side_a"
+      },
+      {
+        "id": "work.pillow_book",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.俳句_现代小说",
+    "entity_type": "relation",
+    "names": [
+      "俳句和现代小说"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "俳句和现代小说 should be compared by period, form, social context, and reading path.",
+    "short_intro": "俳句和现代小说 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "俳句和现代小说"
+    ],
+    "related_entities": [
+      {
+        "id": "period.haiku_edo",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.contemporary_japanese_literature",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.村上春树_战后文学",
+    "entity_type": "relation",
+    "names": [
+      "村上春树和战后文学"
+    ],
+    "domain": "literature.japanese",
+    "factual_core": "村上春树和战后文学 should be compared by period, form, social context, and reading path.",
+    "short_intro": "村上春树和战后文学 should be compared by period, form, social context, and reading path.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "村上春树和战后文学"
+    ],
+    "related_entities": [
+      {
+        "id": "person.haruki_murakami",
+        "relation": "side_a"
+      },
+      {
+        "id": "period.postwar_japanese_literature",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "medium",
+      "theme",
+      "reception"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "concept.literature_asian_general",
+    "entity_type": "concept",
+    "names": [
+      "亚洲文学"
+    ],
+    "domain": "literature.asian_general",
+    "factual_core": "A broad umbrella, not one tradition; it should be narrowed by region, language, period, and colonial/modernity context.",
+    "short_intro": "A broad umbrella, not one tradition; it should be narrowed by region, language, period, and colonial/modernity context.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "umbrella",
+      "regional traditions",
+      "bounded coverage"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "亚洲文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "concept"
+    ]
+  },
+  {
+    "id": "concept.literature_korean_modern",
+    "entity_type": "concept",
+    "names": [
+      "韩国现代文学"
+    ],
+    "domain": "literature.korean_modern",
+    "factual_core": "A broad area that should be answered with caution unless specific authors or sources are available; avoid pretending complete coverage.",
+    "short_intro": "A broad area that should be answered with caution unless specific authors or sources are available; avoid pretending complete coverage.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "bounded_unknown",
+      "modernity",
+      "translation"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "韩国现代文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "concept"
+    ]
+  },
+  {
+    "id": "relation.asian_china_japan_korea",
+    "entity_type": "relation",
+    "names": [
+      "亚洲文学中的中日韩入口"
+    ],
+    "domain": "literature.asian_general",
+    "factual_core": "Asian literature questions can start from China, Japan, and Korea, while admitting Southeast/South Asian coverage needs more sources.",
+    "short_intro": "Asian literature questions can start from China, Japan, and Korea, while admitting Southeast/South Asian coverage needs more sources.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "亚洲文学中的中日韩入口"
+    ],
+    "related_entities": [
+      {
+        "id": "literature.chinese_modern",
+        "relation": "side_a"
+      },
+      {
+        "id": "literature.japanese",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "region",
+      "language",
+      "modernity",
+      "coverage boundary"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "method.asian_literature_bounded_answer",
+    "entity_type": "concept",
+    "names": [
+      "亚洲文学宽域回答法"
+    ],
+    "domain": "literature.asian_general",
+    "factual_core": "Method card: For broad Asian literature, do not collapse to Japan; name coverage boundaries and start from China/Japan/Korea if those cards exist.",
+    "short_intro": "Method card: For broad Asian literature, do not collapse to Japan; name coverage boundaries and start from China/Japan/Korea if those cards exist.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "answer_policy"
+    ],
+    "style_axes": [
+      "bounded",
+      "concrete",
+      "non-template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "亚洲文学宽域回答法"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "method card / planner instruction, not factual knowledge",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card"
+    ]
+  },
+  {
+    "id": "concept.chinese_modern_literature",
+    "entity_type": "concept",
+    "names": [
+      "中国现代文学"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "Chinese modern literature can be entered through May Fourth/new literature, urban fiction, rural narratives, socialist and post-1980s transformations, and contemporary memory.",
+    "short_intro": "Chinese modern literature can be entered through May Fourth/new literature, urban fiction, rural narratives, socialist and post-1980s transformations, and contemporary memory.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "new literature",
+      "modernity",
+      "urban_rural",
+      "memory"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "中国现代文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "concept"
+    ]
+  },
+  {
+    "id": "movement.may_fourth_new_literature",
+    "entity_type": "movement",
+    "names": [
+      "五四新文学运动"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A modern literary movement linked to vernacular writing, social criticism, and new subject formation.",
+    "short_intro": "A modern literary movement linked to vernacular writing, social criticism, and new subject formation.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "vernacular",
+      "social criticism"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1910s-1920s",
+      "A modern literary movement linked to vernacular writing, social criticism, and new subject formation."
+    ],
+    "entry_points": [
+      "五四新文学运动"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "1910s-1920s"
+  },
+  {
+    "id": "period.new_period_literature_1980s",
+    "entity_type": "period",
+    "names": [
+      "1980s新时期文学"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A post-Mao literary opening associated with memory, scar literature, root-seeking, avant-garde, and new narrative experiments.",
+    "short_intro": "A post-Mao literary opening associated with memory, scar literature, root-seeking, avant-garde, and new narrative experiments.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "memory",
+      "avant_garde",
+      "root_seeking"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1980s",
+      "A post-Mao literary opening associated with memory, scar literature, root-seeking, avant-garde, and new narrative experiments."
+    ],
+    "entry_points": [
+      "1980s新时期文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "1980s"
+  },
+  {
+    "id": "person.lu_xun",
+    "entity_type": "person",
+    "names": [
+      "鲁迅"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "Modern Chinese literature anchor associated with vernacular fiction, critique, and new subject formation.",
+    "short_intro": "Modern Chinese literature anchor associated with vernacular fiction, critique, and new subject formation.",
+    "works": [
+      "work.call_to_arms",
+      "work.true_story_ah_q"
+    ],
+    "representative_works": [
+      "work.call_to_arms",
+      "work.true_story_ah_q"
+    ],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "critique",
+      "vernacular"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.call_to_arms",
+      "Start with work.true_story_ah_q"
+    ],
+    "related_entities": [
+      {
+        "id": "work.call_to_arms",
+        "relation": "representative_work"
+      },
+      {
+        "id": "work.true_story_ah_q",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.eileen_chang",
+    "entity_type": "person",
+    "names": [
+      "张爱玲",
+      "Eileen Chang"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "Modern Chinese writer associated with urban detail, gender, war-era life, and narrative coolness.",
+    "short_intro": "Modern Chinese writer associated with urban detail, gender, war-era life, and narrative coolness.",
+    "works": [
+      "work.love_in_a_fallen_city"
+    ],
+    "representative_works": [
+      "work.love_in_a_fallen_city"
+    ],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "urban",
+      "gender",
+      "war"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.love_in_a_fallen_city"
+    ],
+    "related_entities": [
+      {
+        "id": "work.love_in_a_fallen_city",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.shen_congwen",
+    "entity_type": "person",
+    "names": [
+      "沈从文"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "Modern writer associated with borderland imagination, lyric prose, and rural/modern tension.",
+    "short_intro": "Modern writer associated with borderland imagination, lyric prose, and rural/modern tension.",
+    "works": [
+      "work.border_town"
+    ],
+    "representative_works": [
+      "work.border_town"
+    ],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "borderland",
+      "lyric",
+      "rural_modern"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.border_town"
+    ],
+    "related_entities": [
+      {
+        "id": "work.border_town",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.lao_she",
+    "entity_type": "person",
+    "names": [
+      "老舍"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "Modern writer associated with Beijing urban life, social satire, and ordinary people.",
+    "short_intro": "Modern writer associated with Beijing urban life, social satire, and ordinary people.",
+    "works": [
+      "work.rickshaw_boy"
+    ],
+    "representative_works": [
+      "work.rickshaw_boy"
+    ],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "urban",
+      "ordinary life"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.rickshaw_boy"
+    ],
+    "related_entities": [
+      {
+        "id": "work.rickshaw_boy",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.ba_jin",
+    "entity_type": "person",
+    "names": [
+      "巴金"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "Modern writer associated with family, youth, and social pressure in modern fiction.",
+    "short_intro": "Modern writer associated with family, youth, and social pressure in modern fiction.",
+    "works": [
+      "work.family_ba_jin"
+    ],
+    "representative_works": [
+      "work.family_ba_jin"
+    ],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "family",
+      "youth"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.family_ba_jin"
+    ],
+    "related_entities": [
+      {
+        "id": "work.family_ba_jin",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.yu_hua",
+    "entity_type": "person",
+    "names": [
+      "余华"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "Contemporary Chinese writer often read through violence, survival, history, and plain narration.",
+    "short_intro": "Contemporary Chinese writer often read through violence, survival, history, and plain narration.",
+    "works": [
+      "work.to_live"
+    ],
+    "representative_works": [
+      "work.to_live"
+    ],
+    "periods": [
+      "period.new_period_literature_1980s"
+    ],
+    "themes": [
+      "survival",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.to_live"
+    ],
+    "related_entities": [
+      {
+        "id": "work.to_live",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.mo_yan",
+    "entity_type": "person",
+    "names": [
+      "莫言"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "Contemporary Chinese writer associated with rural history, sensory narration, and mythic realism.",
+    "short_intro": "Contemporary Chinese writer associated with rural history, sensory narration, and mythic realism.",
+    "works": [
+      "work.red_sorghum"
+    ],
+    "representative_works": [
+      "work.red_sorghum"
+    ],
+    "periods": [
+      "period.new_period_literature_1980s"
+    ],
+    "themes": [
+      "rural_history",
+      "mythic_realism"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "Start with work.red_sorghum"
+    ],
+    "related_entities": [
+      {
+        "id": "work.red_sorghum",
+        "relation": "representative_work"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "work.call_to_arms",
+    "entity_type": "work",
+    "names": [
+      "呐喊",
+      "《呐喊》"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A public work/album/song anchor associated with person.lu_xun, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.lu_xun, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "vernacular",
+      "critique"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "呐喊"
+    ],
+    "related_entities": [
+      {
+        "id": "person.lu_xun",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.true_story_ah_q",
+    "entity_type": "work",
+    "names": [
+      "阿Q正传",
+      "《阿Q正传》"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A public work/album/song anchor associated with person.lu_xun, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.lu_xun, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "satire",
+      "subject"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "阿Q正传"
+    ],
+    "related_entities": [
+      {
+        "id": "person.lu_xun",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.border_town",
+    "entity_type": "work",
+    "names": [
+      "边城",
+      "《边城》"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A public work/album/song anchor associated with person.shen_congwen, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.shen_congwen, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "borderland",
+      "lyric"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "边城"
+    ],
+    "related_entities": [
+      {
+        "id": "person.shen_congwen",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.rickshaw_boy",
+    "entity_type": "work",
+    "names": [
+      "骆驼祥子",
+      "《骆驼祥子》"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A public work/album/song anchor associated with person.lao_she, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.lao_she, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "urban",
+      "social pressure"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "骆驼祥子"
+    ],
+    "related_entities": [
+      {
+        "id": "person.lao_she",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.love_in_a_fallen_city",
+    "entity_type": "work",
+    "names": [
+      "倾城之恋",
+      "《倾城之恋》"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A public work/album/song anchor associated with person.eileen_chang, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.eileen_chang, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "movement.may_fourth_new_literature"
+    ],
+    "themes": [
+      "urban",
+      "war",
+      "gender"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "倾城之恋"
+    ],
+    "related_entities": [
+      {
+        "id": "person.eileen_chang",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.to_live",
+    "entity_type": "work",
+    "names": [
+      "活着",
+      "《活着》"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A public work/album/song anchor associated with person.yu_hua, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.yu_hua, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.new_period_literature_1980s"
+    ],
+    "themes": [
+      "survival",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "活着"
+    ],
+    "related_entities": [
+      {
+        "id": "person.yu_hua",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.red_sorghum",
+    "entity_type": "work",
+    "names": [
+      "红高粱",
+      "《红高粱》"
+    ],
+    "domain": "literature.chinese_modern",
+    "factual_core": "A public work/album/song anchor associated with person.mo_yan, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.mo_yan, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.new_period_literature_1980s"
+    ],
+    "themes": [
+      "rural_history",
+      "myth"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "红高粱"
+    ],
+    "related_entities": [
+      {
+        "id": "person.mo_yan",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "relation.lu_xun_soseki",
+    "entity_type": "relation",
+    "names": [
+      "鲁迅和夏目漱石"
+    ],
+    "domain": "literature.asian_general",
+    "factual_core": "They can be compared through East Asian modernity, study/translation contexts, modern self, and social critique.",
+    "short_intro": "They can be compared through East Asian modernity, study/translation contexts, modern self, and social critique.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "鲁迅和夏目漱石"
+    ],
+    "related_entities": [
+      {
+        "id": "person.lu_xun",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.natsume_soseki",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "East Asian modernity",
+      "social critique",
+      "modern self"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.eileen_chang_kawabata",
+    "entity_type": "relation",
+    "names": [
+      "张爱玲和川端康成"
+    ],
+    "domain": "literature.asian_general",
+    "factual_core": "They can be compared cautiously through urban detail, war/modernity, sensory form, and emotional distance.",
+    "short_intro": "They can be compared cautiously through urban detail, war/modernity, sensory form, and emotional distance.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "张爱玲和川端康成"
+    ],
+    "related_entities": [
+      {
+        "id": "person.eileen_chang",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.kawabata_yasunari",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "urban detail",
+      "sensory form",
+      "war/modernity"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "concept.western_modern_literature",
+    "entity_type": "concept",
+    "names": [
+      "现代主义文学"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "Modernist literature is a broad early-20th-century transformation in form, subjectivity, time, narration, and urban modernity.",
+    "short_intro": "Modernist literature is a broad early-20th-century transformation in form, subjectivity, time, narration, and urban modernity.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "modernism",
+      "form",
+      "subjectivity"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "现代主义文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "concept"
+    ]
+  },
+  {
+    "id": "person.kafka",
+    "entity_type": "person",
+    "names": [
+      "卡夫卡",
+      "Kafka"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "Modernist writer useful for alienation, law, bureaucracy, and opaque authority.",
+    "short_intro": "Modernist writer useful for alienation, law, bureaucracy, and opaque authority.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.modernist_literature"
+    ],
+    "themes": [
+      "modernism",
+      "form"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.proust",
+    "entity_type": "person",
+    "names": [
+      "普鲁斯特",
+      "Proust"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "Modernist novelist useful for memory, time, and long-form consciousness.",
+    "short_intro": "Modernist novelist useful for memory, time, and long-form consciousness.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.modernist_literature"
+    ],
+    "themes": [
+      "modernism",
+      "form"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.joyce",
+    "entity_type": "person",
+    "names": [
+      "乔伊斯",
+      "Joyce"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "Modernist novelist useful for stream of consciousness, language, and urban form.",
+    "short_intro": "Modernist novelist useful for stream of consciousness, language, and urban form.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.modernist_literature"
+    ],
+    "themes": [
+      "modernism",
+      "form"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.borges",
+    "entity_type": "person",
+    "names": [
+      "博尔赫斯",
+      "Borges"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "Writer useful for labyrinths, fiction as thought, and philosophical short forms.",
+    "short_intro": "Writer useful for labyrinths, fiction as thought, and philosophical short forms.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "period.modernist_literature"
+    ],
+    "themes": [
+      "modernism",
+      "form"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "period.modernist_literature",
+    "entity_type": "period",
+    "names": [
+      "20世纪现代主义文学"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "A period/movement where narrative time, consciousness, urban life, and form become unstable.",
+    "short_intro": "A period/movement where narrative time, consciousness, urban life, and form become unstable.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "modernism",
+      "consciousness",
+      "form"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "early 20th century",
+      "A period/movement where narrative time, consciousness, urban life, and form become unstable."
+    ],
+    "entry_points": [
+      "20世纪现代主义文学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "period",
+      "chronology"
+    ],
+    "time_scope": "early 20th century"
+  },
+  {
+    "id": "relation.proust_joyce",
+    "entity_type": "relation",
+    "names": [
+      "普鲁斯特和乔伊斯"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "Compare by memory/time, language, consciousness, and narrative scale.",
+    "short_intro": "Compare by memory/time, language, consciousness, and narrative scale.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "普鲁斯特和乔伊斯"
+    ],
+    "related_entities": [
+      {
+        "id": "person.proust",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.joyce",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "memory",
+      "language",
+      "consciousness",
+      "scale"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "concept.art_history",
+    "entity_type": "concept",
+    "names": [
+      "艺术史"
+    ],
+    "domain": "art_history",
+    "factual_core": "Art history should be approached through periods, media, institutions, movements, and representative works rather than one Western-only list.",
+    "short_intro": "Art history should be approached through periods, media, institutions, movements, and representative works rather than one Western-only list.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "periods",
+      "media",
+      "institutions"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "艺术史"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "concept"
+    ]
+  },
+  {
+    "id": "movement.renaissance",
+    "entity_type": "movement",
+    "names": [
+      "文艺复兴"
+    ],
+    "domain": "art_history",
+    "factual_core": "A period of renewed classical learning, perspective, patronage, and human-centered art.",
+    "short_intro": "A period of renewed classical learning, perspective, patronage, and human-centered art.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "14th-16th centuries",
+      "A period of renewed classical learning, perspective, patronage, and human-centered art."
+    ],
+    "entry_points": [
+      "文艺复兴"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "14th-16th centuries"
+  },
+  {
+    "id": "movement.impressionism",
+    "entity_type": "movement",
+    "names": [
+      "印象派"
+    ],
+    "domain": "art_history",
+    "factual_core": "A movement tied to light, modern leisure, brushwork, and exhibition changes.",
+    "short_intro": "A movement tied to light, modern leisure, brushwork, and exhibition changes.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "late 19th century",
+      "A movement tied to light, modern leisure, brushwork, and exhibition changes."
+    ],
+    "entry_points": [
+      "印象派"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "late 19th century"
+  },
+  {
+    "id": "movement.modernism_art",
+    "entity_type": "movement",
+    "names": [
+      "现代主义艺术"
+    ],
+    "domain": "art_history",
+    "factual_core": "A broad modern art formation involving abstraction, medium self-awareness, and breaks with academic form.",
+    "short_intro": "A broad modern art formation involving abstraction, medium self-awareness, and breaks with academic form.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "late 19th-20th century",
+      "A broad modern art formation involving abstraction, medium self-awareness, and breaks with academic form."
+    ],
+    "entry_points": [
+      "现代主义艺术"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "late 19th-20th century"
+  },
+  {
+    "id": "movement.dada",
+    "entity_type": "movement",
+    "names": [
+      "达达"
+    ],
+    "domain": "art_history",
+    "factual_core": "An anti-war avant-garde movement that challenged art institutions and authorship.",
+    "short_intro": "An anti-war avant-garde movement that challenged art institutions and authorship.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1910s-1920s",
+      "An anti-war avant-garde movement that challenged art institutions and authorship."
+    ],
+    "entry_points": [
+      "达达"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "1910s-1920s"
+  },
+  {
+    "id": "movement.surrealism",
+    "entity_type": "movement",
+    "names": [
+      "超现实主义"
+    ],
+    "domain": "art_history",
+    "factual_core": "A movement exploring dream, unconscious, image collision, and automatism.",
+    "short_intro": "A movement exploring dream, unconscious, image collision, and automatism.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1920s onward",
+      "A movement exploring dream, unconscious, image collision, and automatism."
+    ],
+    "entry_points": [
+      "超现实主义"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "1920s onward"
+  },
+  {
+    "id": "movement.abstract_expressionism",
+    "entity_type": "movement",
+    "names": [
+      "抽象表现主义"
+    ],
+    "domain": "art_history",
+    "factual_core": "A postwar movement associated with scale, gesture, abstraction, and New York art institutions.",
+    "short_intro": "A postwar movement associated with scale, gesture, abstraction, and New York art institutions.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1940s-1950s",
+      "A postwar movement associated with scale, gesture, abstraction, and New York art institutions."
+    ],
+    "entry_points": [
+      "抽象表现主义"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "1940s-1950s"
+  },
+  {
+    "id": "movement.minimalism",
+    "entity_type": "movement",
+    "names": [
+      "极简主义"
+    ],
+    "domain": "art_history",
+    "factual_core": "A movement focused on reduced form, industrial materials, seriality, and viewer space.",
+    "short_intro": "A movement focused on reduced form, industrial materials, seriality, and viewer space.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1960s",
+      "A movement focused on reduced form, industrial materials, seriality, and viewer space."
+    ],
+    "entry_points": [
+      "极简主义"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "1960s"
+  },
+  {
+    "id": "movement.conceptual_art",
+    "entity_type": "movement",
+    "names": [
+      "观念艺术"
+    ],
+    "domain": "art_history",
+    "factual_core": "A movement where idea, instruction, and institution can matter more than object craft.",
+    "short_intro": "A movement where idea, instruction, and institution can matter more than object craft.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1960s-1970s",
+      "A movement where idea, instruction, and institution can matter more than object craft."
+    ],
+    "entry_points": [
+      "观念艺术"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "1960s-1970s"
+  },
+  {
+    "id": "movement.postmodern_art",
+    "entity_type": "movement",
+    "names": [
+      "后现代主义艺术"
+    ],
+    "domain": "art_history",
+    "factual_core": "A broad formation involving appropriation, critique of originality, media culture, and institutional questioning.",
+    "short_intro": "A broad formation involving appropriation, critique of originality, media culture, and institutional questioning.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "late 20th century",
+      "A broad formation involving appropriation, critique of originality, media culture, and institutional questioning."
+    ],
+    "entry_points": [
+      "后现代主义艺术"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "late 20th century"
+  },
+  {
+    "id": "movement.bauhaus_design",
+    "entity_type": "movement",
+    "names": [
+      "包豪斯/现代设计"
+    ],
+    "domain": "design_history",
+    "factual_core": "A school/movement linking art, craft, industry, typography, architecture, and design pedagogy.",
+    "short_intro": "A school/movement linking art, craft, industry, typography, architecture, and design pedagogy.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "movement",
+      "history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "1919-1933",
+      "A school/movement linking art, craft, industry, typography, architecture, and design pedagogy."
+    ],
+    "entry_points": [
+      "包豪斯/现代设计"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "1919-1933"
+  },
+  {
+    "id": "person.duchamp",
+    "entity_type": "person",
+    "names": [
+      "杜尚",
+      "Duchamp"
+    ],
+    "domain": "art_history",
+    "factual_core": "Artist associated with readymade, authorship, institution, and conceptual art entry points.",
+    "short_intro": "Artist associated with readymade, authorship, institution, and conceptual art entry points.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.picasso",
+    "entity_type": "person",
+    "names": [
+      "毕加索",
+      "Picasso"
+    ],
+    "domain": "art_history",
+    "factual_core": "Modern art anchor associated with cubism, image construction, and 20th-century artistic change.",
+    "short_intro": "Modern art anchor associated with cubism, image construction, and 20th-century artistic change.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.kandinsky",
+    "entity_type": "person",
+    "names": [
+      "康定斯基",
+      "Kandinsky"
+    ],
+    "domain": "art_history",
+    "factual_core": "Abstraction anchor useful for discussing color, form, and non-representational painting.",
+    "short_intro": "Abstraction anchor useful for discussing color, form, and non-representational painting.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.warhol",
+    "entity_type": "person",
+    "names": [
+      "沃霍尔",
+      "Warhol"
+    ],
+    "domain": "art_history",
+    "factual_core": "Pop art anchor for media, repetition, celebrity, and commodity images.",
+    "short_intro": "Pop art anchor for media, repetition, celebrity, and commodity images.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.pollock",
+    "entity_type": "person",
+    "names": [
+      "波洛克",
+      "Pollock"
+    ],
+    "domain": "art_history",
+    "factual_core": "Abstract expressionism anchor for gesture, scale, and action painting.",
+    "short_intro": "Abstract expressionism anchor for gesture, scale, and action painting.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.mondrian",
+    "entity_type": "person",
+    "names": [
+      "蒙德里安",
+      "Mondrian"
+    ],
+    "domain": "art_history",
+    "factual_core": "Abstraction/design anchor for grid, reduction, and modern form.",
+    "short_intro": "Abstraction/design anchor for grid, reduction, and modern form.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.walter_gropius",
+    "entity_type": "person",
+    "names": [
+      "Walter Gropius",
+      "格罗皮乌斯"
+    ],
+    "domain": "design_history",
+    "factual_core": "Bauhaus founder anchor for modern design education and architecture.",
+    "short_intro": "Bauhaus founder anchor for modern design education and architecture.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.susan_sontag",
+    "entity_type": "person",
+    "names": [
+      "桑塔格",
+      "Susan Sontag"
+    ],
+    "domain": "photography_history",
+    "factual_core": "Photography theory anchor for image, ethics, spectatorship, and modern looking.",
+    "short_intro": "Photography theory anchor for image, ethics, spectatorship, and modern looking.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.roland_barthes",
+    "entity_type": "person",
+    "names": [
+      "罗兰·巴特",
+      "Roland Barthes"
+    ],
+    "domain": "photography_history",
+    "factual_core": "Photography/semiotics anchor associated with Camera Lucida and image affect.",
+    "short_intro": "Photography/semiotics anchor associated with Camera Lucida and image affect.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "art_history"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "work.fountain",
+    "entity_type": "work",
+    "names": [
+      "泉",
+      "《泉》"
+    ],
+    "domain": "art_history",
+    "factual_core": "A public work/album/song anchor associated with person.duchamp, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.duchamp, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "movement.dada",
+      "movement.conceptual_art"
+    ],
+    "themes": [
+      "readymade",
+      "institution"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "泉"
+    ],
+    "related_entities": [
+      {
+        "id": "person.duchamp",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.camera_lucida",
+    "entity_type": "work",
+    "names": [
+      "明室",
+      "《明室》"
+    ],
+    "domain": "photography_history",
+    "factual_core": "A public work/album/song anchor associated with person.roland_barthes, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.roland_barthes, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "photography",
+      "memory",
+      "punctum"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "明室"
+    ],
+    "related_entities": [
+      {
+        "id": "person.roland_barthes",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "work.on_photography",
+    "entity_type": "work",
+    "names": [
+      "论摄影",
+      "《论摄影》"
+    ],
+    "domain": "photography_history",
+    "factual_core": "A public work/album/song anchor associated with person.susan_sontag, used for high-level cultural discussion without quoting text.",
+    "short_intro": "A public work/album/song anchor associated with person.susan_sontag, used for high-level cultural discussion without quoting text.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "photography",
+      "ethics",
+      "spectatorship"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "论摄影"
+    ],
+    "related_entities": [
+      {
+        "id": "person.susan_sontag",
+        "relation": "creator_or_primary_context"
+      }
+    ],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "work"
+    ]
+  },
+  {
+    "id": "relation.art_history_photography",
+    "entity_type": "relation",
+    "names": [
+      "艺术史和摄影史"
+    ],
+    "domain": "art_history",
+    "factual_core": "Photography belongs to art history but also has its own technology, documentary, theory, and circulation histories.",
+    "short_intro": "Photography belongs to art history but also has its own technology, documentary, theory, and circulation histories.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "艺术史和摄影史"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.art_history",
+        "relation": "side_a"
+      },
+      {
+        "id": "photography_history",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "medium",
+      "technology",
+      "institution"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.duchamp_bauhaus",
+    "entity_type": "relation",
+    "names": [
+      "杜尚和包豪斯"
+    ],
+    "domain": "art_history",
+    "factual_core": "Duchamp and Bauhaus can be compared by institution, object/function, modernity, and art-design boundaries.",
+    "short_intro": "Duchamp and Bauhaus can be compared by institution, object/function, modernity, and art-design boundaries.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "杜尚和包豪斯"
+    ],
+    "related_entities": [
+      {
+        "id": "person.duchamp",
+        "relation": "side_a"
+      },
+      {
+        "id": "movement.bauhaus_design",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "institution",
+      "object",
+      "function",
+      "modernity"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.minimalism_wabisabi",
+    "entity_type": "relation",
+    "names": [
+      "极简主义和侘寂"
+    ],
+    "domain": "art_history",
+    "factual_core": "They are not the same: compare historical context, material ideology, form reduction, and cultural framing.",
+    "short_intro": "They are not the same: compare historical context, material ideology, form reduction, and cultural framing.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "极简主义和侘寂"
+    ],
+    "related_entities": [
+      {
+        "id": "movement.minimalism",
+        "relation": "side_a"
+      },
+      {
+        "id": "concept.wabi_sabi",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "history",
+      "material",
+      "cultural frame"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "method.art_history_entry",
+    "entity_type": "concept",
+    "names": [
+      "艺术史入门回答法"
+    ],
+    "domain": "art_history",
+    "factual_core": "Method card: For art history, name periods, movements, media, and examples; do not collapse everything to photography or Western-only lists.",
+    "short_intro": "Method card: For art history, name periods, movements, media, and examples; do not collapse everything to photography or Western-only lists.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "answer_policy"
+    ],
+    "style_axes": [
+      "bounded",
+      "concrete",
+      "non-template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "艺术史入门回答法"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "method card / planner instruction, not factual knowledge",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card"
+    ]
+  },
+  {
+    "id": "method.photography_history_answer",
+    "entity_type": "concept",
+    "names": [
+      "摄影史回答法"
+    ],
+    "domain": "photography_history",
+    "factual_core": "Method card: For photography, separate documentation, art institution, technology, ethics, and viewing relation.",
+    "short_intro": "Method card: For photography, separate documentation, art institution, technology, ethics, and viewing relation.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "answer_policy"
+    ],
+    "style_axes": [
+      "bounded",
+      "concrete",
+      "non-template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "摄影史回答法"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "method card / planner instruction, not factual knowledge",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card"
+    ]
+  },
+  {
+    "id": "method.compare_movements",
+    "entity_type": "concept",
+    "names": [
+      "艺术运动比较法"
+    ],
+    "domain": "art_history",
+    "factual_core": "Method card: Compare movements by time, medium, institution, form, and social context.",
+    "short_intro": "Method card: Compare movements by time, medium, institution, form, and social context.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "answer_policy"
+    ],
+    "style_axes": [
+      "bounded",
+      "concrete",
+      "non-template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "艺术运动比较法"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "method card / planner instruction, not factual knowledge",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card"
+    ]
+  },
+  {
+    "id": "concept.philosophy_history",
+    "entity_type": "concept",
+    "names": [
+      "哲学史入口"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Philosophy coverage should use periods and problems rather than only Derrida or Lacan.",
+    "short_intro": "Philosophy coverage should use periods and problems rather than only Derrida or Lacan.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "periods",
+      "problems",
+      "method"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "哲学史入口"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "concept"
+    ]
+  },
+  {
+    "id": "person.socrates",
+    "entity_type": "person",
+    "names": [
+      "苏格拉底"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Ancient philosophy anchor for questioning, ethics, and method.",
+    "short_intro": "Ancient philosophy anchor for questioning, ethics, and method.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.plato",
+    "entity_type": "person",
+    "names": [
+      "柏拉图"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Ancient philosophy anchor for forms, dialogue, politics, and knowledge.",
+    "short_intro": "Ancient philosophy anchor for forms, dialogue, politics, and knowledge.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.aristotle",
+    "entity_type": "person",
+    "names": [
+      "亚里士多德"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Ancient philosophy anchor for logic, substance, ethics, and classification.",
+    "short_intro": "Ancient philosophy anchor for logic, substance, ethics, and classification.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.kant",
+    "entity_type": "person",
+    "names": [
+      "康德"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Modern philosophy anchor for critique, knowledge, ethics, and conditions of experience.",
+    "short_intro": "Modern philosophy anchor for critique, knowledge, ethics, and conditions of experience.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.hegel",
+    "entity_type": "person",
+    "names": [
+      "黑格尔"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Modern philosophy anchor for dialectic, history, recognition, and spirit.",
+    "short_intro": "Modern philosophy anchor for dialectic, history, recognition, and spirit.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.nietzsche",
+    "entity_type": "person",
+    "names": [
+      "尼采"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Modern philosophy anchor for values, genealogy, critique, and style.",
+    "short_intro": "Modern philosophy anchor for values, genealogy, critique, and style.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.kierkegaard",
+    "entity_type": "person",
+    "names": [
+      "克尔凯郭尔"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Existential anchor for anxiety, faith, subjectivity, and choice.",
+    "short_intro": "Existential anchor for anxiety, faith, subjectivity, and choice.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.heidegger",
+    "entity_type": "person",
+    "names": [
+      "海德格尔"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Phenomenology/existential anchor for being, time, world, and interpretation.",
+    "short_intro": "Phenomenology/existential anchor for being, time, world, and interpretation.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.sartre",
+    "entity_type": "person",
+    "names": [
+      "萨特"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Existentialist anchor for freedom, responsibility, bad faith, and situation.",
+    "short_intro": "Existentialist anchor for freedom, responsibility, bad faith, and situation.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.beauvoir",
+    "entity_type": "person",
+    "names": [
+      "波伏娃"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Existential and feminist philosophy anchor for freedom, ambiguity, and gender.",
+    "short_intro": "Existential and feminist philosophy anchor for freedom, ambiguity, and gender.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.camus",
+    "entity_type": "person",
+    "names": [
+      "加缪"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Absurdism/existential anchor for absurdity, revolt, and meaning.",
+    "short_intro": "Absurdism/existential anchor for absurdity, revolt, and meaning.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.foucault",
+    "entity_type": "person",
+    "names": [
+      "福柯"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Post-structuralist anchor for power, knowledge, discourse, and institutions.",
+    "short_intro": "Post-structuralist anchor for power, knowledge, discourse, and institutions.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "person.lacan",
+    "entity_type": "person",
+    "names": [
+      "拉康"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Psychoanalytic theory anchor for language, subject, desire, and symbolic order.",
+    "short_intro": "Psychoanalytic theory anchor for language, subject, desire, and symbolic order.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person"
+    ]
+  },
+  {
+    "id": "movement.ancient_philosophy",
+    "entity_type": "movement",
+    "names": [
+      "古希腊哲学"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Entry through Socrates, Plato, Aristotle, ethics, logic, forms, and classification.",
+    "short_intro": "Entry through Socrates, Plato, Aristotle, ethics, logic, forms, and classification.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy",
+      "period"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "ancient",
+      "Entry through Socrates, Plato, Aristotle, ethics, logic, forms, and classification."
+    ],
+    "entry_points": [
+      "古希腊哲学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "ancient"
+  },
+  {
+    "id": "movement.german_idealism",
+    "entity_type": "movement",
+    "names": [
+      "德国古典哲学"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Entry through Kant, Hegel, critique, dialectic, and history.",
+    "short_intro": "Entry through Kant, Hegel, critique, dialectic, and history.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy",
+      "period"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "late 18th-19th century",
+      "Entry through Kant, Hegel, critique, dialectic, and history."
+    ],
+    "entry_points": [
+      "德国古典哲学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "late 18th-19th century"
+  },
+  {
+    "id": "movement.existentialism",
+    "entity_type": "movement",
+    "names": [
+      "存在主义"
+    ],
+    "domain": "philosophy",
+    "factual_core": "A movement/problem field around freedom, responsibility, anxiety, authenticity, and situation.",
+    "short_intro": "A movement/problem field around freedom, responsibility, anxiety, authenticity, and situation.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy",
+      "period"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "19th-20th century",
+      "A movement/problem field around freedom, responsibility, anxiety, authenticity, and situation."
+    ],
+    "entry_points": [
+      "存在主义"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "19th-20th century"
+  },
+  {
+    "id": "movement.phenomenology",
+    "entity_type": "movement",
+    "names": [
+      "现象学"
+    ],
+    "domain": "philosophy",
+    "factual_core": "A method/field around experience, world, perception, and being-in-the-world.",
+    "short_intro": "A method/field around experience, world, perception, and being-in-the-world.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy",
+      "period"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "20th century",
+      "A method/field around experience, world, perception, and being-in-the-world."
+    ],
+    "entry_points": [
+      "现象学"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "20th century"
+  },
+  {
+    "id": "movement.post_structuralism",
+    "entity_type": "movement",
+    "names": [
+      "后结构主义"
+    ],
+    "domain": "philosophy",
+    "factual_core": "A field around language, power, difference, discourse, and subject formation.",
+    "short_intro": "A field around language, power, difference, discourse, and subject formation.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "philosophy",
+      "period"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [
+      "late 20th century",
+      "A field around language, power, difference, discourse, and subject formation."
+    ],
+    "entry_points": [
+      "后结构主义"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "movement",
+      "chronology"
+    ],
+    "time_scope": "late 20th century"
+  },
+  {
+    "id": "relation.sartre_beauvoir",
+    "entity_type": "relation",
+    "names": [
+      "萨特和波伏娃"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Compare freedom, ethics, situation, gender, and existential responsibility.",
+    "short_intro": "Compare freedom, ethics, situation, gender, and existential responsibility.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "萨特和波伏娃"
+    ],
+    "related_entities": [
+      {
+        "id": "person.sartre",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.beauvoir",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "freedom",
+      "ethics",
+      "gender",
+      "situation"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.derrida_foucault",
+    "entity_type": "relation",
+    "names": [
+      "德里达和福柯"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Compare text/difference and power/discourse without making post-structuralism one slogan.",
+    "short_intro": "Compare text/difference and power/discourse without making post-structuralism one slogan.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "relation",
+      "comparison"
+    ],
+    "style_axes": [
+      "historical_position"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "德里达和福柯"
+    ],
+    "related_entities": [
+      {
+        "id": "person.derrida",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.foucault",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "text",
+      "power",
+      "discourse",
+      "difference"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "compare"
+    ]
+  },
+  {
+    "id": "method.philosophy_balance",
+    "entity_type": "concept",
+    "names": [
+      "哲学平衡回答法"
+    ],
+    "domain": "philosophy",
+    "factual_core": "Method card: For broad philosophy questions, use periods and problems; do not collapse to Derrida, Lacan, or one school.",
+    "short_intro": "Method card: For broad philosophy questions, use periods and problems; do not collapse to Derrida, Lacan, or one school.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "answer_policy"
+    ],
+    "style_axes": [
+      "bounded",
+      "concrete",
+      "non-template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "哲学平衡回答法"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "period",
+      "form",
+      "theme",
+      "institutional context"
+    ],
+    "conversation_moves": {
+      "overview": "Use card fields to give position, period, and concrete anchors.",
+      "works_list": "List concrete works or say coverage is partial; never replace a list with mood words.",
+      "representative_works": "Name representative works and explain each as an entry point.",
+      "entry_path": "Give one to three concrete entry points.",
+      "explain_work": "Explain theme, form, and position without quoting copyrighted text.",
+      "compare": "Compare by period, medium, form, theme, and reception; mention both sides.",
+      "country_relation": "Separate country, language, history, institution, and works.",
+      "why_it_matters": "Explain why the entity changes a field or provides an entry point.",
+      "quote_or_lyrics_boundary": "No lyrics or long copyrighted excerpts; summarize themes instead."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "no lyrics",
+      "do not infer private biography",
+      "mark uncertainty when coverage is partial"
+    ],
+    "copyright_policy": "Use titles, metadata, themes, and short commentary only; no lyrics or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "method card / planner instruction, not factual knowledge",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private intent",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card"
+    ]
+  },
+  {
+    "id": "person.elizabeth_bishop",
+    "entity_type": "person",
+    "names": [
+      "Elizabeth Bishop",
+      "Bishop",
+      "伊丽莎白·毕肖普"
+    ],
+    "domain": "poetry",
+    "factual_core": "Twentieth-century poet useful for discussing precision, observation, restraint, travel, and descriptive pressure without quoting poems.",
+    "short_intro": "A poetry anchor for careful observation, formal restraint, and descriptive intelligence.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "20th century poetry"
+    ],
+    "themes": [
+      "observation",
+      "restraint",
+      "form",
+      "description"
+    ],
+    "style_axes": [
+      "precision",
+      "distance",
+      "attention"
+    ],
+    "historical_context": [
+      "20th century poetry"
+    ],
+    "entry_points": [
+      "compare with Robert Lowell through voice, restraint, and personal material"
+    ],
+    "related_entities": [
+      {
+        "id": "person.robert_lowell",
+        "relation": "comparison_poet"
+      }
+    ],
+    "comparison_axes": [
+      "voice",
+      "restraint",
+      "personal material",
+      "observation"
+    ],
+    "conversation_moves": {
+      "overview": "Position Bishop as a poet of precise observation and restraint.",
+      "works_list": "Do not invent a full bibliography; give bounded entry points if works are not carded.",
+      "representative_works": "Use approved work cards only; otherwise stay at method level.",
+      "entry_path": "Start with short poems and compare voice with Lowell, without quoting.",
+      "explain_work": "Explain form and observation without reproducing poetry.",
+      "compare": "Compare Bishop and Lowell by voice, personal material, observation, and restraint.",
+      "country_relation": "Not applicable.",
+      "why_it_matters": "Explain how restraint can carry pressure without confession.",
+      "quote_or_lyrics_boundary": "No full poems or long excerpts; summarize themes and form."
+    },
+    "safe_boundaries": [
+      "no long poetry quotes",
+      "no private biography inference",
+      "mark partial coverage"
+    ],
+    "copyright_policy": "Use metadata, themes, and short commentary only; no poems or long quoted text.",
+    "followup_bindings": [
+      "person.robert_lowell"
+    ],
+    "source_summary": "Public general cultural knowledge abstracted into structured metadata, not source prose.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "private biography",
+      "complete canon",
+      "direct influence without evidence"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "person",
+      "poetry",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.bishop_lowell",
+    "entity_type": "relation",
+    "names": [
+      "Elizabeth Bishop 和 Lowell",
+      "Bishop 和 Lowell",
+      "Elizabeth Bishop 和 Robert Lowell"
+    ],
+    "domain": "poetry",
+    "factual_core": "Bishop and Lowell can be compared by restraint versus confession, observation versus pressure, and different uses of personal material.",
+    "short_intro": "A relation card for comparing two poetry voices without reducing either to biography.",
+    "works": [],
+    "representative_works": [],
+    "periods": [
+      "20th century poetry"
+    ],
+    "themes": [
+      "comparison",
+      "voice",
+      "personal material",
+      "form"
+    ],
+    "style_axes": [
+      "restraint_vs_confession",
+      "observation_vs_pressure"
+    ],
+    "historical_context": [
+      "20th century poetry"
+    ],
+    "entry_points": [
+      "compare voice first, then personal material and form"
+    ],
+    "related_entities": [
+      {
+        "id": "person.elizabeth_bishop",
+        "relation": "side_a"
+      },
+      {
+        "id": "person.robert_lowell",
+        "relation": "side_b"
+      }
+    ],
+    "comparison_axes": [
+      "voice",
+      "restraint/confession",
+      "observation/pressure",
+      "personal material"
+    ],
+    "conversation_moves": {
+      "overview": "State that this is a comparison relation, not a biography shortcut.",
+      "works_list": "Do not list uncaptured poems as if fully covered.",
+      "representative_works": "Use approved work cards only.",
+      "entry_path": "Start from voice and form differences.",
+      "explain_work": "Not applicable unless a work card exists.",
+      "compare": "Mention both Bishop and Lowell and at least one comparison axis.",
+      "country_relation": "Not applicable.",
+      "why_it_matters": "The pair tests how personal material can be handled with different formal temperatures.",
+      "quote_or_lyrics_boundary": "No full poems or long excerpts."
+    },
+    "safe_boundaries": [
+      "no long poetry quotes",
+      "do not turn style into diagnosis",
+      "mark partial coverage"
+    ],
+    "copyright_policy": "No poem excerpts; summarize formal and thematic differences.",
+    "followup_bindings": [
+      "person.elizabeth_bishop",
+      "person.robert_lowell"
+    ],
+    "source_summary": "Public general literary knowledge abstracted into a relation card.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "private correspondence facts",
+      "complete influence map",
+      "mental health claims"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "poetry",
+      "compare"
+    ]
+  },
+  {
+    "id": "relation.poetry_novel_explanation",
+    "entity_type": "relation",
+    "names": [
+      "诗和小说",
+      "诗和小说的解释方式"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "Poetry and fiction can be interpreted through different units: poems often foreground line, image, rhythm, and compression; novels foreground scene, plot, narration, time, and character systems.",
+    "short_intro": "A method relation for distinguishing genre-level interpretation without asking a vague counterquestion.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "genre",
+      "interpretation",
+      "form",
+      "reading_method"
+    ],
+    "style_axes": [
+      "compression_vs_sequence",
+      "line_vs_scene"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "compare units of reading: line/image/rhythm versus scene/narration/time"
+    ],
+    "related_entities": [],
+    "comparison_axes": [
+      "unit of reading",
+      "form",
+      "time",
+      "voice"
+    ],
+    "conversation_moves": {
+      "overview": "Explain the interpretive units of each genre.",
+      "works_list": "Not a list task.",
+      "representative_works": "Not a work-list task.",
+      "entry_path": "Start with what the form makes visible.",
+      "explain_work": "Apply to a named poem or novel if supplied.",
+      "compare": "Mention poetry and fiction plus comparison axes.",
+      "country_relation": "Not applicable.",
+      "why_it_matters": "Prevents turning all literature into one mood vocabulary.",
+      "quote_or_lyrics_boundary": "No long literary quotations."
+    },
+    "safe_boundaries": [
+      "no long quotes",
+      "do not reduce literature to emotion",
+      "ask for a specific work only after answering the general distinction"
+    ],
+    "copyright_policy": "No long excerpts; use form-level explanation.",
+    "followup_bindings": [],
+    "source_summary": "General literary method card, not source prose.",
+    "confidence": 0.86,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "single universal reading method",
+      "complete literary taxonomy"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "relation",
+      "method",
+      "compare"
+    ]
+  },
+  {
+    "id": "method.literature_not_emotion_only",
+    "entity_type": "concept",
+    "names": [
+      "文学不能只讲情绪",
+      "不要把所有文学都讲成情绪"
+    ],
+    "domain": "literature.western_modern",
+    "factual_core": "Literary interpretation should use form, genre, period, narration, language, and evidence; emotion can be one effect, not the whole answer.",
+    "short_intro": "A method card that blocks mood-only literary answers.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "method",
+      "evidence",
+      "form",
+      "anti_template"
+    ],
+    "style_axes": [
+      "concrete",
+      "bounded",
+      "non_template"
+    ],
+    "historical_context": [],
+    "entry_points": [
+      "separate emotion, form, genre, period, and evidence"
+    ],
+    "related_entities": [
+      {
+        "id": "relation.poetry_novel_explanation",
+        "relation": "method_relation"
+      }
+    ],
+    "comparison_axes": [
+      "emotion/form",
+      "genre/period",
+      "evidence/claim"
+    ],
+    "conversation_moves": {
+      "overview": "Say why emotion is insufficient and name the missing dimensions.",
+      "works_list": "If asked for a list, give works or authors, not mood labels.",
+      "representative_works": "If asked for works, list concrete works only when carded.",
+      "entry_path": "Use form, genre, period, and evidence as the entry path.",
+      "explain_work": "Apply to the work without flattening it to a feeling.",
+      "compare": "Compare by axes, not vibes.",
+      "country_relation": "Not applicable.",
+      "why_it_matters": "Prevents answer-template collapse.",
+      "quote_or_lyrics_boundary": "No long quotes."
+    },
+    "safe_boundaries": [
+      "no mood-only answer",
+      "no long quotes",
+      "do not invent evidence"
+    ],
+    "copyright_policy": "No long excerpts; use abstract method language.",
+    "followup_bindings": [],
+    "source_summary": "Method card for verifier/planner behavior.",
+    "confidence": 0.88,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "all literature has one purpose",
+      "emotion is irrelevant"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "method_card",
+      "anti_template"
     ]
   }
 ];

@@ -1,4 +1,6 @@
-const COPYRIGHT_REQUEST_RE = /(歌词|原文|唱词|逐字|整首|全文|整段|一大段|贴出来|逐句翻译)/;
+import { assessCoverageForAnswer } from "./coverage_gate.js";
+
+const COPYRIGHT_REQUEST_RE = /(歌词|原文|原句|唱词|逐字|整首|全文|整段|一大段|贴出来|逐句翻译)/;
 
 const BAD_CULTURE_ANSWERS = [
   "日本文学不要只读情节。先看沉默、季节、羞耻和战后断裂。",
@@ -211,24 +213,29 @@ function answerCopyrightBoundary(query, focus) {
   return "不能提供完整歌词、整首诗或长段原文；可以改讲主题、背景、结构或阅读/聆听入口。";
 }
 
-function answerWorksList(focus, index, representative = false, query = "", questionType = "") {
+function answerWorksList(focus, index, representative = false, query = "", questionType = "", cards = []) {
   const ids = representative ? asArray(focus?.representative_works) : asArray(focus?.works);
-  const works = displayTitles(cardsByIds(index, ids), 8);
+  const explicitWorks = cards.filter((card) => card.entity_type === "work");
+  const works = displayTitles([...cardsByIds(index, ids), ...explicitWorks].filter((card, idx, arr) => arr.findIndex((item) => item.id === card.id) === idx), 8);
   if (works.length === 0) return "";
   const titles = works.map((title) => `《${title.replace(/[《》]/g, "")}》`).join("、");
+  const partial = works.length < 3 ? "目前卡片覆盖还不完整，所以先给已确认入口：" : "";
   if (questionType === "listen_recommendation" || /先听|歌单/.test(query)) {
-    return `先听路线可从${titles}进；先抓青春记忆、故乡/城市变化和时间感，不贴歌词。`;
+    return `${partial}先听路线可从${titles}进；先抓作品位置和风格变化，不贴歌词。`;
   }
   if (representative) {
-    return `代表作可先抓${titles}；它们分别通向早期问题意识、故乡变化、青春记忆和年代感。`;
+    return `${partial}代表作可先抓${titles}；它们分别通向不同主题入口，不能贴歌词。`;
   }
-  return `歌曲可以先列${titles}；这是入口清单，不是歌词复写。`;
+  return `${partial}歌曲可以先列${titles}；这是入口清单，不是歌词复写。`;
 }
 
 function answerAuthorList(cards, query = "") {
   const people = cards.filter((card) => card.entity_type === "person");
   const names = displayTitles(people, 8);
   if (names.length === 0) return "";
+  if (/按时期|时期/.test(query)) {
+    return `按时期可先分：平安/古典看紫式部、清少纳言；明治近代看夏目漱石、森鸥外；战后看太宰治、川端康成、大江健三郎；当代可看村上春树。`;
+  }
   if (/重要作家/.test(query)) {
     return `重要作家可从${names.join("、")}进入；先按近代自我、抒情意象、战后断裂和当代都市经验分线读。`;
   }
@@ -251,6 +258,21 @@ function answerOverview(focus, cards, domain) {
 }
 
 function answerEntryPath(focus, index, questionType, query = "") {
+  if (/韩国现代文学/.test(query)) {
+    return "韩国现代文学覆盖还薄；可以先把它作为东亚现代文学入口之一，和鲁迅、夏目漱石等中日入口并读，但具体韩国书单需要后续补卡，不应硬编。";
+  }
+  if (focus?.domain === "literature.chinese_modern") {
+    return "中国现代文学入口可从鲁迅《呐喊》、沈从文《边城》、张爱玲《倾城之恋》、老舍《骆驼祥子》进入；再按五四新文学和1980s新时期补时间线。";
+  }
+  if (focus?.domain === "literature.western_modern" && /博尔赫斯/.test(query)) {
+    return "博尔赫斯可先从短篇入口读，抓迷宫、书本、时间和虚构结构；不要先追求完整文学史定位。";
+  }
+  const works = displayTitles(cardsByIds(index, focus?.representative_works || focus?.works || []), 4);
+  if (works.length > 0) {
+    const verb = questionType === "listen_recommendation" ? "先听" : "先读";
+    const partial = works.length < 2 ? "目前作品卡覆盖还不完整，所以先给已确认入口：" : "";
+    return `${partial}${verb}${works.map((title) => `《${title.replace(/[《》]/g, "")}》`).join("、")}，再回到主题和历史语境。`;
+  }
   const entries = asArray(focus?.entry_points).slice(0, 4);
   if (entries.length > 0) {
     if (/第一本|哪一本|读什么/.test(query)) {
@@ -261,11 +283,6 @@ function answerEntryPath(focus, index, questionType, query = "") {
     }
     const tail = focus?.domain === "literature.japanese" ? "同时留意季节感、沉默和战后断裂。" : "";
     return `入门可以这样走：${entries.join("；")}。${tail}`;
-  }
-  const works = displayTitles(cardsByIds(index, focus?.representative_works || focus?.works || []), 4);
-  if (works.length > 0) {
-    const verb = questionType === "listen_recommendation" ? "先听" : "先读";
-    return `${verb}${works.map((title) => `《${title.replace(/[《》]/g, "")}》`).join("、")}，再回到主题和历史语境。`;
   }
   return "";
 }
@@ -316,17 +333,41 @@ function answerCountryRelation(cards, query = "") {
   if (/同一个东西|是不是同一个/.test(query)) {
     return "不是同一个东西。国家是政治和社会实体；文学是语言、历史经验和作品形式累积出来的传统。";
   }
+  if (/历史/.test(query)) {
+    return "不是同一个东西。比较轴是历史时间线和作品传统：日本历史是政治和社会进程；日本文学是在平安古典、明治近代、战后和当代等语境里形成的作品传统。";
+  }
   if (/一回事/.test(query)) {
     return "不是同一个东西。日本是国家、历史和语言语境；日本文学是作品传统，借这个语境生长，但不能和国家本身画等号。";
   }
   return "不是一回事。日本是国家和历史语境；日本文学是在日语、书写制度、社会结构、现代化和战后经验里形成的作品传统。";
 }
 
+function answerDevelopmentHistory(focus, cards, query = "") {
+  const domain = focus?.domain || cards[0]?.domain || "";
+  if (domain === "music.chinese_pop_general" || domain === "music.taiwan" || domain === "music.hongkong" || domain === "music.mainland_rock" || domain === "music.mandopop") {
+    return "可以按台湾民歌运动、1980年代台湾流行、香港粤语流行歌黄金期、大陆摇滚、2000年后平台/制作转向来讲；每段都要落到人物和作品，不能只说时代感。";
+  }
+  if (domain === "literature.japanese") {
+    return "日本文学可粗分平安古典、俳句/江户、明治近代、战后文学和当代小说；每段都要配作家作品，不能只给抽象标签。";
+  }
+  if (domain === "photography_history") {
+    return "摄影史可先按19世纪技术/肖像与档案、20世纪纪实与现代主义、战后观念/美术馆语境、当代数字图像来讲；这里先给框架，不贴长原文。";
+  }
+  if (domain === "art_history" || domain === "poetry.art") {
+    return "艺术史可先按文艺复兴、印象派、现代主义、达达/观念艺术、抽象表现主义、极简和后现代来走；再落到代表人物和作品制度。";
+  }
+  if (domain === "philosophy") {
+    return "哲学史不能只从德里达讲；可先用古希腊、康德/黑格尔、尼采、现象学、存在主义和后结构主义这些时期入口。";
+  }
+  return "这个发展史覆盖还不完整；我可以先按已覆盖的时期入口讲，不该硬编缺失谱系。";
+}
+
 function answerCompare(cards, query = "") {
-  const targets = cards.filter(Boolean).slice(0, 2);
+  const relation = cards.find((card) => card.entity_type === "relation");
+  const targets = relation ? cards.filter((card) => card.entity_type !== "relation").slice(0, 2) : cards.filter(Boolean).slice(0, 2);
   if (targets.length < 2) return "";
   const [a, b] = targets;
-  const axisText = axesFor(targets, 4) || "时代、形式、主题和语境";
+  const axisText = axesFor(relation ? [relation, ...targets] : targets, 4) || "时代、形式、主题和语境";
   const aStyle = styleFor(a, 3) || themes(a, 2);
   const bStyle = styleFor(b, 3) || themes(b, 2);
   if (/谁更冷/.test(query)) {
@@ -334,6 +375,9 @@ function answerCompare(cards, query = "") {
   }
   if (/怎么推理/.test(query)) {
     return `推理时先定比较轴：${axisText}。在这些轴上，${primaryName(a)}偏${aStyle || "自身的问题结构"}，${primaryName(b)}偏${bStyle || "另一组形式和主题"}；结论只能说相似张力，不能说二者等同。`;
+  }
+  if (/战后/.test(query)) {
+    return `可以按${axisText}比较：${primaryName(a)}更偏${aStyle || "它自己的问题结构"}；${primaryName(b)}更偏${bStyle || "另一组形式和主题"}。这里要放在明治近代、战后和当代的时间线上，不能只讲单边印象。`;
   }
   return `可以按${axisText}比较：${primaryName(a)}更偏${aStyle || "它自己的问题结构"}；${primaryName(b)}更偏${bStyle || "另一组形式和主题"}。共同点要有证据，不能硬说成同一种东西。`;
 }
@@ -347,6 +391,10 @@ function answerThemeExplanation(focus, query = "") {
   }
   if (/关系/.test(query) && /美术馆|作品价值/.test(query)) {
     return `关系在于：美术馆通过展示、说明和收藏改变作品语境；价值还要看作品自身、历史位置和观看方式。`;
+  }
+  if (focus?.entity_type === "relation") {
+    const axisText = axesFor([focus], 4) || themes(focus, 4) || "对象、时期和媒介";
+    return `${name}要按${axisText}来讲；不能只讲其中一边，也不能把关系说成单向影响。`;
   }
   if (/漂亮/.test(query)) {
     return `判断摄影作品不能只看漂亮：还要看它怎样组织${themeText || "观看、框取和关系"}，以及画面排除了什么。`;
@@ -373,9 +421,9 @@ export function planCultureAnswer({ query, questionType, cards = [], state = {},
   if (questionType === "no_lyrics_boundary") {
     answer = answerCopyrightBoundary(query, focus);
   } else if (questionType === "works_list" || questionType === "listen_recommendation") {
-    answer = answerWorksList(focus, index, false, query, questionType) || answerEntryPath(focus, index, questionType, query);
+    answer = answerWorksList(focus, index, false, query, questionType, cards) || answerEntryPath(focus, index, questionType, query);
   } else if (questionType === "representative_works") {
-    answer = answerWorksList(focus, index, true, query, questionType) || answerWorksList(focus, index, false, query, questionType);
+    answer = answerWorksList(focus, index, true, query, questionType, cards) || answerWorksList(focus, index, false, query, questionType, cards);
   } else if (questionType === "author_list") {
     answer = answerAuthorList(cards, query);
   } else if (questionType === "entry_path" || questionType === "reading_recommendation") {
@@ -384,6 +432,8 @@ export function planCultureAnswer({ query, questionType, cards = [], state = {},
     answer = answerCompare(cards, query);
   } else if (questionType === "country_relation") {
     answer = answerCountryRelation(cards, query);
+  } else if (questionType === "development_history") {
+    answer = answerDevelopmentHistory(focus, cards, query);
   } else if (questionType === "explain_work" || questionType === "follow_up_explain_last_entity" || questionType === "why_it_matters") {
     answer = answerExplain(focus, questionType, query);
   } else if (questionType === "theme_explanation" || questionType === "user_asks_interpretation") {
@@ -417,7 +467,7 @@ export function verifyCultureDraft({ query = "", questionType = "", answer = "",
   if (questionType === "works_list" || questionType === "representative_works" || questionType === "listen_recommendation") {
     if (!/《[^》]+》/.test(text)) reasons.push("works_list_missing_works");
   }
-  if (questionType === "author_list" && !/(夏目|川端|太宰|村上|Lowell|洛厄尔|芭蕉|德里达)/.test(text)) {
+  if (questionType === "author_list" && !/(夏目|川端|太宰|村上|Lowell|洛厄尔|芭蕉|德里达|鲁迅|张爱玲|沈从文|老舍|余华|莫言|罗大佑|李宗盛|邓丽君|崔健|王菲|周杰伦|Beyond|林夕|杜尚|毕加索|康定斯基|沃霍尔|波洛克|蒙德里安)/.test(text)) {
     reasons.push("author_list_missing_authors");
   }
   if (questionType === "compare" || questionType === "follow_up_compare_last_two") {
@@ -438,6 +488,14 @@ export function verifyCultureDraft({ query = "", questionType = "", answer = "",
   if (/不知道|没有足够/.test(text) && cards.length > 0 && !/没有足够卡片证据/.test(text)) {
     reasons.push("generic_unknown_fallback");
   }
+  const coverage = assessCoverageForAnswer({
+    query,
+    domain: cards[0]?.domain || state.last_domain || "",
+    questionType,
+    answer: text,
+    retrievedCards: cards
+  });
+  if (!coverage.ok) reasons.push(...coverage.reasons);
 
   return {
     ok: reasons.length === 0,

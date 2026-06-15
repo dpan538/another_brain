@@ -17,14 +17,20 @@ const PHOTOGRAPHY_ONLY_RE = /摄影|照片|观看关系/;
 const MOOD_ONLY_RE = /^(?!.*《)(?!.*\d)(?!.*世纪)(?!.*年代)(?!.*夏目|.*川端|.*鲁迅|.*罗大佑|.*周杰伦|.*杜尚|.*包豪斯|.*Duchamp|.*Kafka|.*卡夫卡).*(沉默|季节|羞耻|时代感|私人生活|孤独|情绪|气质)/;
 
 function countMatches(text, patterns) {
-  return patterns.filter((pattern) => pattern.test(text)).length;
+  let count = 0;
+  for (const pattern of patterns) {
+    const source = pattern instanceof RegExp ? pattern.source : String(pattern);
+    const flags = pattern instanceof RegExp && pattern.ignoreCase ? "gi" : "g";
+    count += (String(text || "").match(new RegExp(source, flags)) || []).length;
+  }
+  return count;
 }
 
 export function detectQuestionShape(prompt) {
   const text = String(prompt || "");
   return {
     asksList: /(有哪些|哪几位|哪几首|代表人物|代表作家|代表作|作品有哪些|入口人物|从哪几个人)/.test(text),
-    asksWorks: /(代表作品|代表作|作品|歌曲|专辑|哪几首|哪几张)/.test(text),
+    asksWorks: /(代表作品|代表作(?!家)|作品|歌曲|专辑|哪几首|哪几张)/.test(text),
     asksAuthors: /(作家|代表人物|哪几位|人物有哪些)/.test(text),
     asksHistory: /(怎么发展|发展|历史|演变|从古典到现代|80年代|90年代|2000|战后|近代|当代|运动|时期|golden era)/i.test(text),
     asksCompare: /(差在哪|比较|共同点|不同|是不是一个东西|vs|和.+关系|和.+能比较|都算)/i.test(text),
@@ -54,13 +60,13 @@ export function analyzeBlackboxAnswer({ prompt, domain = "", answer = "", route 
   if (shape.asksList && !/(《[^》]+》|夏目|川端|太宰|村上|鲁迅|张爱玲|李宗盛|邓丽君|崔健|王菲|周杰伦|杜尚|毕加索|康定斯基|Warhol|Kafka|卡夫卡)/.test(text)) {
     failures.push({ check: "list_without_concrete_anchors" });
   }
-  if (shape.asksHistory && countMatches(text, [/古典|平安|江户|明治|近代|战后|当代|80年代|90年代|2000|现代主义|后现代|民歌运动|大陆摇滚|平台时代|世纪/g]) < 2) {
+  if (shape.asksHistory && countMatches(text, [/古典|平安|江户|明治|近代|战后|当代|1980|80年代|1990|90年代|2000|现代主义|后现代|民歌运动|大陆摇滚|平台时代|世纪|黄金期|时期/]) < 2) {
     failures.push({ check: "history_without_chronology" });
   }
   if (shape.asksCompare && !/(轴|比较|不同|共同|更偏|更重|一边|另一边|差别|不是同一个)/.test(text)) {
     failures.push({ check: "compare_without_axis" });
   }
-  if (shape.asksBroadAsian && JAPAN_ONLY_RE.test(text) && !/(中国|韩国|东亚|南亚|东南亚|范围太大|先从)/.test(text)) {
+  if (shape.asksBroadAsian && JAPAN_ONLY_RE.test(text) && !/(中国|韩国|东亚|南亚|东南亚|范围太大|先从|鲁迅|张爱玲|Chinese|East Asian)/.test(text)) {
     failures.push({ check: "asian_literature_collapsed_to_japan" });
   }
   if (shape.asksChinesePop && LUO_ONLY_RE.test(text) && !/(李宗盛|邓丽君|崔健|王菲|周杰伦|香港|台湾|大陆|民歌|摇滚)/.test(text)) {

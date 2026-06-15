@@ -131,16 +131,26 @@ export function solveChineseArithmetic(query) {
     }
   }
 
-  const initial = source.match(new RegExp(`(?:有|原来有)(${n})个`));
+  const peopleEach = source.match(new RegExp(`(${n})(?:个)?人每人(${n})(?:张|个|本|块)?.*?(?:一共|总共|共有).*?[几多少]`));
+  if (peopleEach) {
+    const people = parseNumber(peopleEach[1]);
+    const per = parseNumber(peopleEach[2]);
+    if (Number.isFinite(people) && Number.isFinite(per)) {
+      const result = people * per;
+      return ok({ solver: "arithmetic", operation: "multiplication_word_problem", result, answer: `一共${formatNumber(result)}张。` });
+    }
+  }
+
+  const initial = source.match(new RegExp(`(?:有|原来有)(${n})(?:个|本|张|块|只|支|颗)?`));
   if (initial && /(还剩|剩几个|剩多少)/.test(source)) {
     let total = parseNumber(initial[1]);
     const preferChinese = /[零一二两三四五六七八九十]/.test(initial[1]);
     if (!Number.isFinite(total)) return fail("invalid_initial_number");
-    const opRe = new RegExp(`(又买了|买了|得到|增加|拿走|吃掉|用掉|卖掉|失去|再拿走)(${n})个`, "g");
+    const opRe = new RegExp(`(又买了|买了|又拿来|拿来|得到|增加|拿走|再拿走|送走|吃掉|用掉|卖掉|失去)(${n})(?:个|本|张|块|只|支|颗)?`, "g");
     for (const match of source.matchAll(opRe)) {
       const amount = parseNumber(match[2]);
       if (!Number.isFinite(amount)) return fail("invalid_operation_number");
-      if (/(拿走|吃掉|用掉|卖掉|失去)/.test(match[1])) total -= amount;
+      if (/(拿走|送走|吃掉|用掉|卖掉|失去)/.test(match[1])) total -= amount;
       else total += amount;
     }
     return ok({ solver: "arithmetic", operation: "word_arithmetic", result: total, answer: `还剩${formatMaybeChinese(total, preferChinese)}个。` });
@@ -205,7 +215,7 @@ function scoreGraph(entities, edges) {
 
 function targetMode(query) {
   const tail = String(query || "").split(/[，,]/).pop() || query;
-  if (/(最矮|最小|最轻|最短|最薄|最慢|谁最后|哪.*最后)/.test(tail)) return "min";
+  if (/(最矮|最小|最轻|最短|最薄|最慢|最早|谁最后|哪.*最后)/.test(tail)) return "min";
   return "max";
 }
 
@@ -223,7 +233,7 @@ export function solveTransitiveComparisonFromText(query) {
   if (hasCycle) return fail("cycle_detected", { solver: "transitive_comparison", operation: "order_graph" });
   const result = queryRelationGraph(graph, { mode: targetMode(query) });
   if (!result.ok) return result;
-  const suffix = /(最高)/.test(query) ? "最高" : /(最大)/.test(query) ? "最大" : /(最重)/.test(query) ? "最重" : /(最轻)/.test(query) ? "最轻" : /(最慢)/.test(query) ? "最慢" : /(最后)/.test(query) ? "最后" : /(最厚)/.test(query) ? "最厚" : "符合条件";
+  const suffix = /(最高)/.test(query) ? "最高" : /(最大)/.test(query) ? "最大" : /(最重)/.test(query) ? "最重" : /(最轻)/.test(query) ? "最轻" : /(最慢)/.test(query) ? "最慢" : /(最早)/.test(query) ? "最早" : /(最后)/.test(query) ? "最后" : /(最厚)/.test(query) ? "最厚" : "符合条件";
   return { ...result, solver: "transitive_comparison", operation: "order_graph", answer: `${result.result}${suffix}。` };
 }
 
@@ -254,6 +264,9 @@ export function solveSyllogismFromText(query) {
   if (match) return ok({ solver: "syllogism", operation: "negative_universal", result: false, answer: `不是${match[2]}。` });
 
   match = source.match(/所有(.+?)都是(.+?)[，,]所有\2都是(.+?)[，,]所以所有\1都是\3吗/);
+  if (match) return ok({ solver: "syllogism", operation: "universal_chain", result: true, answer: "是。这个三段论成立。" });
+
+  match = source.match(/所有(.+?)都是(.+?)[，,]所有\2都是(.+?)[，,]\1一定是\3吗/);
   if (match) return ok({ solver: "syllogism", operation: "universal_chain", result: true, answer: "是。这个三段论成立。" });
 
   match = source.match(/所有(.+?)都是(.+?)[，,](.+?)是\1[，,]\3是\2吗/);
