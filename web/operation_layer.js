@@ -358,6 +358,24 @@ function answerPrivacyBoundary(text) {
 }
 
 function answerReasoningPolicyBoundary(text) {
+  if (/韩国.*文学.*(入口|不确定|怎么答|覆盖|知道什么)/.test(text)) {
+    return makeResult({
+      intent: "operation_unknown_factual_status",
+      operation: "bounded_korean_literature_entry_policy",
+      questionType: "reading_recommendation",
+      contextAction: "ANSWER_CULTURE",
+      answer: "韩国现代文学覆盖不足，不能硬编；可以先从东亚现代性入口对照鲁迅、夏目，再等已审核韩国作家/作品卡补齐。"
+    });
+  }
+  if (/((没有|无|缺少).{0,6}(证据|材料|可靠材料|卡片支持)|证据不足|不确定.{0,8}(怎么答|怎么办|如何回答))/.test(text)) {
+    return makeResult({
+      intent: "operation_unknown_factual_status",
+      operation: "evidence_boundary_policy",
+      questionType: "boundary",
+      contextAction: "ANSWER_WITH_UNCERTAINTY",
+      answer: "证据不足时要说不确定或覆盖不足；可以给可验证的推断路径，但不能把猜测说成事实。"
+    });
+  }
   if (/(比较两个文化对象.*避免编谱系|怎么避免编谱系)/.test(text)) {
     return makeResult({
       intent: "operation_coverage_policy",
