@@ -9,15 +9,32 @@ const INPUTS = [
   "artifacts/training_os/reasoning_trace_training.jsonl",
   "artifacts/training_os/coverage_trace_training.jsonl",
   "artifacts/training_os/external_reasoning_trace_training.jsonl",
-  "artifacts/training_os/persona_method_training_public.jsonl"
+  "artifacts/training_os/persona_method_training_public.jsonl",
+  "artifacts/training_os/r17_personal_runtime_policy_training.jsonl"
 ].map((file) => resolve(ROOT, file));
 const STATE = resolve(ROOT, "artifacts/training_os/controlled_gate_training_state.json");
 const MODEL = resolve(ROOT, "artifacts/training_os/controlled_gate_model.json");
 const METRICS = resolve(ROOT, "artifacts/training_os/controlled_gate_training_metrics.json");
+const METRICS_R17 = resolve(ROOT, "artifacts/training_os/r17_controlled_gate_training_metrics.json");
 const CONFUSION = resolve(ROOT, "artifacts/training_os/controlled_gate_confusion_matrices.json");
+const CONFUSION_R17 = resolve(ROOT, "artifacts/training_os/r17_controlled_gate_confusion_matrices.json");
 const FAILURES = resolve(ROOT, "artifacts/training_os/controlled_gate_blind_failures.json");
+const FAILURES_R17 = resolve(ROOT, "artifacts/training_os/r17_controlled_gate_blind_failures.json");
 
-const HEADS = ["domain", "task_type", "question_type", "operation", "answer_policy", "risk_label", "verifier_label", "template_id"];
+const HEADS = [
+  "domain",
+  "task_type",
+  "question_type",
+  "operation",
+  "answer_policy",
+  "risk_label",
+  "coverage_requirement",
+  "verifier_label",
+  "memory_policy",
+  "runtime_profile",
+  "backend_preference",
+  "template_id"
+];
 const SPLITS = ["train", "dev", "test", "blind"];
 
 function parseJsonl(text) {
@@ -69,6 +86,11 @@ function normalize(row, source) {
   const answerPolicy = row.answer_policy || row.expected_answer_policy || "supported_short_answer";
   const risk = riskFromPersona(row);
   const verifier = Array.isArray(row.bad_answers) && row.bad_answers.length > 0 ? "needs_verifier" : "accept";
+  const compactState = row.compact_state || {};
+  const memoryPolicy = deriveMemoryPolicy(row, compactState);
+  const runtimeProfile = compactState.runtime_profile || row.runtime_profile || backendProfileFromTags(row.eval_tags || []);
+  const backendPreference = row.backend_preference || deriveBackendPreference(row, runtimeProfile);
+  const coverageRequirement = deriveCoverageRequirement(row);
   return {
     id: row.id || `${source}:${hash(row.query)}`,
     query: row.query || row.prompt || "",
@@ -80,11 +102,55 @@ function normalize(row, source) {
     operation,
     answer_policy: answerPolicy,
     risk_label: risk,
+    coverage_requirement: coverageRequirement,
     verifier_label: verifier,
+    memory_policy: memoryPolicy,
+    runtime_profile: runtimeProfile,
+    backend_preference: backendPreference,
     template_id: row.template_id || `${task}.${qType}`,
     eval_tags: row.eval_tags || [],
-    compact_state: row.compact_state || {}
+    compact_state: compactState
   };
+}
+
+function deriveMemoryPolicy(row, compactState) {
+  const operation = String(row.expected_persona_operation || row.operation || "");
+  const answerPolicy = String(row.expected_answer_policy || row.answer_policy || "");
+  if (operation.includes("bind_from_internal_session_memory")) return "use_16_turn_session_memory";
+  if (operation.includes("distinguish_visible_ui")) return "visible_4_internal_16_boundary";
+  if (operation.includes("answer_approved_memory_fact")) return "approved_memory_artifact";
+  if (operation.includes("refuse_unapproved_memory")) return "refuse_unapproved_long_memory";
+  if (operation.includes("approved_personal_fact")) return "approved_fact_direct_answer";
+  if (Number(compactState.internal_runtime_memory_exchange_turns || 0) === 16) return "session_memory_available";
+  if (answerPolicy.includes("refuse")) return "boundary";
+  return "none";
+}
+
+function backendProfileFromTags(tags) {
+  if (tags.some((tag) => /webgpu|personal_200m/i.test(tag))) return "personal_200m";
+  if (tags.some((tag) => /r17|runtime/i.test(tag))) return "personal_local";
+  return "standard";
+}
+
+function deriveBackendPreference(row, runtimeProfile) {
+  const task = String(row.task_type || row.expected_task_type || "");
+  const operation = String(row.operation || row.expected_operation || row.expected_persona_operation || "");
+  if (/arithmetic|syllogism|transitive|set_quantifier/.test(task)) return "deterministic_solver";
+  if (/privacy|copyright|source/.test(operation)) return "deterministic_verifier";
+  if (runtimeProfile === "personal_200m") return "webgpu_preferred_wasm_fallback";
+  if (/culture|retrieval|relation_graph/.test(task)) return "local_cards_then_wasm";
+  return "wasm_fallback";
+}
+
+function deriveCoverageRequirement(row) {
+  if (row.coverage_requirement) return JSON.stringify(row.coverage_requirement);
+  const questionType = String(row.question_type || row.expected_question_type || row.expected_persona_operation || "");
+  if (/compare/.test(questionType)) return "requires_both_sides_axis";
+  if (/works|representative/.test(questionType)) return "requires_work_anchors";
+  if (/author|person/.test(questionType)) return "requires_entity_anchors";
+  if (/history|period|chronology/.test(questionType)) return "requires_period_anchors";
+  if (row.retrieval_plan && Object.keys(row.retrieval_plan).length > 0) return "requires_retrieval_evidence";
+  return "none";
 }
 
 function tokenize(text) {
@@ -105,6 +171,10 @@ function featureText(row) {
     row.operation,
     row.answer_policy,
     row.risk_label,
+    row.coverage_requirement,
+    row.memory_policy,
+    row.runtime_profile,
+    row.backend_preference,
     row.eval_tags.join(" "),
     Object.keys(row.compact_state || {}).join(" ")
   ].join(" ");
@@ -187,13 +257,18 @@ async function main() {
     metrics.blind.task_type >= 0.85 &&
     metrics.blind.question_type >= 0.8 &&
     metrics.blind.operation >= 0.8 &&
-    metrics.blind.risk_label >= 0.9;
+    metrics.blind.risk_label >= 0.9 &&
+    metrics.blind.memory_policy >= 0.9 &&
+    metrics.blind.runtime_profile >= 0.85;
 
   await mkdir(dirname(MODEL), { recursive: true });
   await writeFile(MODEL, JSON.stringify({ schema_version: 1, cycle, heads: HEADS, models }, null, 2), "utf8");
   await writeFile(METRICS, JSON.stringify(metrics, null, 2), "utf8");
+  await writeFile(METRICS_R17, JSON.stringify(metrics, null, 2), "utf8");
   await writeFile(CONFUSION, JSON.stringify(evals, null, 2), "utf8");
+  await writeFile(CONFUSION_R17, JSON.stringify(evals, null, 2), "utf8");
   await writeFile(FAILURES, JSON.stringify(evals.blind.failures, null, 2), "utf8");
+  await writeFile(FAILURES_R17, JSON.stringify(evals.blind.failures, null, 2), "utf8");
   await writeFile(STATE, JSON.stringify({ cycles: cycle, last_rows: rows.length }, null, 2), "utf8");
   console.log(JSON.stringify(metrics, null, 2));
 }

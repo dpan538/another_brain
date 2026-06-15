@@ -17,11 +17,14 @@ async function main() {
   const metrics = JSON.parse(await readFile(METRICS, "utf8"));
   const blind = metrics.blind || {};
   const targetChecks = {
-    domain_accuracy_blind: blind.domain >= 0.85,
-    task_type_accuracy_blind: blind.task_type >= 0.85,
-    question_type_accuracy_blind: blind.question_type >= 0.8,
-    operation_accuracy_blind: blind.operation >= 0.8,
-    risk_label_accuracy_blind: blind.risk_label >= 0.9
+    domain_accuracy_blind: blind.domain >= 0.87,
+    task_type_accuracy_blind: blind.task_type >= 0.87,
+    question_type_accuracy_blind: blind.question_type >= 0.83,
+    operation_accuracy_blind: blind.operation >= 0.83,
+    risk_label_accuracy_blind: blind.risk_label >= 0.92,
+    memory_policy_accuracy_blind: blind.memory_policy >= 0.9,
+    runtime_profile_accuracy_blind: blind.runtime_profile >= 0.85,
+    backend_preference_accuracy_blind: blind.backend_preference >= 0.85
   };
   const report = {
     ok: true,
@@ -31,7 +34,7 @@ async function main() {
     blind,
     target_checks: targetChecks,
     objective: metrics.objective,
-    note: "Evaluation covers controlled label prediction only; no final-answer generation is trained."
+    note: "Evaluation covers controlled label prediction only, including R17 memory/runtime/backend heads; no final-answer generation is trained."
   };
   await writeFile(REPORT, JSON.stringify(report, null, 2), "utf8");
   console.log(JSON.stringify(report, null, 2));
