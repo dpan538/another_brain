@@ -80,16 +80,18 @@ export function detectCultureDomain(query, state = {}) {
 
 export function detectCultureQuestionType(query, state = {}) {
   const text = clean(query);
-  const hasFollowup = /(这首|这本|这个|那他呢|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那战后呢|那这首)/.test(text);
+  const hasNoLyricsExplain = /(不要|不贴|不用).{0,6}歌词/.test(text) && /(解释|讲讲|重要|为什么|意义)/.test(text);
+  const hasFollowup = /(这首|这本|这个(?!国家)|那他呢|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那战后呢|那这首)/.test(text);
+  if (hasNoLyricsExplain) return "why_it_matters";
   if (COPYRIGHT_REQUEST_RE.test(text)) return "no_lyrics_boundary";
-  if (/那两个|谁更|共同点|区别|不同|差在哪|比较|和.+有什么共同|vs|VS/.test(text)) return hasFollowup && /那两个|谁更/.test(text) ? "follow_up_compare_last_two" : "compare";
-  if (hasFollowup && /(继续说|再展开|这首|这本|这个|第一首|第一本|这张专辑|它为什么重要|那这首|那战后)/.test(text)) return "follow_up_explain_last_entity";
+  if (/(日本和日本文学|国家.*文学|文学.*国家|一回事|同一个东西|关系)/.test(text) && /日本/.test(text)) return "country_relation";
   if (/(代表作家|作家有哪些|有哪些.*作家|哪些.*作家|重要作家)/.test(text)) return "author_list";
   if (/(代表作|代表性作品|代表作品|经典作品)/.test(text)) return "representative_works";
-  if (/(有什么歌曲|有哪些歌|哪几首|作品有哪些|有哪些作品|有什么作品|歌单|曲目)/.test(text)) return "works_list";
   if (/(先听|从哪.*听|听哪|入门歌)/.test(text)) return "listen_recommendation";
   if (/(从什么开始|从哪.*开始|开始读|入门|第一本|先读|读什么|适合从哪本)/.test(text)) return "reading_recommendation";
-  if (/(日本和日本文学|国家.*文学|文学.*国家|一回事|同一个东西|关系)/.test(text) && /日本/.test(text)) return "country_relation";
+  if (/那两个|谁更|共同点|区别|不同|差在哪|比较(?!好)|和.+有什么共同|vs|VS/.test(text)) return hasFollowup && /那两个|谁更/.test(text) ? "follow_up_compare_last_two" : "compare";
+  if (hasFollowup && /(继续说|再展开|这首|这本|这个(?!国家)|第一首|第一本|这张专辑|它为什么重要|那这首|那战后)/.test(text)) return "follow_up_explain_last_entity";
+  if (/(有什么歌曲|有哪些歌|哪几首|作品有哪些|有哪些作品|有什么作品|歌单|曲目)/.test(text)) return "works_list";
   if (/(为什么重要|重要性|为什么.*重要|意义)/.test(text)) return "why_it_matters";
   if (/(是什么意思|怎么理解|如何理解|这句话|讲什么|在讲什么|大概在讲|你懂什么|是什么|谁是|是谁)/.test(text)) return "explain_work";
   if (/(你怎么看|你觉得|有没有意思)/.test(text)) return "user_asks_opinion";
@@ -113,7 +115,7 @@ function matchAlias(query, index) {
 
 export function bindCultureFollowup(query, state = {}, candidates = [], index = DEFAULT_INDEX) {
   const text = clean(query);
-  if (!/(这首|这本|这个|那他呢|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那这首|那战后)/.test(text)) {
+  if (!/(这首|这本|这个(?!国家)|那他呢|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那这首|那战后)/.test(text)) {
     return null;
   }
   if (/那两个|谁更/.test(text) && Array.isArray(state.last_two_entity_ids) && state.last_two_entity_ids.length >= 2) {
@@ -153,7 +155,7 @@ export function retrieveCultureCards(query, state = {}, index = DEFAULT_INDEX) {
 
   if (questionType === "author_list") {
     focusCards = (index.byDomain.get(domain) || []).filter((card) => card.entity_type === "person");
-  } else if (questionType === "compare" && focusCards.length < 2 && /罗大佑/.test(query) && /日本文学/.test(query)) {
+  } else if (questionType === "compare" && /罗大佑/.test(query) && /日本文学/.test(query)) {
     focusCards = ["person.luo_dayou", "concept.japanese_literature"].map((id) => index.byId.get(id)).filter(Boolean);
   } else if (questionType === "country_relation") {
     focusCards = ["concept.japanese_literature"].map((id) => index.byId.get(id)).filter(Boolean);

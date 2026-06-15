@@ -1,3 +1,5 @@
+import { answerCultureQuery } from "./culture_runtime.js";
+
 const COPYRIGHT_REQUEST_RE = /(歌词|原文|唱词|逐字|整首|全文)/;
 
 function clean(text) {
@@ -358,5 +360,22 @@ export function answerWithOperationLayer(query, state = {}) {
   const text = clean(query);
   if (!text) return null;
   if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return null;
-  return answerCulture(text, state) || answerReasoning(text, state);
+  const cultureRuntimeAnswer = answerCultureQuery(text, state);
+  if (cultureRuntimeAnswer?.answer) {
+    return {
+      intent: cultureRuntimeAnswer.intent || "culture_awareness",
+      answer: clean(cultureRuntimeAnswer.answer),
+      operation: cultureRuntimeAnswer.operation,
+      questionType: cultureRuntimeAnswer.questionType,
+      contextAction: cultureRuntimeAnswer.contextAction || "ANSWER_CULTURE",
+      usedModel: false,
+      culture: {
+        route: cultureRuntimeAnswer.route,
+        cards: cultureRuntimeAnswer.cards || [],
+        verifier: cultureRuntimeAnswer.verifier || null,
+        compactStatePatch: cultureRuntimeAnswer.compactStatePatch || {}
+      }
+    };
+  }
+  return answerReasoning(text, state);
 }
