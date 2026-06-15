@@ -1,4 +1,11 @@
 import { answerCultureQuery } from "./culture_runtime.js";
+import { verifyDraft } from "./draft_verifier.js";
+import {
+  solveChineseArithmetic,
+  solveSetQuantifierFromText,
+  solveSyllogismFromText,
+  solveTransitiveComparisonFromText
+} from "./micro_solvers.js";
 
 const COPYRIGHT_REQUEST_RE = /(歌词|原文|唱词|逐字|整首|全文)/;
 
@@ -30,6 +37,71 @@ function makeResult({ intent, answer, operation, questionType, contextAction }) 
     contextAction,
     usedModel: false
   };
+}
+
+function makeVerifiedSolverResult({ intent, solverResult, operation, questionType = "solve" }) {
+  if (!solverResult?.ok || !solverResult.answer) return null;
+  const result = makeResult({
+    intent,
+    operation: operation || solverResult.operation || solverResult.solver,
+    questionType,
+    contextAction: "SOLVE_REASONING",
+    answer: solverResult.answer
+  });
+  if (!result?.answer) return null;
+  const verification = verifyDraft({
+    query: "",
+    draft: result.answer,
+    solverResult,
+    source: solverResult.solver || intent,
+    trace: {
+      task_type: solverResult.solver || "reasoning",
+      question_type: questionType,
+      operation: result.operation
+    }
+  });
+  if (!verification.ok) return null;
+  return { ...result, solverResult, verifier: verification };
+}
+
+function answerWithMicroSolvers(text) {
+  const arithmetic = solveChineseArithmetic(text);
+  if (arithmetic.ok) {
+    return makeVerifiedSolverResult({
+      intent: "operation_arithmetic",
+      solverResult: arithmetic,
+      operation: arithmetic.operation || "word_arithmetic"
+    });
+  }
+
+  const syllogism = solveSyllogismFromText(text);
+  if (syllogism.ok) {
+    return makeVerifiedSolverResult({
+      intent: "operation_syllogism",
+      solverResult: syllogism,
+      operation: syllogism.operation || "unary_logic"
+    });
+  }
+
+  const setQuantifier = solveSetQuantifierFromText(text);
+  if (setQuantifier.ok) {
+    return makeVerifiedSolverResult({
+      intent: "operation_set_quantifier",
+      solverResult: setQuantifier,
+      operation: setQuantifier.operation || "set_quantifier"
+    });
+  }
+
+  const transitive = solveTransitiveComparisonFromText(text);
+  if (transitive.ok) {
+    return makeVerifiedSolverResult({
+      intent: "operation_transitive_comparison",
+      solverResult: transitive,
+      operation: transitive.operation || "order_graph"
+    });
+  }
+
+  return null;
 }
 
 function parseNumber(value) {
@@ -347,6 +419,7 @@ function answerCulture(text, state) {
 
 function answerReasoning(text) {
   return (
+    answerWithMicroSolvers(text) ||
     answerArithmetic(text) ||
     answerSyllogism(text) ||
     answerTransitiveComparison(text) ||
@@ -362,6 +435,18 @@ export function answerWithOperationLayer(query, state = {}) {
   if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return null;
   const cultureRuntimeAnswer = answerCultureQuery(text, state);
   if (cultureRuntimeAnswer?.answer) {
+    const sharedVerification = verifyDraft({
+      query: text,
+      draft: cultureRuntimeAnswer.answer,
+      source: "culture",
+      evidence: { cards: cultureRuntimeAnswer.cards || [] },
+      trace: {
+        task_type: "culture",
+        question_type: cultureRuntimeAnswer.questionType || "",
+        operation: cultureRuntimeAnswer.operation || ""
+      }
+    });
+    if (!sharedVerification.ok) return null;
     return {
       intent: cultureRuntimeAnswer.intent || "culture_awareness",
       answer: clean(cultureRuntimeAnswer.answer),
@@ -372,7 +457,10 @@ export function answerWithOperationLayer(query, state = {}) {
       culture: {
         route: cultureRuntimeAnswer.route,
         cards: cultureRuntimeAnswer.cards || [],
-        verifier: cultureRuntimeAnswer.verifier || null,
+        verifier: {
+          culture: cultureRuntimeAnswer.verifier || null,
+          shared: sharedVerification
+        },
         compactStatePatch: cultureRuntimeAnswer.compactStatePatch || {}
       }
     };

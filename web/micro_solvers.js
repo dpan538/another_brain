@@ -41,6 +41,12 @@ function formatNumber(value) {
   return Number.isInteger(value) ? String(value) : String(Math.round(value * 1000) / 1000);
 }
 
+function formatMaybeChinese(value, preferChinese = false) {
+  if (!preferChinese) return formatNumber(value);
+  const names = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+  return Number.isInteger(value) && value >= 0 && value <= 10 ? names[value] : formatNumber(value);
+}
+
 function numberPattern() {
   return "(?:\\d+(?:\\.\\d+)?|十[一二两三四五六七八九]?|[一二两三四五六七八九]十[一二两三四五六七八九]?|[零一二两三四五六七八九])";
 }
@@ -128,6 +134,7 @@ export function solveChineseArithmetic(query) {
   const initial = source.match(new RegExp(`(?:有|原来有)(${n})个`));
   if (initial && /(还剩|剩几个|剩多少)/.test(source)) {
     let total = parseNumber(initial[1]);
+    const preferChinese = /[零一二两三四五六七八九十]/.test(initial[1]);
     if (!Number.isFinite(total)) return fail("invalid_initial_number");
     const opRe = new RegExp(`(又买了|买了|得到|增加|拿走|吃掉|用掉|卖掉|失去|再拿走)(${n})个`, "g");
     for (const match of source.matchAll(opRe)) {
@@ -136,7 +143,7 @@ export function solveChineseArithmetic(query) {
       if (/(拿走|吃掉|用掉|卖掉|失去)/.test(match[1])) total -= amount;
       else total += amount;
     }
-    return ok({ solver: "arithmetic", operation: "word_arithmetic", result: total, answer: `还剩${formatNumber(total)}个。` });
+    return ok({ solver: "arithmetic", operation: "word_arithmetic", result: total, answer: `还剩${formatMaybeChinese(total, preferChinese)}个。` });
   }
 
   const expression = parseExpression(source);
