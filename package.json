@@ -49,6 +49,8 @@
     "eval:r13-coverage": "node scripts/eval_r13_coverage.mjs",
     "eval:r13-coverage:report": "node scripts/eval_r13_coverage.mjs --report-only",
     "check:short-context": "node scripts/validate_short_context_contract.mjs",
+    "audit:training-depth": "node scripts/audit_training_depth.mjs",
+    "eval:mini-web-llm-readiness": "node scripts/eval_mini_web_llm_readiness.mjs",
     "audit:culture-coverage": "node scripts/audit_culture_coverage.mjs",
     "audit:anchor-overfit": "node scripts/audit_anchor_overfit.mjs",
     "audit:anchor-overfit:report": "node scripts/audit_anchor_overfit.mjs --report-only",
