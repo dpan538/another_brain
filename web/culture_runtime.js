@@ -72,7 +72,7 @@ export function detectCultureDomain(query, state = {}) {
   const text = clean(query);
   if (includesAny(text, [/罗大佑|李宗盛|Lo Ta-yu|Luo Dayou|华语流行|中文流行|台湾流行|之乎者也|鹿港小镇|童年|恋曲1980|恋曲1990|东方之珠/])) return "music.mandopop";
   if (includesAny(text, [/日本文学|日本小说|日本作家|夏目漱石|川端康成|太宰治|人间失格|村上春树|芭蕉|俳句|雪国|少爷|《心》|战后日本/])) return "literature.japanese";
-  if (includesAny(text, [/存在主义|真实性|本真|德里达|解构|记忆和叙述|记忆与叙述|沉默.*回答|名字.*记忆|语言.*背叛|问题没有答案|没有答案.*值得问/])) return "philosophy";
+  if (includesAny(text, [/存在主义|真实性|本真|德里达|解构|记忆和叙述|记忆与叙述|沉默.*回答|名字.*记忆|名字.*记住|名字.*忘记|语言.*背叛|问题没有答案|没有答案.*值得问|问题的价值/])) return "philosophy";
   if (includesAny(text, [/Robert Lowell|罗伯特·洛厄尔|洛厄尔|自白诗|摄影|照片|杜尚|美术馆|艺术史|诗和歌词|失败情绪|照片没有失败/])) return "poetry.art";
   if (state?.last_domain) return state.last_domain;
   return "generic";

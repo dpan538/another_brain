@@ -100,6 +100,15 @@ function answerWithMicroSolvers(text) {
       operation: transitive.operation || "order_graph"
     });
   }
+  if (transitive.error === "cycle_detected") {
+    return makeResult({
+      intent: "operation_transitive_comparison",
+      operation: "order_graph_cycle_check",
+      questionType: "solve",
+      contextAction: "SOLVE_REASONING",
+      answer: "关系形成循环，不能推出谁最大。"
+    });
+  }
 
   return null;
 }
@@ -223,8 +232,17 @@ function answerSentenceExplanation(text) {
 }
 
 function answerUnknownBoundary(text) {
-  if (/(没见过的歌手|资料里没有的歌手|没有资料的歌手|不认识的歌手)/.test(text)) {
+  if (/(没见过的歌手|资料里没有.*歌手|没有资料.*歌手|不认识的歌手|不知道的时候.*编|会编吗)/.test(text)) {
     const hasNoMaterial = /(资料里没有|没有资料)/.test(text);
+    if (/(不知道的时候.*编|会编吗)/.test(text)) {
+      return makeResult({
+        intent: "operation_unknown_factual_status",
+        operation: "unknown_boundary_check",
+        questionType: "boundary",
+        contextAction: "ANSWER_WITH_UNCERTAINTY",
+        answer: "不知道就不能编；需要可靠材料或明确前提再答。"
+      });
+    }
     return makeResult({
       intent: "operation_unknown_factual_status",
       operation: "unknown_boundary_check",
@@ -239,13 +257,42 @@ function answerUnknownBoundary(text) {
 }
 
 function answerPrivacyBoundary(text) {
-  if (!/(真实姓名|我的姓名|私人身份|身份证号|手机号|住址)/.test(text)) return null;
+  if (!/(真实姓名|我的姓名|私人身份|身份证号|身份证|手机号|住址|你知道我是谁|我是谁)/.test(text)) return null;
+  if (/身份证|手机号|住址/.test(text)) {
+    return makeResult({
+      intent: "operation_privacy_boundary",
+      operation: "privacy_scope_check",
+      questionType: "verify",
+      contextAction: "ANSWER_MEMORY_BOUNDARY",
+      answer: "不能猜也不能生成证件号、手机号或住址这类私人信息。"
+    });
+  }
+  if (/真实姓名|我的姓名/.test(text)) {
+    return makeResult({
+      intent: "operation_privacy_boundary",
+      operation: "privacy_scope_check",
+      questionType: "verify",
+      contextAction: "ANSWER_MEMORY_BOUNDARY",
+      answer: "不知道，也不能猜这个私人身份；只有你明确告诉我才算数。"
+    });
+  }
   return makeResult({
     intent: "operation_privacy_boundary",
     operation: "privacy_scope_check",
     questionType: "verify",
     contextAction: "ANSWER_MEMORY_BOUNDARY",
     answer: "不知道，也不该猜私人身份；只有你能明确告诉我。"
+  });
+}
+
+function answerReasoningPolicyBoundary(text) {
+  if (!/(风格.*正确性|正确性.*风格|风格放在答案正确性前面)/.test(text)) return null;
+  return makeResult({
+    intent: "operation_reasoning_policy",
+    operation: "answer_policy_check",
+    questionType: "boundary",
+    contextAction: "SOLVE_REASONING",
+    answer: "不会。先保证答案正确和边界清楚，风格只能排在后面。"
   });
 }
 
@@ -435,6 +482,7 @@ function answerReasoning(text) {
   return (
     answerWithMicroSolvers(text) ||
     answerGenericCopyrightBoundary(text) ||
+    answerReasoningPolicyBoundary(text) ||
     answerArithmetic(text) ||
     answerSyllogism(text) ||
     answerTransitiveComparison(text) ||
@@ -447,7 +495,7 @@ function answerReasoning(text) {
 export function answerWithOperationLayer(query, state = {}) {
   const text = clean(query);
   if (!text) return null;
-  if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return null;
+  if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return answerPrivacyBoundary(text);
   const cultureRuntimeAnswer = answerCultureQuery(text, state);
   if (cultureRuntimeAnswer?.answer) {
     const sharedVerification = verifyDraft({

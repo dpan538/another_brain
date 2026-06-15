@@ -268,6 +268,9 @@ export function solveSyllogismFromText(query) {
   match = source.match(/所有会(.+?)的都不是(.+?)[，,](.+?)会\1[，,]\3是\2吗/);
   if (match) return ok({ solver: "syllogism", operation: "predicate_negative_universal", result: false, answer: `不是${match[2]}。因为会${match[1]}的都不是${match[2]}。` });
 
+  match = source.match(/所有会(.+?)的都不是(.+?)[，,](.+?)会\1[，,]所以\3是\2吗/);
+  if (match) return ok({ solver: "syllogism", operation: "predicate_negative_universal", result: false, answer: `不是${match[2]}。因为会${match[1]}的都不是${match[2]}。` });
+
   match = source.match(/所有会(.+?)的都是(.+?)[，,](.+?)会\1[，,]\3是\2吗/);
   if (match) return ok({ solver: "syllogism", operation: "predicate_positive_universal", result: true, answer: `是，${match[3]}是${match[2]}。` });
 

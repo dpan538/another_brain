@@ -2750,6 +2750,7 @@ export const CULTURE_CARDS = [
     "entity_type": "concept",
     "names": [
       "语言会背叛意思吗",
+      "语言会背叛意思",
       "语言背叛意思",
       "语言与意思",
       "language betrays meaning"
@@ -2844,6 +2845,7 @@ export const CULTURE_CARDS = [
     "names": [
       "没有答案的问题",
       "问题没有答案",
+      "问题的价值不只在答案",
       "是否还值得问",
       "unanswerable question"
     ],
@@ -3297,6 +3299,7 @@ export const CULTURE_CARDS = [
     "names": [
       "美术馆与作品价值",
       "美术馆和作品价值",
+      "美术馆",
       "艺术制度",
       "museum and artwork value"
     ],

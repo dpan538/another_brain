@@ -276,6 +276,18 @@ function answerExplain(focus, questionType, query = "") {
     const lead = noLyrics ? (/讲讲|重要性/.test(query) ? "不贴原文，讲重要性：" : "不贴原文解释：") : "";
     return `${lead}${name}重要，不是因为一句固定标签，而是因为它把${themeText || "形式、历史和经验"}组织成可讨论的作品/问题；${contextText || focus.factual_core}`;
   }
+  if (/这句话/.test(query)) {
+    return `这句话的意思是：${focus.factual_core} 关键不在口号，而在${themeText || "它改变了判断关系"}。`;
+  }
+  if (/继续说/.test(query)) {
+    return `继续展开：${name}要抓${themeText || "主题和边界"}，再看${contextText || focus.factual_core}。`;
+  }
+  if (/它为什么重要/.test(query)) {
+    return `${name}的重要性在于：${contextText || focus.factual_core}；它把${themeText || "形式和历史经验"}变成可讨论的问题。`;
+  }
+  if (/那这张专辑/.test(query)) {
+    return `这张专辑可从${themeText || "标题、时代和姿态"}看：${focus.factual_core}`;
+  }
   if (/你懂什么/.test(query)) {
     return `${name}不是一个可复读的标签；先看它的位置：${focus.factual_core} 重点是${themeText || "作品语境"}。`;
   }
@@ -326,6 +338,12 @@ function answerThemeExplanation(focus, query = "") {
   if (!focus) return "";
   const name = primaryName(focus);
   const themeText = themes(focus, 4);
+  if (/这件事/.test(query)) {
+    return `放到这件事上，美术馆/制度会改变作品的展示语境、可见度和价值判断，不等于直接决定一切。`;
+  }
+  if (/关系/.test(query) && /美术馆|作品价值/.test(query)) {
+    return `关系在于：美术馆通过展示、说明和收藏改变作品语境；价值还要看作品自身、历史位置和观看方式。`;
+  }
   if (/漂亮/.test(query)) {
     return `判断摄影作品不能只看漂亮：还要看它怎样组织${themeText || "观看、框取和关系"}，以及画面排除了什么。`;
   }
