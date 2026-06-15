@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "source_id": "src_daipan_art_public_profile",
+  "visibility": "public",
+  "approved_for_public_runtime": true,
+  "source_summary": "Public-safe abstract summary of public profile facts. This file contains no raw page copy.",
+  "direct_facts": [
+    "fine artist and designer",
+    "works through photography, printmaking, writing, visual art, and design research",
+    "SVA BFA Design 2021-2025",
+    "University of Queensland Master of Information Technology in progress",
+    "public portfolio includes Quite Off, The Threes, Monolith for Light, Reframed Still, Closing Time, Masks",
+    "not affiliated with DAIPAN Butoh Collective"
+  ],
+  "interpretive_themes": [
+    "images as structures of perception, memory, material, and attention",
+    "framing, sequence, repetition, material process",
+    "slow looking",
+    "constructed fields shaped by colour, surface, time, compositional constraint"
+  ],
+  "must_not_infer": [
+    "private address",
+    "student ID",
+    "visa status",
+    "all works ever made",
+    "private contacts",
+    "unlisted projects",
+    "private biography"
+  ],
+  "contact_policy": [
+    "Contact details are not persona answers.",
+    "Do not include email, phone, address, or private handles in persona responses."
+  ]
+}

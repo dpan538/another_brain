@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "source_id": "src_uploaded_pdf_collection",
+  "visibility": "local",
+  "approved_for_public_runtime": false,
+  "source_summary": "Public-safe abstract summary of a locally uploaded writing collection PDF. This file contains no raw source text.",
+  "direct_facts": [
+    "written between 2024 and spring 2025",
+    "coincided with a New York final-year period",
+    "organized into Still Life, Bless You, Their World",
+    "the preface gives a born-in-Jiangsu, raised-in-Shanghai, writing-from-New-York sequence"
+  ],
+  "section_summaries": [
+    {
+      "section": "Still Life",
+      "summary": "internal world and subjective perception"
+    },
+    {
+      "section": "Bless You",
+      "summary": "others, attachment, and the second-person world"
+    },
+    {
+      "section": "Their World",
+      "summary": "symbolic, institutional, and role-based structures"
+    }
+  ],
+  "interpretive_themes": [
+    "displacement and abstract home",
+    "fragmented subject",
+    "watching and being watched",
+    "memory and forgetting",
+    "fantasy/symbolic/real tension"
+  ],
+  "must_not_infer": [
+    "exact private address",
+    "visa or immigration status",
+    "medical diagnosis",
+    "literal supernatural claim",
+    "family biography beyond approved facts",
+    "complete author psychology"
+  ],
+  "copyright_boundary": [
+    "no raw quote training",
+    "no long excerpt",
+    "summaries and short facts only"
+  ]
+}

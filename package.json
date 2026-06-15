@@ -31,6 +31,13 @@
     "check:launch-policy": "python3 scripts/validate_launch_policy.py",
     "check:release": "bash scripts/check_release.sh",
     "eval:capacity": "node scripts/eval_capacity_limits.mjs --targets-mb 20,40",
+    "eval:persona-contracts": "node scripts/eval_persona_contracts.mjs",
+    "eval:persona-contracts:strict": "node scripts/eval_persona_contracts.mjs --strict",
+    "eval:r9-regression": "node scripts/eval_r9_regression.mjs",
+    "eval:r9-regression:strict": "node scripts/eval_r9_regression.mjs --strict",
+    "check:persona-privacy": "node scripts/validate_persona_privacy.mjs",
+    "check:persona-overfit": "node scripts/validate_persona_overfit.mjs",
+    "check:personal-facts": "node scripts/validate_personal_facts.mjs",
     "probe:dialog": "node scripts/dialog_probe.mjs",
     "serve": "python3 -m http.server 5173 --directory web"
   }

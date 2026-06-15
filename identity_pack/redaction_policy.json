@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "visibility_labels": [
+    "public",
+    "local",
+    "private",
+    "forbidden"
+  ],
+  "forbidden_patterns": [
+    "email_address",
+    "phone_number",
+    "street_address",
+    "passport_number",
+    "visa_number",
+    "government_id_number",
+    "bank_or_payment_account",
+    "absolute_local_filesystem_path",
+    "source_path",
+    "local_timestamp",
+    "gps_or_precise_coordinates",
+    "hidden_metadata",
+    "private_name_unless_approved",
+    "unpublished_private_title",
+    "dense_copyrighted_text",
+    "memorizeable_source_snippet"
+  ],
+  "redaction_replacements": {
+    "email_address": "[REDACTED_EMAIL]",
+    "phone_number": "[REDACTED_PHONE]",
+    "street_address": "[REDACTED_ADDRESS]",
+    "passport_number": "[REDACTED_ID]",
+    "visa_number": "[REDACTED_ID]",
+    "government_id_number": "[REDACTED_ID]",
+    "bank_or_payment_account": "[REDACTED_ACCOUNT]",
+    "absolute_local_filesystem_path": "[REDACTED_LOCAL_PATH]",
+    "source_path": "[REDACTED_SOURCE_PATH]",
+    "local_timestamp": "[REDACTED_LOCAL_TIMESTAMP]",
+    "gps_or_precise_coordinates": "[REDACTED_COORDINATES]",
+    "hidden_metadata": "[REDACTED_METADATA]",
+    "private_name_unless_approved": "[REDACTED_PRIVATE_NAME]",
+    "unpublished_private_title": "[REDACTED_PRIVATE_TITLE]",
+    "dense_copyrighted_text": "[REDACTED_COPYRIGHTED_TEXT]",
+    "memorizeable_source_snippet": "[REDACTED_SOURCE_SNIPPET]"
+  },
+  "commit_forbidden": [
+    "raw_local_files",
+    "raw_notes",
+    "source_paths",
+    "sensitive_metadata",
+    "training_prompts_linked_to_private_material",
+    "unapproved_corrections",
+    "private_manifests_with_identifiable_metadata",
+    "raw_text_caches",
+    "extracted_local_snippets",
+    "private_eval_prompts_containing_private_facts"
+  ],
+  "public_runtime_forbidden": [
+    "private_local_materials",
+    "unapproved_private_identity_claims",
+    "withdrawn_materials",
+    "raw_source_text",
+    "local_file_traces",
+    "hidden_metadata",
+    "dense_copyrighted_text"
+  ],
+  "training_forbidden": [
+    "raw_biography",
+    "raw_website_copy",
+    "raw_private_notes",
+    "dense_copyrighted_text",
+    "rejected_materials",
+    "forbidden_materials",
+    "unredacted_personal_data",
+    "source_paths"
+  ],
+  "notes": [
+    "This is an example public policy file, not a private source manifest.",
+    "Real source hashes and private manifests must remain local unless separately approved.",
+    "Public persona artifacts should use abstractions, not source text."
+  ]
+}
