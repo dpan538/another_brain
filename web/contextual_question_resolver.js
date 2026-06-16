@@ -17,6 +17,16 @@ function lastAnswerExists(session = {}) {
   return Boolean(String(session.lastAssistantAnswer || session.lastAnswer || "").trim());
 }
 
+function hasJapaneseAuthorPair(session = {}) {
+  const topic = activeTopic(session);
+  const ids = new Set([...(topic?.entity_ids || []), ...(session.activeEntityIds || []), ...(session.active_entity_ids || [])]);
+  const text = `${session.lastUserText || ""} ${session.lastAnswer || ""} ${session.lastAssistantAnswer || ""}`;
+  return (
+    (ids.has("author.natsume_soseki") && ids.has("author.kawabata_yasunari")) ||
+    (/夏目漱石/.test(text) && /川端/.test(text))
+  );
+}
+
 export function resolveContextualQuestion({ query = "", session = {} } = {}) {
   const text = clean(query);
   const candidates = [];
@@ -49,6 +59,12 @@ export function resolveContextualQuestion({ query = "", session = {} } = {}) {
     confidence = 0.95;
     is_transform_request = true;
     reasons.push("transform_last_answer_request");
+  } else if (/(谁|哪一位|哪个).{0,8}(更适合|适合).{0,6}(入门|开始)|更适合入门/.test(text) && hasJapaneseAuthorPair(session)) {
+    success = true;
+    binding_kind = "last_pair";
+    target_ids = ["author.natsume_soseki", "author.kawabata_yasunari"];
+    confidence = 0.91;
+    reasons.push("entry_followup_bound_to_japanese_author_pair");
   } else if (/^(那|这个|这首|这本|它|他|她)/.test(text) && topic) {
     success = true;
     binding_kind = "topic_stack";

@@ -705,6 +705,8 @@ function stateLastAnswer(state = {}) {
 function activeEntityIds(state = {}) {
   const ids = [];
   if (Array.isArray(state.activeEntityIds)) ids.push(...state.activeEntityIds);
+  const stack = Array.isArray(state.active_topic_stack) ? state.active_topic_stack : Array.isArray(state.activeTopicStack) ? state.activeTopicStack : [];
+  for (const topic of stack) if (Array.isArray(topic.entity_ids)) ids.push(...topic.entity_ids);
   if (state.last_focus_entity_id) ids.push(state.last_focus_entity_id);
   if (Array.isArray(state.last_mentions)) ids.push(...state.last_mentions);
   if (/罗大佑/.test(`${state.lastAnswer || ""} ${state.lastAssistantAnswer || ""}`)) ids.push("person.luo_dayou");
@@ -867,6 +869,23 @@ function answerMusicRepresentativenessFollowup(text, state) {
     answer: characteristics
       ? "罗大佑的歌特点是叙事性强、民谣/摇滚质地明显，旋律容易进入，但主题常落到青春记忆、城市变化和社会观察。"
       : "代表性在三点：青春记忆、城乡变化、社会观察。入口可以听《童年》《鹿港小镇》《恋曲1990》。"
+  });
+}
+
+function answerComparisonEntryFollowup(text, state = {}) {
+  if (!/(谁|哪一位|哪个).{0,8}(更适合|适合).{0,6}(入门|开始)|更适合入门/.test(text)) return null;
+  const ids = activeEntityIds(state);
+  const recent = `${state.lastUserText || ""} ${state.lastAnswer || ""} ${state.lastAssistantAnswer || ""} ${(state.recentTurns || [])
+    .map((turn) => `${turn.question || ""} ${turn.answer || ""}`)
+    .join(" ")}`;
+  const hasPair = (ids.includes("author.natsume_soseki") && ids.includes("author.kawabata_yasunari")) || (/夏目漱石/.test(recent) && /川端/.test(recent));
+  if (!hasPair) return null;
+  return makeResult({
+    intent: "operation_culture_entry_followup",
+    operation: "recommend_entry_from_active_comparison",
+    questionType: "entry_path_compare",
+    contextAction: "ANSWER_CULTURE",
+    answer: "入门更建议先读夏目漱石：叙事和问题更清楚；川端康成可以放到后面看意象和冷感美学。"
   });
 }
 
@@ -1114,6 +1133,8 @@ export function answerWithOperationLayer(query, state = {}) {
   if (responseMode.mode === "followup_answer") {
     const safeSummary = answerSafeSummaryFollowup(text, state);
     if (safeSummary) return withResponseMode(safeSummary, responseMode);
+    const comparisonFollowup = answerComparisonEntryFollowup(text, state);
+    if (comparisonFollowup) return withResponseMode(comparisonFollowup, responseMode);
     const followup = answerMusicRepresentativenessFollowup(text, state);
     if (followup) return withResponseMode(followup, responseMode);
   }

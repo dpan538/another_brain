@@ -1,0 +1,1000 @@
+{"id":"session_0001","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0002","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0003","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0004","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0005","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0006","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0007","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0008","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0009","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0010","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0011","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0012","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0013","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0014","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0015","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0016","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0017","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0018","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0019","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0020","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0021","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0022","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0023","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0024","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0025","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0026","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0027","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0028","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0029","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0030","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0031","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0032","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0033","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0034","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0035","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0036","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0037","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0038","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0039","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0040","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0041","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0042","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0043","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0044","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0045","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0046","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0047","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0048","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0049","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0050","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0051","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0052","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0053","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0054","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0055","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0056","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0057","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0058","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0059","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0060","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0061","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0062","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0063","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0064","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0065","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0066","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0067","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0068","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0069","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0070","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0071","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0072","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0073","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0074","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0075","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0076","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0077","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0078","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0079","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0080","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0081","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0082","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0083","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0084","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0085","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0086","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0087","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0088","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0089","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0090","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0091","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0092","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0093","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0094","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0095","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0096","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0097","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0098","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0099","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0100","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0101","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0102","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0103","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0104","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0105","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0106","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0107","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0108","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0109","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0110","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0111","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0112","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0113","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0114","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0115","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0116","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0117","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0118","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0119","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0120","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0121","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0122","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0123","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0124","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0125","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0126","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0127","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0128","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0129","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0130","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0131","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0132","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0133","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0134","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0135","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0136","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0137","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0138","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0139","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0140","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0141","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0142","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0143","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0144","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0145","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0146","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0147","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0148","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0149","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0150","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0151","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0152","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0153","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0154","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0155","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0156","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0157","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0158","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0159","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0160","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0161","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0162","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0163","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0164","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0165","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0166","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0167","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0168","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0169","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0170","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0171","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0172","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0173","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0174","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0175","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0176","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0177","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0178","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0179","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0180","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0181","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0182","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0183","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0184","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0185","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0186","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0187","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0188","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0189","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0190","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0191","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0192","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0193","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0194","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0195","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0196","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0197","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0198","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0199","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0200","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0201","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0202","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0203","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0204","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0205","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0206","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0207","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0208","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0209","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0210","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0211","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0212","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0213","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0214","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0215","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0216","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0217","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0218","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0219","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0220","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0221","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0222","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0223","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0224","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0225","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0226","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0227","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0228","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0229","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0230","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0231","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0232","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0233","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0234","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0235","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0236","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0237","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0238","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0239","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0240","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0241","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0242","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0243","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0244","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0245","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0246","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0247","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0248","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0249","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0250","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0251","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0252","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0253","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0254","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0255","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0256","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0257","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0258","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0259","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0260","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0261","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0262","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0263","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0264","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0265","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0266","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0267","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0268","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0269","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0270","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0271","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0272","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0273","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0274","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0275","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0276","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0277","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0278","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0279","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0280","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0281","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0282","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0283","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0284","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0285","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0286","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0287","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0288","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0289","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0290","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0291","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0292","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0293","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0294","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0295","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0296","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0297","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0298","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0299","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0300","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0301","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0302","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0303","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0304","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0305","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0306","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0307","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0308","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0309","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0310","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0311","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0312","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0313","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0314","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0315","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0316","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0317","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0318","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0319","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0320","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0321","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0322","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0323","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0324","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0325","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0326","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0327","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0328","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0329","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0330","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0331","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0332","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0333","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0334","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0335","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0336","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0337","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0338","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0339","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0340","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0341","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0342","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0343","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0344","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0345","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0346","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0347","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0348","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0349","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0350","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0351","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0352","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0353","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0354","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0355","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0356","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0357","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0358","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0359","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0360","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0361","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0362","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0363","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0364","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0365","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0366","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0367","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0368","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0369","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0370","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0371","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0372","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0373","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0374","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0375","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0376","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0377","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0378","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0379","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0380","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0381","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0382","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0383","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0384","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0385","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0386","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0387","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0388","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0389","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0390","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0391","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0392","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0393","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0394","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0395","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0396","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0397","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0398","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0399","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0400","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0401","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0402","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0403","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0404","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0405","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0406","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0407","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0408","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0409","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0410","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0411","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0412","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0413","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0414","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0415","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0416","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0417","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0418","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0419","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0420","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0421","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0422","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0423","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0424","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0425","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0426","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0427","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0428","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0429","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0430","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0431","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0432","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0433","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0434","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0435","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0436","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0437","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0438","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0439","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0440","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0441","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0442","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0443","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0444","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0445","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0446","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0447","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0448","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0449","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0450","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0451","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0452","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0453","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0454","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0455","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0456","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0457","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0458","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0459","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0460","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0461","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0462","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0463","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0464","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0465","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0466","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0467","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0468","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0469","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0470","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0471","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0472","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0473","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0474","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0475","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0476","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0477","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0478","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0479","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0480","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0481","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0482","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0483","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0484","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0485","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0486","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0487","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0488","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0489","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0490","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0491","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0492","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0493","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0494","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0495","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0496","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0497","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0498","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0499","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0500","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0501","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0502","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0503","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0504","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0505","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0506","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0507","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0508","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0509","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0510","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0511","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0512","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0513","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0514","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0515","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0516","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0517","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0518","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0519","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0520","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0521","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0522","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0523","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0524","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0525","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0526","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0527","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0528","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0529","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0530","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0531","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0532","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0533","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0534","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0535","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0536","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0537","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0538","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0539","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0540","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0541","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0542","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0543","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0544","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0545","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0546","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0547","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0548","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0549","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0550","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0551","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0552","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0553","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0554","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0555","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0556","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0557","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0558","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0559","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0560","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0561","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0562","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0563","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0564","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0565","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0566","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0567","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0568","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0569","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0570","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0571","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0572","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0573","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0574","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0575","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0576","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0577","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0578","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0579","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0580","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0581","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0582","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0583","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0584","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0585","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0586","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0587","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0588","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0589","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0590","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0591","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0592","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0593","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0594","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0595","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0596","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0597","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0598","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0599","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0600","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0601","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0602","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0603","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0604","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0605","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0606","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0607","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0608","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0609","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0610","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0611","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0612","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0613","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0614","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0615","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0616","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0617","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0618","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0619","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0620","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0621","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0622","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0623","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0624","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0625","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0626","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0627","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0628","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0629","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0630","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0631","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0632","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0633","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0634","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0635","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0636","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0637","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0638","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0639","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0640","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0641","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0642","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0643","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0644","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0645","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0646","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0647","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0648","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0649","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0650","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0651","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0652","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0653","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0654","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0655","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0656","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0657","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0658","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0659","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0660","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0661","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0662","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0663","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0664","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0665","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0666","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0667","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0668","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0669","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0670","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0671","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0672","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0673","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0674","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0675","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0676","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0677","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0678","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0679","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0680","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0681","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0682","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0683","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0684","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0685","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0686","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0687","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0688","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0689","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0690","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0691","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0692","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0693","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0694","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0695","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0696","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0697","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0698","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0699","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0700","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0701","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0702","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0703","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0704","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0705","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0706","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0707","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0708","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0709","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0710","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0711","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0712","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0713","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0714","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0715","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0716","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0717","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0718","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0719","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0720","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0721","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0722","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0723","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0724","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0725","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0726","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0727","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0728","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0729","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0730","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0731","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0732","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0733","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0734","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0735","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0736","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0737","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0738","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0739","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0740","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0741","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0742","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0743","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0744","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0745","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0746","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0747","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0748","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0749","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0750","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0751","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0752","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0753","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0754","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0755","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0756","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0757","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0758","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0759","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0760","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0761","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0762","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0763","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0764","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0765","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0766","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0767","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0768","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0769","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0770","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0771","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0772","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0773","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0774","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0775","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0776","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0777","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0778","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0779","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0780","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0781","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0782","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0783","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0784","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0785","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0786","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0787","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0788","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0789","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0790","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0791","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0792","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0793","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0794","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0795","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0796","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0797","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0798","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0799","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0800","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0801","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0802","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0803","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0804","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0805","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0806","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0807","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0808","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0809","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0810","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0811","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0812","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0813","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0814","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0815","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0816","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0817","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0818","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0819","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0820","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0821","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0822","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0823","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0824","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0825","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0826","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0827","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0828","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0829","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0830","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0831","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0832","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0833","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0834","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0835","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0836","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0837","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0838","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0839","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0840","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0841","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0842","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0843","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0844","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0845","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0846","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0847","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0848","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0849","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0850","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0851","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0852","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0853","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0854","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0855","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0856","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0857","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0858","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0859","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0860","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0861","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0862","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0863","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0864","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0865","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0866","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0867","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0868","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0869","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0870","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0871","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0872","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0873","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0874","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0875","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0876","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0877","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0878","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0879","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0880","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0881","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0882","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0883","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0884","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0885","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0886","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0887","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0888","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0889","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0890","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0891","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0892","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0893","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0894","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0895","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0896","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0897","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0898","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0899","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0900","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0901","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0902","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0903","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0904","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0905","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0906","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0907","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0908","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0909","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0910","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0911","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0912","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0913","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0914","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0915","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0916","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0917","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0918","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0919","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0920","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0921","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0922","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0923","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0924","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0925","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0926","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0927","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0928","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0929","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0930","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0931","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0932","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0933","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0934","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0935","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0936","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0937","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0938","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0939","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0940","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0941","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0942","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0943","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0944","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0945","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0946","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0947","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0948","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0949","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0950","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0951","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0952","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0953","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0954","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0955","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0956","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0957","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0958","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0959","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0960","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0961","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0962","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0963","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0964","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0965","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0966","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0967","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0968","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0969","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0970","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0971","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0972","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0973","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0974","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0975","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0976","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0977","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0978","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0979","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0980","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0981","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0982","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0983","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0984","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0985","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0986","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0987","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0988","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0989","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0990","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0991","type":"culture_followup","ui_profile":"mobile","turns":["你知道罗大佑吗？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","我需要怎么提问？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0992","type":"work_followup","ui_profile":"mobile","turns":["日本文学代表作家有哪些？","夏目漱石是谁？","简单一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0993","type":"comparison_followup","ui_profile":"mobile","turns":["比较夏目漱石和川端康成。","谁更适合入门？","短一点。","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}
+{"id":"session_0994","type":"repair_boundary","ui_profile":"mobile","turns":[{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？","他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？"]}
+{"id":"session_0995","type":"affordance_boundary","ui_profile":"mobile","turns":["嗯。","罗大佑是谁？","这样啊。","我需要怎么提问？","把完整歌词贴出来。","你知道我要干什么吗？",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_0996","type":"topic_shift","ui_profile":"mobile","turns":["罗大佑是谁？","顺便问一下日本文学。","再回到罗大佑，他的歌有什么特点？","短一点。","嗯。","我需要怎么提问？",{"user":"日本文学是什么？","assistant":"你需要提问。"},"我不是已经问了吗？"]}
+{"id":"session_0997","type":"sixteen_turn_memory","ui_profile":"mobile","turns":["罗大佑是谁？","嗯。","这样啊。","日本文学是什么？","继续。","摄影不能只看好不好看是什么意思？","短一点。","杜尚为什么重要？","包豪斯是什么？","我需要怎么提问？","你知道我要干什么吗？","罗大佑的歌曲有什么代表性？"]}
+{"id":"session_0998","type":"visible_ui_four","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌曲有什么代表性？","罗大佑的歌曲有什么代表性？","是否能简单一点？","嗯。","继续说。"]}
+{"id":"session_0999","type":"mobile_density","ui_profile":"mobile","turns":["罗大佑的歌曲有什么代表性？","简单一点。","日本文学代表作家有哪些？","嗯。","我需要怎么提问？","把完整歌词贴出来。",{"user":"罗大佑是谁？","assistant":"也许发生过，不在我眼前。"},"什么发生过？"]}
+{"id":"session_1000","type":"anti_monotony","ui_profile":"mobile","turns":["罗大佑是谁？","他的歌有什么特点？","罗大佑的歌有什么特点？","换个说法。","嗯。","我需要怎么提问？",{"user":"比较 A 和 B。","assistant":"你要问哪一边？"},"哪一边？"]}

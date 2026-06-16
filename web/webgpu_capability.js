@@ -87,6 +87,34 @@ export function detectIndexedDbSupport(scope = globalThis) {
   return { available: typeof root.indexedDB === "object" };
 }
 
+export async function detectStorageEstimate(scope = globalThis) {
+  const root = getScope(scope);
+  try {
+    if (typeof root.navigator?.storage?.estimate !== "function") {
+      return { available: false, quota: 0, usage: 0, reason: "navigator.storage.estimate unavailable" };
+    }
+    const estimate = await root.navigator.storage.estimate();
+    return {
+      available: true,
+      quota: Number(estimate.quota || 0),
+      usage: Number(estimate.usage || 0),
+      remaining: Math.max(0, Number(estimate.quota || 0) - Number(estimate.usage || 0))
+    };
+  } catch (error) {
+    return { available: false, quota: 0, usage: 0, reason: error?.message || "storage estimate failed" };
+  }
+}
+
+export function detectMobileSafariRisk(scope = globalThis) {
+  const root = getScope(scope);
+  const ua = String(root.navigator?.userAgent || "");
+  const mobileSafari = /iPhone|iPad|iPod/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+  return {
+    mobileSafari,
+    risk: mobileSafari ? "webgpu_storage_and_worker_support_may_vary" : ""
+  };
+}
+
 export function estimateGpuMemoryClass(webgpuInfo = {}) {
   if (!webgpuInfo.available) return "none";
   const maxBuffer = Number(webgpuInfo.limits?.maxBufferSize || 0);
@@ -140,8 +168,10 @@ export async function detectBrowserInferenceProfile(options = {}) {
   const storage = {
     opfs: detectOpfsSupport(scope).available,
     cacheApi: detectCacheApiSupport(scope).available,
-    indexedDb: detectIndexedDbSupport(scope).available
+    indexedDb: detectIndexedDbSupport(scope).available,
+    estimate: await detectStorageEstimate(scope)
   };
+  const mobileSafari = detectMobileSafariRisk(scope);
   const selection = selectInferenceBackend({
     preferWebGpu: options.preferWebGpu !== false,
     runtimeProfile: options.runtimeProfile || "standard",
@@ -154,6 +184,7 @@ export async function detectBrowserInferenceProfile(options = {}) {
     wasm,
     worker,
     storage,
+    mobileSafari,
     gpuMemoryClass: estimateGpuMemoryClass(webgpu),
     recommendedBackend: selection.recommendedBackend,
     recommendedProfile: selection.recommendedProfile,

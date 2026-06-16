@@ -134,6 +134,18 @@
     "check:response-mode-invariants": "node scripts/check_response_mode_invariants.mjs",
     "fuzz:contextual-questions": "node scripts/fuzz_contextual_questions.mjs",
     "check:dialogue-boundary": "npm run eval:dialogue-boundary && npm run eval:r19-contextual-binding && npm run eval:mobile-answer-density && npm run check:answer-deduplication && npm run check:response-mode-invariants && npm run check:conversation-controller-coverage && npm run fuzz:contextual-questions",
-    "serve": "python3 -m http.server 5173 --directory web"
+    "serve": "python3 -m http.server 5173 --directory web",
+    "build:r20-endpoint-evals": "node scripts/build_r20_endpoint_evals.mjs",
+    "eval:real-browser-e2e": "node scripts/eval_real_browser_e2e.mjs",
+    "probe:deployed-parity": "node scripts/probe_deployed_parity.mjs",
+    "audit:runtime-assets": "node scripts/audit_runtime_asset_version.mjs",
+    "eval:endpoint-readiness": "node scripts/eval_endpoint_readiness.mjs",
+    "generate:session-stress": "node scripts/generate_session_level_stress.mjs",
+    "eval:session-stress": "node scripts/eval_session_level_stress.mjs",
+    "bench:webgpu-retrieval": "node scripts/bench_retrieval_webgpu.mjs",
+    "eval:embedding-retrieval": "node scripts/eval_embedding_retrieval_quality.mjs",
+    "check:webgpu-contract": "node scripts/check_webgpu_contract.mjs",
+    "check:endpoint": "npm run eval:endpoint-readiness && npm run eval:session-stress && npm run check:dialogue-boundary && npm run check:mobile-answer-density && npm run check:answer-deduplication",
+    "check:webgpu-pilot": "npm run check:webgpu-contract && npm run bench:webgpu-retrieval && npm run eval:embedding-retrieval"
   }
 }

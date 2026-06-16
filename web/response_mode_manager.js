@@ -39,6 +39,8 @@ function hasActiveTopic(session = {}) {
       session.lastDomain ||
       session.last_domain ||
       session.last_focus_entity_id ||
+      (Array.isArray(session.active_topic_stack) && session.active_topic_stack.length > 0) ||
+      (Array.isArray(session.activeTopicStack) && session.activeTopicStack.length > 0) ||
       (Array.isArray(session.activeEntityIds) && session.activeEntityIds.length > 0) ||
       (Array.isArray(session.last_mentions) && session.last_mentions.length > 0)
   );
@@ -70,6 +72,18 @@ function activeLuo(session = {}, query = "") {
 
 function musicFollowup(query, session = {}) {
   return activeLuo(session, query) && !/罗大佑/.test(query) && /(他的).{0,8}(歌|歌曲)|代表性|特点|代表在哪里|为什么重要|这些歌/.test(query);
+}
+
+function comparisonEntryFollowup(query, session = {}) {
+  const stack = Array.isArray(session.active_topic_stack) ? session.active_topic_stack : Array.isArray(session.activeTopicStack) ? session.activeTopicStack : [];
+  const ids = new Set([
+    ...(session.activeEntityIds || []),
+    ...(session.active_entity_ids || []),
+    ...stack.flatMap((topic) => topic.entity_ids || [])
+  ]);
+  const recent = `${session.lastUserText || ""} ${session.lastAnswer || ""} ${session.lastAssistantAnswer || ""}`;
+  const hasPair = (ids.has("author.natsume_soseki") && ids.has("author.kawabata_yasunari")) || (/夏目漱石/.test(recent) && /川端/.test(recent));
+  return hasPair && /(谁|哪一位|哪个).{0,8}(更适合|适合).{0,6}(入门|开始)|更适合入门/.test(query);
 }
 
 export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
@@ -142,6 +156,16 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
       mode: RESPONSE_MODES.FOLLOWUP_ANSWER,
       confidence: 0.93,
       reasons: ["active_luo_music_followup"],
+      should_skip_repair: true,
+      userTurn
+    };
+  }
+
+  if (comparisonEntryFollowup(text, session)) {
+    return {
+      mode: RESPONSE_MODES.FOLLOWUP_ANSWER,
+      confidence: 0.9,
+      reasons: ["active_comparison_entry_followup"],
       should_skip_repair: true,
       userTurn
     };

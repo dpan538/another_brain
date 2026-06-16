@@ -111,5 +111,11 @@ node scripts/check_answer_deduplication.mjs >/dev/null
 node scripts/check_response_mode_invariants.mjs >/dev/null
 node scripts/check_conversation_controller_coverage.mjs >/dev/null
 node scripts/fuzz_contextual_questions.mjs >/dev/null
+node scripts/eval_endpoint_readiness.mjs >/dev/null
+node scripts/eval_session_level_stress.mjs >/dev/null
+node scripts/check_mobile_answer_density.mjs >/dev/null
+node scripts/check_webgpu_contract.mjs >/dev/null
+node scripts/bench_retrieval_webgpu.mjs >/dev/null
+node scripts/eval_embedding_retrieval_quality.mjs >/dev/null
 
 printf 'release check passed\n'
