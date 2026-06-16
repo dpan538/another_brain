@@ -211,11 +211,18 @@ async function main() {
   const report = {
     ok: failures.length === 0,
     generated_at: new Date().toISOString(),
+    training_status: {
+      phase: "r21_mixed_dialogic_control",
+      broad_nlu_training_complete: false,
+      continuation_required: true,
+      reason: "Anchor and sibling families are gates for control behavior, not proof of completed natural-language reasoning training."
+    },
     metrics: {
       anchor_session_passed: !failures.some((failure) => failure.sessionId === gold.id),
       paraphrase_family_passed: !failures.some((failure) => /^r21_para_/.test(failure.sessionId)),
       hard_negative_family_passed: !failures.some((failure) => /^r21_hard_negative_/.test(failure.sessionId)),
       blind_sibling_family_passed: !failures.some((failure) => /^r21_blind_sibling_/.test(failure.sessionId)),
+      blind_sibling_sessions: counters.blind_sibling_sessions,
       turn_function_accuracy: counters.turn_function_total ? counters.turn_function_correct / counters.turn_function_total : 0,
       response_mode_accuracy: counters.response_mode_total ? counters.response_mode_correct / counters.response_mode_total : 0,
       non_question_turns_tested: counters.non_question_turns_tested,

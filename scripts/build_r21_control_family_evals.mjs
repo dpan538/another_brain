@@ -8,7 +8,11 @@ const SPLITS = {
   train: [
     { entity: "罗大佑", entity_family: "music.luo_dayou", pronoun: "他的", domain: "music", referent: "previous_active_person" },
     { entity: "李宗盛", entity_family: "music.li_zongsheng", pronoun: "他的", domain: "music", referent: "previous_active_person" },
-    { entity: "夏目漱石", entity_family: "lit.natsume", pronoun: "他的", domain: "literature", referent: "previous_active_person" }
+    { entity: "张惠妹", entity_family: "music.a_mei", pronoun: "她的", domain: "music", referent: "previous_active_person" },
+    { entity: "夏目漱石", entity_family: "lit.natsume", pronoun: "他的", domain: "literature", referent: "previous_active_person" },
+    { entity: "白先勇", entity_family: "lit.bai_xianyong", pronoun: "他的", domain: "literature", referent: "previous_active_person" },
+    { entity: "毕加索", entity_family: "art.picasso", pronoun: "他的", domain: "art", referent: "previous_active_person" },
+    { entity: "现代建筑", entity_family: "design.modern_architecture", pronoun: "它的", domain: "design", referent: "previous_active_domain_or_work" }
   ],
   dev: [
     { entity: "王菲", entity_family: "music.faye_wong", pronoun: "她的", domain: "music", referent: "previous_active_person" },
@@ -217,17 +221,17 @@ function buildForSplit(split, entities) {
   const rows = [];
   let n = 0;
   const followupPrompts = {
-    train: [`${entities[0]?.pronoun || "他的"}作品有什么代表性？`, "这些作品有什么共同点？", "他的创作特点是什么？"],
+    train: [`${entities[0]?.pronoun || "他的"}作品有什么代表性？`, "这些作品有什么共同点？", "她的歌为什么有力量？", "他的创作特点是什么？", "他的文本从哪里进入？", "这些图像代表在哪里？", "它的形式逻辑是什么？"],
     dev: [`${entities[0]?.pronoun || "他的"}歌有什么特点？`, "这个对象为什么重要？", "这些东西代表在哪里？"],
     blind: [`${entities[0]?.pronoun || "他的"}代表性在哪里？`, "如果继续说它，重点是什么？", "它适合从哪里进入？"]
   };
   const simplifyPrompts = {
-    train: ["短一点。", "说简单点。", "别那么复杂。"],
+    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。"],
     dev: ["能不能简单一点？", "换个短说法。", "说人话一点。"],
     blind: ["压成一句。", "更轻一点。", "再短一层。"]
   };
   const repairGuardPrompts = {
-    train: ["什么发生过？", "刚才说发生过是什么意思？", "这里不是事件吧？"],
+    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？"],
     dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？"],
     blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？"]
   };

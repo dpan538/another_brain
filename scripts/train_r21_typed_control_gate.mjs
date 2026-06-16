@@ -35,9 +35,44 @@ function features(row) {
   const text = `${row.prompt || ""} ${(row.turns || []).map((turn) => `${turn.user || ""} ${turn.assistant || ""}`).join(" ")} ${JSON.stringify(row.compact_state || {})}`;
   const feats = new Set(["__bias"]);
   for (const token of text.toLowerCase().match(/[a-z0-9_.]+|[\u4e00-\u9fff]{1,2}/g) || []) feats.add(token);
-  for (const key of Object.keys(row.compact_state || {})) feats.add(`state:${key}`);
+  for (const [key, value] of Object.entries(row.compact_state || {})) {
+    feats.add(`state:${key}`);
+    if (typeof value === "string") feats.add(`state:${key}:${value.toLowerCase()}`);
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        if (typeof item === "string") feats.add(`state:${key}:${item.toLowerCase()}`);
+      }
+    }
+  }
   feats.add(`scenario:${row.scenario_family}`);
   return [...feats];
+}
+
+function contextKeys(row) {
+  const keys = [];
+  const scenario = row.scenario_family || "";
+  const state = row.compact_state || {};
+  if (!scenario) return keys;
+  if (typeof state.activeDomain === "string" && state.activeDomain) {
+    keys.push(`${scenario}|activeDomain:${state.activeDomain}`);
+  }
+  const firstEntity = Array.isArray(state.activeEntityIds) ? state.activeEntityIds[0] : "";
+  if (typeof firstEntity === "string" && firstEntity) {
+    const prefix = firstEntity.split(".")[0] || firstEntity;
+    keys.push(`${scenario}|activeEntityPrefix:${prefix}`);
+  }
+  return keys;
+}
+
+function pureLabelMap(labelCounts) {
+  return Object.fromEntries(
+    [...labelCounts.entries()]
+      .filter(([, counts]) => Object.keys(counts).length === 1)
+      .map(([key, counts]) => [
+        key,
+        Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
+      ])
+  );
 }
 
 function trainHead(rows, head) {
@@ -45,6 +80,7 @@ function trainHead(rows, head) {
   const totals = new Map();
   const vocab = new Set();
   const scenarioLabels = new Map();
+  const contextLabels = new Map();
   for (const row of rows) {
     const label = row.labels[head];
     const scenario = row.scenario_family || "";
@@ -52,6 +88,11 @@ function trainHead(rows, head) {
       const counts = scenarioLabels.get(scenario) || {};
       counts[label] = (counts[label] || 0) + 1;
       scenarioLabels.set(scenario, counts);
+    }
+    for (const key of contextKeys(row)) {
+      const counts = contextLabels.get(key) || {};
+      counts[label] = (counts[label] || 0) + 1;
+      contextLabels.set(key, counts);
     }
     if (!labels.has(label)) labels.set(label, new Map());
     totals.set(label, (totals.get(label) || 0) + 1);
@@ -63,18 +104,17 @@ function trainHead(rows, head) {
   }
   return {
     labels: [...labels.entries()].map(([label, counts]) => ({ label, counts: Object.fromEntries(counts), total: totals.get(label) || 0 })),
-    scenario_labels: Object.fromEntries(
-      [...scenarioLabels.entries()].map(([scenario, counts]) => [
-        scenario,
-        Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
-      ])
-    ),
+    context_labels: pureLabelMap(contextLabels),
+    scenario_labels: pureLabelMap(scenarioLabels),
     vocab_size: vocab.size,
     total_rows: rows.length
   };
 }
 
 function predictHead(model, row) {
+  for (const key of contextKeys(row)) {
+    if (model.context_labels?.[key]) return model.context_labels[key];
+  }
   if (row.scenario_family && model.scenario_labels?.[row.scenario_family]) return model.scenario_labels[row.scenario_family];
   const feats = features(row);
   let best = { label: "", score: -Infinity };

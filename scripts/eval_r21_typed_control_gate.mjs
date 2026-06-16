@@ -35,12 +35,39 @@ function features(row) {
   const text = `${row.prompt || ""} ${(row.turns || []).map((turn) => `${turn.user || ""} ${turn.assistant || ""}`).join(" ")} ${JSON.stringify(row.compact_state || {})}`;
   const feats = new Set(["__bias"]);
   for (const token of text.toLowerCase().match(/[a-z0-9_.]+|[\u4e00-\u9fff]{1,2}/g) || []) feats.add(token);
-  for (const key of Object.keys(row.compact_state || {})) feats.add(`state:${key}`);
+  for (const [key, value] of Object.entries(row.compact_state || {})) {
+    feats.add(`state:${key}`);
+    if (typeof value === "string") feats.add(`state:${key}:${value.toLowerCase()}`);
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        if (typeof item === "string") feats.add(`state:${key}:${item.toLowerCase()}`);
+      }
+    }
+  }
   feats.add(`scenario:${row.scenario_family}`);
   return [...feats];
 }
 
+function contextKeys(row) {
+  const keys = [];
+  const scenario = row.scenario_family || "";
+  const state = row.compact_state || {};
+  if (!scenario) return keys;
+  if (typeof state.activeDomain === "string" && state.activeDomain) {
+    keys.push(`${scenario}|activeDomain:${state.activeDomain}`);
+  }
+  const firstEntity = Array.isArray(state.activeEntityIds) ? state.activeEntityIds[0] : "";
+  if (typeof firstEntity === "string" && firstEntity) {
+    const prefix = firstEntity.split(".")[0] || firstEntity;
+    keys.push(`${scenario}|activeEntityPrefix:${prefix}`);
+  }
+  return keys;
+}
+
 function predictHead(model, row) {
+  for (const key of contextKeys(row)) {
+    if (model.context_labels?.[key]) return model.context_labels[key];
+  }
   if (row.scenario_family && model.scenario_labels?.[row.scenario_family]) return model.scenario_labels[row.scenario_family];
   const feats = features(row);
   let best = { label: "", score: -Infinity };

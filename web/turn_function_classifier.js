@@ -97,7 +97,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(很喜欢你.*(文学|诗歌).*努力|喜欢你在.*(文学|诗歌).*努力|你在.*(文学|诗歌).*努力|喜欢你把.*(音乐|文学|诗歌).*(连|放|想)|喜欢你在.*(诗性|文学).*尝试)/.test(text)) {
+  if (/(很喜欢你.*(文学|诗歌|艺术|形式|设计|电影).*努力|喜欢你在.*(文学|诗歌|艺术|形式|设计|电影).*努力|你在.*(文学|诗歌|艺术|形式|设计|电影).*努力|喜欢你把.*(音乐|文学|诗歌|艺术|形式|设计|电影).*(连|放|想)|喜欢你在.*(诗性|文学|艺术|形式|设计|电影).*尝试)/.test(text)) {
     return baseResult({
       turn_function: "compliment",
       stance_requirement: "reflective_judgment",
@@ -109,7 +109,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(羡慕|让我想到了?|想到童年|想起童年|比较喜欢|有点怀念)/.test(text)) {
+  if (/(羡慕|让我想到了?|想到童年|想起童年|比较喜欢|有点怀念|把普通物件变成问题|重新看普通东西)/.test(text)) {
     return baseResult({
       turn_function: "affective_disclosure",
       stance_requirement: "reflective_judgment",
@@ -132,7 +132,18 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(像舞台剧|舞台剧|细节和冲突|场景和冲突)/.test(text)) {
+  if (/(和.*(设计|建筑|摄影|电影).*(很像|有点像)|像.*(设计|建筑|摄影|电影)|不只是.*(艺术|形式).*也.*(设计|建筑|摄影|电影)|这个其实和设计很像)/.test(text)) {
+    return baseResult({
+      turn_function: "analogy_statement",
+      stance_requirement: "light_judgment",
+      judgment_axis: "form",
+      bridge_target: /电影/.test(text) ? "cinema_form" : "design_form",
+      confidence: 0.88,
+      reasons: ["form_media_analogy"]
+    });
+  }
+
+  if (/(像舞台剧|舞台剧|细节和冲突|场景和冲突|镜头和冲突|镜头.*冲突|比较有镜头)/.test(text)) {
     return baseResult({
       turn_function: "analogy_statement",
       stance_requirement: "light_judgment",
@@ -143,18 +154,18 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(日本文学.*台湾文学|台湾文学.*日本文学).*(相似|一样|共同|注意到|能看到)|相似性.*(日本文学|台湾文学)/.test(text)) {
+  if (/(日本文学.*台湾文学|台湾文学.*日本文学).*(相似|一样|共同|注意到|能看到)|相似性.*(日本文学|台湾文学)|(.+和.+).*(相似|共同|相似性|注意到|能看到)/.test(text)) {
     return baseResult({
       turn_function: "cross_domain_comparison",
       stance_requirement: "comparative_judgment",
       judgment_axis: "history",
-      bridge_target: "literature_cross_region",
+      bridge_target: /(日本文学|台湾文学)/.test(text) ? "literature_cross_region" : "cross_domain",
       confidence: 0.92,
       reasons: ["cross_domain_literature_comparison"]
     });
   }
 
-  if (/(代表作和作家|代表作.*作家|作家.*代表作|列举.{0,8}(三个|三位|几个)|能列举.*(作家|代表作)|列.{0,4}(三个|三位).*(作家|作品)|(三个|三位).*(作家|作品).*(列|列一下|列举))/.test(text)) {
+  if (/(代表作和作家|代表作.*作家|作家.*代表作|代表作.*艺术家|艺术家.*代表作|列举.{0,8}(三个|三位|几个)|能列举.*(作家|代表作|艺术家)|列.{0,4}(三个|三位).*(作家|作品|艺术家)|(三个|三位).*(作家|作品|艺术家).*(列|列一下|列举))/.test(text)) {
     return baseResult({
       turn_function: "list_request",
       stance_requirement: "none",
@@ -165,12 +176,12 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(专辑.*单曲|单曲.*专辑).*(区别|不同|创作模式|创作方式|差别|差在哪里)|创作模式.*(专辑|单曲)|创作方式.*(专辑|单曲)/.test(text)) {
+  if (/(专辑.*单曲|单曲.*专辑|现成品.*绘画|绘画.*现成品|照片.*绘画|绘画.*照片|建筑.*海报|海报.*建筑).*(区别|不同|创作模式|创作方式|差别|差在哪里)|创作模式.*(专辑|单曲|现成品|绘画|摄影)|创作方式.*(专辑|单曲|现成品|绘画|摄影)/.test(text)) {
     return baseResult({
       turn_function: "abstract_comparison",
       stance_requirement: "comparative_judgment",
       judgment_axis: "form",
-      bridge_target: "music_form",
+      bridge_target: /(专辑|单曲)/.test(text) ? "music_form" : "media_form",
       confidence: 0.91,
       reasons: ["album_single_comparison"]
     });
@@ -187,7 +198,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(讲的真是|真的.*(童年|爱情|乡愁)|真是在讲|是不是.*讲|它讲的是|叫.*童年.*讲童年)/.test(text)) {
+  if (/(讲的真是|真的.*(童年|爱情|乡愁)|真是在讲|是不是.*讲|它讲的是|叫.*童年.*讲童年|只是在开玩笑|只是开玩笑|只是记录现实|只是记录|真的只是)/.test(text)) {
     return baseResult({
       turn_function: "interpretive_question",
       stance_requirement: "reflective_judgment",
@@ -195,6 +206,17 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
       bridge_target: "previous_topic",
       confidence: 0.89,
       reasons: ["interpretive_question"]
+    });
+  }
+
+  if (!/(鳄鱼|对话框|你|我|布里斯班|内蒙|内蒙古|地理)/.test(text) && /(.+和.+有什么关系|他和.+有什么关系|她和.+有什么关系|它和.+有什么关系|这和.+有什么关系)/.test(text)) {
+    return baseResult({
+      turn_function: "relation_question",
+      stance_requirement: "comparative_judgment",
+      judgment_axis: "relation",
+      bridge_target: "cross_domain",
+      confidence: 0.86,
+      reasons: ["contextual_relation_question"]
     });
   }
 

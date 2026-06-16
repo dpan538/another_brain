@@ -1,12 +1,16 @@
 {
-  "generated_at": "2026-06-16T06:43:24.654Z",
+  "generated_at": "2026-06-16T08:51:22.279Z",
   "splits": {
     "train": {
-      "rows": 22,
+      "rows": 38,
       "scenario_families": 14,
       "entity_families": [
+        "art.picasso",
+        "design.modern_architecture",
         "dialogic.music_literature_identity.luo_natsume",
+        "lit.bai_xianyong",
         "lit.natsume",
+        "music.a_mei",
         "music.li_zongsheng",
         "music.luo_dayou",
         "train.quiet.synthetic",
