@@ -1,47 +1,62 @@
 {
-  "generated_at": "2026-06-16T08:51:22.279Z",
+  "generated_at": "2026-06-16T09:43:44.134Z",
   "splits": {
     "train": {
-      "rows": 38,
+      "rows": 78,
       "scenario_families": 14,
       "entity_families": [
         "art.picasso",
         "design.modern_architecture",
         "dialogic.music_literature_identity.luo_natsume",
+        "dialogic.science_observation.darwin_fabre",
+        "dialogic.technology_interface.shannon_tool",
+        "dialogic.urban_space.jane_street",
         "lit.bai_xianyong",
         "lit.natsume",
         "music.a_mei",
         "music.li_zongsheng",
         "music.luo_dayou",
+        "science.darwin",
+        "science.history",
+        "technology.shannon",
         "train.quiet.synthetic",
-        "train.repair.synthetic"
+        "train.repair.synthetic",
+        "urban.jane_jacobs"
       ]
     },
     "dev": {
-      "rows": 22,
+      "rows": 42,
       "scenario_families": 14,
       "entity_families": [
         "art.duchamp",
         "dev.quiet.synthetic",
         "dev.repair.synthetic",
         "dialogic.music_literature_identity.faye_zhang",
+        "dialogic.urban_space.jacobs_city",
+        "ethics.arendt",
         "lit.kawabata",
-        "music.faye_wong"
+        "music.faye_wong",
+        "science.carson",
+        "urban.le_corbusier"
       ]
     },
     "blind": {
-      "rows": 22,
+      "rows": 42,
       "scenario_families": 14,
       "entity_families": [
         "blind.quiet.synthetic",
         "blind.repair.synthetic",
         "design.bauhaus",
         "dialogic.music_literature_identity.sodagreen_kawabata",
+        "dialogic.technology_interface.turing_tool",
+        "ethics.camus",
         "lit.murakami",
-        "music.jay_chou"
+        "music.jay_chou",
+        "science.ecology",
+        "technology.turing"
       ]
     }
   },
   "unique_scenario_families": 14,
-  "blind_only_entity_families": 6
+  "blind_only_entity_families": 10
 }

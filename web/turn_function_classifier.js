@@ -62,7 +62,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(不像.*对话框|对话框.*能说出来|像.*对话框.*话|不像.*普通助手|普通助手.*你到底是什么|不像.*网页对话框)/.test(text)) {
+  if (/(不像.*对话框|对话框.*能说出来|像.*对话框.*话|不像.*普通助手|普通助手.*你到底是什么|不像.*网页对话框|不像.*工具.*说出来|工具.*能说出来|不像.*工具.*你是谁)/.test(text)) {
     return baseResult({
       turn_function: "identity_probe",
       stance_requirement: "boundary_judgment",
@@ -97,7 +97,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(很喜欢你.*(文学|诗歌|艺术|形式|设计|电影).*努力|喜欢你在.*(文学|诗歌|艺术|形式|设计|电影).*努力|你在.*(文学|诗歌|艺术|形式|设计|电影).*努力|喜欢你把.*(音乐|文学|诗歌|艺术|形式|设计|电影).*(连|放|想)|喜欢你在.*(诗性|文学|艺术|形式|设计|电影).*尝试)/.test(text)) {
+  if (/(很喜欢你.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动).*努力|喜欢你在.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动).*努力|你在.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动).*努力|喜欢你把.*(音乐|文学|诗歌|艺术|形式|设计|电影|科学|城市|技术|伦理).*(连|放|想)|喜欢你在.*(诗性|文学|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动).*尝试)/.test(text)) {
     return baseResult({
       turn_function: "compliment",
       stance_requirement: "reflective_judgment",
@@ -109,7 +109,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(羡慕|让我想到了?|想到童年|想起童年|比较喜欢|有点怀念|把普通物件变成问题|重新看普通东西)/.test(text)) {
+  if (/(羡慕|让我想到了?|想到童年|想起童年|比较喜欢|有点怀念|把普通物件变成问题|重新看普通东西|羡慕.*(观察|街道|工具|行动|判断|证据|公共空间)|想到.*(小时候|小时候的|童年|记忆))/.test(text)) {
     return baseResult({
       turn_function: "affective_disclosure",
       stance_requirement: "reflective_judgment",
@@ -121,7 +121,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(和.*(文学|诗歌|诗).*(很像|有点像)|像.*(文学|诗歌|诗)|不只是流行音乐|文学性|很短的形式写故事|有点像诗)/.test(text)) {
+  if (/(和.*(文学|诗歌|诗|小说).*(很像|有点像)|像.*(文学|诗歌|诗|小说)|不只是流行音乐|文学性|很短的形式写故事|有点像诗|像是在写故事|叙事感很强)/.test(text)) {
     return baseResult({
       turn_function: "analogy_statement",
       stance_requirement: "light_judgment",
@@ -132,18 +132,28 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(和.*(设计|建筑|摄影|电影).*(很像|有点像)|像.*(设计|建筑|摄影|电影)|不只是.*(艺术|形式).*也.*(设计|建筑|摄影|电影)|这个其实和设计很像)/.test(text)) {
+  if (/(和.*(设计|建筑|摄影|电影|工具|界面|城市|规划|科学观察|实验|政治|伦理).*(很像|有点像)|像.*(设计|建筑|摄影|电影|工具|界面|城市|规划|科学观察|实验|政治|伦理)|不只是.*(艺术|形式|技术|科学).*也.*(设计|建筑|摄影|电影|城市|文学)|这个其实和设计很像)/.test(text)) {
     return baseResult({
       turn_function: "analogy_statement",
       stance_requirement: "light_judgment",
       judgment_axis: "form",
-      bridge_target: /电影/.test(text) ? "cinema_form" : "design_form",
+      bridge_target: /电影/.test(text)
+        ? "cinema_form"
+        : /(科学|实验|观察)/.test(text)
+          ? "science_observation"
+          : /(城市|规划|街道)/.test(text)
+            ? "urban_form"
+            : /(工具|界面|技术)/.test(text)
+              ? "technology_form"
+              : /(政治|伦理)/.test(text)
+                ? "ethics_action"
+                : "design_form",
       confidence: 0.88,
       reasons: ["form_media_analogy"]
     });
   }
 
-  if (/(像舞台剧|舞台剧|细节和冲突|场景和冲突|镜头和冲突|镜头.*冲突|比较有镜头)/.test(text)) {
+  if (/(像舞台剧|舞台剧|细节和冲突|场景和冲突|镜头和冲突|镜头.*冲突|比较有镜头)/.test(text) && !/(相似|共同|相似性|注意到|能看到)/.test(text)) {
     return baseResult({
       turn_function: "analogy_statement",
       stance_requirement: "light_judgment",
@@ -158,14 +168,14 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     return baseResult({
       turn_function: "cross_domain_comparison",
       stance_requirement: "comparative_judgment",
-      judgment_axis: "history",
+      judgment_axis: /(技术|工具|算法|城市|科学|伦理|政治)/.test(text) ? "relation" : "history",
       bridge_target: /(日本文学|台湾文学)/.test(text) ? "literature_cross_region" : "cross_domain",
       confidence: 0.92,
       reasons: ["cross_domain_literature_comparison"]
     });
   }
 
-  if (/(代表作和作家|代表作.*作家|作家.*代表作|代表作.*艺术家|艺术家.*代表作|列举.{0,8}(三个|三位|几个)|能列举.*(作家|代表作|艺术家)|列.{0,4}(三个|三位).*(作家|作品|艺术家)|(三个|三位).*(作家|作品|艺术家).*(列|列一下|列举))/.test(text)) {
+  if (/(代表作和作家|代表作.*作家|作家.*代表作|代表作.*艺术家|艺术家.*代表作|代表人物|关键人物|经典文本|列举.{0,8}(三个|三位|几个)|能列举.*(作家|代表作|艺术家|人物|文本|作品)|列.{0,4}(三个|三位).*(作家|作品|艺术家|人物|文本)|(三个|三位).*(作家|作品|艺术家|人物|文本).*(列|列一下|列举))/.test(text)) {
     return baseResult({
       turn_function: "list_request",
       stance_requirement: "none",
@@ -176,18 +186,26 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(专辑.*单曲|单曲.*专辑|现成品.*绘画|绘画.*现成品|照片.*绘画|绘画.*照片|建筑.*海报|海报.*建筑).*(区别|不同|创作模式|创作方式|差别|差在哪里)|创作模式.*(专辑|单曲|现成品|绘画|摄影)|创作方式.*(专辑|单曲|现成品|绘画|摄影)/.test(text)) {
+  if (/(专辑.*单曲|单曲.*专辑|现成品.*绘画|绘画.*现成品|照片.*绘画|绘画.*照片|建筑.*海报|海报.*建筑|观察.*实验|实验.*观察|算法.*界面|界面.*算法|规划.*街道|街道.*规划|行动.*理论|理论.*行动).*(区别|不同|创作模式|创作方式|工作模式|差别|差在哪里)|创作模式.*(专辑|单曲|现成品|绘画|摄影|观察|实验|算法|界面)|创作方式.*(专辑|单曲|现成品|绘画|摄影)|工作模式.*(观察|实验|算法|界面|规划|街道)/.test(text)) {
     return baseResult({
       turn_function: "abstract_comparison",
       stance_requirement: "comparative_judgment",
       judgment_axis: "form",
-      bridge_target: /(专辑|单曲)/.test(text) ? "music_form" : "media_form",
+      bridge_target: /(专辑|单曲)/.test(text)
+        ? "music_form"
+        : /(观察|实验|科学)/.test(text)
+          ? "science_method"
+          : /(算法|界面|工具)/.test(text)
+            ? "technology_method"
+            : /(规划|街道|城市)/.test(text)
+              ? "urban_method"
+              : "media_form",
       confidence: 0.91,
       reasons: ["album_single_comparison"]
     });
   }
 
-  if (/(还有其他.*(歌手|作家|作品).*推荐|推荐.*(歌手|作家|作品)|可以推荐|还能听谁|还有谁)/.test(text)) {
+  if (/(还有其他.*(歌手|作家|作品|科学家|思想家|城市|建筑|工具|方向).*推荐|推荐.*(歌手|作家|作品|科学家|思想家|城市|建筑|工具|方向)|可以推荐|还能听谁|还有谁|还能看谁|还有什么入口)/.test(text)) {
     return baseResult({
       turn_function: "recommendation_request",
       stance_requirement: "light_judgment",
@@ -198,7 +216,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(讲的真是|真的.*(童年|爱情|乡愁)|真是在讲|是不是.*讲|它讲的是|叫.*童年.*讲童年|只是在开玩笑|只是开玩笑|只是记录现实|只是记录|真的只是)/.test(text)) {
+  if (/(讲的真是|真的.*(童年|爱情|乡愁|进步|效率|客观|自由)|真是在讲|是不是.*讲|它讲的是|叫.*童年.*讲童年|只是在开玩笑|只是开玩笑|只是记录现实|只是记录|真的只是|只是.*(效率|进步|客观|工具)|真的是.*(进步|效率|客观|自由)|(童年|进步|效率|客观|自由).*真的是)/.test(text)) {
     return baseResult({
       turn_function: "interpretive_question",
       stance_requirement: "reflective_judgment",
@@ -242,7 +260,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(是那个|是不是|是那位|是.*吗|对吗|没错吧|就是.*吗)/.test(text) && active) {
+  if (/(是那个|是不是|是那位|是.*吗|对吗|没错吧|就是.*吗)/.test(text) && active && !/(真的是|真的只是|只是)/.test(text)) {
     return baseResult({
       turn_function: "confirmation",
       stance_requirement: "boundary_judgment",

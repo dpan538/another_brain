@@ -24,9 +24,49 @@ function activeVisualCulture(state = {}, query = "") {
   return /杜尚|包豪斯|摄影|绘画|现成品|现代艺术|现代建筑|设计|电影|镜头|艺术|形式/.test(source);
 }
 
+function activeScienceCulture(state = {}, query = "") {
+  const source = `${query} ${recentText(state)}`;
+  return /达尔文|进化论|自然选择|科学史|实验|法布尔|卡逊|昆虫记|生态/.test(source);
+}
+
+function activeUrbanCulture(state = {}, query = "") {
+  const source = `${query} ${recentText(state)}`;
+  return /简·?雅各布斯|城市|街道|规划|公共空间|社区|邻里|看见城市/.test(source);
+}
+
+function activeTechnologyCulture(state = {}, query = "") {
+  const source = `${query} ${recentText(state)}`;
+  return /香农|图灵|信息论|算法|界面|计算机|技术|维纳|控制论|检索/.test(source);
+}
+
+function activeEthicsCulture(state = {}, query = "") {
+  const source = `${query} ${recentText(state)}`;
+  return /阿伦特|伦理|政治|行动|责任|存在主义|自由|公共生活/.test(source);
+}
+
 function activeLuoLike(state = {}, query = "") {
   const source = `${query} ${recentText(state)}`;
   return /罗大佑|童年|鹿港小镇|恋曲1990|之乎者也/.test(source);
+}
+
+function activeDialogicDomain(state = {}, query = "") {
+  if (/(科学|进化|生态|达尔文|法布尔|卡逊|叙事)/.test(query)) return "science";
+  if (/(城市|街道|规划|空间|简·?雅各布斯)/.test(query)) return "urban";
+  if (/(技术|算法|界面|信息论|香农|图灵|维纳)/.test(query)) return "technology";
+  if (/(伦理|政治|行动|责任|阿伦特|自由)/.test(query)) return "ethics";
+  if (/(艺术|形式|设计|摄影|电影|杜尚|包豪斯|现成品|绘画)/.test(query)) return "visual";
+  if (activeVisualCulture(state, query)) return "visual";
+  if (activeScienceCulture(state, query)) return "science";
+  if (activeUrbanCulture(state, query)) return "urban";
+  if (activeTechnologyCulture(state, query)) return "technology";
+  if (activeEthicsCulture(state, query)) return "ethics";
+  if (activeMandopop(state, query)) return "music";
+  return "";
+}
+
+function extractKnowSubject(query = "") {
+  const match = String(query || "").match(/你知道(.+?)(?:吗|么|嘛|？|\?|$)/);
+  return clean(match?.[1] || "");
 }
 
 function makeDialogicResult({
@@ -55,6 +95,18 @@ function answerRecommendation(query) {
   if (/(现代艺术|艺术家|绘画|摄影|设计|建筑)/.test(query)) {
     return "可以从杜尚、包豪斯、桑塔格、王家卫这类入口走：一个看观念，一个看形式秩序，一个看观看，一个看镜头叙事。";
   }
+  if (/(科学|进化|生态|观察|实验)/.test(query)) {
+    return "可以从达尔文、法布尔、蕾切尔·卡逊、古尔德进入：一个看演化，一个看观察，一个看生态，一个看科学叙事。";
+  }
+  if (/(城市|建筑|街道|规划)/.test(query)) {
+    return "可以从简·雅各布斯、柯布西耶、包豪斯、王澍进入：一个看街道，一个看规划，一个看形式，一个看地方经验。";
+  }
+  if (/(技术|工具|算法|信息|计算)/.test(query)) {
+    return "可以从图灵、香农、维纳、道格拉斯·恩格尔巴特进入：一个看计算，一个看信息，一个看反馈，一个看工具。";
+  }
+  if (/(伦理|政治|哲学|行动)/.test(query)) {
+    return "可以从阿伦特、加缪、汉娜·皮特金、桑塔格进入：一个看行动，一个看荒诞，一个看公共判断，一个看观看伦理。";
+  }
   return "可以换一个相邻入口：先找同领域里风格不同的人，再比较声音、题材和时代位置。";
 }
 
@@ -64,6 +116,18 @@ function answerAbstractComparison(query) {
   }
   if (/(现成品|绘画|摄影|照片)/.test(query)) {
     return "绘画更重材料和手的组织；现成品更重命名、位置和制度。它不是少做，而是把创作重心移到判断。";
+  }
+  if (/(街道|规划|城市)/.test(query)) {
+    return "街道观察从日常细节出发，规划更像先画结构。好城市需要两者互相校正。";
+  }
+  if (/(观察.*实验|实验.*观察)/.test(query)) {
+    return "观察更像把世界看准，实验更像主动制造条件。一个守住细节，一个测试关系。";
+  }
+  if (/(算法|界面|工具)/.test(query)) {
+    return "算法处理规则和选择，界面处理人的动作和理解。一个在背后算，一个在前面让人能用。";
+  }
+  if (/(行动|理论|责任)/.test(query)) {
+    return "理论整理判断，行动把判断放进世界里。差别在于后者要承担结果。";
   }
   return "一种形式偏连续结构，一种形式偏单点命中；差别在材料、顺序、观看位置和完成方式。";
 }
@@ -75,12 +139,39 @@ function answerFormAnalogy(query) {
   if (/(设计|建筑|摄影)/.test(query)) {
     return "可以。相似处在形式组织：删减、比例、视角和秩序，而不是题材必须一样。";
   }
+  if (/(科学|实验|观察)/.test(query)) {
+    return "可以。好的科学叙述也像文学：先选择细节，再让证据和时间把判断推出来。";
+  }
+  if (/(城市|街道|规划)/.test(query)) {
+    return "可以。城市也像文本：街道、节奏和人群是句法，冲突藏在日常动线里。";
+  }
+  if (/(技术|工具|界面)/.test(query)) {
+    return "可以。好工具也有形式感：它把复杂性藏起来，让人的动作变得更准确。";
+  }
+  if (/(政治|伦理|行动)/.test(query)) {
+    return "可以。伦理和戏剧都看行动：不是只看立场，而是看人在具体情境里怎样承担。";
+  }
   return "可以这样看。好的形式不是装饰，而是把材料、节奏和判断组织起来。";
 }
 
 function answerCrossDomain(query) {
   if (/(日本文学|台湾文学)/.test(query)) {
     return "能注意到。两者都常写现代化下的个人、家庭和记忆；日本文学更细压心理，台湾文学更常连着殖民、乡土和身份转换。";
+  }
+  if (/(包豪斯|现代建筑|设计|摄影|电影|艺术|形式)/.test(query)) {
+    return "能注意到。共同点通常不在外观，而在怎样处理现代生活、材料秩序和人的位置；差别要回到媒介和历史。";
+  }
+  if (/(科学|文学|叙事|进化|生态)/.test(query)) {
+    return "能注意到。科学史和文学都在安排证据、时间和视角；差别是科学要回到可检验关系。";
+  }
+  if (/(城市|文学|建筑|街道)/.test(query)) {
+    return "能注意到。城市和文学都靠场景、人物和冲突组织经验；差别是城市还要接受真实使用的检验。";
+  }
+  if (/(技术|诗|工具|界面)/.test(query)) {
+    return "能注意到。技术和诗都在压缩形式；一个压缩动作路径，一个压缩语言经验。";
+  }
+  if (/(伦理|舞台|政治|戏剧)/.test(query)) {
+    return "能注意到。伦理和舞台都把人放进冲突里看；差别是伦理还要判断责任边界。";
   }
   return "能注意到。共同点通常不在外观，而在怎样处理现代生活、材料秩序和人的位置；差别要回到媒介和历史。";
 }
@@ -92,6 +183,18 @@ function answerListRequest(query) {
   if (/(现代艺术|艺术家|代表作)/.test(query)) {
     return "三个入口：杜尚《泉》、毕加索《格尔尼卡》、蒙德里安的格子绘画。先看观念、冲突和形式秩序。";
   }
+  if (/(城市|建筑|规划)/.test(query)) {
+    return "三个入口：简·雅各布斯《美国大城市的死与生》、柯布西耶、包豪斯。";
+  }
+  if (/(技术|信息|计算|工具|算法)/.test(query)) {
+    return "三个入口：图灵、香农、维纳。先看计算、信息和反馈怎样改变工具。";
+  }
+  if (/(伦理|政治|哲学|行动)/.test(query)) {
+    return "三个入口：阿伦特《人的境况》、加缪《西西弗神话》、萨特《存在与虚无》。";
+  }
+  if (/(科学史|科学|进化|生态)/.test(query)) {
+    return "三个入口：达尔文《物种起源》、法布尔《昆虫记》、蕾切尔·卡逊《寂静的春天》。";
+  }
   return "可以先列三个入口：一个看观念，一个看形式，一个看历史位置；再回到你最在意的那条线。";
 }
 
@@ -100,13 +203,55 @@ function answerRelationQuestion(query, state) {
   if (/(杜尚|现成品).*(摄影|照片)|摄影.*(杜尚|现成品)|他和摄影/.test(source)) {
     return "有关系，但不是直接题材关系。杜尚把艺术转向命名和制度；摄影也会改变观看、证据和作品位置。";
   }
+  if (/(达尔文|进化论).*(文学|叙事|生态)|科学.*文学|文学.*科学/.test(source)) {
+    return "有关系，但不是同一种事。达尔文让时间和差异变成解释框架；文学也常用时间组织经验。";
+  }
+  if (/(简·?雅各布斯|城市).*(文学|舞台|建筑)|城市.*(文学|舞台|建筑)/.test(source)) {
+    return "有关系。城市不是抽象地图，而是由人物、场景和冲突组成；这点和文学、舞台都相通。";
+  }
+  if (/(香农|图灵|技术|工具).*(诗|文学|界面)|技术.*(诗|文学|界面)/.test(source)) {
+    return "有关系。技术把动作压缩成路径，诗把经验压缩成语言；两者都在处理形式和效率。";
+  }
+  if (/(阿伦特|伦理|政治).*(舞台|文学|行动)|伦理.*(舞台|文学|行动)/.test(source)) {
+    return "有关系。伦理和舞台都不只看观点，而是看一个人怎样在情境里行动并承担后果。";
+  }
   return "可以按三层看：有没有直接事实关系、有没有形式相似、有没有共同的观看或判断方式。";
+}
+
+function answerDomainOverview(query, state) {
+  const subject = extractKnowSubject(query);
+  const domain = activeDialogicDomain(state, query);
+  if (domain === "science") {
+    return `${subject || "这个科学对象"}可以理解为科学史里的入口：重点在观察、证据、时间尺度和解释关系。`;
+  }
+  if (domain === "urban") {
+    return `${subject || "这个城市对象"}可以理解为城市经验的入口：重点在街道、公共空间、日常使用和人的关系。`;
+  }
+  if (domain === "technology") {
+    return `${subject || "这个技术对象"}可以理解为工具思想的入口：重点在信息、规则、界面和人的动作。`;
+  }
+  if (domain === "ethics") {
+    return `${subject || "这个伦理对象"}可以理解为行动判断的入口：重点在责任、公共性、选择和后果。`;
+  }
+  return "";
 }
 
 export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction = {} } = {}) {
   const text = clean(query);
   const fn = turnFunction.turn_function || "";
   if (!text || !fn) return null;
+
+  if (fn === "information_question") {
+    const domainOverview = answerDomainOverview(text, state);
+    if (domainOverview) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "dialogic_domain_overview",
+        questionType: "overview",
+        answer: domainOverview
+      });
+    }
+  }
 
   if (fn === "information_question" && /(杜尚|现代艺术|摄影史|摄影作为观看|摄影)/.test(text)) {
     if (/杜尚/.test(text)) {
@@ -126,6 +271,38 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "confirmation") {
+    if (activeScienceCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "confirm_active_referent",
+        questionType: "confirmation",
+        answer: "是。这里说的是科学史里的对象，我会按观察、证据和时间尺度继续。"
+      });
+    }
+    if (activeUrbanCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "confirm_active_referent",
+        questionType: "confirmation",
+        answer: "是。这里说的是城市和公共空间里的对象，我会按街道、使用和人群继续。"
+      });
+    }
+    if (activeTechnologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "confirm_active_referent",
+        questionType: "confirmation",
+        answer: "是。这里说的是技术和信息里的对象，我会按规则、工具和人的动作继续。"
+      });
+    }
+    if (activeEthicsCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "confirm_active_referent",
+        questionType: "confirmation",
+        answer: "是。这里说的是伦理和公共行动里的对象，我会按责任、判断和后果继续。"
+      });
+    }
     if (/(现代艺术家|艺术家|现代艺术)/.test(text)) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -175,6 +352,38 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "我会先看它怎样改变观看：不是只看好不好看，而是看材料、位置和制度怎样让意义发生。"
       });
     }
+    if (activeScienceCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "aesthetic_judgment_science",
+        questionType: "reflective_judgment",
+        answer: "我会看它怎样把观察变成解释：厉害处不只是结论，而是让证据、差异和时间连成关系。"
+      });
+    }
+    if (activeUrbanCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "aesthetic_judgment_urban",
+        questionType: "reflective_judgment",
+        answer: "我会看它怎样把城市从图纸拉回街道：重点是日常使用、公共空间和人的互相看见。"
+      });
+    }
+    if (activeTechnologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "aesthetic_judgment_technology",
+        questionType: "reflective_judgment",
+        answer: "我会看它怎样把复杂规则变成可用动作：好的技术不是炫技，而是让判断和操作更清楚。"
+      });
+    }
+    if (activeEthicsCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "reflective_judgment_ethics",
+        questionType: "reflective_judgment",
+        answer: "我会看它怎样把观念放进行动里：重点不是立场漂亮，而是人在情境里怎样承担责任。"
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "aesthetic_judgment",
@@ -202,6 +411,38 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "analogy_statement" && turnFunction.bridge_target === "music_to_literature") {
+    if (activeScienceCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_science_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("科学观察")
+      });
+    }
+    if (activeUrbanCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_urban_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("城市街道")
+      });
+    }
+    if (activeTechnologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_technology_to_poetry",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("技术工具界面")
+      });
+    }
+    if (activeEthicsCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_ethics_to_drama",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("政治伦理行动")
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_music_to_literature",
@@ -211,6 +452,38 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "analogy_statement" && turnFunction.bridge_target === "stage_theater") {
+    if (activeTechnologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_technology_to_stage_action",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。工具和舞台都看动作：谁在什么情境里选择，冲突就从那里发生。"
+      });
+    }
+    if (activeEthicsCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_ethics_to_stage_action",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。伦理和舞台都看行动：人物在具体情境里选择，也在后果里承担。"
+      });
+    }
+    if (activeUrbanCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_urban_to_stage_conflict",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。街道也像舞台：人物、场景和冲突都在日常动线里发生。"
+      });
+    }
+    if (activeScienceCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_science_to_stage_detail",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。科学叙事也要安排细节、冲突和转折，只是最后要回到证据。"
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_to_stage_detail_conflict",
@@ -219,7 +492,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
     });
   }
 
-  if (fn === "analogy_statement" && ["design_form", "cinema_form"].includes(turnFunction.bridge_target)) {
+  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action"].includes(turnFunction.bridge_target)) {
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_form_across_media",
@@ -256,6 +529,42 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "affective_disclosure") {
+    if (activeScienceCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "reflect_affective_projection",
+        questionType: "affective_reflection",
+        contextAction: "ANSWER_LOCAL",
+        answer: "我能理解这个投射。羡慕的也许不是结论本身，而是那种把细节、观察和时间慢慢看清的能力。"
+      });
+    }
+    if (activeUrbanCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "reflect_affective_projection",
+        questionType: "affective_reflection",
+        contextAction: "ANSWER_LOCAL",
+        answer: "我能理解这个投射。它像是在羡慕一种街道感：能从普通日常里看见人怎样彼此靠近或错开。"
+      });
+    }
+    if (activeTechnologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "reflect_affective_projection",
+        questionType: "affective_reflection",
+        contextAction: "ANSWER_LOCAL",
+        answer: "我能理解这个投射。羡慕的可能是把复杂东西做成清楚工具的能力，让思考能落到动作里。"
+      });
+    }
+    if (activeEthicsCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "reflect_affective_projection",
+        questionType: "affective_reflection",
+        contextAction: "ANSWER_LOCAL",
+        answer: "我能理解这个投射。它不是想变成某个哲学家，而是羡慕一种把判断放进行动里的勇气。"
+      });
+    }
     if (activeVisualCulture(state, text)) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -275,6 +584,38 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "interpretive_question") {
+    if (activeScienceCulture(state, text) && /(进步|客观|只是)/.test(text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "interpret_science_beyond_progress",
+        questionType: "interpretive_judgment",
+        answer: "不只是进步神话。更准确地说，它在问差异、适应和时间怎样形成关系，而不是把世界说成越来越好。"
+      });
+    }
+    if (activeUrbanCulture(state, text) && /(只是|效率|漂亮|规划)/.test(text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "interpret_city_beyond_efficiency",
+        questionType: "interpretive_judgment",
+        answer: "不只是效率或漂亮。城市问题更关心街道怎样被使用，人怎样相遇，冲突怎样被空间安排。"
+      });
+    }
+    if (activeTechnologyCulture(state, text) && /(只是|效率|工具|中立)/.test(text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "interpret_technology_beyond_efficiency",
+        questionType: "interpretive_judgment",
+        answer: "不只是效率。工具会安排人的动作和注意力，所以技术也会改变判断的路径。"
+      });
+    }
+    if (activeEthicsCulture(state, text) && /(自由|行动|只是|观点)/.test(text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "interpret_ethics_beyond_position",
+        questionType: "interpretive_judgment",
+        answer: "不只是观点。伦理判断要看行动、处境和后果：一个人怎样把立场变成承担。"
+      });
+    }
     if (activeVisualCulture(state, text) && /(现成品|开玩笑|玩笑|普通物件)/.test(text)) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -308,13 +649,26 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "identity_probe") {
+    const domain = activeDialogicDomain(state, text);
+    const contextLine =
+      domain === "science"
+        ? "当前会话把科学、观察和时间连起来了"
+        : domain === "urban"
+          ? "当前会话把城市、空间和日常经验连起来了"
+          : domain === "technology"
+            ? "当前会话把技术、工具和判断连起来了"
+            : domain === "ethics"
+              ? "当前会话把伦理、行动和责任连起来了"
+              : domain === "visual"
+                ? "当前会话把艺术、形式和观看连起来了"
+                : "当前会话把音乐、文学和记忆连起来了";
     return makeDialogicResult({
       turnFunction: fn,
       intent: "self_identity_known",
       operation: "identity_boundary_with_context",
       questionType: "identity_boundary",
       contextAction: "SURFACE_IDENTITY",
-      answer: "我是对话框。能这样说，是因为当前会话把音乐、文学和记忆连起来了；我不需要把自己说成人。"
+      answer: `我是对话框。能这样说，是因为${contextLine}；我不需要把自己说成人。`
     });
   }
 
@@ -340,6 +694,43 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "compliment") {
+    const domain = activeDialogicDomain(state, text);
+    if (domain === "science") {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "acknowledge_compliment_with_reflective_continuation",
+        questionType: "affective_acknowledgement",
+        contextAction: "ANSWER_LOCAL",
+        answer: "我接住这个。科学和叙事这条线值得继续，因为它能把观察、证据和时间说得更准。"
+      });
+    }
+    if (domain === "urban") {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "acknowledge_compliment_with_reflective_continuation",
+        questionType: "affective_acknowledgement",
+        contextAction: "ANSWER_LOCAL",
+        answer: "我接住这个。城市和空间这条线值得继续，因为它能把日常、冲突和公共性说得更准。"
+      });
+    }
+    if (domain === "technology") {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "acknowledge_compliment_with_reflective_continuation",
+        questionType: "affective_acknowledgement",
+        contextAction: "ANSWER_LOCAL",
+        answer: "我接住这个。技术和形式这条线值得继续，因为它能把工具、动作和判断说得更准。"
+      });
+    }
+    if (domain === "ethics") {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "acknowledge_compliment_with_reflective_continuation",
+        questionType: "affective_acknowledgement",
+        contextAction: "ANSWER_LOCAL",
+        answer: "我接住这个。伦理和行动这条线值得继续，因为它能把判断、处境和责任说得更准。"
+      });
+    }
     if (activeVisualCulture(state, text)) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -359,6 +750,43 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "deepening_invitation") {
+    const domain = activeDialogicDomain(state, text);
+    if (domain === "science") {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "generate_deeper_dialogic_questions",
+        questionType: "deepening_invitation",
+        contextAction: "ANSWER_HELP",
+        answer: "可以问得更深一点：观察什么时候变成证据？科学叙事怎样避免把复杂世界说成单线进步？"
+      });
+    }
+    if (domain === "urban") {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "generate_deeper_dialogic_questions",
+        questionType: "deepening_invitation",
+        contextAction: "ANSWER_HELP",
+        answer: "可以问得更深一点：一条街怎样让人相遇？城市规划什么时候会压扁真实生活？"
+      });
+    }
+    if (domain === "technology") {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "generate_deeper_dialogic_questions",
+        questionType: "deepening_invitation",
+        contextAction: "ANSWER_HELP",
+        answer: "可以问得更深一点：一个工具怎样改变思考？界面把哪些判断交给人，又藏起哪些判断？"
+      });
+    }
+    if (domain === "ethics") {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "generate_deeper_dialogic_questions",
+        questionType: "deepening_invitation",
+        contextAction: "ANSWER_HELP",
+        answer: "可以问得更深一点：判断什么时候变成行动？一个人怎样在复杂处境里承担责任？"
+      });
+    }
     if (activeVisualCulture(state, text)) {
       return makeDialogicResult({
         turnFunction: fn,

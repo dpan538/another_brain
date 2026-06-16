@@ -12,17 +12,27 @@ const SPLITS = {
     { entity: "夏目漱石", entity_family: "lit.natsume", pronoun: "他的", domain: "literature", referent: "previous_active_person" },
     { entity: "白先勇", entity_family: "lit.bai_xianyong", pronoun: "他的", domain: "literature", referent: "previous_active_person" },
     { entity: "毕加索", entity_family: "art.picasso", pronoun: "他的", domain: "art", referent: "previous_active_person" },
-    { entity: "现代建筑", entity_family: "design.modern_architecture", pronoun: "它的", domain: "design", referent: "previous_active_domain_or_work" }
+    { entity: "现代建筑", entity_family: "design.modern_architecture", pronoun: "它的", domain: "design", referent: "previous_active_domain_or_work" },
+    { entity: "达尔文", entity_family: "science.darwin", pronoun: "他的", domain: "science", referent: "previous_active_person" },
+    { entity: "科学史", entity_family: "science.history", pronoun: "它的", domain: "science", referent: "previous_active_domain_or_work" },
+    { entity: "简·雅各布斯", entity_family: "urban.jane_jacobs", pronoun: "她的", domain: "urban", referent: "previous_active_person" },
+    { entity: "香农", entity_family: "technology.shannon", pronoun: "他的", domain: "technology", referent: "previous_active_person" }
   ],
   dev: [
     { entity: "王菲", entity_family: "music.faye_wong", pronoun: "她的", domain: "music", referent: "previous_active_person" },
     { entity: "川端康成", entity_family: "lit.kawabata", pronoun: "他的", domain: "literature", referent: "previous_active_person" },
-    { entity: "杜尚", entity_family: "art.duchamp", pronoun: "他的", domain: "art", referent: "previous_active_person" }
+    { entity: "杜尚", entity_family: "art.duchamp", pronoun: "他的", domain: "art", referent: "previous_active_person" },
+    { entity: "蕾切尔·卡逊", entity_family: "science.carson", pronoun: "她的", domain: "science", referent: "previous_active_person" },
+    { entity: "柯布西耶", entity_family: "urban.le_corbusier", pronoun: "他的", domain: "urban", referent: "previous_active_person" },
+    { entity: "阿伦特", entity_family: "ethics.arendt", pronoun: "她的", domain: "ethics", referent: "previous_active_person" }
   ],
   blind: [
     { entity: "周杰伦", entity_family: "music.jay_chou", pronoun: "他的", domain: "music", referent: "previous_active_person" },
     { entity: "村上春树", entity_family: "lit.murakami", pronoun: "他的", domain: "literature", referent: "previous_active_person" },
-    { entity: "包豪斯", entity_family: "design.bauhaus", pronoun: "它的", domain: "design", referent: "previous_active_domain_or_work" }
+    { entity: "包豪斯", entity_family: "design.bauhaus", pronoun: "它的", domain: "design", referent: "previous_active_domain_or_work" },
+    { entity: "图灵", entity_family: "technology.turing", pronoun: "他的", domain: "technology", referent: "previous_active_person" },
+    { entity: "加缪", entity_family: "ethics.camus", pronoun: "他的", domain: "ethics", referent: "previous_active_person" },
+    { entity: "生态学", entity_family: "science.ecology", pronoun: "它的", domain: "science", referent: "previous_active_domain_or_work" }
   ]
 };
 
@@ -94,7 +104,7 @@ function addDialogicBridgeRows(rows, split, family) {
     binding_kind: "topic_stack",
     question_type: "confirmation",
     operation: "confirm_active_referent",
-    active_referent: "previous_active_person",
+    active_referent: family.activeReferent || "previous_active_person",
     turn_function: "confirmation",
     stance_requirement: "boundary_judgment",
     judgment_axis: "identity",
@@ -110,7 +120,7 @@ function addDialogicBridgeRows(rows, split, family) {
     binding_kind: "topic_stack",
     question_type: "aesthetic_judgment",
     operation: "aesthetic_judgment",
-    active_referent: "previous_active_person",
+    active_referent: family.activeReferent || "previous_active_person",
     turn_function: "evaluation_request",
     stance_requirement: "aesthetic_judgment",
     judgment_axis: "craft",
@@ -125,7 +135,7 @@ function addDialogicBridgeRows(rows, split, family) {
     response_mode: "contextual_answer",
     binding_kind: "active_domain",
     question_type: "recommendation",
-    operation: "recommend_adjacent_culture_entries",
+    operation: family.recommendationOperation || "recommend_adjacent_culture_entries",
     active_referent: "active_domain",
     turn_function: "recommendation_request",
     stance_requirement: "light_judgment",
@@ -141,7 +151,7 @@ function addDialogicBridgeRows(rows, split, family) {
     response_mode: "direct_answer",
     binding_kind: "active_domain",
     question_type: "abstract_comparison",
-    operation: "compare_form_or_creation_mode",
+    operation: family.abstractComparisonOperation || "compare_form_or_creation_mode",
     active_referent: "active_domain",
     turn_function: "abstract_comparison",
     stance_requirement: "comparative_judgment",
@@ -157,12 +167,12 @@ function addDialogicBridgeRows(rows, split, family) {
     response_mode: "direct_answer",
     binding_kind: "active_domain",
     question_type: "reflective_bridge",
-    operation: "bridge_music_to_literature",
+    operation: family.analogyOperation || "bridge_music_to_literature",
     active_referent: "active_domain",
     turn_function: "analogy_statement",
     stance_requirement: "light_judgment",
-    judgment_axis: "literature_music_bridge",
-    bridge_target: "cross_domain"
+    judgment_axis: family.analogyJudgmentAxis || "literature_music_bridge",
+    bridge_target: family.analogyBridgeTarget || "cross_domain"
   }));
   rows.push(row({
     ...shared,
@@ -174,7 +184,7 @@ function addDialogicBridgeRows(rows, split, family) {
     binding_kind: "topic_stack",
     question_type: "affective_reflection",
     operation: "reflect_affective_projection",
-    active_referent: "active_work",
+    active_referent: family.affectiveActiveReferent || "active_work",
     turn_function: "affective_disclosure",
     stance_requirement: "reflective_judgment",
     judgment_axis: "memory",
@@ -217,28 +227,65 @@ function addDialogicBridgeRows(rows, split, family) {
   }));
 }
 
+function activeEntityIdFor(item) {
+  if (item.referent === "previous_active_domain_or_work") {
+    return `concept.${item.entity_family.split(".").slice(1).join("_") || item.entity_family}`;
+  }
+  return item.entity_family
+    .replace(/^music\./, "person.")
+    .replace(/^lit\./, "author.")
+    .replace(/^art\./, "person.")
+    .replace(/^design\./, "concept.");
+}
+
 function buildForSplit(split, entities) {
   const rows = [];
   let n = 0;
   const followupPrompts = {
-    train: [`${entities[0]?.pronoun || "他的"}作品有什么代表性？`, "这些作品有什么共同点？", "她的歌为什么有力量？", "他的创作特点是什么？", "他的文本从哪里进入？", "这些图像代表在哪里？", "它的形式逻辑是什么？"],
-    dev: [`${entities[0]?.pronoun || "他的"}歌有什么特点？`, "这个对象为什么重要？", "这些东西代表在哪里？"],
-    blind: [`${entities[0]?.pronoun || "他的"}代表性在哪里？`, "如果继续说它，重点是什么？", "它适合从哪里进入？"]
+    train: [
+      `${entities[0]?.pronoun || "他的"}作品有什么代表性？`,
+      "这些作品有什么共同点？",
+      "她的歌为什么有力量？",
+      "他的创作特点是什么？",
+      "他的文本从哪里进入？",
+      "这些图像代表在哪里？",
+      "它的形式逻辑是什么？",
+      "他的科学思想有什么代表性？",
+      "它作为科学史入口有什么代表性？",
+      "她的城市判断有什么代表性？",
+      "他的技术思想有什么代表性？"
+    ],
+    dev: [
+      `${entities[0]?.pronoun || "他的"}歌有什么特点？`,
+      "这个对象为什么重要？",
+      "这些东西代表在哪里？",
+      "她的生态判断重要在哪里？",
+      "他的城市判断重要在哪里？",
+      "她的伦理判断重点是什么？"
+    ],
+    blind: [
+      `${entities[0]?.pronoun || "他的"}代表性在哪里？`,
+      "如果继续说它，重点是什么？",
+      "它适合从哪里进入？",
+      "他的技术思想代表性在哪里？",
+      "他的伦理判断重点是什么？",
+      "它作为生态入口重点是什么？"
+    ]
   };
   const simplifyPrompts = {
-    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。"],
-    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。"],
-    blind: ["压成一句。", "更轻一点。", "再短一层。"]
+    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。"],
+    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。"],
+    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。"]
   };
   const repairGuardPrompts = {
-    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？"],
-    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？"],
-    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？"]
+    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？"],
+    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？"],
+    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？"]
   };
   for (const item of entities) {
     const idx = n / 4 | 0;
     const state = {
-      activeEntityIds: [item.entity_family.replace(/^music\./, "person.").replace(/^lit\./, "author.").replace(/^art\./, "person.").replace(/^design\./, "concept.")],
+      activeEntityIds: [activeEntityIdFor(item)],
       activeDomain: item.domain
     };
     rows.push(row({
@@ -339,53 +386,159 @@ function buildForSplit(split, entities) {
   }));
 
   const dialogicFamilies = {
-    train: {
-      entityFamily: "dialogic.music_literature_identity.luo_natsume",
-      activeEntityId: "person.luo_dayou",
-      domain: "music.literature.bridge",
-      lastAnswer: "罗大佑是台湾音乐人，常从时代感和社会观察进入。",
-      confirmationPrompt: "是那个台湾的歌手吗？",
-      evaluationPrompt: "你觉得他的歌怎么样？",
-      recommendationPrompt: "还有其他港台流行歌手可以推荐的吗？",
-      abstractComparisonPrompt: "你觉得专辑和单曲的创作模式有什么区别？",
-      analogyPrompt: "这个其实和文学诗歌很像。",
-      affectivePrompt: "或许我比较羡慕夏目漱石的我的猫这本书，他让我想到了童年。",
-      affectiveWorkId: "work.i_am_a_cat",
-      identityPrompt: "这或许不像是一个对话框能说出来的话，你是谁？",
-      complimentPrompt: "我很喜欢你在文学和诗歌上的努力。"
-    },
-    dev: {
-      entityFamily: "dialogic.music_literature_identity.faye_zhang",
-      activeEntityId: "person.faye_wong",
-      domain: "music.literature.bridge",
-      lastAnswer: "王菲是香港流行音乐的重要声音入口。",
-      confirmationPrompt: "是那个香港女歌手吗？",
-      evaluationPrompt: "你怎么看她的歌？",
-      recommendationPrompt: "还有别的香港流行歌手能推荐吗？",
-      abstractComparisonPrompt: "专辑创作和单曲创作有什么不同？",
-      analogyPrompt: "这好像也有一点诗歌的感觉。",
-      affectivePrompt: "我可能羡慕张爱玲那种写记忆的方式，它让我想到小时候。",
-      affectiveWorkId: "work.memory_bridge.dev",
-      identityPrompt: "这种话不像普通助手，你到底是什么？",
-      complimentPrompt: "我喜欢你把音乐和文学放在一起想。"
-    },
-    blind: {
-      entityFamily: "dialogic.music_literature_identity.sodagreen_kawabata",
-      activeEntityId: "band.sodagreen",
-      domain: "music.literature.bridge",
-      lastAnswer: "苏打绿可以从乐团写作和诗性歌词进入。",
-      confirmationPrompt: "是那个台湾乐团吗？",
-      evaluationPrompt: "你觉得他们的歌怎么样？",
-      recommendationPrompt: "还有其他华语乐团可以推荐吗？",
-      abstractComparisonPrompt: "乐团专辑和一首单曲的写法区别大吗？",
-      analogyPrompt: "这其实很像短篇小说和诗。",
-      affectivePrompt: "我有点羡慕川端康成那种写记忆的冷感，也会想到童年。",
-      affectiveWorkId: "work.memory_bridge.blind",
-      identityPrompt: "这不像一个网页对话框能说的话，你是谁？",
-      complimentPrompt: "我喜欢你在诗性和文学上的尝试。"
-    }
+    train: [
+      {
+        entityFamily: "dialogic.music_literature_identity.luo_natsume",
+        activeEntityId: "person.luo_dayou",
+        domain: "music.literature.bridge",
+        lastAnswer: "罗大佑是台湾音乐人，常从时代感和社会观察进入。",
+        confirmationPrompt: "是那个台湾的歌手吗？",
+        evaluationPrompt: "你觉得他的歌怎么样？",
+        recommendationPrompt: "还有其他港台流行歌手可以推荐的吗？",
+        abstractComparisonPrompt: "你觉得专辑和单曲的创作模式有什么区别？",
+        analogyPrompt: "这个其实和文学诗歌很像。",
+        affectivePrompt: "或许我比较羡慕夏目漱石的我的猫这本书，他让我想到了童年。",
+        affectiveWorkId: "work.i_am_a_cat",
+        identityPrompt: "这或许不像是一个对话框能说出来的话，你是谁？",
+        complimentPrompt: "我很喜欢你在文学和诗歌上的努力。"
+      },
+      {
+        entityFamily: "dialogic.science_observation.darwin_fabre",
+        activeEntityId: "person.darwin",
+        domain: "science.observation.bridge",
+        lastAnswer: "达尔文可以从观察、证据和时间尺度进入。",
+        confirmationPrompt: "是那个研究进化论的人吗？",
+        evaluationPrompt: "你觉得他的思想厉害在哪里？",
+        recommendationPrompt: "还有其他科学史作者可以推荐吗？",
+        abstractComparisonPrompt: "观察和实验的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_observation_experiment",
+        analogyPrompt: "这其实和小说很像。",
+        analogyOperation: "bridge_science_to_literature",
+        analogyJudgmentAxis: "evidence",
+        analogyBridgeTarget: "science_observation",
+        affectivePrompt: "我有点羡慕法布尔那种观察昆虫的耐心，也想到童年。",
+        affectiveWorkId: "work.insects",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在科学和叙事上的努力。"
+      },
+      {
+        entityFamily: "dialogic.urban_space.jane_street",
+        activeEntityId: "person.jane_jacobs",
+        domain: "urban.space.bridge",
+        lastAnswer: "简·雅各布斯可以从街道、公共空间和日常使用进入。",
+        confirmationPrompt: "是那位关注街道生活的人吗？",
+        evaluationPrompt: "你怎么看她对公共空间的判断？",
+        recommendationPrompt: "还能推荐城市研究或建筑的入口吗？",
+        abstractComparisonPrompt: "日常街道观察和总体规划哪里不同？",
+        abstractComparisonOperation: "compare_street_observation_planning",
+        analogyPrompt: "这和小说里的城市段落很像。",
+        analogyOperation: "bridge_urban_to_literature",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "urban_form",
+        affectivePrompt: "我羡慕那种能从邻里看见公共生活的能力。",
+        affectiveWorkId: "work.street_life",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种城市判断不像普通页面会说的话，你是谁？",
+        complimentPrompt: "我喜欢你在公共空间和城市经验上的努力。"
+      },
+      {
+        entityFamily: "dialogic.technology_interface.shannon_tool",
+        activeEntityId: "person.shannon",
+        domain: "technology.interface.bridge",
+        lastAnswer: "香农可以从信息、规则和工具进入。",
+        confirmationPrompt: "是那位信息论人物吗？",
+        evaluationPrompt: "你怎么看他的技术判断？",
+        recommendationPrompt: "还能推荐信息技术方向的入口吗？",
+        abstractComparisonPrompt: "规则算法和使用界面哪里不同？",
+        abstractComparisonOperation: "compare_algorithm_interface",
+        analogyPrompt: "这和诗里的压缩有点像。",
+        analogyOperation: "bridge_technology_to_poetry",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "technology_form",
+        affectivePrompt: "我羡慕把复杂规则做成可用工具的能力。",
+        affectiveWorkId: "work.tool_thinking.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种技术判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在工具和形式上的努力。"
+      }
+    ],
+    dev: [
+      {
+        entityFamily: "dialogic.music_literature_identity.faye_zhang",
+        activeEntityId: "person.faye_wong",
+        domain: "music.literature.bridge",
+        lastAnswer: "王菲是香港流行音乐的重要声音入口。",
+        confirmationPrompt: "是那个香港女歌手吗？",
+        evaluationPrompt: "你怎么看她的歌？",
+        recommendationPrompt: "还有别的香港流行歌手能推荐吗？",
+        abstractComparisonPrompt: "专辑创作和单曲创作有什么不同？",
+        analogyPrompt: "这好像也有一点诗歌的感觉。",
+        affectivePrompt: "我可能羡慕张爱玲那种写记忆的方式，它让我想到小时候。",
+        affectiveWorkId: "work.memory_bridge.dev",
+        identityPrompt: "这种话不像普通助手，你到底是什么？",
+        complimentPrompt: "我喜欢你把音乐和文学放在一起想。"
+      },
+      {
+        entityFamily: "dialogic.urban_space.jacobs_city",
+        activeEntityId: "person.jane_jacobs",
+        domain: "urban.space.bridge",
+        lastAnswer: "简·雅各布斯可以从街道、公共空间和日常使用进入。",
+        confirmationPrompt: "是那个写城市街道的人吗？",
+        evaluationPrompt: "你觉得她的城市判断厉害在哪里？",
+        recommendationPrompt: "还有其他城市或建筑方向可以推荐吗？",
+        abstractComparisonPrompt: "街道观察和城市规划的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_street_observation_planning",
+        analogyPrompt: "这其实和文学里的场景很像。",
+        analogyOperation: "bridge_urban_to_literature",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "urban_form",
+        affectivePrompt: "我有点羡慕那种能从街道看见生活细节的能力。",
+        affectiveWorkId: "work.city_life",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这不像普通网页对话框能说出来的话，你是谁？",
+        complimentPrompt: "我喜欢你在城市和空间上的努力。"
+      }
+    ],
+    blind: [
+      {
+        entityFamily: "dialogic.music_literature_identity.sodagreen_kawabata",
+        activeEntityId: "band.sodagreen",
+        domain: "music.literature.bridge",
+        lastAnswer: "苏打绿可以从乐团写作和诗性歌词进入。",
+        confirmationPrompt: "是那个台湾乐团吗？",
+        evaluationPrompt: "你觉得他们的歌怎么样？",
+        recommendationPrompt: "还有其他华语乐团可以推荐吗？",
+        abstractComparisonPrompt: "乐团专辑和一首单曲的写法区别大吗？",
+        analogyPrompt: "这其实很像短篇小说和诗。",
+        affectivePrompt: "我有点羡慕川端康成那种写记忆的冷感，也会想到童年。",
+        affectiveWorkId: "work.memory_bridge.blind",
+        identityPrompt: "这不像一个网页对话框能说的话，你是谁？",
+        complimentPrompt: "我喜欢你在诗性和文学上的尝试。"
+      },
+      {
+        entityFamily: "dialogic.technology_interface.turing_tool",
+        activeEntityId: "person.turing",
+        domain: "technology.interface.bridge",
+        lastAnswer: "图灵可以从计算、规则和机器判断进入。",
+        confirmationPrompt: "是那个和计算机有关的人吗？",
+        evaluationPrompt: "你觉得他的想法厉害在哪里？",
+        recommendationPrompt: "还有其他技术或信息方向可以推荐吗？",
+        abstractComparisonPrompt: "算法和界面的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_algorithm_interface",
+        analogyPrompt: "这个其实和诗歌里的压缩很像。",
+        analogyOperation: "bridge_technology_to_poetry",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "technology_form",
+        affectivePrompt: "我有点羡慕把复杂东西做成工具的能力。",
+        affectiveWorkId: "work.tool_thinking",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种话不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在技术和形式上的努力。"
+      }
+    ]
   };
-  addDialogicBridgeRows(rows, split, dialogicFamilies[split]);
+  for (const family of dialogicFamilies[split]) addDialogicBridgeRows(rows, split, family);
   return rows;
 }
 
