@@ -1,3 +1,5 @@
+import { detectCultureDomain, resolveCultureEntity } from "./culture_runtime.js";
+
 function clean(text) {
   return String(text || "").trim();
 }
@@ -8,30 +10,29 @@ function unique(values) {
 
 function explicitTopicFromQuery(query = "", domain = "") {
   const text = clean(query);
-  if (/罗大佑|童年|鹿港小镇|恋曲1990|之乎者也|东方之珠/.test(text)) {
+  const cards = resolveCultureEntity(text, {});
+  const explicitCards = cards.filter((card) => (card.names || []).some((name) => text.includes(name)));
+  const focusCards = explicitCards.length ? explicitCards : cards.filter((card) => card.entity_type !== "concept");
+  if (focusCards.length > 0) {
+    const entityIds = unique(focusCards.filter((card) => ["person", "author"].some((kind) => card.id.startsWith(`${kind}.`) || card.entity_type === "person")).map((card) => card.id));
+    const workIds = unique(focusCards.filter((card) => card.entity_type === "work" || card.id.startsWith("work.")).map((card) => card.id));
+    const inferredDomain = domain || focusCards[0]?.domain || detectCultureDomain(text, {});
     return {
-      id: "topic.person.luo_dayou",
-      entity_ids: ["person.luo_dayou"],
-      work_ids: unique([
-        /童年/.test(text) ? "work.song.tongnian" : "",
-        /鹿港小镇/.test(text) ? "work.song.lukang_xiaozhen" : "",
-        /恋曲1990/.test(text) ? "work.song.lianqu_1990" : "",
-        /之乎者也/.test(text) ? "work.album.zhihu_zheye" : ""
-      ]),
-      domain: domain || "music.mandopop",
-      label: "罗大佑"
+      id: entityIds[0] ? `topic.${entityIds[0]}` : workIds[0] ? `topic.${workIds[0]}` : `topic.domain.${inferredDomain}`,
+      entity_ids: entityIds,
+      work_ids: workIds,
+      domain: inferredDomain,
+      label: focusCards[0]?.names?.[0] || inferredDomain || "当前话题"
     };
   }
-  if (/日本文学|夏目漱石|川端康成|村上春树|太宰治/.test(text)) {
+  const inferredDomain = detectCultureDomain(text, {});
+  if (inferredDomain && inferredDomain !== "generic") {
     return {
-      id: "topic.domain.japanese_literature",
-      entity_ids: unique([
-        /夏目漱石/.test(text) ? "author.natsume_soseki" : "",
-        /川端康成/.test(text) ? "author.kawabata_yasunari" : ""
-      ]),
+      id: `topic.domain.${inferredDomain}`,
+      entity_ids: [],
       work_ids: [],
-      domain: domain || "literature.japanese",
-      label: "日本文学"
+      domain: domain || inferredDomain,
+      label: inferredDomain
     };
   }
   return null;
@@ -40,22 +41,23 @@ function explicitTopicFromQuery(query = "", domain = "") {
 function topicFromSession(session = {}) {
   const entityIds = Array.isArray(session.activeEntityIds) ? session.activeEntityIds : [];
   const workIds = Array.isArray(session.activeWorkIds) ? session.activeWorkIds : [];
-  if (entityIds.includes("person.luo_dayou") || /罗大佑/.test(`${session.lastAnswer || ""} ${session.lastAssistantAnswer || ""}`)) {
+  if (entityIds.length > 0 || workIds.length > 0 || session.last_focus_entity_id) {
     return {
-      id: "topic.person.luo_dayou",
-      entity_ids: unique(["person.luo_dayou", ...entityIds]),
+      id: `topic.${session.last_focus_entity_id || entityIds[0] || workIds[0]}`,
+      entity_ids: unique([session.last_focus_entity_id || "", ...entityIds]).filter((id) => /person\.|author\./.test(id)),
       work_ids: unique(workIds),
-      domain: session.activeDomain || session.lastDomain || "music.mandopop",
-      label: "罗大佑"
+      domain: session.activeDomain || session.lastDomain || session.last_domain || "",
+      label: session.last_focus_entity_id || entityIds[0] || workIds[0] || "当前话题"
     };
   }
-  if ((session.activeDomain || session.lastDomain) === "literature.japanese") {
+  const domain = session.activeDomain || session.lastDomain || session.last_domain;
+  if (domain) {
     return {
-      id: "topic.domain.japanese_literature",
+      id: `topic.domain.${domain}`,
       entity_ids: unique(entityIds),
       work_ids: unique(workIds),
-      domain: "literature.japanese",
-      label: "日本文学"
+      domain,
+      label: domain
     };
   }
   return null;

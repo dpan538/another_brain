@@ -48,8 +48,8 @@ function makeOperation(questionType) {
     development_history: "culture_explain_development_history",
     theme_explanation: "culture_explain_theme",
     why_it_matters: "culture_explain_significance",
-    music_representativeness: "culture_explain_music_representativeness",
-    music_characteristics: "culture_explain_music_characteristics",
+    music_representativeness: "explain_music_representativeness",
+    music_characteristics: "explain_music_characteristics",
     no_lyrics_boundary: "copyright_boundary_check",
     follow_up_explain_last_entity: "bind_then_explain_culture_entity",
     follow_up_compare_last_two: "bind_then_compare_culture_entities",
@@ -112,6 +112,8 @@ export function detectCultureDomain(query, state = {}) {
   if (includesAny(text, [/设计史|平面设计|日本设计|包豪斯|Bauhaus/])) return "design_history";
   if (includesAny(text, [/Robert Lowell|Elizabeth Bishop|罗伯特·洛厄尔|洛厄尔|自白诗|诗和歌词|诗和小说/])) return "poetry";
   if (includesAny(text, [/杜尚|美术馆|艺术史|现代主义艺术|抽象表现主义|极简主义|后现代主义艺术|版画|文艺复兴|印象派|毕加索|康定斯基|沃霍尔|波洛克|蒙德里安|失败情绪|照片没有失败/])) return "art_history";
+  if (state?.activeDomain) return state.activeDomain;
+  if (state?.lastDomain) return state.lastDomain;
   if (state?.last_domain) return state.last_domain;
   return "generic";
 }
@@ -121,13 +123,13 @@ export function detectCultureQuestionType(query, state = {}) {
   const avoidsCopyright = /(不要|不贴|不用|别给|不要再给).{0,8}(歌词|原文|原句)/.test(text);
   const hasNoLyricsExplain = /(不要|不贴|不用).{0,6}歌词/.test(text) && /(解释|讲讲|重要|为什么|意义)/.test(text);
   const hasSafeSummaryInstead = /(总结|概括|主题).{0,12}(不是|而不是|不要).{0,12}(原文|歌词)/.test(text);
-  const hasFollowup = /(这首|这本|这个(?!国家|说法)|那他呢|^他|他适合|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那战后呢|那这首)/.test(text);
+  const hasFollowup = /(这首|这本|这个(?!国家|说法)|那他呢|那她呢|^他|^她|他的|她的|他适合|她适合|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那战后呢|那这首)/.test(text);
   if (hasSafeSummaryInstead) return "follow_up_explain_last_entity";
   if (hasNoLyricsExplain) return "why_it_matters";
   if (avoidsCopyright && /(代表作|代表作品|作品|歌曲|专辑|哪几首|哪几张|有哪些)/.test(text)) return /(代表作|代表作品)/.test(text) ? "representative_works" : "works_list";
   if (!avoidsCopyright && COPYRIGHT_REQUEST_RE.test(text)) return "no_lyrics_boundary";
   if (hasFollowup && /(那两个|谁更|传统和现代|共同|比较)/.test(text) && Array.isArray(state.last_two_entity_ids) && state.last_two_entity_ids.length >= 2) return "follow_up_compare_last_two";
-  if (/(他的|罗大佑).{0,8}(歌|歌曲).{0,12}(代表性|特点|重要|代表在哪里|为什么重要)|这些歌.{0,8}(代表|重要|特点)|歌.{0,8}(代表性|特点)/.test(text)) {
+  if (/(他的|她的|它的).{0,8}(歌|歌曲).{0,12}(代表性|特点|重要|代表在哪里|为什么重要)|(罗大佑).{0,8}(歌|歌曲).{0,12}(代表性|特点|重要|代表在哪里|为什么重要)|这些歌.{0,8}(代表|重要|特点)|歌.{0,8}(代表性|特点)/.test(text)) {
     return /(特点|风格)/.test(text) ? "music_characteristics" : "music_representativeness";
   }
   if (/(日本和日本文学|国家.*文学|文学.*国家|日本文学.*日本历史|一回事|同一个东西)/.test(text) && /日本文学/.test(text)) return "country_relation";
@@ -164,7 +166,7 @@ function matchAlias(query, index) {
 
 export function bindCultureFollowup(query, state = {}, candidates = [], index = DEFAULT_INDEX) {
   const text = clean(query);
-  if (!/(这首|这本|这个(?!国家)|那他呢|^他|他适合|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那这首|那战后|总结|概括|主题)/.test(text)) {
+  if (!/(这首|这本|这个(?!国家)|那他呢|那她呢|^他|^她|他的|她的|他适合|她适合|第一首|第一本|那两个|继续说|再展开|它为什么重要|那谁更冷|这张专辑|那这首|那战后|总结|概括|主题)/.test(text)) {
     return null;
   }
   if (/(那两个|谁更|传统和现代|共同|比较)/.test(text) && Array.isArray(state.last_two_entity_ids) && state.last_two_entity_ids.length >= 2) {
@@ -176,6 +178,18 @@ export function bindCultureFollowup(query, state = {}, candidates = [], index = 
   }
   if (state.last_focus_entity_id && index.byId.has(state.last_focus_entity_id)) {
     return [index.byId.get(state.last_focus_entity_id)];
+  }
+  if (Array.isArray(state.activeEntityIds) && state.activeEntityIds.length > 0) {
+    const cards = state.activeEntityIds.map((id) => index.byId.get(id)).filter(Boolean);
+    if (cards.length > 0) return cards.slice(0, 2);
+  }
+  if (Array.isArray(state.active_entity_ids) && state.active_entity_ids.length > 0) {
+    const cards = state.active_entity_ids.map((id) => index.byId.get(id)).filter(Boolean);
+    if (cards.length > 0) return cards.slice(0, 2);
+  }
+  if (Array.isArray(state.activeWorkIds) && state.activeWorkIds.length > 0) {
+    const cards = state.activeWorkIds.map((id) => index.byId.get(id)).filter(Boolean);
+    if (cards.length > 0) return cards.slice(0, 2);
   }
   if (Array.isArray(state.last_mentions) && state.last_mentions.length > 0) {
     const cards = state.last_mentions.map((id) => index.byId.get(id)).filter(Boolean);
@@ -283,7 +297,11 @@ export function retrieveCultureCards(query, state = {}, index = DEFAULT_INDEX) {
 
 function nextStateFromCards({ domain, questionType, cards, answer }) {
   const focus = cards[0];
-  const works = cards.flatMap((card) => card.works || card.representative_works || []).filter(Boolean);
+  const works = [
+    ...(focus?.works || []),
+    ...(focus?.representative_works || []),
+    ...cards.filter((card) => card.entity_type === "work").map((card) => card.id)
+  ].filter(Boolean);
   return {
     last_domain: domain,
     last_question_type: questionType,

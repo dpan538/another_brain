@@ -117,5 +117,11 @@ node scripts/check_mobile_answer_density.mjs >/dev/null
 node scripts/check_webgpu_contract.mjs >/dev/null
 node scripts/bench_retrieval_webgpu.mjs >/dev/null
 node scripts/eval_embedding_retrieval_quality.mjs >/dev/null
+node scripts/validate_r21_failure_bank.mjs >/dev/null
+node scripts/build_r21_control_family_evals.mjs >/dev/null
+node scripts/validate_r21_family_splits.mjs >/dev/null
+node scripts/train_r21_typed_control_gate.mjs >/dev/null
+node scripts/eval_r21_typed_control_gate.mjs >/dev/null
+node scripts/check_r21_anti_overfit_invariants.mjs >/dev/null
 
 printf 'release check passed\n'

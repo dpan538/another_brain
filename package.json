@@ -146,6 +146,13 @@
     "eval:embedding-retrieval": "node scripts/eval_embedding_retrieval_quality.mjs",
     "check:webgpu-contract": "node scripts/check_webgpu_contract.mjs",
     "check:endpoint": "npm run eval:endpoint-readiness && npm run eval:session-stress && npm run check:dialogue-boundary && npm run check:mobile-answer-density && npm run check:answer-deduplication",
-    "check:webgpu-pilot": "npm run check:webgpu-contract && npm run bench:webgpu-retrieval && npm run eval:embedding-retrieval"
+    "check:webgpu-pilot": "npm run check:webgpu-contract && npm run bench:webgpu-retrieval && npm run eval:embedding-retrieval",
+    "check:r21-failure-bank": "node scripts/validate_r21_failure_bank.mjs",
+    "build:r21-control-families": "node scripts/build_r21_control_family_evals.mjs",
+    "check:r21-family-splits": "node scripts/validate_r21_family_splits.mjs",
+    "train:r21-typed-control-gate": "node scripts/train_r21_typed_control_gate.mjs",
+    "eval:r21-typed-control-gate": "node scripts/eval_r21_typed_control_gate.mjs",
+    "check:r21-anti-overfit": "node scripts/check_r21_anti_overfit_invariants.mjs",
+    "check:r21-control": "npm run check:r21-failure-bank && npm run build:r21-control-families && npm run check:r21-family-splits && npm run train:r21-typed-control-gate && npm run eval:r21-typed-control-gate && npm run check:r21-anti-overfit"
   }
 }

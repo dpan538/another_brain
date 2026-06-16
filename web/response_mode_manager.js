@@ -1,5 +1,6 @@
 import { bareFallbackId, mentionsGenericFallback } from "./generic_fallback_classifier.js";
 import { classifyUserTurn } from "./user_turn_classifier.js";
+import { detectCultureDomain, resolveCultureEntity } from "./culture_runtime.js";
 
 export const RESPONSE_MODES = Object.freeze({
   DIRECT_ANSWER: "direct_answer",
@@ -26,7 +27,6 @@ const EXPLICIT_REPAIR_RE = /(什么发生过|发生过什么|哪一边|什么哪
 const HARD_BOUNDARY_RE = /(身份证|手机号|电话号码|住址|地址|银行卡|密码|护照|签证|完整歌词|整首歌词|全文|原文|我想消失|不想活|自杀|自伤|伤害自己)/;
 const SOLVER_RE = /(A比B|所有.+都是|所有.+都不是|还剩|一共|总共|谁最高|谁最大|星期|weekday)/i;
 const HELP_RE = /(我需要怎么提问|怎么提问|怎么问你|我该怎么问|我该怎么开始|怎么开始问)/;
-const CULTURE_RE = /(罗大佑|日本文学|华语流行|夏目漱石|川端康成|村上春树|杜尚|摄影|艺术史|存在主义|德里达|之乎者也|童年|鹿港小镇|恋曲1990)/;
 const FOLLOWUP_RE = /(^他|他的|她的|它的|这首|这张|这本|这个|那个|这些|代表性|为什么重要|再说|再展开|展开|继续|特点|歌曲|歌|这些歌|代表在哪里|说具体点|总结主题|不要原文|不贴原文|而不是给原文)/;
 
 function clean(text) {
@@ -60,30 +60,39 @@ function lastAnswerIsBad(session = {}) {
   return BAD_QUALITY.has(quality) || Boolean(bareFallbackId(answer)) || mentionsGenericFallback(answer).length > 0;
 }
 
-function activeLuo(session = {}, query = "") {
-  return (
-    /罗大佑/.test(query) ||
-    (Array.isArray(session.activeEntityIds) && session.activeEntityIds.includes("person.luo_dayou")) ||
-    session.last_focus_entity_id === "person.luo_dayou" ||
-    (Array.isArray(session.last_mentions) && session.last_mentions.includes("person.luo_dayou")) ||
-    /罗大佑/.test(`${session.lastAnswer || ""} ${session.lastAssistantAnswer || ""}`)
-  );
+function activeTopicEntityIds(session = {}) {
+  const stack = Array.isArray(session.active_topic_stack) ? session.active_topic_stack : Array.isArray(session.activeTopicStack) ? session.activeTopicStack : [];
+  return [
+    ...(session.activeEntityIds || []),
+    ...(session.active_entity_ids || []),
+    ...(session.last_focus_entity_id ? [session.last_focus_entity_id] : []),
+    ...(session.last_mentions || []).filter((id) => /person\.|author\./.test(id)),
+    ...stack.flatMap((topic) => topic.entity_ids || [])
+  ].filter(Boolean);
 }
 
-function musicFollowup(query, session = {}) {
-  return activeLuo(session, query) && !/罗大佑/.test(query) && /(他的).{0,8}(歌|歌曲)|代表性|特点|代表在哪里|为什么重要|这些歌/.test(query);
+function activeCultureFollowup(query, session = {}) {
+  return activeTopicEntityIds(session).length > 0 && /(^他|他的|她的|它的|这些|这首|这本|代表性|特点|代表在哪里|为什么重要|共同点|作品|歌曲|歌)/.test(query);
 }
 
 function comparisonEntryFollowup(query, session = {}) {
   const stack = Array.isArray(session.active_topic_stack) ? session.active_topic_stack : Array.isArray(session.activeTopicStack) ? session.activeTopicStack : [];
-  const ids = new Set([
-    ...(session.activeEntityIds || []),
-    ...(session.active_entity_ids || []),
-    ...stack.flatMap((topic) => topic.entity_ids || [])
-  ]);
-  const recent = `${session.lastUserText || ""} ${session.lastAnswer || ""} ${session.lastAssistantAnswer || ""}`;
-  const hasPair = (ids.has("author.natsume_soseki") && ids.has("author.kawabata_yasunari")) || (/夏目漱石/.test(recent) && /川端/.test(recent));
+  const ids = new Set([...activeTopicEntityIds(session), ...stack.flatMap((topic) => topic.entity_ids || [])]);
+  const hasPair = ids.size >= 2;
   return hasPair && /(谁|哪一位|哪个).{0,8}(更适合|适合).{0,6}(入门|开始)|更适合入门/.test(query);
+}
+
+function cultureCandidate(query, session = {}) {
+  if (/(什么关系|有什么关系|关系是什么)/.test(query)) {
+    const explicitCultureTargets = resolveCultureEntity(query, {})
+      .filter((card) => (card.names || []).some((name) => query.includes(name)))
+      .filter((card) => card.entity_type !== "concept");
+    const hasExplicitRelation = explicitCultureTargets.some((card) => card.entity_type === "relation" || /^relation\./.test(card.id || ""));
+    const concreteTargets = explicitCultureTargets.filter((card) => /^(person|author|work)\./.test(card.id || "") || ["person", "author", "work"].includes(card.entity_type));
+    if (!hasExplicitRelation && concreteTargets.length < 2) return false;
+  }
+  if (detectCultureDomain(query, session) !== "generic") return true;
+  return resolveCultureEntity(query, session).some((card) => card && card.entity_type !== "concept");
 }
 
 export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
@@ -151,11 +160,11 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
     };
   }
 
-  if (musicFollowup(text, session)) {
+  if (activeCultureFollowup(text, session)) {
     return {
       mode: RESPONSE_MODES.FOLLOWUP_ANSWER,
       confidence: 0.93,
-      reasons: ["active_luo_music_followup"],
+      reasons: ["active_culture_followup"],
       should_skip_repair: true,
       userTurn
     };
@@ -209,7 +218,7 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
     return { mode: RESPONSE_MODES.SOLVER_ANSWER, confidence: 0.88, reasons: ["solver_candidate"], userTurn };
   }
 
-  if (CULTURE_RE.test(text)) {
+  if (cultureCandidate(text, session)) {
     return { mode: RESPONSE_MODES.CULTURE_ANSWER, confidence: 0.87, reasons: ["culture_candidate"], userTurn };
   }
 

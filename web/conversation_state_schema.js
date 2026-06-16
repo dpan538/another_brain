@@ -1,5 +1,6 @@
 import { bareFallbackId, mentionsGenericFallback } from "./generic_fallback_classifier.js";
 import { detectMethodLeak } from "./method_leak_verifier.js";
+import { detectCultureDomain, resolveCultureEntity } from "./culture_runtime.js";
 
 export const LAST_ANSWER_QUALITY = Object.freeze({
   ACCEPTED: "accepted",
@@ -40,30 +41,12 @@ function mergeUnique(...lists) {
 
 function inferActiveFromText(text) {
   const source = clean(text);
-  const entityIds = [];
-  const workIds = [];
-  let domain = "";
-
-  if (/罗大佑|童年|鹿港小镇|恋曲1990|恋曲1980|之乎者也|东方之珠/.test(source)) {
-    entityIds.push("person.luo_dayou");
-    domain = "music.mandopop";
-  }
-  if (/日本文学|夏目漱石|川端康成|太宰治|村上春树|雪国|少爷|人间失格|挪威的森林/.test(source)) {
-    domain ||= "literature.japanese";
-    if (/夏目漱石/.test(source)) entityIds.push("author.natsume_soseki");
-    if (/川端康成/.test(source)) entityIds.push("author.kawabata_yasunari");
-  }
-
-  const works = [
-    ["work.album.zhihu_zheye", /之乎者也/],
-    ["work.song.lukang_xiaozhen", /鹿港小镇/],
-    ["work.song.tongnian", /童年/],
-    ["work.song.lianqu_1990", /恋曲1990/],
-    ["work.song.lianqu_1980", /恋曲1980/]
-  ];
-  for (const [id, re] of works) {
-    if (re.test(source)) workIds.push(id);
-  }
+  const cards = resolveCultureEntity(source, {}).filter((card) => (card.names || []).some((name) => source.includes(name)));
+  const entityIds = cards.filter((card) => card.entity_type === "person" || /^person\.|^author\./.test(card.id)).map((card) => card.id);
+  const workIds = cards.filter((card) => card.entity_type === "work" || /^work\./.test(card.id)).map((card) => card.id);
+  const domainCard = cards.find((card) => card.entity_type !== "concept");
+  const detectedDomain = detectCultureDomain(source, {});
+  const domain = domainCard?.domain || (detectedDomain !== "generic" ? detectedDomain : "");
 
   return { entityIds, workIds, domain };
 }
@@ -80,7 +63,7 @@ export function inferActiveConversationFields({ query = "", answer = "", trace =
     fromAnswer.entityIds,
     Array.isArray(previousState.activeEntityIds) ? previousState.activeEntityIds : [],
     focus ? [focus] : [],
-    mentions.filter((id) => /person\.|author\./.test(id))
+    focus ? [] : mentions.filter((id) => /person\.|author\./.test(id))
   ).slice(0, 6);
 
   const activeWorkIds = mergeUnique(

@@ -1,4 +1,4 @@
-import { answerCultureQuery } from "./culture_runtime.js";
+import { answerCultureQuery, resolveCultureEntity } from "./culture_runtime.js";
 import { verifyDraft } from "./draft_verifier.js";
 import { answerFallbackRepair } from "./fallback_repair.js";
 import { answerMetaKnowledgeQuery } from "./meta_knowledge_router.js";
@@ -698,6 +698,51 @@ function answerSurfaceRelationStatement(text) {
   return null;
 }
 
+function answerSelfBodyBoundary(text, state = {}) {
+  const recent = [
+    state.lastIntent,
+    state.lastUserText,
+    state.lastAnswer,
+    state.lastAssistantAnswer,
+    ...(state.recentTurns || []).flatMap((turn) => [turn.question, turn.answer, turn.intent])
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const bodyContext = /(animal_crocodile_body|self_dialog_box_body|self_body_boundary|有身体|身体吗|名字没有|对话框没有身体)/.test(recent);
+  const directDialogBoxBody = /^(你有身体吗|对话框有身体吗)[？?。!！\s]*$|身体.*属于你/.test(text);
+  const dialogBoxFollowup = /^(那|那么)?\s*对话框呢[？?。!！\s]*$/.test(text) && bodyContext;
+  const selfFollowup = /^(那|那么)?\s*你呢[？?。!！\s]*$/.test(text) && bodyContext;
+  if (directDialogBoxBody || dialogBoxFollowup) {
+    return makeResult({
+      intent: "self_dialog_box_body",
+      operation: "self_body_boundary",
+      questionType: "self_body_boundary",
+      contextAction: "SELF_BODY_BOUNDARY",
+      answer: "对话框没有身体。"
+    });
+  }
+  if (selfFollowup) {
+    return makeResult({
+      intent: "self_body_boundary",
+      operation: "self_body_boundary",
+      questionType: "self_body_boundary",
+      contextAction: "SELF_BODY_BOUNDARY",
+      answer: "我是对话框。所以没有身体。"
+    });
+  }
+  return null;
+}
+
+function shouldYieldRelationQuestionToDirect(text) {
+  if (!/(什么关系|有什么关系|关系是什么)/.test(text)) return false;
+  const explicitCultureTargets = resolveCultureEntity(text, {})
+    .filter((card) => (card.names || []).some((name) => text.includes(name)))
+    .filter((card) => card.entity_type !== "concept");
+  const hasExplicitRelation = explicitCultureTargets.some((card) => card.entity_type === "relation" || /^relation\./.test(card.id || ""));
+  const concreteTargets = explicitCultureTargets.filter((card) => /^(person|author|work)\./.test(card.id || "") || ["person", "author", "work"].includes(card.entity_type));
+  return !hasExplicitRelation && concreteTargets.length < 2;
+}
+
 function stateLastAnswer(state = {}) {
   return clean(state.lastAssistantAnswer || state.lastAnswer || state.recentTurns?.at?.(-1)?.answer || "");
 }
@@ -1135,8 +1180,6 @@ export function answerWithOperationLayer(query, state = {}) {
     if (safeSummary) return withResponseMode(safeSummary, responseMode);
     const comparisonFollowup = answerComparisonEntryFollowup(text, state);
     if (comparisonFollowup) return withResponseMode(comparisonFollowup, responseMode);
-    const followup = answerMusicRepresentativenessFollowup(text, state);
-    if (followup) return withResponseMode(followup, responseMode);
   }
 
   if (responseMode.mode === "bounded_unknown" || responseMode.mode === "specific_clarification") {
@@ -1149,6 +1192,9 @@ export function answerWithOperationLayer(query, state = {}) {
   if (responseMode.mode === "help_how_to_ask") {
     return withResponseMode(answerHelpHowToAsk(text), responseMode);
   }
+
+  const selfBodyBoundary = answerSelfBodyBoundary(text, state);
+  if (selfBodyBoundary) return withResponseMode(selfBodyBoundary, responseMode);
 
   const metaAnswer = answerMetaKnowledgeQuery(text, state);
   if (metaAnswer?.answer) return withResponseMode(makeResult(metaAnswer), responseMode);
@@ -1181,6 +1227,7 @@ export function answerWithOperationLayer(query, state = {}) {
   if (declarationAnswer) return withResponseMode(declarationAnswer, responseMode);
   const sentenceExplanation = answerSentenceExplanation(text);
   if (sentenceExplanation) return withResponseMode(sentenceExplanation, responseMode);
+  if (shouldYieldRelationQuestionToDirect(text)) return null;
   const cultureRuntimeAnswer = answerCultureQuery(text, state);
   if (cultureRuntimeAnswer?.answer) {
     const sharedVerification = verifyDraft({

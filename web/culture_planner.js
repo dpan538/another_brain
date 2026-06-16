@@ -70,6 +70,10 @@ const LABELS = {
   loneliness: "孤独",
   music_memory: "音乐与记忆",
   music_culture: "音乐文化",
+  vocal_style: "声音辨识度",
+  hongkong_pop: "香港流行语境",
+  alternative_pop: "另类流行质地",
+  cantopop_ballad: "粤语/华语抒情歌",
   surreal_structure: "超现实结构",
   accessible_prose: "可读性强的叙述",
   everyday_surreal: "日常中的超现实",
@@ -232,18 +236,20 @@ function answerWorksList(focus, index, representative = false, query = "", quest
 
 function answerMusicRepresentativeness(focus, cards = [], index = null, query = "", questionType = "") {
   const person =
-    cards.find((card) => card.id === "person.luo_dayou") ||
-    (focus?.id === "person.luo_dayou" ? focus : null) ||
+    (focus?.entity_type === "person" && /^music\./.test(focus.domain || "") ? focus : null) ||
+    cards.find((card) => card.entity_type === "person" && /^music\./.test(card.domain || "")) ||
     cards.find((card) => card.entity_type === "person" && card.domain === "music.mandopop");
   if (!person) return "";
   const works = displayTitles(cards.filter((card) => card.entity_type === "work"), 4);
-  const titles = works.length
-    ? works.map((title) => `《${title.replace(/[《》]/g, "")}》`).join("、")
-    : "《童年》《鹿港小镇》《恋曲1990》";
+  const titles = works.length ? works.map((title) => `《${title.replace(/[《》]/g, "")}》`).join("、") : "";
+  const themeText = themes(person, 3) || styleFor(person, 3) || "作品位置、声音和时代语境";
   if (questionType === "music_characteristics" || /特点|风格/.test(query)) {
-    return `${primaryName(person)}的歌特点在叙事性、民谣/摇滚质地和直白压力：旋律容易进入，但主题常落到青春记忆、城市变化和社会观察。`;
+    return `${primaryName(person)}的歌特点可先抓${themeText}${titles ? `；入口是${titles}` : ""}。`;
   }
-  return `代表性在三点：青春记忆、城乡变化、社会观察。入口可以听${titles}。`;
+  if (person.id === "person.luo_dayou") {
+    return `代表性在三点：青春记忆、城乡变化、社会观察。入口可以听${titles || "《童年》《鹿港小镇》《恋曲1990》"}。`;
+  }
+  return `${primaryName(person)}的代表性可先看${themeText}${titles ? `；入口是${titles}` : ""}。`;
 }
 
 function answerAuthorList(cards, query = "") {
@@ -265,8 +271,10 @@ function answerOverview(focus, cards, domain) {
   if (domain === "literature.asian_general") {
     return "亚洲文学不是单一传统；可先从中国现代文学、日本近现代文学、韩国现代文学和更广的南亚/东南亚脉络拆开，覆盖不足处要明说，不能只讲日本文学。";
   }
-  if (focus?.entity_type === "person" && focus.domain === "music.mandopop") {
-    return `${primaryName(focus)}是台湾音乐人，关键在时代感、青春记忆和社会观察。`;
+  if (focus?.entity_type === "person" && /^music\./.test(focus.domain || "")) {
+    const themeText = themes(focus, 3) || styleFor(focus, 3);
+    if (focus.id === "person.luo_dayou") return `${primaryName(focus)}是台湾音乐人，关键在时代感、青春记忆和社会观察。`;
+    return `${primaryName(focus)}可放在${focus.domain.replace("music.", "")}语境里看；关键是${themeText || focus.factual_core || "作品、声音和时代位置"}。`;
   }
   const bits = [];
   bits.push(base.short_intro || base.factual_core);

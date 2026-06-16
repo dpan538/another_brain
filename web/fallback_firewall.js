@@ -2,6 +2,7 @@ import { shouldBreakClarificationLoop, rewriteClarificationLoop } from "./clarif
 import { answerFallbackRepair, detectFallbackRepairIntent, isGenericBadFallback } from "./fallback_repair.js";
 import { classifyFallbackShape } from "./generic_fallback_classifier.js";
 import { answerMetaKnowledgeQuery, classifyKnowQuery } from "./meta_knowledge_router.js";
+import { answerCultureQuery, detectCultureDomain, resolveCultureEntity } from "./culture_runtime.js";
 
 const QUESTION_CUES_RE = /(谁|什么|吗|嘛|呢|怎么|为什么|为何|哪|哪里|有没有|知道|介绍|代表|有哪些|读过|听过|懂|了解|[?？])/;
 
@@ -19,7 +20,10 @@ export function isQuestionLike(query) {
 }
 
 function detectedKnownCulture(query) {
-  return /(罗大佑|日本文学|夏目漱石|川端康成|之乎者也|鹿港小镇|童年|恋曲1990)/.test(clean(query));
+  const text = clean(query);
+  if (!text) return false;
+  if (detectCultureDomain(text, {}) !== "generic") return true;
+  return resolveCultureEntity(text, {}).some((card) => card && card.entity_type !== "concept");
 }
 
 function isExternalLookupQuestion(query) {
@@ -57,8 +61,9 @@ function replacementForPolicy(policy, query, state) {
     return answerMetaKnowledgeQuery(query, state)?.answer || "我没有人的经历，但可以按本地知识卡和证据边界回答。";
   }
   if (policy === "direct_known_entity_overview") {
-    if (/罗大佑/.test(query)) return "罗大佑是台湾音乐人，常被放在华语流行音乐里谈；可以从《之乎者也》《鹿港小镇》《童年》这些入口开始。";
-    if (/日本文学/.test(query)) return "日本文学可以从古典、近代、战后和当代几条线进入；也可以直接问作家、作品或入门路径。";
+    const culture = answerCultureQuery(query, state);
+    if (culture?.answer) return culture.answer;
+    return "这是可按文化对象回答的问题；我应该先识别对象、作品或领域，再按证据边界给短答。";
   }
   if (policy === "minimal_specific_clarify") {
     return rewriteClarificationLoop({ query, session: state, draft: "" });

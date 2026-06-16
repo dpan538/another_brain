@@ -49,7 +49,6 @@ function boundTargetsFrom({ binding = {}, draft = {}, session = {} } = {}) {
   if (Array.isArray(binding.target_ids)) ids.push(...binding.target_ids);
   if (Array.isArray(draft.cards)) ids.push(...draft.cards.filter((id) => /person\.|author\.|work\./.test(id)));
   if (Array.isArray(session.activeEntityIds)) ids.push(...session.activeEntityIds);
-  if (draft.questionType === "music_representativeness" || draft.questionType === "music_characteristics") ids.unshift("person.luo_dayou");
   return [...new Set(ids.filter(Boolean))].slice(0, 8);
 }
 

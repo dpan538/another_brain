@@ -12,8 +12,7 @@ function stripMethodLeak(text) {
 function activeLuo({ lastAnswer = "", activeEntityIds = [], activeDomain = "" } = {}) {
   return (
     /罗大佑|童年|鹿港小镇|恋曲1990|之乎者也/.test(lastAnswer) ||
-    activeEntityIds.includes("person.luo_dayou") ||
-    activeDomain === "music.mandopop"
+    activeEntityIds.includes("person.luo_dayou")
   );
 }
 
@@ -35,6 +34,7 @@ export function simplifyLastAnswer({ lastAnswer = "", lastTrace = {}, activeEnti
 
   const first = text.split(/[。！？!?]/).find((part) => part.trim()) || text;
   const compact = first
+    .replace(/^换个说法[:：]/, "")
     .replace(/不是因为一句固定标签，而是因为/g, "因为")
     .replace(/可以理解为：/g, "")
     .slice(0, 86);

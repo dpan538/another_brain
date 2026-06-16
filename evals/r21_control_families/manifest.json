@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-06-16T06:19:21.433Z",
+  "splits": {
+    "train": {
+      "rows": 14,
+      "scenario_families": 6,
+      "entity_families": [
+        "lit.natsume",
+        "music.li_zongsheng",
+        "music.luo_dayou",
+        "train.quiet.synthetic",
+        "train.repair.synthetic"
+      ]
+    },
+    "dev": {
+      "rows": 14,
+      "scenario_families": 6,
+      "entity_families": [
+        "art.duchamp",
+        "dev.quiet.synthetic",
+        "dev.repair.synthetic",
+        "lit.kawabata",
+        "music.faye_wong"
+      ]
+    },
+    "blind": {
+      "rows": 14,
+      "scenario_families": 6,
+      "entity_families": [
+        "blind.quiet.synthetic",
+        "blind.repair.synthetic",
+        "design.bauhaus",
+        "lit.murakami",
+        "music.jay_chou"
+      ]
+    }
+  },
+  "unique_scenario_families": 6,
+  "blind_only_entity_families": 5
+}
