@@ -12,6 +12,7 @@ import {
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "../web/structured_decision.js?v=1";
 import { detectContextAction } from "../web/context_state.js?v=2";
 import { answerWithOperationLayer } from "../web/operation_layer.js?v=1";
+import { handleConversationTurn } from "../web/conversation_controller.js";
 import { finalizeWithFallbackFirewall } from "../web/fallback_firewall.js?v=1";
 import { buildConversationStatePatch } from "../web/conversation_state_schema.js";
 import { recordQuietAffordanceSignal } from "../web/non_question_affordance.js?v=1";
@@ -260,9 +261,19 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
   const state = reasoningStateFor(runtime);
   const stateBefore = compactState(state);
   const contextDecision = detectContextAction(text, state);
-  const resolved = resolveAnswer(text, state);
-  if (resolved.type === "ui_affordance") {
-    runtime.dialogState = recordQuietAffordanceSignal(runtime.dialogState, text, resolved.userTurn);
+  const controlled = handleConversationTurn({
+    query: text,
+    session: state,
+    runtimeProfile: options.runtimeProfile || "standard",
+    uiProfile: options.uiProfile || "mobile",
+    draftResolver: resolveAnswer
+  });
+  const resolved = controlled.resolved || {};
+  if (controlled.response?.type === "ui_affordance") {
+    runtime.dialogState = {
+      ...recordQuietAffordanceSignal(runtime.dialogState, text, resolved.userTurn),
+      ...(controlled.nextSession || {})
+    };
     const stateAfter = compactState(runtime.dialogState);
     const trace = {
       input: text,
@@ -275,8 +286,9 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
       raw_answer: "",
       sanitizer_changed: false,
       user_turn: resolved.userTurn || null,
-      affordance: resolved.affordance,
+      affordance: controlled.response.affordance,
       response_mode: resolved.responseMode || (resolved.response_mode ? { mode: resolved.response_mode } : { mode: "quiet_affordance" }),
+      conversation_controller: controlled.trace,
       fallback_firewall: {
         checked: false,
         reason: "ui_affordance_not_answer",
@@ -293,7 +305,7 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
       prompt: text,
       answer: "",
       output: "",
-      affordance: resolved.affordance,
+      affordance: controlled.response.affordance,
       intent: "quiet_affordance",
       route: "affordance",
       usedModel: false,
@@ -309,24 +321,10 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
       decision: null
     };
   }
-  const finalized = finalizeWithFallbackFirewall({
-    query: text,
-    state,
-    candidateAnswer: resolved.answer,
-    intent: resolved.intent,
-    route: resolved.route,
-    trace: {
-      intent: resolved.intent,
-      route: resolved.route,
-      questionType: resolved.questionType || "",
-      question_type: resolved.questionType || "",
-      operation: resolved.operation || "",
-      context_decision: contextDecision
-    }
-  });
-  const rawAnswer = String(finalized.answer || "").trim();
-  const answer = sanitizeSurfaceIdentity(finalized.answer, text);
-  const sanitizerChanged = rawAnswer !== answer;
+  const finalized = controlled.finalized || {};
+  const rawAnswer = String(finalized.answer || controlled.response?.answer || "").trim();
+  const answer = String(controlled.response?.answer || rawAnswer).trim();
+  const sanitizerChanged = false;
 
   runtime.contextTurns.push({ question: text, answer, intent: finalized.intent || resolved.intent });
   if (runtime.contextTurns.length > REASONING_CONTEXT_TURN_LIMIT) {
@@ -344,7 +342,8 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
       },
       finalized,
       previousState: previousDialogState
-    })
+    }),
+    ...(controlled.nextSession || {})
   };
   const stateAfter = compactState(runtime.dialogState);
   const finalResolved = { ...resolved, intent: finalized.intent || resolved.intent, route: finalized.route || resolved.route };
@@ -373,6 +372,7 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
     sanitizer_changed: sanitizerChanged,
     fallback_firewall: finalized.firewall || null,
     response_mode: resolved.responseMode || (resolved.response_mode ? { mode: resolved.response_mode } : null),
+    conversation_controller: controlled.trace,
     final_answer: answer,
     state_after: stateAfter
   };

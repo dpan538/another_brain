@@ -243,7 +243,7 @@ function answerMusicRepresentativeness(focus, cards = [], index = null, query = 
   if (questionType === "music_characteristics" || /特点|风格/.test(query)) {
     return `${primaryName(person)}的歌特点在叙事性、民谣/摇滚质地和直白压力：旋律容易进入，但主题常落到青春记忆、城市变化和社会观察。`;
   }
-  return `代表性主要在三点：个人青春、城乡/城市变化、社会观察。比如${titles}，分别能进入共同记忆、乡土/现代化和私人情感。`;
+  return `代表性在三点：青春记忆、城乡变化、社会观察。入口可以听${titles}。`;
 }
 
 function answerAuthorList(cards, query = "") {
@@ -343,6 +343,9 @@ function answerExplain(focus, questionType, query = "") {
   if (!focus) return "";
   const name = primaryName(focus);
   const themeText = themes(focus, 4);
+  if (/照片.*好不好看|不能只看好不好看|好不好看/.test(query) && /照片|摄影/.test(query)) {
+    return "不能只看好不好看；还要看照片怎样组织观看、框取、对象和观看者关系。";
+  }
   if (/不是.*标签/.test(query)) {
     return `${name}不是标签；要落到对象、作品、时期和关系这些具体锚点，再说明作品、时期和比较轴。`;
   }
@@ -498,6 +501,9 @@ function answerThemeExplanation(focus, query = "") {
   }
   if (/关系/.test(query) && /美术馆|作品价值/.test(query)) {
     return `可按展示语境/作品自身、制度价值/审美判断这两个轴比较：美术馆会改变作品怎样被看见和说明；价值还要看作品自身、历史位置和观看方式。`;
+  }
+  if (/照片.*好不好看|不能只看好不好看|好不好看/.test(query) && /照片|摄影/.test(query)) {
+    return "不能只看好不好看；还要看照片怎样组织观看、框取、对象和观看者关系。";
   }
   if (focus?.entity_type === "relation") {
     const axisText = axesFor([focus], 4) || themes(focus, 4) || "对象、时期和媒介";

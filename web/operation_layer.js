@@ -237,6 +237,15 @@ function answerTransitiveComparison(text) {
 }
 
 function answerSentenceExplanation(text) {
+  if (/照片.*好不好看|不能只看好不好看|好不好看/.test(text) && /照片|摄影/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_theme_explanation",
+      operation: "culture_explain_theme",
+      questionType: "theme_explanation",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能只看好不好看；还要看照片怎样组织观看、框取、对象和观看者关系。"
+    });
+  }
   if (/(门禁|上下文|规则|测试)/.test(text)) return null;
   const quotedSentence = /[“"].+[”"].*(怎么理解|什么意思)/.test(text);
   const explicitSentence = /(这句话是什么意思|这句话.*怎么理解|这句话.*什么意思)/.test(text);
@@ -857,7 +866,7 @@ function answerMusicRepresentativenessFollowup(text, state) {
     contextAction: "ANSWER_CULTURE",
     answer: characteristics
       ? "罗大佑的歌特点是叙事性强、民谣/摇滚质地明显，旋律容易进入，但主题常落到青春记忆、城市变化和社会观察。"
-      : "代表性主要在三点：个人青春、城乡/城市变化、社会观察。比如《童年》偏共同记忆，《鹿港小镇》偏乡土和现代化，《恋曲1990》偏私人情感。"
+      : "代表性在三点：青春记忆、城乡变化、社会观察。入口可以听《童年》《鹿港小镇》《恋曲1990》。"
   });
 }
 
@@ -1081,6 +1090,9 @@ function answerReasoning(text) {
 export function answerWithOperationLayer(query, state = {}) {
   const text = clean(query);
   if (!text) return null;
+  if (/^(把这句话|把这句|请把这句话|请把这句).{0,8}(缩短|改短|精简|简短)|缩短[:：]/.test(text)) {
+    return null;
+  }
   const userTurn = classifyUserTurn({ query: text, session: state });
   const responseMode = selectResponseMode({ query: text, session: state });
   const safetyBoundary = answerSafetyBoundary(text);

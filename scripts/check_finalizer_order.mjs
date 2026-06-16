@@ -17,7 +17,10 @@ async function main() {
   if (!/function commitAnswer[\s\S]*finalizeWithFallbackFirewall[\s\S]*setAnswer[\s\S]*rememberTurn/.test(app)) {
     failures.push("web_app_finalizer_not_before_render_or_store");
   }
-  if (!/const resolved = resolveAnswer[\s\S]*finalizeWithFallbackFirewall[\s\S]*sanitizeSurfaceIdentity[\s\S]*runtime\.contextTurns\.push/.test(dialog)) {
+  const legacyDialogOrder = /const resolved = resolveAnswer[\s\S]*finalizeWithFallbackFirewall[\s\S]*sanitizeSurfaceIdentity[\s\S]*runtime\.contextTurns\.push/.test(dialog);
+  const controllerDialogOrder =
+    /const controlled = handleConversationTurn[\s\S]*draftResolver: resolveAnswer[\s\S]*const resolved = controlled\.resolved[\s\S]*runtime\.contextTurns\.push/.test(dialog);
+  if (!legacyDialogOrder && !controllerDialogOrder) {
     failures.push("dialog_runtime_finalizer_order_invalid");
   }
   if (!/lastAnswer/.test(dialog) || !/rememberTurn/.test(app)) {

@@ -104,5 +104,12 @@ node scripts/check_repair_overtrigger_invariants.mjs >/dev/null
 node scripts/fuzz_fallback_routes.mjs >/dev/null
 node scripts/check_finalizer_coverage.mjs >/dev/null
 node scripts/check_finalizer_order.mjs >/dev/null
+node scripts/eval_dialogue_boundary.mjs >/dev/null
+node scripts/eval_r19_contextual_binding.mjs >/dev/null
+node scripts/eval_mobile_answer_density.mjs >/dev/null
+node scripts/check_answer_deduplication.mjs >/dev/null
+node scripts/check_response_mode_invariants.mjs >/dev/null
+node scripts/check_conversation_controller_coverage.mjs >/dev/null
+node scripts/fuzz_contextual_questions.mjs >/dev/null
 
 printf 'release check passed\n'

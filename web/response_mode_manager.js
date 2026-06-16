@@ -127,6 +127,16 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
     };
   }
 
+  if (userTurn.kind === "declaration_with_signal" && hasActiveTopic(session)) {
+    return {
+      mode: RESPONSE_MODES.DIRECT_ANSWER,
+      confidence: userTurn.confidence || 0.82,
+      reasons: ["declaration_signal_with_active_context"],
+      should_skip_repair: true,
+      userTurn
+    };
+  }
+
   if (musicFollowup(text, session)) {
     return {
       mode: RESPONSE_MODES.FOLLOWUP_ANSWER,

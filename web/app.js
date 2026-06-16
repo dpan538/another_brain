@@ -10,6 +10,7 @@ import {
 import { decideStructuredRoute, retrieveEvidence, verifyProposedAnswer } from "./structured_decision.js?v=1";
 import { buildDebugReport, downloadDebugReport } from "./debug_report.js?v=1";
 import { answerWithOperationLayer } from "./operation_layer.js?v=2";
+import { handleConversationTurn } from "./conversation_controller.js?v=1";
 import { finalizeWithFallbackFirewall } from "./fallback_firewall.js?v=1";
 import { buildConversationStatePatch } from "./conversation_state_schema.js?v=1";
 import { recordQuietAffordanceSignal } from "./non_question_affordance.js?v=1";
@@ -227,22 +228,24 @@ function contextActionForIntent(intent, route) {
 
 function commitAnswer(question, answer, intent, previousState = dialogState, meta = {}) {
   hideAffordance();
-  const finalized = finalizeWithFallbackFirewall({
-    query: question,
-    state: previousState,
-    candidateAnswer: answer,
-    intent,
-    route: meta.route || "unknown",
-    trace: {
-      answerSource: meta.answerSource || meta.route || "unknown",
-      questionType: meta.questionType || "",
-      question_type: meta.questionType || "",
-      operation: meta.operation || meta.contextAction || ""
-    }
-  });
+  const finalized =
+    meta.finalized ||
+    finalizeWithFallbackFirewall({
+      query: question,
+      state: previousState,
+      candidateAnswer: answer,
+      intent,
+      route: meta.route || "unknown",
+      trace: {
+        answerSource: meta.answerSource || meta.route || "unknown",
+        questionType: meta.questionType || "",
+        question_type: meta.questionType || "",
+        operation: meta.operation || meta.contextAction || ""
+      }
+    });
   const finalIntent = finalized.intent || intent;
   const route = finalized.route || meta.route || "unknown";
-  const finalAnswer = sanitizeSurfaceIdentity(finalized.answer, question);
+  const finalAnswer = meta.preFinalized ? String(answer || "").trim() : sanitizeSurfaceIdentity(finalized.answer, question);
   const latencyMs = meta.startedAt ? performance.now() - meta.startedAt : 0;
   lastDebugEvent = {
     route,
@@ -253,7 +256,8 @@ function commitAnswer(question, answer, intent, previousState = dialogState, met
     latencyMs,
     failureTag: finalized.firewall?.reason || meta.failureTag || "none",
     fallbackFirewall: finalized.firewall || null,
-    responseMode: meta.responseMode || null
+    responseMode: meta.responseMode || null,
+    conversationController: meta.conversationController || null
   };
   setAnswer(finalAnswer);
   rememberTurn(question, finalAnswer, finalIntent);
@@ -263,6 +267,7 @@ function commitAnswer(question, answer, intent, previousState = dialogState, met
       query: question,
       answer: finalAnswer,
       resolved: {
+        ...(meta.conversationResolved || {}),
         route: meta.route || "unknown",
         operation: meta.operation || "",
         questionType: meta.questionType || "",
@@ -271,7 +276,8 @@ function commitAnswer(question, answer, intent, previousState = dialogState, met
       },
       finalized,
       previousState
-    })
+    }),
+    ...(meta.nextSession || {})
   };
 }
 
@@ -373,6 +379,24 @@ function answerWithStructuredDecision(text, state) {
   };
 }
 
+function resolveAnswer(text, state) {
+  const operationAnswer = answerWithOperationLayer(text, state);
+  if (operationAnswer?.type === "ui_affordance") return { ...operationAnswer, route: "affordance" };
+  if (operationAnswer?.answer) return { ...operationAnswer, route: "operation" };
+
+  const intent = detectIntent(text, state);
+  const directAnswer = directAnswerForResolvedIntent(intent, text, state);
+  if (directAnswer) return { intent, answer: directAnswer, route: "direct" };
+
+  const tinyAnswer = answerWithTinyRouter(text, state);
+  if (tinyAnswer?.answer) return { ...tinyAnswer, route: "tiny_router" };
+
+  const structuredAnswer = answerWithStructuredDecision(text, state);
+  if (structuredAnswer?.answer) return { ...structuredAnswer, route: "structured" };
+
+  return { intent, answer: fallbackForIntent(intent, text), route: "fallback" };
+}
+
 async function submitPrompt(event) {
   event.preventDefault();
   if (isResponding) return;
@@ -389,9 +413,20 @@ async function submitPrompt(event) {
 
   try {
     const reasoningState = currentReasoningState();
-    const operationAnswer = answerWithOperationLayer(text, reasoningState);
-    if (operationAnswer?.type === "ui_affordance") {
-      showAffordanceResponse(text, operationAnswer, reasoningState, startedAt);
+    const controlled = handleConversationTurn({
+      query: text,
+      session: reasoningState,
+      runtimeProfile: "standard",
+      uiProfile: "mobile",
+      draftResolver: resolveAnswer
+    });
+    if (controlled.response?.type === "ui_affordance") {
+      showAffordanceResponse(text, {
+        ...controlled.response,
+        userTurn: controlled.resolved?.userTurn,
+        responseMode: controlled.resolved?.responseMode
+      }, reasoningState, startedAt);
+      dialogState = { ...dialogState, ...(controlled.nextSession || {}) };
       return;
     }
 
@@ -399,58 +434,19 @@ async function submitPrompt(event) {
     setThinking(true, thinking.mode);
     await new Promise((resolve) => setTimeout(resolve, thinking.delay));
 
-    if (operationAnswer?.answer) {
-      commitAnswer(text, operationAnswer.answer, operationAnswer.intent, reasoningState, {
-        route: "operation",
-        answerSource: "operation_layer",
-        contextAction: operationAnswer.contextAction,
-        operation: operationAnswer.operation,
-        questionType: operationAnswer.questionType,
-        responseMode: operationAnswer.responseMode || (operationAnswer.response_mode ? { mode: operationAnswer.response_mode } : null),
-        culture: operationAnswer.culture || null,
-        startedAt
-      });
-      return;
-    }
-
-    const intent = detectIntent(text, reasoningState);
-    const directAnswer = directAnswerForResolvedIntent(intent, text, reasoningState);
-    if (directAnswer) {
-      commitAnswer(text, directAnswer, intent, reasoningState, {
-        route: "direct",
-        answerSource: "direct",
-        startedAt
-      });
-      return;
-    }
-
-    const tinyAnswer = answerWithTinyRouter(text, reasoningState);
-    if (tinyAnswer?.answer) {
-      commitAnswer(text, tinyAnswer.answer, tinyAnswer.intent, reasoningState, {
-        route: "tiny_router",
-        answerSource: "tiny_router",
-        startedAt
-      });
-      return;
-    }
-
-    const structuredAnswer = answerWithStructuredDecision(text, reasoningState);
-    if (structuredAnswer?.answer) {
-      commitAnswer(text, structuredAnswer.answer, structuredAnswer.intent, reasoningState, {
-        route: "structured",
-        answerSource: "structured_decision",
-        contextAction: structuredAnswer.decision?.route || "STRUCTURED_DECISION",
-        operation: structuredAnswer.decision?.route || "structured_decision",
-        questionType: structuredAnswer.decision?.route || "structured_decision",
-        startedAt
-      });
-      return;
-    }
-
-    const answer = fallbackForIntent(intent, text);
-    commitAnswer(text, answer, intent, reasoningState, {
-      route: "fallback",
-      answerSource: "fallback",
+    commitAnswer(text, controlled.response.answer, controlled.response.intent, reasoningState, {
+      preFinalized: true,
+      finalized: controlled.finalized,
+      route: controlled.response.route,
+      answerSource: "conversation_controller",
+      contextAction: controlled.resolved?.contextAction,
+      operation: controlled.resolved?.operation,
+      questionType: controlled.resolved?.questionType,
+      responseMode: controlled.resolved?.responseMode || null,
+      culture: controlled.resolved?.culture || null,
+      conversationResolved: controlled.resolved,
+      conversationController: controlled.trace,
+      nextSession: controlled.nextSession,
       startedAt
     });
   } catch (error) {

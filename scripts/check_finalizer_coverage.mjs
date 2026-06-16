@@ -32,7 +32,11 @@ async function main() {
       failures.push(`web_app_set_answer_outside_commit_answer:${index + 1}`);
     }
   });
-  if (!/const resolved = resolveAnswer[\s\S]*finalizeWithFallbackFirewall[\s\S]*runtime\.contextTurns\.push/.test(dialog)) {
+  const dialogUsesLegacyFinalizer = /const resolved = resolveAnswer[\s\S]*finalizeWithFallbackFirewall[\s\S]*runtime\.contextTurns\.push/.test(dialog);
+  const dialogUsesControllerFinalizer =
+    /handleConversationTurn[\s\S]*draftResolver: resolveAnswer[\s\S]*runtime\.contextTurns\.push/.test(dialog) &&
+    /conversation_controller/.test(dialog);
+  if (!dialogUsesLegacyFinalizer && !dialogUsesControllerFinalizer) {
     failures.push("dialog_runtime_finalizer_not_between_resolve_and_store");
   }
   if (!/class FallbackFirewall/.test(firewall) || !/classifyFallbackShape/.test(firewall)) {
