@@ -1,5 +1,6 @@
 import { selectResponseMode } from "./response_mode_manager.js";
 import { classifyUserTurn } from "./user_turn_classifier.js";
+import { classifyTurnFunction } from "./turn_function_classifier.js";
 import { resolveContextualQuestion } from "./contextual_question_resolver.js";
 import { updateTopicStack, activeTopic } from "./topic_stack.js";
 import { makeAnswerPlan } from "./answer_plan.js";
@@ -56,6 +57,7 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
   const text = clean(query);
   const userTurn = classifyUserTurn({ query: text, session });
   const binding = resolveContextualQuestion({ query: text, session });
+  const turnFunction = classifyTurnFunction({ query: text, session, userTurn, binding });
   const modeDecision = selectResponseMode({ query: text, session, trace: { binding, userTurn } });
   const legacyMode = modeDecision?.mode || "direct_answer";
   const controllerMode = controllerModeFromLegacy(legacyMode, text);
@@ -63,13 +65,21 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
     ...session,
     r19_binding: binding,
     r19_response_mode: controllerMode,
-    r19_user_turn_kind: userTurn.kind
+    r19_user_turn_kind: userTurn.kind,
+    r21_turn_function: turnFunction.turn_function,
+    r21_turn_function_labels: turnFunction
   };
   const draft = draftResolver ? draftResolver(text, draftState) : null;
 
   if (draft?.type === "ui_affordance") {
     const trace = {
       user_turn_kind: userTurn.kind,
+      turn_function: turnFunction.turn_function,
+      stance_requirement: turnFunction.stance_requirement,
+      judgment_axis: turnFunction.judgment_axis,
+      affective_load: turnFunction.affective_load,
+      identity_boundary_level: turnFunction.identity_boundary_level,
+      bridge_target: turnFunction.bridge_target,
       response_type: "ui_affordance",
       response_mode: "quiet_affordance",
       legacy_response_mode: legacyMode,
@@ -149,6 +159,12 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
   });
   const trace = {
     user_turn_kind: userTurn.kind,
+    turn_function: turnFunction.turn_function,
+    stance_requirement: turnFunction.stance_requirement,
+    judgment_axis: turnFunction.judgment_axis,
+    affective_load: turnFunction.affective_load,
+    identity_boundary_level: turnFunction.identity_boundary_level,
+    bridge_target: turnFunction.bridge_target,
     response_type: responseTypeFromMode(controllerMode),
     response_mode: controllerMode,
     legacy_response_mode: legacyMode,
@@ -188,6 +204,7 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
       controllerMode,
       answerStyle,
       responseType: responseTypeFromMode(controllerMode),
+      turnFunction,
       binding,
       densityPolicy: density,
       answerPlan: plan,

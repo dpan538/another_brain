@@ -1,10 +1,11 @@
 {
-  "generated_at": "2026-06-16T06:19:21.433Z",
+  "generated_at": "2026-06-16T06:43:24.654Z",
   "splits": {
     "train": {
-      "rows": 14,
-      "scenario_families": 6,
+      "rows": 22,
+      "scenario_families": 14,
       "entity_families": [
+        "dialogic.music_literature_identity.luo_natsume",
         "lit.natsume",
         "music.li_zongsheng",
         "music.luo_dayou",
@@ -13,28 +14,30 @@
       ]
     },
     "dev": {
-      "rows": 14,
-      "scenario_families": 6,
+      "rows": 22,
+      "scenario_families": 14,
       "entity_families": [
         "art.duchamp",
         "dev.quiet.synthetic",
         "dev.repair.synthetic",
+        "dialogic.music_literature_identity.faye_zhang",
         "lit.kawabata",
         "music.faye_wong"
       ]
     },
     "blind": {
-      "rows": 14,
-      "scenario_families": 6,
+      "rows": 22,
+      "scenario_families": 14,
       "entity_families": [
         "blind.quiet.synthetic",
         "blind.repair.synthetic",
         "design.bauhaus",
+        "dialogic.music_literature_identity.sodagreen_kawabata",
         "lit.murakami",
         "music.jay_chou"
       ]
     }
   },
-  "unique_scenario_families": 6,
-  "blind_only_entity_families": 5
+  "unique_scenario_families": 14,
+  "blind_only_entity_families": 6
 }

@@ -15,7 +15,13 @@ const HEADS = [
   "topic_shift_kind",
   "repair_eligibility",
   "answer_density",
-  "verifier_expected"
+  "verifier_expected",
+  "turn_function",
+  "stance_requirement",
+  "judgment_axis",
+  "affective_load",
+  "identity_boundary_level",
+  "bridge_target"
 ];
 
 async function readJsonl(path) {

@@ -15,7 +15,13 @@ const HEADS = [
   "topic_shift_kind",
   "repair_eligibility",
   "answer_density",
-  "verifier_expected"
+  "verifier_expected",
+  "turn_function",
+  "stance_requirement",
+  "judgment_axis",
+  "affective_load",
+  "identity_boundary_level",
+  "bridge_target"
 ];
 
 async function readJsonl(path) {
@@ -85,6 +91,7 @@ async function main() {
   const blindEntities = new Set(blind.map((row) => row.entity_family));
   const metrics = {
     response_mode_accuracy: blindEval.byHead.response_mode.accuracy,
+    turn_function_accuracy: blindEval.byHead.turn_function.accuracy,
     binding_accuracy: blindEval.byHead.binding_kind.accuracy,
     operation_accuracy: blindEval.byHead.operation.accuracy,
     repair_precision: 1,

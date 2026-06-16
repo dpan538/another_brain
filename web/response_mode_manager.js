@@ -1,5 +1,6 @@
 import { bareFallbackId, mentionsGenericFallback } from "./generic_fallback_classifier.js";
 import { classifyUserTurn } from "./user_turn_classifier.js";
+import { classifyTurnFunction } from "./turn_function_classifier.js";
 import { detectCultureDomain, resolveCultureEntity } from "./culture_runtime.js";
 
 export const RESPONSE_MODES = Object.freeze({
@@ -98,6 +99,7 @@ function cultureCandidate(query, session = {}) {
 export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
   const text = clean(query);
   const userTurn = classifyUserTurn({ query: text, session, trace });
+  const turnFunction = classifyTurnFunction({ query: text, session, userTurn, binding: trace?.binding || {} });
   const reasons = [];
 
   if (!text) {
@@ -147,6 +149,50 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
       reasons: ["explicit_expand_last_answer"],
       should_skip_repair: true,
       userTurn
+    };
+  }
+
+  if (turnFunction.turn_function === "confirmation" && hasActiveTopic(session)) {
+    return {
+      mode: RESPONSE_MODES.FOLLOWUP_ANSWER,
+      confidence: 0.9,
+      reasons: ["turn_function_confirmation_with_active_topic"],
+      should_skip_repair: true,
+      userTurn,
+      turnFunction
+    };
+  }
+
+  if (["analogy_statement", "affective_disclosure", "compliment", "deepening_invitation"].includes(turnFunction.turn_function)) {
+    return {
+      mode: RESPONSE_MODES.DIRECT_ANSWER,
+      confidence: turnFunction.confidence || 0.82,
+      reasons: [`turn_function_${turnFunction.turn_function}`],
+      should_skip_repair: true,
+      userTurn,
+      turnFunction
+    };
+  }
+
+  if (
+    [
+      "evaluation_request",
+      "recommendation_request",
+      "abstract_comparison",
+      "cross_domain_comparison",
+      "list_request",
+      "interpretive_question",
+      "boundary_clarification",
+      "identity_probe"
+    ].includes(turnFunction.turn_function)
+  ) {
+    return {
+      mode: turnFunction.turn_function === "identity_probe" ? RESPONSE_MODES.BOUNDARY_ANSWER : hasActiveTopic(session) ? RESPONSE_MODES.FOLLOWUP_ANSWER : RESPONSE_MODES.CULTURE_ANSWER,
+      confidence: turnFunction.confidence || 0.82,
+      reasons: [`turn_function_${turnFunction.turn_function}`],
+      should_skip_repair: true,
+      userTurn,
+      turnFunction
     };
   }
 
@@ -212,6 +258,50 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
 
   if (HELP_RE.test(text) || userTurn.kind === "help_how_to_ask") {
     return { mode: RESPONSE_MODES.HELP_HOW_TO_ASK, confidence: 0.93, reasons: ["help_how_to_ask"], userTurn };
+  }
+
+  if (turnFunction.turn_function === "confirmation" && hasActiveTopic(session)) {
+    return {
+      mode: RESPONSE_MODES.FOLLOWUP_ANSWER,
+      confidence: 0.9,
+      reasons: ["turn_function_confirmation_with_active_topic"],
+      should_skip_repair: true,
+      userTurn,
+      turnFunction
+    };
+  }
+
+  if (["analogy_statement", "affective_disclosure", "compliment", "deepening_invitation"].includes(turnFunction.turn_function)) {
+    return {
+      mode: RESPONSE_MODES.DIRECT_ANSWER,
+      confidence: turnFunction.confidence || 0.82,
+      reasons: [`turn_function_${turnFunction.turn_function}`],
+      should_skip_repair: true,
+      userTurn,
+      turnFunction
+    };
+  }
+
+  if (
+    [
+      "evaluation_request",
+      "recommendation_request",
+      "abstract_comparison",
+      "cross_domain_comparison",
+      "list_request",
+      "interpretive_question",
+      "boundary_clarification",
+      "identity_probe"
+    ].includes(turnFunction.turn_function)
+  ) {
+    return {
+      mode: turnFunction.turn_function === "identity_probe" ? RESPONSE_MODES.BOUNDARY_ANSWER : hasActiveTopic(session) ? RESPONSE_MODES.FOLLOWUP_ANSWER : RESPONSE_MODES.CULTURE_ANSWER,
+      confidence: turnFunction.confidence || 0.82,
+      reasons: [`turn_function_${turnFunction.turn_function}`],
+      should_skip_repair: true,
+      userTurn,
+      turnFunction
+    };
   }
 
   if (SOLVER_RE.test(text)) {

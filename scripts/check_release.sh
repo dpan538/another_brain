@@ -122,6 +122,7 @@ node scripts/build_r21_control_family_evals.mjs >/dev/null
 node scripts/validate_r21_family_splits.mjs >/dev/null
 node scripts/train_r21_typed_control_gate.mjs >/dev/null
 node scripts/eval_r21_typed_control_gate.mjs >/dev/null
+node scripts/eval_r21_mixed_dialogic_sessions.mjs >/dev/null
 node scripts/check_r21_anti_overfit_invariants.mjs >/dev/null
 
 printf 'release check passed\n'

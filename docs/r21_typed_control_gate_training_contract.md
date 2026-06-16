@@ -14,6 +14,31 @@ The required labels are:
 - `repair_eligibility`
 - `answer_density`
 - `verifier_expected`
+- `turn_function`
+- `stance_requirement`
+- `judgment_axis`
+- `affective_load`
+- `identity_boundary_level`
+- `bridge_target`
+
+R21 must treat a mixed conversational judgment session as more than a list of questions. User turns may function as:
+
+- `information_question`
+- `confirmation`
+- `evaluation_request`
+- `recommendation_request`
+- `abstract_comparison`
+- `analogy_statement`
+- `cross_domain_comparison`
+- `list_request`
+- `affective_disclosure`
+- `interpretive_question`
+- `identity_probe`
+- `boundary_clarification`
+- `compliment`
+- `deepening_invitation`
+
+Non-question turns with semantic force, such as analogies, personal projection, or praise, must not collapse into `quiet_affordance`, `help_how_to_ask`, generic fallback, or mechanical acknowledgement. They require a typed response decision before generation, usually `reflective_bridge`, `affective_reflection`, or `affective_acknowledgement`.
 
 Failure records must enter the failure bank before runtime patches. A failure may only become a runtime change after it has been generalized into a scenario family with train, dev, and blind coverage.
 

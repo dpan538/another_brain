@@ -153,6 +153,7 @@
     "train:r21-typed-control-gate": "node scripts/train_r21_typed_control_gate.mjs",
     "eval:r21-typed-control-gate": "node scripts/eval_r21_typed_control_gate.mjs",
     "check:r21-anti-overfit": "node scripts/check_r21_anti_overfit_invariants.mjs",
-    "check:r21-control": "npm run check:r21-failure-bank && npm run build:r21-control-families && npm run check:r21-family-splits && npm run train:r21-typed-control-gate && npm run eval:r21-typed-control-gate && npm run check:r21-anti-overfit"
+    "eval:r21-mixed-dialogic": "node scripts/eval_r21_mixed_dialogic_sessions.mjs",
+    "check:r21-control": "npm run check:r21-failure-bank && npm run build:r21-control-families && npm run check:r21-family-splits && npm run train:r21-typed-control-gate && npm run eval:r21-typed-control-gate && npm run eval:r21-mixed-dialogic && npm run check:r21-anti-overfit"
   }
 }

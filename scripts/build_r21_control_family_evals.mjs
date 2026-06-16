@@ -22,6 +22,16 @@ const SPLITS = {
   ]
 };
 
+function defaultTurnFunction(base = {}) {
+  if (base.turn_function) return base.turn_function;
+  if (base.scenario_family === "contextual_followup") return "information_question";
+  if (base.scenario_family === "transform_last_answer") return "transform_request";
+  if (base.scenario_family === "fallback_repair") return "repair_question";
+  if (base.scenario_family === "quiet_affordance") return "quiet_declaration";
+  if (base.scenario_family === "repair_boundary") return "boundary_clarification";
+  return "information_question";
+}
+
 function row(base) {
   return {
     id: base.id,
@@ -41,11 +51,166 @@ function row(base) {
       topic_shift_kind: base.topic_shift_kind || "none",
       repair_eligibility: base.repair_eligibility || "false",
       answer_density: base.answer_density || "mobile_short",
-      verifier_expected: base.verifier_expected || "grounded_short_answer"
+      verifier_expected: base.verifier_expected || "grounded_short_answer",
+      turn_function: defaultTurnFunction(base),
+      stance_requirement: base.stance_requirement || "none",
+      judgment_axis: base.judgment_axis || "none",
+      affective_load: base.affective_load || "low",
+      identity_boundary_level: base.identity_boundary_level || "none",
+      bridge_target: base.bridge_target || "none"
     },
     must_not_include: base.must_not_include || ["你需要提问", "你要问哪一边", "也许发生过", "我刚才没有接住问题"],
     notes: base.notes || ""
   };
+}
+
+function addDialogicBridgeRows(rows, split, family) {
+  let n = rows.length + 1;
+  const baseState = {
+    activeEntityIds: [family.activeEntityId],
+    activeDomain: family.domain,
+    lastAssistantAnswer: family.lastAnswer
+  };
+  const shared = {
+    split,
+    entity_family: family.entityFamily,
+    response_type: "answer",
+    repair_eligibility: "false",
+    answer_density: "mobile_short",
+    verifier_expected: "dialogic_grounded_short_answer"
+  };
+
+  rows.push(row({
+    ...shared,
+    id: `${split}_dialogic_confirmation_${n++}`,
+    scenario_family: "dialogic_confirmation",
+    prompt: family.confirmationPrompt,
+    compact_state: baseState,
+    response_mode: "contextual_answer",
+    binding_kind: "topic_stack",
+    question_type: "confirmation",
+    operation: "confirm_active_referent",
+    active_referent: "previous_active_person",
+    turn_function: "confirmation",
+    stance_requirement: "boundary_judgment",
+    judgment_axis: "identity",
+    bridge_target: "previous_topic"
+  }));
+  rows.push(row({
+    ...shared,
+    id: `${split}_dialogic_evaluation_${n++}`,
+    scenario_family: "dialogic_evaluation_request",
+    prompt: family.evaluationPrompt,
+    compact_state: baseState,
+    response_mode: "contextual_answer",
+    binding_kind: "topic_stack",
+    question_type: "aesthetic_judgment",
+    operation: "aesthetic_judgment",
+    active_referent: "previous_active_person",
+    turn_function: "evaluation_request",
+    stance_requirement: "aesthetic_judgment",
+    judgment_axis: "craft",
+    bridge_target: "previous_topic"
+  }));
+  rows.push(row({
+    ...shared,
+    id: `${split}_dialogic_recommendation_${n++}`,
+    scenario_family: "dialogic_recommendation_request",
+    prompt: family.recommendationPrompt,
+    compact_state: baseState,
+    response_mode: "contextual_answer",
+    binding_kind: "active_domain",
+    question_type: "recommendation",
+    operation: "recommend_adjacent_culture_entries",
+    active_referent: "active_domain",
+    turn_function: "recommendation_request",
+    stance_requirement: "light_judgment",
+    judgment_axis: "craft",
+    bridge_target: "previous_topic"
+  }));
+  rows.push(row({
+    ...shared,
+    id: `${split}_dialogic_abstract_compare_${n++}`,
+    scenario_family: "dialogic_abstract_comparison",
+    prompt: family.abstractComparisonPrompt,
+    compact_state: baseState,
+    response_mode: "direct_answer",
+    binding_kind: "active_domain",
+    question_type: "abstract_comparison",
+    operation: "compare_form_or_creation_mode",
+    active_referent: "active_domain",
+    turn_function: "abstract_comparison",
+    stance_requirement: "comparative_judgment",
+    judgment_axis: "form",
+    bridge_target: "cross_domain"
+  }));
+  rows.push(row({
+    ...shared,
+    id: `${split}_dialogic_analogy_${n++}`,
+    scenario_family: "dialogic_analogy_statement",
+    prompt: family.analogyPrompt,
+    compact_state: baseState,
+    response_mode: "direct_answer",
+    binding_kind: "active_domain",
+    question_type: "reflective_bridge",
+    operation: "bridge_music_to_literature",
+    active_referent: "active_domain",
+    turn_function: "analogy_statement",
+    stance_requirement: "light_judgment",
+    judgment_axis: "literature_music_bridge",
+    bridge_target: "cross_domain"
+  }));
+  rows.push(row({
+    ...shared,
+    id: `${split}_dialogic_affective_${n++}`,
+    scenario_family: "dialogic_affective_disclosure",
+    prompt: family.affectivePrompt,
+    compact_state: { ...baseState, activeWorkIds: [family.affectiveWorkId] },
+    response_mode: "direct_answer",
+    binding_kind: "topic_stack",
+    question_type: "affective_reflection",
+    operation: "reflect_affective_projection",
+    active_referent: "active_work",
+    turn_function: "affective_disclosure",
+    stance_requirement: "reflective_judgment",
+    judgment_axis: "memory",
+    affective_load: "medium",
+    bridge_target: "childhood_memory"
+  }));
+  rows.push(row({
+    ...shared,
+    id: `${split}_dialogic_identity_${n++}`,
+    scenario_family: "dialogic_identity_probe",
+    prompt: family.identityPrompt,
+    compact_state: baseState,
+    response_mode: "boundary_answer",
+    binding_kind: "self_identity",
+    question_type: "identity_boundary",
+    operation: "identity_boundary_with_context",
+    active_referent: "self_boundary",
+    turn_function: "identity_probe",
+    stance_requirement: "boundary_judgment",
+    judgment_axis: "identity",
+    identity_boundary_level: "explicit",
+    bridge_target: "identity_boundary"
+  }));
+  rows.push(row({
+    ...shared,
+    id: `${split}_dialogic_compliment_${n++}`,
+    scenario_family: "dialogic_compliment",
+    prompt: family.complimentPrompt,
+    compact_state: baseState,
+    response_mode: "direct_answer",
+    binding_kind: "topic_stack",
+    question_type: "affective_acknowledgement",
+    operation: "acknowledge_compliment_with_reflective_continuation",
+    active_referent: "previous_topic",
+    turn_function: "compliment",
+    stance_requirement: "reflective_judgment",
+    judgment_axis: "relation",
+    affective_load: "warm",
+    bridge_target: "previous_topic"
+  }));
 }
 
 function buildForSplit(split, entities) {
@@ -168,6 +333,55 @@ function buildForSplit(split, entities) {
     answer_density: "none",
     verifier_expected: "not_persisted_as_answer"
   }));
+
+  const dialogicFamilies = {
+    train: {
+      entityFamily: "dialogic.music_literature_identity.luo_natsume",
+      activeEntityId: "person.luo_dayou",
+      domain: "music.literature.bridge",
+      lastAnswer: "罗大佑是台湾音乐人，常从时代感和社会观察进入。",
+      confirmationPrompt: "是那个台湾的歌手吗？",
+      evaluationPrompt: "你觉得他的歌怎么样？",
+      recommendationPrompt: "还有其他港台流行歌手可以推荐的吗？",
+      abstractComparisonPrompt: "你觉得专辑和单曲的创作模式有什么区别？",
+      analogyPrompt: "这个其实和文学诗歌很像。",
+      affectivePrompt: "或许我比较羡慕夏目漱石的我的猫这本书，他让我想到了童年。",
+      affectiveWorkId: "work.i_am_a_cat",
+      identityPrompt: "这或许不像是一个对话框能说出来的话，你是谁？",
+      complimentPrompt: "我很喜欢你在文学和诗歌上的努力。"
+    },
+    dev: {
+      entityFamily: "dialogic.music_literature_identity.faye_zhang",
+      activeEntityId: "person.faye_wong",
+      domain: "music.literature.bridge",
+      lastAnswer: "王菲是香港流行音乐的重要声音入口。",
+      confirmationPrompt: "是那个香港女歌手吗？",
+      evaluationPrompt: "你怎么看她的歌？",
+      recommendationPrompt: "还有别的香港流行歌手能推荐吗？",
+      abstractComparisonPrompt: "专辑创作和单曲创作有什么不同？",
+      analogyPrompt: "这好像也有一点诗歌的感觉。",
+      affectivePrompt: "我可能羡慕张爱玲那种写记忆的方式，它让我想到小时候。",
+      affectiveWorkId: "work.memory_bridge.dev",
+      identityPrompt: "这种话不像普通助手，你到底是什么？",
+      complimentPrompt: "我喜欢你把音乐和文学放在一起想。"
+    },
+    blind: {
+      entityFamily: "dialogic.music_literature_identity.sodagreen_kawabata",
+      activeEntityId: "band.sodagreen",
+      domain: "music.literature.bridge",
+      lastAnswer: "苏打绿可以从乐团写作和诗性歌词进入。",
+      confirmationPrompt: "是那个台湾乐团吗？",
+      evaluationPrompt: "你觉得他们的歌怎么样？",
+      recommendationPrompt: "还有其他华语乐团可以推荐吗？",
+      abstractComparisonPrompt: "乐团专辑和一首单曲的写法区别大吗？",
+      analogyPrompt: "这其实很像短篇小说和诗。",
+      affectivePrompt: "我有点羡慕川端康成那种写记忆的冷感，也会想到童年。",
+      affectiveWorkId: "work.memory_bridge.blind",
+      identityPrompt: "这不像一个网页对话框能说的话，你是谁？",
+      complimentPrompt: "我喜欢你在诗性和文学上的尝试。"
+    }
+  };
+  addDialogicBridgeRows(rows, split, dialogicFamilies[split]);
   return rows;
 }
 

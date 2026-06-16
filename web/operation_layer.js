@@ -2,10 +2,12 @@ import { answerCultureQuery, resolveCultureEntity } from "./culture_runtime.js";
 import { verifyDraft } from "./draft_verifier.js";
 import { answerFallbackRepair } from "./fallback_repair.js";
 import { answerMetaKnowledgeQuery } from "./meta_knowledge_router.js";
+import { answerDialogicBridgeTurn } from "./dialogic_bridge_runtime.js";
 import { buildQuietAffordance } from "./non_question_affordance.js";
 import { expandLastAnswer, rewriteLastAnswer, simplifyLastAnswer } from "./last_answer_transform.js";
 import { selectResponseMode } from "./response_mode_manager.js";
 import { classifyUserTurn } from "./user_turn_classifier.js";
+import { classifyTurnFunction } from "./turn_function_classifier.js";
 import {
   solveChineseArithmetic,
   solveSetQuantifierFromText,
@@ -1159,6 +1161,7 @@ export function answerWithOperationLayer(query, state = {}) {
   }
   const userTurn = classifyUserTurn({ query: text, session: state });
   const responseMode = selectResponseMode({ query: text, session: state });
+  const turnFunction = classifyTurnFunction({ query: text, session: state, userTurn });
   const safetyBoundary = answerSafetyBoundary(text);
   if (safetyBoundary) return withResponseMode(safetyBoundary, responseMode);
   if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return withResponseMode(answerPrivacyBoundary(text), responseMode);
@@ -1192,6 +1195,9 @@ export function answerWithOperationLayer(query, state = {}) {
   if (responseMode.mode === "help_how_to_ask") {
     return withResponseMode(answerHelpHowToAsk(text), responseMode);
   }
+
+  const dialogicBridge = answerDialogicBridgeTurn({ query: text, state, turnFunction });
+  if (dialogicBridge?.answer) return withResponseMode(makeResult(dialogicBridge), responseMode);
 
   const selfBodyBoundary = answerSelfBodyBoundary(text, state);
   if (selfBodyBoundary) return withResponseMode(selfBodyBoundary, responseMode);
