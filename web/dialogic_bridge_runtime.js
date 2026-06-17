@@ -64,6 +64,14 @@ function activeLawCulture(state = {}, query = "") {
   return activeDialogicDomain(state, query) === "law";
 }
 
+function activeTheaterCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "theater";
+}
+
+function activeHistoryCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "history";
+}
+
 function activeLuoLike(state = {}, query = "") {
   const source = `${query} ${recentText(state)}`;
   return /罗大佑|童年|鹿港小镇|恋曲1990|之乎者也/.test(source);
@@ -111,6 +119,8 @@ function activeDialogicDomain(state = {}, query = "") {
   if (/language|translation|semiotic|symbol|meaning/.test(stateDomain)) return "language";
   if (/food|cooking|taste|tea|kitchen|dish/.test(stateDomain)) return "food";
   if (/law|legal|justice|rule|court|rights/.test(stateDomain)) return "law";
+  if (/theater|theatre|stage|performance|drama/.test(stateDomain)) return "theater";
+  if (/history|memory|archive|historiography/.test(stateDomain)) return "history";
 
   return detectDialogicDomain({ query: "", context: recentText(state) });
 }
@@ -219,6 +229,12 @@ function answerAbstractComparison(query) {
   if (/(规则|判例|法律|正义|司法|解释)/.test(query)) {
     return "规则更像稳定边界，判例更像具体解释。一个给可预期性，一个把公平放进真实处境。";
   }
+  if (/(排练|演出|戏剧|舞台|剧场|表演)/.test(query)) {
+    return "排练更像试错和校准，演出更像现场承担。一个反复调整，一个在观众面前完成判断。";
+  }
+  if (/(史料|叙事|档案|记忆|历史)/.test(query)) {
+    return "史料更像证据边界，叙事更像时间组织。一个限制想象，一个让材料形成可理解的关系。";
+  }
   if (/(镜头|剪辑|长镜头|电影)/.test(query)) {
     return "镜头更像选择视角，剪辑更像安排时间。一个决定你看见什么，一个决定你怎样经历。";
   }
@@ -248,6 +264,12 @@ function answerFormAnalogy(query, state = {}) {
   }
   if (/(政治|伦理|行动)/.test(query)) {
     return "可以。伦理和戏剧都看行动：不是只看立场，而是看人在具体情境里怎样承担。";
+  }
+  if (/(戏剧|舞台|剧场|表演)/.test(query)) {
+    return "可以。戏剧和文学都靠细节与冲突组织场面；不同的是戏剧还要让身体和停顿在现场发生。";
+  }
+  if (/(历史|记忆|档案|史料)/.test(query)) {
+    return "可以。历史和文学都处理时间、记忆和叙述；不同的是历史要把想象压回证据边界。";
   }
   return "可以这样看。好的形式不是装饰，而是把材料、节奏和判断组织起来。";
 }
@@ -630,6 +652,22 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: answerFormAnalogy("法律规则解释", state)
       });
     }
+    if (activeTheaterCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_theater_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("戏剧舞台表演", state)
+      });
+    }
+    if (activeHistoryCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_history_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("历史记忆档案", state)
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_music_to_literature",
@@ -703,6 +741,14 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "可以这样看。法律和舞台都把冲突放到场景里，只是法律还要给出可承担的边界。"
       });
     }
+    if (activeHistoryCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_history_to_stage_memory",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。历史叙述也像舞台：人物、材料和冲突都要被放到时间里。"
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_to_stage_detail_conflict",
@@ -711,7 +757,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
     });
   }
 
-  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation", "language_meaning", "food_craft", "law_justice"].includes(turnFunction.bridge_target)) {
+  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation", "language_meaning", "food_craft", "law_justice", "theater_performance", "history_memory"].includes(turnFunction.bridge_target)) {
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_form_across_media",

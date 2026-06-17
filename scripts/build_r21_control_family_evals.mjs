@@ -22,7 +22,9 @@ const SPLITS = {
     { entity: "王家卫", entity_family: "cinema.wong_kar_wai", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
     { entity: "维特根斯坦", entity_family: "language.wittgenstein", pronoun: "他的", domain: "language", referent: "previous_active_person" },
     { entity: "饮食文化", entity_family: "food.culture", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
-    { entity: "法律解释", entity_family: "law.interpretation", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" }
+    { entity: "法律解释", entity_family: "law.interpretation", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" },
+    { entity: "戏剧表演", entity_family: "theater.performance", pronoun: "它的", domain: "theater", referent: "previous_active_domain_or_work" },
+    { entity: "历史叙事", entity_family: "history.narrative", pronoun: "它的", domain: "history", referent: "previous_active_domain_or_work" }
   ],
   dev: [
     { entity: "王菲", entity_family: "music.faye_wong", pronoun: "她的", domain: "music", referent: "previous_active_person" },
@@ -36,7 +38,9 @@ const SPLITS = {
     { entity: "侯孝贤", entity_family: "cinema.hou_hsiao_hsien", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
     { entity: "索绪尔", entity_family: "language.saussure", pronoun: "他的", domain: "language", referent: "previous_active_person" },
     { entity: "茶文化", entity_family: "food.tea", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
-    { entity: "正义理论", entity_family: "law.justice", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" }
+    { entity: "正义理论", entity_family: "law.justice", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" },
+    { entity: "剧场空间", entity_family: "theater.stage_space", pronoun: "它的", domain: "theater", referent: "previous_active_domain_or_work" },
+    { entity: "口述史", entity_family: "history.oral_history", pronoun: "它的", domain: "history", referent: "previous_active_domain_or_work" }
   ],
   blind: [
     { entity: "周杰伦", entity_family: "music.jay_chou", pronoun: "他的", domain: "music", referent: "previous_active_person" },
@@ -50,7 +54,9 @@ const SPLITS = {
     { entity: "小津安二郎", entity_family: "cinema.ozu", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
     { entity: "本雅明", entity_family: "language.benjamin", pronoun: "他的", domain: "language", referent: "previous_active_person" },
     { entity: "烹饪手艺", entity_family: "food.cooking", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
-    { entity: "判例法", entity_family: "law.precedent", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" }
+    { entity: "判例法", entity_family: "law.precedent", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" },
+    { entity: "舞台剧", entity_family: "theater.drama", pronoun: "它的", domain: "theater", referent: "previous_active_domain_or_work" },
+    { entity: "地方志", entity_family: "history.local_gazetteer", pronoun: "它的", domain: "history", referent: "previous_active_domain_or_work" }
   ]
 };
 
@@ -263,7 +269,9 @@ function activeEntityIdFor(item) {
     .replace(/^cinema\./, "person.")
     .replace(/^language\./, "person.")
     .replace(/^food\./, "concept.")
-    .replace(/^law\./, "concept.");
+    .replace(/^law\./, "concept.")
+    .replace(/^theater\./, "concept.")
+    .replace(/^history\./, "concept.");
 }
 
 function buildForSplit(split, entities) {
@@ -287,7 +295,9 @@ function buildForSplit(split, entities) {
       "他的镜头叙事有什么代表性？",
       "他的语言判断有什么代表性？",
       "它的饮食判断有什么代表性？",
-      "它的法律解释有什么代表性？"
+      "它的法律解释有什么代表性？",
+      "它的戏剧表演有什么代表性？",
+      "它的历史叙事有什么代表性？"
     ],
     dev: [
       `${entities[0]?.pronoun || "他的"}歌有什么特点？`,
@@ -301,7 +311,9 @@ function buildForSplit(split, entities) {
       "他的影像判断重要在哪里？",
       "他的符号判断重点是什么？",
       "它的味觉判断重点是什么？",
-      "它的正义判断重点是什么？"
+      "它的正义判断重点是什么？",
+      "它的剧场判断重点是什么？",
+      "它的历史记忆判断重点是什么？"
     ],
     blind: [
       `${entities[0]?.pronoun || "他的"}代表性在哪里？`,
@@ -315,18 +327,20 @@ function buildForSplit(split, entities) {
       "他的电影形式重点是什么？",
       "他的翻译判断重点是什么？",
       "它作为烹饪入口重点是什么？",
-      "它作为判例入口重点是什么？"
+      "它作为判例入口重点是什么？",
+      "它作为舞台入口重点是什么？",
+      "它作为地方志入口重点是什么？"
     ]
   };
   const simplifyPrompts = {
-    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。", "压成一个镜头判断。", "换成一句语言判断。", "换成一句饮食判断。", "换成一句法律判断。"],
-    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。", "换成影像里的主轴。", "换成符号里的主轴。", "换成味觉里的主轴。", "换成正义里的主轴。"],
-    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。", "说成电影判断。", "说成翻译判断。", "说成烹饪判断。", "说成判例判断。"]
+    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。", "压成一个镜头判断。", "换成一句语言判断。", "换成一句饮食判断。", "换成一句法律判断。", "换成一句舞台判断。", "换成一句历史判断。"],
+    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。", "换成影像里的主轴。", "换成符号里的主轴。", "换成味觉里的主轴。", "换成正义里的主轴。", "换成剧场里的主轴。", "换成史料里的主轴。"],
+    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。", "说成电影判断。", "说成翻译判断。", "说成烹饪判断。", "说成判例判断。", "说成舞台判断。", "说成历史判断。"]
   };
   const repairGuardPrompts = {
-    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？", "这不是电影上映新闻吧？", "这不是翻译事故吧？", "这不是餐馆新闻吧？", "这不是法院新闻吧？"],
-    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？", "这不是电影档期吧？", "这不是词典状态吧？", "这不是饭店开业吧？", "这不是庭审状态吧？"],
-    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？", "这不是影院排片吧？", "这不是译本新闻吧？", "这不是厨房事故吧？", "这不是判决新闻吧？"]
+    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？", "这不是电影上映新闻吧？", "这不是翻译事故吧？", "这不是餐馆新闻吧？", "这不是法院新闻吧？", "这不是剧场演出事故吧？", "这不是历史事件状态吧？"],
+    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？", "这不是电影档期吧？", "这不是词典状态吧？", "这不是饭店开业吧？", "这不是庭审状态吧？", "这不是剧场排期吧？", "这不是史料发现新闻吧？"],
+    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？", "这不是影院排片吧？", "这不是译本新闻吧？", "这不是厨房事故吧？", "这不是判决新闻吧？", "这不是舞台事故吧？", "这不是档案开放状态吧？"]
   };
   for (const item of entities) {
     const idx = n / 4 | 0;
@@ -627,6 +641,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种法律判断不像普通工具会说出来，你是谁？",
         complimentPrompt: "我喜欢你在法律和正义上的努力。"
+      },
+      {
+        entityFamily: "dialogic.theater_performance.stage_conflict",
+        activeEntityId: "concept.theater_performance",
+        domain: "theater.performance.bridge",
+        lastAnswer: "戏剧表演可以从台词、身体和现场冲突进入。",
+        confirmationPrompt: "是那种和舞台和演员有关的表演吗？",
+        evaluationPrompt: "你怎么看戏剧里的表演判断？",
+        recommendationPrompt: "还能推荐戏剧或舞台方向的入口吗？",
+        abstractComparisonPrompt: "排练和正式演出的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_rehearsal_performance",
+        analogyPrompt: "这其实和小说里的场面很像。",
+        analogyOperation: "bridge_theater_to_literature",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "theater_performance",
+        affectivePrompt: "我羡慕那种用一句台词制造冲突的能力。",
+        affectiveWorkId: "work.stage_conflict.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种戏剧判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在戏剧和表演上的努力。"
+      },
+      {
+        entityFamily: "dialogic.history_memory.archive_time",
+        activeEntityId: "concept.history_narrative",
+        domain: "history.memory.bridge",
+        lastAnswer: "历史叙事可以从史料、记忆和时间结构进入。",
+        confirmationPrompt: "是那种和史料和记忆有关的叙事吗？",
+        evaluationPrompt: "你怎么看历史里的解释判断？",
+        recommendationPrompt: "还能推荐历史或史学方向的入口吗？",
+        abstractComparisonPrompt: "史料和叙事的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_archive_narrative",
+        analogyPrompt: "这其实和小说里的时间结构很像。",
+        analogyOperation: "bridge_history_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "history_memory",
+        affectivePrompt: "我羡慕那种把零散记忆放回时间里的能力。",
+        affectiveWorkId: "work.archive_time.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种历史判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在口述史和个人记忆上的努力。"
       }
     ],
     dev: [
@@ -784,6 +838,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种正义判断不像普通工具能说出来，你是谁？",
         complimentPrompt: "我喜欢你在法律和公平上的努力。"
+      },
+      {
+        entityFamily: "dialogic.theater_performance.stage_space",
+        activeEntityId: "concept.stage_space",
+        domain: "theater.performance.bridge",
+        lastAnswer: "剧场空间可以从场面调度、停顿和观众关系进入。",
+        confirmationPrompt: "是那种和剧场空间有关的判断吗？",
+        evaluationPrompt: "你觉得剧场空间的判断重点是什么？",
+        recommendationPrompt: "还能推荐戏剧或剧场方向的入口吗？",
+        abstractComparisonPrompt: "台词和表演的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_rehearsal_performance",
+        analogyPrompt: "这其实和小说里的场景安排很像。",
+        analogyOperation: "bridge_theater_to_literature",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "theater_performance",
+        affectivePrompt: "我羡慕那种用停顿和身体制造关系的能力。",
+        affectiveWorkId: "work.stage_space.dev",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种剧场判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在剧场和表演上的努力。"
+      },
+      {
+        entityFamily: "dialogic.history_memory.oral_history",
+        activeEntityId: "concept.oral_history",
+        domain: "history.memory.bridge",
+        lastAnswer: "口述史可以从个人记忆、证词和时间关系进入。",
+        confirmationPrompt: "是那种和个人记忆有关的历史材料吗？",
+        evaluationPrompt: "你觉得口述史的判断重点是什么？",
+        recommendationPrompt: "还能推荐历史和记忆方向的入口吗？",
+        abstractComparisonPrompt: "档案和口述记忆的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_archive_narrative",
+        analogyPrompt: "这其实和散文里的记忆结构很像。",
+        analogyOperation: "bridge_history_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "history_memory",
+        affectivePrompt: "我羡慕那种从个人记忆里看见时代的能力。",
+        affectiveWorkId: "work.oral_history.dev",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种历史判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在历史和记忆上的努力。"
       }
     ],
     blind: [
@@ -941,6 +1035,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种法律判断不像一个工具能说出来，你是谁？",
         complimentPrompt: "我喜欢你在法律和解释上的努力。"
+      },
+      {
+        entityFamily: "dialogic.theater_performance.drama_scene",
+        activeEntityId: "concept.drama_scene",
+        domain: "theater.performance.bridge",
+        lastAnswer: "舞台剧可以从演员、台词和现场冲突进入。",
+        confirmationPrompt: "是那种靠演员和现场完成的戏剧吗？",
+        evaluationPrompt: "你怎么看舞台剧里的表演判断？",
+        recommendationPrompt: "还有其他戏剧和舞台方向可以推荐吗？",
+        abstractComparisonPrompt: "排练过程和现场演出的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_rehearsal_performance",
+        analogyPrompt: "这其实和短篇小说里的场面很像。",
+        analogyOperation: "bridge_theater_to_literature",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "theater_performance",
+        affectivePrompt: "我有点羡慕把一句台词变成行动的能力。",
+        affectiveWorkId: "work.drama_scene.blind",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种戏剧判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在舞台和表演上的努力。"
+      },
+      {
+        entityFamily: "dialogic.history_memory.local_gazetteer",
+        activeEntityId: "concept.local_gazetteer",
+        domain: "history.memory.bridge",
+        lastAnswer: "地方志可以从地方记忆、档案和时间结构进入。",
+        confirmationPrompt: "是那种记录地方和年代的历史材料吗？",
+        evaluationPrompt: "你怎么看地方志里的历史判断？",
+        recommendationPrompt: "还有其他历史和记忆方向可以推荐吗？",
+        abstractComparisonPrompt: "档案材料和历史叙事的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_archive_narrative",
+        analogyPrompt: "这其实和小说里的地方记忆很像。",
+        analogyOperation: "bridge_history_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "history_memory",
+        affectivePrompt: "我有点羡慕从地方材料里看见时间的能力。",
+        affectiveWorkId: "work.local_memory.blind",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种历史判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在历史和地方记忆上的努力。"
       }
     ]
   };
