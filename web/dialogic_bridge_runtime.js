@@ -1,3 +1,5 @@
+import { detectDialogicDomain, getDialogicDomainProfile } from "./dialogic_domain_profiles.js";
+
 function clean(text) {
   return String(text || "").trim();
 }
@@ -15,33 +17,35 @@ function recentText(state = {}) {
 }
 
 function activeMandopop(state = {}, query = "") {
-  const source = `${query} ${recentText(state)}`;
-  return /罗大佑|李宗盛|王菲|邓丽君|张惠妹|周杰伦|港台|华语流行|流行歌|歌曲|童年/.test(source);
+  return activeDialogicDomain(state, query) === "music";
 }
 
 function activeVisualCulture(state = {}, query = "") {
-  const source = `${query} ${recentText(state)}`;
-  return /杜尚|包豪斯|摄影|绘画|现成品|现代艺术|现代建筑|设计|电影|镜头|艺术|形式/.test(source);
+  return activeDialogicDomain(state, query) === "visual";
 }
 
 function activeScienceCulture(state = {}, query = "") {
-  const source = `${query} ${recentText(state)}`;
-  return /达尔文|进化论|自然选择|科学史|实验|法布尔|卡逊|昆虫记|生态/.test(source);
+  return activeDialogicDomain(state, query) === "science";
 }
 
 function activeUrbanCulture(state = {}, query = "") {
-  const source = `${query} ${recentText(state)}`;
-  return /简·?雅各布斯|城市|街道|规划|公共空间|社区|邻里|看见城市/.test(source);
+  return activeDialogicDomain(state, query) === "urban";
 }
 
 function activeTechnologyCulture(state = {}, query = "") {
-  const source = `${query} ${recentText(state)}`;
-  return /香农|图灵|信息论|算法|界面|计算机|技术|维纳|控制论|检索/.test(source);
+  return activeDialogicDomain(state, query) === "technology";
 }
 
 function activeEthicsCulture(state = {}, query = "") {
-  const source = `${query} ${recentText(state)}`;
-  return /阿伦特|伦理|政治|行动|责任|存在主义|自由|公共生活/.test(source);
+  return activeDialogicDomain(state, query) === "ethics";
+}
+
+function activeEducationCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "education";
+}
+
+function activeEconomicsCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "economics";
 }
 
 function activeLuoLike(state = {}, query = "") {
@@ -50,23 +54,60 @@ function activeLuoLike(state = {}, query = "") {
 }
 
 function activeDialogicDomain(state = {}, query = "") {
-  if (/(科学|进化|生态|达尔文|法布尔|卡逊|叙事)/.test(query)) return "science";
-  if (/(城市|街道|规划|空间|简·?雅各布斯)/.test(query)) return "urban";
-  if (/(技术|算法|界面|信息论|香农|图灵|维纳)/.test(query)) return "technology";
-  if (/(伦理|政治|行动|责任|阿伦特|自由)/.test(query)) return "ethics";
-  if (/(艺术|形式|设计|摄影|电影|杜尚|包豪斯|现成品|绘画)/.test(query)) return "visual";
-  if (activeVisualCulture(state, query)) return "visual";
-  if (activeScienceCulture(state, query)) return "science";
-  if (activeUrbanCulture(state, query)) return "urban";
-  if (activeTechnologyCulture(state, query)) return "technology";
-  if (activeEthicsCulture(state, query)) return "ethics";
-  if (activeMandopop(state, query)) return "music";
-  return "";
+  const explicit = detectDialogicDomain({ query, context: "" });
+  if (explicit) return explicit;
+
+  const focusContext = [
+    state.lastUserText,
+    state.lastUserQuery,
+    state.lastAnswer,
+    state.lastAssistantAnswer
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const focused = detectDialogicDomain({ query: "", context: focusContext });
+  if (focused) return focused;
+
+  const stateDomain = String(
+    state.activeDomain ||
+      state.active_domain ||
+      state.lastDomain ||
+      state.last_domain ||
+      state.compact_state?.activeDomain ||
+      state.compactState?.activeDomain ||
+      ""
+  ).toLowerCase();
+  if (/music|mandopop/.test(stateDomain)) return "music";
+  if (/visual|art|design|photo|cinema/.test(stateDomain)) return "visual";
+  if (/science|ecology/.test(stateDomain)) return "science";
+  if (/urban|city|architecture|space/.test(stateDomain)) return "urban";
+  if (/technology|interface|tool|comput/.test(stateDomain)) return "technology";
+  if (/ethics|politic|action/.test(stateDomain)) return "ethics";
+  if (/education|learning|classroom/.test(stateDomain)) return "education";
+  if (/economics|market|institution|labor/.test(stateDomain)) return "economics";
+
+  return detectDialogicDomain({ query: "", context: recentText(state) });
+}
+
+function activeProfile(state = {}, query = "") {
+  return getDialogicDomainProfile(activeDialogicDomain(state, query));
 }
 
 function extractKnowSubject(query = "") {
-  const match = String(query || "").match(/你知道(.+?)(?:吗|么|嘛|？|\?|$)/);
-  return clean(match?.[1] || "");
+  const text = String(query || "");
+  const beforeKnow = text.match(/^(.+?)(?:你知道吗|你知道么|你知道嘛|知道吗|知道么|知道嘛|是谁|是什么人|是什么)(?:[？?。.!！]*)$/);
+  if (beforeKnow?.[1]) return clean(beforeKnow[1]);
+  const afterKnow = text.match(/你知道(.+?)(?:吗|么|嘛|？|\?|$)/);
+  if (afterKnow?.[1]) return clean(afterKnow[1]);
+  if (/罗大佑/.test(text)) return "罗大佑";
+  if (/杜尚/.test(text)) return "杜尚";
+  if (/达尔文/.test(text)) return "达尔文";
+  if (/简·?雅各布斯/.test(text)) return "简·雅各布斯";
+  if (/香农/.test(text)) return "香农";
+  if (/阿伦特/.test(text)) return "阿伦特";
+  if (/弗莱雷/.test(text)) return "弗莱雷";
+  if (/波兰尼/.test(text)) return "波兰尼";
+  return "";
 }
 
 function makeDialogicResult({
@@ -88,7 +129,9 @@ function makeDialogicResult({
   };
 }
 
-function answerRecommendation(query) {
+function answerRecommendation(query, state = {}) {
+  const profile = activeProfile(state, query);
+  if (profile?.recommendation) return profile.recommendation;
   if (/(港台|华语|流行|歌手|还能听谁|还有谁)/.test(query)) {
     return "可以听李宗盛、王菲、邓丽君、张惠妹。一个看叙事，一个看声音气质，一个看时代流通，一个看舞台力量。";
   }
@@ -129,13 +172,21 @@ function answerAbstractComparison(query) {
   if (/(行动|理论|责任)/.test(query)) {
     return "理论整理判断，行动把判断放进世界里。差别在于后者要承担结果。";
   }
+  if (/(学习|训练|教育|教学|课堂)/.test(query)) {
+    return "训练更像重复动作，学习更像形成理解。好的教育要让方法进入经验，而不是只把答案塞进去。";
+  }
+  if (/(市场|计划|劳动|资本|经济)/.test(query)) {
+    return "市场更像分散选择，计划更像集中安排；劳动和资本的差别，则在谁承担身体、时间和风险。";
+  }
   return "一种形式偏连续结构，一种形式偏单点命中；差别在材料、顺序、观看位置和完成方式。";
 }
 
-function answerFormAnalogy(query) {
+function answerFormAnalogy(query, state = {}) {
   if (/(电影|镜头)/.test(query)) {
     return "可以这样看。镜头、小说和歌都靠选择细节来制造冲突；重点不是信息多，而是视角准。";
   }
+  const profile = activeProfile(state, query);
+  if (profile?.formAnalogy) return profile.formAnalogy;
   if (/(设计|建筑|摄影)/.test(query)) {
     return "可以。相似处在形式组织：删减、比例、视角和秩序，而不是题材必须一样。";
   }
@@ -154,10 +205,12 @@ function answerFormAnalogy(query) {
   return "可以这样看。好的形式不是装饰，而是把材料、节奏和判断组织起来。";
 }
 
-function answerCrossDomain(query) {
+function answerCrossDomain(query, state = {}) {
   if (/(日本文学|台湾文学)/.test(query)) {
     return "能注意到。两者都常写现代化下的个人、家庭和记忆；日本文学更细压心理，台湾文学更常连着殖民、乡土和身份转换。";
   }
+  const profile = activeProfile(state, query);
+  if (profile?.crossDomain) return profile.crossDomain;
   if (/(包豪斯|现代建筑|设计|摄影|电影|艺术|形式)/.test(query)) {
     return "能注意到。共同点通常不在外观，而在怎样处理现代生活、材料秩序和人的位置；差别要回到媒介和历史。";
   }
@@ -176,10 +229,12 @@ function answerCrossDomain(query) {
   return "能注意到。共同点通常不在外观，而在怎样处理现代生活、材料秩序和人的位置；差别要回到媒介和历史。";
 }
 
-function answerListRequest(query) {
+function answerListRequest(query, state = {}) {
   if (/日本文学/.test(query)) {
     return "三个入口：夏目漱石《我是猫》或《心》、川端康成《雪国》、太宰治《人间失格》。";
   }
+  const profile = activeProfile(state, query);
+  if (profile?.listAnswer) return profile.listAnswer;
   if (/(现代艺术|艺术家|代表作)/.test(query)) {
     return "三个入口：杜尚《泉》、毕加索《格尔尼卡》、蒙德里安的格子绘画。先看观念、冲突和形式秩序。";
   }
@@ -220,26 +275,36 @@ function answerRelationQuestion(query, state) {
 
 function answerDomainOverview(query, state) {
   const subject = extractKnowSubject(query);
-  const domain = activeDialogicDomain(state, query);
-  if (domain === "science") {
-    return `${subject || "这个科学对象"}可以理解为科学史里的入口：重点在观察、证据、时间尺度和解释关系。`;
+  if (/(怎么问|怎么提问|如何问|需要怎么问|我该怎么问|怎么开始)/.test(query)) return "";
+  if (/(什么关系|有什么关系|关系？|关系$)/.test(query)) return "";
+  if (/(项目|这个项目|下一步).{0,8}训练|训练什么/.test(query)) return "";
+  if (/罗大佑/.test(query) && /(代表作|作品|哪些歌|有什么歌|歌曲)/.test(query)) {
+    return "罗大佑的代表作可以从《之乎者也》《童年》《鹿港小镇》《恋曲1990》进入。";
   }
-  if (domain === "urban") {
-    return `${subject || "这个城市对象"}可以理解为城市经验的入口：重点在街道、公共空间、日常使用和人的关系。`;
+  if (/(这些歌|这些作品|代表在哪里|有什么代表性|有什么特点|歌曲.*代表性)/.test(query) && activeMandopop(state, query)) {
+    return "代表性在三点：青春记忆、城乡变化、社会观察。入口可以听《童年》《鹿港小镇》《恋曲1990》。";
   }
-  if (domain === "technology") {
-    return `${subject || "这个技术对象"}可以理解为工具思想的入口：重点在信息、规则、界面和人的动作。`;
+  if (/罗大佑/.test(query)) {
+    return "罗大佑是台湾音乐人，常从华语流行、时代感、青春记忆和社会观察进入。";
   }
-  if (domain === "ethics") {
-    return `${subject || "这个伦理对象"}可以理解为行动判断的入口：重点在责任、公共性、选择和后果。`;
-  }
-  return "";
+  const profile = activeProfile(state, query);
+  return profile?.overview ? profile.overview(subject) : "";
 }
 
 export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction = {} } = {}) {
   const text = clean(query);
   const fn = turnFunction.turn_function || "";
   if (!text || !fn) return null;
+
+  if (fn === "information_question" && /(这些歌|这些作品|代表在哪里|有什么代表性|有什么特点|歌曲.*代表性|歌.*特点)/.test(text) && activeMandopop(state, text)) {
+    const characteristics = /(特点|风格)/.test(text);
+    return makeDialogicResult({
+      turnFunction: fn,
+      operation: characteristics ? "explain_music_characteristics" : "explain_music_representativeness",
+      questionType: characteristics ? "music_characteristics" : "music_representativeness",
+      answer: "代表性在三点：青春记忆、城乡变化、社会观察。入口可以听《童年》《鹿港小镇》《恋曲1990》。"
+    });
+  }
 
   if (fn === "information_question") {
     const domainOverview = answerDomainOverview(text, state);
@@ -327,6 +392,15 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "是。这里说的是台湾音乐人罗大佑，常从华语流行、时代感和社会观察进入。"
       });
     }
+    const profile = activeProfile(state, text);
+    if (profile?.confirmation) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "confirm_active_referent",
+        questionType: "confirmation",
+        answer: profile.confirmation
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "confirm_active_referent",
@@ -384,6 +458,15 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "我会看它怎样把观念放进行动里：重点不是立场漂亮，而是人在情境里怎样承担责任。"
       });
     }
+    const profile = activeProfile(state, text);
+    if (profile?.evaluation) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: `aesthetic_judgment_${profile.id}`,
+        questionType: "reflective_judgment",
+        answer: profile.evaluation
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "aesthetic_judgment",
@@ -397,7 +480,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
       turnFunction: fn,
       operation: "recommend_adjacent_culture_entries",
       questionType: "recommendation",
-      answer: answerRecommendation(text)
+      answer: answerRecommendation(text, state)
     });
   }
 
@@ -416,7 +499,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         turnFunction: fn,
         operation: "bridge_science_to_literature",
         questionType: "reflective_bridge",
-        answer: answerFormAnalogy("科学观察")
+        answer: answerFormAnalogy("科学观察", state)
       });
     }
     if (activeUrbanCulture(state, text)) {
@@ -424,7 +507,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         turnFunction: fn,
         operation: "bridge_urban_to_literature",
         questionType: "reflective_bridge",
-        answer: answerFormAnalogy("城市街道")
+        answer: answerFormAnalogy("城市街道", state)
       });
     }
     if (activeTechnologyCulture(state, text)) {
@@ -432,7 +515,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         turnFunction: fn,
         operation: "bridge_technology_to_poetry",
         questionType: "reflective_bridge",
-        answer: answerFormAnalogy("技术工具界面")
+        answer: answerFormAnalogy("技术工具界面", state)
       });
     }
     if (activeEthicsCulture(state, text)) {
@@ -440,7 +523,23 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         turnFunction: fn,
         operation: "bridge_ethics_to_drama",
         questionType: "reflective_bridge",
-        answer: answerFormAnalogy("政治伦理行动")
+        answer: answerFormAnalogy("政治伦理行动", state)
+      });
+    }
+    if (activeEducationCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_education_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("教育学习经验", state)
+      });
+    }
+    if (activeEconomicsCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_economics_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("经济市场劳动", state)
       });
     }
     return makeDialogicResult({
@@ -488,16 +587,16 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
       turnFunction: fn,
       operation: "bridge_to_stage_detail_conflict",
       questionType: "reflective_bridge",
-      answer: "可以这样看。小说、歌和舞台剧都不是只给结论，而是把人物、场景和冲突留在细节里。"
+      answer: "可以这样看。舞台感不是只给结论，而是让人物在场景和冲突里行动，并在情境中承担。"
     });
   }
 
-  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action"].includes(turnFunction.bridge_target)) {
+  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation"].includes(turnFunction.bridge_target)) {
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_form_across_media",
       questionType: "reflective_bridge",
-      answer: answerFormAnalogy(text)
+      answer: answerFormAnalogy(text, state)
     });
   }
 
@@ -506,7 +605,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
       turnFunction: fn,
       operation: turnFunction.bridge_target === "literature_cross_region" ? "compare_japanese_taiwan_literature_axes" : "compare_cross_domain_form_axes",
       questionType: "cross_domain_comparison",
-      answer: answerCrossDomain(text)
+      answer: answerCrossDomain(text, state)
     });
   }
 
@@ -515,7 +614,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
       turnFunction: fn,
       operation: "list_authors_and_works",
       questionType: "author_work_list",
-      answer: answerListRequest(text)
+      answer: answerListRequest(text, state)
     });
   }
 
@@ -572,6 +671,16 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         questionType: "affective_reflection",
         contextAction: "ANSWER_LOCAL",
         answer: "我能理解这个投射。那种羡慕不是想变成艺术家，而是羡慕一种把普通东西重新看成问题的能力。"
+      });
+    }
+    const profile = activeProfile(state, text);
+    if (profile?.affectiveReflection) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "reflect_affective_projection",
+        questionType: "affective_reflection",
+        contextAction: "ANSWER_LOCAL",
+        answer: profile.affectiveReflection
       });
     }
     return makeDialogicResult({
@@ -640,6 +749,15 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "不只是童年本身。它借校园和日常表面，写时间过去、共同记忆和失去的轻微疼痛。"
       });
     }
+    const profile = activeProfile(state, text);
+    if (profile?.interpretiveBeyondLiteral) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: `interpret_${profile.id}_beyond_literal`,
+        questionType: "interpretive_judgment",
+        answer: profile.interpretiveBeyondLiteral
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "interpret_theme_beyond_literal",
@@ -649,19 +767,8 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "identity_probe") {
-    const domain = activeDialogicDomain(state, text);
-    const contextLine =
-      domain === "science"
-        ? "当前会话把科学、观察和时间连起来了"
-        : domain === "urban"
-          ? "当前会话把城市、空间和日常经验连起来了"
-          : domain === "technology"
-            ? "当前会话把技术、工具和判断连起来了"
-            : domain === "ethics"
-              ? "当前会话把伦理、行动和责任连起来了"
-              : domain === "visual"
-                ? "当前会话把艺术、形式和观看连起来了"
-                : "当前会话把音乐、文学和记忆连起来了";
+    const profile = activeProfile(state, text);
+    const contextLine = profile?.identityContextLine || "当前会话把音乐、文学和记忆连起来了";
     return makeDialogicResult({
       turnFunction: fn,
       intent: "self_identity_known",
@@ -740,6 +847,16 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "我接住这个。艺术和形式这条线值得继续，因为它能把观看、材料和判断说得更准。"
       });
     }
+    const profile = activeProfile(state, text);
+    if (profile?.compliment) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "acknowledge_compliment_with_reflective_continuation",
+        questionType: "affective_acknowledgement",
+        contextAction: "ANSWER_LOCAL",
+        answer: profile.compliment
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "acknowledge_compliment_with_reflective_continuation",
@@ -794,6 +911,16 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         questionType: "deepening_invitation",
         contextAction: "ANSWER_HELP",
         answer: "可以问得更深一点：一个普通物件怎样变成艺术问题？形式改变时，我们的观看到底被谁安排？"
+      });
+    }
+    const profile = activeProfile(state, text);
+    if (profile?.deepening) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "generate_deeper_dialogic_questions",
+        questionType: "deepening_invitation",
+        contextAction: "ANSWER_HELP",
+        answer: profile.deepening
       });
     }
     return makeDialogicResult({

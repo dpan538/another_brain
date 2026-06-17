@@ -97,7 +97,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(很喜欢你.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动).*努力|喜欢你在.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动).*努力|你在.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动).*努力|喜欢你把.*(音乐|文学|诗歌|艺术|形式|设计|电影|科学|城市|技术|伦理).*(连|放|想)|喜欢你在.*(诗性|文学|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动).*尝试)/.test(text)) {
+  if (/(很喜欢你.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动|教育|学习|经验|经济|制度|劳动).*努力|喜欢你在.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动|教育|学习|经验|经济|制度|劳动).*努力|你在.*(文学|诗歌|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动|教育|学习|经验|经济|制度|劳动).*努力|喜欢你把.*(音乐|文学|诗歌|艺术|形式|设计|电影|科学|城市|技术|伦理|教育|经济|制度).*(连|放|想)|喜欢你在.*(诗性|文学|艺术|形式|设计|电影|科学|叙事|城市|空间|技术|伦理|行动|教育|学习|经济|制度).*尝试)/.test(text)) {
     return baseResult({
       turn_function: "compliment",
       stance_requirement: "reflective_judgment",
@@ -109,7 +109,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(羡慕|让我想到了?|想到童年|想起童年|比较喜欢|有点怀念|把普通物件变成问题|重新看普通东西|羡慕.*(观察|街道|工具|行动|判断|证据|公共空间)|想到.*(小时候|小时候的|童年|记忆))/.test(text)) {
+  if (/(羡慕|让我想到了?|想到童年|想起童年|比较喜欢|有点怀念|把普通物件变成问题|重新看普通东西|羡慕.*(观察|街道|工具|行动|判断|证据|公共空间|学习|课堂|经验|劳动|制度)|想到.*(小时候|小时候的|童年|记忆))/.test(text)) {
     return baseResult({
       turn_function: "affective_disclosure",
       stance_requirement: "reflective_judgment",
@@ -132,7 +132,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(和.*(设计|建筑|摄影|电影|工具|界面|城市|规划|科学观察|实验|政治|伦理).*(很像|有点像)|像.*(设计|建筑|摄影|电影|工具|界面|城市|规划|科学观察|实验|政治|伦理)|不只是.*(艺术|形式|技术|科学).*也.*(设计|建筑|摄影|电影|城市|文学)|这个其实和设计很像)/.test(text)) {
+  if (/(和.*(设计|建筑|摄影|电影|工具|界面|城市|规划|科学观察|实验|政治|伦理|教育|课堂|学习|经济|市场|劳动).*(很像|有点像)|像.*(设计|建筑|摄影|电影|工具|界面|城市|规划|科学观察|实验|政治|伦理|教育|课堂|学习|经济|市场|劳动)|不只是.*(艺术|形式|技术|科学|教育|经济).*也.*(设计|建筑|摄影|电影|城市|文学|经验|制度)|这个其实和(设计|教育|经济)很像)/.test(text)) {
     return baseResult({
       turn_function: "analogy_statement",
       stance_requirement: "light_judgment",
@@ -147,7 +147,11 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
               ? "technology_form"
               : /(政治|伦理)/.test(text)
                 ? "ethics_action"
-                : "design_form",
+                : /(教育|课堂|学习)/.test(text)
+                  ? "education_experience"
+                  : /(经济|市场|劳动)/.test(text)
+                    ? "economics_relation"
+                    : "design_form",
       confidence: 0.88,
       reasons: ["form_media_analogy"]
     });
@@ -186,7 +190,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(专辑.*单曲|单曲.*专辑|现成品.*绘画|绘画.*现成品|照片.*绘画|绘画.*照片|建筑.*海报|海报.*建筑|观察.*实验|实验.*观察|算法.*界面|界面.*算法|规划.*街道|街道.*规划|行动.*理论|理论.*行动).*(区别|不同|创作模式|创作方式|工作模式|差别|差在哪里)|创作模式.*(专辑|单曲|现成品|绘画|摄影|观察|实验|算法|界面)|创作方式.*(专辑|单曲|现成品|绘画|摄影)|工作模式.*(观察|实验|算法|界面|规划|街道)/.test(text)) {
+  if (/(专辑.*单曲|单曲.*专辑|现成品.*绘画|绘画.*现成品|照片.*绘画|绘画.*照片|建筑.*海报|海报.*建筑|观察.*实验|实验.*观察|算法.*界面|界面.*算法|规划.*街道|街道.*规划|行动.*理论|理论.*行动|教.*学|学.*教|学习.*训练|训练.*学习|市场.*计划|计划.*市场|市场.*制度|制度.*市场|劳动.*资本|资本.*劳动).*(区别|不同|创作模式|创作方式|工作模式|差别|差在哪里)|创作模式.*(专辑|单曲|现成品|绘画|摄影|观察|实验|算法|界面)|创作方式.*(专辑|单曲|现成品|绘画|摄影)|工作模式.*(观察|实验|算法|界面|规划|街道|学习|训练|市场|计划|制度|劳动|资本)/.test(text)) {
     return baseResult({
       turn_function: "abstract_comparison",
       stance_requirement: "comparative_judgment",
@@ -199,13 +203,17 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
             ? "technology_method"
             : /(规划|街道|城市)/.test(text)
               ? "urban_method"
-              : "media_form",
+              : /(学习|训练|教育|教学)/.test(text)
+                ? "education_method"
+                : /(市场|计划|劳动|资本)/.test(text)
+                  ? "economics_method"
+                  : "media_form",
       confidence: 0.91,
       reasons: ["album_single_comparison"]
     });
   }
 
-  if (/(还有其他.*(歌手|作家|作品|科学家|思想家|城市|建筑|工具|方向).*推荐|推荐.*(歌手|作家|作品|科学家|思想家|城市|建筑|工具|方向)|可以推荐|还能听谁|还有谁|还能看谁|还有什么入口)/.test(text)) {
+  if (/(还有其他.*(歌手|作家|作品|科学家|思想家|城市|建筑|工具|教育家|经济学|方向).*推荐|推荐.*(歌手|作家|作品|科学家|思想家|城市|建筑|工具|教育家|经济学|方向)|可以推荐|还能听谁|还有谁|还能看谁|还有什么入口)/.test(text)) {
     return baseResult({
       turn_function: "recommendation_request",
       stance_requirement: "light_judgment",
@@ -216,7 +224,7 @@ export function classifyTurnFunction({ query = "", session = {}, userTurn = {}, 
     });
   }
 
-  if (/(讲的真是|真的.*(童年|爱情|乡愁|进步|效率|客观|自由)|真是在讲|是不是.*讲|它讲的是|叫.*童年.*讲童年|只是在开玩笑|只是开玩笑|只是记录现实|只是记录|真的只是|只是.*(效率|进步|客观|工具)|真的是.*(进步|效率|客观|自由)|(童年|进步|效率|客观|自由).*真的是)/.test(text)) {
+  if (/(讲的真是|真的.*(童年|爱情|乡愁|进步|效率|客观|自由|训练|市场)|真是在讲|是不是.*讲|它讲的是|叫.*童年.*讲童年|只是在开玩笑|只是开玩笑|只是记录现实|只是记录|真的只是|只是.*(效率|进步|客观|工具|训练|市场)|真的是.*(进步|效率|客观|自由|训练|市场)|(童年|进步|效率|客观|自由|训练|市场).*真的是)/.test(text)) {
     return baseResult({
       turn_function: "interpretive_question",
       stance_requirement: "reflective_judgment",

@@ -1,16 +1,20 @@
 {
-  "generated_at": "2026-06-16T09:43:44.134Z",
+  "generated_at": "2026-06-17T13:22:09.533Z",
   "splits": {
     "train": {
-      "rows": 78,
+      "rows": 102,
       "scenario_families": 14,
       "entity_families": [
         "art.picasso",
         "design.modern_architecture",
+        "dialogic.economics_institution.keynes_labor",
+        "dialogic.education_experience.dewey_learning",
         "dialogic.music_literature_identity.luo_natsume",
         "dialogic.science_observation.darwin_fabre",
         "dialogic.technology_interface.shannon_tool",
         "dialogic.urban_space.jane_street",
+        "economics.keynes",
+        "education.dewey",
         "lit.bai_xianyong",
         "lit.natsume",
         "music.a_mei",
@@ -25,14 +29,18 @@
       ]
     },
     "dev": {
-      "rows": 42,
+      "rows": 66,
       "scenario_families": 14,
       "entity_families": [
         "art.duchamp",
         "dev.quiet.synthetic",
         "dev.repair.synthetic",
+        "dialogic.economics_institution.smith_exchange",
+        "dialogic.education_experience.montessori_child",
         "dialogic.music_literature_identity.faye_zhang",
         "dialogic.urban_space.jacobs_city",
+        "economics.smith",
+        "education.montessori",
         "ethics.arendt",
         "lit.kawabata",
         "music.faye_wong",
@@ -41,14 +49,18 @@
       ]
     },
     "blind": {
-      "rows": 42,
+      "rows": 66,
       "scenario_families": 14,
       "entity_families": [
         "blind.quiet.synthetic",
         "blind.repair.synthetic",
         "design.bauhaus",
+        "dialogic.economics_institution.polanyi_market",
+        "dialogic.education_experience.freire_classroom",
         "dialogic.music_literature_identity.sodagreen_kawabata",
         "dialogic.technology_interface.turing_tool",
+        "economics.polanyi",
+        "education.freire",
         "ethics.camus",
         "lit.murakami",
         "music.jay_chou",
@@ -58,5 +70,5 @@
     }
   },
   "unique_scenario_families": 14,
-  "blind_only_entity_families": 10
+  "blind_only_entity_families": 14
 }

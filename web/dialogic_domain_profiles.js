@@ -1,0 +1,156 @@
+export const DIALOGIC_DOMAIN_PROFILES = Object.freeze({
+  music: {
+    id: "music",
+    queryPattern: /罗大佑|李宗盛|王菲|邓丽君|张惠妹|周杰伦|港台|华语流行|流行歌|歌曲|歌手|乐团|专辑|单曲|童年/,
+    sourcePattern: /罗大佑|李宗盛|王菲|邓丽君|张惠妹|周杰伦|港台|华语流行|流行歌|歌曲|童年/,
+    overview: (subject) => `${subject || "这个音乐对象"}可以理解为华语流行里的入口：重点在声音、时代感、记忆和社会观察。`,
+    confirmation: "是。这里说的是华语流行语境里的对象，我会按声音、时代感和社会观察继续。",
+    evaluation: "我会把它看成流行歌里的叙事写作：旋律不炫，重点在时代感、记忆和社会观察。",
+    recommendation: "可以听李宗盛、王菲、邓丽君、张惠妹。一个看叙事，一个看声音气质，一个看时代流通，一个看舞台力量。",
+    formAnalogy: "是。好歌和诗都在短形式里压缩叙事、节奏和情绪，不只是把话说漂亮。",
+    crossDomain: "能注意到。音乐和文学都能把私人经验变成可分享的形式；差别在声音、叙述者和时间结构。",
+    listAnswer: "三个入口：罗大佑、李宗盛、王菲。先看时代感、叙事歌词和声音气质。",
+    affectiveReflection: "我能理解这个投射。它不是只在怀旧，而是在羡慕一种把私人记忆说成共同经验的能力。",
+    interpretiveBeyondLiteral: "不只是字面对象。它借日常表面写时间过去、共同记忆和失去的轻微疼痛。",
+    identityContextLine: "当前会话把音乐、文学和记忆连起来了",
+    compliment: "我接住这个。文学和诗歌这条路值得继续，因为它能把音乐里的记忆、形式和判断说得更准。",
+    deepening: "可以问得更深一点：一首歌怎样把私人童年变成共同记忆？文学里的叙述者和流行歌里的“我”有什么不同？"
+  },
+  visual: {
+    id: "visual",
+    queryPattern: /杜尚|包豪斯|摄影|绘画|现成品|现代艺术|现代建筑|设计|电影|镜头|艺术|形式/,
+    sourcePattern: /杜尚|包豪斯|摄影|绘画|现成品|现代艺术|现代建筑|设计|电影|镜头|艺术|形式/,
+    overview: (subject) => /包豪斯/.test(subject || "")
+      ? "包豪斯是现代设计和艺术教育的重要入口：把工业生产、教学体系和形式实验放在一起。"
+      : `${subject || "这个艺术对象"}可以理解为现代视觉文化里的入口：重点在观看、材料、位置和制度。`,
+    confirmation: "是。这里确认的是现代艺术和视觉文化里的对象，我会按观看、材料和制度继续。",
+    evaluation: "我会先看它怎样改变观看：不是只看好不好看，而是看材料、位置和制度怎样让意义发生。",
+    recommendation: "可以从杜尚、包豪斯、桑塔格、王家卫这类入口走：一个看观念，一个看形式秩序，一个看观看，一个看镜头叙事。",
+    formAnalogy: "可以。相似处在形式组织：删减、比例、视角和秩序，而不是题材必须一样。",
+    crossDomain: "能注意到。共同点通常不在外观，而在怎样处理现代生活、材料秩序和人的位置；差别要回到媒介和历史。",
+    listAnswer: "三个入口：杜尚《泉》、毕加索《格尔尼卡》、蒙德里安的格子绘画。先看观念、冲突和形式秩序。",
+    affectiveReflection: "我能理解这个投射。那种羡慕不是想变成艺术家，而是羡慕一种把普通东西重新看成问题的能力。",
+    interpretiveBeyondLiteral: "不只是玩笑或记录。它会把问题转到命名、位置、观看和制度判断上。",
+    identityContextLine: "当前会话把艺术、形式和观看连起来了",
+    compliment: "我接住这个。艺术和形式这条线值得继续，因为它能把观看、材料和判断说得更准。",
+    deepening: "可以问得更深一点：一个普通物件怎样变成艺术问题？形式改变时，我们的观看到底被谁安排？"
+  },
+  science: {
+    id: "science",
+    queryPattern: /达尔文|进化论|自然选择|科学史|实验|法布尔|卡逊|昆虫记|生态|科学观察|证据/,
+    sourcePattern: /达尔文|进化论|自然选择|科学史|实验|法布尔|卡逊|昆虫记|生态/,
+    overview: (subject) => `${subject || "这个科学对象"}可以理解为科学史里的入口：重点在观察、证据、时间尺度和解释关系。`,
+    confirmation: "是。这里说的是科学史里的对象，我会按观察、证据和时间尺度继续。",
+    evaluation: "我会看它怎样把观察变成解释：厉害处不只是结论，而是让证据、差异和时间连成关系。",
+    recommendation: "可以从达尔文、法布尔、蕾切尔·卡逊、古尔德进入：一个看演化，一个看观察，一个看生态，一个看科学叙事。",
+    formAnalogy: "可以。好的科学叙述也像文学：先选择细节，再让证据和时间把判断推出来。",
+    crossDomain: "能注意到。科学史和文学都在安排证据、时间和视角；差别是科学要回到可检验关系。",
+    listAnswer: "三个入口：达尔文《物种起源》、法布尔《昆虫记》、蕾切尔·卡逊《寂静的春天》。",
+    affectiveReflection: "我能理解这个投射。羡慕的也许不是结论本身，而是那种把细节、观察和时间慢慢看清的能力。",
+    interpretiveBeyondLiteral: "不只是进步神话。更准确地说，它在问差异、适应和时间怎样形成关系。",
+    identityContextLine: "当前会话把科学、观察和时间连起来了",
+    compliment: "我接住这个。科学和叙事这条线值得继续，因为它能把观察、证据和时间说得更准。",
+    deepening: "可以问得更深一点：观察什么时候变成证据？科学叙事怎样避免把复杂世界说成单线进步？"
+  },
+  urban: {
+    id: "urban",
+    queryPattern: /简·?雅各布斯|城市|街道|规划|公共空间|社区|邻里|看见城市|建筑/,
+    sourcePattern: /简·?雅各布斯|城市|街道|规划|公共空间|社区|邻里|看见城市/,
+    overview: (subject) => `${subject || "这个城市对象"}可以理解为城市经验的入口：重点在街道、公共空间、日常使用和人的关系。`,
+    confirmation: "是。这里说的是城市和公共空间里的对象，我会按街道、使用和人群继续。",
+    evaluation: "我会看它怎样把城市从图纸拉回街道：重点是日常使用、公共空间和人的互相看见。",
+    recommendation: "可以从简·雅各布斯、柯布西耶、包豪斯、王澍进入：一个看街道，一个看规划，一个看形式，一个看地方经验。",
+    formAnalogy: "可以。城市也像文本：街道、节奏和人群是句法，冲突藏在日常动线里。",
+    crossDomain: "能注意到。城市和文学都靠场景、人物和冲突组织经验；差别是城市还要接受真实使用的检验。",
+    listAnswer: "三个入口：简·雅各布斯《美国大城市的死与生》、柯布西耶、包豪斯。",
+    affectiveReflection: "我能理解这个投射。它像是在羡慕一种街道感：能从普通日常里看见人怎样彼此靠近或错开。",
+    interpretiveBeyondLiteral: "不只是效率或漂亮。城市问题更关心街道怎样被使用，人怎样相遇，冲突怎样被空间安排。",
+    identityContextLine: "当前会话把城市、空间和日常经验连起来了",
+    compliment: "我接住这个。城市和空间这条线值得继续，因为它能把日常、冲突和公共性说得更准。",
+    deepening: "可以问得更深一点：一条街怎样让人相遇？城市规划什么时候会压扁真实生活？"
+  },
+  technology: {
+    id: "technology",
+    queryPattern: /香农|图灵|信息论|算法|界面|计算机|技术|维纳|控制论|检索|工具/,
+    sourcePattern: /香农|图灵|信息论|算法|界面|计算机|技术|维纳|控制论|检索/,
+    overview: (subject) => `${subject || "这个技术对象"}可以理解为工具思想的入口：重点在信息、规则、界面和人的动作。`,
+    confirmation: "是。这里说的是技术和信息里的对象，我会按规则、工具和人的动作继续。",
+    evaluation: "我会看它怎样把复杂规则变成可用动作：好的技术不是炫技，而是让判断和操作更清楚。",
+    recommendation: "可以从图灵、香农、维纳、道格拉斯·恩格尔巴特进入：一个看计算，一个看信息，一个看反馈，一个看工具。",
+    formAnalogy: "可以。好工具也有形式感：它把复杂性藏起来，让人的动作变得更准确。",
+    crossDomain: "能注意到。技术和诗都在压缩形式；一个压缩动作路径，一个压缩语言经验。",
+    listAnswer: "三个入口：图灵、香农、维纳。先看计算、信息和反馈怎样改变工具。",
+    affectiveReflection: "我能理解这个投射。羡慕的可能是把复杂东西做成清楚工具的能力，让思考能落到动作里。",
+    interpretiveBeyondLiteral: "不只是效率。工具会安排人的动作和注意力，所以技术也会改变判断的路径。",
+    identityContextLine: "当前会话把技术、工具和判断连起来了",
+    compliment: "我接住这个。技术和形式这条线值得继续，因为它能把工具、动作和判断说得更准。",
+    deepening: "可以问得更深一点：一个工具怎样改变思考？界面把哪些判断交给人，又藏起哪些判断？"
+  },
+  ethics: {
+    id: "ethics",
+    queryPattern: /阿伦特|伦理|政治|行动|责任|存在主义|自由|公共生活|加缪|萨特/,
+    sourcePattern: /阿伦特|加缪|萨特|伦理|政治|存在主义/,
+    overview: (subject) => `${subject || "这个伦理对象"}可以理解为行动判断的入口：重点在责任、公共性、选择和后果。`,
+    confirmation: "是。这里说的是伦理和公共行动里的对象，我会按责任、判断和后果继续。",
+    evaluation: "我会看它怎样把观念放进行动里：重点不是立场漂亮，而是人在情境里怎样承担责任。",
+    recommendation: "可以从阿伦特、加缪、汉娜·皮特金、桑塔格进入：一个看行动，一个看荒诞，一个看公共判断，一个看观看伦理。",
+    formAnalogy: "可以。伦理和戏剧都看行动：不是只看立场，而是看人在具体情境里怎样承担。",
+    crossDomain: "能注意到。伦理和舞台都把人放进冲突里看；差别是伦理还要判断责任边界。",
+    listAnswer: "三个入口：阿伦特《人的境况》、加缪《西西弗神话》、萨特《存在与虚无》。",
+    affectiveReflection: "我能理解这个投射。它不是想变成某个哲学家，而是羡慕一种把判断放进行动里的勇气。",
+    interpretiveBeyondLiteral: "不只是观点。伦理判断要看行动、处境和后果：一个人怎样把立场变成承担。",
+    identityContextLine: "当前会话把伦理、行动和责任连起来了",
+    compliment: "我接住这个。伦理和行动这条线值得继续，因为它能把判断、处境和责任说得更准。",
+    deepening: "可以问得更深一点：判断什么时候变成行动？一个人怎样在复杂处境里承担责任？"
+  },
+  education: {
+    id: "education",
+    queryPattern: /杜威|蒙台梭利|弗莱雷|教育|学习|课堂|教学|训练|学校|学生/,
+    sourcePattern: /杜威|蒙台梭利|弗莱雷|教育|学习|课堂|教学|训练|学校|学生/,
+    overview: (subject) => `${subject || "这个教育对象"}可以理解为学习经验的入口：重点在经验、方法、课堂关系和人的成长。`,
+    confirmation: "是。这里说的是教育和学习里的对象，我会按经验、方法和课堂关系继续。",
+    evaluation: "我会看它怎样把知识变成经验：好的教育判断不只看灌输，而是看人怎样主动理解和行动。",
+    recommendation: "可以从杜威、蒙台梭利、弗莱雷、伊里奇进入：一个看经验，一个看儿童，一个看解放，一个看制度批判。",
+    formAnalogy: "可以。教育也像文学：不是只交代结论，而是安排经验，让人在过程中改变理解。",
+    crossDomain: "能注意到。教育和文学都处理成长、误解和重新理解；差别是教育还要落实到方法和关系。",
+    listAnswer: "三个入口：杜威《民主主义与教育》、蒙台梭利、弗莱雷《被压迫者教育学》。",
+    affectiveReflection: "我能理解这个投射。羡慕的可能不是课堂本身，而是那种把经验慢慢转成理解的能力。",
+    interpretiveBeyondLiteral: "不只是训练。学习真正重要的是理解怎样生成，以及一个人如何把方法变成自己的判断。",
+    identityContextLine: "当前会话把教育、经验和理解连起来了",
+    compliment: "我接住这个。教育和经验这条线值得继续，因为它能把方法、成长和判断说得更准。",
+    deepening: "可以问得更深一点：学习什么时候不是训练，而是理解的形成？一个课堂怎样改变人的判断方式？"
+  },
+  economics: {
+    id: "economics",
+    queryPattern: /凯恩斯|亚当·?斯密|哈耶克|波兰尼|经济|市场|劳动|资本|价格|制度|交换/,
+    sourcePattern: /凯恩斯|亚当·?斯密|哈耶克|波兰尼|经济|市场|劳动|资本|价格|交换/,
+    overview: (subject) => `${subject || "这个经济对象"}可以理解为社会制度的入口：重点在市场、劳动、交换、风险和人的选择。`,
+    confirmation: "是。这里说的是经济和制度里的对象，我会按市场、劳动和人的选择继续。",
+    evaluation: "我会看它怎样把抽象制度拉回人的选择：经济问题不只是效率，也关乎风险、劳动和分配。",
+    recommendation: "可以从亚当·斯密、凯恩斯、哈耶克、波兰尼进入：一个看交换，一个看需求，一个看秩序，一个看社会嵌入。",
+    formAnalogy: "可以。经济也像叙事：价格、劳动和制度不是孤立数字，而是人在关系里做选择的痕迹。",
+    crossDomain: "能注意到。经济和文学都写欲望、选择和限制；差别是经济还要解释制度怎样塑造行动。",
+    listAnswer: "三个入口：亚当·斯密《国富论》、凯恩斯《就业、利息和货币通论》、波兰尼《大转型》。",
+    affectiveReflection: "我能理解这个投射。羡慕的也许是能从市场背后看见制度、劳动和人的关系。",
+    interpretiveBeyondLiteral: "不只是效率。市场和劳动问题还牵涉风险、分配、制度安排和人的选择余地。",
+    identityContextLine: "当前会话把经济、劳动和制度连起来了",
+    compliment: "我接住这个。经济和制度这条线值得继续，因为它能把效率、劳动和人的处境说得更准。",
+    deepening: "可以问得更深一点：市场什么时候遮住了劳动？效率和人的选择余地之间怎样互相限制？"
+  }
+});
+
+export function getDialogicDomainProfile(domain) {
+  return DIALOGIC_DOMAIN_PROFILES[domain] || null;
+}
+
+export function detectDialogicDomain({ query = "", context = "" } = {}) {
+  const queryText = String(query || "");
+  const sourceText = `${queryText} ${String(context || "")}`;
+  for (const profile of Object.values(DIALOGIC_DOMAIN_PROFILES)) {
+    if (profile.queryPattern.test(queryText)) return profile.id;
+  }
+  for (const profile of Object.values(DIALOGIC_DOMAIN_PROFILES)) {
+    if (profile.sourcePattern.test(sourceText)) return profile.id;
+  }
+  return "";
+}

@@ -16,7 +16,9 @@ const SPLITS = {
     { entity: "达尔文", entity_family: "science.darwin", pronoun: "他的", domain: "science", referent: "previous_active_person" },
     { entity: "科学史", entity_family: "science.history", pronoun: "它的", domain: "science", referent: "previous_active_domain_or_work" },
     { entity: "简·雅各布斯", entity_family: "urban.jane_jacobs", pronoun: "她的", domain: "urban", referent: "previous_active_person" },
-    { entity: "香农", entity_family: "technology.shannon", pronoun: "他的", domain: "technology", referent: "previous_active_person" }
+    { entity: "香农", entity_family: "technology.shannon", pronoun: "他的", domain: "technology", referent: "previous_active_person" },
+    { entity: "杜威", entity_family: "education.dewey", pronoun: "他的", domain: "education", referent: "previous_active_person" },
+    { entity: "凯恩斯", entity_family: "economics.keynes", pronoun: "他的", domain: "economics", referent: "previous_active_person" }
   ],
   dev: [
     { entity: "王菲", entity_family: "music.faye_wong", pronoun: "她的", domain: "music", referent: "previous_active_person" },
@@ -24,7 +26,9 @@ const SPLITS = {
     { entity: "杜尚", entity_family: "art.duchamp", pronoun: "他的", domain: "art", referent: "previous_active_person" },
     { entity: "蕾切尔·卡逊", entity_family: "science.carson", pronoun: "她的", domain: "science", referent: "previous_active_person" },
     { entity: "柯布西耶", entity_family: "urban.le_corbusier", pronoun: "他的", domain: "urban", referent: "previous_active_person" },
-    { entity: "阿伦特", entity_family: "ethics.arendt", pronoun: "她的", domain: "ethics", referent: "previous_active_person" }
+    { entity: "阿伦特", entity_family: "ethics.arendt", pronoun: "她的", domain: "ethics", referent: "previous_active_person" },
+    { entity: "蒙台梭利", entity_family: "education.montessori", pronoun: "她的", domain: "education", referent: "previous_active_person" },
+    { entity: "亚当·斯密", entity_family: "economics.smith", pronoun: "他的", domain: "economics", referent: "previous_active_person" }
   ],
   blind: [
     { entity: "周杰伦", entity_family: "music.jay_chou", pronoun: "他的", domain: "music", referent: "previous_active_person" },
@@ -32,7 +36,9 @@ const SPLITS = {
     { entity: "包豪斯", entity_family: "design.bauhaus", pronoun: "它的", domain: "design", referent: "previous_active_domain_or_work" },
     { entity: "图灵", entity_family: "technology.turing", pronoun: "他的", domain: "technology", referent: "previous_active_person" },
     { entity: "加缪", entity_family: "ethics.camus", pronoun: "他的", domain: "ethics", referent: "previous_active_person" },
-    { entity: "生态学", entity_family: "science.ecology", pronoun: "它的", domain: "science", referent: "previous_active_domain_or_work" }
+    { entity: "生态学", entity_family: "science.ecology", pronoun: "它的", domain: "science", referent: "previous_active_domain_or_work" },
+    { entity: "弗莱雷", entity_family: "education.freire", pronoun: "他的", domain: "education", referent: "previous_active_person" },
+    { entity: "波兰尼", entity_family: "economics.polanyi", pronoun: "他的", domain: "economics", referent: "previous_active_person" }
   ]
 };
 
@@ -235,7 +241,13 @@ function activeEntityIdFor(item) {
     .replace(/^music\./, "person.")
     .replace(/^lit\./, "author.")
     .replace(/^art\./, "person.")
-    .replace(/^design\./, "concept.");
+    .replace(/^design\./, "concept.")
+    .replace(/^science\./, "person.")
+    .replace(/^urban\./, "person.")
+    .replace(/^technology\./, "person.")
+    .replace(/^ethics\./, "person.")
+    .replace(/^education\./, "person.")
+    .replace(/^economics\./, "person.");
 }
 
 function buildForSplit(split, entities) {
@@ -253,7 +265,9 @@ function buildForSplit(split, entities) {
       "他的科学思想有什么代表性？",
       "它作为科学史入口有什么代表性？",
       "她的城市判断有什么代表性？",
-      "他的技术思想有什么代表性？"
+      "他的技术思想有什么代表性？",
+      "他的教育思想有什么代表性？",
+      "他的经济判断有什么代表性？"
     ],
     dev: [
       `${entities[0]?.pronoun || "他的"}歌有什么特点？`,
@@ -261,7 +275,9 @@ function buildForSplit(split, entities) {
       "这些东西代表在哪里？",
       "她的生态判断重要在哪里？",
       "他的城市判断重要在哪里？",
-      "她的伦理判断重点是什么？"
+      "她的伦理判断重点是什么？",
+      "她的教育方法重要在哪里？",
+      "他的市场判断重点是什么？"
     ],
     blind: [
       `${entities[0]?.pronoun || "他的"}代表性在哪里？`,
@@ -269,18 +285,20 @@ function buildForSplit(split, entities) {
       "它适合从哪里进入？",
       "他的技术思想代表性在哪里？",
       "他的伦理判断重点是什么？",
-      "它作为生态入口重点是什么？"
+      "它作为生态入口重点是什么？",
+      "他的教育判断代表性在哪里？",
+      "他的制度判断重点是什么？"
     ]
   };
   const simplifyPrompts = {
-    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。"],
-    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。"],
-    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。"]
+    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。"],
+    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。"],
+    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。"]
   };
   const repairGuardPrompts = {
-    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？"],
-    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？"],
-    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？"]
+    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？"],
+    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？"],
+    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？"]
   };
   for (const item of entities) {
     const idx = n / 4 | 0;
@@ -461,6 +479,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种技术判断不像普通工具会说出来，你是谁？",
         complimentPrompt: "我喜欢你在工具和形式上的努力。"
+      },
+      {
+        entityFamily: "dialogic.education_experience.dewey_learning",
+        activeEntityId: "person.dewey",
+        domain: "education.experience.bridge",
+        lastAnswer: "杜威可以从经验、学习和教育方法进入。",
+        confirmationPrompt: "是那个讲经验教育的人吗？",
+        evaluationPrompt: "你觉得他的教育思想厉害在哪里？",
+        recommendationPrompt: "还能推荐教育思想方向的入口吗？",
+        abstractComparisonPrompt: "学习和训练的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_learning_training",
+        analogyPrompt: "这也像人在小说里慢慢长大。",
+        analogyOperation: "bridge_education_to_literature",
+        analogyJudgmentAxis: "experience",
+        analogyBridgeTarget: "education_experience",
+        affectivePrompt: "我羡慕那种能把经验慢慢变成理解的能力。",
+        affectiveWorkId: "work.learning_experience.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种教育判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你把教育和经验连起来的努力。"
+      },
+      {
+        entityFamily: "dialogic.economics_institution.keynes_labor",
+        activeEntityId: "person.keynes",
+        domain: "economics.institution.bridge",
+        lastAnswer: "凯恩斯可以从需求、制度和风险进入。",
+        confirmationPrompt: "是那个经济学家吗？",
+        evaluationPrompt: "你怎么看他的经济判断？",
+        recommendationPrompt: "还能推荐经济思想方向的入口吗？",
+        abstractComparisonPrompt: "市场和计划的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_economic_institution_modes",
+        analogyPrompt: "这其实和小说里的欲望和限制很像。",
+        analogyOperation: "bridge_economics_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "economics_relation",
+        affectivePrompt: "我有点羡慕能从数字背后看见人的处境。",
+        affectiveWorkId: "work.institution_labor.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种经济判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你把经济和制度放在一起想。"
       }
     ],
     dev: [
@@ -498,6 +556,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这不像普通网页对话框能说出来的话，你是谁？",
         complimentPrompt: "我喜欢你在城市和空间上的努力。"
+      },
+      {
+        entityFamily: "dialogic.education_experience.montessori_child",
+        activeEntityId: "person.montessori",
+        domain: "education.experience.bridge",
+        lastAnswer: "蒙台梭利可以从儿童、环境和学习经验进入。",
+        confirmationPrompt: "是那位教育家吗？",
+        evaluationPrompt: "你觉得她的教育方法重要在哪里？",
+        recommendationPrompt: "还能推荐学习和教育方向的入口吗？",
+        abstractComparisonPrompt: "教学和学习的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_learning_training",
+        analogyPrompt: "这其实和文学里的成长很像。",
+        analogyOperation: "bridge_education_to_literature",
+        analogyJudgmentAxis: "experience",
+        analogyBridgeTarget: "education_experience",
+        affectivePrompt: "我羡慕那种从孩子动作里看见理解生成的能力。",
+        affectiveWorkId: "work.child_learning",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种学习判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在教育和学习上的努力。"
+      },
+      {
+        entityFamily: "dialogic.economics_institution.smith_exchange",
+        activeEntityId: "person.smith",
+        domain: "economics.institution.bridge",
+        lastAnswer: "亚当·斯密可以从交换、劳动和社会秩序进入。",
+        confirmationPrompt: "是那个讨论市场和交换的人吗？",
+        evaluationPrompt: "你觉得他的经济判断重点是什么？",
+        recommendationPrompt: "还有其他经济思想方向可以推荐吗？",
+        abstractComparisonPrompt: "劳动和资本的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_economic_institution_modes",
+        analogyPrompt: "这其实和小说里的人物关系很像。",
+        analogyOperation: "bridge_economics_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "economics_relation",
+        affectivePrompt: "我有点羡慕从交换里看见人的处境的能力。",
+        affectiveWorkId: "work.exchange_labor",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种经济判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在交换和制度上的努力。"
       }
     ],
     blind: [
@@ -535,6 +633,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种话不像一个工具能说出来，你是谁？",
         complimentPrompt: "我喜欢你在技术和形式上的努力。"
+      },
+      {
+        entityFamily: "dialogic.education_experience.freire_classroom",
+        activeEntityId: "person.freire",
+        domain: "education.experience.bridge",
+        lastAnswer: "弗莱雷可以从教育、经验和解放进入。",
+        confirmationPrompt: "是那个讲教育和解放的人吗？",
+        evaluationPrompt: "他的教育判断最重要的地方是什么？",
+        recommendationPrompt: "还有哪些教育思想入口可以继续看？",
+        abstractComparisonPrompt: "训练和学习的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_learning_training",
+        analogyPrompt: "这像把课堂写成一段成长小说。",
+        analogyOperation: "bridge_education_to_literature",
+        analogyJudgmentAxis: "experience",
+        analogyBridgeTarget: "education_experience",
+        affectivePrompt: "我有点羡慕把课堂经验变成理解的能力。",
+        affectiveWorkId: "work.classroom_experience",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种教育判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在学习和经验上的努力。"
+      },
+      {
+        entityFamily: "dialogic.economics_institution.polanyi_market",
+        activeEntityId: "person.polanyi",
+        domain: "economics.institution.bridge",
+        lastAnswer: "波兰尼可以从市场、社会和制度进入。",
+        confirmationPrompt: "是那个讨论市场嵌入社会的人吗？",
+        evaluationPrompt: "你怎么看他的制度判断？",
+        recommendationPrompt: "还有其他经济和制度方向可以推荐吗？",
+        abstractComparisonPrompt: "市场和社会制度的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_economic_institution_modes",
+        analogyPrompt: "这其实和小说里的关系网络很像。",
+        analogyOperation: "bridge_economics_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "economics_relation",
+        affectivePrompt: "我有点羡慕能从市场背后看见社会关系的能力。",
+        affectiveWorkId: "work.market_society",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种制度判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在市场和社会关系上的努力。"
       }
     ]
   };
