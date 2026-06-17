@@ -1,0 +1,124 @@
+#!/usr/bin/env node
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, extname, resolve } from "node:path";
+import { ROOT } from "./r18_utils.mjs";
+import {
+  NON_QUESTION_TURN_FUNCTIONS,
+  classifySurfaceHits,
+  flattenStrings,
+  isBadExamplePath,
+  isCandidateAnswerPath,
+  listFiles,
+  parseMaybeJsonLines,
+  pathHint,
+  relativeRoot,
+  responseModeFromObject,
+  turnFunctionFromObject,
+  zhChars
+} from "./r22_surface_utils.mjs";
+
+const OUT = resolve(ROOT, "artifacts/training_os/r22_natural_surface_pattern_audit.json");
+const SCAN_DIRS = ["artifacts/training_os", "evals"];
+
+function skeleton(text) {
+  return String(text || "")
+    .replace(/[《“"][^》”"]+[》”"]/g, "《X》")
+    .replace(/[A-Za-z0-9_.-]+/g, "X")
+    .replace(/[\u4e00-\u9fff]{2,}/g, (chunk) => (chunk.length > 12 ? `${chunk.slice(0, 4)}…${chunk.slice(-4)}` : chunk))
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function hardFailureFor({ turnFunction, responseMode, answer, hits }) {
+  const ids = new Set(hits.map((hit) => hit.id));
+  if (NON_QUESTION_TURN_FUNCTIONS.has(turnFunction) && ids.has("you_can_continue_ask")) return "active_non_question_escape";
+  if (turnFunction === "compliment" && (ids.has("generic_thanks") || ids.has("continue_effort") || ids.has("i_caught_it"))) return "compliment_artificial_acknowledgement";
+  if (turnFunction === "analogy_statement" && zhChars(answer) > 90 && /(这体现了|这是一种|跨媒介|关联|本质上)/.test(answer)) return "announced_bridge_on_analogy";
+  if (["quiet_affordance", "help_how_to_ask", "bounded_unknown"].includes(responseMode) && NON_QUESTION_TURN_FUNCTIONS.has(turnFunction)) return "non_question_misrouted_surface";
+  return "";
+}
+
+async function scanJsonFile(file) {
+  const rows = parseMaybeJsonLines(await readFile(file, "utf8"), file);
+  const examples = [];
+  for (const [rowIndex, row] of rows.entries()) {
+    const strings = flattenStrings(row);
+    for (const item of strings) {
+      if (!isCandidateAnswerPath(item.path) || isBadExamplePath(item.path)) continue;
+      const hits = classifySurfaceHits(item.text);
+      if (!hits.length) continue;
+      const turnFunction = turnFunctionFromObject(row);
+      const responseMode = responseModeFromObject(row);
+      examples.push({
+        file: relativeRoot(file),
+        row_index: rowIndex,
+        path: pathHint(item.path),
+        turn_function: turnFunction,
+        response_mode: responseMode,
+        text: item.text,
+        hits,
+        hard_failure: hardFailureFor({ turnFunction, responseMode, answer: item.text, hits })
+      });
+    }
+  }
+  return examples;
+}
+
+async function main() {
+  const files = [];
+  for (const dir of SCAN_DIRS) {
+    files.push(...(await listFiles(dir, (path) => [".json", ".jsonl"].includes(extname(path)))));
+  }
+  const allExamples = [];
+  for (const file of files) {
+    try {
+      allExamples.push(...(await scanJsonFile(file)));
+    } catch {
+      // Some historical artifact JSON may be partial or tool-specific. Skip it;
+      // this audit is for current visible answer surfaces, not archive repair.
+    }
+  }
+
+  const patternCounts = {};
+  const patternByTurnFunction = {};
+  const skeletonCounts = {};
+  for (const example of allExamples) {
+    const fn = example.turn_function || "unknown";
+    patternByTurnFunction[fn] ||= {};
+    skeletonCounts[skeleton(example.text)] = (skeletonCounts[skeleton(example.text)] || 0) + 1;
+    for (const hit of example.hits) {
+      patternCounts[hit.id] = (patternCounts[hit.id] || 0) + hit.matches.length;
+      patternByTurnFunction[fn][hit.id] = (patternByTurnFunction[fn][hit.id] || 0) + hit.matches.length;
+    }
+  }
+
+  const hardFailures = allExamples.filter((example) => example.hard_failure);
+  const repeatedSurfaceSkeletons = Object.entries(skeletonCounts)
+    .filter(([, count]) => count >= 3)
+    .map(([surface_skeleton, count]) => ({ surface_skeleton, count }))
+    .slice(0, 40);
+
+  const report = {
+    ok: hardFailures.length === 0,
+    audit_only: !process.argv.includes("--strict"),
+    generated_at: new Date().toISOString(),
+    scanned_files: files.length,
+    scanned_examples: allExamples.length,
+    pattern_counts: patternCounts,
+    pattern_by_turn_function: patternByTurnFunction,
+    repeated_surface_skeletons: repeatedSurfaceSkeletons,
+    suspicious_must_include_leakage: allExamples.filter((example) => /我接住|更深层次|关系/.test(example.text)).slice(0, 80),
+    hard_failures: hardFailures.slice(0, 80),
+    examples: allExamples.slice(0, 120)
+  };
+
+  await mkdir(dirname(OUT), { recursive: true });
+  await writeFile(OUT, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+  console.log(JSON.stringify({ ok: report.ok, audit_only: report.audit_only, pattern_counts: report.pattern_counts, hard_failure_count: hardFailures.length, out: OUT }, null, 2));
+  if (!report.ok && process.argv.includes("--strict")) process.exit(2);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(2);
+});

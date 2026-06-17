@@ -5,6 +5,7 @@ import { resolveContextualQuestion } from "./contextual_question_resolver.js";
 import { updateTopicStack, activeTopic } from "./topic_stack.js";
 import { makeAnswerPlan } from "./answer_plan.js";
 import { selectAnswerDensity } from "./answer_density_policy.js";
+import { inferSurfaceControl } from "./surface_control_policy.js";
 import { formatMobileAnswer } from "./mobile_answer_formatter.js";
 import { detectRepeatAnswer, rewriteForNonRepeat } from "./answer_deduper.js";
 import { finalizeWithFallbackFirewall } from "./fallback_firewall.js";
@@ -72,6 +73,16 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
   const draft = draftResolver ? draftResolver(text, draftState) : null;
 
   if (draft?.type === "ui_affordance") {
+    const surfaceControl = inferSurfaceControl({
+      query: text,
+      userTurn,
+      turnFunction,
+      responseType: "ui_affordance",
+      responseMode: "quiet_affordance",
+      answerStyle: "affordance",
+      questionType: draft.questionType || userTurn.kind || "",
+      binding
+    });
     const trace = {
       user_turn_kind: userTurn.kind,
       turn_function: turnFunction.turn_function,
@@ -84,6 +95,8 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
       response_mode: "quiet_affordance",
       legacy_response_mode: legacyMode,
       answer_style: "affordance",
+      ...surfaceControl,
+      surface_control: surfaceControl,
       question_type: draft.questionType || userTurn.kind || "",
       operation: draft.operation || "quiet_affordance",
       binding,
@@ -129,6 +142,17 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
   });
   const sanitized = sanitizeSurfaceIdentity(finalized.answer, text);
   const answerStyle = answerStyleFromDraft(draft, controllerMode);
+  const responseType = responseTypeFromMode(controllerMode);
+  const surfaceControl = inferSurfaceControl({
+    query: text,
+    userTurn,
+    turnFunction,
+    responseType,
+    responseMode: controllerMode,
+    answerStyle,
+    questionType: draft?.questionType || "",
+    binding
+  });
   const density = selectAnswerDensity({ responseMode: controllerMode, answerStyle, uiProfile, query: text, session });
   const boundTargets = boundTargetsFrom({ binding, draft, session });
   const plan = makeAnswerPlan({
@@ -139,7 +163,8 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
     answerStyle,
     boundTargets,
     evidenceIds: draft?.cards || [],
-    mobileDensity: density
+    mobileDensity: density,
+    surfaceControl
   });
   let finalAnswer = formatMobileAnswer({ answer: sanitized, density, plan, query: text });
   const dedupe = detectRepeatAnswer({ answer: finalAnswer, session, plan });
@@ -169,6 +194,8 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
     response_mode: controllerMode,
     legacy_response_mode: legacyMode,
     answer_style: answerStyle,
+    ...surfaceControl,
+    surface_control: surfaceControl,
     question_type: draft?.questionType || "",
     operation: draft?.operation || "",
     binding,

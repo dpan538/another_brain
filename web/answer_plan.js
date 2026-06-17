@@ -10,7 +10,8 @@ export function makeAnswerPlan({
   answerStyle = "",
   boundTargets = [],
   evidenceIds = [],
-  mobileDensity = {}
+  mobileDensity = {},
+  surfaceControl = {}
 } = {}) {
   const targets = Array.isArray(boundTargets) ? boundTargets.filter(Boolean) : [];
   const target = targets[0] || "unknown";
@@ -25,6 +26,7 @@ export function makeAnswerPlan({
     anchors: [],
     avoid_phrases: [],
     variation_strategy: "",
+    surface_control: surfaceControl,
     evidence_ids: Array.isArray(evidenceIds) ? evidenceIds.slice(0, 8) : []
   };
 
