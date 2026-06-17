@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "npm run check:release",
+  "buildCommand": "npm run build:vercel",
   "outputDirectory": "web",
   "cleanUrls": true,
   "trailingSlash": false,
@@ -20,7 +20,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },

@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "npm run check:release",
+    "build:vercel": "node scripts/prepare_vercel_static_build.mjs && npm run check:vercel-build",
+    "check:vercel-build": "node scripts/check_vercel_static_build.mjs",
     "build:knowledge": "python3 scripts/build_knowledge_base.py && python3 scripts/build_knowledge_shards.py",
     "check": "npm run check:release && npm run check:launch-policy && npm run check:seo && npm run check:identity-pack && npm run check:help-onboarding && npm run check:fallback-overuse && npm run check:dataset-splits && npm run check:frontend-latency && npm run check:voice-verifier && npm run check:output-sanitizer && npm run check:dialog-sanity && npm run check:gate-effectiveness && npm run check:r9-reasoning-gate && npm run check:culture-awareness && npm run check:context-gate && npm run check:blind-casepacks && python3 scripts/validate_distillation.py && python3 scripts/eval_tiny_router.py && python3 scripts/eval_dialog_persona.py && python3 scripts/validate_context_stress_cases.py && python3 scripts/validate_clone_logic_ethics.py && node scripts/eval_casepacks_node.mjs --min-score 0.88 --out artifacts/training_os/casepack_eval_report.json && node scripts/run_model_gate_node.mjs --out artifacts/training_os/model_inference_report.json",
     "check:clone-logic-ethics": "python3 scripts/validate_clone_logic_ethics.py",
