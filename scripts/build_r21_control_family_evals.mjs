@@ -20,7 +20,9 @@ const SPLITS = {
     { entity: "杜威", entity_family: "education.dewey", pronoun: "他的", domain: "education", referent: "previous_active_person" },
     { entity: "凯恩斯", entity_family: "economics.keynes", pronoun: "他的", domain: "economics", referent: "previous_active_person" },
     { entity: "王家卫", entity_family: "cinema.wong_kar_wai", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
-    { entity: "维特根斯坦", entity_family: "language.wittgenstein", pronoun: "他的", domain: "language", referent: "previous_active_person" }
+    { entity: "维特根斯坦", entity_family: "language.wittgenstein", pronoun: "他的", domain: "language", referent: "previous_active_person" },
+    { entity: "饮食文化", entity_family: "food.culture", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
+    { entity: "法律解释", entity_family: "law.interpretation", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" }
   ],
   dev: [
     { entity: "王菲", entity_family: "music.faye_wong", pronoun: "她的", domain: "music", referent: "previous_active_person" },
@@ -32,7 +34,9 @@ const SPLITS = {
     { entity: "蒙台梭利", entity_family: "education.montessori", pronoun: "她的", domain: "education", referent: "previous_active_person" },
     { entity: "亚当·斯密", entity_family: "economics.smith", pronoun: "他的", domain: "economics", referent: "previous_active_person" },
     { entity: "侯孝贤", entity_family: "cinema.hou_hsiao_hsien", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
-    { entity: "索绪尔", entity_family: "language.saussure", pronoun: "他的", domain: "language", referent: "previous_active_person" }
+    { entity: "索绪尔", entity_family: "language.saussure", pronoun: "他的", domain: "language", referent: "previous_active_person" },
+    { entity: "茶文化", entity_family: "food.tea", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
+    { entity: "正义理论", entity_family: "law.justice", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" }
   ],
   blind: [
     { entity: "周杰伦", entity_family: "music.jay_chou", pronoun: "他的", domain: "music", referent: "previous_active_person" },
@@ -44,7 +48,9 @@ const SPLITS = {
     { entity: "弗莱雷", entity_family: "education.freire", pronoun: "他的", domain: "education", referent: "previous_active_person" },
     { entity: "波兰尼", entity_family: "economics.polanyi", pronoun: "他的", domain: "economics", referent: "previous_active_person" },
     { entity: "小津安二郎", entity_family: "cinema.ozu", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
-    { entity: "本雅明", entity_family: "language.benjamin", pronoun: "他的", domain: "language", referent: "previous_active_person" }
+    { entity: "本雅明", entity_family: "language.benjamin", pronoun: "他的", domain: "language", referent: "previous_active_person" },
+    { entity: "烹饪手艺", entity_family: "food.cooking", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
+    { entity: "判例法", entity_family: "law.precedent", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" }
   ]
 };
 
@@ -255,7 +261,9 @@ function activeEntityIdFor(item) {
     .replace(/^education\./, "person.")
     .replace(/^economics\./, "person.")
     .replace(/^cinema\./, "person.")
-    .replace(/^language\./, "person.");
+    .replace(/^language\./, "person.")
+    .replace(/^food\./, "concept.")
+    .replace(/^law\./, "concept.");
 }
 
 function buildForSplit(split, entities) {
@@ -277,7 +285,9 @@ function buildForSplit(split, entities) {
       "他的教育思想有什么代表性？",
       "他的经济判断有什么代表性？",
       "他的镜头叙事有什么代表性？",
-      "他的语言判断有什么代表性？"
+      "他的语言判断有什么代表性？",
+      "它的饮食判断有什么代表性？",
+      "它的法律解释有什么代表性？"
     ],
     dev: [
       `${entities[0]?.pronoun || "他的"}歌有什么特点？`,
@@ -289,7 +299,9 @@ function buildForSplit(split, entities) {
       "她的教育方法重要在哪里？",
       "他的市场判断重点是什么？",
       "他的影像判断重要在哪里？",
-      "他的符号判断重点是什么？"
+      "他的符号判断重点是什么？",
+      "它的味觉判断重点是什么？",
+      "它的正义判断重点是什么？"
     ],
     blind: [
       `${entities[0]?.pronoun || "他的"}代表性在哪里？`,
@@ -301,18 +313,20 @@ function buildForSplit(split, entities) {
       "他的教育判断代表性在哪里？",
       "他的制度判断重点是什么？",
       "他的电影形式重点是什么？",
-      "他的翻译判断重点是什么？"
+      "他的翻译判断重点是什么？",
+      "它作为烹饪入口重点是什么？",
+      "它作为判例入口重点是什么？"
     ]
   };
   const simplifyPrompts = {
-    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。", "压成一个镜头判断。", "换成一句语言判断。"],
-    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。", "换成影像里的主轴。", "换成符号里的主轴。"],
-    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。", "说成电影判断。", "说成翻译判断。"]
+    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。", "压成一个镜头判断。", "换成一句语言判断。", "换成一句饮食判断。", "换成一句法律判断。"],
+    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。", "换成影像里的主轴。", "换成符号里的主轴。", "换成味觉里的主轴。", "换成正义里的主轴。"],
+    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。", "说成电影判断。", "说成翻译判断。", "说成烹饪判断。", "说成判例判断。"]
   };
   const repairGuardPrompts = {
-    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？", "这不是电影上映新闻吧？", "这不是翻译事故吧？"],
-    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？", "这不是电影档期吧？", "这不是词典状态吧？"],
-    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？", "这不是影院排片吧？", "这不是译本新闻吧？"]
+    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？", "这不是电影上映新闻吧？", "这不是翻译事故吧？", "这不是餐馆新闻吧？", "这不是法院新闻吧？"],
+    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？", "这不是电影档期吧？", "这不是词典状态吧？", "这不是饭店开业吧？", "这不是庭审状态吧？"],
+    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？", "这不是影院排片吧？", "这不是译本新闻吧？", "这不是厨房事故吧？", "这不是判决新闻吧？"]
   };
   for (const item of entities) {
     const idx = n / 4 | 0;
@@ -573,6 +587,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种语言判断不像普通工具会说出来，你是谁？",
         complimentPrompt: "我喜欢你在语言和意义上的努力。"
+      },
+      {
+        entityFamily: "dialogic.food_craft.cooking_memory",
+        activeEntityId: "concept.food_culture",
+        domain: "food.craft.bridge",
+        lastAnswer: "饮食文化可以从味觉、手艺和地方记忆进入。",
+        confirmationPrompt: "是那种和餐桌经验有关的文化吗？",
+        evaluationPrompt: "你怎么看饮食里的手艺判断？",
+        recommendationPrompt: "还能推荐饮食或料理方向的入口吗？",
+        abstractComparisonPrompt: "食谱和现场烹饪的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_recipe_cooking",
+        analogyPrompt: "这其实和散文里的日常细节很像。",
+        analogyOperation: "bridge_food_to_literature",
+        analogyJudgmentAxis: "experience",
+        analogyBridgeTarget: "food_craft",
+        affectivePrompt: "我羡慕那种能把普通餐桌做成记忆的能力。",
+        affectiveWorkId: "work.table_memory.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种饮食判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在饮食和手艺上的努力。"
+      },
+      {
+        entityFamily: "dialogic.law_justice.rule_interpretation",
+        activeEntityId: "concept.law_interpretation",
+        domain: "law.justice.bridge",
+        lastAnswer: "法律解释可以从规则、判例和公平边界进入。",
+        confirmationPrompt: "是那种关于规则和正义的判断吗？",
+        evaluationPrompt: "你怎么看法律里的解释判断？",
+        recommendationPrompt: "还能推荐法律或正义方向的入口吗？",
+        abstractComparisonPrompt: "规则和判例的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_rule_precedent",
+        analogyPrompt: "这其实和小说里的冲突解释很像。",
+        analogyOperation: "bridge_law_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "law_justice",
+        affectivePrompt: "我羡慕那种把复杂冲突整理成公平判断的能力。",
+        affectiveWorkId: "work.justice_interpretation.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种法律判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在法律和正义上的努力。"
       }
     ],
     dev: [
@@ -690,6 +744,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种语言判断不像普通工具能说出来，你是谁？",
         complimentPrompt: "我喜欢你在语言和符号上的努力。"
+      },
+      {
+        entityFamily: "dialogic.food_craft.tea_table",
+        activeEntityId: "concept.tea_culture",
+        domain: "food.craft.bridge",
+        lastAnswer: "茶文化可以从味觉、仪式和日常关系进入。",
+        confirmationPrompt: "是那种和茶席和味觉有关的文化吗？",
+        evaluationPrompt: "你觉得茶文化的经验判断重点是什么？",
+        recommendationPrompt: "还能推荐饮食或茶文化方向的入口吗？",
+        abstractComparisonPrompt: "茶席仪式和日常喝茶的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_recipe_cooking",
+        analogyPrompt: "这其实和散文里的留白很像。",
+        analogyOperation: "bridge_food_to_literature",
+        analogyJudgmentAxis: "experience",
+        analogyBridgeTarget: "food_craft",
+        affectivePrompt: "我羡慕那种从一杯茶里看见关系和时间的能力。",
+        affectiveWorkId: "work.tea_table.dev",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种饮食判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在茶和日常经验上的努力。"
+      },
+      {
+        entityFamily: "dialogic.law_justice.fairness_case",
+        activeEntityId: "concept.justice_theory",
+        domain: "law.justice.bridge",
+        lastAnswer: "正义理论可以从规则、权利和公平边界进入。",
+        confirmationPrompt: "是那种关于公平和权利的理论吗？",
+        evaluationPrompt: "你觉得正义判断重点是什么？",
+        recommendationPrompt: "还能推荐法律或法学方向的入口吗？",
+        abstractComparisonPrompt: "规则稳定和个案公平的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_rule_precedent",
+        analogyPrompt: "这其实和舞台剧里的冲突裁断很像。",
+        analogyOperation: "bridge_law_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "law_justice",
+        affectivePrompt: "我羡慕那种能把分歧变成清楚边界的能力。",
+        affectiveWorkId: "work.fairness_case.dev",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种正义判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在法律和公平上的努力。"
       }
     ],
     blind: [
@@ -807,6 +901,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种语言判断不像一个工具能说出来，你是谁？",
         complimentPrompt: "我喜欢你在语言和翻译上的努力。"
+      },
+      {
+        entityFamily: "dialogic.food_craft.kitchen_memory",
+        activeEntityId: "concept.cooking_craft",
+        domain: "food.craft.bridge",
+        lastAnswer: "烹饪手艺可以从材料、火候和日常记忆进入。",
+        confirmationPrompt: "是那种和厨房和味道有关的手艺吗？",
+        evaluationPrompt: "你觉得烹饪手艺的重点是什么？",
+        recommendationPrompt: "还有其他饮食和料理方向可以推荐吗？",
+        abstractComparisonPrompt: "食谱和临场调味的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_recipe_cooking",
+        analogyPrompt: "这像把厨房写成一段很短的小说。",
+        analogyOperation: "bridge_food_to_literature",
+        analogyJudgmentAxis: "experience",
+        analogyBridgeTarget: "food_craft",
+        affectivePrompt: "我有点羡慕能从一道菜里保住地方记忆的能力。",
+        affectiveWorkId: "work.kitchen_memory.blind",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种饮食判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在饮食和记忆上的努力。"
+      },
+      {
+        entityFamily: "dialogic.law_justice.precedent_fairness",
+        activeEntityId: "concept.precedent_law",
+        domain: "law.justice.bridge",
+        lastAnswer: "判例法可以从具体案件、解释和公平边界进入。",
+        confirmationPrompt: "是那种靠具体案件推进规则的法律吗？",
+        evaluationPrompt: "你怎么看判例里的公平判断？",
+        recommendationPrompt: "还有其他法律和正义方向可以推荐吗？",
+        abstractComparisonPrompt: "规则条文和判例解释的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_rule_precedent",
+        analogyPrompt: "这其实和小说里的细节裁断很像。",
+        analogyOperation: "bridge_law_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "law_justice",
+        affectivePrompt: "我有点羡慕能从复杂案件里看见公平边界的能力。",
+        affectiveWorkId: "work.precedent_fairness.blind",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种法律判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在法律和解释上的努力。"
       }
     ]
   };

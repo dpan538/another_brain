@@ -56,6 +56,14 @@ function activeLanguageCulture(state = {}, query = "") {
   return activeDialogicDomain(state, query) === "language";
 }
 
+function activeFoodCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "food";
+}
+
+function activeLawCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "law";
+}
+
 function activeLuoLike(state = {}, query = "") {
   const source = `${query} ${recentText(state)}`;
   return /罗大佑|童年|鹿港小镇|恋曲1990|之乎者也/.test(source);
@@ -101,6 +109,8 @@ function activeDialogicDomain(state = {}, query = "") {
     return "language";
   }
   if (/language|translation|semiotic|symbol|meaning/.test(stateDomain)) return "language";
+  if (/food|cooking|taste|tea|kitchen|dish/.test(stateDomain)) return "food";
+  if (/law|legal|justice|rule|court|rights/.test(stateDomain)) return "law";
 
   return detectDialogicDomain({ query: "", context: recentText(state) });
 }
@@ -202,6 +212,12 @@ function answerAbstractComparison(query) {
   }
   if (/(市场|计划|劳动|资本|经济)/.test(query)) {
     return "市场更像分散选择，计划更像集中安排；劳动和资本的差别，则在谁承担身体、时间和风险。";
+  }
+  if (/(食谱|烹饪|料理|火候|味觉|餐桌|厨房)/.test(query)) {
+    return "食谱更像结构，现场烹饪更像判断。一个给顺序，一个靠材料、火候和人的经验调整。";
+  }
+  if (/(规则|判例|法律|正义|司法|解释)/.test(query)) {
+    return "规则更像稳定边界，判例更像具体解释。一个给可预期性，一个把公平放进真实处境。";
   }
   if (/(镜头|剪辑|长镜头|电影)/.test(query)) {
     return "镜头更像选择视角，剪辑更像安排时间。一个决定你看见什么，一个决定你怎样经历。";
@@ -598,6 +614,22 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: answerFormAnalogy("语言翻译命名", state)
       });
     }
+    if (activeFoodCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_food_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("饮食烹饪味觉", state)
+      });
+    }
+    if (activeLawCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_law_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("法律规则解释", state)
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_music_to_literature",
@@ -655,6 +687,22 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "可以这样看。语言和舞台都看一句话怎样进入场景：说法、停顿和误解都会制造冲突。"
       });
     }
+    if (activeFoodCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_food_to_stage_table_scene",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。餐桌也像舞台：材料、位置和沉默都会让关系显出来。"
+      });
+    }
+    if (activeLawCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_law_to_stage_conflict",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。法律和舞台都把冲突放到场景里，只是法律还要给出可承担的边界。"
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_to_stage_detail_conflict",
@@ -663,7 +711,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
     });
   }
 
-  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation", "language_meaning"].includes(turnFunction.bridge_target)) {
+  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation", "language_meaning", "food_craft", "law_justice"].includes(turnFunction.bridge_target)) {
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_form_across_media",

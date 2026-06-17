@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-06-17T13:38:40.879Z",
+  "generated_at": "2026-06-17T13:59:22.306Z",
   "splits": {
     "train": {
-      "rows": 126,
+      "rows": 150,
       "scenario_families": 14,
       "entity_families": [
         "art.picasso",
@@ -11,14 +11,18 @@
         "dialogic.cinema_time.wong_lens",
         "dialogic.economics_institution.keynes_labor",
         "dialogic.education_experience.dewey_learning",
+        "dialogic.food_craft.cooking_memory",
         "dialogic.language_meaning.wittgenstein_use",
+        "dialogic.law_justice.rule_interpretation",
         "dialogic.music_literature_identity.luo_natsume",
         "dialogic.science_observation.darwin_fabre",
         "dialogic.technology_interface.shannon_tool",
         "dialogic.urban_space.jane_street",
         "economics.keynes",
         "education.dewey",
+        "food.culture",
         "language.wittgenstein",
+        "law.interpretation",
         "lit.bai_xianyong",
         "lit.natsume",
         "music.a_mei",
@@ -33,7 +37,7 @@
       ]
     },
     "dev": {
-      "rows": 90,
+      "rows": 114,
       "scenario_families": 14,
       "entity_families": [
         "art.duchamp",
@@ -43,13 +47,17 @@
         "dialogic.cinema_time.hou_memory",
         "dialogic.economics_institution.smith_exchange",
         "dialogic.education_experience.montessori_child",
+        "dialogic.food_craft.tea_table",
         "dialogic.language_meaning.saussure_sign",
+        "dialogic.law_justice.fairness_case",
         "dialogic.music_literature_identity.faye_zhang",
         "dialogic.urban_space.jacobs_city",
         "economics.smith",
         "education.montessori",
         "ethics.arendt",
+        "food.tea",
         "language.saussure",
+        "law.justice",
         "lit.kawabata",
         "music.faye_wong",
         "science.carson",
@@ -57,7 +65,7 @@
       ]
     },
     "blind": {
-      "rows": 90,
+      "rows": 114,
       "scenario_families": 14,
       "entity_families": [
         "blind.quiet.synthetic",
@@ -67,13 +75,17 @@
         "dialogic.cinema_time.ozu_family",
         "dialogic.economics_institution.polanyi_market",
         "dialogic.education_experience.freire_classroom",
+        "dialogic.food_craft.kitchen_memory",
         "dialogic.language_meaning.benjamin_translation",
+        "dialogic.law_justice.precedent_fairness",
         "dialogic.music_literature_identity.sodagreen_kawabata",
         "dialogic.technology_interface.turing_tool",
         "economics.polanyi",
         "education.freire",
         "ethics.camus",
+        "food.cooking",
         "language.benjamin",
+        "law.precedent",
         "lit.murakami",
         "music.jay_chou",
         "science.ecology",
@@ -82,5 +94,5 @@
     }
   },
   "unique_scenario_families": 14,
-  "blind_only_entity_families": 18
+  "blind_only_entity_families": 22
 }

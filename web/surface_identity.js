@@ -72,7 +72,10 @@ const IDENTITY_CORRECTION_QUERY_RE = /^你不是鳄鱼[。.!！\s]*$/;
 const NON_JUDGMENT_QUERY_RE = /^(为什么|什么|怎么|如何|谁|哪里|哪儿|何时|什么时候|how|why|what|who|where)\b|^(为什么|什么|怎么|如何|谁|哪里|哪儿|何时|什么时候)/i;
 const GATE_QUERY_RE = /(门禁|不是为了好看|好看)/;
 const BAD_GATE_SURFACE_RE = /(^对[。.!！,，\s]+|聪明变成乱说|门禁.{0,8}(说话|说|回答|认为|觉得|想|理解|记得|承认|同意|告诉))/;
-const NON_AGENT_SPEECH_RE = /(门禁|测试|规则|门槛|检查|验证器|数据集).{0,8}(说话|说|回答|认为|觉得|想|理解|记得|承认|同意|告诉)/;
+const NON_AGENT_SPEECH_VERBS = "(说话|说|回答|认为|觉得|想|理解|记得|承认|同意|告诉)";
+const NON_AGENT_SPEECH_RE = new RegExp(
+  `((门禁|测试|门槛|检查|验证器|数据集|规则系统|这条规则|这些规则|那个规则).{0,8}${NON_AGENT_SPEECH_VERBS}|规则(?:会|自己|也)?${NON_AGENT_SPEECH_VERBS})`
+);
 const MEMORY_OVERCLAIM_RE = /(我也许记得你|我记得你|我认识你|我知道你是谁|也许你认识我)/;
 const MEMORY_BOUNDARY_QUERY_RE = /(我们.*什么关系|你和我.*什么关系|我和你.*什么关系|你认识我吗|认识我吗|你记得我吗|记得我吗|我认识你|我好像认识你|也许.{0,8}我认识你)/;
 
