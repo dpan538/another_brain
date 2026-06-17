@@ -29,6 +29,8 @@ export function inferSurfaceControl({
       abstraction_level: "concrete",
       bridge_style: "none",
       acknowledgment_style: "minimal",
+      acknowledgment_mode: "minimal",
+      surface_prohibitions: [],
       sentence_shape: "one_sentence",
       stance_strength: "none",
       silence_policy: "affordance_only_if_low_signal"
@@ -42,6 +44,8 @@ export function inferSurfaceControl({
       abstraction_level: "concrete",
       bridge_style: "none",
       acknowledgment_style: "none",
+      acknowledgment_mode: "none",
+      surface_prohibitions: [],
       sentence_shape: "two_clause",
       stance_strength: "firm",
       silence_policy: "never_silent_when_active_context"
@@ -54,7 +58,9 @@ export function inferSurfaceControl({
       reasoning_budget: "none",
       abstraction_level: "mixed",
       bridge_style: "implicit",
-      acknowledgment_style: "no_praise_loop",
+      acknowledgment_style: "reflective",
+      acknowledgment_mode: "reflective",
+      surface_prohibitions: ["generic_thanks", "praise_loop", "assistant_politeness_residue"],
       sentence_shape: "one_sentence",
       stance_strength: "light",
       silence_policy: "never_silent_when_active_context"
@@ -68,6 +74,8 @@ export function inferSurfaceControl({
       abstraction_level: "mixed",
       bridge_style: "implicit",
       acknowledgment_style: "minimal",
+      acknowledgment_mode: "minimal",
+      surface_prohibitions: ["announced_bridge", "taxonomy_language"],
       sentence_shape: "two_clause",
       stance_strength: "light",
       silence_policy: "never_silent_when_active_context"
@@ -81,6 +89,8 @@ export function inferSurfaceControl({
       abstraction_level: "concrete",
       bridge_style: "implicit",
       acknowledgment_style: "reflective",
+      acknowledgment_mode: "reflective",
+      surface_prohibitions: ["taxonomy_language", "therapy_drift"],
       sentence_shape: "two_clause",
       stance_strength: "light",
       silence_policy: "never_silent_when_active_context"
@@ -94,6 +104,8 @@ export function inferSurfaceControl({
       abstraction_level: "mixed",
       bridge_style: "implicit",
       acknowledgment_style: "none",
+      acknowledgment_mode: "none",
+      surface_prohibitions: ["question_menu", "fake_depth"],
       sentence_shape: "question_back",
       stance_strength: "clear",
       silence_policy: "never_silent_when_active_context"
@@ -107,6 +119,8 @@ export function inferSurfaceControl({
       abstraction_level: "concrete",
       bridge_style: "none",
       acknowledgment_style: "minimal",
+      acknowledgment_mode: "minimal",
+      surface_prohibitions: [],
       sentence_shape: "one_sentence",
       stance_strength: "light",
       silence_policy: "never_silent_when_active_context"
@@ -120,6 +134,8 @@ export function inferSurfaceControl({
       abstraction_level: "concrete",
       bridge_style: "none",
       acknowledgment_style: "none",
+      acknowledgment_mode: "none",
+      surface_prohibitions: [],
       sentence_shape: "short_list",
       stance_strength: "clear",
       silence_policy: "never_silent_when_active_context"
@@ -133,6 +149,8 @@ export function inferSurfaceControl({
       abstraction_level: "mixed",
       bridge_style: "implicit",
       acknowledgment_style: "none",
+      acknowledgment_mode: "none",
+      surface_prohibitions: ["over_abstract_judgment"],
       sentence_shape: "two_clause",
       stance_strength: "clear",
       silence_policy: "never_silent_when_active_context"
@@ -146,6 +164,8 @@ export function inferSurfaceControl({
       abstraction_level: "concrete",
       bridge_style: "none",
       acknowledgment_style: "none",
+      acknowledgment_mode: "none",
+      surface_prohibitions: [],
       sentence_shape: "question_back",
       stance_strength: "clear",
       silence_policy: "never_silent_when_active_context"
@@ -158,6 +178,8 @@ export function inferSurfaceControl({
     abstraction_level: "mixed",
     bridge_style: "none",
     acknowledgment_style: "none",
+    acknowledgment_mode: "none",
+    surface_prohibitions: [],
     sentence_shape: "two_clause",
     stance_strength: /evaluation|interpretive|judgment/.test(`${fn} ${qType}`) ? "light" : "none",
     silence_policy: "never_silent_when_active_context"

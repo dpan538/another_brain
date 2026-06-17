@@ -6,6 +6,7 @@ import { updateTopicStack, activeTopic } from "./topic_stack.js";
 import { makeAnswerPlan } from "./answer_plan.js";
 import { selectAnswerDensity } from "./answer_density_policy.js";
 import { inferSurfaceControl } from "./surface_control_policy.js";
+import { realizeNaturalSurfaceShadow } from "./natural_surface_realizer.js";
 import { formatMobileAnswer } from "./mobile_answer_formatter.js";
 import { detectRepeatAnswer, rewriteForNonRepeat } from "./answer_deduper.js";
 import { finalizeWithFallbackFirewall } from "./fallback_firewall.js";
@@ -174,6 +175,21 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
     dedupe.rewritten = true;
     dedupe.rewrite_answer = finalAnswer;
   }
+  const surfaceCandidate = realizeNaturalSurfaceShadow({
+    query: text,
+    currentAnswer: finalAnswer,
+    turnFunction: turnFunction.turn_function,
+    responseType,
+    responseMode: controllerMode,
+    questionType: draft?.questionType || "",
+    operation: draft?.operation || "",
+    domain: session.activeDomain || session.lastDomain || draft?.culture?.compactStatePatch?.last_domain || "",
+    activeTopic: activeTopic(session) || null,
+    binding,
+    surfaceControl,
+    evidenceIds: draft?.cards || [],
+    plan
+  });
 
   const topicStack = updateTopicStack({
     session,
@@ -203,6 +219,7 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
     density_policy: density,
     answer_plan: plan,
     dedupe,
+    surface_candidate: surfaceCandidate,
     verifier: draft?.verifier || draft?.culture?.verifier || {},
     finalizer: { route: finalized.route || draft?.route || "", fallback_firewall: finalized.firewall || null },
     webgpu_assist: { available: false, authoritative: false, runtime_profile: runtimeProfile }
@@ -212,6 +229,8 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
     response: {
       type: "answer",
       answer: finalAnswer,
+      shadow_candidate_answer: surfaceCandidate.candidate_answer || "",
+      surface_candidate: surfaceCandidate,
       trace,
       intent: finalized.intent || draft?.intent || "conversation_controller",
       route: finalized.route || draft?.route || "conversation_controller",

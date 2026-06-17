@@ -9,8 +9,10 @@ import {
   isBadExamplePath,
   isCandidateAnswerPath,
   listFiles,
+  makeExecutionReport,
   parseMaybeJsonLines,
   pathHint,
+  provenanceForString,
   relativeRoot,
   responseModeFromObject,
   turnFunctionFromObject,
@@ -18,7 +20,7 @@ import {
 } from "./r22_surface_utils.mjs";
 
 const OUT = resolve(ROOT, "artifacts/training_os/r22_natural_surface_pattern_audit.json");
-const SCAN_DIRS = ["artifacts/training_os", "evals"];
+const SCAN_DIRS = ["artifacts/training_os", "evals", "docs"];
 
 function skeleton(text) {
   return String(text || "")
@@ -44,7 +46,9 @@ async function scanJsonFile(file) {
   for (const [rowIndex, row] of rows.entries()) {
     const strings = flattenStrings(row);
     for (const item of strings) {
-      if (!isCandidateAnswerPath(item.path) || isBadExamplePath(item.path)) continue;
+      const provenance = provenanceForString({ file, path: item.path });
+      if (!isCandidateAnswerPath(item.path) && !["fixture_bad_answer", "fixture_better_shape", "documentation_or_contract"].includes(provenance)) continue;
+      if (isBadExamplePath(item.path) && provenance !== "fixture_bad_answer") continue;
       const hits = classifySurfaceHits(item.text);
       if (!hits.length) continue;
       const turnFunction = turnFunctionFromObject(row);
@@ -53,6 +57,7 @@ async function scanJsonFile(file) {
         file: relativeRoot(file),
         row_index: rowIndex,
         path: pathHint(item.path),
+        provenance,
         turn_function: turnFunction,
         response_mode: responseMode,
         text: item.text,
@@ -80,42 +85,88 @@ async function main() {
   }
 
   const patternCounts = {};
+  const patternCountsByProvenance = {};
   const patternByTurnFunction = {};
   const skeletonCounts = {};
+  const skeletonCountsByProvenance = {};
   for (const example of allExamples) {
     const fn = example.turn_function || "unknown";
+    const provenance = example.provenance || "unknown";
     patternByTurnFunction[fn] ||= {};
-    skeletonCounts[skeleton(example.text)] = (skeletonCounts[skeleton(example.text)] || 0) + 1;
+    patternCountsByProvenance[provenance] ||= {};
+    skeletonCountsByProvenance[provenance] ||= {};
+    const skel = skeleton(example.text);
+    skeletonCounts[skel] = (skeletonCounts[skel] || 0) + 1;
+    skeletonCountsByProvenance[provenance][skel] = (skeletonCountsByProvenance[provenance][skel] || 0) + 1;
     for (const hit of example.hits) {
       patternCounts[hit.id] = (patternCounts[hit.id] || 0) + hit.matches.length;
+      patternCountsByProvenance[provenance][hit.id] = (patternCountsByProvenance[provenance][hit.id] || 0) + hit.matches.length;
       patternByTurnFunction[fn][hit.id] = (patternByTurnFunction[fn][hit.id] || 0) + hit.matches.length;
     }
   }
 
-  const hardFailures = allExamples.filter((example) => example.hard_failure);
+  const behavioralProvenance = new Set(["current_runtime_output", "shadow_candidate_output"]);
+  const hardFailures = allExamples.filter((example) => example.hard_failure && behavioralProvenance.has(example.provenance));
+  const allHardFailures = allExamples.filter((example) => example.hard_failure);
+  const liveHardPatternIds = new Set(["i_caught_it", "generic_thanks", "continue_effort", "you_can_continue_ask", "praise_thanks_skeleton"]);
+  const liveHardPatternCount = Object.entries(patternCountsByProvenance.current_runtime_output || {})
+    .filter(([id]) => liveHardPatternIds.has(id))
+    .reduce((sum, [, count]) => sum + count, 0);
   const repeatedSurfaceSkeletons = Object.entries(skeletonCounts)
     .filter(([, count]) => count >= 3)
     .map(([surface_skeleton, count]) => ({ surface_skeleton, count }))
     .slice(0, 40);
 
-  const report = {
-    ok: hardFailures.length === 0,
-    audit_only: !process.argv.includes("--strict"),
-    generated_at: new Date().toISOString(),
+  const report = makeExecutionReport({
+    behaviorOk: hardFailures.length === 0 && liveHardPatternCount === 0,
+    auditOnly: !process.argv.includes("--strict"),
+    blocking: process.argv.includes("--strict") && hardFailures.length > 0,
+    extra: {
     scanned_files: files.length,
     scanned_examples: allExamples.length,
     pattern_counts: patternCounts,
+    pattern_counts_by_provenance: patternCountsByProvenance,
+    live_runtime_pattern_counts: patternCountsByProvenance.current_runtime_output || {},
+    shadow_candidate_pattern_counts: patternCountsByProvenance.shadow_candidate_output || {},
+    fixture_pattern_counts: {
+      fixture_better_shape: patternCountsByProvenance.fixture_better_shape || {},
+      fixture_bad_answer: patternCountsByProvenance.fixture_bad_answer || {},
+      eval_expected_answer: patternCountsByProvenance.eval_expected_answer || {}
+    },
+    historical_pattern_counts: patternCountsByProvenance.historical_artifact || {},
     pattern_by_turn_function: patternByTurnFunction,
     repeated_surface_skeletons: repeatedSurfaceSkeletons,
+    repeated_surface_skeletons_by_provenance: Object.fromEntries(
+      Object.entries(skeletonCountsByProvenance).map(([provenance, counts]) => [
+        provenance,
+        Object.entries(counts)
+          .filter(([, count]) => count >= 3)
+          .map(([surface_skeleton, count]) => ({ surface_skeleton, count }))
+          .slice(0, 40)
+      ])
+    ),
     suspicious_must_include_leakage: allExamples.filter((example) => /我接住|更深层次|关系/.test(example.text)).slice(0, 80),
     hard_failures: hardFailures.slice(0, 80),
+    live_hard_pattern_count: liveHardPatternCount,
+    all_provenance_hard_failures: allHardFailures.slice(0, 80),
     examples: allExamples.slice(0, 120)
-  };
+    }
+  });
 
   await mkdir(dirname(OUT), { recursive: true });
   await writeFile(OUT, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-  console.log(JSON.stringify({ ok: report.ok, audit_only: report.audit_only, pattern_counts: report.pattern_counts, hard_failure_count: hardFailures.length, out: OUT }, null, 2));
-  if (!report.ok && process.argv.includes("--strict")) process.exit(2);
+  console.log(JSON.stringify({
+    execution_ok: report.execution_ok,
+    behavior_ok: report.behavior_ok,
+    audit_only: report.audit_only,
+    live_runtime_pattern_counts: report.live_runtime_pattern_counts,
+    shadow_candidate_pattern_counts: report.shadow_candidate_pattern_counts,
+    fixture_pattern_counts: report.fixture_pattern_counts,
+    hard_failure_count: hardFailures.length,
+    live_hard_pattern_count: report.live_hard_pattern_count,
+    out: OUT
+  }, null, 2));
+  if (!report.behavior_ok && process.argv.includes("--strict")) process.exit(2);
 }
 
 main().catch((error) => {

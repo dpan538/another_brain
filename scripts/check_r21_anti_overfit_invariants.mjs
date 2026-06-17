@@ -1,4 +1,5 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 
 const ROOT = process.cwd();
@@ -12,7 +13,16 @@ const STRICT_CONTROL_FILES = [
   "web/conversation_state_schema.js"
 ];
 const DEBT_FILES = ["web/operation_layer.js", "web/culture_planner.js", "web/last_answer_transform.js", "web/fallback_firewall.js"];
+const SURFACE_GOVERNANCE_FILES = [
+  "web/answer_plan.js",
+  "web/dialogic_bridge_runtime.js",
+  "web/dialogic_domain_profiles.js",
+  "web/dialogic_profile_primitives.js",
+  "web/natural_surface_realizer.js",
+  "web/surface_control_policy.js"
+];
 const ENTITY_PATTERNS = [/person\.luo_dayou/, /author\.natsume_soseki/, /author\.kawabata_yasunari/, /罗大佑/, /夏目漱石/, /川端康成/];
+const BASELINE = "424e4b7cbe41fb8439fe38a2a75d43abfe3c862b";
 const FAILURE_BANK = "data/failure_bank/r21_failure_bank.jsonl";
 const BLIND_SIBLINGS = "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl";
 
@@ -31,6 +41,106 @@ async function countPatterns(path) {
     if (matches.length) hits.push({ pattern: pattern.source, count: matches.length });
   }
   return hits;
+}
+
+function gitDiff(path) {
+  try {
+    return execFileSync("git", ["diff", "-U0", BASELINE, "--", path], { cwd: ROOT, encoding: "utf8" });
+  } catch {
+    return "";
+  }
+}
+
+async function countExactPromptLogic(path) {
+  let text = "";
+  try {
+    text = await readFile(resolve(ROOT, path), "utf8");
+  } catch {
+    return { file: path, exact_prompt_logic_count: 0, examples: [] };
+  }
+  const matches = text
+    .split(/\r?\n/)
+    .filter((line) => /(?:query|prompt|text)\s*(?:===|==|\.includes\()/.test(line) && /["'`].{4,80}["'`]/.test(line))
+    .map((line) => line.trim());
+  return { file: path, exact_prompt_logic_count: matches.length, examples: matches.slice(0, 20) };
+}
+
+async function countFullAnswerSentences(path) {
+  let text = "";
+  try {
+    text = await readFile(resolve(ROOT, path), "utf8");
+  } catch {
+    return { file: path, full_answer_sentence_count: 0 };
+  }
+  const quotedStrings = [];
+  for (const line of text.split(/\r?\n/)) {
+    const matches = line.match(/(["'`])(.{12,220}?[。！？].*?)\1/g) || [];
+    quotedStrings.push(...matches);
+  }
+  const longChineseSentences = quotedStrings.filter((item) => {
+    const zh = [...item].filter((char) => /[\u4e00-\u9fff]/.test(char)).length;
+    return zh >= 18;
+  });
+  return { file: path, full_answer_sentence_count: longChineseSentences.length };
+}
+
+async function repeatedProfileSkeletonCount(path) {
+  let text = "";
+  try {
+    text = await readFile(resolve(ROOT, path), "utf8");
+  } catch {
+    return { file: path, repeated_profile_skeleton_count: 0, skeletons: [] };
+  }
+  const scanned = text
+    .split(/\r?\n/)
+    .filter((line) => !/regex\s*:|RegExp|PROHIBITION|PATTERN/.test(line))
+    .join("\n");
+  const skeletons = [
+    { id: "can_understand_as_entry", regex: /可以理解为[^`"']{0,40}入口/g },
+    { id: "focus_is", regex: /重点在[^`"']{0,24}/g },
+    { id: "caught_this_line", regex: /我接住这个/g },
+    { id: "can_ask_deeper", regex: /可以问得更深一点/g }
+  ].map((item) => ({ id: item.id, count: (scanned.match(item.regex) || []).length }));
+  return {
+    file: path,
+    repeated_profile_skeleton_count: skeletons.reduce((sum, item) => sum + item.count, 0),
+    skeletons
+  };
+}
+
+async function surfaceGovernanceDebt() {
+  const legacyEntitySpecificDebt = [];
+  const newlyAddedEntitySpecificLogic = [];
+  const exactPromptLogic = [];
+  const fullAnswerSentenceCounts = [];
+  const repeatedProfileSkeletonCounts = [];
+  for (const file of SURFACE_GOVERNANCE_FILES) {
+    const hits = await countPatterns(file).catch(() => []);
+    if (hits.length) legacyEntitySpecificDebt.push({ file, hits });
+    const diff = gitDiff(file);
+    const addedLines = diff
+      .split(/\r?\n/)
+      .filter((line) => line.startsWith("+") && !line.startsWith("+++"))
+      .join("\n");
+    const newHits = [];
+    for (const pattern of ENTITY_PATTERNS) {
+      const matches = addedLines.match(new RegExp(pattern.source, "g")) || [];
+      if (matches.length) newHits.push({ pattern: pattern.source, count: matches.length });
+    }
+    if (newHits.length) newlyAddedEntitySpecificLogic.push({ file, hits: newHits });
+    exactPromptLogic.push(await countExactPromptLogic(file));
+    fullAnswerSentenceCounts.push(await countFullAnswerSentences(file));
+    repeatedProfileSkeletonCounts.push(await repeatedProfileSkeletonCount(file));
+  }
+  return {
+    baseline_commit_for_new_debt: BASELINE,
+    files_scanned: SURFACE_GOVERNANCE_FILES,
+    legacy_entity_specific_debt: legacyEntitySpecificDebt,
+    newly_added_entity_specific_logic: newlyAddedEntitySpecificLogic,
+    exact_prompt_logic: exactPromptLogic,
+    full_answer_sentence_count: fullAnswerSentenceCounts,
+    repeated_profile_skeleton_count: repeatedProfileSkeletonCounts
+  };
 }
 
 async function main() {
@@ -71,11 +181,16 @@ async function main() {
     if (count < 1) invariantFailures.push({ reason: "blind_theme_missing", theme });
   }
   const packageText = await readFile(resolve(ROOT, "package.json"), "utf8");
+  const surfaceDebt = await surfaceGovernanceDebt();
+  if (surfaceDebt.newly_added_entity_specific_logic.length) {
+    invariantFailures.push({ reason: "new_surface_entity_specific_logic", hits: surfaceDebt.newly_added_entity_specific_logic });
+  }
   const report = {
     ok: strictHits.length === 0 && invariantFailures.length === 0,
     strict_control_files: STRICT_CONTROL_FILES,
     strict_entity_specific_hits: strictHits,
     known_runtime_entity_specific_debt: debtHits,
+    surface_governance_entity_specific_report: surfaceDebt,
     failure_bank_rows: failureBankRows.length,
     blind_sibling_sessions: blindSiblingRows.length,
     blind_theme_coverage: blindThemeCoverage,

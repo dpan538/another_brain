@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { ROOT } from "./r18_utils.mjs";
+import { makeExecutionReport } from "./r22_surface_utils.mjs";
 
 const OUT = resolve(ROOT, "artifacts/training_os/r22_missing_knowledge_primitives_audit.json");
 
@@ -83,27 +85,82 @@ function supportFound({ text, supportText }) {
   return { domains, found, count: found.length };
 }
 
-async function loadSupportText() {
+async function loadSupportFiles() {
   const files = [
     "web/culture_cards.generated.js",
     "web/dialogic_domain_profiles.js",
+    "web/dialogic_profile_primitives.js",
     "web/dialogic_bridge_runtime.js",
     "web/culture_planner.js",
     "web/turn_function_classifier.js"
   ];
-  const chunks = [];
+  const chunks = {};
   for (const file of files) {
     try {
-      chunks.push(await readFile(resolve(ROOT, file), "utf8"));
+      chunks[file] = await readFile(resolve(ROOT, file), "utf8");
     } catch {
       // Optional support file.
     }
   }
-  return chunks.join("\n");
+  return chunks;
+}
+
+function gitHead() {
+  try {
+    return execFileSync("git", ["rev-parse", "HEAD"], { cwd: ROOT, encoding: "utf8" }).trim();
+  } catch {
+    return "unknown";
+  }
+}
+
+async function loadObservedFailures() {
+  const files = [
+    "artifacts/training_os/r22_natural_surface_eval_report.json",
+    "artifacts/training_os/r22_shadow_surface_eval_report.json"
+  ];
+  const out = new Map();
+  for (const file of files) {
+    try {
+      const report = JSON.parse(await readFile(resolve(ROOT, file), "utf8"));
+      for (const failure of [...(report.current_runtime_failures || []), ...(report.failures || [])]) {
+        if (failure.id) out.set(String(failure.id).replace(/#\d+$/, ""), failure);
+      }
+    } catch {
+      // Reports are optional; absence means the primitive audit cannot claim an observed runtime failure.
+    }
+  }
+  return out;
+}
+
+function supportEvidence({ text, supportFiles }) {
+  const domains = inferSiblingDomains(text);
+  const markers = domains.flatMap((domain) => DOMAIN_SUPPORT[domain] || []);
+  const evidence = [];
+  for (const [file, body] of Object.entries(supportFiles)) {
+    const found = markers.filter((marker) => body.includes(marker));
+    if (found.length) evidence.push({ support_file: file, support_span_or_marker: found.slice(0, 10) });
+  }
+  return {
+    domains,
+    found: evidence.flatMap((item) => item.support_span_or_marker),
+    count: evidence.reduce((sum, item) => sum + item.support_span_or_marker.length, 0),
+    evidence
+  };
+}
+
+function candidatePatchClass({ hasObservedFailure, hasSupport, turnFunction, support, runtimeTraceAvailable = false }) {
+  if (!hasObservedFailure) return "insufficient_evidence";
+  if (hasSupport) {
+    if (["analogy_statement", "affective_disclosure", "compliment"].includes(turnFunction)) return "inspect_surface";
+    return runtimeTraceAvailable ? "inspect_composition" : "inspect_control";
+  }
+  if (support.domains.length >= 2) return "primitive_candidate_requires_review";
+  return "insufficient_evidence";
 }
 
 async function main() {
-  const supportText = await loadSupportText();
+  const supportFiles = await loadSupportFiles();
+  const observedFailures = await loadObservedFailures();
   const sources = [
     { label: "r21_anchor", rows: [JSON.parse(await readFile(resolve(ROOT, "evals/r21_mixed_dialogic/gold_session.json"), "utf8"))] },
     { label: "r21_blind_siblings", rows: jsonlRows(await readFile(resolve(ROOT, "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl"), "utf8")) }
@@ -115,24 +172,45 @@ async function main() {
         const turnFunction = expectedTurnFunction(row, turn);
         if (!turnFunction) continue;
         const rule = primitiveRuleFor(turnFunction);
-        const text = [turn.user, ...(turn.must_include_any || []), row.id || ""].join(" ");
-        const support = supportFound({ text, supportText });
+        const priorContext = (row.turns || [])
+          .slice(Math.max(0, turnIndex - 3), turnIndex)
+          .map((item) => item.user || "")
+          .join(" ");
+        const text = [priorContext, turn.user, row.id || ""].join(" ");
+        const support = supportEvidence({ text, supportFiles });
         const hasSupport = support.count >= Math.min(2, support.domains.length || 1);
+        const observed = observedFailures.get(row.id) || observedFailures.get(`${row.id}#${turnIndex + 1}`) || null;
+        const candidate_patch_class = candidatePatchClass({
+          hasObservedFailure: Boolean(observed),
+          hasSupport,
+          turnFunction,
+          support,
+          runtimeTraceAvailable: Boolean(observed)
+        });
         audits.push({
           source: source.label,
           session_id: row.id,
           turn_index: turnIndex + 1,
           user: turn.user,
           turn_function: turnFunction,
+          heuristic_only: true,
+          confidence: observed ? (hasSupport ? "medium" : "low") : "low",
+          evidence_source: observed ? "observed_runtime_failure_plus_lexical_support_scan" : "user_turn_prior_context_lexical_support_scan",
           missing_primitive_class: rule.missing_primitive_class,
           minimally_sufficient_primitives: rule.minimally_sufficient_primitives,
           current_support_found: support.found.slice(0, 12),
-          patch_allowed: !hasSupport,
-          patch_type_allowed: hasSupport ? "inspect_retrieval_composition_control_or_surface" : "generalized_primitive_card_only",
+          support_evidence: support.evidence.slice(0, 8),
+          observed_runtime_failure: observed || null,
+          retrieval_trace_available: false,
+          composition_trace_available: false,
+          candidate_patch_class,
+          patch_allowed: "deprecated_use_candidate_patch_class",
+          patch_type_allowed: "deprecated_use_candidate_patch_class",
           sibling_domain_support_count: support.domains.length,
           sibling_domains: support.domains,
           negative_examples_required: ["missing_bridge_operator", "missing_constraint", "missing_answer_shape_primitive"].includes(rule.missing_primitive_class),
-          exact_answer_card_forbidden: true
+          exact_answer_card_forbidden: true,
+          requires_human_review: candidate_patch_class === "primitive_candidate_requires_review"
         });
       }
     }
@@ -140,14 +218,20 @@ async function main() {
 
   const byPrimitive = {};
   for (const item of audits) byPrimitive[item.missing_primitive_class] = (byPrimitive[item.missing_primitive_class] || 0) + 1;
-  const patchable = audits.filter((item) => item.patch_allowed);
-  const report = {
-    ok: true,
-    audit_only: true,
-    generated_at: new Date().toISOString(),
+  const candidates = audits.filter((item) => item.candidate_patch_class === "primitive_candidate_requires_review");
+  const byPatchClass = {};
+  for (const item of audits) byPatchClass[item.candidate_patch_class] = (byPatchClass[item.candidate_patch_class] || 0) + 1;
+  const report = makeExecutionReport({
+    behaviorOk: true,
+    auditOnly: true,
+    evaluatedCommit: gitHead(),
+    extra: {
+    heuristic_only: true,
     rows_audited: audits.length,
     missing_primitive_class_counts: byPrimitive,
-    patch_allowed_count: patchable.length,
+    candidate_patch_class_counts: byPatchClass,
+    primitive_candidate_requires_review_count: candidates.length,
+    patch_allowed_count: "deprecated_not_a_task_count",
     exact_answer_cards_allowed: false,
     new_entity_specific_branches_allowed: false,
     audits,
@@ -155,10 +239,20 @@ async function main() {
       interpretation: "patch_allowed=false means the KB appears to contain reusable support, so the likely issue is retrieval, composition, typed control, or surface realization rather than adding more fact cards.",
       next_step: "Use this report before adding any KB card; add only generalized primitive cards with sibling-domain reuse and negative/constraint coverage."
     }
-  };
+    }
+  });
   await mkdir(dirname(OUT), { recursive: true });
   await writeFile(OUT, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-  console.log(JSON.stringify({ ok: report.ok, rows_audited: audits.length, patch_allowed_count: patchable.length, missing_primitive_class_counts: byPrimitive, out: OUT }, null, 2));
+  console.log(JSON.stringify({
+    execution_ok: report.execution_ok,
+    behavior_ok: report.behavior_ok,
+    heuristic_only: report.heuristic_only,
+    rows_audited: audits.length,
+    primitive_candidate_requires_review_count: candidates.length,
+    candidate_patch_class_counts: byPatchClass,
+    missing_primitive_class_counts: byPrimitive,
+    out: OUT
+  }, null, 2));
 }
 
 main().catch((error) => {

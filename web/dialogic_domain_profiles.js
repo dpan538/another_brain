@@ -1,3 +1,5 @@
+import { LEGACY_SURFACE_FIELD_STATUS } from "./dialogic_profile_primitives.js";
+
 export const DIALOGIC_DOMAIN_PROFILES = Object.freeze({
   music: {
     id: "music",
@@ -276,7 +278,13 @@ export const DIALOGIC_DOMAIN_PROFILES = Object.freeze({
 });
 
 export function getDialogicDomainProfile(domain) {
-  return DIALOGIC_DOMAIN_PROFILES[domain] || null;
+  const profile = DIALOGIC_DOMAIN_PROFILES[domain] || null;
+  return profile
+    ? {
+        ...profile,
+        legacy_surface_status: LEGACY_SURFACE_FIELD_STATUS
+      }
+    : null;
 }
 
 export function detectDialogicDomain({ query = "", context = "" } = {}) {

@@ -25,6 +25,34 @@ export const SURFACE_PATTERNS = [
   { id: "beyond_but_you_can", regex: /这超出了我的能力，但你可以/g, severity: "suspicious" }
 ];
 
+export const SURFACE_SYNONYM_SKELETONS = [
+  {
+    id: "focus_synonym_skeleton",
+    regex: /(重点|关键|核心|要点|厉害处|真正重要的地方)(在于|是|其实是)/g,
+    severity: "suspicious"
+  },
+  {
+    id: "domain_profile_entry_skeleton",
+    regex: /(可以|能够|适合)?从.{1,24}(进入|入手|开始|切入)/g,
+    severity: "suspicious"
+  },
+  {
+    id: "abstract_not_x_but_y_skeleton",
+    regex: /不(只是|是|单是|简单是).{1,28}(而是|更是|真正是)/g,
+    severity: "suspicious"
+  },
+  {
+    id: "announced_bridge_skeleton",
+    regex: /(这|它)(体现|说明|呈现|构成|形成).{0,28}(关系|关联|结构|维度|桥接)/g,
+    severity: "suspicious"
+  },
+  {
+    id: "praise_thanks_skeleton",
+    regex: /(谢谢|感谢).{0,12}(认可|喜欢|夸奖|鼓励)/g,
+    severity: "hard_on_compliment"
+  }
+];
+
 export const NATURALNESS_TURN_FUNCTIONS = new Set([
   "analogy_statement",
   "affective_disclosure",
@@ -130,11 +158,29 @@ export function pathHint(path = []) {
 
 export function classifySurfaceHits(text) {
   const hits = [];
-  for (const pattern of SURFACE_PATTERNS) {
+  for (const pattern of [...SURFACE_PATTERNS, ...SURFACE_SYNONYM_SKELETONS]) {
     const matches = [...String(text || "").matchAll(pattern.regex)].map((match) => match[0]);
     if (matches.length) hits.push({ id: pattern.id, severity: pattern.severity, matches });
   }
   return hits;
+}
+
+export function provenanceForString({ file = "", path = [] } = {}) {
+  const normalized = relativeRoot(file);
+  const hint = pathHint(path);
+  if (/better_answer_shape/.test(hint)) return "fixture_better_shape";
+  if (/bad_answer|bad_answer_examples/.test(hint)) return "fixture_bad_answer";
+  if (/shadow_candidate|candidate_answer|surface_candidate/.test(hint)) return "shadow_candidate_output";
+  if (/transcripts\.\d+\.answer|turns\.\d+\.answer|current_answer|final_answer|raw_answer|output|reply/.test(hint)) {
+    if (/^artifacts\/training_os\/r22_/.test(normalized)) return "current_runtime_output";
+    if (/^artifacts\/training_os\//.test(normalized)) return "historical_artifact";
+    if (/^evals\//.test(normalized)) return "eval_expected_answer";
+  }
+  if (/expected|must_include|must_not_include|answer_shape|rubric/.test(hint) && /^evals\//.test(normalized)) return "eval_expected_answer";
+  if (/^docs\//.test(normalized)) return "documentation_or_contract";
+  if (/^artifacts\/training_os\//.test(normalized)) return "historical_artifact";
+  if (/^evals\//.test(normalized)) return "eval_expected_answer";
+  return "unknown";
 }
 
 export function turnFunctionFromObject(value = {}) {
@@ -161,4 +207,24 @@ export function responseModeFromObject(value = {}) {
 
 export function relativeRoot(path) {
   return relative(ROOT, path);
+}
+
+export function makeExecutionReport({
+  behaviorOk = true,
+  auditOnly = true,
+  blocking = false,
+  baselineCommit = "",
+  evaluatedCommit = "",
+  extra = {}
+} = {}) {
+  return {
+    execution_ok: true,
+    behavior_ok: Boolean(behaviorOk),
+    audit_only: Boolean(auditOnly),
+    blocking: Boolean(blocking),
+    baseline_commit: baselineCommit || "unknown",
+    evaluated_commit: evaluatedCommit || "unknown",
+    generated_at: new Date().toISOString(),
+    ...extra
+  };
 }

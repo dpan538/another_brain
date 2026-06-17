@@ -1,0 +1,1634 @@
+{
+  "generated_at": "2026-06-17T23:01:14.573Z",
+  "audit_source": "artifacts/training_os/r22_eval_proxy_leakage_audit.json",
+  "rows_total": 85,
+  "classification_counts": {
+    "semantic_grounding_migrate": 80,
+    "naturalness_proxy_migrate": 5
+  },
+  "policy": {
+    "facts_boundaries_and_identity_must_include_may_not_be_deleted_for_naturalness": true,
+    "legacy_rows_must_remain": true,
+    "migrate_only_naturalness_proxy_this_round": true,
+    "shadow_run_legacy_and_replacement_before_gate_change": true
+  },
+  "rows": [
+    {
+      "id": "r22_proxy_0001",
+      "file": "evals/r10_culture/luo_dayou.jsonl",
+      "source_id": "r10_luo_009",
+      "row_index": 8,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0002",
+      "file": "evals/r10_culture/poetry_art.jsonl",
+      "source_id": "r10_art_004",
+      "row_index": 3,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0003",
+      "file": "evals/r10_culture/poetry_art.jsonl",
+      "source_id": "r10_art_005",
+      "row_index": 4,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0004",
+      "file": "evals/r11_reasoning/followup_binding.jsonl",
+      "source_id": "r11_follow_002",
+      "row_index": 1,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0005",
+      "file": "evals/r11_reasoning/sentence_explanation.jsonl",
+      "source_id": "r11_sent_006",
+      "row_index": 5,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0006",
+      "file": "evals/r13_coverage/art_history.jsonl",
+      "source_id": "art_018",
+      "row_index": 17,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0007",
+      "file": "evals/r16_short_context/internal_sixteen_turn_compact_state.jsonl",
+      "source_id": "compact_001",
+      "row_index": 0,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "可以通过结构化实体承接"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (可以通过结构化实体承接) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0008",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_faye_chang_001",
+      "row_index": 0,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0009",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_faye_chang_001",
+      "row_index": 0,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0010",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_faye_chang_001",
+      "row_index": 0,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0011",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_jay_murakami_001",
+      "row_index": 1,
+      "turn_index": "10",
+      "path": "turns.10.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "共同记忆"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (共同记忆) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0012",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_jay_murakami_001",
+      "row_index": 1,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0013",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_jay_murakami_001",
+      "row_index": 1,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0014",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_jay_murakami_001",
+      "row_index": 1,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0015",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_duchamp_bauhaus_001",
+      "row_index": 2,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0016",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_duchamp_bauhaus_001",
+      "row_index": 2,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0017",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_duchamp_bauhaus_001",
+      "row_index": 2,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0018",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_photography_cinema_001",
+      "row_index": 3,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0019",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_photography_cinema_001",
+      "row_index": 3,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0020",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_photography_cinema_001",
+      "row_index": 3,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0021",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_science_evolution_001",
+      "row_index": 4,
+      "turn_index": "4",
+      "path": "turns.4.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0022",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_science_evolution_001",
+      "row_index": 4,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0023",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_science_evolution_001",
+      "row_index": 4,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0024",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_science_evolution_001",
+      "row_index": 4,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0025",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_urban_space_001",
+      "row_index": 5,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0026",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_urban_space_001",
+      "row_index": 5,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0027",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_urban_space_001",
+      "row_index": 5,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0028",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_technology_interface_001",
+      "row_index": 6,
+      "turn_index": "9",
+      "path": "turns.9.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "复杂"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (复杂) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0029",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_technology_interface_001",
+      "row_index": 6,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0030",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_technology_interface_001",
+      "row_index": 6,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0031",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_technology_interface_001",
+      "row_index": 6,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0032",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_ethics_action_001",
+      "row_index": 7,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0033",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_ethics_action_001",
+      "row_index": 7,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0034",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_ethics_action_001",
+      "row_index": 7,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0035",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_education_experience_001",
+      "row_index": 8,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0036",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_education_experience_001",
+      "row_index": 8,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0037",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_education_experience_001",
+      "row_index": 8,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0038",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_economics_institution_001",
+      "row_index": 9,
+      "turn_index": "5",
+      "path": "turns.5.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0039",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_economics_institution_001",
+      "row_index": 9,
+      "turn_index": "9",
+      "path": "turns.9.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0040",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_economics_institution_001",
+      "row_index": 9,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0041",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_economics_institution_001",
+      "row_index": 9,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0042",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_economics_institution_001",
+      "row_index": 9,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0043",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_cinema_time_001",
+      "row_index": 10,
+      "turn_index": "2",
+      "path": "turns.2.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0044",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_cinema_time_001",
+      "row_index": 10,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0045",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_cinema_time_001",
+      "row_index": 10,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0046",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_cinema_time_001",
+      "row_index": 10,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0047",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_language_meaning_001",
+      "row_index": 11,
+      "turn_index": "2",
+      "path": "turns.2.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0048",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_language_meaning_001",
+      "row_index": 11,
+      "turn_index": "4",
+      "path": "turns.4.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0049",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_language_meaning_001",
+      "row_index": 11,
+      "turn_index": "5",
+      "path": "turns.5.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0050",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_language_meaning_001",
+      "row_index": 11,
+      "turn_index": "9",
+      "path": "turns.9.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0051",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_language_meaning_001",
+      "row_index": 11,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0052",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_language_meaning_001",
+      "row_index": 11,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0053",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_language_meaning_001",
+      "row_index": 11,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0054",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_food_craft_001",
+      "row_index": 12,
+      "turn_index": "2",
+      "path": "turns.2.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0055",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_food_craft_001",
+      "row_index": 12,
+      "turn_index": "8",
+      "path": "turns.8.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0056",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_food_craft_001",
+      "row_index": 12,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0057",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_food_craft_001",
+      "row_index": 12,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0058",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_food_craft_001",
+      "row_index": 12,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0059",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_law_justice_001",
+      "row_index": 13,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0060",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_law_justice_001",
+      "row_index": 13,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0061",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_law_justice_001",
+      "row_index": 13,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0062",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_theater_performance_001",
+      "row_index": 14,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0063",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_theater_performance_001",
+      "row_index": 14,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0064",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_theater_performance_001",
+      "row_index": 14,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0065",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_history_memory_001",
+      "row_index": 15,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0066",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_history_memory_001",
+      "row_index": 15,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0067",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_history_memory_001",
+      "row_index": 15,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0068",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_care_relation_001",
+      "row_index": 16,
+      "turn_index": "9",
+      "path": "turns.9.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0069",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_care_relation_001",
+      "row_index": 16,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0070",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_care_relation_001",
+      "row_index": 16,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0071",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_care_relation_001",
+      "row_index": 16,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0072",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_psychology_memory_001",
+      "row_index": 17,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0073",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_psychology_memory_001",
+      "row_index": 17,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0074",
+      "file": "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl",
+      "source_id": "r21_blind_sibling_psychology_memory_001",
+      "row_index": 17,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0075",
+      "file": "evals/r21_mixed_dialogic/gold_session.json",
+      "source_id": "r21_dialogic_bridge_music_literature_identity_001",
+      "row_index": 0,
+      "turn_index": "10",
+      "path": "turns.10.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "共同记忆"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (共同记忆) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0076",
+      "file": "evals/r21_mixed_dialogic/gold_session.json",
+      "source_id": "r21_dialogic_bridge_music_literature_identity_001",
+      "row_index": 0,
+      "turn_index": "13",
+      "path": "turns.13.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "没有直接事实关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (没有直接事实关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0077",
+      "file": "evals/r21_mixed_dialogic/gold_session.json",
+      "source_id": "r21_dialogic_bridge_music_literature_identity_001",
+      "row_index": 0,
+      "turn_index": "14",
+      "path": "turns.14.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (接住) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0078",
+      "file": "evals/r21_mixed_dialogic/gold_session.json",
+      "source_id": "r21_dialogic_bridge_music_literature_identity_001",
+      "row_index": 0,
+      "turn_index": "15",
+      "path": "turns.15.must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (更深) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0079",
+      "file": "evals/r21_mixed_dialogic/paraphrase_family.jsonl",
+      "source_id": "r21_para_compliment_001",
+      "row_index": 4,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "compliment",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "naturalness_proxy_migrate",
+      "action_allowed_this_round": "add_replacement_rubric_shadow_only",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword must_include with bad/better surface-shape rubric, forbidden template patterns, response mode check, and one concrete specificity check.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0080",
+      "file": "evals/r21_mixed_dialogic/paraphrase_family.jsonl",
+      "source_id": "r21_para_deepening_001",
+      "row_index": 5,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "deepening_invitation",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "naturalness_proxy_migrate",
+      "action_allowed_this_round": "add_replacement_rubric_shadow_only",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace required words such as 更深 with a deep-question shape check: one non-menu question grounded in active topic.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0081",
+      "file": "evals/r22_natural_surface/proxy_leakage_cases.jsonl",
+      "source_id": "r22_proxy_must_include_catch_001",
+      "row_index": 0,
+      "turn_index": "",
+      "path": "bad_eval_pattern.must_include_any",
+      "expected_turn_function": "compliment",
+      "suspicious_must_include": [
+        "接住"
+      ],
+      "migration_class": "naturalness_proxy_migrate",
+      "action_allowed_this_round": "add_replacement_rubric_shadow_only",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword must_include with bad/better surface-shape rubric, forbidden template patterns, response mode check, and one concrete specificity check.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0082",
+      "file": "evals/r22_natural_surface/proxy_leakage_cases.jsonl",
+      "source_id": "r22_proxy_must_include_deeper_001",
+      "row_index": 1,
+      "turn_index": "",
+      "path": "bad_eval_pattern.must_include_any",
+      "expected_turn_function": "deepening_invitation",
+      "suspicious_must_include": [
+        "更深"
+      ],
+      "migration_class": "naturalness_proxy_migrate",
+      "action_allowed_this_round": "add_replacement_rubric_shadow_only",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace required words such as 更深 with a deep-question shape check: one non-menu question grounded in active topic.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0083",
+      "file": "evals/r22_natural_surface/proxy_leakage_cases.jsonl",
+      "source_id": "r22_proxy_must_include_relation_001",
+      "row_index": 2,
+      "turn_index": "",
+      "path": "bad_eval_pattern.must_include_any",
+      "expected_turn_function": "analogy_statement",
+      "suspicious_must_include": [
+        "关系",
+        "结构",
+        "共同"
+      ],
+      "migration_class": "naturalness_proxy_migrate",
+      "action_allowed_this_round": "add_replacement_rubric_shadow_only",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword must_include with bad/better surface-shape rubric, forbidden template patterns, response mode check, and one concrete specificity check.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0084",
+      "file": "evals/r9_regression/culture_reasoning_regression.jsonl",
+      "source_id": "",
+      "row_index": 23,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    },
+    {
+      "id": "r22_proxy_0085",
+      "file": "evals/r9_regression/culture_reasoning_regression.jsonl",
+      "source_id": "",
+      "row_index": 31,
+      "turn_index": "",
+      "path": "must_include_any",
+      "expected_turn_function": "",
+      "suspicious_must_include": [
+        "关系"
+      ],
+      "migration_class": "semantic_grounding_migrate",
+      "action_allowed_this_round": "keep_legacy_constraint",
+      "legacy_row_must_remain": true,
+      "replacement_required_before_removal": true,
+      "suggested_replacement": "Replace keyword proxy (关系) with semantic anchor or natural-language unit test.",
+      "old_constraint_deleted": false,
+      "threshold_weakened": false
+    }
+  ]
+}
