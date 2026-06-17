@@ -64,6 +64,14 @@ function activeLawCulture(state = {}, query = "") {
   return activeDialogicDomain(state, query) === "law";
 }
 
+function activeCareCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "care";
+}
+
+function activePsychologyCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "psychology";
+}
+
 function activeTheaterCulture(state = {}, query = "") {
   return activeDialogicDomain(state, query) === "theater";
 }
@@ -119,6 +127,8 @@ function activeDialogicDomain(state = {}, query = "") {
   if (/language|translation|semiotic|symbol|meaning/.test(stateDomain)) return "language";
   if (/food|cooking|taste|tea|kitchen|dish/.test(stateDomain)) return "food";
   if (/law|legal|justice|rule|court|rights/.test(stateDomain)) return "law";
+  if (/care|medical|clinic|nursing|health|body/.test(stateDomain)) return "care";
+  if (/psychology|psychoanalysis|dream|emotion|cognition/.test(stateDomain)) return "psychology";
   if (/theater|theatre|stage|performance|drama/.test(stateDomain)) return "theater";
   if (/history|memory|archive|historiography/.test(stateDomain)) return "history";
 
@@ -229,6 +239,12 @@ function answerAbstractComparison(query) {
   if (/(规则|判例|法律|正义|司法|解释)/.test(query)) {
     return "规则更像稳定边界，判例更像具体解释。一个给可预期性，一个把公平放进真实处境。";
   }
+  if (/(诊断|症状|照护|护理|临床|病房|身体经验)/.test(query)) {
+    return "诊断更像命名问题，照护更像陪人穿过处境。一个需要准确边界，一个需要倾听和承担。";
+  }
+  if (/(梦|记忆|心理|潜意识|情绪|解释)/.test(query) && /(区别|不同|工作模式|差别|差在哪里)/.test(query)) {
+    return "梦更像经验的变形，记忆更像时间里的重组。解释要轻一点，不能把一个人压成标签。";
+  }
   if (/(排练|演出|戏剧|舞台|剧场|表演)/.test(query)) {
     return "排练更像试错和校准，演出更像现场承担。一个反复调整，一个在观众面前完成判断。";
   }
@@ -265,6 +281,12 @@ function answerFormAnalogy(query, state = {}) {
   if (/(政治|伦理|行动)/.test(query)) {
     return "可以。伦理和戏剧都看行动：不是只看立场，而是看人在具体情境里怎样承担。";
   }
+  if (/(照护|医学人文|病房|诊断|身体经验)/.test(query)) {
+    return "可以。照护和文学都要读细节；不同的是照护还要守住身体、风险和边界。";
+  }
+  if (/(心理学|精神分析|梦|潜意识|情绪)/.test(query)) {
+    return "可以。心理学和文学都处理内心活动；不同的是心理解释要慢一点，不能急着替人下结论。";
+  }
   if (/(戏剧|舞台|剧场|表演)/.test(query)) {
     return "可以。戏剧和文学都靠细节与冲突组织场面；不同的是戏剧还要让身体和停顿在现场发生。";
   }
@@ -297,6 +319,12 @@ function answerCrossDomain(query, state = {}) {
   }
   if (/(伦理|舞台|政治|戏剧)/.test(query)) {
     return "能注意到。伦理和舞台都把人放进冲突里看；差别是伦理还要判断责任边界。";
+  }
+  if (/(照护|医学|身体|病房|文学)/.test(query)) {
+    return "能注意到。照护和文学都处理痛苦、叙述和关系；差别是照护必须守住身体风险和边界。";
+  }
+  if (/(心理学|心理|精神分析|文学|梦|记忆)/.test(query)) {
+    return "能注意到。心理学和文学都写记忆、欲望和误解；差别是心理学要守住解释边界。";
   }
   return "能注意到。共同点通常不在外观，而在怎样处理现代生活、材料秩序和人的位置；差别要回到媒介和历史。";
 }
@@ -446,6 +474,22 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "是。这里说的是伦理和公共行动里的对象，我会按责任、判断和后果继续。"
       });
     }
+    if (activeCareCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "confirm_active_referent",
+        questionType: "confirmation",
+        answer: "是。这里说的是照护和医学人文里的对象，我会按身体经验、倾听和边界继续。"
+      });
+    }
+    if (activePsychologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "confirm_active_referent",
+        questionType: "confirmation",
+        answer: "是。这里说的是心理学和自我理解里的对象，我会按梦、记忆、情绪和边界继续。"
+      });
+    }
     if (/(现代艺术家|艺术家|现代艺术)/.test(text)) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -536,6 +580,22 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "我会看它怎样把观念放进行动里：重点不是立场漂亮，而是人在情境里怎样承担责任。"
       });
     }
+    if (activeCareCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "reflective_judgment_care",
+        questionType: "reflective_judgment",
+        answer: "我会看它怎样把诊断拉回人的处境：照护判断不只是信息正确，也看倾听、边界和承担。"
+      });
+    }
+    if (activePsychologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "reflective_judgment_psychology",
+        questionType: "reflective_judgment",
+        answer: "我会看它怎样把经验变成可讨论的结构：不是替人下结论，而是保留边界地理解记忆和动机。"
+      });
+    }
     const profile = activeProfile(state, text);
     if (profile?.evaluation) {
       return makeDialogicResult({
@@ -610,6 +670,22 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         operation: "bridge_ethics_to_drama",
         questionType: "reflective_bridge",
         answer: answerFormAnalogy("政治伦理行动", state)
+      });
+    }
+    if (activeCareCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_care_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("照护医学人文身体经验", state)
+      });
+    }
+    if (activePsychologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_psychology_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("心理学精神分析梦", state)
       });
     }
     if (activeEducationCulture(state, text)) {
@@ -741,6 +817,22 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "可以这样看。法律和舞台都把冲突放到场景里，只是法律还要给出可承担的边界。"
       });
     }
+    if (activeCareCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_care_to_stage_scene",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。病房也像一个场景：身体、沉默和关系都在里面显出来，但照护还要守住真实边界。"
+      });
+    }
+    if (activePsychologyCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_psychology_to_stage_inner_conflict",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。心理叙述也有舞台感：记忆、误解和停顿会让内在冲突浮出来。"
+      });
+    }
     if (activeHistoryCulture(state, text)) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -757,7 +849,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
     });
   }
 
-  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation", "language_meaning", "food_craft", "law_justice", "theater_performance", "history_memory"].includes(turnFunction.bridge_target)) {
+  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation", "language_meaning", "food_craft", "law_justice", "care_relation", "psychology_memory", "theater_performance", "history_memory"].includes(turnFunction.bridge_target)) {
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_form_across_media",

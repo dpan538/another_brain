@@ -59,12 +59,14 @@ async function main() {
     language: blindSiblingRows.filter((row) => /(language|meaning|translation)/i.test(row.id)).length,
     food: blindSiblingRows.filter((row) => /(food|cooking|craft|table|kitchen)/i.test(row.id)).length,
     law: blindSiblingRows.filter((row) => /(law|justice|precedent|fairness)/i.test(row.id)).length,
+    care: blindSiblingRows.filter((row) => /(care|clinical|medical|body)/i.test(row.id)).length,
+    psychology: blindSiblingRows.filter((row) => /(psychology|memory_mind|dream|emotion)/i.test(row.id)).length,
     theater: blindSiblingRows.filter((row) => /(theater|stage|drama|performance)/i.test(row.id)).length,
     history: blindSiblingRows.filter((row) => /(history|memory|archive|gazetteer)/i.test(row.id)).length
   };
   const invariantFailures = [];
-  if (failureBankRows.length < 17) invariantFailures.push({ reason: "failure_bank_too_small", rows: failureBankRows.length, min: 17 });
-  if (blindSiblingRows.length < 16) invariantFailures.push({ reason: "blind_sibling_sessions_too_few", rows: blindSiblingRows.length, min: 16 });
+  if (failureBankRows.length < 19) invariantFailures.push({ reason: "failure_bank_too_small", rows: failureBankRows.length, min: 19 });
+  if (blindSiblingRows.length < 18) invariantFailures.push({ reason: "blind_sibling_sessions_too_few", rows: blindSiblingRows.length, min: 18 });
   for (const [theme, count] of Object.entries(blindThemeCoverage)) {
     if (count < 1) invariantFailures.push({ reason: "blind_theme_missing", theme });
   }

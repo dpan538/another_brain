@@ -1,13 +1,15 @@
 {
-  "generated_at": "2026-06-17T14:13:48.163Z",
+  "generated_at": "2026-06-17T14:28:07.254Z",
   "splits": {
     "train": {
-      "rows": 174,
+      "rows": 198,
       "scenario_families": 14,
       "entity_families": [
         "art.picasso",
+        "care.ethics",
         "cinema.wong_kar_wai",
         "design.modern_architecture",
+        "dialogic.care_relation.clinical_listening",
         "dialogic.cinema_time.wong_lens",
         "dialogic.economics_institution.keynes_labor",
         "dialogic.education_experience.dewey_learning",
@@ -16,6 +18,7 @@
         "dialogic.language_meaning.wittgenstein_use",
         "dialogic.law_justice.rule_interpretation",
         "dialogic.music_literature_identity.luo_natsume",
+        "dialogic.psychology_memory.dream_self",
         "dialogic.science_observation.darwin_fabre",
         "dialogic.technology_interface.shannon_tool",
         "dialogic.theater_performance.stage_conflict",
@@ -31,6 +34,7 @@
         "music.a_mei",
         "music.li_zongsheng",
         "music.luo_dayou",
+        "psychology.mind",
         "science.darwin",
         "science.history",
         "technology.shannon",
@@ -41,13 +45,15 @@
       ]
     },
     "dev": {
-      "rows": 138,
+      "rows": 162,
       "scenario_families": 14,
       "entity_families": [
         "art.duchamp",
+        "care.humanities",
         "cinema.hou_hsiao_hsien",
         "dev.quiet.synthetic",
         "dev.repair.synthetic",
+        "dialogic.care_relation.medical_humanities",
         "dialogic.cinema_time.hou_memory",
         "dialogic.economics_institution.smith_exchange",
         "dialogic.education_experience.montessori_child",
@@ -56,6 +62,7 @@
         "dialogic.language_meaning.saussure_sign",
         "dialogic.law_justice.fairness_case",
         "dialogic.music_literature_identity.faye_zhang",
+        "dialogic.psychology_memory.psychoanalysis",
         "dialogic.theater_performance.stage_space",
         "dialogic.urban_space.jacobs_city",
         "economics.smith",
@@ -67,19 +74,22 @@
         "law.justice",
         "lit.kawabata",
         "music.faye_wong",
+        "psychology.psychoanalysis",
         "science.carson",
         "theater.stage_space",
         "urban.le_corbusier"
       ]
     },
     "blind": {
-      "rows": 138,
+      "rows": 162,
       "scenario_families": 14,
       "entity_families": [
         "blind.quiet.synthetic",
         "blind.repair.synthetic",
+        "care.clinical_narrative",
         "cinema.ozu",
         "design.bauhaus",
+        "dialogic.care_relation.clinical_narrative",
         "dialogic.cinema_time.ozu_family",
         "dialogic.economics_institution.polanyi_market",
         "dialogic.education_experience.freire_classroom",
@@ -88,6 +98,7 @@
         "dialogic.language_meaning.benjamin_translation",
         "dialogic.law_justice.precedent_fairness",
         "dialogic.music_literature_identity.sodagreen_kawabata",
+        "dialogic.psychology_memory.memory_mind",
         "dialogic.technology_interface.turing_tool",
         "dialogic.theater_performance.drama_scene",
         "economics.polanyi",
@@ -99,6 +110,7 @@
         "law.precedent",
         "lit.murakami",
         "music.jay_chou",
+        "psychology.memory",
         "science.ecology",
         "technology.turing",
         "theater.drama"
@@ -106,5 +118,5 @@
     }
   },
   "unique_scenario_families": 14,
-  "blind_only_entity_families": 26
+  "blind_only_entity_families": 30
 }

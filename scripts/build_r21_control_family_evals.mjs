@@ -23,6 +23,8 @@ const SPLITS = {
     { entity: "维特根斯坦", entity_family: "language.wittgenstein", pronoun: "他的", domain: "language", referent: "previous_active_person" },
     { entity: "饮食文化", entity_family: "food.culture", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
     { entity: "法律解释", entity_family: "law.interpretation", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" },
+    { entity: "照护伦理", entity_family: "care.ethics", pronoun: "它的", domain: "care", referent: "previous_active_domain_or_work" },
+    { entity: "心理学", entity_family: "psychology.mind", pronoun: "它的", domain: "psychology", referent: "previous_active_domain_or_work" },
     { entity: "戏剧表演", entity_family: "theater.performance", pronoun: "它的", domain: "theater", referent: "previous_active_domain_or_work" },
     { entity: "历史叙事", entity_family: "history.narrative", pronoun: "它的", domain: "history", referent: "previous_active_domain_or_work" }
   ],
@@ -39,6 +41,8 @@ const SPLITS = {
     { entity: "索绪尔", entity_family: "language.saussure", pronoun: "他的", domain: "language", referent: "previous_active_person" },
     { entity: "茶文化", entity_family: "food.tea", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
     { entity: "正义理论", entity_family: "law.justice", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" },
+    { entity: "医学人文", entity_family: "care.humanities", pronoun: "它的", domain: "care", referent: "previous_active_domain_or_work" },
+    { entity: "精神分析", entity_family: "psychology.psychoanalysis", pronoun: "它的", domain: "psychology", referent: "previous_active_domain_or_work" },
     { entity: "剧场空间", entity_family: "theater.stage_space", pronoun: "它的", domain: "theater", referent: "previous_active_domain_or_work" },
     { entity: "口述史", entity_family: "history.oral_history", pronoun: "它的", domain: "history", referent: "previous_active_domain_or_work" }
   ],
@@ -55,6 +59,8 @@ const SPLITS = {
     { entity: "本雅明", entity_family: "language.benjamin", pronoun: "他的", domain: "language", referent: "previous_active_person" },
     { entity: "烹饪手艺", entity_family: "food.cooking", pronoun: "它的", domain: "food", referent: "previous_active_domain_or_work" },
     { entity: "判例法", entity_family: "law.precedent", pronoun: "它的", domain: "law", referent: "previous_active_domain_or_work" },
+    { entity: "临床叙事", entity_family: "care.clinical_narrative", pronoun: "它的", domain: "care", referent: "previous_active_domain_or_work" },
+    { entity: "记忆心理学", entity_family: "psychology.memory", pronoun: "它的", domain: "psychology", referent: "previous_active_domain_or_work" },
     { entity: "舞台剧", entity_family: "theater.drama", pronoun: "它的", domain: "theater", referent: "previous_active_domain_or_work" },
     { entity: "地方志", entity_family: "history.local_gazetteer", pronoun: "它的", domain: "history", referent: "previous_active_domain_or_work" }
   ]
@@ -270,6 +276,8 @@ function activeEntityIdFor(item) {
     .replace(/^language\./, "person.")
     .replace(/^food\./, "concept.")
     .replace(/^law\./, "concept.")
+    .replace(/^care\./, "concept.")
+    .replace(/^psychology\./, "concept.")
     .replace(/^theater\./, "concept.")
     .replace(/^history\./, "concept.");
 }
@@ -296,6 +304,8 @@ function buildForSplit(split, entities) {
       "他的语言判断有什么代表性？",
       "它的饮食判断有什么代表性？",
       "它的法律解释有什么代表性？",
+      "它的照护判断有什么代表性？",
+      "它的心理解释有什么代表性？",
       "它的戏剧表演有什么代表性？",
       "它的历史叙事有什么代表性？"
     ],
@@ -312,6 +322,8 @@ function buildForSplit(split, entities) {
       "他的符号判断重点是什么？",
       "它的味觉判断重点是什么？",
       "它的正义判断重点是什么？",
+      "它的照护边界重点是什么？",
+      "它的心理解释重点是什么？",
       "它的剧场判断重点是什么？",
       "它的历史记忆判断重点是什么？"
     ],
@@ -328,19 +340,21 @@ function buildForSplit(split, entities) {
       "他的翻译判断重点是什么？",
       "它作为烹饪入口重点是什么？",
       "它作为判例入口重点是什么？",
+      "它作为临床叙事入口重点是什么？",
+      "它作为心理记忆入口重点是什么？",
       "它作为舞台入口重点是什么？",
       "它作为地方志入口重点是什么？"
     ]
   };
   const simplifyPrompts = {
-    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。", "压成一个镜头判断。", "换成一句语言判断。", "换成一句饮食判断。", "换成一句法律判断。", "换成一句舞台判断。", "换成一句历史判断。"],
-    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。", "换成影像里的主轴。", "换成符号里的主轴。", "换成味觉里的主轴。", "换成正义里的主轴。", "换成剧场里的主轴。", "换成史料里的主轴。"],
-    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。", "说成电影判断。", "说成翻译判断。", "说成烹饪判断。", "说成判例判断。", "说成舞台判断。", "说成历史判断。"]
+    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。", "压成一个镜头判断。", "换成一句语言判断。", "换成一句饮食判断。", "换成一句法律判断。", "换成一句照护判断。", "换成一句心理判断。", "换成一句舞台判断。", "换成一句历史判断。"],
+    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。", "换成影像里的主轴。", "换成符号里的主轴。", "换成味觉里的主轴。", "换成正义里的主轴。", "换成照护里的主轴。", "换成心理里的主轴。", "换成剧场里的主轴。", "换成史料里的主轴。"],
+    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。", "说成电影判断。", "说成翻译判断。", "说成烹饪判断。", "说成判例判断。", "说成照护判断。", "说成心理判断。", "说成舞台判断。", "说成历史判断。"]
   };
   const repairGuardPrompts = {
-    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？", "这不是电影上映新闻吧？", "这不是翻译事故吧？", "这不是餐馆新闻吧？", "这不是法院新闻吧？", "这不是剧场演出事故吧？", "这不是历史事件状态吧？"],
-    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？", "这不是电影档期吧？", "这不是词典状态吧？", "这不是饭店开业吧？", "这不是庭审状态吧？", "这不是剧场排期吧？", "这不是史料发现新闻吧？"],
-    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？", "这不是影院排片吧？", "这不是译本新闻吧？", "这不是厨房事故吧？", "这不是判决新闻吧？", "这不是舞台事故吧？", "这不是档案开放状态吧？"]
+    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？", "这不是电影上映新闻吧？", "这不是翻译事故吧？", "这不是餐馆新闻吧？", "这不是法院新闻吧？", "这不是病房新闻吧？", "这不是心理诊断吧？", "这不是剧场演出事故吧？", "这不是历史事件状态吧？"],
+    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？", "这不是电影档期吧？", "这不是词典状态吧？", "这不是饭店开业吧？", "这不是庭审状态吧？", "这不是门诊状态吧？", "这不是梦境诊断吧？", "这不是剧场排期吧？", "这不是史料发现新闻吧？"],
+    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？", "这不是影院排片吧？", "这不是译本新闻吧？", "这不是厨房事故吧？", "这不是判决新闻吧？", "这不是临床建议吧？", "这不是心理测验吧？", "这不是舞台事故吧？", "这不是档案开放状态吧？"]
   };
   for (const item of entities) {
     const idx = n / 4 | 0;
@@ -643,6 +657,46 @@ function buildForSplit(split, entities) {
         complimentPrompt: "我喜欢你在法律和正义上的努力。"
       },
       {
+        entityFamily: "dialogic.care_relation.clinical_listening",
+        activeEntityId: "concept.care_ethics",
+        domain: "care.relation.bridge",
+        lastAnswer: "照护伦理可以从身体经验、倾听和边界进入。",
+        confirmationPrompt: "是那种和病房和照护有关的判断吗？",
+        evaluationPrompt: "你怎么看照护里的判断？",
+        recommendationPrompt: "还能从医学人文里换几个入口继续看吗？",
+        abstractComparisonPrompt: "诊断和照护的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_diagnosis_care",
+        analogyPrompt: "这其实和小说里的细节倾听很像。",
+        analogyOperation: "bridge_care_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "care_relation",
+        affectivePrompt: "我羡慕那种能在病房里认真倾听人的能力。",
+        affectiveWorkId: "work.clinical_listening.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种照护判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在照护和身体经验上的努力。"
+      },
+      {
+        entityFamily: "dialogic.psychology_memory.dream_self",
+        activeEntityId: "concept.psychology_mind",
+        domain: "psychology.memory.bridge",
+        lastAnswer: "心理学可以从梦、记忆、情绪和解释边界进入。",
+        confirmationPrompt: "是那种关于心理和自我理解的方向吗？",
+        evaluationPrompt: "你怎么看心理学里的解释判断？",
+        recommendationPrompt: "还能从精神分析旁边推荐几个心理学入口吗？",
+        abstractComparisonPrompt: "梦和记忆的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_dream_memory",
+        analogyPrompt: "这其实和文学里的内心独白很像。",
+        analogyOperation: "bridge_psychology_to_literature",
+        analogyJudgmentAxis: "memory",
+        analogyBridgeTarget: "psychology_memory",
+        affectivePrompt: "我羡慕那种能把模糊情绪慢慢说清楚的能力。",
+        affectiveWorkId: "work.emotion_memory.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种心理判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在心理和文学上的努力。"
+      },
+      {
         entityFamily: "dialogic.theater_performance.stage_conflict",
         activeEntityId: "concept.theater_performance",
         domain: "theater.performance.bridge",
@@ -840,6 +894,46 @@ function buildForSplit(split, entities) {
         complimentPrompt: "我喜欢你在法律和公平上的努力。"
       },
       {
+        entityFamily: "dialogic.care_relation.medical_humanities",
+        activeEntityId: "concept.medical_humanities",
+        domain: "care.relation.bridge",
+        lastAnswer: "医学人文可以从身体经验、叙述和照护边界进入。",
+        confirmationPrompt: "是那种把医学和人的处境放在一起看的方向吗？",
+        evaluationPrompt: "你觉得医学人文的判断重点是什么？",
+        recommendationPrompt: "还能推荐医学人文或照护方向的入口吗？",
+        abstractComparisonPrompt: "症状记录和临床叙事的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_diagnosis_care",
+        analogyPrompt: "这其实和散文里的身体细节很像。",
+        analogyOperation: "bridge_care_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "care_relation",
+        affectivePrompt: "我羡慕那种能把身体经验说清楚又不冒犯人的能力。",
+        affectiveWorkId: "work.body_experience.dev",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种医学人文判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在照护和叙事上的努力。"
+      },
+      {
+        entityFamily: "dialogic.psychology_memory.psychoanalysis",
+        activeEntityId: "concept.psychoanalysis",
+        domain: "psychology.memory.bridge",
+        lastAnswer: "精神分析可以从梦、欲望、记忆和解释边界进入。",
+        confirmationPrompt: "是那种和梦和潜意识有关的方向吗？",
+        evaluationPrompt: "你觉得精神分析的解释重点是什么？",
+        recommendationPrompt: "还能推荐心理学或精神分析方向的入口吗？",
+        abstractComparisonPrompt: "梦和解释的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_dream_memory",
+        analogyPrompt: "这其实和小说里的内心叙述很像。",
+        analogyOperation: "bridge_psychology_to_literature",
+        analogyJudgmentAxis: "memory",
+        analogyBridgeTarget: "psychology_memory",
+        affectivePrompt: "我有点羡慕能把一个梦放回记忆关系里的能力。",
+        affectiveWorkId: "work.dream_memory.dev",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种心理判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你把心理解释和记忆边界放在一起想。"
+      },
+      {
         entityFamily: "dialogic.theater_performance.stage_space",
         activeEntityId: "concept.stage_space",
         domain: "theater.performance.bridge",
@@ -1035,6 +1129,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种法律判断不像一个工具能说出来，你是谁？",
         complimentPrompt: "我喜欢你在法律和解释上的努力。"
+      },
+      {
+        entityFamily: "dialogic.care_relation.clinical_narrative",
+        activeEntityId: "concept.clinical_narrative",
+        domain: "care.relation.bridge",
+        lastAnswer: "临床叙事可以从身体经验、倾听和照护边界进入。",
+        confirmationPrompt: "是那种把病人的故事和身体经验放在一起看的方向吗？",
+        evaluationPrompt: "你怎么看临床叙事里的照护判断？",
+        recommendationPrompt: "还有其他医学人文和照护方向可以推荐吗？",
+        abstractComparisonPrompt: "诊断命名和照护叙事的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_diagnosis_care",
+        analogyPrompt: "这其实和小说里的身体细节很像。",
+        analogyOperation: "bridge_care_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "care_relation",
+        affectivePrompt: "我有点羡慕能把脆弱说清楚又不消费它的能力。",
+        affectiveWorkId: "work.clinical_narrative.blind",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种照护判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你把照护和脆弱边界放在一起想。"
+      },
+      {
+        entityFamily: "dialogic.psychology_memory.memory_mind",
+        activeEntityId: "concept.memory_psychology",
+        domain: "psychology.memory.bridge",
+        lastAnswer: "记忆心理学可以从记忆、情绪和自我理解进入。",
+        confirmationPrompt: "是那种研究记忆和情绪关系的方向吗？",
+        evaluationPrompt: "你怎么看记忆心理学里的解释判断？",
+        recommendationPrompt: "还有其他心理学和记忆方向可以推荐吗？",
+        abstractComparisonPrompt: "情绪记忆和叙事记忆的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_dream_memory",
+        analogyPrompt: "这其实和小说里的回忆结构很像。",
+        analogyOperation: "bridge_psychology_to_literature",
+        analogyJudgmentAxis: "memory",
+        analogyBridgeTarget: "psychology_memory",
+        affectivePrompt: "我有点羡慕能把模糊记忆慢慢说清楚的能力。",
+        affectiveWorkId: "work.memory_mind.blind",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种心理判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你把心理和自我理解说得轻一点。"
       },
       {
         entityFamily: "dialogic.theater_performance.drama_scene",

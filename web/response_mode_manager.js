@@ -122,6 +122,17 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
     };
   }
 
+  if (["analogy_statement", "affective_disclosure", "compliment", "deepening_invitation"].includes(turnFunction.turn_function)) {
+    return {
+      mode: RESPONSE_MODES.DIRECT_ANSWER,
+      confidence: turnFunction.confidence || 0.82,
+      reasons: [`turn_function_${turnFunction.turn_function}`],
+      should_skip_repair: true,
+      userTurn,
+      turnFunction
+    };
+  }
+
   if (SIMPLIFY_RE.test(text) && lastAssistantAnswer(session)) {
     return {
       mode: RESPONSE_MODES.SIMPLIFY_LAST_ANSWER,
@@ -157,17 +168,6 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
       mode: RESPONSE_MODES.FOLLOWUP_ANSWER,
       confidence: 0.9,
       reasons: ["turn_function_confirmation_with_active_topic"],
-      should_skip_repair: true,
-      userTurn,
-      turnFunction
-    };
-  }
-
-  if (["analogy_statement", "affective_disclosure", "compliment", "deepening_invitation"].includes(turnFunction.turn_function)) {
-    return {
-      mode: RESPONSE_MODES.DIRECT_ANSWER,
-      confidence: turnFunction.confidence || 0.82,
-      reasons: [`turn_function_${turnFunction.turn_function}`],
       should_skip_repair: true,
       userTurn,
       turnFunction
