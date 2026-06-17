@@ -20,6 +20,10 @@ function activeMandopop(state = {}, query = "") {
   return activeDialogicDomain(state, query) === "music";
 }
 
+function activeCinemaCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "cinema";
+}
+
 function activeVisualCulture(state = {}, query = "") {
   return activeDialogicDomain(state, query) === "visual";
 }
@@ -46,6 +50,10 @@ function activeEducationCulture(state = {}, query = "") {
 
 function activeEconomicsCulture(state = {}, query = "") {
   return activeDialogicDomain(state, query) === "economics";
+}
+
+function activeLanguageCulture(state = {}, query = "") {
+  return activeDialogicDomain(state, query) === "language";
 }
 
 function activeLuoLike(state = {}, query = "") {
@@ -78,13 +86,21 @@ function activeDialogicDomain(state = {}, query = "") {
       ""
   ).toLowerCase();
   if (/music|mandopop/.test(stateDomain)) return "music";
-  if (/visual|art|design|photo|cinema/.test(stateDomain)) return "visual";
+  if (/cinema|film|movie/.test(stateDomain)) return "cinema";
+  if (/visual|art|design|photo/.test(stateDomain)) return "visual";
   if (/science|ecology/.test(stateDomain)) return "science";
   if (/urban|city|architecture|space/.test(stateDomain)) return "urban";
   if (/technology|interface|tool|comput/.test(stateDomain)) return "technology";
   if (/ethics|politic|action/.test(stateDomain)) return "ethics";
   if (/education|learning|classroom/.test(stateDomain)) return "education";
   if (/economics|market|institution|labor/.test(stateDomain)) return "economics";
+  if (
+    /philosophy/.test(stateDomain) &&
+    /(语言|翻译|命名|意义|符号|维特根斯坦|索绪尔|本雅明)/.test(`${query} ${focusContext} ${recentText(state)}`)
+  ) {
+    return "language";
+  }
+  if (/language|translation|semiotic|symbol|meaning/.test(stateDomain)) return "language";
 
   return detectDialogicDomain({ query: "", context: recentText(state) });
 }
@@ -107,6 +123,12 @@ function extractKnowSubject(query = "") {
   if (/阿伦特/.test(text)) return "阿伦特";
   if (/弗莱雷/.test(text)) return "弗莱雷";
   if (/波兰尼/.test(text)) return "波兰尼";
+  if (/王家卫/.test(text)) return "王家卫";
+  if (/侯孝贤/.test(text)) return "侯孝贤";
+  if (/小津安二郎|小津/.test(text)) return "小津安二郎";
+  if (/维特根斯坦/.test(text)) return "维特根斯坦";
+  if (/索绪尔/.test(text)) return "索绪尔";
+  if (/本雅明/.test(text)) return "本雅明";
   return "";
 }
 
@@ -130,6 +152,9 @@ function makeDialogicResult({
 }
 
 function answerRecommendation(query, state = {}) {
+  if (/(摄影|照片|现代艺术|艺术).*(电影|方向|推荐)|电影.*摄影/.test(query)) {
+    return "可以从杜尚、包豪斯、桑塔格旁接王家卫：先看观看、形式秩序和媒介位置，再看镜头叙事。";
+  }
   const profile = activeProfile(state, query);
   if (profile?.recommendation) return profile.recommendation;
   if (/(港台|华语|流行|歌手|还能听谁|还有谁)/.test(query)) {
@@ -178,6 +203,12 @@ function answerAbstractComparison(query) {
   if (/(市场|计划|劳动|资本|经济)/.test(query)) {
     return "市场更像分散选择，计划更像集中安排；劳动和资本的差别，则在谁承担身体、时间和风险。";
   }
+  if (/(镜头|剪辑|长镜头|电影)/.test(query)) {
+    return "镜头更像选择视角，剪辑更像安排时间。一个决定你看见什么，一个决定你怎样经历。";
+  }
+  if (/(语言|翻译|命名|意义|符号)/.test(query)) {
+    return "命名像把对象固定下来，翻译像重新安排关系。一个重边界，一个重转化。";
+  }
   return "一种形式偏连续结构，一种形式偏单点命中；差别在材料、顺序、观看位置和完成方式。";
 }
 
@@ -209,6 +240,9 @@ function answerCrossDomain(query, state = {}) {
   if (/(日本文学|台湾文学)/.test(query)) {
     return "能注意到。两者都常写现代化下的个人、家庭和记忆；日本文学更细压心理，台湾文学更常连着殖民、乡土和身份转换。";
   }
+  if (/(摄影.*电影|电影.*摄影)/.test(query)) {
+    return "能注意到。摄影和电影都处理现代生活、媒介技术和历史记忆；差别是照片凝住一刻，电影组织时间。";
+  }
   const profile = activeProfile(state, query);
   if (profile?.crossDomain) return profile.crossDomain;
   if (/(包豪斯|现代建筑|设计|摄影|电影|艺术|形式)/.test(query)) {
@@ -232,6 +266,12 @@ function answerCrossDomain(query, state = {}) {
 function answerListRequest(query, state = {}) {
   if (/日本文学/.test(query)) {
     return "三个入口：夏目漱石《我是猫》或《心》、川端康成《雪国》、太宰治《人间失格》。";
+  }
+  if (/(电影作者|电影.*(作者|导演|代表作品|作品)|导演.*作品)/.test(query)) {
+    return "三个入口：王家卫《花样年华》、侯孝贤《童年往事》、小津安二郎《东京物语》。";
+  }
+  if (/(语言思想|语言.*(代表人物|文本|作品)|翻译.*(代表人物|文本)|语言学|哲学研究)/.test(query)) {
+    return "三个入口：维特根斯坦《哲学研究》、索绪尔《普通语言学教程》、本雅明《译者的任务》。";
   }
   const profile = activeProfile(state, query);
   if (profile?.listAnswer) return profile.listAnswer;
@@ -494,6 +534,14 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "analogy_statement" && turnFunction.bridge_target === "music_to_literature") {
+    if (activeCinemaCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_cinema_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("电影镜头", state)
+      });
+    }
     if (activeScienceCulture(state, text)) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -542,6 +590,14 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: answerFormAnalogy("经济市场劳动", state)
       });
     }
+    if (activeLanguageCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_language_to_literature",
+        questionType: "reflective_bridge",
+        answer: answerFormAnalogy("语言翻译命名", state)
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_music_to_literature",
@@ -551,6 +607,14 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "analogy_statement" && turnFunction.bridge_target === "stage_theater") {
+    if (activeCinemaCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_cinema_to_stage_conflict",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。电影和舞台都靠场景、停顿和冲突，只是电影还能用镜头距离安排关系。"
+      });
+    }
     if (activeTechnologyCulture(state, text)) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -583,6 +647,14 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "可以这样看。科学叙事也要安排细节、冲突和转折，只是最后要回到证据。"
       });
     }
+    if (activeLanguageCulture(state, text)) {
+      return makeDialogicResult({
+        turnFunction: fn,
+        operation: "bridge_language_to_stage_dialogue",
+        questionType: "reflective_bridge",
+        answer: "可以这样看。语言和舞台都看一句话怎样进入场景：说法、停顿和误解都会制造冲突。"
+      });
+    }
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_to_stage_detail_conflict",
@@ -591,7 +663,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
     });
   }
 
-  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation"].includes(turnFunction.bridge_target)) {
+  if (fn === "analogy_statement" && ["design_form", "cinema_form", "science_observation", "urban_form", "technology_form", "ethics_action", "education_experience", "economics_relation", "language_meaning"].includes(turnFunction.bridge_target)) {
     return makeDialogicResult({
       turnFunction: fn,
       operation: "bridge_form_across_media",

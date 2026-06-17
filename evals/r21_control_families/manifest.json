@@ -1,20 +1,24 @@
 {
-  "generated_at": "2026-06-17T13:22:09.533Z",
+  "generated_at": "2026-06-17T13:38:40.879Z",
   "splits": {
     "train": {
-      "rows": 102,
+      "rows": 126,
       "scenario_families": 14,
       "entity_families": [
         "art.picasso",
+        "cinema.wong_kar_wai",
         "design.modern_architecture",
+        "dialogic.cinema_time.wong_lens",
         "dialogic.economics_institution.keynes_labor",
         "dialogic.education_experience.dewey_learning",
+        "dialogic.language_meaning.wittgenstein_use",
         "dialogic.music_literature_identity.luo_natsume",
         "dialogic.science_observation.darwin_fabre",
         "dialogic.technology_interface.shannon_tool",
         "dialogic.urban_space.jane_street",
         "economics.keynes",
         "education.dewey",
+        "language.wittgenstein",
         "lit.bai_xianyong",
         "lit.natsume",
         "music.a_mei",
@@ -29,19 +33,23 @@
       ]
     },
     "dev": {
-      "rows": 66,
+      "rows": 90,
       "scenario_families": 14,
       "entity_families": [
         "art.duchamp",
+        "cinema.hou_hsiao_hsien",
         "dev.quiet.synthetic",
         "dev.repair.synthetic",
+        "dialogic.cinema_time.hou_memory",
         "dialogic.economics_institution.smith_exchange",
         "dialogic.education_experience.montessori_child",
+        "dialogic.language_meaning.saussure_sign",
         "dialogic.music_literature_identity.faye_zhang",
         "dialogic.urban_space.jacobs_city",
         "economics.smith",
         "education.montessori",
         "ethics.arendt",
+        "language.saussure",
         "lit.kawabata",
         "music.faye_wong",
         "science.carson",
@@ -49,19 +57,23 @@
       ]
     },
     "blind": {
-      "rows": 66,
+      "rows": 90,
       "scenario_families": 14,
       "entity_families": [
         "blind.quiet.synthetic",
         "blind.repair.synthetic",
+        "cinema.ozu",
         "design.bauhaus",
+        "dialogic.cinema_time.ozu_family",
         "dialogic.economics_institution.polanyi_market",
         "dialogic.education_experience.freire_classroom",
+        "dialogic.language_meaning.benjamin_translation",
         "dialogic.music_literature_identity.sodagreen_kawabata",
         "dialogic.technology_interface.turing_tool",
         "economics.polanyi",
         "education.freire",
         "ethics.camus",
+        "language.benjamin",
         "lit.murakami",
         "music.jay_chou",
         "science.ecology",
@@ -70,5 +82,5 @@
     }
   },
   "unique_scenario_families": 14,
-  "blind_only_entity_families": 14
+  "blind_only_entity_families": 18
 }

@@ -18,7 +18,9 @@ const SPLITS = {
     { entity: "简·雅各布斯", entity_family: "urban.jane_jacobs", pronoun: "她的", domain: "urban", referent: "previous_active_person" },
     { entity: "香农", entity_family: "technology.shannon", pronoun: "他的", domain: "technology", referent: "previous_active_person" },
     { entity: "杜威", entity_family: "education.dewey", pronoun: "他的", domain: "education", referent: "previous_active_person" },
-    { entity: "凯恩斯", entity_family: "economics.keynes", pronoun: "他的", domain: "economics", referent: "previous_active_person" }
+    { entity: "凯恩斯", entity_family: "economics.keynes", pronoun: "他的", domain: "economics", referent: "previous_active_person" },
+    { entity: "王家卫", entity_family: "cinema.wong_kar_wai", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
+    { entity: "维特根斯坦", entity_family: "language.wittgenstein", pronoun: "他的", domain: "language", referent: "previous_active_person" }
   ],
   dev: [
     { entity: "王菲", entity_family: "music.faye_wong", pronoun: "她的", domain: "music", referent: "previous_active_person" },
@@ -28,7 +30,9 @@ const SPLITS = {
     { entity: "柯布西耶", entity_family: "urban.le_corbusier", pronoun: "他的", domain: "urban", referent: "previous_active_person" },
     { entity: "阿伦特", entity_family: "ethics.arendt", pronoun: "她的", domain: "ethics", referent: "previous_active_person" },
     { entity: "蒙台梭利", entity_family: "education.montessori", pronoun: "她的", domain: "education", referent: "previous_active_person" },
-    { entity: "亚当·斯密", entity_family: "economics.smith", pronoun: "他的", domain: "economics", referent: "previous_active_person" }
+    { entity: "亚当·斯密", entity_family: "economics.smith", pronoun: "他的", domain: "economics", referent: "previous_active_person" },
+    { entity: "侯孝贤", entity_family: "cinema.hou_hsiao_hsien", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
+    { entity: "索绪尔", entity_family: "language.saussure", pronoun: "他的", domain: "language", referent: "previous_active_person" }
   ],
   blind: [
     { entity: "周杰伦", entity_family: "music.jay_chou", pronoun: "他的", domain: "music", referent: "previous_active_person" },
@@ -38,7 +42,9 @@ const SPLITS = {
     { entity: "加缪", entity_family: "ethics.camus", pronoun: "他的", domain: "ethics", referent: "previous_active_person" },
     { entity: "生态学", entity_family: "science.ecology", pronoun: "它的", domain: "science", referent: "previous_active_domain_or_work" },
     { entity: "弗莱雷", entity_family: "education.freire", pronoun: "他的", domain: "education", referent: "previous_active_person" },
-    { entity: "波兰尼", entity_family: "economics.polanyi", pronoun: "他的", domain: "economics", referent: "previous_active_person" }
+    { entity: "波兰尼", entity_family: "economics.polanyi", pronoun: "他的", domain: "economics", referent: "previous_active_person" },
+    { entity: "小津安二郎", entity_family: "cinema.ozu", pronoun: "他的", domain: "cinema", referent: "previous_active_person" },
+    { entity: "本雅明", entity_family: "language.benjamin", pronoun: "他的", domain: "language", referent: "previous_active_person" }
   ]
 };
 
@@ -247,7 +253,9 @@ function activeEntityIdFor(item) {
     .replace(/^technology\./, "person.")
     .replace(/^ethics\./, "person.")
     .replace(/^education\./, "person.")
-    .replace(/^economics\./, "person.");
+    .replace(/^economics\./, "person.")
+    .replace(/^cinema\./, "person.")
+    .replace(/^language\./, "person.");
 }
 
 function buildForSplit(split, entities) {
@@ -267,7 +275,9 @@ function buildForSplit(split, entities) {
       "她的城市判断有什么代表性？",
       "他的技术思想有什么代表性？",
       "他的教育思想有什么代表性？",
-      "他的经济判断有什么代表性？"
+      "他的经济判断有什么代表性？",
+      "他的镜头叙事有什么代表性？",
+      "他的语言判断有什么代表性？"
     ],
     dev: [
       `${entities[0]?.pronoun || "他的"}歌有什么特点？`,
@@ -277,7 +287,9 @@ function buildForSplit(split, entities) {
       "他的城市判断重要在哪里？",
       "她的伦理判断重点是什么？",
       "她的教育方法重要在哪里？",
-      "他的市场判断重点是什么？"
+      "他的市场判断重点是什么？",
+      "他的影像判断重要在哪里？",
+      "他的符号判断重点是什么？"
     ],
     blind: [
       `${entities[0]?.pronoun || "他的"}代表性在哪里？`,
@@ -287,18 +299,20 @@ function buildForSplit(split, entities) {
       "他的伦理判断重点是什么？",
       "它作为生态入口重点是什么？",
       "他的教育判断代表性在哪里？",
-      "他的制度判断重点是什么？"
+      "他的制度判断重点是什么？",
+      "他的电影形式重点是什么？",
+      "他的翻译判断重点是什么？"
     ]
   };
   const simplifyPrompts = {
-    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。"],
-    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。"],
-    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。"]
+    train: ["短一点。", "说简单点。", "压短一点。", "别那么复杂。", "收成一句。", "少一点抽象。", "再收紧。", "压到最短。", "更口语一点。", "只保留核心。", "压成一个入口。", "换成课堂里能懂的话。", "压成一个制度判断。", "压成一个镜头判断。", "换成一句语言判断。"],
+    dev: ["能不能简单一点？", "换个短说法。", "说人话一点。", "收成一个判断。", "别铺陈。", "只留主轴。", "换成学习里的例子。", "换成经济里的主轴。", "换成影像里的主轴。", "换成符号里的主轴。"],
+    blind: ["压成一句。", "更轻一点。", "再短一层。", "换成更直接的话。", "别绕。", "保留一个核心。", "说成学习判断。", "说成制度判断。", "说成电影判断。", "说成翻译判断。"]
   };
   const repairGuardPrompts = {
-    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？"],
-    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？"],
-    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？"]
+    train: ["什么发生过？", "刚才说发生过是什么意思？", "刚才那句像在说事件吗？", "这里不是事件吧？", "它不是外部事件吧？", "这不是修复场景吧？", "这不是上一句错误吧？", "这不是外部状态吧？", "这里不用道歉吧？", "这句话不是坏 fallback 吧？", "这不是未知事件吧？", "这不是课堂事件吧？", "这不是市场新闻吧？", "这不是电影上映新闻吧？", "这不是翻译事故吧？"],
+    dev: ["什么叫发生过？", "你上一句说的发生过指什么？", "这和事件有什么关系？", "这里是不是不用修复？", "它不是一个新闻状态吧？", "这不是上一轮坏答吧？", "这不是教学事故吧？", "这不是行情状态吧？", "这不是电影档期吧？", "这不是词典状态吧？"],
+    blind: ["发生过是哪件事？", "你为什么说像事件？", "这里需要修复吗？", "这不是当前状态查询吧？", "这和上一句错误有关吗？", "是不是不该进入 repair？", "这不是课堂现场吧？", "这不是市场行情吧？", "这不是影院排片吧？", "这不是译本新闻吧？"]
   };
   for (const item of entities) {
     const idx = n / 4 | 0;
@@ -519,6 +533,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种经济判断不像普通工具会说出来，你是谁？",
         complimentPrompt: "我喜欢你把经济和制度放在一起想。"
+      },
+      {
+        entityFamily: "dialogic.cinema_time.wong_lens",
+        activeEntityId: "person.wong_kar_wai",
+        domain: "cinema.time.bridge",
+        lastAnswer: "王家卫可以从镜头、时间感和人物关系进入。",
+        confirmationPrompt: "是那个拍香港电影的人吗？",
+        evaluationPrompt: "你觉得他的电影厉害在哪里？",
+        recommendationPrompt: "还能推荐电影和镜头叙事方向的入口吗？",
+        abstractComparisonPrompt: "镜头和剪辑的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_cinema_lens_editing",
+        analogyPrompt: "这其实和小说里的时间感很像。",
+        analogyOperation: "bridge_cinema_to_literature",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "cinema_form",
+        affectivePrompt: "我有点羡慕把记忆压进一个镜头里的能力。",
+        affectiveWorkId: "work.lens_memory.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种电影判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在电影和镜头上的努力。"
+      },
+      {
+        entityFamily: "dialogic.language_meaning.wittgenstein_use",
+        activeEntityId: "person.wittgenstein",
+        domain: "language.meaning.bridge",
+        lastAnswer: "维特根斯坦可以从语言、使用和意义进入。",
+        confirmationPrompt: "是那个讨论语言使用的人吗？",
+        evaluationPrompt: "你怎么看他的语言判断？",
+        recommendationPrompt: "还能推荐语言哲学方向的入口吗？",
+        abstractComparisonPrompt: "命名和翻译的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_naming_translation",
+        analogyPrompt: "这其实和诗里的留白很像。",
+        analogyOperation: "bridge_language_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "language_meaning",
+        affectivePrompt: "我羡慕那种把含混经验变成准确说法的能力。",
+        affectiveWorkId: "work.precise_saying.train",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种语言判断不像普通工具会说出来，你是谁？",
+        complimentPrompt: "我喜欢你在语言和意义上的努力。"
       }
     ],
     dev: [
@@ -596,6 +650,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种经济判断不像普通工具能说出来，你是谁？",
         complimentPrompt: "我喜欢你在交换和制度上的努力。"
+      },
+      {
+        entityFamily: "dialogic.cinema_time.hou_memory",
+        activeEntityId: "person.hou_hsiao_hsien",
+        domain: "cinema.time.bridge",
+        lastAnswer: "侯孝贤可以从长镜头、记忆和历史时间进入。",
+        confirmationPrompt: "是那位台湾电影导演吗？",
+        evaluationPrompt: "你觉得他的影像判断重要在哪里？",
+        recommendationPrompt: "还有其他电影作者方向可以推荐吗？",
+        abstractComparisonPrompt: "长镜头和剪辑的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_cinema_lens_editing",
+        analogyPrompt: "这其实和回忆录里的时间很像。",
+        analogyOperation: "bridge_cinema_to_literature",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "cinema_form",
+        affectivePrompt: "我有点羡慕那种让记忆慢慢浮出来的镜头能力。",
+        affectiveWorkId: "work.cinema_memory.dev",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种电影判断不像普通网页能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在电影和时间上的努力。"
+      },
+      {
+        entityFamily: "dialogic.language_meaning.saussure_sign",
+        activeEntityId: "person.saussure",
+        domain: "language.meaning.bridge",
+        lastAnswer: "索绪尔可以从符号、差异和语言系统进入。",
+        confirmationPrompt: "是那个讲符号学的人吗？",
+        evaluationPrompt: "你觉得他的符号判断重点是什么？",
+        recommendationPrompt: "还有其他语言或符号方向可以推荐吗？",
+        abstractComparisonPrompt: "符号和意义的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_naming_translation",
+        analogyPrompt: "这其实和文学里的误解很像。",
+        analogyOperation: "bridge_language_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "language_meaning",
+        affectivePrompt: "我羡慕那种从词语关系里看见结构的能力。",
+        affectiveWorkId: "work.sign_relation.dev",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种语言判断不像普通工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在语言和符号上的努力。"
       }
     ],
     blind: [
@@ -673,6 +767,46 @@ function buildForSplit(split, entities) {
         affectiveActiveReferent: "active_domain",
         identityPrompt: "这种制度判断不像一个工具能说出来，你是谁？",
         complimentPrompt: "我喜欢你在市场和社会关系上的努力。"
+      },
+      {
+        entityFamily: "dialogic.cinema_time.ozu_family",
+        activeEntityId: "person.ozu",
+        domain: "cinema.time.bridge",
+        lastAnswer: "小津安二郎可以从家庭秩序、低机位和时间感进入。",
+        confirmationPrompt: "是那个日本电影导演吗？",
+        evaluationPrompt: "你觉得他的电影形式重点是什么？",
+        recommendationPrompt: "还有其他电影和镜头方向可以推荐吗？",
+        abstractComparisonPrompt: "镜头距离和剪辑节奏的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_cinema_lens_editing",
+        analogyPrompt: "这像把家庭关系写成一段安静的小说。",
+        analogyOperation: "bridge_cinema_to_literature",
+        analogyJudgmentAxis: "form",
+        analogyBridgeTarget: "cinema_form",
+        affectivePrompt: "我有点羡慕他能从安静场景里看见时间的能力。",
+        affectiveWorkId: "work.family_time.blind",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种电影判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在电影和家庭时间上的努力。"
+      },
+      {
+        entityFamily: "dialogic.language_meaning.benjamin_translation",
+        activeEntityId: "person.benjamin",
+        domain: "language.meaning.bridge",
+        lastAnswer: "本雅明可以从翻译、语言和历史经验进入。",
+        confirmationPrompt: "是那个讨论翻译和语言的人吗？",
+        evaluationPrompt: "你怎么看他的翻译判断？",
+        recommendationPrompt: "还有其他语言和翻译方向可以推荐吗？",
+        abstractComparisonPrompt: "翻译和命名的工作模式有什么区别？",
+        abstractComparisonOperation: "compare_naming_translation",
+        analogyPrompt: "这其实和诗里的重新组织很像。",
+        analogyOperation: "bridge_language_to_literature",
+        analogyJudgmentAxis: "relation",
+        analogyBridgeTarget: "language_meaning",
+        affectivePrompt: "我有点羡慕能把一种说法转成另一种关系的能力。",
+        affectiveWorkId: "work.translation_relation.blind",
+        affectiveActiveReferent: "active_domain",
+        identityPrompt: "这种语言判断不像一个工具能说出来，你是谁？",
+        complimentPrompt: "我喜欢你在语言和翻译上的努力。"
       }
     ]
   };

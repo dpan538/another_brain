@@ -54,11 +54,13 @@ async function main() {
     technology: blindSiblingRows.filter((row) => /(technology|interface|tool)/i.test(row.id)).length,
     ethics: blindSiblingRows.filter((row) => /(ethics|action)/i.test(row.id)).length,
     education: blindSiblingRows.filter((row) => /(education|learning|classroom)/i.test(row.id)).length,
-    economics: blindSiblingRows.filter((row) => /(economics|institution|market)/i.test(row.id)).length
+    economics: blindSiblingRows.filter((row) => /(economics|institution|market)/i.test(row.id)).length,
+    cinema: blindSiblingRows.filter((row) => /(cinema|film|lens|movie)/i.test(row.id)).length,
+    language: blindSiblingRows.filter((row) => /(language|meaning|translation)/i.test(row.id)).length
   };
   const invariantFailures = [];
-  if (failureBankRows.length < 11) invariantFailures.push({ reason: "failure_bank_too_small", rows: failureBankRows.length, min: 11 });
-  if (blindSiblingRows.length < 10) invariantFailures.push({ reason: "blind_sibling_sessions_too_few", rows: blindSiblingRows.length, min: 10 });
+  if (failureBankRows.length < 13) invariantFailures.push({ reason: "failure_bank_too_small", rows: failureBankRows.length, min: 13 });
+  if (blindSiblingRows.length < 12) invariantFailures.push({ reason: "blind_sibling_sessions_too_few", rows: blindSiblingRows.length, min: 12 });
   for (const [theme, count] of Object.entries(blindThemeCoverage)) {
     if (count < 1) invariantFailures.push({ reason: "blind_theme_missing", theme });
   }
