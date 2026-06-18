@@ -20,6 +20,18 @@ function titleCount(answer) {
   return (answer.match(/《[^》]{1,30}》/g) || []).length;
 }
 
+function primaryName(card) {
+  return card?.names?.[0] || card?.id || "";
+}
+
+function retrievedWorkTitleCount(retrievedCards) {
+  const titles = asArray(retrievedCards)
+    .filter((card) => card?.entity_type === "work")
+    .map((card) => primaryName(card).replace(/[《》\s]/g, ""))
+    .filter(Boolean);
+  return new Set(titles).size;
+}
+
 function personAnchorCount(answer) {
   const names = [
     "罗大佑",
@@ -113,6 +125,8 @@ function comparisonTargetCount(query, answer) {
 function observedCoverage(answer, retrievedCards) {
   return {
     retrieved_cards: asArray(retrievedCards).length,
+    retrieved_work_cards: asArray(retrievedCards).filter((card) => card?.entity_type === "work").length,
+    retrieved_work_titles: retrievedWorkTitleCount(retrievedCards),
     title_count: titleCount(answer),
     person_anchor_count: personAnchorCount(answer),
     period_anchor_count: periodAnchorCount(answer),
@@ -147,7 +161,8 @@ export function assessCoverageForAnswer({ query = "", domain = "", questionType 
   }
   if (/works_list|representative_works|listen_recommendation/.test(qt) || /(有哪些.*(歌|作品|专辑)|代表作(?!家)|代表作品|哪几首|哪几张)/.test(q)) {
     requiredCoverage.push("min_3_work_anchors");
-    if (observed.title_count < 3 && !observed.is_bounded_partial) reasons.push("works_list_missing_works");
+    const retrievedWorkMinimum = observed.retrieved_work_titles > 0 ? Math.min(3, observed.retrieved_work_titles) : 3;
+    if (observed.title_count < retrievedWorkMinimum && !observed.is_bounded_partial) reasons.push("works_list_missing_works");
   }
   if (/development_history|chronology|period_relation/.test(qt) || /(怎么发展|历史演变|从古典到现代|80年代|90年代|2000|战后|近代|当代|运动|时期)/.test(q)) {
     requiredCoverage.push("min_2_period_anchors");

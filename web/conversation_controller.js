@@ -150,6 +150,7 @@ export function handleConversationTurn({
       questionType: draft?.questionType || "",
       question_type: draft?.questionType || "",
       operation: draft?.operation || "",
+      response_act: draft?.response_act || "",
       response_mode: legacyMode,
       controller_response_mode: controllerMode
     }
@@ -173,6 +174,7 @@ export function handleConversationTurn({
     domain: session.activeDomain || session.lastDomain || draft?.culture?.compactStatePatch?.last_domain || "",
     questionType: draft?.questionType || "",
     operation: draft?.operation || "",
+    responseAct: draft?.response_act || "",
     responseMode: controllerMode,
     answerStyle,
     boundTargets,
@@ -227,6 +229,7 @@ export function handleConversationTurn({
     surface_control: surfaceControl,
     question_type: draft?.questionType || "",
     operation: draft?.operation || "",
+    response_act: draft?.response_act || "",
     binding,
     active_topic: topicStack[0] || null,
     density_policy: density,

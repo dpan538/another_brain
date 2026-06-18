@@ -6,6 +6,7 @@ export function makeAnswerPlan({
   domain = "",
   questionType = "",
   operation = "",
+  responseAct = "",
   responseMode = "",
   answerStyle = "",
   boundTargets = [],
@@ -19,6 +20,7 @@ export function makeAnswerPlan({
   const plan = {
     plan_id: `${answerStyle || "answer"}.${questionType || operation || "general"}`,
     semantic_signature,
+    response_act: responseAct || operation || "",
     required_slots: [],
     optional_slots: [],
     max_sentences: mobileDensity.max_sentences || 2,

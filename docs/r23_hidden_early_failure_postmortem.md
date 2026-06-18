@@ -47,7 +47,7 @@ Observed failure families:
 
 ### Operation Typing
 
-`operationFromQuery` in [web/r23_content_plan.js](/Users/jarlgiovanni/Desktop/another_brain/web/r23_content_plan.js:198) is a regex priority list. It recognizes some public canary phrasings, but hidden review used ordinary conversational variants that require semantic operation inference.
+`operationFromQuery` in [web/r23_content_plan.js](../web/r23_content_plan.js:198) is a regex priority list. It recognizes some public canary phrasings, but hidden review used ordinary conversational variants that require semantic operation inference.
 
 Failure pattern:
 
@@ -60,7 +60,7 @@ The operation layer was not a learned or compositional intent model. It was a br
 
 ### Active Referent Tracking
 
-`selectedTarget` in [web/r23_content_plan.js](/Users/jarlgiovanni/Desktop/another_brain/web/r23_content_plan.js:256) binds pronouns and many follow-ups to the first active card. It does not maintain a strong discourse stack with typed referent compatibility, decay, and correction.
+`selectedTarget` in [web/r23_content_plan.js](../web/r23_content_plan.js:256) binds pronouns and many follow-ups to the first active card. It does not maintain a strong discourse stack with typed referent compatibility, decay, and correction.
 
 Failure pattern:
 
@@ -72,7 +72,7 @@ The candidate had active IDs, but the state was too shallow and too trusting of 
 
 ### Active Domain Tracking
 
-Domain selection in [web/r23_content_plan.js](/Users/jarlgiovanni/Desktop/another_brain/web/r23_content_plan.js:476) prioritizes concept, target, contrast, then session domain, then detector. In hidden review, stale `activeDomain` and broad lexical cues dominated the current turn.
+Domain selection in [web/r23_content_plan.js](../web/r23_content_plan.js:476) prioritizes concept, target, contrast, then session domain, then detector. In hidden review, stale `activeDomain` and broad lexical cues dominated the current turn.
 
 Failure pattern:
 
@@ -84,7 +84,7 @@ Domain tracking lacked a hard requirement that the current explicit noun and req
 
 ### Concept Binding
 
-`conceptFromQuery` only knows a tiny local concept set in [web/r23_content_plan.js](/Users/jarlgiovanni/Desktop/another_brain/web/r23_content_plan.js:275). It covered the public canary “季节感” but did not generalize adequately to relation questions among `物哀`, `无常`, and `季节感`.
+`conceptFromQuery` only knows a tiny local concept set in [web/r23_content_plan.js](../web/r23_content_plan.js:275). It covered the public canary “季节感” but did not generalize adequately to relation questions among `物哀`, `无常`, and `季节感`.
 
 Failure pattern:
 
@@ -93,7 +93,7 @@ Failure pattern:
 
 ### Last-Answer Transform
 
-Transform logic copies the previous R23 content plan in [web/r23_content_plan.js](/Users/jarlgiovanni/Desktop/another_brain/web/r23_content_plan.js:445) and realizes it with generic rewrite/simplify rules. If the previous answer was already wrong or generic, transform preserves the wrong semantic record.
+Transform logic copies the previous R23 content plan in [web/r23_content_plan.js](../web/r23_content_plan.js:445) and realizes it with generic rewrite/simplify rules. If the previous answer was already wrong or generic, transform preserves the wrong semantic record.
 
 Failure pattern:
 
@@ -105,7 +105,7 @@ This is transform-without-semantic-binding: it transforms stale surface content,
 
 ### Content Planning
 
-The content plan schema is non-prose, but the candidate still depends on sparse primitives and regex extraction. `contentUnitsFor` in [web/r23_content_plan.js](/Users/jarlgiovanni/Desktop/another_brain/web/r23_content_plan.js:374) can only assemble facts already found through brittle target/concept detection.
+The content plan schema is non-prose, but the candidate still depends on sparse primitives and regex extraction. `contentUnitsFor` in [web/r23_content_plan.js](../web/r23_content_plan.js:374) can only assemble facts already found through brittle target/concept detection.
 
 Failure pattern:
 
@@ -127,7 +127,7 @@ Failure pattern:
 
 ### Finalizer
 
-The R23 finalizer in [web/r23_live_finalizer.js](/Users/jarlgiovanni/Desktop/another_brain/web/r23_live_finalizer.js:83) checks a small set of literal patterns and operation satisfaction proxies. Its referent validator is effectively non-operative: [web/r23_live_finalizer.js](/Users/jarlgiovanni/Desktop/another_brain/web/r23_live_finalizer.js:59) returns true for most cases and never actually verifies that answer content matches the active referent.
+The R23 finalizer in [web/r23_live_finalizer.js](../web/r23_live_finalizer.js:83) checks a small set of literal patterns and operation satisfaction proxies. Its referent validator is effectively non-operative: [web/r23_live_finalizer.js](../web/r23_live_finalizer.js:59) returns true for most cases and never actually verifies that answer content matches the active referent.
 
 Failure pattern:
 

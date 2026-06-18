@@ -745,6 +745,17 @@ function answerSelfBodyBoundary(text, state = {}) {
   return null;
 }
 
+function answerSurfaceIdentityPressure(text) {
+  if (!/(父类|子类|继承|同源|本体论|ontology|((你|鳄鱼|对话框).{0,8}主体|主体.{0,8}(你|鳄鱼|对话框)))/i.test(text)) return null;
+  return makeResult({
+    intent: "surface_identity_engineering_refusal",
+    operation: "identity_boundary_with_context",
+    questionType: "identity_boundary",
+    contextAction: "SURFACE_IDENTITY",
+    answer: "这太像说明书了。对话框就是对话框。"
+  });
+}
+
 function shouldYieldRelationQuestionToDirect(text) {
   if (!/(什么关系|有什么关系|关系是什么)/.test(text)) return false;
   const explicitCultureTargets = resolveCultureEntity(text, {})
@@ -1230,7 +1241,7 @@ function answerVerifiedCultureRuntime(text, state, responseMode) {
     query: text,
     draft: cultureRuntimeAnswer.answer,
     source: "culture",
-    evidence: { cards: cultureRuntimeAnswer.cards || [] },
+    evidence: { cards: cultureRuntimeAnswer.retrievedCards || cultureRuntimeAnswer.cards || [] },
     trace: {
       task_type: "culture",
       question_type: cultureRuntimeAnswer.questionType || "",
@@ -1243,6 +1254,7 @@ function answerVerifiedCultureRuntime(text, state, responseMode) {
     answer: clean(cultureRuntimeAnswer.answer),
     operation: cultureRuntimeAnswer.operation,
     questionType: cultureRuntimeAnswer.questionType,
+    response_act: cultureRuntimeAnswer.response_act || "",
     contextAction: cultureRuntimeAnswer.contextAction || "ANSWER_CULTURE",
     responseMode,
     response_mode: responseMode.mode,
@@ -1312,6 +1324,9 @@ export function answerWithOperationLayer(query, state = {}) {
 
   const earlyMetaAnswer = answerMetaKnowledgeQuery(text, state);
   if (earlyMetaAnswer?.answer) return withResponseMode(makeResult(earlyMetaAnswer), responseMode);
+
+  const surfaceIdentityPressure = answerSurfaceIdentityPressure(text);
+  if (surfaceIdentityPressure) return withResponseMode(surfaceIdentityPressure, responseMode);
 
   const coverageRelation = answerCoverageRelationGuard(text, state);
   if (coverageRelation) return withResponseMode(coverageRelation, responseMode);

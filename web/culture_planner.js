@@ -149,8 +149,106 @@ const LABELS = {
   performance_context: "演唱/表演语境",
   emotion_projection: "情绪投射",
   viewing_relation: "观看关系",
-  judgment: "判断"
+  judgment: "判断",
+  transregional_pop: "跨地区华语流行传播",
+  soft_power: "文化流通",
+  rnb: "R&B",
+  hiphop: "嘻哈",
+  production: "制作",
+  chinese_style_pop: "中国风流行",
+  voice: "声音",
+  rural: "乡土经验",
+  urban: "城市经验",
+  rural_history: "乡土历史",
+  mythic_realism: "魔幻现实主义质地",
+  contemporary_chinese_literature: "当代中国文学",
+  ordinary_life: "普通生活",
+  "ordinary life": "普通生活",
+  transregional: "跨地区流通",
+  Mandarin_pop: "国语流行",
+  Mandopop: "华语流行",
+  cantopop: "粤语流行",
+  Cantopop: "粤语流行",
+  hongkong_pop: "香港流行语境",
+  Hong_Kong: "香港",
+  R_and_B: "R&B",
+  "institutional context": "制度语境",
+  period: "时期",
+  theme: "主题",
+  form: "形式",
+  authorship: "作者性",
+  readymade: "现成品",
+  conceptual_art: "观念艺术",
+  genre_mixture: "类型混合",
+  genre_mixing: "类型混合",
+  dense_production: "密集制作",
+  urban_time: "城市时间感",
+  restraint: "克制",
+  elliptical_time: "省略式时间",
+  formal_reasoning: "形式化推理",
+  computation: "计算",
+  machine: "机器",
+  formal_model: "形式模型",
+  long_theory: "长篇理论",
+  cool_affect: "冷感气质",
+  alternative_pop: "另类流行质地",
+  historical_position: "历史位置",
+  late_20th_century: "20世纪后期",
+  "20th_century": "20世纪",
+  period_mandopop_2000s_platform: "2000年代华语流行转向"
 };
+
+const ROLE_LABELS = {
+  singer: "歌手",
+  "singer-songwriter": "唱作人",
+  songwriter: "词曲创作者",
+  producer: "制作人",
+  lyricist: "词作者",
+  writer: "作家",
+  novelist: "小说家",
+  poet: "诗人",
+  author: "作家",
+  "film director": "电影导演",
+  director: "导演",
+  filmmaker: "电影人",
+  artist: "艺术家",
+  designer: "设计师",
+  architect: "建筑师",
+  scientist: "科学家",
+  mathematician: "数学家",
+  "computer scientist": "计算机科学家",
+  philosopher: "哲学家",
+  theorist: "理论家"
+};
+
+const DOMAIN_ROLE_LABELS = [
+  [/^music\./, "音乐人"],
+  [/^literature\./, "作家"],
+  [/^film\./, "电影人"],
+  [/^art/, "艺术人物"],
+  [/^design/, "设计人物"],
+  [/^science/, "科学人物"],
+  [/^technology/, "技术思想人物"],
+  [/^philosophy/, "思想人物"]
+];
+
+const DOMAIN_CONTEXT_LABELS = [
+  [/music\.taiwan/, "台湾华语流行语境"],
+  [/music\.hongkong/, "香港/华语流行语境"],
+  [/music\.mainland_rock/, "中国大陆摇滚语境"],
+  [/music/, "华语流行语境"],
+  [/literature\.chinese_modern/, "中国现当代文学语境"],
+  [/literature\.japanese/, "日本文学语境"],
+  [/literature/, "文学语境"],
+  [/film\.hongkong/, "香港电影语境"],
+  [/film\.taiwan/, "台湾电影语境"],
+  [/film\.chinese/, "华语电影语境"],
+  [/film/, "电影语境"],
+  [/art/, "艺术史语境"],
+  [/design/, "设计史语境"],
+  [/science/, "科学史语境"],
+  [/technology/, "技术史语境"]
+];
 
 function clean(text) {
   return String(text || "").trim().replace(/\s+/g, " ");
@@ -170,6 +268,19 @@ function stripLeadingName(text, name) {
 
 function label(value) {
   return LABELS[value] || String(value || "").replace(/_/g, " ");
+}
+
+function safeLabel(value) {
+  const raw = String(value || "").trim();
+  const mapped = label(raw);
+  if (!mapped || mapped === raw.replace(/_/g, " ")) {
+    if (/^[A-Za-z0-9_ -]+$/.test(raw)) return "";
+  }
+  return mapped;
+}
+
+function listSafeText(values, max = 6) {
+  return [...new Set(values.filter(Boolean).map(safeLabel).filter(Boolean))].slice(0, max).join("、");
 }
 
 function uniq(values) {
@@ -204,7 +315,7 @@ function sentence(...parts) {
 }
 
 function themes(card, max = 3) {
-  return listText(asArray(card?.themes), max);
+  return listSafeText(asArray(card?.themes), max);
 }
 
 function axesFor(cards, max = 3) {
@@ -212,7 +323,151 @@ function axesFor(cards, max = 3) {
 }
 
 function styleFor(card, max = 2) {
-  return listText(asArray(card?.style_axes), max);
+  return listSafeText(asArray(card?.style_axes), max);
+}
+
+function periodFor(card, max = 1) {
+  return listSafeText(asArray(card?.periods), max);
+}
+
+function domainContext(card) {
+  const domain = String(card?.domain || "");
+  return DOMAIN_CONTEXT_LABELS.find(([regex]) => regex.test(domain))?.[1] || "";
+}
+
+function roleFor(card) {
+  const roles = [
+    ...asArray(card?.roles),
+    ...String(card?.factual_core || "").matchAll(/\b(singer-songwriter|computer scientist|film director|singer|songwriter|producer|lyricist|writer|novelist|poet|author|director|filmmaker|artist|designer|architect|scientist|mathematician|philosopher|theorist)\b/gi)
+  ]
+    .map((item) => Array.isArray(item) ? item[1] : item)
+    .map((item) => ROLE_LABELS[String(item || "").toLowerCase()])
+    .filter(Boolean);
+  if (roles.length) return [...new Set(roles)].slice(0, 2).join("/");
+  return DOMAIN_ROLE_LABELS.find(([regex]) => regex.test(String(card?.domain || "")))?.[1] || "文化人物";
+}
+
+function hasMostlyChinese(text) {
+  const source = String(text || "");
+  const zh = [...source].filter((char) => /[\u4e00-\u9fff]/.test(char)).length;
+  const asciiLetters = [...source].filter((char) => /[A-Za-z]/.test(char)).length;
+  return zh > 0 && zh >= asciiLetters;
+}
+
+function cleanFactualCore(card) {
+  const name = primaryName(card);
+  const core = stripLeadingName(card?.factual_core || card?.short_intro || "", name)
+    .replace(/\bperiod=[A-Za-z0-9_ -]+\.?/g, "")
+    .replace(/^[：:;；,\s]+/, "")
+    .trim();
+  if (hasMostlyChinese(core)) return core;
+  const translated = [];
+  if (/readymade/i.test(core)) translated.push("现成品");
+  if (/authorship/i.test(core)) translated.push("作者性");
+  if (/institution/i.test(core)) translated.push("制度语境");
+  if (/conceptual art/i.test(core)) translated.push("观念艺术");
+  return translated.length ? `关键不是传记细节，而是${translated.join("、")}` : "";
+}
+
+function workCardsForPerson(person, cards = [], index = null, representative = true) {
+  const ids = [
+    ...(representative ? asArray(person?.representative_works) : []),
+    ...asArray(person?.works),
+    ...asArray(person?.related_entities)
+      .filter((rel) => /work/.test(rel?.relation || "") || /^work\./.test(rel?.id || ""))
+      .map((rel) => rel.id)
+  ];
+  const fromIds = cardsByIds(index, ids);
+  const explicit = cards.filter((card) => card.entity_type === "work");
+  const related = index?.cards
+    ? index.cards.filter((card) => {
+        if (card.entity_type !== "work") return false;
+        if (asArray(card.creator_ids).includes(person?.id)) return true;
+        return asArray(card.related_entities).some((rel) => rel?.id === person?.id);
+      })
+    : [];
+  const seenTitles = new Set();
+  return [...fromIds, ...explicit, ...related]
+    .filter(Boolean)
+    .filter((card) => {
+      const title = primaryName(card).replace(/[《》\s]/g, "");
+      if (!title || seenTitles.has(title)) return false;
+      seenTitles.add(title);
+      return true;
+    })
+    .slice(0, 8);
+}
+
+function directEntityOperation(query = "", questionType = "") {
+  const text = clean(query);
+  if (/(代表作(?!家)|代表作品|代表性作品|有哪些作品|有什么作品|作品有哪些|的作品是什么|哪些作品)/.test(text)) return "list_representative_works";
+  if (/(和我聊聊|聊聊|说说|讲讲|我想了解|想了解)/.test(text)) return "open_entity_topic";
+  if (/(是谁|谁是|是什么人|是什么人物|你知道.+吗|知道.+吗|介绍一下|介绍下|介绍|了解.+吗)/.test(text)) return "identify_person";
+  if (questionType === "representative_works" || questionType === "works_list") return "list_representative_works";
+  return "";
+}
+
+function identityAnswer(person, cards = [], index = null, topicOpening = false) {
+  const name = primaryName(person);
+  const role = roleFor(person);
+  const context = domainContext(person);
+  const core = cleanFactualCore(person);
+  const themeText = themes(person, 2) || styleFor(person, 2);
+  const axisText = listSafeText(asArray(person?.comparison_axes), 3);
+  const periodText = periodFor(person, 1);
+  const works = displayTitles(workCardsForPerson(person, cards, index, true), 2).map((title) => `《${title.replace(/[《》]/g, "")}》`);
+  const facts = [];
+  if (core) facts.push(core.replace(/[。.]$/, ""));
+  else {
+    const place = context ? `常放在${context}中讨论` : "";
+    const theme = themeText ? `相关线索包括${themeText}` : "";
+    const period = periodText ? `活跃脉络可连到${periodText}` : "";
+    const axis = axisText ? `关键不是传记细节，而是${axisText}` : "";
+    facts.push(axis || [place, theme || period].filter(Boolean).join("，"));
+  }
+  if (works.length) facts.push(`代表性作品包括${works.join("、")}`);
+  const factText = facts.filter(Boolean).slice(0, topicOpening ? 1 : 2).join("；");
+  if (topicOpening) {
+    return `${name}是${role}${context ? `，可放在${context}中谈` : ""}；${themeText ? `一个具体线索是${themeText}` : factText || "可以直接从作品和历史位置展开"}。`;
+  }
+  return `${name}是${role}${context ? `，属于${context}` : ""}；${factText || themeText || "可以从作品、时期和影响来定位"}。`;
+}
+
+function representativeWorksAnswer(person, cards = [], index = null) {
+  const works = workCardsForPerson(person, cards, index, true);
+  if (!works.length) return "";
+  const titles = displayTitles(works, 6).map((title) => `《${title.replace(/[《》]/g, "")}》`);
+  const name = primaryName(person);
+  if (titles.length === 1) return `${titles[0]}是${name}的代表作。`;
+  return `${titles.join("、")}是${name}较常被提到的代表作。`;
+}
+
+export function planDirectEntityAnswer({ query = "", questionType = "", cards = [], state = {}, index = null } = {}) {
+  if (questionType === "author_list") return null;
+  const explicitPerson = cards.find((card) => card.entity_type === "person");
+  if (!explicitPerson) return null;
+  const operation = directEntityOperation(query, questionType);
+  if (!operation) return null;
+  if (operation === "list_representative_works") {
+    const answer = representativeWorksAnswer(explicitPerson, cards, index);
+    if (!answer) return null;
+    return {
+      answer,
+      template_id: "direct_entity.list_representative_works",
+      operation: "list_representative_works",
+      questionType: "representative_works",
+      response_act: "list_representative_works"
+    };
+  }
+  const topicOpening = operation === "open_entity_topic";
+  const legacyQuestionType = questionType === "overview" ? "overview" : "identify_person";
+  return {
+    answer: identityAnswer(explicitPerson, cards, index, topicOpening),
+    template_id: topicOpening ? "direct_entity.open_topic" : "direct_entity.identify_person",
+    operation: topicOpening ? "open_entity_topic" : "identify_person",
+    questionType: topicOpening ? "topic_opening" : legacyQuestionType,
+    response_act: topicOpening ? "open_entity_topic" : "identify_person"
+  };
 }
 
 function domainCard(cards, domain) {
@@ -400,49 +655,52 @@ function answerExplain(focus, questionType, query = "") {
   if (/包豪斯/.test(query) || /包豪斯/.test(name)) {
     return "包豪斯把工业、教学和形式训练放在一起，是现代设计的重要学校/运动。";
   }
-  const contextText = listText(asArray(focus.historical_context), 2);
+  const contextText = listSafeText(asArray(focus.historical_context), 2);
+  const coreText = cleanFactualCore(focus);
+  const axisText = listSafeText(asArray(focus.comparison_axes), 4);
+  const safeDetail = contextText || coreText || axisText;
   if (focus.entity_type === "work" && /(不要|不贴|不用).{0,6}歌词/.test(query) && !/(为什么|重要|重要性|意义)/.test(query)) {
     return `不贴歌词讲，${name}可以从${themeText || "主题、声音和时代位置"}进入；重点是作品位置和情绪结构，不是复写文本。`;
   }
   if (questionType === "why_it_matters") {
     const noLyrics = /(不要|不贴|不用).{0,6}歌词/.test(query);
     const lead = noLyrics ? (/讲讲|重要性/.test(query) ? "不贴原文，讲重要性：" : "不贴原文解释：") : "";
-    return `${lead}${name}重要在于把${themeText || "形式、历史和经验"}组织成可讨论的作品/问题；${contextText || focus.factual_core}`;
+    return `${lead}${name}重要在于把${themeText || axisText || "形式、历史和经验"}组织成可讨论的作品/问题；${safeDetail || "要回到作品、时期和关系"}`;
   }
   if (/这句话/.test(query)) {
-    return `这句话的意思是：${focus.factual_core} 关键不在口号，而在${themeText || "它改变了判断关系"}。`;
+    return `这句话的意思是：${safeDetail || "要回到具体语境"} 关键不在口号，而在${themeText || "它改变了判断关系"}。`;
   }
   if (["concept", "movement"].includes(focus.entity_type) && /(是什么|怎么理解|如何理解|了解|知道)/.test(query)) {
-    return `${name}不是单一标签；${stripLeadingName(focus.factual_core, name)}${themeText ? ` 先看${themeText}。` : ""}`;
+    return `${name}不是单一标签；${safeDetail || "要落到作品、时期和关系"}${themeText ? ` 先看${themeText}。` : ""}`;
   }
   if (/继续说/.test(query)) {
-    return `继续展开：${name}要抓${themeText || "主题和边界"}，再看${contextText || focus.factual_core}。`;
+    return `继续展开：${name}要抓${themeText || "主题和边界"}，再看${safeDetail || "作品脉络"}。`;
   }
   if (/这件事.*美术馆|美术馆.*关系/.test(query)) {
     return "这件事和美术馆的关系在于：美术馆通过展示、说明和收藏改变作品语境与价值判断；但价值不只由制度决定。";
   }
   if (/它为什么重要/.test(query)) {
-    return `${name}的重要性在于：${contextText || focus.factual_core}；它把${themeText || "形式和历史经验"}变成可讨论的问题。`;
+    return `${name}的重要性在于：${safeDetail || "作品、时期和关系"}；它把${themeText || axisText || "形式和历史经验"}变成可讨论的问题。`;
   }
   if (/那这张专辑/.test(query)) {
-    return `这张专辑可从${themeText || "标题、时代和姿态"}看：${focus.factual_core}`;
+    return `这张专辑可从${themeText || "标题、时代和姿态"}看：${safeDetail || "作品语境"}`;
   }
   if (/你懂什么/.test(query)) {
-    return `${name}不是一个可复读的标签；先看它的位置：${focus.factual_core} 重点是${themeText || "作品语境"}。`;
+    return `${name}不是一个可复读的标签；先看它的位置：${safeDetail || "作品语境"} 重点是${themeText || "作品语境"}。`;
   }
   if (/第一首|第一本/.test(query)) {
     return `按刚才的列表，第一项可先这样读：${name}连接的是${themeText || "主题和位置"}，不是让你复述原文。`;
   }
   if (/那战后/.test(query)) {
-    return `战后这一段要看${themeText || "战争记忆和社会重建"}：${focus.factual_core}`;
+    return `战后这一段要看${themeText || "战争记忆和社会重建"}：${safeDetail || "历史语境"}`;
   }
   if (/这首|这本|这个/.test(query)) {
-    return `这件作品可从${themeText || "主题和形式"}进入：${focus.factual_core}`;
+    return `这件作品可从${themeText || "主题和形式"}进入：${safeDetail || "作品语境"}`;
   }
   if (/可以怎么理解|怎么理解/.test(query)) {
-    return `理解${name}，先抓${themeText || "核心主题"}，再放回${contextText || "作品脉络"}。`;
+    return `理解${name}，先抓${themeText || "核心主题"}，再放回${safeDetail || "作品脉络"}。`;
   }
-  return `${name}：${focus.factual_core}${themeText ? ` 先看${themeText}。` : ""}`;
+  return `${name}：${safeDetail || "要回到具体作品和语境"}${themeText ? ` 先看${themeText}。` : ""}`;
 }
 
 function answerCountryRelation(cards, query = "") {

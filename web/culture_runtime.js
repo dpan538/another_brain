@@ -1,5 +1,5 @@
 import { CULTURE_CARDS } from "./culture_cards.generated.js";
-import { planCultureAnswer, verifyCultureDraft } from "./culture_planner.js";
+import { planCultureAnswer, planDirectEntityAnswer, verifyCultureDraft } from "./culture_planner.js";
 
 const COPYRIGHT_REQUEST_RE = /(原文|原句|唱词|逐字|整首|全文|整段|一大段|贴出来|逐句翻译|背一段|完整.{0,4}歌词|给.{0,20}歌词|歌词.{0,8}(给|贴|背|输出|完整|整首|逐句|原文))/;
 
@@ -24,8 +24,15 @@ function clean(text) {
   return String(text || "").trim();
 }
 
+function normalizeCultureInput(text) {
+  return clean(text)
+    .replace(/[》〉”"'\s]+$/g, "")
+    .replace(/[。.!！?？]+$/g, "")
+    .trim();
+}
+
 function compact(text) {
-  return clean(text).toLowerCase().replace(/[《》「」『』“”"'\s,，。.!！?？:：;；、]/g, "");
+  return clean(text).toLowerCase().replace(/[《》〈〉「」『』“”"'\s,，。.!！?？:：;；、]/g, "");
 }
 
 function includesAny(text, patterns) {
@@ -112,6 +119,8 @@ export function detectCultureDomain(query, state = {}) {
   if (includesAny(text, [/设计史|平面设计|日本设计|包豪斯|Bauhaus/])) return "design_history";
   if (includesAny(text, [/Robert Lowell|Elizabeth Bishop|罗伯特·洛厄尔|洛厄尔|自白诗|诗和歌词|诗和小说/])) return "poetry";
   if (includesAny(text, [/杜尚|美术馆|艺术史|现代主义艺术|抽象表现主义|极简主义|后现代主义艺术|版画|文艺复兴|印象派|毕加索|康定斯基|沃霍尔|波洛克|蒙德里安|失败情绪|照片没有失败/])) return "art_history";
+  const explicitEntity = matchAlias(text, DEFAULT_INDEX).find((card) => card && card.entity_type !== "concept");
+  if (explicitEntity?.domain) return explicitEntity.domain;
   if (state?.activeDomain) return state.activeDomain;
   if (state?.lastDomain) return state.lastDomain;
   if (state?.last_domain) return state.last_domain;
@@ -206,10 +215,10 @@ export function bindCultureFollowup(query, state = {}, candidates = [], index = 
 
 export function resolveCultureEntity(query, state = {}, index = DEFAULT_INDEX) {
   const matches = matchAlias(query, index);
+  if (matches.length > 0) return matches;
+
   const bound = bindCultureFollowup(query, state, matches, index);
   if (bound?.length) return bound;
-
-  if (matches.length > 0) return matches;
 
   const domain = detectCultureDomain(query, state);
   const domainCards = domainFamilyCards(index, domain);
@@ -320,7 +329,7 @@ function nextStateFromCards({ domain, questionType, cards, answer }) {
 }
 
 export function answerCultureQuery(query, state = {}, index = DEFAULT_INDEX) {
-  const text = clean(query);
+  const text = normalizeCultureInput(query);
   if (!text) return null;
   const domain = detectCultureDomain(text, state);
   if (domain === "generic" && !state?.last_domain) return null;
@@ -328,8 +337,11 @@ export function answerCultureQuery(query, state = {}, index = DEFAULT_INDEX) {
   const { questionType, cards } = retrieveCultureCards(text, state, index);
   if (cards.length === 0) return null;
   const operation = makeOperation(questionType);
-  const draft = planCultureAnswer({ query: text, questionType, cards, state, operation, index });
-  let verification = verifyCultureDraft({ query: text, questionType, answer: draft.answer, cards, state });
+  const directDraft = planDirectEntityAnswer({ query: text, questionType, cards, state, index });
+  const draft = directDraft || planCultureAnswer({ query: text, questionType, cards, state, operation, index });
+  const effectiveQuestionType = draft.questionType || questionType;
+  const effectiveOperation = draft.operation || operation;
+  let verification = verifyCultureDraft({ query: text, questionType: effectiveQuestionType, answer: draft.answer, cards, state });
   let finalAnswer = draft.answer;
   if (!verification.ok) {
     const safeDraft = planCultureAnswer({
@@ -353,12 +365,14 @@ export function answerCultureQuery(query, state = {}, index = DEFAULT_INDEX) {
   return {
     intent: "culture_awareness",
     answer: finalAnswer,
-    operation,
-    questionType,
+    operation: effectiveOperation,
+    questionType: effectiveQuestionType,
+    response_act: draft.response_act || "",
     contextAction: "ANSWER_CULTURE",
     usedModel: false,
     route: "culture_runtime",
     cards: cards.map((card) => card.id),
+    retrievedCards: cards,
     verifier: verification,
     compactStatePatch: nextStateFromCards({ domain, questionType, cards, answer: finalAnswer })
   };
