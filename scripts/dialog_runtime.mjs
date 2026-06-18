@@ -266,6 +266,7 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
     session: state,
     runtimeProfile: options.runtimeProfile || "standard",
     uiProfile: options.uiProfile || "mobile",
+    r23Candidate: Boolean(options.r23Candidate),
     draftResolver: resolveAnswer
   });
   const resolved = controlled.resolved || {};

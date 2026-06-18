@@ -11,6 +11,7 @@ import { realizeNaturalSurfaceShadow } from "./natural_surface_realizer.js";
 import { formatMobileAnswer } from "./mobile_answer_formatter.js";
 import { detectRepeatAnswer, rewriteForNonRepeat } from "./answer_deduper.js";
 import { finalizeWithFallbackFirewall } from "./fallback_firewall.js";
+import { handleR23CandidateTurn } from "./r23_candidate_controller.js";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js";
 
 function clean(text) {
@@ -56,8 +57,18 @@ function boundTargetsFrom({ binding = {}, draft = {}, session = {} } = {}) {
   return [...new Set(ids.filter(Boolean))].slice(0, 8);
 }
 
-export function handleConversationTurn({ query = "", session = {}, runtimeProfile = "standard", uiProfile = "mobile", draftResolver = null } = {}) {
+export function handleConversationTurn({
+  query = "",
+  session = {},
+  runtimeProfile = "standard",
+  uiProfile = "mobile",
+  draftResolver = null,
+  r23Candidate = false
+} = {}) {
   const text = clean(query);
+  if (r23Candidate) {
+    return handleR23CandidateTurn({ query: text, session, runtimeProfile, uiProfile });
+  }
   const userTurn = classifyUserTurn({ query: text, session });
   const binding = resolveContextualQuestion({ query: text, session });
   const turnFunction = classifyTurnFunction({ query: text, session, userTurn, binding });

@@ -39,6 +39,8 @@ const APP_VERSION = `0.1.0-p0-firewall-${RUNTIME_VERSION.p0FallbackFirewall ? "o
 const PROMPT_MAX_HEIGHT_FALLBACK = 260;
 const STRUCTURED_EVIDENCE_LIMIT = 5;
 const KEYBOARD_VISUAL_VIEWPORT_DELTA = 120;
+const URL_FLAGS = new URLSearchParams(window.location.search);
+const R23_CANDIDATE_ENABLED = URL_FLAGS.get("r23Candidate") === "true";
 const chatHistory = [];
 const contextTurns = [];
 let dialogState = createDialogState();
@@ -418,6 +420,7 @@ async function submitPrompt(event) {
       session: reasoningState,
       runtimeProfile: "standard",
       uiProfile: "mobile",
+      r23Candidate: R23_CANDIDATE_ENABLED,
       draftResolver: resolveAnswer
     });
     if (controlled.response?.type === "ui_affordance") {

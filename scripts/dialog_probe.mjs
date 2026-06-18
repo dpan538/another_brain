@@ -27,6 +27,7 @@ function usage() {
     "  --out <path>               Write JSON report. Default: artifacts/training_os/dialog_probe_report.json",
     "  --max-answer-ms <number>   Mark turns slower than this as failures.",
     "  --with-thinking-delay      Include the UI thinking delay in answerMs.",
+    "  --r23-candidate            Use the non-public R23 candidate answer path.",
     "  --include-state            Include compact final dialog state in the report.",
     "  --text                     Print a compact text transcript after the JSON summary.",
     "  --no-defaults             Do not use default sanity prompts when no prompt/input is provided."
@@ -40,6 +41,7 @@ function parseArgs(argv) {
     out: DEFAULT_OUT,
     maxAnswerMs: 1500,
     withThinkingDelay: false,
+    r23Candidate: false,
     includeState: false,
     text: false,
     useDefaults: true
@@ -52,6 +54,7 @@ function parseArgs(argv) {
     else if (item === "--out") args.out = resolve(ROOT, argv[++index] || "");
     else if (item === "--max-answer-ms") args.maxAnswerMs = Number(argv[++index]);
     else if (item === "--with-thinking-delay") args.withThinkingDelay = true;
+    else if (item === "--r23-candidate") args.r23Candidate = true;
     else if (item === "--include-state") args.includeState = true;
     else if (item === "--text") args.text = true;
     else if (item === "--no-defaults") args.useDefaults = false;
@@ -130,7 +133,8 @@ function buildReport(turns, runtime, args) {
     generated_at: new Date().toISOString(),
     options: {
       maxAnswerMs: args.maxAnswerMs,
-      withThinkingDelay: args.withThinkingDelay
+      withThinkingDelay: args.withThinkingDelay,
+      r23Candidate: args.r23Candidate
     },
     summary: {
       total: turns.length,
@@ -170,7 +174,8 @@ async function main() {
   }
 
   const { runtime, turns } = await runDialogPrompts(prompts, {
-    withThinkingDelay: args.withThinkingDelay
+    withThinkingDelay: args.withThinkingDelay,
+    r23Candidate: args.r23Candidate
   });
   const report = buildReport(turns, runtime, args);
 
