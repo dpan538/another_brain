@@ -215,6 +215,24 @@ function fallbackUnitSummary(units) {
   };
 }
 
+function isStructuredUnit(unit = "") {
+  return /^(person|author|work|topic|concept)\./.test(textOf(unit));
+}
+
+function semanticPreflightFallbackReason({ turnFunction = "", currentUnits = {} } = {}) {
+  const fn = textOf(turnFunction);
+  if (fn === "confirmation") return "confirmation_shadow_requires_review";
+  if (currentUnits.boundary_requirements?.length) return "boundary_units_require_current_answer";
+  if (currentUnits.uncertainty_markers?.length) return "uncertainty_requires_current_answer";
+  if (currentUnits.quantities?.length) return "quantity_units_require_current_answer";
+  if (currentUnits.polarity && currentUnits.polarity !== "neutral") return "polarity_requires_current_answer";
+
+  const requiredTextUnits = (currentUnits.required_units || []).filter((unit) => !isStructuredUnit(unit));
+  if (requiredTextUnits.length) return "required_text_units_require_current_answer";
+
+  return "";
+}
+
 export function realizeNaturalSurfaceShadow({
   query = "",
   currentAnswer = "",
@@ -281,6 +299,21 @@ export function realizeNaturalSurfaceShadow({
       ...base,
       fallback_to_current_reason: "turn_function_not_in_shadow_scope",
       fallback_reason: "turn_function_not_in_shadow_scope"
+    };
+  }
+
+  const semanticPreflightReason = semanticPreflightFallbackReason({ turnFunction: fn, currentUnits });
+  if (semanticPreflightReason) {
+    return {
+      ...base,
+      semantic_verifier: {
+        ok: true,
+        semantic_preservation_ok: true,
+        hard_failures: [],
+        warnings: [semanticPreflightReason]
+      },
+      fallback_to_current_reason: semanticPreflightReason,
+      fallback_reason: semanticPreflightReason
     };
   }
 
