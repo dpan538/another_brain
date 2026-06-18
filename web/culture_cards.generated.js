@@ -115390,5 +115390,3511 @@ export const CULTURE_CARDS = [
       "topic_reentry",
       "cross_domain_analogy"
     ]
+  },
+  {
+    "id": "relation.r26_bridge.witness_memory_boundary",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.witness_memory_boundary"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "constrains relation scaffold.",
+    "short_intro": "constrains relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "testimony",
+      "evidence pressure"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.witness_testimony",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.memory_vs_fact",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "testimony",
+      "evidence pressure",
+      "not perfect recall"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "constrains",
+    "source_ids": [
+      "concept.witness_testimony"
+    ],
+    "target_ids": [
+      "concept.memory_vs_fact"
+    ],
+    "shared_axes": [
+      "testimony",
+      "evidence pressure"
+    ],
+    "contrast_axes": [
+      "not perfect recall"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.mise_frame",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.mise_frame"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "overlaps_with relation scaffold.",
+    "short_intro": "overlaps_with relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "space",
+      "arrangement"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.mise_en_scene",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "theme.framing",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "space",
+      "arrangement",
+      "not border only"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "overlaps_with",
+    "source_ids": [
+      "concept.mise_en_scene"
+    ],
+    "target_ids": [
+      "theme.framing"
+    ],
+    "shared_axes": [
+      "space",
+      "arrangement"
+    ],
+    "contrast_axes": [
+      "not border only"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.documentary_image_evidence",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.documentary_image_evidence"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "constrains relation scaffold.",
+    "short_intro": "constrains relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "truth claim",
+      "context"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.documentary_fiction_boundary",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.image_not_evidence",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "truth claim",
+      "context",
+      "image not complete proof"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "constrains",
+    "source_ids": [
+      "concept.documentary_fiction_boundary"
+    ],
+    "target_ids": [
+      "concept.image_not_evidence"
+    ],
+    "shared_axes": [
+      "truth claim",
+      "context"
+    ],
+    "contrast_axes": [
+      "image not complete proof"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.city_film_street",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.city_film_street"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "bridges relation scaffold.",
+    "short_intro": "bridges relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "urban scene",
+      "movement"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.city_film",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.city_street",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "urban scene",
+      "movement",
+      "city not backdrop only"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "bridges",
+    "source_ids": [
+      "concept.city_film"
+    ],
+    "target_ids": [
+      "concept.city_street"
+    ],
+    "shared_axes": [
+      "urban scene",
+      "movement"
+    ],
+    "contrast_axes": [
+      "city not backdrop only"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.memory_film_memory_fact",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.memory_film_memory_fact"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "constrains relation scaffold.",
+    "short_intro": "constrains relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "subjective recall",
+      "image fragment"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.memory_film",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.memory_vs_fact",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "subjective recall",
+      "image fragment",
+      "memory not exact record"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "constrains",
+    "source_ids": [
+      "concept.memory_film"
+    ],
+    "target_ids": [
+      "concept.memory_vs_fact"
+    ],
+    "shared_axes": [
+      "subjective recall",
+      "image fragment"
+    ],
+    "contrast_axes": [
+      "memory not exact record"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.jazz_conversation",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.jazz_conversation"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "frames relation scaffold.",
+    "short_intro": "frames relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "ensemble",
+      "variation"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.jazz",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.improvisation",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "ensemble",
+      "variation",
+      "not mood label"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "frames",
+    "source_ids": [
+      "concept.jazz"
+    ],
+    "target_ids": [
+      "concept.improvisation"
+    ],
+    "shared_axes": [
+      "ensemble",
+      "variation"
+    ],
+    "contrast_axes": [
+      "not mood label"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.song_poem_boundary",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.song_poem_boundary"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "constrains relation scaffold.",
+    "short_intro": "constrains relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "form difference",
+      "voice support"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.song_poem_boundary",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.translation_equivalence_boundary",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "form difference",
+      "voice support",
+      "song is not just poem"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "constrains",
+    "source_ids": [
+      "concept.song_poem_boundary"
+    ],
+    "target_ids": [
+      "concept.translation_equivalence_boundary"
+    ],
+    "shared_axes": [
+      "form difference",
+      "voice support"
+    ],
+    "contrast_axes": [
+      "song is not just poem"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.image_reference",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.image_reference"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "bridges relation scaffold.",
+    "short_intro": "bridges relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "representation",
+      "referent"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.representation_image",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.naming_reference_distinction",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "representation",
+      "referent",
+      "image is not object"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "bridges",
+    "source_ids": [
+      "concept.representation_image"
+    ],
+    "target_ids": [
+      "concept.naming_reference_distinction"
+    ],
+    "shared_axes": [
+      "representation",
+      "referent"
+    ],
+    "contrast_axes": [
+      "image is not object"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.image_not_evidence_law",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.image_not_evidence_law"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "constrains relation scaffold.",
+    "short_intro": "constrains relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "evidence",
+      "context"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.image_not_evidence",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.witness_testimony",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "evidence",
+      "context",
+      "not proof alone"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "constrains",
+    "source_ids": [
+      "concept.image_not_evidence"
+    ],
+    "target_ids": [
+      "concept.witness_testimony"
+    ],
+    "shared_axes": [
+      "evidence",
+      "context"
+    ],
+    "contrast_axes": [
+      "not proof alone"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.translation_not_equivalence",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.translation_not_equivalence"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "constrains relation scaffold.",
+    "short_intro": "constrains relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "name",
+      "meaning shift"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.translation_equivalence_boundary",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.naming_reference_distinction",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "name",
+      "meaning shift",
+      "no perfect one-to-one"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "constrains",
+    "source_ids": [
+      "concept.translation_equivalence_boundary"
+    ],
+    "target_ids": [
+      "concept.naming_reference_distinction"
+    ],
+    "shared_axes": [
+      "name",
+      "meaning shift"
+    ],
+    "contrast_axes": [
+      "no perfect one-to-one"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "relation.r26_bridge.affective_not_diagnosis",
+    "entity_type": "relation",
+    "names": [
+      "r26_bridge.affective_not_diagnosis"
+    ],
+    "domain": "bridge_boundary",
+    "factual_core": "constrains relation scaffold.",
+    "short_intro": "constrains relation scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "association",
+      "memory"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.affective_association_boundary",
+        "relation": "relation_endpoint"
+      },
+      {
+        "id": "concept.memory_vs_fact",
+        "relation": "relation_endpoint"
+      }
+    ],
+    "comparison_axes": [
+      "association",
+      "memory",
+      "not diagnosis"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "relation"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_analogy_bridge",
+      "supports_same_or_different_question"
+    ],
+    "relation_type": "constrains",
+    "source_ids": [
+      "concept.affective_association_boundary"
+    ],
+    "target_ids": [
+      "concept.memory_vs_fact"
+    ],
+    "shared_axes": [
+      "association",
+      "memory"
+    ],
+    "contrast_axes": [
+      "not diagnosis"
+    ],
+    "licensed_verbs": [
+      "distinguishes",
+      "frames",
+      "constrains",
+      "helps_compare"
+    ],
+    "example_ids": [],
+    "constraints": [
+      "preserve domain difference",
+      "do not infer identity"
+    ],
+    "negative_moves": [
+      "analogy_is_not_identity",
+      "same_word_is_not_same_concept"
+    ],
+    "boundary_notes": [
+      "Use only for bounded comparison."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:analogy",
+        "url": "https://www.britannica.com/search?query=analogy"
+      },
+      {
+        "label": "Britannica:evidence",
+        "url": "https://www.britannica.com/search?query=evidence"
+      }
+    ],
+    "transfer_scope": [
+      "same_or_different_question",
+      "concept_followup",
+      "non_question_uptake"
+    ],
+    "turn_functions": [
+      "explain_relation",
+      "compare_forms",
+      "concept_followup",
+      "topic_reentry",
+      "meaningful_non_question"
+    ]
+  },
+  {
+    "id": "concept.memory_vs_fact",
+    "entity_type": "concept",
+    "names": [
+      "记忆与事实",
+      "memory vs fact"
+    ],
+    "domain": "psychology_memory_boundary",
+    "factual_core": "memory vs fact concept scaffold.",
+    "short_intro": "memory vs fact concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.witness_testimony"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.witness_testimony",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "subjective recall",
+      "evidence difference",
+      "narrative shaping"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_boundary_guardrail",
+      "supports_false_equivalence_rejection"
+    ],
+    "definition_units": [
+      "subjective recall",
+      "evidence difference",
+      "narrative shaping"
+    ],
+    "examples": [
+      "memoir question",
+      "film memory scene"
+    ],
+    "non_examples": [
+      "memory equals perfect storage"
+    ],
+    "related_concepts": [
+      "concept.witness_testimony"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "memory equals perfect storage"
+    ],
+    "negative_moves": [
+      "do_not_treat_memory_as_complete_evidence"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:memory",
+        "url": "https://www.britannica.com/search?query=memory"
+      }
+    ],
+    "transfer_scope": [
+      "literature",
+      "film",
+      "care_boundary"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.documentary_fiction_boundary",
+    "entity_type": "concept",
+    "names": [
+      "纪录与虚构边界",
+      "documentary fiction boundary"
+    ],
+    "domain": "film",
+    "factual_core": "documentary fiction boundary concept scaffold.",
+    "short_intro": "documentary fiction boundary concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.image_not_evidence"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.image_not_evidence",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "recorded world",
+      "constructed form",
+      "truth claim"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_boundary_guardrail",
+      "supports_false_equivalence_rejection"
+    ],
+    "definition_units": [
+      "recorded world",
+      "constructed form",
+      "truth claim"
+    ],
+    "examples": [
+      "docufiction",
+      "essay film"
+    ],
+    "non_examples": [
+      "documentary equals pure fact"
+    ],
+    "related_concepts": [
+      "concept.image_not_evidence"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "documentary equals pure fact"
+    ],
+    "negative_moves": [
+      "do_not_treat_image_as_complete_proof"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "BFI:documentary",
+        "url": "https://www.bfi.org.uk/search?query=documentary"
+      }
+    ],
+    "transfer_scope": [
+      "film",
+      "law",
+      "history"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.image_not_evidence",
+    "entity_type": "concept",
+    "names": [
+      "图像不是证据本身",
+      "image is not evidence by default"
+    ],
+    "domain": "image_theory",
+    "factual_core": "image is not evidence by default concept scaffold.",
+    "short_intro": "image is not evidence by default concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.documentary_fiction_boundary"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.documentary_fiction_boundary",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "image record",
+      "context need",
+      "interpretive risk"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_boundary_guardrail",
+      "supports_false_equivalence_rejection"
+    ],
+    "definition_units": [
+      "image record",
+      "context need",
+      "interpretive risk"
+    ],
+    "examples": [
+      "photograph as clue",
+      "documentary image"
+    ],
+    "non_examples": [
+      "image equals proof"
+    ],
+    "related_concepts": [
+      "concept.documentary_fiction_boundary"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "image equals proof"
+    ],
+    "negative_moves": [
+      "do_not_treat_picture_as_complete_proof"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "MoMA:photography evidence",
+        "url": "https://www.moma.org/search/?query=photography%20evidence"
+      }
+    ],
+    "transfer_scope": [
+      "photography",
+      "law",
+      "film"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.song_poem_boundary",
+    "entity_type": "concept",
+    "names": [
+      "歌与诗的边界",
+      "song and poem boundary"
+    ],
+    "domain": "music_literature",
+    "factual_core": "song and poem boundary concept scaffold.",
+    "short_intro": "song and poem boundary concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.translation_equivalence_boundary"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.translation_equivalence_boundary",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "voice",
+      "music support",
+      "text compression"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_boundary_guardrail",
+      "supports_false_equivalence_rejection"
+    ],
+    "definition_units": [
+      "voice",
+      "music support",
+      "text compression"
+    ],
+    "examples": [
+      "lyric discussion",
+      "song-poem comparison"
+    ],
+    "non_examples": [
+      "song equals poem"
+    ],
+    "related_concepts": [
+      "concept.translation_equivalence_boundary"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "song equals poem"
+    ],
+    "negative_moves": [
+      "do_not_quote_lyrics"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:lyric",
+        "url": "https://www.britannica.com/search?query=lyric"
+      }
+    ],
+    "transfer_scope": [
+      "music",
+      "poetry",
+      "copyright_boundary"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.representation_image",
+    "entity_type": "concept",
+    "names": [
+      "再现",
+      "representation"
+    ],
+    "domain": "art_image_design",
+    "factual_core": "representation concept scaffold.",
+    "short_intro": "representation concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.image_not_evidence"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.image_not_evidence",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "image relation",
+      "object relation",
+      "viewer inference"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "domain_pack",
+    "pack_id": "art_design_image_deepening",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_domain_foundation",
+      "supports_concept_followup"
+    ],
+    "definition_units": [
+      "image relation",
+      "object relation",
+      "viewer inference"
+    ],
+    "examples": [
+      "painting",
+      "photography"
+    ],
+    "non_examples": [
+      "copying only"
+    ],
+    "related_concepts": [
+      "concept.image_not_evidence"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "copying only"
+    ],
+    "negative_moves": [
+      "do_not_treat_image_as_object_itself"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "MoMA:representation",
+        "url": "https://www.moma.org/search/?query=representation"
+      }
+    ],
+    "transfer_scope": [
+      "art",
+      "language",
+      "film"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.naming_reference_distinction",
+    "entity_type": "concept",
+    "names": [
+      "命名与指称差异",
+      "naming vs reference"
+    ],
+    "domain": "language",
+    "factual_core": "naming vs reference concept scaffold.",
+    "short_intro": "naming vs reference concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.reference"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.reference",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "name",
+      "referent",
+      "context"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_boundary_guardrail",
+      "supports_false_equivalence_rejection"
+    ],
+    "definition_units": [
+      "name",
+      "referent",
+      "context"
+    ],
+    "examples": [
+      "proper name",
+      "translation term"
+    ],
+    "non_examples": [
+      "name equals meaning"
+    ],
+    "related_concepts": [
+      "concept.reference"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "name equals meaning"
+    ],
+    "negative_moves": [
+      "do_not_treat_same_name_as_same_entity"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "SEP:reference",
+        "url": "https://plato.stanford.edu/entries/reference/"
+      },
+      {
+        "label": "SEP:names",
+        "url": "https://plato.stanford.edu/entries/names/"
+      }
+    ],
+    "transfer_scope": [
+      "language",
+      "law",
+      "dialogue"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.translation_equivalence_boundary",
+    "entity_type": "concept",
+    "names": [
+      "翻译等价边界",
+      "translation equivalence boundary"
+    ],
+    "domain": "language",
+    "factual_core": "translation equivalence boundary concept scaffold.",
+    "short_intro": "translation equivalence boundary concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.translation"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.translation",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "meaning loss",
+      "context shift",
+      "form difference"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_boundary_guardrail",
+      "supports_false_equivalence_rejection"
+    ],
+    "definition_units": [
+      "meaning loss",
+      "context shift",
+      "form difference"
+    ],
+    "examples": [
+      "title translation",
+      "poetry term"
+    ],
+    "non_examples": [
+      "perfect one-to-one equivalent"
+    ],
+    "related_concepts": [
+      "concept.translation"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "perfect one-to-one equivalent"
+    ],
+    "negative_moves": [
+      "do_not_claim_one_perfect_equivalent"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:translation",
+        "url": "https://www.britannica.com/search?query=translation"
+      }
+    ],
+    "transfer_scope": [
+      "language",
+      "literature",
+      "philosophy"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.authority_legitimacy",
+    "entity_type": "concept",
+    "names": [
+      "权威与正当性",
+      "authority and legitimacy"
+    ],
+    "domain": "social_thought",
+    "factual_core": "authority and legitimacy concept scaffold.",
+    "short_intro": "authority and legitimacy concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.rule_of_law"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.rule_of_law",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "power claim",
+      "acceptance",
+      "justification"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_boundary_guardrail",
+      "supports_false_equivalence_rejection"
+    ],
+    "definition_units": [
+      "power claim",
+      "acceptance",
+      "justification"
+    ],
+    "examples": [
+      "law",
+      "institution"
+    ],
+    "non_examples": [
+      "authority equals force"
+    ],
+    "related_concepts": [
+      "concept.rule_of_law"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "authority equals force"
+    ],
+    "negative_moves": [
+      "do_not_make_current_legal_claim"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "SEP:legitimacy",
+        "url": "https://plato.stanford.edu/entries/legitimacy/"
+      }
+    ],
+    "transfer_scope": [
+      "law",
+      "politics",
+      "education"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.affective_association_boundary",
+    "entity_type": "concept",
+    "names": [
+      "情感联想边界",
+      "affective association boundary"
+    ],
+    "domain": "care_boundary",
+    "factual_core": "affective association boundary concept scaffold.",
+    "short_intro": "affective association boundary concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.memory_vs_fact"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.memory_vs_fact",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "association",
+      "memory",
+      "non-diagnosis"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "boundary_pack",
+    "pack_id": "bridge_negative_boundary_layer",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_boundary_guardrail",
+      "supports_false_equivalence_rejection"
+    ],
+    "definition_units": [
+      "association",
+      "memory",
+      "non-diagnosis"
+    ],
+    "examples": [
+      "personal resonance",
+      "art feeling"
+    ],
+    "non_examples": [
+      "clinical diagnosis"
+    ],
+    "related_concepts": [
+      "concept.memory_vs_fact"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "clinical diagnosis"
+    ],
+    "negative_moves": [
+      "do_not_pathologize_personal_association"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:emotion",
+        "url": "https://www.britannica.com/search?query=emotion"
+      }
+    ],
+    "transfer_scope": [
+      "care_boundary",
+      "art",
+      "music"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.postcolonial_memory",
+    "entity_type": "concept",
+    "names": [
+      "后殖民记忆",
+      "postcolonial memory"
+    ],
+    "domain": "literature.world",
+    "factual_core": "postcolonial memory concept scaffold.",
+    "short_intro": "postcolonial memory concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.witness_testimony"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.witness_testimony",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "memory after empire",
+      "language pressure",
+      "historical voice"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "domain_pack",
+    "pack_id": "world_literature_extension",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_domain_foundation",
+      "supports_concept_followup"
+    ],
+    "definition_units": [
+      "memory after empire",
+      "language pressure",
+      "historical voice"
+    ],
+    "examples": [
+      "nation narrative",
+      "family history"
+    ],
+    "non_examples": [
+      "nostalgia only"
+    ],
+    "related_concepts": [
+      "concept.witness_testimony"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "nostalgia only"
+    ],
+    "negative_moves": [
+      "do_not_turn_into_current_politics_without_source"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:postcolonialism",
+        "url": "https://www.britannica.com/search?query=postcolonialism"
+      }
+    ],
+    "transfer_scope": [
+      "literature",
+      "history",
+      "social_thought"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.witness_testimony",
+    "entity_type": "concept",
+    "names": [
+      "见证与证词",
+      "witness and testimony"
+    ],
+    "domain": "literature",
+    "factual_core": "witness and testimony concept scaffold.",
+    "short_intro": "witness and testimony concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.memory_vs_fact"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.memory_vs_fact",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "first person account",
+      "evidence pressure",
+      "ethical address"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "domain_pack",
+    "pack_id": "world_literature_extension",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_domain_foundation",
+      "supports_concept_followup"
+    ],
+    "definition_units": [
+      "first person account",
+      "evidence pressure",
+      "ethical address"
+    ],
+    "examples": [
+      "testimonial writing",
+      "legal testimony analogy"
+    ],
+    "non_examples": [
+      "opinion only"
+    ],
+    "related_concepts": [
+      "concept.memory_vs_fact"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "opinion only"
+    ],
+    "negative_moves": [
+      "do_not_treat_testimony_as_total_proof"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:testimony",
+        "url": "https://www.britannica.com/search?query=testimony"
+      }
+    ],
+    "transfer_scope": [
+      "literature",
+      "law",
+      "history"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.mise_en_scene",
+    "entity_type": "concept",
+    "names": [
+      "场面调度",
+      "mise-en-scene"
+    ],
+    "domain": "film",
+    "factual_core": "mise-en-scene concept scaffold.",
+    "short_intro": "mise-en-scene concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "theme.framing"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "theme.framing",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "staging",
+      "space",
+      "visible arrangement"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "domain_pack",
+    "pack_id": "global_cinema_extension",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_domain_foundation",
+      "supports_concept_followup"
+    ],
+    "definition_units": [
+      "staging",
+      "space",
+      "visible arrangement"
+    ],
+    "examples": [
+      "frame composition",
+      "actor placement"
+    ],
+    "non_examples": [
+      "set decoration only"
+    ],
+    "related_concepts": [
+      "theme.framing"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "set decoration only"
+    ],
+    "negative_moves": [
+      "do_not_reduce_to_pretty_image"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "BFI:mise en scene",
+        "url": "https://www.bfi.org.uk/search?query=mise%20en%20scene"
+      }
+    ],
+    "transfer_scope": [
+      "film",
+      "theater",
+      "design"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.city_film",
+    "entity_type": "concept",
+    "names": [
+      "城市电影",
+      "city film"
+    ],
+    "domain": "film",
+    "factual_core": "city film concept scaffold.",
+    "short_intro": "city film concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.city_street"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.city_street",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "urban space",
+      "movement",
+      "social relation"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "domain_pack",
+    "pack_id": "global_cinema_extension",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_domain_foundation",
+      "supports_concept_followup"
+    ],
+    "definition_units": [
+      "urban space",
+      "movement",
+      "social relation"
+    ],
+    "examples": [
+      "street scene",
+      "metropolis film"
+    ],
+    "non_examples": [
+      "city as backdrop only"
+    ],
+    "related_concepts": [
+      "concept.city_street"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "city as backdrop only"
+    ],
+    "negative_moves": [
+      "do_not_reduce_city_to_setting"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "BFI:city film",
+        "url": "https://www.bfi.org.uk/search?query=city%20film"
+      }
+    ],
+    "transfer_scope": [
+      "film",
+      "urban",
+      "literature"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.memory_film",
+    "entity_type": "concept",
+    "names": [
+      "记忆电影",
+      "memory film"
+    ],
+    "domain": "film",
+    "factual_core": "memory film concept scaffold.",
+    "short_intro": "memory film concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.memory_vs_fact"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.memory_vs_fact",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "time return",
+      "image fragment",
+      "subjective recall"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "domain_pack",
+    "pack_id": "global_cinema_extension",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_domain_foundation",
+      "supports_concept_followup"
+    ],
+    "definition_units": [
+      "time return",
+      "image fragment",
+      "subjective recall"
+    ],
+    "examples": [
+      "flashback structure",
+      "essay film"
+    ],
+    "non_examples": [
+      "plot recap only"
+    ],
+    "related_concepts": [
+      "concept.memory_vs_fact"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "plot recap only"
+    ],
+    "negative_moves": [
+      "do_not_treat_memory_as_exact_record"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "BFI:memory film",
+        "url": "https://www.bfi.org.uk/search?query=memory%20film"
+      }
+    ],
+    "transfer_scope": [
+      "film",
+      "literature",
+      "psychology_boundary"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.improvisation",
+    "entity_type": "concept",
+    "names": [
+      "即兴",
+      "improvisation"
+    ],
+    "domain": "music",
+    "factual_core": "improvisation concept scaffold.",
+    "short_intro": "improvisation concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.jazz"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.jazz",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "real-time choice",
+      "shared structure",
+      "variation"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "domain_pack",
+    "pack_id": "global_music_culture",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_domain_foundation",
+      "supports_concept_followup"
+    ],
+    "definition_units": [
+      "real-time choice",
+      "shared structure",
+      "variation"
+    ],
+    "examples": [
+      "jazz solo",
+      "call response"
+    ],
+    "non_examples": [
+      "random playing"
+    ],
+    "related_concepts": [
+      "concept.jazz"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "random playing"
+    ],
+    "negative_moves": [
+      "do_not_claim_no_structure"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:improvisation music",
+        "url": "https://www.britannica.com/search?query=improvisation%20music"
+      }
+    ],
+    "transfer_scope": [
+      "music",
+      "conversation",
+      "theater"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
+  },
+  {
+    "id": "concept.jazz",
+    "entity_type": "concept",
+    "names": [
+      "爵士",
+      "jazz"
+    ],
+    "domain": "music",
+    "factual_core": "jazz concept scaffold.",
+    "short_intro": "jazz concept scaffold.",
+    "works": [],
+    "representative_works": [],
+    "periods": [],
+    "themes": [
+      "concept.improvisation"
+    ],
+    "style_axes": [],
+    "historical_context": [],
+    "entry_points": [
+      "definition_unit",
+      "contrast_unit"
+    ],
+    "related_entities": [
+      {
+        "id": "concept.improvisation",
+        "relation": "related_concept"
+      }
+    ],
+    "comparison_axes": [
+      "improvisation",
+      "swing relation",
+      "ensemble interaction"
+    ],
+    "conversation_moves": {
+      "overview": "definition_unit",
+      "works_list": "list_items",
+      "representative_works": "representative_items",
+      "entry_path": "guided_sequence",
+      "explain_work": "summary_no_quotes",
+      "compare": "contrast_axes",
+      "country_relation": "context_split",
+      "why_it_matters": "field_effect",
+      "quote_or_lyrics_boundary": "no_long_quotes"
+    },
+    "safe_boundaries": [
+      "no long quotations",
+      "no private-intent inference",
+      "mark uncertainty when scope is partial",
+      "do not convert concept support into expert advice"
+    ],
+    "copyright_policy": "Use metadata, themes, and short paraphrase only; no lyrics, plot dumps, or long copyrighted excerpts.",
+    "followup_bindings": [],
+    "source_summary": "R26 source backed card; compact primitives only.",
+    "confidence": 0.82,
+    "visibility": "public",
+    "approved_for_public_runtime": true,
+    "not_to_infer": [
+      "complete canon",
+      "private motive",
+      "direct influence without evidence",
+      "identity equivalence from analogy",
+      "current professional advice"
+    ],
+    "needs_review": false,
+    "eval_tags": [
+      "r26",
+      "concept"
+    ],
+    "runtime_scope": "domain_pack",
+    "pack_id": "global_music_culture",
+    "activation_priority": 6,
+    "source_library_tier": "r26_v2_v3_source_growth",
+    "runtime_default": false,
+    "local_first_risk": "low_bundle_risk",
+    "bundle_weight_estimate": "small",
+    "purpose_class": [
+      "adds_domain_foundation",
+      "supports_concept_followup"
+    ],
+    "definition_units": [
+      "improvisation",
+      "swing relation",
+      "ensemble interaction"
+    ],
+    "examples": [
+      "small group jazz",
+      "modal jazz"
+    ],
+    "non_examples": [
+      "background cafe music"
+    ],
+    "related_concepts": [
+      "concept.improvisation"
+    ],
+    "related_people": [],
+    "relation_ids": [],
+    "common_misreadings": [
+      "background cafe music"
+    ],
+    "negative_moves": [
+      "do_not_reduce_to_mood"
+    ],
+    "boundary_notes": [
+      "Use as a concept distinction, not as a complete answer."
+    ],
+    "provenance": [
+      {
+        "label": "Britannica:jazz",
+        "url": "https://www.britannica.com/search?query=jazz"
+      }
+    ],
+    "transfer_scope": [
+      "music",
+      "conversation",
+      "city"
+    ],
+    "turn_functions": [
+      "define_concept",
+      "explain_characteristics",
+      "explain_relation",
+      "compare_forms",
+      "topic_reentry"
+    ]
   }
 ];
