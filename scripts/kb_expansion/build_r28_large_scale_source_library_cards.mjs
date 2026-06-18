@@ -864,7 +864,7 @@ function generateR28Cards(byId) {
   }
 
   const auto = autoClosureRelations(byId);
-  activeLimitRelations(auto, 380);
+  activeLimitRelations(auto, 400);
 
   const bridgeRows = [];
   const conceptIds = [

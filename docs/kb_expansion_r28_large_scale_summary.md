@@ -8,22 +8,22 @@ R28 expanded and cleaned the KB source library. This document is a KB/data repor
 - final source cards: 5717
 - source delta: 3041
 - baseline active runtime source cards: 1070
-- final active runtime source cards: 1820
-- active runtime source delta: 750
+- final active runtime source cards: 1840
+- active runtime source delta: 770
 - baseline generated runtime cards: 1069
-- final generated runtime cards: 1819
+- final generated runtime cards: 1839
 - generated artifact size before: 3454705
-- generated artifact size after: 6687888
-- generated artifact SHA256: 917edc027e56332189143b393090903434baa61d62e61df07965194660664f26
-- source-only cards: 3748
+- generated artifact size after: 6763539
+- generated artifact SHA256: 5b7873042e4189cddcfc7ceb7d00b7b53e70d52fbfc094e04f86f5ed7a0f5ed3
+- source-only cards: 3728
 - optional long-tail cards: 149
 
 ## R28 Additions
 
 - R28 stage cards: 3041
-- R28 active stage cards: 819
+- R28 active stage cards: 839
 - R28 relation/contrast/negative/boundary/example share: 0.968
-- R28 active relation-like share: 0.991
+- R28 active relation-like share: 0.992
 - cards by type: {"concept":25,"person":16,"relation":2936,"work":64}
 - cards by pack: {"art_image_design_architecture":192,"bridge_negative_boundary_layer":695,"city_food_daily_life":224,"economy_law_education_care_boundary":284,"film_media_global_expansion":323,"literature_global_expansion":500,"music_global_and_chinese_completion":302,"philosophy_language_social_thought":77,"r28_active_closure_pruned_source_only":164,"science_technology_computing":280}
 - cards by domain family: {"art_image_design_architecture":185,"city_food_daily":221,"economy_law_education_care":289,"film_media":343,"literature":521,"music":305,"philosophy_language_social":142,"science_technology":1035}
@@ -36,7 +36,7 @@ R28 expanded and cleaned the KB source library. This document is a KB/data repor
 - active method cards after cleanup: 0
 - active external seed cards after cleanup: 0
 - source orphan counts: {"closed_or_non_anchor":5035,"orphan_concept":47,"orphan_person":67,"orphan_work":95,"relation_missing_endpoint":473}
-- active orphan counts: {"closed_or_non_anchor":1819,"orphan_person":1}
+- active orphan counts: {"closed_or_non_anchor":1840}
 - active missing references: 0
 - active relation missing endpoints: 0
 - duplicate clusters reported: 200
@@ -45,11 +45,11 @@ R28 expanded and cleaned the KB source library. This document is a KB/data repor
 
 - baseline source relation density: 0.541
 - final source relation density: 0.767
-- final active relation density: 0.635
+- final active relation density: 0.639
 - source person-to-work closure: 0.796
 - source work-to-concept closure: 0.827
 - source concept-to-relation closure: 0.897
-- active person-to-work closure: 0.992
+- active person-to-work closure: 1
 - active work-to-concept closure: 1
 - active concept-to-relation closure: 1
 
