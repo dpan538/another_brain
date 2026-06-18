@@ -1,9 +1,10 @@
-const CHINESE_NUMBER_PATTERN = /[一二三四五六七八九十百千万亿两\d]+/g;
 const NEGATION_PATTERN = /不|不是|不能|不可|没有|无|并非|别|禁止|不得|不该/;
 const UNCERTAINTY_PATTERN = /也许|可能|不确定|看情况|需要看|取决于|未必|似乎|大概|没有足够|无法确认|不能确认/;
 const BOUNDARY_PATTERN = /隐私|版权|完整歌词|全文|身份证|手机号|地址|银行卡|法律|医疗|金融|自伤|伤害|来源|辖区|日期|程序|边界|不能给|不该说|不声称/;
 const RELATION_PATTERN = /像|相似|关系|关联|桥|对照|区别|差别|共同|变成|连|连接|组织|保存|压缩|承担/;
 const CONFIRMATION_PATTERN = /^是($|[的。，,；]|[^不无没未])|^对[。；，,]|^可以|^能注意到|^知道/;
+const SIGNIFICANT_QUANTITY_PATTERN =
+  /\d+(?:个|位|条|项|次|轮|句|段|年|世纪|年代|入口)?|[二三四五六七八九十百千万亿两]+(?:个|位|条|项|次|轮|句|段|年|世纪|年代|入口)?|一(?:个|位|条|项|次|轮|句|段|年|世纪|年代|入口)/g;
 
 function textOf(value) {
   return String(value || "").trim();
@@ -18,11 +19,25 @@ function zhNamedChunks(text = "") {
   const source = textOf(text);
   const quoted = [...source.matchAll(/《([^》]{1,24})》/g)].map((match) => match[1]);
   chunks.push(...quoted);
-  const names = [...source.matchAll(/[A-Z][A-Za-z0-9_.-]{1,40}|[\u4e00-\u9fff]{2,8}(?:文学|音乐|电影|法律|戏剧|诗歌|小说|歌|专辑|单曲|歌手|作家|剧|城市|饮食|心理学|经济|教育|历史|语言|技术|工具|伦理|记忆|童年)/g)].map(
-    (match) => match[0]
+  const latinNames = [...source.matchAll(/[A-Z][A-Za-z0-9_.-]{1,40}/g)].map((match) => match[0]);
+  const namedBeforePossessive = [...source.matchAll(/([\u4e00-\u9fff]{2,4})(?=的(?:歌|歌曲|作品|电影|小说|书|音乐|声音|专辑|单曲))/g)].map(
+    (match) => match[1]
   );
-  chunks.push(...names);
+  const namedBeforeQuote = [...source.matchAll(/([\u4e00-\u9fff]{2,4})(?=《)/g)].map((match) => match[1]);
+  const namedAsRole = [
+    ...source.matchAll(/([\u4e00-\u9fff]{2,4})(?=是(?:台湾|日本|中国|香港|华语|美国|英国|法国)?(?:音乐人|作家|导演|歌手|小说家|诗人))/g)
+  ].map((match) => match[1]);
+  const domainChunks = [
+    ...source.matchAll(
+      /(?:日本|台湾|中国|香港|华语|现代|古典|当代|东亚|亚洲)?(?:文学|音乐|电影|法律|戏剧|诗歌|小说|饮食|心理学|经济|教育|历史|语言|技术|伦理|记忆|童年)/g
+    )
+  ].map((match) => match[0]);
+  chunks.push(...latinNames, ...namedBeforePossessive, ...namedBeforeQuote, ...namedAsRole, ...domainChunks);
   return unique(chunks).slice(0, 24);
+}
+
+function significantQuantities(text = "") {
+  return unique(textOf(text).match(SIGNIFICANT_QUANTITY_PATTERN) || []);
 }
 
 function splitClaims(text = "") {
@@ -104,7 +119,7 @@ export function extractSurfaceContentUnits({
     active_referent: activeReferent || (Array.isArray(binding?.target_ids) ? binding.target_ids[0] || "" : ""),
     polarity,
     claims,
-    quantities: unique(text.match(CHINESE_NUMBER_PATTERN) || []),
+    quantities: significantQuantities(text),
     named_items: namedItems,
     query_named_items: queryNamedItems,
     qualifiers: unique([...uncertaintyMarkers, ...boundaryRequirements]),

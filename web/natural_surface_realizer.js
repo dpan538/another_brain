@@ -46,6 +46,11 @@ function prohibitionHits(text) {
 }
 
 function domainFrom({ domain = "", query = "", activeTopic = {} } = {}) {
+  const activeDomain = activeTopic?.domain || "";
+  if (primitiveProfileFor(activeDomain)) return activeDomain;
+  if (primitiveProfileFor(domain)) return domain;
+  if (activeDomain && !primitiveProfileFor(activeDomain)) return activeDomain;
+
   const source = `${domain} ${activeTopic?.domain || ""} ${query}`;
   if (/音乐|歌|专辑|单曲|流行|music|mandopop/.test(source)) return "music";
   if (/文学|小说|诗|作家|literature/.test(source)) return "literature";
@@ -225,7 +230,7 @@ function semanticPreflightFallbackReason({ turnFunction = "", currentUnits = {} 
   if (currentUnits.boundary_requirements?.length) return "boundary_units_require_current_answer";
   if (currentUnits.uncertainty_markers?.length) return "uncertainty_requires_current_answer";
   if (currentUnits.quantities?.length) return "quantity_units_require_current_answer";
-  if (currentUnits.polarity && currentUnits.polarity !== "neutral") return "polarity_requires_current_answer";
+  if (["negative", "uncertain"].includes(currentUnits.polarity)) return "polarity_requires_current_answer";
 
   const requiredTextUnits = (currentUnits.required_units || []).filter((unit) => !isStructuredUnit(unit));
   if (requiredTextUnits.length) return "required_text_units_require_current_answer";

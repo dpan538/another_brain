@@ -84,32 +84,37 @@ function evaluateSurfaceCase({ row, actual, failures }) {
 }
 
 function evaluateCandidateCase({ row, actual, failures }) {
+  const fallbackRows = [];
   const trace = cc(actual);
   const candidate = trace.surface_candidate || {};
   const text = shadowCandidate(actual);
-  if (!text) return;
+  if (!text) return { fallbackRows };
   if (candidate.fallback_to_current_reason) {
-    failures.push({
+    fallbackRows.push({
       id: row.id,
-      reason: "shadow_candidate_fallback",
+      reason: "shadow_candidate_not_attempted",
       fallback_reason: candidate.fallback_to_current_reason,
       candidate_answer: text
     });
+    return { fallbackRows };
   }
   const forbidden = checkForbiddenPatterns(text, row.forbidden_surface_patterns || []);
   if (forbidden.length) failures.push({ id: row.id, reason: "shadow_forbidden_surface_pattern", forbidden, candidate_answer: text });
   const hits = classifySurfaceHits(text).filter((hit) => ["you_can_continue_ask", "generic_thanks", "continue_effort", "i_caught_it"].includes(hit.id));
   if (hits.length) failures.push({ id: row.id, reason: "shadow_high_risk_surface_pattern", hits, candidate_answer: text });
+  return { fallbackRows };
 }
 
 async function evaluateNonQuestionRows(failures, transcripts) {
   const candidateFailures = [];
+  const candidateFallbacks = [];
   const rows = await loadRows("non_question_turns.jsonl");
   for (const row of rows) {
     const runtime = await runContext(row.context || []);
     const actual = await answerDialogPrompt(row.user, runtime, { uiProfile: "mobile", withThinkingDelay: false });
     evaluateSurfaceCase({ row, actual, failures });
-    evaluateCandidateCase({ row, actual, failures: candidateFailures });
+    const candidateResult = evaluateCandidateCase({ row, actual, failures: candidateFailures });
+    candidateFallbacks.push(...(candidateResult?.fallbackRows || []));
     transcripts.push({
       id: row.id,
       user: row.user,
@@ -119,11 +124,12 @@ async function evaluateNonQuestionRows(failures, transcripts) {
       trace: cc(actual)
     });
   }
-  return { rows: rows.length, candidateFailures };
+  return { rows: rows.length, candidateFailures, candidateFallbacks };
 }
 
 async function evaluateSessions(failures, transcripts) {
   const candidateFailures = [];
+  const candidateFallbacks = [];
   const rows = await loadRows("session_rhythm_cases.jsonl");
   for (const row of rows) {
     const runtime = createDialogRuntime();
@@ -136,7 +142,8 @@ async function evaluateSessions(failures, transcripts) {
       seenSkeletons.set(skeleton, (seenSkeletons.get(skeleton) || 0) + 1);
       if (turn.turn_function || turn.expected_surface_mode || turn.reasoning_budget) {
         evaluateSurfaceCase({ row: { ...turn, id: `${row.id}#${index + 1}` }, actual, failures });
-        evaluateCandidateCase({ row: { ...turn, id: `${row.id}#${index + 1}` }, actual, failures: candidateFailures });
+        const candidateResult = evaluateCandidateCase({ row: { ...turn, id: `${row.id}#${index + 1}` }, actual, failures: candidateFailures });
+        candidateFallbacks.push(...(candidateResult?.fallbackRows || []));
       }
       const forbidden = checkForbiddenPatterns(text, row.forbidden_surface_patterns || []);
       if (forbidden.length) failures.push({ id: row.id, turn: index + 1, reason: "session_forbidden_surface_pattern", forbidden, answer: text });
@@ -154,7 +161,7 @@ async function evaluateSessions(failures, transcripts) {
       if (count >= 3) failures.push({ id: row.id, reason: "same_surface_skeleton_streak", surface_skeleton, count });
     }
   }
-  return { rows: rows.length, candidateFailures };
+  return { rows: rows.length, candidateFailures, candidateFallbacks };
 }
 
 async function evaluateBadBetterPairs(failures) {
@@ -177,6 +184,7 @@ async function main() {
   const pairRows = await evaluateBadBetterPairs(failures);
   const proxyRows = await loadRows("proxy_leakage_cases.jsonl");
   const candidateFailures = [...nonQuestion.candidateFailures, ...session.candidateFailures];
+  const candidateFallbacks = [...(nonQuestion.candidateFallbacks || []), ...(session.candidateFallbacks || [])];
   const report = makeExecutionReport({
     behaviorOk: failures.length === 0,
     auditOnly: !STRICT,
@@ -194,6 +202,8 @@ async function main() {
     current_runtime_failures: failures.slice(0, 80),
     candidate_failure_count: candidateFailures.length,
     candidate_runtime_failures: candidateFailures.slice(0, 80),
+    candidate_fallback_count: candidateFallbacks.length,
+    candidate_fallbacks: candidateFallbacks.slice(0, 80),
     failures: failures.slice(0, 80),
     transcripts
     }
