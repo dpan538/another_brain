@@ -56,8 +56,8 @@ export const DIALOGIC_DOMAIN_PROFILES = Object.freeze({
   },
   science: {
     id: "science",
-    queryPattern: /达尔文|进化论|自然选择|科学史|实验|法布尔|卡逊|昆虫记|生态|科学观察|证据/,
-    sourcePattern: /达尔文|进化论|自然选择|科学史|实验|法布尔|卡逊|昆虫记|生态/,
+    queryPattern: /达尔文|进化论|自然选择|科学|科学史|科学叙事|实验|法布尔|卡逊|昆虫记|生态|科学观察|证据/,
+    sourcePattern: /达尔文|进化论|自然选择|科学|科学史|科学叙事|实验|法布尔|卡逊|昆虫记|生态/,
     overview: (subject) => `${subject || "这个科学对象"}可以理解为科学史里的入口：重点在观察、证据、时间尺度和解释关系。`,
     confirmation: "是。这里说的是科学史里的对象，我会按观察、证据和时间尺度继续。",
     evaluation: "我会看它怎样把观察变成解释：厉害处不只是结论，而是让证据、差异和时间连成关系。",

@@ -127,6 +127,21 @@ export function inferSurfaceControl({
     };
   }
 
+  if (fn === "topic_reentry") {
+    return {
+      surface_mode: "compact_judgment",
+      reasoning_budget: "one_step",
+      abstraction_level: "mixed",
+      bridge_style: "implicit",
+      acknowledgment_style: "none",
+      acknowledgment_mode: "none",
+      surface_prohibitions: ["announced_bridge", "generic_bridge_template"],
+      sentence_shape: "two_clause",
+      stance_strength: "light",
+      silence_policy: "never_silent_when_active_context"
+    };
+  }
+
   if (/list/.test(`${style} ${qType}`)) {
     return {
       surface_mode: "list_short",

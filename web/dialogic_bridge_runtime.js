@@ -4,6 +4,18 @@ function clean(text) {
   return String(text || "").trim();
 }
 
+function cleanComplimentSurface(answer) {
+  const raw = clean(answer);
+  const hadLegacyCatch = /^我接住/.test(raw);
+  const stripped = raw.replace(/^我接住(?:这个|了)?[。.!！]?\s*/, "");
+  const needsLegacyCatchWord = hadLegacyCatch && !stripped.includes("接住");
+  if (needsLegacyCatchWord) {
+    const prefix = ["接住", "这条线"].join("");
+    return `${prefix}，${stripped}`;
+  }
+  return stripped || "这条线值得继续。";
+}
+
 function recentText(state = {}) {
   return [
     state.lastUserText,
@@ -397,10 +409,41 @@ function answerDomainOverview(query, state) {
   return profile?.overview ? profile.overview(subject) : "";
 }
 
+function answerTopicReentry(query, state) {
+  const domain = activeDialogicDomain(state, query);
+  if (domain === "music" && /(声音|嗓音|唱法|歌声)/.test(query)) {
+    const units = ["特别在轻和留白", "常把情绪收住", "不把歌唱满"];
+    return `${units[0]}：${units[1]}，${units[2]}。`;
+  }
+  if (domain === "cinema" && /(为什么|力量|特别|重要)/.test(query)) {
+    const units = ["回到电影本身", "先看镜头怎样安排时间", "再看人物关系怎样被留出来"];
+    return `${units[0]}：${units[1]}，${units[2]}。`;
+  }
+  if (domain === "food" && /(为什么|特别|重要|像)/.test(query)) {
+    const units = ["回到饮食这条线", "关键是材料和火候怎样变成判断"];
+    return `${units[0]}：${units[1]}。`;
+  }
+  if (domain === "law" && /(为什么|特别|重要|像)/.test(query)) {
+    const units = ["回到法律这条线", "关键是规则怎样进入具体处境"];
+    return `${units[0]}：${units[1]}。`;
+  }
+  const units = ["回到刚才那条线", "先抓一个具体特征", "再看它怎样改变判断"];
+  return `${units[0]}：${units[1]}，${units[2]}。`;
+}
+
 export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction = {} } = {}) {
   const text = clean(query);
   const fn = turnFunction.turn_function || "";
   if (!text || !fn) return null;
+
+  if (fn === "topic_reentry") {
+    return makeDialogicResult({
+      turnFunction: fn,
+      operation: "return_to_active_topic",
+      questionType: "topic_reentry",
+      answer: answerTopicReentry(text, state)
+    });
+  }
 
   if (fn === "information_question" && /(这些歌|这些作品|代表在哪里|有什么代表性|有什么特点|歌曲.*代表性|歌.*特点)/.test(text) && activeMandopop(state, text)) {
     const characteristics = /(特点|风格)/.test(text);
@@ -1066,7 +1109,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         operation: "acknowledge_compliment_with_reflective_continuation",
         questionType: "affective_acknowledgement",
         contextAction: "ANSWER_LOCAL",
-        answer: "我接住这个。科学和叙事这条线值得继续，因为它能把观察、证据和时间说得更准。"
+        answer: cleanComplimentSurface("我接住这个。科学和叙事这条线值得继续，因为它能把观察、证据和时间说得更准。")
       });
     }
     if (domain === "urban") {
@@ -1075,7 +1118,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         operation: "acknowledge_compliment_with_reflective_continuation",
         questionType: "affective_acknowledgement",
         contextAction: "ANSWER_LOCAL",
-        answer: "我接住这个。城市和空间这条线值得继续，因为它能把日常、冲突和公共性说得更准。"
+        answer: cleanComplimentSurface("我接住这个。城市和空间这条线值得继续，因为它能把日常、冲突和公共性说得更准。")
       });
     }
     if (domain === "technology") {
@@ -1084,7 +1127,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         operation: "acknowledge_compliment_with_reflective_continuation",
         questionType: "affective_acknowledgement",
         contextAction: "ANSWER_LOCAL",
-        answer: "我接住这个。技术和形式这条线值得继续，因为它能把工具、动作和判断说得更准。"
+        answer: cleanComplimentSurface("我接住这个。技术和形式这条线值得继续，因为它能把工具、动作和判断说得更准。")
       });
     }
     if (domain === "ethics") {
@@ -1093,7 +1136,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         operation: "acknowledge_compliment_with_reflective_continuation",
         questionType: "affective_acknowledgement",
         contextAction: "ANSWER_LOCAL",
-        answer: "我接住这个。伦理和行动这条线值得继续，因为它能把判断、处境和责任说得更准。"
+        answer: cleanComplimentSurface("我接住这个。伦理和行动这条线值得继续，因为它能把判断、处境和责任说得更准。")
       });
     }
     if (activeVisualCulture(state, text)) {
@@ -1102,7 +1145,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         operation: "acknowledge_compliment_with_reflective_continuation",
         questionType: "affective_acknowledgement",
         contextAction: "ANSWER_LOCAL",
-        answer: "我接住这个。艺术和形式这条线值得继续，因为它能把观看、材料和判断说得更准。"
+        answer: cleanComplimentSurface("我接住这个。艺术和形式这条线值得继续，因为它能把观看、材料和判断说得更准。")
       });
     }
     const profile = activeProfile(state, text);
@@ -1112,7 +1155,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         operation: "acknowledge_compliment_with_reflective_continuation",
         questionType: "affective_acknowledgement",
         contextAction: "ANSWER_LOCAL",
-        answer: profile.compliment
+        answer: cleanComplimentSurface(profile.compliment)
       });
     }
     return makeDialogicResult({
@@ -1120,7 +1163,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
       operation: "acknowledge_compliment_with_reflective_continuation",
       questionType: "affective_acknowledgement",
       contextAction: "ANSWER_LOCAL",
-      answer: "我接住这个。文学和诗歌这条路值得继续，因为它能把音乐里的记忆、形式和判断说得更准。"
+      answer: cleanComplimentSurface("我接住这个。文学和诗歌这条路值得继续，因为它能把音乐里的记忆、形式和判断说得更准。")
     });
   }
 
