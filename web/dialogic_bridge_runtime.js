@@ -16,6 +16,40 @@ function cleanComplimentSurface(answer) {
   return stripped || "这条线值得继续。";
 }
 
+function softenEntrySkeleton(answer) {
+  const text = clean(answer);
+  const entryMatch = text.match(/^(.{1,24}?)可以理解为(.{1,24}?)里的入口：重点在(.{1,48}?)。?$/);
+  if (entryMatch) {
+    const [, subject, field, axes] = entryMatch;
+    return [subject, "是", field, "里的入口；先看", axes, "。"].join("");
+  }
+
+  const confirmationEntryMatch = text.match(/^(是。这里说的是.{1,36}?，)常从(.{1,48})进入。?$/);
+  if (confirmationEntryMatch) {
+    const [, prefix, axes] = confirmationEntryMatch;
+    return [prefix, "可按", axes, "继续。"].join("");
+  }
+
+  return text;
+}
+
+function softenContrastSkeleton(answer) {
+  return clean(answer)
+    .replace(/舞台感不是只给结论，而是/g, "舞台感在于")
+    .replace(/它不是只在怀旧，而是在/g, "它更像在")
+    .replace(/不是只看好不好看，而是看/g, "别只看好不好看；要看")
+    .replace(/不是少做，而是把/g, "不是少做；是把")
+    .replace(/不是只交代结论，而是/g, "要")
+    .replace(/不是只看立场，而是看/g, "要看")
+    .replace(/不只是好吃，而是/g, "要看")
+    .replace(/它不是想变成/g, "与其说想变成")
+    .replace(/，而是羡慕/g, "，不如说羡慕");
+}
+
+function softenDialogicSurface(answer) {
+  return softenContrastSkeleton(softenEntrySkeleton(answer));
+}
+
 function recentText(state = {}) {
   return [
     state.lastUserText,
@@ -184,7 +218,7 @@ function makeDialogicResult({
 }) {
   return {
     intent,
-    answer: clean(answer),
+    answer: softenDialogicSurface(answer),
     operation,
     questionType,
     contextAction,
