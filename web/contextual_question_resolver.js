@@ -37,7 +37,6 @@ function explicitCultureTargets(query, session = {}) {
   const cards = resolveCultureEntity(query, session);
   return cards
     .filter((card) => clean(query).includes(card.names?.[0] || "") || (card.names || []).some((name) => clean(query).includes(name)))
-    .filter((card) => card && card.entity_type !== "concept")
     .slice(0, 4);
 }
 

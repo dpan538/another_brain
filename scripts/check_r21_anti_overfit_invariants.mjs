@@ -120,7 +120,12 @@ async function countRegexToCannedAnswerBranches(path) {
     const line = lines[index];
     const next = lines[index + 1] || "";
     const window = `${line}\n${next}`;
-    if (/\/.+\/\.test\(|\.match\(|\.includes\(/.test(line) && /\breturn\s+(?:sentence|question|\(?["'`])/.test(window)) {
+    const returnedStrings = [
+      ...window.matchAll(/\breturn\s+(?:sentence|question)\(\s*(["'`])([^"'`]{1,220})\1/g),
+      ...window.matchAll(/\breturn\s+\(?\s*(["'`])([^"'`]{1,220})\1/g)
+    ].map((match) => match[2] || "");
+    const returnsVisibleAnswer = returnedStrings.some((value) => zhCount(value) >= 8);
+    if (/\/.+\/\.test\(|\.match\(|\.includes\(/.test(line) && returnsVisibleAnswer) {
       examples.push(window.trim());
     }
   }

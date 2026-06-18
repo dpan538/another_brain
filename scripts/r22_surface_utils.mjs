@@ -168,13 +168,21 @@ export function classifySurfaceHits(text) {
 export function provenanceForString({ file = "", path = [] } = {}) {
   const normalized = relativeRoot(file);
   const hint = pathHint(path);
+  const isCurrentRuntimeArtifact =
+    /^artifacts\/training_os\/(?:culture_awareness_report|r10_culture_report|r11_reasoning_report|r13_coverage_report|p0_lobotomy_report|p0_response_mode_report|non_question_affordance_report|r19_dialogue_boundary_report|r19_contextual_binding_report|r20_endpoint_readiness_report|r21_mixed_dialogic_report|dialog_probe_report|production_smoke_canary_report|casepack_eval_report|model_inference_report)\.json$/.test(
+      normalized
+    );
   if (/better_answer_shape/.test(hint)) return "fixture_better_shape";
   if (/bad_answer|bad_answer_examples/.test(hint)) return "fixture_bad_answer";
   if (/shadow_candidate|candidate_answer|surface_candidate/.test(hint)) return "shadow_candidate_output";
   if (/transcripts\.\d+\.answer|turns\.\d+\.answer|current_answer|final_answer|raw_answer|output|reply/.test(hint)) {
+    if (isCurrentRuntimeArtifact) return "current_runtime_output";
     if (/^artifacts\/training_os\/r22_/.test(normalized)) return "current_runtime_output";
     if (/^artifacts\/training_os\//.test(normalized)) return "historical_artifact";
     if (/^evals\//.test(normalized)) return "eval_expected_answer";
+  }
+  if (/^(?:results|local_outputs|samples|protected|allowedUnknown)\.\d+\.answer$/.test(hint) && isCurrentRuntimeArtifact) {
+    return "current_runtime_output";
   }
   if (/expected|must_include|must_not_include|answer_shape|rubric/.test(hint) && /^evals\//.test(normalized)) return "eval_expected_answer";
   if (/^docs\//.test(normalized)) return "documentation_or_contract";

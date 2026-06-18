@@ -156,6 +156,18 @@ function clean(text) {
   return String(text || "").trim().replace(/\s+/g, " ");
 }
 
+function escapeRegExp(text) {
+  return String(text || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function stripLeadingName(text, name) {
+  const core = clean(text);
+  if (!name) return core;
+  return core
+    .replace(new RegExp(`^${escapeRegExp(name)}[：:,，\\s]*`), "")
+    .replace(new RegExp(`^${escapeRegExp(name)}是`), "是");
+}
+
 function label(value) {
   return LABELS[value] || String(value || "").replace(/_/g, " ");
 }
@@ -166,7 +178,9 @@ function uniq(values) {
 
 function primaryName(card) {
   if (!card) return "";
-  return card.names?.[0] || card.id || "";
+  const names = asArray(card.names).filter(Boolean);
+  const displayName = names.find((name) => !/(应该|怎么|哪里|什么|为何|为什么|吗|？|\?)/.test(String(name)));
+  return displayName || names[0] || card.id || "";
 }
 
 function listText(values, max = 6) {
@@ -221,8 +235,22 @@ function answerCopyrightBoundary(query, focus) {
 function answerWorksList(focus, index, representative = false, query = "", questionType = "", cards = []) {
   const ids = representative ? asArray(focus?.representative_works) : asArray(focus?.works);
   const explicitWorks = cards.filter((card) => card.entity_type === "work");
-  const works = displayTitles([...cardsByIds(index, ids), ...explicitWorks].filter((card, idx, arr) => arr.findIndex((item) => item.id === card.id) === idx), 8);
+  const workCards = [...cardsByIds(index, ids), ...explicitWorks].filter((card, idx, arr) => arr.findIndex((item) => item.id === card.id) === idx);
+  const works = displayTitles(workCards, 8);
   if (works.length === 0) return "";
+  if (representative && /(作家|作者|人物)/.test(query)) {
+    const pairs = workCards
+      .map((work) => {
+        const creatorId = asArray(work?.related_entities).find((item) => item?.relation === "created_by")?.id;
+        const creator = creatorId ? index?.byId?.get?.(creatorId) : null;
+        const creatorName = primaryName(creator);
+        const workTitle = primaryName(work).replace(/[《》]/g, "");
+        return creatorName && workTitle ? `${creatorName}《${workTitle}》` : "";
+      })
+      .filter(Boolean)
+      .slice(0, 3);
+    if (pairs.length) return `三个入口：${pairs.join("、")}。`;
+  }
   const titles = works.map((title) => `《${title.replace(/[《》]/g, "")}》`).join("、");
   const partial = works.length < 3 ? "目前卡片覆盖还不完整，所以先给已确认入口：" : "";
   if (questionType === "listen_recommendation" || /先听|歌单/.test(query)) {
@@ -318,7 +346,7 @@ function answerEntryPath(focus, index, questionType, query = "") {
   }
   if (focus?.id === "concept.japanese_literature") {
     if (/应该怎么读|怎么读/.test(query)) {
-      return "可以从《心》或《少爷》入门；读法上看季节、沉默和战后断裂怎样进入作品。";
+      return "入门可选《心》或《少爷》；读的时候看季节、沉默和战后断裂怎样落进作品。";
     }
     if (/第一本|读什么/.test(query)) {
       return "第一本可选夏目漱石《心》或《少爷》；想轻一点，也可以从村上春树短篇入门。";
@@ -363,6 +391,9 @@ function answerExplain(focus, questionType, query = "") {
   if (/照片.*好不好看|不能只看好不好看|好不好看/.test(query) && /照片|摄影/.test(query)) {
     return "不能只看好不好看；还要看照片怎样组织观看、框取、对象和观看者关系。";
   }
+  if (/(版画|印刷图像|复制性媒介)/.test(query)) {
+    return "版画不只是复制；还要看刻、印、传播和重复观看怎样改变图像。";
+  }
   if (/不是.*标签/.test(query)) {
     return `${name}不是标签；要落到对象、作品、时期和关系这些具体锚点，再说明作品、时期和比较轴。`;
   }
@@ -376,10 +407,13 @@ function answerExplain(focus, questionType, query = "") {
   if (questionType === "why_it_matters") {
     const noLyrics = /(不要|不贴|不用).{0,6}歌词/.test(query);
     const lead = noLyrics ? (/讲讲|重要性/.test(query) ? "不贴原文，讲重要性：" : "不贴原文解释：") : "";
-    return `${lead}${name}重要，不是因为一句固定标签，而是因为它把${themeText || "形式、历史和经验"}组织成可讨论的作品/问题；${contextText || focus.factual_core}`;
+    return `${lead}${name}重要在于把${themeText || "形式、历史和经验"}组织成可讨论的作品/问题；${contextText || focus.factual_core}`;
   }
   if (/这句话/.test(query)) {
     return `这句话的意思是：${focus.factual_core} 关键不在口号，而在${themeText || "它改变了判断关系"}。`;
+  }
+  if (["concept", "movement"].includes(focus.entity_type) && /(是什么|怎么理解|如何理解|了解|知道)/.test(query)) {
+    return `${name}不是单一标签；${stripLeadingName(focus.factual_core, name)}${themeText ? ` 先看${themeText}。` : ""}`;
   }
   if (/继续说/.test(query)) {
     return `继续展开：${name}要抓${themeText || "主题和边界"}，再看${contextText || focus.factual_core}。`;
@@ -408,7 +442,7 @@ function answerExplain(focus, questionType, query = "") {
   if (/可以怎么理解|怎么理解/.test(query)) {
     return `理解${name}，先抓${themeText || "核心主题"}，再放回${contextText || "作品脉络"}。`;
   }
-  return `${name}可以这样理解：${focus.factual_core}${themeText ? ` 重点看${themeText}。` : ""}`;
+  return `${name}：${focus.factual_core}${themeText ? ` 先看${themeText}。` : ""}`;
 }
 
 function answerCountryRelation(cards, query = "") {
@@ -537,6 +571,9 @@ function answerThemeExplanation(focus, query = "") {
   if (/照片.*好不好看|不能只看好不好看|好不好看/.test(query) && /照片|摄影/.test(query)) {
     return "不能只看好不好看；还要看照片怎样组织观看、框取、对象和观看者关系。";
   }
+  if (/(版画|印刷图像|复制性媒介)/.test(query)) {
+    return "版画不只是复制；还要看刻、印、传播和重复观看怎样改变图像。";
+  }
   if (focus?.entity_type === "relation") {
     const axisText = axesFor([focus], 4) || themes(focus, 4) || "对象、时期和媒介";
     return `${name}要按${axisText}来讲；不能只讲其中一边，也不能把关系说成单向影响。`;
@@ -550,7 +587,7 @@ function answerThemeExplanation(focus, query = "") {
   if (/怎么理解/.test(query)) {
     return `可以理解为：${focus.factual_core} 这里的关键是${themeText || "字面和隐含关系"}，不是把情绪当成图像本身。`;
   }
-  return `${name}的重点不是一句玄学结论，而是${themeText || focus.factual_core}。可以先按字面意思，再看它如何改变观看、阅读或判断关系。`;
+  return `${name}先看${themeText || focus.factual_core}；再回到字面、语境和判断关系。`;
 }
 
 function boundedUnknown(questionType) {
@@ -572,7 +609,7 @@ export function planCultureAnswer({ query, questionType, cards = [], state = {},
   } else if (questionType === "representative_works") {
     answer = answerWorksList(focus, index, true, query, questionType, cards) || answerWorksList(focus, index, false, query, questionType, cards);
   } else if (questionType === "author_list") {
-    answer = answerAuthorList(cards, query);
+    answer = answerAuthorList(cards, query) || answerWorksList(focus, index, true, query, "representative_works", cards);
   } else if (questionType === "entry_path" || questionType === "reading_recommendation") {
     answer = answerEntryPath(focus, index, questionType, query);
   } else if (questionType === "compare" || questionType === "follow_up_compare_last_two") {

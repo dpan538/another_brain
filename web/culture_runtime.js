@@ -141,7 +141,7 @@ export function detectCultureQuestionType(query, state = {}) {
   if (/(日本和日本文学|国家.*文学|文学.*国家|日本文学.*日本历史|一回事|同一个东西)/.test(text) && /日本文学/.test(text)) return "country_relation";
   if (/这件事.*美术馆.*关系|美术馆.*这件事.*关系/.test(text)) return "follow_up_explain_last_entity";
   if (/美术馆.*作品价值|作品价值.*美术馆/.test(text)) return "theme_explanation";
-  if (/(代表作家|作家有哪些|有哪些.*作家|哪些.*作家|重要作家|代表人物|人物有哪些|从哪几个人|哪几个人|入口人物|列作家)/.test(text)) return "author_list";
+  if (/(代表作家|作家有哪些|有哪些.*作家|哪些.*作家|重要作家|代表人物|人物有哪些|从哪几个人|哪几个人|入口人物|列作家|作家.*列举|列举.*作家|作家.*代表作|代表作.*作家)/.test(text)) return "author_list";
   if (/那两个|谁更|共同点|区别|不同|差在哪|差别|怎么分|区分|比较(?!好)|和.+有什么共同|和.+关系|和.+怎么讲|能比较|vs|VS|都算|只是在反对/.test(text)) return hasFollowup && /那两个|谁更/.test(text) ? "follow_up_compare_last_two" : "compare";
   if (/(怎么发展|历史演变|从古典到现代|80年代|90年代|2000年后|2000年代|平台时代|战后|近代|当代|运动是什么|黄金期|大概怎么变|哲学史|怎么粗分|五四|新时期文学)/.test(text)) return "development_history";
   if (/(代表作|代表性作品|代表作品|经典作品)/.test(text)) return "representative_works";

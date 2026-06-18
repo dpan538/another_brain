@@ -1,4 +1,5 @@
 import { detectDialogicDomain, getDialogicDomainProfile } from "./dialogic_domain_profiles.js";
+import { detectCultureDomain, resolveCultureEntity } from "./culture_runtime.js";
 
 function clean(text) {
   return String(text || "").trim();
@@ -183,6 +184,14 @@ function activeDialogicDomain(state = {}, query = "") {
 
 function activeProfile(state = {}, query = "") {
   return getDialogicDomainProfile(activeDialogicDomain(state, query));
+}
+
+function hasExplicitCultureTargetOutsideDialogic(query = "") {
+  const text = clean(query);
+  if (!text) return false;
+  if (detectDialogicDomain({ query: text, context: "" })) return false;
+  if (detectCultureDomain(text, {}) !== "generic") return true;
+  return resolveCultureEntity(text, {}).some((card) => (card.names || []).some((name) => text.includes(name)));
 }
 
 function isUserIntentBoundaryQuery(query = "") {
@@ -434,6 +443,8 @@ function answerDomainOverview(query, state) {
   const subject = extractKnowSubject(query);
   if (/(怎么问|怎么提问|如何问|需要怎么问|我该怎么问|怎么开始)/.test(query)) return "";
   if (/(什么关系|有什么关系|关系？|关系$)/.test(query)) return "";
+  if (/(为什么|为何|重要|重要性|意义)/.test(query)) return "";
+  if (!subject && /(应该怎么看|应该怎么读|怎么读|从哪里开始|从哪.*开始|入门)/.test(query)) return "";
   if (/(项目|这个项目|下一步).{0,8}训练|训练什么/.test(query)) return "";
   if (/罗大佑/.test(query) && /(代表作|作品|哪些歌|有什么歌|歌曲)/.test(query)) {
     return "罗大佑的代表作可以从《之乎者也》《童年》《鹿港小镇》《恋曲1990》进入。";
@@ -475,6 +486,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   const fn = turnFunction.turn_function || "";
   if (!text || !fn) return null;
   if (isUserIntentBoundaryQuery(text)) return null;
+  if (fn === "information_question" && hasExplicitCultureTargetOutsideDialogic(text)) return null;
 
   if (fn === "topic_reentry") {
     return makeDialogicResult({
@@ -507,7 +519,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
     }
   }
 
-  if (fn === "information_question" && /(杜尚|现代艺术|摄影史|摄影作为观看|摄影)/.test(text)) {
+  if (fn === "information_question" && /(杜尚|现代艺术|摄影史|摄影作为观看|摄影)/.test(text) && !/(为什么|为何|重要|重要性|意义)/.test(text)) {
     if (/杜尚/.test(text)) {
       return makeDialogicResult({
         turnFunction: fn,
