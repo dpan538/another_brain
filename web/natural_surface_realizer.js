@@ -1,4 +1,6 @@
 import { primitiveProfileFor } from "./dialogic_profile_primitives.js";
+import { detectUserConfirmationPolarity, extractSurfaceContentUnits } from "./surface_content_units.js";
+import { verifySurfaceCandidate } from "./surface_semantic_verifier.js";
 
 const LOW_RISK_TURN_FUNCTIONS = new Set([
   "confirmation",
@@ -54,75 +56,163 @@ function domainFrom({ domain = "", query = "", activeTopic = {} } = {}) {
   return domain || activeTopic?.domain || "";
 }
 
+const AXIS_LABELS = Object.freeze({
+  rhythm: "节奏",
+  imagery: "意象",
+  compression: "压缩",
+  voice: "声音",
+  duration: "时间",
+  memory: "记忆",
+  circulation: "流通",
+  detail: "细节",
+  conflict: "冲突",
+  scene: "场面",
+  time: "时间",
+  sequence: "顺序",
+  attention: "注意力",
+  place: "地方",
+  taste: "味道",
+  narration: "叙述",
+  sound: "声音"
+});
+
+function axisLabel(axis = "") {
+  return AXIS_LABELS[axis] || String(axis || "").replace(/_/g, "");
+}
+
 function pickPrimitive(domain, key, fallback = "") {
   const profile = primitiveProfileFor(domain) || {};
   const values = Array.isArray(profile[key]) ? profile[key] : [];
   return values[0] || fallback;
 }
 
-function makeCandidate({ query, turnFunction, currentAnswer, domain, surfaceControl, activeTopic }) {
+function relationMatchesQuery(relation = {}, query = "") {
+  const q = textOf(query).toLowerCase();
+  const haystack = [
+    relation.left_type,
+    relation.right_type,
+    ...(relation.shared_axes || []),
+    ...(relation.contrast_axes || []),
+    ...(relation.licensed_verbs || [])
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  if (!q) return true;
+  if (/诗|文学|小说/.test(q) && /poetry|literature|novel/.test(haystack)) return true;
+  if (/舞台|戏剧|冲突|细节/.test(q) && /theater|conflict|detail|scene/.test(haystack)) return true;
+  if (/童年|记忆|想到|羡慕/.test(q) && /memory/.test(haystack)) return true;
+  return false;
+}
+
+function pickRelation(profile = {}, query = "") {
+  const relations = Array.isArray(profile.analogy_relations) ? profile.analogy_relations : [];
+  return relations.find((relation) => relationMatchesQuery(relation, query)) || relations[0] || null;
+}
+
+function pickContrast(profile = {}) {
+  const contrasts = Array.isArray(profile.focal_contrasts) ? profile.focal_contrasts : [];
+  return contrasts[0] || null;
+}
+
+function relationPhrase(relation = {}, verb = "压缩") {
+  const axes = (relation.shared_axes || []).map(axisLabel).filter(Boolean);
+  if (!axes.length) return "";
+  const first = axes[0];
+  const second = axes[1] || axes[0];
+  return `${verb}${first}${second === first ? "" : `和${second}`}`;
+}
+
+function contrastPhrase(contrast = {}) {
+  if (!contrast) return "";
+  const left = textOf(contrast.left_axis);
+  const right = textOf(contrast.right_axis);
+  if (!left || !right) return "";
+  return `${left}和${right}`;
+}
+
+function buildMicroCandidate({ query, turnFunction, currentUnits, domain, activeTopic }) {
   const fn = textOf(turnFunction);
   const q = textOf(query);
   const topicDomain = domainFrom({ domain, query: q, activeTopic });
+  const profile = primitiveProfileFor(topicDomain) || {};
   const nativeVerb = pickPrimitive(topicDomain, "native_verbs", "压缩");
-  const relation = pickPrimitive(topicDomain, "analogy_relations", "");
-  const contrast = pickPrimitive(topicDomain, "focal_contrasts", "");
+  const relation = pickRelation(profile, q);
+  const contrast = pickContrast(profile);
+  const primitivesUsed = [];
 
   if (fn === "confirmation") {
-    return /吗|是不是|是那个|对吗/.test(q) ? sentence("是，可以按这个对象继续说") : "";
+    const confirmationKind = detectUserConfirmationPolarity(q);
+    if (confirmationKind !== "confirmation_question" || currentUnits.polarity !== "affirmative") return null;
+    const referent = currentUnits.named_items?.[0] || currentUnits.entities?.find((item) => !/^person\.|^author\./.test(item)) || "";
+    if (!referent) return null;
+    return {
+      text: sentence(`是，仍然是${referent}`),
+      primitives_used: []
+    };
   }
 
   if (fn === "analogy_statement" || fn === "reflection" || fn === "declaration_with_signal") {
-    if (/诗|文学|小说/.test(q)) {
-      return relation
-        ? sentence(`是，有点像：${relation.replace(/。$/, "")}`)
-        : sentence(`是，有点像：都靠节奏和意象把经验${nativeVerb}住`);
+    if (relation) {
+      primitivesUsed.push(relation.id);
+      const phrase = relationPhrase(relation, relation.licensed_verbs?.[0] || nativeVerb);
+      if (phrase) return { text: sentence(`是，像在${phrase}`), primitives_used: primitivesUsed };
     }
-    if (/舞台|戏剧|冲突|细节/.test(q)) {
-      return sentence("可以这样看：细节不是装饰，它会把冲突留在场面里");
+    const contrastText = contrastPhrase(contrast);
+    if (contrastText) {
+      primitivesUsed.push(contrast.id);
+      return { text: sentence(`是，张力在${contrastText}`), primitives_used: primitivesUsed };
     }
-    if (/不是我要|太机械|像模板|不自然/.test(q)) {
-      return sentence("明白，这里应该少一点框架，多贴着你刚才那条线说");
-    }
-    return contrast ? sentence(`可以，这里真正有张力的是${contrast}`) : "";
   }
 
   if (fn === "affective_disclosure") {
-    if (/羡慕|想到|童年|记忆/.test(q)) return sentence("这像是在羡慕一种能力：把很私人的记忆说得轻，又让别人认得出来");
-    return sentence("我会把这当成一个轻的个人联想，不把它讲成诊断");
-  }
-
-  if (fn === "compliment") {
-    if (topicDomain === "film") return sentence("这条线可以继续：镜头、空间和节奏都在帮感受找到形状");
-    if (topicDomain === "law") return sentence("这条线可以继续：规则、解释和人的处境正好连在一起");
-    if (topicDomain === "food") return sentence("这条线可以继续：味道、手艺和记忆本来就贴得很近");
-    if (topicDomain === "theater") return sentence("这条线可以继续：台词、停顿和冲突都能把感受压实");
-    if (topicDomain === "literature") return sentence("这条线可以继续：文学和诗歌都在找更准的说法");
-    return sentence("这条线可以继续：音乐、文学和诗歌都在找更准的说法");
+    const relationForMemory = relation && /memory|记忆/.test(`${relation.shared_axes || []} ${q}`) ? relation : null;
+    if (!relationForMemory) return null;
+    primitivesUsed.push(relationForMemory.id);
+    const phrase = relationPhrase(relationForMemory, relationForMemory.licensed_verbs?.[0] || nativeVerb);
+    return phrase ? { text: sentence(`像是被${phrase}碰到`), primitives_used: primitivesUsed } : null;
   }
 
   if (fn === "deepening_invitation") {
-    if (/童年|记忆|音乐|文学|诗/.test(`${q} ${currentAnswer}`)) return question("一件作品什么时候会把私人记忆变成别人也能认出的经验");
-    if (topicDomain === "film") return question("一个镜头什么时候不只是记录，而是在安排人与时间的关系");
-    if (topicDomain === "law") return question("规则什么时候会把复杂冲突变成可承担的判断");
-    if (topicDomain === "food") return question("一道菜什么时候不只是味道，而是在保存一种地方记忆");
-    if (topicDomain === "theater") return question("一句台词什么时候不只是说明，而是在推动行动");
-    return question("一件作品什么时候会把形式变成感受本身");
+    if (relation) {
+      primitivesUsed.push(relation.id);
+      const axis = axisLabel(relation.shared_axes?.[0] || "");
+      const verb = relation.licensed_verbs?.[0] || nativeVerb;
+      if (axis) return { text: question(`它怎样用${verb}改变${axis}`), primitives_used: primitivesUsed };
+    }
+    if (contrast) {
+      primitivesUsed.push(contrast.id);
+      return { text: question(`${contrastPhrase(contrast)}真正差在哪里`), primitives_used: primitivesUsed };
+    }
   }
 
-  if (fn === "topic_reentry") {
-    return sentence("可以回到刚才那条线：先抓一个具体对象，再看它怎样变奏");
-  }
-
-  return "";
+  return null;
 }
 
-function contentUnitsFromAnswer(answer) {
-  return textOf(answer)
-    .split(/[。！？!?；;]/)
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .slice(0, 6);
+function makeCandidate({ query, turnFunction, currentAnswer, domain, surfaceControl, activeTopic }) {
+  return buildMicroCandidate({
+    query,
+    turnFunction,
+    currentAnswer,
+    domain,
+    surfaceControl,
+    activeTopic,
+    currentUnits: surfaceControl.current_units || {}
+  });
+}
+
+function fallbackUnitSummary(units) {
+  return {
+    entities: units.entities || [],
+    active_referent: units.active_referent || "",
+    polarity: units.polarity || "neutral",
+    claims: (units.claims || []).slice(0, 6),
+    named_items: units.named_items || [],
+    qualifiers: units.qualifiers || [],
+    relation_ids: units.relation_ids || [],
+    required_units: units.required_units || [],
+    evidence_ids: units.evidence_ids || []
+  };
 }
 
 export function realizeNaturalSurfaceShadow({
@@ -143,11 +233,22 @@ export function realizeNaturalSurfaceShadow({
   const fn = textOf(turnFunction);
   const boundarySource = `${responseType} ${responseMode} ${questionType} ${operation}`;
   const current = textOf(currentAnswer);
+  const activeReferent = binding?.active_referent || binding?.target_ids?.[0] || activeTopic?.id || "";
+  const currentUnits = extractSurfaceContentUnits({
+    answer: current,
+    query,
+    plan,
+    binding,
+    responseType,
+    responseMode,
+    activeReferent,
+    evidenceIds
+  });
   const base = {
     enabled: true,
     live_switch: false,
     candidate_answer: current,
-    content_units_used: contentUnitsFromAnswer(current),
+    content_units_used: fallbackUnitSummary(currentUnits),
     primitives_used: [],
     realization_shape: "fallback_current",
     dropped_reasoning_units: [],
@@ -156,6 +257,12 @@ export function realizeNaturalSurfaceShadow({
     confidence: 0,
     surface_confidence: 0,
     required_units_preserved: true,
+    semantic_verifier: {
+      ok: true,
+      semantic_preservation_ok: true,
+      hard_failures: [],
+      warnings: ["no_shadow_candidate_attempted"]
+    },
     evidence_ids: Array.isArray(evidenceIds) ? evidenceIds.slice(0, 8) : [],
     dropped_optional_units: [],
     fallback_to_current_reason: "",
@@ -178,17 +285,17 @@ export function realizeNaturalSurfaceShadow({
   }
 
   const resolvedDomain = domainFrom({ domain, query, activeTopic });
-  const primitiveProfile = primitiveProfileFor(resolvedDomain) || {};
-  const candidate = textOf(makeCandidate({
+  const candidateResult = makeCandidate({
     query,
     turnFunction: fn,
     currentAnswer: current,
     domain: resolvedDomain,
-    surfaceControl,
+    surfaceControl: { ...surfaceControl, current_units: currentUnits },
     activeTopic,
     binding,
     plan
-  }));
+  });
+  const candidate = textOf(candidateResult?.text || "");
   if (!candidate) {
     return {
       ...base,
@@ -198,40 +305,71 @@ export function realizeNaturalSurfaceShadow({
   }
 
   const hits = prohibitionHits(candidate);
+  const candidateUnits = extractSurfaceContentUnits({
+    answer: candidate,
+    query,
+    plan,
+    binding,
+    responseType,
+    responseMode,
+    activeReferent,
+    evidenceIds
+  });
+  const semanticVerifier = verifySurfaceCandidate({
+    query,
+    currentAnswer: current,
+    candidateAnswer: candidate,
+    currentUnits,
+    candidateUnits,
+    plan: {
+      ...plan,
+      relation_ids: [...(Array.isArray(plan?.relation_ids) ? plan.relation_ids : []), ...(candidateResult?.primitives_used || [])],
+      primitive_ids: [...(Array.isArray(plan?.primitive_ids) ? plan.primitive_ids : []), ...(candidateResult?.primitives_used || [])]
+    },
+    binding,
+    responseType,
+    responseMode,
+    turnFunction: fn,
+    surfaceControl,
+    evidenceIds
+  });
   const tooLongForNone = surfaceControl.reasoning_budget === "none" && zhChars(candidate) > 70;
-  const confidence = hits.length || tooLongForNone ? 0.38 : 0.72;
-  if (confidence < 0.6) {
+  const confidence = Math.max(0, Math.min(1, semanticVerifier.confidence - (hits.length ? 0.24 : 0) - (tooLongForNone ? 0.2 : 0)));
+  if (hits.length || tooLongForNone || !semanticVerifier.ok || confidence < 0.6) {
+    const fallbackReason = hits.length
+      ? "candidate_hits_surface_prohibition"
+      : !semanticVerifier.ok
+        ? "candidate_failed_semantic_verifier"
+        : "candidate_confidence_below_threshold";
     return {
       ...base,
       candidate_answer: current,
-      content_units_used: contentUnitsFromAnswer(current),
+      content_units_used: fallbackUnitSummary(currentUnits),
       primitives_used: [],
       forbidden_pattern_hits: hits,
       prohibition_hits: hits,
       confidence,
       surface_confidence: confidence,
-      fallback_to_current_reason: hits.length ? "candidate_hits_surface_prohibition" : "candidate_confidence_below_threshold",
-      fallback_reason: hits.length ? "candidate_hits_surface_prohibition" : "candidate_confidence_below_threshold"
+      required_units_preserved: semanticVerifier.missing_required_units.length === 0,
+      semantic_verifier: semanticVerifier,
+      fallback_to_current_reason: fallbackReason,
+      fallback_reason: fallbackReason
     };
   }
 
-  const primitivesUsed = [
-    ...(primitiveProfile.native_verbs || []).slice(0, 2),
-    ...(primitiveProfile.focal_contrasts || []).slice(0, 1),
-    ...(primitiveProfile.analogy_relations || []).slice(0, 1)
-  ].filter(Boolean);
   return {
     ...base,
     candidate_answer: candidate,
-    content_units_used: contentUnitsFromAnswer(candidate),
-    primitives_used: primitivesUsed,
+    content_units_used: fallbackUnitSummary(candidateUnits),
+    primitives_used: candidateResult?.primitives_used || [],
     realization_shape: surfaceControl.sentence_shape || "one_sentence",
-    dropped_reasoning_units: contentUnitsFromAnswer(current).filter((unit) => !candidate.includes(unit)).slice(0, 4),
+    dropped_reasoning_units: (currentUnits.claims || []).filter((unit) => !candidate.includes(unit)).slice(0, 4),
     forbidden_pattern_hits: hits,
     prohibition_hits: hits,
     confidence,
     surface_confidence: confidence,
-    required_units_preserved: true,
+    required_units_preserved: semanticVerifier.missing_required_units.length === 0,
+    semantic_verifier: semanticVerifier,
     dropped_optional_units: [],
     fallback_to_current_reason: "",
     fallback_reason: ""

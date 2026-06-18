@@ -22,7 +22,7 @@ const SURFACE_GOVERNANCE_FILES = [
   "web/surface_control_policy.js"
 ];
 const ENTITY_PATTERNS = [/person\.luo_dayou/, /author\.natsume_soseki/, /author\.kawabata_yasunari/, /罗大佑/, /夏目漱石/, /川端康成/];
-const BASELINE = "424e4b7cbe41fb8439fe38a2a75d43abfe3c862b";
+const BASELINE = "56713f5192e75f068c7efac0346ff024e6d5bcc9";
 const FAILURE_BANK = "data/failure_bank/r21_failure_bank.jsonl";
 const BLIND_SIBLINGS = "evals/r21_mixed_dialogic/blind_sibling_sessions.jsonl";
 
@@ -84,6 +84,63 @@ async function countFullAnswerSentences(path) {
   return { file: path, full_answer_sentence_count: longChineseSentences.length };
 }
 
+function zhCount(text) {
+  return [...String(text || "")].filter((char) => /[\u4e00-\u9fff]/.test(char)).length;
+}
+
+function addedLinesFor(path) {
+  return gitDiff(path)
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("+") && !line.startsWith("+++"))
+    .map((line) => line.slice(1));
+}
+
+async function countNewHardcodedSurfaceSentences(path) {
+  const examples = [];
+  const patterns = [
+    /\b(?:sentence|question)\(\s*(["'`])([^"'`]{8,220})\1\s*\)/g,
+    /\breturn\s+(["'`])([^"'`]{8,220})\1/g,
+    /=>\s+(["'`])([^"'`]{8,220})\1/g
+  ];
+  for (const line of addedLinesFor(path)) {
+    for (const pattern of patterns) {
+      for (const match of line.matchAll(pattern)) {
+        const value = match[2] || "";
+        if (zhCount(value) >= 14) examples.push({ line: line.trim(), value });
+      }
+    }
+  }
+  return { file: path, new_hardcoded_surface_sentence_count: examples.length, examples: examples.slice(0, 20) };
+}
+
+async function countRegexToCannedAnswerBranches(path) {
+  const lines = addedLinesFor(path);
+  const examples = [];
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const next = lines[index + 1] || "";
+    const window = `${line}\n${next}`;
+    if (/\/.+\/\.test\(|\.match\(|\.includes\(/.test(line) && /\breturn\s+(?:sentence|question|\(?["'`])/.test(window)) {
+      examples.push(window.trim());
+    }
+  }
+  return { file: path, regex_to_canned_answer_branch_count: examples.length, examples: examples.slice(0, 20) };
+}
+
+async function countPrimitiveStringRenderedVerbatim(path) {
+  let text = "";
+  try {
+    text = await readFile(resolve(ROOT, path), "utf8");
+  } catch {
+    return { file: path, primitive_string_rendered_verbatim_count: 0, examples: [] };
+  }
+  const examples = text
+    .split(/\r?\n/)
+    .filter((line) => /pickPrimitive\([^)]*analogy_relations|relation\.replace|text:\s*relation\b|candidate_answer:\s*relation\b/.test(line))
+    .map((line) => line.trim());
+  return { file: path, primitive_string_rendered_verbatim_count: examples.length, examples: examples.slice(0, 20) };
+}
+
 async function repeatedProfileSkeletonCount(path) {
   let text = "";
   try {
@@ -114,6 +171,9 @@ async function surfaceGovernanceDebt() {
   const exactPromptLogic = [];
   const fullAnswerSentenceCounts = [];
   const repeatedProfileSkeletonCounts = [];
+  const newHardcodedSurfaceSentenceCounts = [];
+  const regexToCannedAnswerCounts = [];
+  const primitiveStringRenderedVerbatimCounts = [];
   for (const file of SURFACE_GOVERNANCE_FILES) {
     const hits = await countPatterns(file).catch(() => []);
     if (hits.length) legacyEntitySpecificDebt.push({ file, hits });
@@ -131,6 +191,9 @@ async function surfaceGovernanceDebt() {
     exactPromptLogic.push(await countExactPromptLogic(file));
     fullAnswerSentenceCounts.push(await countFullAnswerSentences(file));
     repeatedProfileSkeletonCounts.push(await repeatedProfileSkeletonCount(file));
+    newHardcodedSurfaceSentenceCounts.push(await countNewHardcodedSurfaceSentences(file));
+    regexToCannedAnswerCounts.push(await countRegexToCannedAnswerBranches(file));
+    primitiveStringRenderedVerbatimCounts.push(await countPrimitiveStringRenderedVerbatim(file));
   }
   return {
     baseline_commit_for_new_debt: BASELINE,
@@ -139,7 +202,10 @@ async function surfaceGovernanceDebt() {
     newly_added_entity_specific_logic: newlyAddedEntitySpecificLogic,
     exact_prompt_logic: exactPromptLogic,
     full_answer_sentence_count: fullAnswerSentenceCounts,
-    repeated_profile_skeleton_count: repeatedProfileSkeletonCounts
+    repeated_profile_skeleton_count: repeatedProfileSkeletonCounts,
+    new_hardcoded_surface_sentence_count: newHardcodedSurfaceSentenceCounts,
+    regex_to_canned_answer_branch_count: regexToCannedAnswerCounts,
+    primitive_string_rendered_verbatim_count: primitiveStringRenderedVerbatimCounts
   };
 }
 
@@ -184,6 +250,27 @@ async function main() {
   const surfaceDebt = await surfaceGovernanceDebt();
   if (surfaceDebt.newly_added_entity_specific_logic.length) {
     invariantFailures.push({ reason: "new_surface_entity_specific_logic", hits: surfaceDebt.newly_added_entity_specific_logic });
+  }
+  const newHardcodedSurfaceCount = surfaceDebt.new_hardcoded_surface_sentence_count.reduce(
+    (sum, row) => sum + row.new_hardcoded_surface_sentence_count,
+    0
+  );
+  const regexToCannedCount = surfaceDebt.regex_to_canned_answer_branch_count.reduce(
+    (sum, row) => sum + row.regex_to_canned_answer_branch_count,
+    0
+  );
+  const primitiveRenderedCount = surfaceDebt.primitive_string_rendered_verbatim_count.reduce(
+    (sum, row) => sum + row.primitive_string_rendered_verbatim_count,
+    0
+  );
+  if (newHardcodedSurfaceCount > 0) {
+    invariantFailures.push({ reason: "new_hardcoded_surface_sentence", count: newHardcodedSurfaceCount });
+  }
+  if (regexToCannedCount > 0) {
+    invariantFailures.push({ reason: "regex_to_canned_answer_branch", count: regexToCannedCount });
+  }
+  if (primitiveRenderedCount > 0) {
+    invariantFailures.push({ reason: "primitive_string_rendered_verbatim", count: primitiveRenderedCount });
   }
   const report = {
     ok: strictHits.length === 0 && invariantFailures.length === 0,
