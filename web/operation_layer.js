@@ -1310,6 +1310,9 @@ export function answerWithOperationLayer(query, state = {}) {
     return withResponseMode(answerHelpHowToAsk(text), responseMode);
   }
 
+  const earlyMetaAnswer = answerMetaKnowledgeQuery(text, state);
+  if (earlyMetaAnswer?.answer) return withResponseMode(makeResult(earlyMetaAnswer), responseMode);
+
   const coverageRelation = answerCoverageRelationGuard(text, state);
   if (coverageRelation) return withResponseMode(coverageRelation, responseMode);
 

@@ -185,8 +185,13 @@ function activeProfile(state = {}, query = "") {
   return getDialogicDomainProfile(activeDialogicDomain(state, query));
 }
 
+function isUserIntentBoundaryQuery(query = "") {
+  return /你知道我(要干什么|想干什么|在干什么|在测试什么|想问什么)/.test(query);
+}
+
 function extractKnowSubject(query = "") {
   const text = String(query || "");
+  if (isUserIntentBoundaryQuery(text)) return "";
   const beforeKnow = text.match(/^(.+?)(?:你知道吗|你知道么|你知道嘛|知道吗|知道么|知道嘛|是谁|是什么人|是什么)(?:[？?。.!！]*)$/);
   if (beforeKnow?.[1]) return clean(beforeKnow[1]);
   const afterKnow = text.match(/你知道(.+?)(?:吗|么|嘛|？|\?|$)/);
@@ -469,6 +474,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   const text = clean(query);
   const fn = turnFunction.turn_function || "";
   if (!text || !fn) return null;
+  if (isUserIntentBoundaryQuery(text)) return null;
 
   if (fn === "topic_reentry") {
     return makeDialogicResult({
