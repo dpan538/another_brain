@@ -7,14 +7,13 @@ function clean(text) {
 
 function cleanComplimentSurface(answer) {
   const raw = clean(answer);
-  const hadLegacyCatch = /^我接住/.test(raw);
   const stripped = raw.replace(/^我接住(?:这个|了)?[。.!！]?\s*/, "");
-  const needsLegacyCatchWord = hadLegacyCatch && !stripped.includes("接住");
-  if (needsLegacyCatchWord) {
-    const prefix = ["接住", "这条线"].join("");
-    return `${prefix}，${stripped}`;
-  }
   return stripped || "这条线值得继续。";
+}
+
+function cleanDeepeningSurface(answer) {
+  const stripped = clean(answer).replace(/^可以问得更深一点[:：]\s*/, "");
+  return stripped || "这个对象什么时候从经验变成判断？";
 }
 
 function softenEntrySkeleton(answer) {
@@ -34,6 +33,12 @@ function softenEntrySkeleton(answer) {
   return text;
 }
 
+function softenRecommendationSkeleton(answer) {
+  return clean(answer)
+    .replace(/^可以从(.{1,80}?)(?:这类入口走|进入)：/, "先看$1：")
+    .replace(/^可以从(.{1,80}?)旁接(.{1,32}?)：/, "先把$1和$2放在一起：");
+}
+
 function softenContrastSkeleton(answer) {
   return clean(answer)
     .replace(/舞台感不是只给结论，而是/g, "舞台感在于")
@@ -48,7 +53,7 @@ function softenContrastSkeleton(answer) {
 }
 
 function softenDialogicSurface(answer) {
-  return softenContrastSkeleton(softenEntrySkeleton(answer));
+  return softenContrastSkeleton(softenEntrySkeleton(softenRecommendationSkeleton(answer)));
 }
 
 function recentText(state = {}) {
@@ -132,21 +137,7 @@ function activeLuoLike(state = {}, query = "") {
   return /罗大佑|童年|鹿港小镇|恋曲1990|之乎者也/.test(source);
 }
 
-function activeDialogicDomain(state = {}, query = "") {
-  const explicit = detectDialogicDomain({ query, context: "" });
-  if (explicit) return explicit;
-
-  const focusContext = [
-    state.lastUserText,
-    state.lastUserQuery,
-    state.lastAnswer,
-    state.lastAssistantAnswer
-  ]
-    .filter(Boolean)
-    .join(" ");
-  const focused = detectDialogicDomain({ query: "", context: focusContext });
-  if (focused) return focused;
-
+function dialogicDomainFromState(state = {}, query = "", context = "") {
   const stateDomain = String(
     state.activeDomain ||
       state.active_domain ||
@@ -165,12 +156,7 @@ function activeDialogicDomain(state = {}, query = "") {
   if (/ethics|politic|action/.test(stateDomain)) return "ethics";
   if (/education|learning|classroom/.test(stateDomain)) return "education";
   if (/economics|market|institution|labor/.test(stateDomain)) return "economics";
-  if (
-    /philosophy/.test(stateDomain) &&
-    /(语言|翻译|命名|意义|符号|维特根斯坦|索绪尔|本雅明)/.test(`${query} ${focusContext} ${recentText(state)}`)
-  ) {
-    return "language";
-  }
+  if (/philosophy/.test(stateDomain) && /(语言|翻译|命名|意义|符号|维特根斯坦|索绪尔|本雅明)/.test(`${query} ${context} ${recentText(state)}`)) return "language";
   if (/language|translation|semiotic|symbol|meaning/.test(stateDomain)) return "language";
   if (/food|cooking|taste|tea|kitchen|dish/.test(stateDomain)) return "food";
   if (/law|legal|justice|rule|court|rights/.test(stateDomain)) return "law";
@@ -178,8 +164,77 @@ function activeDialogicDomain(state = {}, query = "") {
   if (/psychology|psychoanalysis|dream|emotion|cognition/.test(stateDomain)) return "psychology";
   if (/theater|theatre|stage|performance|drama/.test(stateDomain)) return "theater";
   if (/history|memory|archive|historiography/.test(stateDomain)) return "history";
+  return "";
+}
+
+function activeDialogicDomain(state = {}, query = "") {
+  const explicit = detectDialogicDomain({ query, context: "" });
+  if (explicit) return explicit;
+
+  const focusContext = [
+    state.lastUserText,
+    state.lastUserQuery,
+    state.lastAnswer,
+    state.lastAssistantAnswer
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const focused = detectDialogicDomain({ query: "", context: focusContext });
+  if (focused) return focused;
+
+  const stateBound = dialogicDomainFromState(state, query, focusContext);
+  if (stateBound) return stateBound;
 
   return detectDialogicDomain({ query: "", context: recentText(state) });
+}
+
+function dialogicDomainFromReflectiveLine(text = "") {
+  const source = clean(text);
+  if (/(音乐|流行歌|歌曲|一首歌|文学和诗歌|私人童年|共同记忆)/.test(source)) return "music";
+  if (/(电影|镜头|剪辑|长镜头)/.test(source)) return "cinema";
+  if (/(艺术|观看|普通物件|视觉)/.test(source)) return "visual";
+  if (/(科学|观察|证据|生态|实验)/.test(source)) return "science";
+  if (/(城市|街道|空间|规划|公共性)/.test(source)) return "urban";
+  if (/(技术|工具|界面|信息|计算)/.test(source)) return "technology";
+  if (/(伦理|行动|责任)/.test(source)) return "ethics";
+  if (/(教育|学习|课堂|成长)/.test(source)) return "education";
+  if (/(经济|市场|劳动|效率)/.test(source)) return "economics";
+  if (/(语言|翻译|意义|命名|语词|词语)/.test(source)) return "language";
+  if (/(饮食|手艺|餐桌|味道|一道菜)/.test(source)) return "food";
+  if (/(法律|规则|裁判|公平|权利)/.test(source)) return "law";
+  if (/(照护|医学|倾听|病房)/.test(source)) return "care";
+  if (/(心理|梦|自我|情绪)/.test(source)) return "psychology";
+  if (/(戏剧|舞台|台词|表演|冲突)/.test(source)) return "theater";
+  if (/(历史|史料|档案|记忆|叙述)/.test(source)) return "history";
+  return "";
+}
+
+function activeDeepeningDomain(state = {}, query = "") {
+  const explicit = detectDialogicDomain({ query, context: "" });
+  if (explicit) return explicit;
+  const recentAnswers = Array.isArray(state.recentTurns)
+    ? state.recentTurns.map((turn) => turn?.answer || "").filter(Boolean).reverse()
+    : [];
+  const answerCandidates = [
+    ...recentAnswers,
+    state.lastAnswer,
+    state.lastAssistantAnswer,
+    state.lastAnswerSummary,
+    state.last_assistant_answer
+  ].filter(Boolean);
+  for (const answer of answerCandidates) {
+    const domain = dialogicDomainFromReflectiveLine(answer);
+    if (domain) return domain;
+  }
+  return activeDialogicDomain(state, query);
+}
+
+function activeComplimentDomain(state = {}, query = "") {
+  const explicit = detectDialogicDomain({ query, context: "" });
+  if (explicit) return explicit;
+  const stateBound = dialogicDomainFromState(state, query, recentText(state));
+  if (stateBound) return stateBound;
+  return activeDialogicDomain(state, query);
 }
 
 function activeProfile(state = {}, query = "") {
@@ -230,9 +285,10 @@ function makeDialogicResult({
   intent = "operation_dialogic_bridge",
   contextAction = "ANSWER_CULTURE"
 }) {
+  const surfaceAnswer = operation === "generate_deeper_dialogic_questions" ? cleanDeepeningSurface(answer) : answer;
   return {
     intent,
-    answer: softenDialogicSurface(answer),
+    answer: softenDialogicSurface(surfaceAnswer),
     operation,
     questionType,
     contextAction,
@@ -1154,7 +1210,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "compliment") {
-    const domain = activeDialogicDomain(state, text);
+    const domain = activeComplimentDomain(state, text);
     if (domain === "science") {
       return makeDialogicResult({
         turnFunction: fn,
@@ -1191,7 +1247,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: cleanComplimentSurface("我接住这个。伦理和行动这条线值得继续，因为它能把判断、处境和责任说得更准。")
       });
     }
-    if (activeVisualCulture(state, text)) {
+    if (domain === "visual") {
       return makeDialogicResult({
         turnFunction: fn,
         operation: "acknowledge_compliment_with_reflective_continuation",
@@ -1200,7 +1256,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: cleanComplimentSurface("我接住这个。艺术和形式这条线值得继续，因为它能把观看、材料和判断说得更准。")
       });
     }
-    const profile = activeProfile(state, text);
+    const profile = getDialogicDomainProfile(domain) || activeProfile(state, text);
     if (profile?.compliment) {
       return makeDialogicResult({
         turnFunction: fn,
@@ -1220,7 +1276,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
   }
 
   if (fn === "deepening_invitation") {
-    const domain = activeDialogicDomain(state, text);
+    const domain = activeDeepeningDomain(state, text);
     if (domain === "science") {
       return makeDialogicResult({
         turnFunction: fn,
@@ -1257,7 +1313,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "可以问得更深一点：判断什么时候变成行动？一个人怎样在复杂处境里承担责任？"
       });
     }
-    if (activeVisualCulture(state, text)) {
+    if (domain === "visual") {
       return makeDialogicResult({
         turnFunction: fn,
         operation: "generate_deeper_dialogic_questions",
@@ -1266,7 +1322,7 @@ export function answerDialogicBridgeTurn({ query = "", state = {}, turnFunction 
         answer: "可以问得更深一点：一个普通物件怎样变成艺术问题？形式改变时，我们的观看到底被谁安排？"
       });
     }
-    const profile = activeProfile(state, text);
+    const profile = getDialogicDomainProfile(domain) || activeProfile(state, text);
     if (profile?.deepening) {
       return makeDialogicResult({
         turnFunction: fn,

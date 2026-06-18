@@ -37,8 +37,8 @@ export const DIALOGIC_DOMAIN_PROFILES = Object.freeze({
   },
   visual: {
     id: "visual",
-    queryPattern: /杜尚|包豪斯|摄影|绘画|现成品|现代艺术|现代建筑|设计|电影|镜头|艺术|形式/,
-    sourcePattern: /杜尚|包豪斯|摄影|绘画|现成品|现代艺术|现代建筑|设计|电影|镜头|艺术|形式/,
+    queryPattern: /杜尚|包豪斯|摄影|绘画|现成品|现代艺术|现代建筑|设计|电影|镜头|艺术/,
+    sourcePattern: /杜尚|包豪斯|摄影|绘画|现成品|现代艺术|现代建筑|设计|电影|镜头|艺术/,
     overview: (subject) => /包豪斯/.test(subject || "")
       ? "包豪斯是现代设计和艺术教育的重要入口：把工业生产、教学体系和形式实验放在一起。"
       : `${subject || "这个艺术对象"}可以理解为现代视觉文化里的入口：重点在观看、材料、位置和制度。`,
@@ -226,8 +226,8 @@ export const DIALOGIC_DOMAIN_PROFILES = Object.freeze({
   },
   psychology: {
     id: "psychology",
-    queryPattern: /心理学|精神分析|弗洛伊德|荣格|维果茨基|梦的解析|潜意识|认知心理|情绪记忆|自我理解/,
-    sourcePattern: /心理学|精神分析|弗洛伊德|荣格|维果茨基|梦的解析|潜意识|认知心理|情绪记忆|自我理解/,
+    queryPattern: /心理学|心理|精神分析|弗洛伊德|荣格|维果茨基|梦的解析|潜意识|认知心理|情绪记忆|记忆心理|自我理解/,
+    sourcePattern: /心理学|心理|精神分析|弗洛伊德|荣格|维果茨基|梦的解析|潜意识|认知心理|情绪记忆|记忆心理|自我理解/,
     overview: (subject) => `${subject || "这个心理学对象"}可以理解为自我理解的入口：重点在梦、记忆、情绪和解释边界。`,
     confirmation: "是。这里说的是心理学和自我理解里的对象，我会按梦、记忆、情绪和边界继续。",
     evaluation: "我会看它怎样把经验变成可讨论的结构：好的心理判断不是替人下结论，而是保留边界地理解动机和记忆。",
@@ -239,7 +239,7 @@ export const DIALOGIC_DOMAIN_PROFILES = Object.freeze({
     interpretiveBeyondLiteral: "不只是梦或情绪本身。心理问题要看记忆、关系和解释边界，不能把一个人压成标签。",
     identityContextLine: "当前会话把心理、记忆和解释边界连起来了",
     compliment: "我接住这个。心理和文学这条线要轻一点走，因为它能把记忆、情绪和说法说得更准。",
-    deepening: "可以问得更深一点：一个梦什么时候是在表达经验，而不是提供答案？我们怎样理解自己而不急着给自己贴标签？"
+    deepening: "可以问得更深一点：记忆什么时候是在表达经验，而不是提供答案？心理解释怎样理解自己而不急着贴标签？"
   },
   theater: {
     id: "theater",
