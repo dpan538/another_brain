@@ -24,9 +24,9 @@ const BAD_QUALITY = new Set(["bad_fallback", "firewall_rewritten", "verifier_rej
 const SIMPLIFY_RE = /(是否能简单一点|能不能简单|简单一点|简单点|再短一点|短一点|说简单点|说人话|别那么玄|别那么复杂)/;
 const REWRITE_RE = /(换个说法|重新说|说清楚|更具体|别这样说|别这么玄|换一种说法|讲清楚一点)/;
 const EXPAND_RE = /(展开一点|展开说|详细一点|再具体一点|说具体点|具体点|多说一点|继续展开)/;
-const EXPLICIT_REPAIR_RE = /(什么发生过|发生过什么|哪一边|什么哪一边|我不是已经问了吗|不是已经问|我已经问|已经问了|你刚才答偏|你没接住|刚才没接住|不是这个意思|你又绕回|你说的哪一边是什么意思|你刚才什么意思|你刚才说什么|为什么这么答|是不是答偏|是不是在绕圈)/;
+const EXPLICIT_REPAIR_RE = /(什么发生过|发生过什么|哪一边|什么哪一边|我不是已经问了吗|不是已经问|我已经问|已经问了|你刚才答偏|你没接住|刚才没接住|不是这个意思|你又绕回|你说的哪一边是什么意思|你刚才说.{0,20}是什么意思|你刚才什么意思|你刚才说什么|为什么这么答|是不是答偏|是不是在绕圈)/;
 const HARD_BOUNDARY_RE = /(身份证|手机号|电话号码|住址|地址|银行卡|密码|护照|签证|完整歌词|整首歌词|全文|原文|我想消失|不想活|自杀|自伤|伤害自己)/;
-const SOLVER_RE = /(A比B|所有.+都是|所有.+都不是|还剩|一共|总共|谁最高|谁最大|星期|weekday)/i;
+const SOLVER_RE = /(A比B|所有.+都是|所有.+都会|所有.+都不是|还剩|一共|总共|谁最高|谁最大|星期|weekday)/i;
 const HELP_RE = /(我需要怎么提问|怎么提问|怎么问你|我该怎么问|我该怎么开始|怎么开始问)/;
 const FOLLOWUP_RE = /(^他|他的|她的|它的|这首|这张|这本|这个|那个|这些|代表性|为什么重要|再说|再展开|展开|继续|特点|歌曲|歌|这些歌|代表在哪里|说具体点|总结主题|不要原文|不贴原文|而不是给原文)/;
 
@@ -112,11 +112,11 @@ export function selectResponseMode({ query, session = {}, trace = {} } = {}) {
   }
 
   const explicitRepair = EXPLICIT_REPAIR_RE.test(text);
-  if (explicitRepair && lastAnswerIsBad(session)) {
+  if ((explicitRepair || userTurn.kind === "fallback_repair") && lastAnswerIsBad(session)) {
     return {
       mode: RESPONSE_MODES.FALLBACK_REPAIR,
       confidence: 0.94,
-      reasons: ["explicit_repair_after_bad_answer"],
+      reasons: [explicitRepair ? "explicit_repair_after_bad_answer" : "classified_repair_after_bad_answer"],
       should_skip_repair: false,
       userTurn
     };

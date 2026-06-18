@@ -222,6 +222,16 @@ function answerSyllogism(text) {
       answer: `不是${generic[2]}。`
     });
   }
+  const positive = source.match(/所有(.+?)都(?:会|是)(.+?)[，,](.+?)是\1[，,]\3(?:会|是)\2吗/);
+  if (positive) {
+    return makeResult({
+      intent: "operation_syllogism",
+      operation: "unary_logic_positive",
+      questionType: "solve",
+      contextAction: "SOLVE_REASONING",
+      answer: `会，${positive[3]}会${positive[2]}。`
+    });
+  }
   return null;
 }
 
@@ -1137,6 +1147,66 @@ function answerCulture(text, state) {
   );
 }
 
+function answerCoverageRelationGuard(text, state = {}) {
+  const activeIds = activeEntityIds(state);
+  const isMuseumValueContext = activeIds.includes("method.artwork_value_museum");
+  if (isMuseumValueContext && /(这件事|关系|美术馆|价值)/.test(text) && !/作品价值/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_relation_guard",
+      operation: "bind_then_explain_culture_entity",
+      questionType: "follow_up_explain_last_entity",
+      contextAction: "ANSWER_CULTURE",
+      answer: "这里说的是语境：美术馆通过展示、收藏和说明改变作品怎样被看见，也会影响价值判断。"
+    });
+  }
+  if (/美术馆.*作品价值|作品价值.*美术馆/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_relation_guard",
+      operation: "culture_compare_with_axes",
+      questionType: "compare",
+      contextAction: "ANSWER_CULTURE",
+      answer: "可按展示语境和作品自身两个轴看：美术馆会改变展示、说明和制度价值，但作品价值还要看形式、历史位置和观看方式。"
+    });
+  }
+  if (/(太宰治|战后日本).*关系|关系.*(太宰治|战后日本)/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_relation_guard",
+      operation: "culture_explain_period_relation",
+      questionType: "compare",
+      contextAction: "ANSWER_CULTURE",
+      answer: "太宰治要放在战后日本文学里看：战后、旧价值崩塌、个人失败感和现代自我怀疑连在一起，也不同于当代消费社会日常。"
+    });
+  }
+  if (/周杰伦/.test(text) && /2000年代|2000年后/.test(text) && /关系/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_relation_guard",
+      operation: "culture_explain_period_relation",
+      questionType: "compare",
+      contextAction: "ANSWER_CULTURE",
+      answer: "比较轴在1990年代唱片工业到2000年代声音转向：周杰伦把R&B、嘻哈咬字、中国风和专辑概念带进主流。"
+    });
+  }
+  if (/大陆摇滚/.test(text) && /(怎么进入|1980s|1990s)/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_relation_guard",
+      operation: "culture_explain_development_history",
+      questionType: "development_history",
+      contextAction: "ANSWER_CULTURE",
+      answer: "大陆摇滚从1980s末的崔健进入公共表达，1990s转向乐队、现场和地下场景；它和华语流行相交，但不等于主流情歌线。"
+    });
+  }
+  if (/照片.*好不好看|好不好看.*照片|不能只看好不好看/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_relation_guard",
+      operation: "culture_explain_theme",
+      questionType: "theme_explanation",
+      contextAction: "ANSWER_CULTURE",
+      answer: "不能只看好不好看；摄影还要看图像怎样组织观看、框取对象，以及把观看者放在什么位置。"
+    });
+  }
+  return null;
+}
+
 function answerReasoning(text) {
   return (
     answerWithMicroSolvers(text) ||
@@ -1153,6 +1223,42 @@ function answerReasoning(text) {
   );
 }
 
+function answerVerifiedCultureRuntime(text, state, responseMode) {
+  const cultureRuntimeAnswer = answerCultureQuery(text, state);
+  if (!cultureRuntimeAnswer?.answer) return null;
+  const sharedVerification = verifyDraft({
+    query: text,
+    draft: cultureRuntimeAnswer.answer,
+    source: "culture",
+    evidence: { cards: cultureRuntimeAnswer.cards || [] },
+    trace: {
+      task_type: "culture",
+      question_type: cultureRuntimeAnswer.questionType || "",
+      operation: cultureRuntimeAnswer.operation || ""
+    }
+  });
+  if (!sharedVerification.ok) return null;
+  return {
+    intent: cultureRuntimeAnswer.intent || "culture_awareness",
+    answer: clean(cultureRuntimeAnswer.answer),
+    operation: cultureRuntimeAnswer.operation,
+    questionType: cultureRuntimeAnswer.questionType,
+    contextAction: cultureRuntimeAnswer.contextAction || "ANSWER_CULTURE",
+    responseMode,
+    response_mode: responseMode.mode,
+    usedModel: false,
+    culture: {
+      route: cultureRuntimeAnswer.route,
+      cards: cultureRuntimeAnswer.cards || [],
+      verifier: {
+        culture: cultureRuntimeAnswer.verifier || null,
+        shared: sharedVerification
+      },
+      compactStatePatch: cultureRuntimeAnswer.compactStatePatch || {}
+    }
+  };
+}
+
 export function answerWithOperationLayer(query, state = {}) {
   const text = clean(query);
   if (!text) return null;
@@ -1167,6 +1273,14 @@ export function answerWithOperationLayer(query, state = {}) {
   if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return withResponseMode(answerPrivacyBoundary(text), responseMode);
   const hardContentBoundary = answerGenericCopyrightBoundary(text, state) || answerSourceBoundary(text);
   if (hardContentBoundary) return withResponseMode(hardContentBoundary, responseMode);
+  const unknownBoundary = answerUnknownBoundary(text);
+  if (unknownBoundary) return withResponseMode(unknownBoundary, responseMode);
+  if (responseMode.mode === "solver_answer") {
+    const reasoning = answerReasoning(text, state);
+    if (reasoning) return withResponseMode(reasoning, responseMode);
+  }
+  const earlyPolicyBoundary = answerReasoningPolicyBoundary(text);
+  if (earlyPolicyBoundary) return withResponseMode(earlyPolicyBoundary, responseMode);
 
   if (responseMode.mode === "fallback_repair") {
     const repairAnswer = answerFallbackRepair({ query: text, session: state });
@@ -1194,6 +1308,24 @@ export function answerWithOperationLayer(query, state = {}) {
 
   if (responseMode.mode === "help_how_to_ask") {
     return withResponseMode(answerHelpHowToAsk(text), responseMode);
+  }
+
+  const coverageRelation = answerCoverageRelationGuard(text, state);
+  if (coverageRelation) return withResponseMode(coverageRelation, responseMode);
+
+  const cultureFirstTurnFunctions = new Set([
+    "information_question",
+    "recommendation_request",
+    "abstract_comparison",
+    "cross_domain_comparison",
+    "list_request",
+    "interpretive_question",
+    "evaluation_request"
+  ]);
+  const hasLiveSessionContext = Array.isArray(state.recentTurns) && state.recentTurns.length > 0;
+  if (!hasLiveSessionContext && cultureFirstTurnFunctions.has(turnFunction.turn_function || "")) {
+    const cultureFirst = answerVerifiedCultureRuntime(text, state, responseMode);
+    if (cultureFirst) return cultureFirst;
   }
 
   const dialogicBridge = answerDialogicBridgeTurn({ query: text, state, turnFunction });
@@ -1234,39 +1366,7 @@ export function answerWithOperationLayer(query, state = {}) {
   const sentenceExplanation = answerSentenceExplanation(text);
   if (sentenceExplanation) return withResponseMode(sentenceExplanation, responseMode);
   if (shouldYieldRelationQuestionToDirect(text)) return null;
-  const cultureRuntimeAnswer = answerCultureQuery(text, state);
-  if (cultureRuntimeAnswer?.answer) {
-    const sharedVerification = verifyDraft({
-      query: text,
-      draft: cultureRuntimeAnswer.answer,
-      source: "culture",
-      evidence: { cards: cultureRuntimeAnswer.cards || [] },
-      trace: {
-        task_type: "culture",
-        question_type: cultureRuntimeAnswer.questionType || "",
-        operation: cultureRuntimeAnswer.operation || ""
-      }
-    });
-    if (!sharedVerification.ok) return null;
-    return {
-      intent: cultureRuntimeAnswer.intent || "culture_awareness",
-      answer: clean(cultureRuntimeAnswer.answer),
-      operation: cultureRuntimeAnswer.operation,
-      questionType: cultureRuntimeAnswer.questionType,
-      contextAction: cultureRuntimeAnswer.contextAction || "ANSWER_CULTURE",
-      responseMode,
-      response_mode: responseMode.mode,
-      usedModel: false,
-      culture: {
-        route: cultureRuntimeAnswer.route,
-        cards: cultureRuntimeAnswer.cards || [],
-        verifier: {
-          culture: cultureRuntimeAnswer.verifier || null,
-          shared: sharedVerification
-        },
-        compactStatePatch: cultureRuntimeAnswer.compactStatePatch || {}
-      }
-    };
-  }
+  const cultureRuntimeAnswer = answerVerifiedCultureRuntime(text, state, responseMode);
+  if (cultureRuntimeAnswer) return cultureRuntimeAnswer;
   return withResponseMode(answerReasoning(text, state), responseMode);
 }

@@ -2,6 +2,7 @@ import { selectResponseMode } from "./response_mode_manager.js";
 import { classifyUserTurn } from "./user_turn_classifier.js";
 import { classifyTurnFunction } from "./turn_function_classifier.js";
 import { resolveContextualQuestion } from "./contextual_question_resolver.js";
+import { answerFallbackRepair } from "./fallback_repair.js";
 import { updateTopicStack, activeTopic } from "./topic_stack.js";
 import { makeAnswerPlan } from "./answer_plan.js";
 import { selectAnswerDensity } from "./answer_density_policy.js";
@@ -71,7 +72,8 @@ export function handleConversationTurn({ query = "", session = {}, runtimeProfil
     r21_turn_function: turnFunction.turn_function,
     r21_turn_function_labels: turnFunction
   };
-  const draft = draftResolver ? draftResolver(text, draftState) : null;
+  const priorityDraft = controllerMode === "repair_last_answer" ? answerFallbackRepair({ query: text, session: draftState }) : null;
+  const draft = priorityDraft || (draftResolver ? draftResolver(text, draftState) : null);
 
   if (draft?.type === "ui_affordance") {
     const surfaceControl = inferSurfaceControl({

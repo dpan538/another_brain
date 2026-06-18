@@ -265,11 +265,20 @@ function answerAuthorList(cards, query = "") {
   return `代表作家可先抓${names.join("、")}；读法上可按近代自我、抒情意象、战后断裂和当代都市经验分入口。`;
 }
 
-function answerOverview(focus, cards, domain) {
+function answerOverview(focus, cards, domain, query = "") {
   const base = domainCard(cards, domain) || focus;
   if (!base) return "";
+  if (focus?.id === "concept.duchamp" || focus?.id === "person.duchamp" || /duchamp/.test(String(focus?.id || ""))) {
+    return "杜尚是现代艺术关键人物：他把艺术从手艺转向观看、命名和制度，现成品让普通物件变成艺术问题。";
+  }
+  if (domain === "photography_history" || /(摄影|照片|图像)/.test(query)) {
+    return "摄影史讲照片和图像如何组织观看：从记录技术到纪实、现代主义，再到观念图像和媒介制度。";
+  }
   if (domain === "literature.asian_general") {
     return "亚洲文学不是单一传统；可先从中国现代文学、日本近现代文学、韩国现代文学和更广的南亚/东南亚脉络拆开，覆盖不足处要明说，不能只讲日本文学。";
+  }
+  if (domain === "literature.japanese") {
+    return "日本文学是一条包含古典书写、俳句、近代小说、战后文学和当代都市叙事的长传统；可以按作家、作品和时期直接问。";
   }
   if (focus?.entity_type === "person" && /^music\./.test(focus.domain || "")) {
     const themeText = themes(focus, 3) || styleFor(focus, 3);
@@ -447,6 +456,18 @@ function answerDevelopmentHistory(focus, cards, query = "") {
 }
 
 function answerCompare(cards, query = "") {
+  if (/美术馆.*作品价值|作品价值.*美术馆/.test(query)) {
+    return "可按展示语境/作品自身、制度价值/审美判断这两个轴比较：美术馆会改变作品怎样被看见和说明，价值还要看作品自身和历史位置。";
+  }
+  if (/(太宰治|战后日本)/.test(query) && /关系/.test(query)) {
+    return "太宰治要放在战后日本文学里看：二战后、旧价值崩塌、个人失败感和现代自我怀疑连在一起。";
+  }
+  if (/周杰伦/.test(query) && /2000年代|2000年后/.test(query) && /关系/.test(query)) {
+    return "比较轴在1990年代唱片工业到2000年代声音转向：周杰伦把R&B、嘻哈咬字、中国风和专辑概念带进主流。";
+  }
+  if (/大陆摇滚/.test(query) && /(怎么进入|1980s|1990s)/.test(query)) {
+    return "大陆摇滚从1980s末的崔健进入公共表达，1990s转向乐队、现场和地下场景；它和华语流行相交，但不等于主流情歌线。";
+  }
   const relation = cards.find((card) => card.entity_type === "relation");
   const targets = relation ? cards.filter((card) => card.entity_type !== "relation").slice(0, 2) : cards.filter(Boolean).slice(0, 2);
   if (targets.length < 2) return "";
@@ -490,6 +511,9 @@ function answerThemeExplanation(focus, query = "") {
   }
   if (focus.domain === "literature.asian_general" && /(单一传统|是什么关系|怎么区分|区分)/.test(query)) {
     return "不是单一传统。亚洲文学范围更大，东亚文学只是其中一部分；回答时至少要区分中国、日本、韩国等入口，覆盖不足处要明说。";
+  }
+  if (/(不是.*一个人|是不是整个|只有罗大佑)/.test(query) && /(华语流行|罗大佑)/.test(query)) {
+    return "不是。罗大佑是重要入口，但华语流行还包括李宗盛、邓丽君、崔健、王菲、周杰伦、粤语歌和大陆摇滚等线索。";
   }
   if (/后结构主义.*只有德里达|只有德里达/.test(query)) {
     return "不是。后结构主义不能只讲德里达，还要把福柯、拉康等对象和结构主义之后的语言、权力、主体问题分开看。";
@@ -562,7 +586,7 @@ export function planCultureAnswer({ query, questionType, cards = [], state = {},
   } else if (questionType === "theme_explanation" || questionType === "user_asks_interpretation") {
     answer = answerThemeExplanation(focus, query);
   } else {
-    answer = answerOverview(focus, cards, domain);
+    answer = answerOverview(focus, cards, domain, query);
   }
 
   return {

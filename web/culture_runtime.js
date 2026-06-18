@@ -129,6 +129,12 @@ export function detectCultureQuestionType(query, state = {}) {
   if (avoidsCopyright && /(代表作|代表作品|作品|歌曲|专辑|哪几首|哪几张|有哪些)/.test(text)) return /(代表作|代表作品)/.test(text) ? "representative_works" : "works_list";
   if (!avoidsCopyright && COPYRIGHT_REQUEST_RE.test(text)) return "no_lyrics_boundary";
   if (hasFollowup && /(那两个|谁更|传统和现代|共同|比较)/.test(text) && Array.isArray(state.last_two_entity_ids) && state.last_two_entity_ids.length >= 2) return "follow_up_compare_last_two";
+  if (/(照片.*好不好看|好不好看.*照片|不能只看好不好看)/.test(text)) return "theme_explanation";
+  if (/(不是.*一个人|是不是整个|只有罗大佑)/.test(text) && /(华语流行|罗大佑)/.test(text)) return "theme_explanation";
+  if (
+    /(怎么进入|有什么关系)/.test(text) &&
+    (/(大陆摇滚|战后日本|太宰治|美术馆|作品价值)/.test(text) || (/周杰伦/.test(text) && /2000年代|2000年后/.test(text)))
+  ) return "compare";
   if (/(他的|她的|它的).{0,8}(歌|歌曲).{0,12}(代表性|特点|重要|代表在哪里|为什么重要)|(罗大佑).{0,8}(歌|歌曲).{0,12}(代表性|特点|重要|代表在哪里|为什么重要)|这些歌.{0,8}(代表|重要|特点)|歌.{0,8}(代表性|特点)/.test(text)) {
     return /(特点|风格)/.test(text) ? "music_characteristics" : "music_representativeness";
   }

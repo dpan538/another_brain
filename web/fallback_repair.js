@@ -85,7 +85,7 @@ export function answerFallbackRepair({ query, session = {}, lastAssistantAnswer 
     };
   }
 
-  if (/什么发生过|发生过什么/.test(text)) {
+  if (/什么发生过|发生过什么|发生过/.test(text)) {
     const topic = likelyLuo ? "罗大佑" : likelyJapanese ? "日本文学" : "刚才的问题";
     const suffix = likelyLuo
       ? "罗大佑是台湾音乐人，不是一个待确认的外部事件。"

@@ -165,6 +165,8 @@
     "audit:eval-proxy-leakage": "node scripts/audit_eval_proxy_leakage.mjs",
     "audit:missing-knowledge-primitives": "node scripts/audit_missing_knowledge_primitives.mjs",
     "build:r22-proxy-migration-manifest": "node scripts/build_r22_proxy_migration_manifest.mjs",
-    "audit:r22-surface-governance": "npm run eval:r22-natural-surface && npm run eval:r22-shadow-surface && npm run eval:r22-surface-semantic-mutations && npm run audit:natural-surface-patterns && npm run audit:eval-proxy-leakage && npm run build:r22-proxy-migration-manifest && npm run audit:missing-knowledge-primitives"
+    "audit:r22-surface-governance": "npm run eval:r22-natural-surface && npm run eval:r22-shadow-surface && npm run eval:r22-surface-semantic-mutations && npm run audit:natural-surface-patterns && npm run audit:eval-proxy-leakage && npm run build:r22-proxy-migration-manifest && npm run audit:missing-knowledge-primitives",
+    "cycle:r10-r22:quick": "node scripts/run_r10_r22_cycle.mjs --quick",
+    "cycle:r10-r22:full": "node scripts/run_r10_r22_cycle.mjs --full"
   }
 }
