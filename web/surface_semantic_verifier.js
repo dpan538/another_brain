@@ -39,7 +39,10 @@ function unitAppearsInCandidate(unit, candidateUnits) {
     candidateUnits?.active_referent === unit ||
     candidateUnits?.entities?.includes(unit) ||
     candidateUnits?.named_items?.includes(unit) ||
-    candidateUnits?.evidence_ids?.includes(unit)
+    candidateUnits?.evidence_ids?.includes(unit) ||
+    candidateUnits?.qualifiers?.includes(unit) ||
+    candidateUnits?.boundary_requirements?.includes(unit) ||
+    candidateUnits?.uncertainty_markers?.includes(unit)
   );
 }
 
@@ -60,6 +63,19 @@ function unsupportedRelations({ currentUnits, candidateUnits, plan, surfaceContr
     ...relationSupportIds({ plan, surfaceControl, binding })
   ]);
   return (candidateUnits?.relation_ids || []).filter((id) => id !== "generic_relation_claim" && !allowed.has(id));
+}
+
+function hasUnsupportedDirectRelation({ currentText, candidateText, allowedRelationIds }) {
+  const candidate = textOf(candidateText);
+  if (!/(?:直接|同一个|同一|制度|结构).{0,8}关系|关系.{0,8}(?:直接|同一个|同一|制度|结构)/.test(candidate)) {
+    return false;
+  }
+  const current = textOf(currentText);
+  if (current.includes(candidate)) return false;
+  if (!/(?:直接|同一个|同一|制度|结构).{0,8}关系|关系.{0,8}(?:直接|同一个|同一|制度|结构)/.test(current)) {
+    return true;
+  }
+  return !allowedRelationIds.length;
 }
 
 function collectMissingRequiredUnits(currentUnits, candidateUnits) {
@@ -149,6 +165,15 @@ export function verifySurfaceCandidate({
     binding
   });
   if (unsupportedRelationIds.length) hardFailures.push("unsupported_relation");
+
+  const allowedRelationIds = relationSupportIds({ plan, surfaceControl, binding }).concat(current.relation_ids || []);
+  if (hasUnsupportedDirectRelation({ currentText, candidateText, allowedRelationIds })) {
+    hardFailures.push("unsupported_relation");
+  }
+
+  if (/你是谁|身份|对话框/.test(`${query} ${currentText}`) && /内部|主体|实例|隐藏|本体|ontology|复制体/.test(candidateText)) {
+    hardFailures.push("unsupported_named_entity");
+  }
 
   if (confirmationKind !== "none") {
     if (/^是，可以按这个对象继续说[。.!！?？]?$/.test(candidateText)) hardFailures.push("false_confirmation");

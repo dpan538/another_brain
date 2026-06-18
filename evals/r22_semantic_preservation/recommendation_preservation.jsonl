@@ -1,0 +1,2 @@
+{"id":"recommend_items_preserved","family":"recommendation_items","domain":"music","turn_function":"recommendation_request","expect":"accept","query":"还有其他港台歌手推荐吗？","current":"可以听李宗盛、王菲、邓丽君。","candidate":"可以从李宗盛、王菲、邓丽君听起。"}
+{"id":"recommend_item_added_reject","family":"unsupported_recommendation_item","domain":"music","turn_function":"recommendation_request","expect":"reject","expected_failure_any":["unsupported_named_entity"],"query":"还有其他港台歌手推荐吗？","current":"可以听李宗盛、王菲、邓丽君。","candidate":"可以听李宗盛、王菲、邓丽君和披头士。"}

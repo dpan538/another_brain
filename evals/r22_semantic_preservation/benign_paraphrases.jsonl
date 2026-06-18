@@ -1,0 +1,6 @@
+{"id":"benign_music_poetry","family":"implicit_bridge","domain":"music","turn_function":"analogy_statement","expect":"accept","query":"这个其实和文学诗歌很像。","current":"罗大佑的歌和诗都在短形式里压缩节奏和意象。","candidate":"罗大佑的歌像诗：短，但靠节奏和意象撑住。"}
+{"id":"benign_literature_stage","family":"clause_order","domain":"literature","turn_function":"analogy_statement","expect":"accept","query":"这有点像舞台剧。","current":"小说和舞台剧都靠场景、细节和冲突推进。","candidate":"小说也像舞台剧：靠场景、细节和冲突往前走。"}
+{"id":"benign_compliment_topic","family":"generic_thanks_removed","domain":"literature","turn_function":"compliment","expect":"accept","query":"我喜欢你在文学和诗歌上的努力。","current":"文学和诗歌这条线值得继续，它能把经验说得更准。","candidate":"这条文学和诗歌的线值得走：它让经验更准。"}
+{"id":"benign_topic_reentry_film","family":"shorten_preserve_axis","domain":"film","turn_function":"topic_reentry","expect":"accept","binding":{"target_ids":["person.ozu"]},"query":"回到小津，简单一点。","current":"小津的电影力量在家庭场景、停顿和镜头位置。","candidate":"小津的力量在家庭场景、停顿和镜头位置。"}
+{"id":"benign_food_memory","family":"two_clause_to_one","domain":"food","turn_function":"analogy_statement","expect":"accept","query":"做菜和文学有点像。","current":"饮食和文学都靠细节保存地方和记忆。","candidate":"饮食和文学相似：都用细节保存地方和记忆。"}
+{"id":"benign_law_boundary","family":"boundary_preserved_short","domain":"law","turn_function":"boundary_answer","expect":"accept","query":"这个法律问题能直接定论吗？","current":"不能直接定论，法律问题要看辖区、日期和程序。","candidate":"不能直接定论；要看辖区、日期和程序。"}

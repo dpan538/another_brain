@@ -1,0 +1,10 @@
+{"id":"content_units_person_works_001","text":"小津的电影力量在家庭场景、停顿和镜头位置。","expected_named_items_any":["小津"],"forbidden_named_items":["家庭场景","停顿"],"expected_relation_ids":[]}
+{"id":"content_units_recommendation_001","text":"可以听李宗盛、王菲、邓丽君。","expected_named_items_any":["李宗盛","王菲","邓丽君"],"forbidden_named_items":["可以听"],"expected_relation_ids":[]}
+{"id":"content_units_boundary_law_001","text":"不能直接定论，法律问题要看辖区、日期和程序。","expected_qualifiers_any":["boundary_strength"],"expected_polarity":"negative","forbidden_named_items":["直接定论"]}
+{"id":"content_units_uncertain_001","text":"不确定，要看作品版本和语境。","expected_qualifiers_any":["不确定"],"expected_polarity":"uncertain","forbidden_named_items":["语境"]}
+{"id":"content_units_quote_title_001","text":"《吾輩は猫である》把叙述者和日常观察放在一起。","expected_named_items_any":["吾輩は猫である"],"forbidden_named_items":["叙述者"],"expected_relation_ids":[]}
+{"id":"content_units_relation_food_001","text":"做菜和文学都靠细节保存地方和记忆。","expected_named_items_any":["文学"],"expected_relation_ids":["food_memory_bridge"],"forbidden_named_items":["做菜"]}
+{"id":"content_units_identity_001","text":"我是对话框；能沿着你给的线索组织回答。","expected_named_items_any":[],"expected_polarity":"neutral","forbidden_named_items":["线索"]}
+{"id":"content_units_quantity_001","text":"可以列三个入口：夏目漱石、川端康成、村上春树。","expected_named_items_any":["夏目漱石","川端康成","村上春树"],"expected_quantities_any":["三个"],"forbidden_named_items":["入口"]}
+{"id":"content_units_generic_quantity_001","text":"这是一种感觉，不是事实断言。","expected_polarity":"negative","forbidden_quantities":["一种"],"forbidden_named_items":["感觉"]}
+{"id":"content_units_unsupported_relation_phrase_001","text":"照片和法律有同一个直接制度关系。","expected_relation_ids":["generic_relation_claim"],"expected_named_items_any":["法律"],"forbidden_named_items":["照片"]}

@@ -1,0 +1,2 @@
+{"id":"relation_supported_music_lit","family":"supported_relation","domain":"music","turn_function":"analogy_statement","expect":"accept","plan":{"relation_ids":["music_literature_bridge"]},"query":"歌和诗像吗？","current":"音乐和诗歌都靠节奏、意象和压缩表达。","candidate":"音乐和诗歌相似，都靠节奏、意象和压缩表达。"}
+{"id":"relation_unsupported_visual_reject","family":"unsupported_relation","domain":"visual","turn_function":"analogy_statement","expect":"reject","expected_failure_any":["unsupported_relation"],"query":"照片和法律像吗？","current":"照片和观看有关，法律和适用有关。","candidate":"照片和法律有同一个直接制度关系。"}

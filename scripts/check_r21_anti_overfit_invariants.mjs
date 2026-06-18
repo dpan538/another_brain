@@ -19,6 +19,7 @@ const SURFACE_GOVERNANCE_FILES = [
   "web/dialogic_domain_profiles.js",
   "web/dialogic_profile_primitives.js",
   "web/natural_surface_realizer.js",
+  "web/surface_clause_planner.js",
   "web/surface_control_policy.js"
 ];
 const ENTITY_PATTERNS = [/person\.luo_dayou/, /author\.natsume_soseki/, /author\.kawabata_yasunari/, /罗大佑/, /夏目漱石/, /川端康成/];

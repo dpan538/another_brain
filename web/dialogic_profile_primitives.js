@@ -23,7 +23,7 @@ export const PRIMITIVE_FIELD_TAXONOMY = Object.freeze([
   "answer_shape_hints"
 ]);
 
-export const DIALOGIC_PROFILE_PRIMITIVES = Object.freeze({
+const RAW_DIALOGIC_PROFILE_PRIMITIVES = {
   music: {
     factual_anchors: ["流行歌", "声音", "记忆", "时代"],
     native_verbs: ["铺陈", "重复", "变奏", "压缩", "推进", "留白", "转调", "咬字"],
@@ -171,7 +171,34 @@ export const DIALOGIC_PROFILE_PRIMITIVES = Object.freeze({
     negative_moves: ["avoid_over_personification", "avoid_customer_service_thanks", "preserve_identity_boundary"],
     answer_shape_hints: [{ id: "plain_identity_boundary", first_move: "plain_boundary", return_to_context: true }]
   }
-});
+};
+
+function normalizePrimitiveProfile(profile = {}, domain = "") {
+  const defaultTransferScope = [`domain:${domain}`, "low_risk_surface_shadow"];
+  const defaultConstraints = ["do_not_render_verbatim", "preserve_current_answer_semantics", "no_boundary_rewrite"];
+  return {
+    ...profile,
+    focal_contrasts: (profile.focal_contrasts || []).map((contrast) => ({
+      transfer_scope: defaultTransferScope,
+      constraints: defaultConstraints,
+      ...contrast
+    })),
+    analogy_relations: (profile.analogy_relations || []).map((relation) => ({
+      transfer_scope: defaultTransferScope,
+      constraints: defaultConstraints,
+      ...relation
+    }))
+  };
+}
+
+export const DIALOGIC_PROFILE_PRIMITIVES = Object.freeze(
+  Object.fromEntries(
+    Object.entries(RAW_DIALOGIC_PROFILE_PRIMITIVES).map(([domain, profile]) => [
+      domain,
+      Object.freeze(normalizePrimitiveProfile(profile, domain))
+    ])
+  )
+);
 
 export function primitiveProfileFor(domain = "") {
   const key = String(domain || "").toLowerCase();

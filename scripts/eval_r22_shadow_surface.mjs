@@ -85,7 +85,7 @@ function classifyCandidateOutcome({ current, candidate, surfaceCandidate }) {
   const semantic = surfaceCandidate.semantic_verifier || {};
   const semanticHardFailures = Array.isArray(semantic.hard_failures) ? semantic.hard_failures : [];
   const semanticFallback = surfaceCandidate.fallback_to_current_reason === "candidate_failed_semantic_verifier";
-  const semanticFailure = semanticFallback || (candidateAttempted && semantic.semantic_preservation_ok === false);
+  const acceptedCandidateSemanticFailure = candidateAttempted && semantic.semantic_preservation_ok === false;
   const contextFitFailure = semantic.context_fit_ok === false;
   const boundaryFailure = semantic.boundary_ok === false;
   const lostUsefulSpecificity = zhChars(candidate) > 0 && zhChars(current) - zhChars(candidate) > 80 && !/《|：|，/.test(candidate);
@@ -95,12 +95,12 @@ function classifyCandidateOutcome({ current, candidate, surfaceCandidate }) {
     candidate_attempted: candidateAttempted,
     candidate_not_attempted: candidateIsFallback,
     candidate_surface_pattern_failure: candidateAttempted && candidateHits.length > 0,
-    candidate_semantic_failure: semanticFailure,
+    candidate_semantic_failure: acceptedCandidateSemanticFailure,
     candidate_context_fit_failure: contextFitFailure,
     candidate_boundary_failure: boundaryFailure,
     candidate_failure:
       (candidateAttempted && (candidateHits.length > 0 || lostUsefulSpecificity || tooShortCold)) ||
-      semanticFailure ||
+      acceptedCandidateSemanticFailure ||
       contextFitFailure ||
       boundaryFailure,
     current_hits: currentHits,
@@ -116,7 +116,7 @@ function classifyCandidateOutcome({ current, candidate, surfaceCandidate }) {
     candidate_worse:
       candidateHits.length > currentHits.length ||
       (candidateAttempted && (lostUsefulSpecificity || tooShortCold)) ||
-      semanticFailure ||
+      acceptedCandidateSemanticFailure ||
       contextFitFailure ||
       boundaryFailure
   };

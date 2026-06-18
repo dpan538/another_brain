@@ -1,0 +1,3 @@
+{"id":"confirm_true_accept","family":"true_confirmation","domain":"music","turn_function":"confirmation","expect":"accept","query":"是那个台湾音乐人吗？","current":"是，罗大佑是台湾音乐人。","candidate":"是，罗大佑是台湾音乐人。"}
+{"id":"confirm_false_reject","family":"false_confirmation","domain":"music","turn_function":"confirmation","expect":"reject","expected_failure_any":["false_confirmation"],"query":"罗大佑是日本小说家吗？","current":"不是，他是台湾音乐人。","candidate":"是，他是日本小说家。"}
+{"id":"confirm_uncertain_reject_confident","family":"uncertain_confirmation","domain":"history","turn_function":"confirmation","expect":"reject","expected_failure_any":["surface_candidate_more_confident_than_source","dropped_uncertainty"],"query":"这个说法确定吗？","current":"不确定，需要看具体来源。","candidate":"确定，来源已经证明。"}

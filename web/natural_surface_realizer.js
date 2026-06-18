@@ -1,5 +1,6 @@
 import { primitiveProfileFor } from "./dialogic_profile_primitives.js";
-import { detectUserConfirmationPolarity, extractSurfaceContentUnits } from "./surface_content_units.js";
+import { makeSurfaceClausePlan, realizeSurfaceClausePlan } from "./surface_clause_planner.js";
+import { extractSurfaceContentUnits } from "./surface_content_units.js";
 import { verifySurfaceCandidate } from "./surface_semantic_verifier.js";
 
 const LOW_RISK_TURN_FUNCTIONS = new Set([
@@ -29,14 +30,6 @@ function textOf(value) {
   return String(value || "").trim();
 }
 
-function sentence(text) {
-  return `${textOf(text)}。`;
-}
-
-function question(text) {
-  return `${textOf(text)}？`;
-}
-
 function zhChars(text) {
   return [...String(text || "")].filter((char) => /[\u4e00-\u9fff]/.test(char)).length;
 }
@@ -61,137 +54,19 @@ function domainFrom({ domain = "", query = "", activeTopic = {} } = {}) {
   return domain || activeTopic?.domain || "";
 }
 
-const AXIS_LABELS = Object.freeze({
-  rhythm: "节奏",
-  imagery: "意象",
-  compression: "压缩",
-  voice: "声音",
-  duration: "时间",
-  memory: "记忆",
-  circulation: "流通",
-  detail: "细节",
-  conflict: "冲突",
-  scene: "场面",
-  time: "时间",
-  sequence: "顺序",
-  attention: "注意力",
-  place: "地方",
-  taste: "味道",
-  narration: "叙述",
-  sound: "声音"
-});
-
-function axisLabel(axis = "") {
-  return AXIS_LABELS[axis] || String(axis || "").replace(/_/g, "");
-}
-
-function pickPrimitive(domain, key, fallback = "") {
-  const profile = primitiveProfileFor(domain) || {};
-  const values = Array.isArray(profile[key]) ? profile[key] : [];
-  return values[0] || fallback;
-}
-
-function relationMatchesQuery(relation = {}, query = "") {
-  const q = textOf(query).toLowerCase();
-  const haystack = [
-    relation.left_type,
-    relation.right_type,
-    ...(relation.shared_axes || []),
-    ...(relation.contrast_axes || []),
-    ...(relation.licensed_verbs || [])
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-  if (!q) return true;
-  if (/诗|文学|小说/.test(q) && /poetry|literature|novel/.test(haystack)) return true;
-  if (/舞台|戏剧|冲突|细节/.test(q) && /theater|conflict|detail|scene/.test(haystack)) return true;
-  if (/童年|记忆|想到|羡慕/.test(q) && /memory/.test(haystack)) return true;
-  return false;
-}
-
-function pickRelation(profile = {}, query = "") {
-  const relations = Array.isArray(profile.analogy_relations) ? profile.analogy_relations : [];
-  return relations.find((relation) => relationMatchesQuery(relation, query)) || relations[0] || null;
-}
-
-function pickContrast(profile = {}) {
-  const contrasts = Array.isArray(profile.focal_contrasts) ? profile.focal_contrasts : [];
-  return contrasts[0] || null;
-}
-
-function relationPhrase(relation = {}, verb = "压缩") {
-  const axes = (relation.shared_axes || []).map(axisLabel).filter(Boolean);
-  if (!axes.length) return "";
-  const first = axes[0];
-  const second = axes[1] || axes[0];
-  return `${verb}${first}${second === first ? "" : `和${second}`}`;
-}
-
-function contrastPhrase(contrast = {}) {
-  if (!contrast) return "";
-  const left = textOf(contrast.left_axis);
-  const right = textOf(contrast.right_axis);
-  if (!left || !right) return "";
-  return `${left}和${right}`;
-}
-
 function buildMicroCandidate({ query, turnFunction, currentUnits, domain, activeTopic }) {
   const fn = textOf(turnFunction);
   const q = textOf(query);
   const topicDomain = domainFrom({ domain, query: q, activeTopic });
   const profile = primitiveProfileFor(topicDomain) || {};
-  const nativeVerb = pickPrimitive(topicDomain, "native_verbs", "压缩");
-  const relation = pickRelation(profile, q);
-  const contrast = pickContrast(profile);
-  const primitivesUsed = [];
-
-  if (fn === "confirmation") {
-    const confirmationKind = detectUserConfirmationPolarity(q);
-    if (confirmationKind !== "confirmation_question" || currentUnits.polarity !== "affirmative") return null;
-    const referent = currentUnits.named_items?.[0] || currentUnits.entities?.find((item) => !/^person\.|^author\./.test(item)) || "";
-    if (!referent) return null;
-    return {
-      text: sentence(`是，仍然是${referent}`),
-      primitives_used: []
-    };
-  }
-
-  if (fn === "analogy_statement" || fn === "reflection" || fn === "declaration_with_signal") {
-    if (relation) {
-      primitivesUsed.push(relation.id);
-      const phrase = relationPhrase(relation, relation.licensed_verbs?.[0] || nativeVerb);
-      if (phrase) return { text: sentence(`是，像在${phrase}`), primitives_used: primitivesUsed };
-    }
-    const contrastText = contrastPhrase(contrast);
-    if (contrastText) {
-      primitivesUsed.push(contrast.id);
-      return { text: sentence(`是，张力在${contrastText}`), primitives_used: primitivesUsed };
-    }
-  }
-
-  if (fn === "affective_disclosure") {
-    const relationForMemory = relation && /memory|记忆/.test(`${relation.shared_axes || []} ${q}`) ? relation : null;
-    if (!relationForMemory) return null;
-    primitivesUsed.push(relationForMemory.id);
-    const phrase = relationPhrase(relationForMemory, relationForMemory.licensed_verbs?.[0] || nativeVerb);
-    return phrase ? { text: sentence(`像是被${phrase}碰到`), primitives_used: primitivesUsed } : null;
-  }
-
-  if (fn === "deepening_invitation") {
-    if (relation) {
-      primitivesUsed.push(relation.id);
-      const axis = axisLabel(relation.shared_axes?.[0] || "");
-      const verb = relation.licensed_verbs?.[0] || nativeVerb;
-      if (axis) return { text: question(`它怎样用${verb}改变${axis}`), primitives_used: primitivesUsed };
-    }
-    if (contrast) {
-      primitivesUsed.push(contrast.id);
-      return { text: question(`${contrastPhrase(contrast)}真正差在哪里`), primitives_used: primitivesUsed };
-    }
-  }
-
-  return null;
+  const plan = makeSurfaceClausePlan({ query: q, turnFunction: fn, profile, currentUnits });
+  const text = realizeSurfaceClausePlan(plan || {});
+  if (!text) return null;
+  return {
+    text,
+    primitives_used: plan?.primitives_used || [],
+    clause_plan: plan
+  };
 }
 
 function makeCandidate({ query, turnFunction, currentAnswer, domain, surfaceControl, activeTopic }) {
@@ -273,6 +148,7 @@ export function realizeNaturalSurfaceShadow({
     candidate_answer: current,
     content_units_used: fallbackUnitSummary(currentUnits),
     primitives_used: [],
+    clause_plan: null,
     realization_shape: "fallback_current",
     dropped_reasoning_units: [],
     forbidden_pattern_hits: prohibitionHits(current),
@@ -383,7 +259,8 @@ export function realizeNaturalSurfaceShadow({
       ...base,
       candidate_answer: current,
       content_units_used: fallbackUnitSummary(currentUnits),
-      primitives_used: [],
+    primitives_used: [],
+      clause_plan: null,
       forbidden_pattern_hits: hits,
       prohibition_hits: hits,
       confidence,
@@ -400,6 +277,7 @@ export function realizeNaturalSurfaceShadow({
     candidate_answer: candidate,
     content_units_used: fallbackUnitSummary(candidateUnits),
     primitives_used: candidateResult?.primitives_used || [],
+    clause_plan: candidateResult?.clause_plan || null,
     realization_shape: surfaceControl.sentence_shape || "one_sentence",
     dropped_reasoning_units: (currentUnits.claims || []).filter((unit) => !candidate.includes(unit)).slice(0, 4),
     forbidden_pattern_hits: hits,
