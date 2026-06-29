@@ -13,6 +13,8 @@ import { detectRepeatAnswer, rewriteForNonRepeat } from "./answer_deduper.js";
 import { finalizeWithFallbackFirewall } from "./fallback_firewall.js";
 import { handleR23CandidateTurn } from "./r23_candidate_controller.js";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js";
+import { classifyAnswerability } from "./answerability_classifier.js";
+import { compactTaskState, extractTaskStatePatch, mergeTaskState } from "./task_state_runtime.js";
 
 function clean(text) {
   return String(text || "").trim();
@@ -71,6 +73,7 @@ export function handleConversationTurn({
   }
   const userTurn = classifyUserTurn({ query: text, session });
   const binding = resolveContextualQuestion({ query: text, session });
+  const answerability = classifyAnswerability({ query: text, session });
   const turnFunction = classifyTurnFunction({ query: text, session, userTurn, binding });
   const modeDecision = selectResponseMode({ query: text, session, trace: { binding, userTurn } });
   const legacyMode = modeDecision?.mode || "direct_answer";
@@ -81,7 +84,9 @@ export function handleConversationTurn({
     r19_response_mode: controllerMode,
     r19_user_turn_kind: userTurn.kind,
     r21_turn_function: turnFunction.turn_function,
-    r21_turn_function_labels: turnFunction
+    r21_turn_function_labels: turnFunction,
+    answerability,
+    task_state: session.task_state || {}
   };
   const priorityDraft = controllerMode === "repair_last_answer" ? answerFallbackRepair({ query: text, session: draftState }) : null;
   const draft = priorityDraft || (draftResolver ? draftResolver(text, draftState) : null);
@@ -114,7 +119,11 @@ export function handleConversationTurn({
       question_type: draft.questionType || userTurn.kind || "",
       operation: draft.operation || "quiet_affordance",
       binding,
+      answerability,
       active_topic: activeTopic(session) || null,
+      task_state_before: compactTaskState(session.task_state || {}),
+      task_state_after: compactTaskState(session.task_state || {}),
+      fallback_overuse_guard: { skipped: true, reason: "ui_affordance_not_answer" },
       density_policy: {},
       dedupe: {},
       verifier: {},
@@ -213,6 +222,18 @@ export function handleConversationTurn({
     domain: session.activeDomain || draft?.culture?.compactStatePatch?.last_domain || "",
     operation: draft?.operation || ""
   });
+  const taskStateBefore = compactTaskState(session.task_state || {});
+  const taskPatch = extractTaskStatePatch({ query: text, answer: finalAnswer, session });
+  const draftTaskState = draft?.task_state || {};
+  const taskStateAfter = mergeTaskState(mergeTaskState(session.task_state || {}, taskPatch), draftTaskState);
+  const fallbackOveruseGuard = {
+    answerability: answerability.answerability,
+    confidence: answerability.confidence,
+    protected: Boolean(answerability.shouldAvoidFallback && ["local_answerable", "contextual_answerable", "knowledge_answerable"].includes(answerability.answerability)),
+    micro_solver_used: Boolean(draft?.microSolver || draft?.solverResult?.solver),
+    project_continuation_used: draft?.intent === "project_continuation",
+    finalizer_route: finalized.route || draft?.route || ""
+  };
   const trace = {
     user_turn_kind: userTurn.kind,
     turn_function: turnFunction.turn_function,
@@ -231,7 +252,13 @@ export function handleConversationTurn({
     operation: draft?.operation || "",
     response_act: draft?.response_act || "",
     binding,
+    answerability,
+    context_binding_target: binding?.binding_kind || "",
     active_topic: topicStack[0] || null,
+    task_state_before: taskStateBefore,
+    task_state_after: taskStateAfter,
+    micro_solver: draft?.microSolver || draft?.solverResult || null,
+    fallback_overuse_guard: fallbackOveruseGuard,
     density_policy: density,
     answer_plan: plan,
     dedupe,
@@ -255,6 +282,7 @@ export function handleConversationTurn({
     },
     nextSession: {
       active_topic_stack: topicStack,
+      task_state: taskStateAfter,
       last_answer_signature: plan.semantic_signature,
       last_answer_plan_id: plan.plan_id,
       last_bound_referent_ids: boundTargets
@@ -268,6 +296,10 @@ export function handleConversationTurn({
       responseType: responseTypeFromMode(controllerMode),
       turnFunction,
       binding,
+      answerability,
+      taskStateBefore,
+      taskStateAfter,
+      fallbackOveruseGuard,
       densityPolicy: density,
       answerPlan: plan,
       dedupe,

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://another-brain.local/schemas/data_ingestion/canonical_entity.schema.json",
+  "title": "Public Ingestion Canonical Entity",
+  "type": "object",
+  "required": [
+    "canonical_id",
+    "wikidata_qid",
+    "entity_type",
+    "labels",
+    "aliases",
+    "descriptions",
+    "domains",
+    "wikipedia_sitelinks",
+    "external_ids",
+    "provenance",
+    "license_class",
+    "runtime_scope",
+    "quality_flags",
+    "preferred_display_language",
+    "available_languages",
+    "Chinese_label_source",
+    "fallback_language_used",
+    "translation_required",
+    "visible_text_eligible"
+  ],
+  "properties": {
+    "canonical_id": { "type": "string" },
+    "wikidata_qid": { "type": "string", "pattern": "^Q[1-9][0-9]*$" },
+    "entity_type": { "type": "string" },
+    "labels": {
+      "type": "object",
+      "required": ["zh_hans", "zh_hant", "zh", "original", "en"]
+    },
+    "aliases": {
+      "type": "object",
+      "required": ["zh_hans", "zh_hant", "original", "en"]
+    },
+    "descriptions": {
+      "type": "object",
+      "required": ["zh", "en"]
+    },
+    "provenance": { "type": "array" },
+    "quality_flags": { "type": "array" }
+  },
+  "additionalProperties": true
+}

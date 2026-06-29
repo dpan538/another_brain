@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.com/schemas/static-llm-manifest.schema.json",
+  "title": "Another Brain Static LLM Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "model_id",
+    "model_family",
+    "architecture",
+    "parameter_count",
+    "quantization",
+    "context_length",
+    "tokenizer",
+    "runtime_backend",
+    "license",
+    "license_url",
+    "source_url",
+    "converted_by",
+    "conversion_tool",
+    "provenance",
+    "review_status",
+    "contains_private_data",
+    "total_bytes",
+    "profile",
+    "files",
+    "shard_policy",
+    "same_origin_only",
+    "external_urls_allowed",
+    "backend_required"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "model_id": { "type": "string", "minLength": 1 },
+    "model_family": { "type": "string", "minLength": 1 },
+    "architecture": {
+      "type": "string",
+      "enum": ["decoder_only", "encoder_decoder"]
+    },
+    "parameter_count": { "type": "integer", "minimum": 1 },
+    "quantization": { "type": "string", "minLength": 1 },
+    "context_length": { "type": "integer", "minimum": 1 },
+    "tokenizer": { "type": "string", "minLength": 1 },
+    "runtime_backend": {
+      "type": "string",
+      "enum": ["webgpu", "wasm", "webnn_candidate"]
+    },
+    "license": { "type": "string" },
+    "license_url": { "type": "string" },
+    "source_url": { "type": "string" },
+    "converted_by": { "type": "string" },
+    "conversion_tool": { "type": "string" },
+    "provenance": { "type": "string" },
+    "review_status": {
+      "type": "string",
+      "enum": ["example_only", "candidate", "license_reviewed", "admitted", "rejected"]
+    },
+    "contains_private_data": { "const": false },
+    "total_bytes": { "type": "integer", "minimum": 1 },
+    "profile": {
+      "type": "string",
+      "enum": ["hobby_static_llm_lite", "pro_static_llm_full"]
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "bytes", "sha256", "role", "required"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "bytes": { "type": "integer", "minimum": 1 },
+          "sha256": { "type": "string", "minLength": 1 },
+          "role": {
+            "type": "string",
+            "enum": ["weights", "tokenizer", "config", "wasm_runtime", "metadata"]
+          },
+          "required": { "type": "boolean" }
+        }
+      }
+    },
+    "shard_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_file_bytes", "target_file_bytes", "shard_count"],
+      "properties": {
+        "max_file_bytes": { "type": "integer", "minimum": 1 },
+        "target_file_bytes": { "type": "integer", "minimum": 1 },
+        "shard_count": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "same_origin_only": { "const": true },
+    "external_urls_allowed": { "const": false },
+    "backend_required": { "const": false }
+  }
+}

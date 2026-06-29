@@ -26,14 +26,28 @@ required_files=(
   "web/app.js"
   "web/debug_report.js"
   "web/dialog_rules.js"
+  "web/knowledge_runtime.js"
+  "web/static_llm_runtime.js"
+  "web/llm_answer_contract.js"
   "web/tiny_router_model.generated.js"
-  "web/knowledge_base.generated.js"
+  "static_llm/README.md"
+  "static_llm/llm_manifest.schema.json"
+  "static_llm/example_manifest.hobby.json"
+  "static_llm/example_manifest.pro.json"
+  "knowledge_sources/registry.json"
+  "knowledge_sources/schema.json"
+  "build_sources/knowledge/knowledge_base.generated.js"
   "web/knowledge_shards/manifest.json"
+  "web/knowledge_shards/routing.json"
 )
 
 for path in "${required_files[@]}"; do
   [[ -f "$path" ]] || fail "missing required file: $path"
 done
+
+if [[ -f "web/knowledge_base.generated.js" ]]; then
+  fail "monolithic knowledge build source must not live under web/"
+fi
 
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   tracked_files="$(git ls-files --cached --others --exclude-standard)"
@@ -62,8 +76,14 @@ if printf '%s\n' "$tracked_files" | grep -E '(^|/)web/brain_pack\.js$|(^|/)web/m
   fail "tracked private or vendored web runtime payload found"
 fi
 
-if printf '%s\n' "$tracked_files" | grep -E '\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$' >/dev/null; then
-  fail "tracked model weight or checkpoint file found"
+model_weight_files="$(printf '%s\n' "$tracked_files" | grep -E '\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$' || true)"
+if [[ -n "$model_weight_files" ]]; then
+  unmanaged_model_weight_files="$(printf '%s\n' "$model_weight_files" | grep -v -E '^(static_llm/assets/|web/static_llm/assets/)' || true)"
+  if [[ -n "$unmanaged_model_weight_files" ]]; then
+    printf '%s\n' "$unmanaged_model_weight_files" >&2
+    fail "tracked model weight or checkpoint file found outside approved static LLM asset paths"
+  fi
+  node scripts/check_static_llm_budget.mjs >/dev/null || fail "static LLM model asset admission or budget check failed"
 fi
 
 if printf '%s\n' "$tracked_files" | grep -E '(^|/)\.env($|\.|/)|vercel_token|VERCEL_TOKEN' >/dev/null; then
@@ -95,6 +115,10 @@ python3 -m json.tool vercel.json >/dev/null
 python3 -m json.tool package.json >/dev/null
 python3 -m json.tool web/site.webmanifest >/dev/null
 python3 scripts/validate_knowledge_shards.py >/dev/null
+node scripts/validate_knowledge_runtime_shards.mjs >/dev/null
+node scripts/validate_static_llm_manifest.mjs >/dev/null
+node scripts/check_static_llm_budget.mjs >/dev/null
+node scripts/check_no_backend_llm_inference.mjs >/dev/null
 node scripts/eval_seo_metadata.mjs >/dev/null
 node scripts/check_fallback_invariants.mjs >/dev/null
 node scripts/eval_canary_anti_lobotomy.mjs >/dev/null

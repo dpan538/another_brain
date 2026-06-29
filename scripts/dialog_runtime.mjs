@@ -1,4 +1,7 @@
+import { readFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
+import { fileURLToPath } from "node:url";
 
 import { OBJECT_TABLE } from "../web/object_table.js?v=5";
 import {
@@ -31,6 +34,7 @@ import {
   SESSION_MEMORY_WINDOWS
 } from "../web/internal_session_memory.js?v=1";
 import { clampThinkingProfile, selectThinkingProfile } from "../web/thinking_profile.js?v=1";
+import { configureKnowledgeRuntime, warmKnowledgeForQuery } from "../web/knowledge_runtime.js?v=1";
 
 export const VISIBLE_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxVisibleExchangeTurns;
 export const RAW_RUNTIME_CONTEXT_TURN_LIMIT = CONTEXT_WINDOWS.maxRawExchangeTurnsInRuntimePacket;
@@ -40,6 +44,29 @@ const STRUCTURED_EVIDENCE_LIMIT = 5;
 const NORMALIZE_PUNCTUATION = /[\s\-＿_—–~～`"'“”‘’.,，。!?！？:：;；、()[\]{}<>《》「」『』]/g;
 const IDENTITY_REPETITION_PATTERN =
   /(鳄鱼|对话框|你是谁|你是什么|谁是|名字|叫你|叫我|机器人|只是个对话框|什么项目|efish|another|other)/i;
+const WEB_DIR = resolve(dirname(fileURLToPath(import.meta.url)), "../web");
+
+configureKnowledgeRuntime({
+  shardBase: "knowledge_shards/",
+  fetchImpl: async (url) => {
+    const cleanPath = String(url || "").replace(/^\.\//, "");
+    try {
+      const text = await readFile(resolve(WEB_DIR, cleanPath), "utf8");
+      return {
+        ok: true,
+        status: 200,
+        json: async () => JSON.parse(text)
+      };
+    } catch {
+      return {
+        ok: false,
+        status: 404,
+        json: async () => ({})
+      };
+    }
+  },
+  reset: true
+});
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -257,6 +284,7 @@ export async function answerDialogPrompt(text, runtime, options = {}) {
   const withThinkingDelay = Boolean(options.withThinkingDelay);
   const thinking = thinkingProfileFor(text, runtime.dialogState, runtime.contextTurns);
   if (withThinkingDelay) await sleep(thinking.delay);
+  await warmKnowledgeForQuery(text).catch(() => []);
 
   const state = reasoningStateFor(runtime);
   const stateBefore = compactState(state);

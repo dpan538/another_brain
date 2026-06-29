@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dpan538/another_brain/training/long_horizon/schema.json",
+  "title": "another_brain Long-Horizon Task Sample",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "task_family",
+    "difficulty",
+    "language",
+    "user_goal",
+    "initial_context",
+    "turns",
+    "constraints",
+    "expected_behaviors",
+    "forbidden_behaviors",
+    "scoring_rubric",
+    "failure_modes",
+    "provenance",
+    "review_status"
+  ],
+  "properties": {
+    "task_id": { "type": "string", "pattern": "^lh_[a-z0-9_]+$" },
+    "task_family": { "type": "string", "minLength": 3 },
+    "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+    "language": { "type": "string", "enum": ["zh-CN", "en", "mixed"] },
+    "user_goal": { "type": "string", "minLength": 4 },
+    "initial_context": { "type": "string" },
+    "turns": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "text"],
+        "properties": {
+          "role": { "type": "string", "enum": ["user"] },
+          "text": { "type": "string", "minLength": 1 },
+          "observable_state": { "type": "object" },
+          "expected_behavior_tags": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "expected_behaviors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "forbidden_behaviors": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "scoring_rubric": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["final_answer"],
+      "properties": {
+        "final_answer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "must_include_any": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "must_not_include": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "next_action": { "type": "boolean" },
+            "max_chars": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "all_answers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "must_not_include": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "failure_modes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_type", "license_or_permission", "contains_private_data"],
+      "properties": {
+        "source_type": {
+          "type": "string",
+          "enum": ["human_seed", "synthetic_llm", "repo_derived", "eval_fixture"]
+        },
+        "generator_model": { "type": "string" },
+        "generated_at": { "type": "string" },
+        "license_or_permission": { "type": "string", "minLength": 1 },
+        "contains_private_data": { "type": "boolean" },
+        "reviewer": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["seed_reviewed", "needs_review", "rejected"]
+    }
+  }
+}

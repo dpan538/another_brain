@@ -1,5 +1,9 @@
 # WebGPU Reasoning Runtime Plan
 
+R25 legacy note: the WebGPU/personal_200m sections below are historical
+comparison material. The active target is a same-origin static browser decoder
+LLM with R24 verifier/fallback wrapping, not a 100M-200M SLM final product.
+
 WebGPU matters for another_brain because the target product is a browser-side personal mini Web-LLM runtime with no cloud inference in the public profile. GPU acceleration can help local inference paths that are too heavy for the deterministic runtime alone, while keeping session memory and personal context inside the browser.
 
 ## Useful WebGPU Roles

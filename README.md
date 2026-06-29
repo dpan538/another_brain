@@ -1,6 +1,6 @@
 # Another Brain
 
-Another Brain is the source repository for Answer Machine, a local-first browser-side answer web app at `efishother.com`. It turns allowed local materials into redacted memory structures, then answers through deterministic dialog rules, static knowledge lookup, and a compact tiny router that acts as a route-and-answer Web SLM.
+Another Brain is the source repository for Answer Machine, a local-first browser-side answer web app at `efishother.com`. R25 changes the target architecture to an LLM-first static browser runtime: a future same-origin decoder LLM drafts in the browser, while the R24 recovery gates, shard runtime, verifier, finalizer, and fallback firewall wrap that draft.
 
 The public UI is intentionally small: one input box, no account, no cloud inference, and no remote LLM call. The browser path is designed to stay light enough for mobile devices.
 
@@ -12,22 +12,21 @@ GitHub description: `Answer Machine: local-first browser-side answers with deter
 
 ## Runtime Shape
 
-The router owns control flow. A larger local LLM is not part of the first public runtime. Vercel is used only for static hosting.
+The active product target is a same-origin static decoder LLM running in the browser. Vercel is used only for static hosting: no Vercel Function inference, no Edge Function inference, no external LLM API, and no external storage product for model loading. Browser cache/storage is allowed because it is user-local.
 
 This is not an omniscient assistant or a generic chatbot. The private design model can talk about subject, Crocodile, body, symbol, and copy, but the front-stage dialog does not explain itself that way. Its public identity is deliberately smaller: it is a dialog box; it was once called Crocodile; the rest stays before or after the conversation.
 
 ```text
 user input
-  -> deterministic dialog rules
-  -> generated static knowledge cards
-  -> tiny router Web SLM
-  -> structured route/evidence/verifier fallback
-  -> short controlled fallback answer
+  -> shard-first static knowledge lookup
+  -> static browser LLM draft
+  -> R24 verifier / finalizer / fallback firewall
+  -> answer or controlled fallback
 ```
 
-The tiny router is not a general generative model. It is a character n-gram classifier plus conservative answer index: a compact route-and-answer layer trained from the public dialog teacher, model-gate cases, correction pairs, common knowledge cards, help/onboarding cases, surface-identity cases, reasoning/counterquestion calibration, context-window calibration, relationship-repetition calibration, and persona alignment. In the current public gate, 768/805 cases are direct rule or knowledge answers, and 37/805 use the tiny router Web SLM.
+The old tiny router and personal-200M / mini-web SLM planning surface is now legacy fallback and test harness. It is not the final product target. It remains useful for R24 regression gates, sanity checks, and bounded fallback behavior while R25 prepares static LLM admission.
 
-WebLLM is intentionally out of the first public runtime. It does not accelerate the tiny router classifier, and previous local checks showed that the small generative fallback was too likely to drift or hallucinate in open dialog. The reliable path is to train the tiny router directly and keep unknown questions, privacy-sensitive questions, and route misses controlled by deterministic rules.
+R25A does not ship model weights. A real model can be introduced only in R25B or later after the static manifest, budget, no-backend, license/provenance, and admission gates pass.
 
 The reasoning path is deliberately small. It trains the SLM to choose a response strategy, not to expose long chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic rather than a generative LLM.
 
@@ -36,6 +35,8 @@ The voice is intentionally unified. Another Brain does not split public persona 
 ## Privacy Rules
 
 - No cloud inference APIs.
+- No Vercel Function or Edge Function LLM inference.
+- No external storage product for model loading.
 - Do not commit local memory artifacts, drive inventories, model weights, or LoRA checkpoints.
 - Do not copy original source materials from a local drive into the repository.
 - Do not read paths that look like identity, banking, visa, passport, address proof, or account-number material.
@@ -83,13 +84,18 @@ python3 scripts/build_brain_pack.py --source "/path/to/local/source" --inventory
 python3 scripts/validate_brain_pack.py --brain-pack artifacts/brain_pack.json
 ```
 
-Build shared browser knowledge and the tiny router:
+Build shared browser knowledge and legacy fallback artifacts:
 
 ```bash
 npm run build:knowledge
 python3 scripts/build_distillation_dataset.py
 python3 scripts/train_tiny_router.py
 ```
+
+`npm run build:knowledge` derives the generated knowledge build source from
+`knowledge_sources/registry.json` and `knowledge_sources/cards/*.jsonl`, then
+regenerates `web/knowledge_shards/manifest.json`, `routing.json`, and shard
+files. The generated build source stays outside deployable `web/`.
 
 Run the local gates:
 
@@ -100,6 +106,12 @@ python3 scripts/bench_knowledge_runtime.py
 python3 scripts/validate_training_os.py
 python3 scripts/eval_dialog_persona.py
 node scripts/run_model_gate_node.mjs --out /tmp/another_brain_model_gate.json
+```
+
+Run the R25 static LLM scaffold gate:
+
+```bash
+npm run check:r25-llm-first-static
 ```
 
 Build and validate the mixed context stress suite:
@@ -197,16 +209,17 @@ npm run check:launch-readiness
 ## Current Gate Snapshot
 
 - Distillation dataset: 76365 rows, 74580 train, 1785 eval.
-- Tiny router web artifact: 7581139 bytes, observed only. Production blocking is loaded-page answer latency, not router byte size.
+- Tiny router web artifact: 7581139 bytes, observed only. In R25 it is legacy fallback/test harness, not the final intelligence layer.
 - Tiny router v2 label mode: action labels.
 - Tiny router feature weights: 32000.
 - Tiny router answer index: 789.
 - Tiny router action accuracy: 0.9414 overall, identity 1.0000, privacy 1.0000, help 1.0000.
 - Tiny router family-holdout accuracy: 0.9467 across 6833 held-out examples from unseen source/tag/id families.
 - Relationship repetition gate: 16/16 turns passed.
-- Knowledge runtime: 55151 generated cards, 55284 total runtime cards, p95 0.231ms and p99 0.324ms on the last local run.
-- Knowledge web artifact: 7645757 bytes.
-- Knowledge shards: 43 static JSON shards, max shard size 179996 bytes, round-trip validated against `web/knowledge_base.generated.js`.
+- Knowledge runtime: 55151 generated cards available through shard-first lazy loading; direct lookup stays synchronous after query warmup.
+- Knowledge source of truth: `knowledge_sources/registry.json` plus 37 reviewed JSONL chunks extracted from the R24F build source.
+- Knowledge generated build source: 7645750 bytes at `build_sources/knowledge/knowledge_base.generated.js`, outside deployable `web/`.
+- Knowledge shards: 43 static JSON shards, max shard size 179996 bytes, plus a 1400960 byte routing index generated from labels and aliases.
 - Dialog persona eval: 742 cases, including 16 surface-identity cases, 0 failures.
 - Help/onboarding eval: 23/23 passed, no fallback answers, no assistant-tone hits.
 - R2 split manifest: 7 datasets, 140 public/style metadata cases, family-held-out 70/15/15 train/dev/blind split, blind cases not used for training.
@@ -231,8 +244,13 @@ npm run check:launch-readiness
 - `web/`: static browser app and public runtime modules.
 - `web/tiny_router.js`: browser-side Web SLM wrapper.
 - `web/tiny_router_model.generated.js`: compact generated tiny-router artifact.
-- `web/knowledge_base.generated.js`: monolithic generated common-knowledge cards kept for the current synchronous runtime path.
-- `web/knowledge_shards/`: static shard JSON files and manifest for CDN-friendly deployment and future lazy loading.
+- `web/static_llm_runtime.js`: browser-side static LLM loader interface, disabled until model admission.
+- `web/llm_answer_contract.js`: R25 LLM draft contract wrapped by R24 verifier/fallback boundaries.
+- `static_llm/`: static LLM manifest schema and example manifests; no model weights are admitted in R25A.
+- `web/knowledge_runtime.js`: shard-first browser knowledge loader and in-memory shard cache.
+- `knowledge_sources/`: reviewed source-of-truth registry and JSONL chunks for generated knowledge rows.
+- `build_sources/knowledge/knowledge_base.generated.js`: monolithic generated common-knowledge build source, kept outside deployable `web/`.
+- `web/knowledge_shards/`: static shard JSON files, manifest, and routing index for CDN-friendly lazy loading.
 - `web/context_stress_cases.json`: 100x16 mixed context stress cases for training calibration.
 - `web/structured_decision.js`: structured route, evidence sufficiency, and answer verifier helper.
 - `evals/casepacks/`: synthetic casepack-16 capability evals.
@@ -253,7 +271,7 @@ npm run check:launch-readiness
 
 ## Deployment
 
-The launch target is static Vercel hosting for `efishother.com`. Vercel should not run model inference, generate memory packs, or build private artifacts. The checked-in `vercel.json` uses `web/` as the output directory and runs only the release preflight.
+The launch target is static Vercel hosting for `efishother.com`. Vercel should not run model inference, generate memory packs, use Functions or Edge Functions for LLM inference, or depend on external storage for model loading. Future R25 model assets must be same-origin static files admitted by manifest and budget checks. The checked-in `vercel.json` uses `web/` as the output directory and runs only the static build preflight.
 
 Public crawl and AI-readable resources are checked in under `web/`:
 

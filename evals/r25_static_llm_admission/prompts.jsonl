@@ -1,0 +1,5 @@
+{"id":"no_manifest_disabled","query":"Static LLM should be disabled when no admitted manifest exists.","expected":"disabled_runtime"}
+{"id":"examples_not_admitted","query":"Example manifests must not count as real models.","expected":"example_manifest_rejected_for_admission"}
+{"id":"no_backend_calls","query":"The admission path must not use backend or external model calls.","expected":"same_origin_only"}
+{"id":"fallback_firewall_active","query":"A risky draft should still be blocked by R24 fallback firewall.","expected":"fallback_firewall_rejects_risky_surface"}
+{"id":"llm_draft_disabled","query":"A draft generator should return unavailable until R25B admits assets.","expected":"draft_unavailable"}

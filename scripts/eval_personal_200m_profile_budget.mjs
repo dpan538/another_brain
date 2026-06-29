@@ -42,6 +42,7 @@ function assess(item) {
 }
 
 async function main() {
+  console.warn("[legacy] personal_200m budget evaluation is retained for comparison only. It is not the R25 final product target.");
   const payload = JSON.parse(await readFile(INPUT, "utf8"));
   const assessments = (payload.candidates || []).map(assess);
   const viableControlled = assessments.filter((item) => item.readiness === "candidate_for_gate_or_embedding");

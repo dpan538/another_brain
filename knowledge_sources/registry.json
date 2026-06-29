@@ -1,0 +1,993 @@
+{
+  "chunk_rows": 1500,
+  "default_metadata": {
+    "contains_private_data": false,
+    "license_or_permission": "project repository derived generated knowledge",
+    "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+    "provenance": {
+      "method": "mechanical_extract_from_r24f_build_source",
+      "source_path": "build_sources/knowledge/knowledge_base.generated.js",
+      "source_sha256": "b9b011efaa47c423b35fd8f09f88d7761d56ad5fd8aba88a26c7709c40a8108c",
+      "source_type": "repo_derived"
+    },
+    "review_status": "mechanically_extracted_r24g",
+    "source_type": "repo_derived"
+  },
+  "description": "Mechanically extracted reviewed source chunks for the generated knowledge build source.",
+  "generated_at": "2026-06-28T00:00:00+00:00",
+  "generated_from": {
+    "bytes": 7645750,
+    "path": "build_sources/knowledge/knowledge_base.generated.js",
+    "sha256": "b9b011efaa47c423b35fd8f09f88d7761d56ad5fd8aba88a26c7709c40a8108c",
+    "stats": {
+      "answer_fields": 58975,
+      "concept_cards": 55151,
+      "domains": [
+        "abstract",
+        "animal",
+        "architecture_space",
+        "art",
+        "art_history",
+        "art_theory",
+        "biology_medicine",
+        "body",
+        "chemistry_earth",
+        "cinema_media",
+        "city",
+        "city_life",
+        "computer_science",
+        "cooking",
+        "country",
+        "creative_reasoning",
+        "crocodile_subject",
+        "culture_literature",
+        "daily_action",
+        "daily_object",
+        "deconstruction",
+        "design_system",
+        "dialog_context",
+        "drink",
+        "education",
+        "electronics",
+        "emotion",
+        "engineering",
+        "epistemic",
+        "everyday_reasoning",
+        "existentialism",
+        "finance",
+        "folk_symbolic",
+        "food",
+        "history_event",
+        "humanities_art",
+        "lacanian_psychoanalysis",
+        "life_philosophy",
+        "linguistics",
+        "literary_history",
+        "materials",
+        "math_logic",
+        "media",
+        "memory_identity",
+        "music",
+        "nature",
+        "painting",
+        "philosopher",
+        "philosophy",
+        "photo",
+        "photo_movement",
+        "photography_history",
+        "photography_theory",
+        "place",
+        "plant",
+        "poetry_notebook",
+        "postwar_philosophy",
+        "printmaking",
+        "profession",
+        "regional_development",
+        "relation_reasoning",
+        "science",
+        "social_life",
+        "software",
+        "sports",
+        "structuralism_language",
+        "tech_life",
+        "tool",
+        "translation_studies",
+        "transport",
+        "web",
+        "world_place"
+      ],
+      "generated_at": "2026-06-28T00:00:00+00:00",
+      "policy": {
+        "cloud_inference_api_allowed": false,
+        "contains_internal_asset_labels": false,
+        "contains_project_paths": false,
+        "purpose": "local persona-shaped common knowledge for short natural answers",
+        "voice": "short conversational facts; no encyclopedia tone and no unexplained poetic metaphors"
+      },
+      "schema_version": 1,
+      "specific_fact_cards": 1016
+    }
+  },
+  "row_count": 55151,
+  "schema_version": 1,
+  "source_set_id": "r24g_knowledge_sources",
+  "sources": [
+    {
+      "bytes": 1120096,
+      "contains_private_data": false,
+      "domains": [
+        "abstract",
+        "animal",
+        "art",
+        "body",
+        "city",
+        "country",
+        "daily_object",
+        "drink",
+        "education",
+        "emotion",
+        "finance",
+        "food",
+        "linguistics",
+        "media",
+        "music",
+        "nature",
+        "philosophy",
+        "photo",
+        "place",
+        "plant",
+        "profession",
+        "regional_development",
+        "science",
+        "software",
+        "sports",
+        "tool",
+        "transport",
+        "web"
+      ],
+      "index": 0,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 1499,
+      "order_start": 0,
+      "path": "cards/cards_000.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "a5d55bfadd1bbceba26840d3d04f8ddfe502f8426598a4ef552cb098dcf9711f",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1117730,
+      "contains_private_data": false,
+      "domains": [
+        "architecture_space",
+        "biology_medicine",
+        "chemistry_earth",
+        "cinema_media",
+        "computer_science",
+        "culture_literature",
+        "daily_action",
+        "design_system",
+        "electronics",
+        "engineering",
+        "history_event",
+        "materials",
+        "math_logic",
+        "painting",
+        "philosophy",
+        "printmaking",
+        "social_life",
+        "world_place"
+      ],
+      "index": 1,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 2999,
+      "order_start": 1500,
+      "path": "cards/cards_001.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "2ed0f906098870be8529acfe6d4f5b00dbe9e28fcfccf7207d99a6a53880cab1",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1137694,
+      "contains_private_data": false,
+      "domains": [
+        "art_history",
+        "art_theory",
+        "crocodile_subject",
+        "deconstruction",
+        "existentialism",
+        "folk_symbolic",
+        "history_event",
+        "humanities_art",
+        "lacanian_psychoanalysis",
+        "linguistics",
+        "literary_history",
+        "philosopher",
+        "philosophy",
+        "photo_movement",
+        "photography_history",
+        "photography_theory",
+        "poetry_notebook",
+        "postwar_philosophy",
+        "structuralism_language",
+        "translation_studies"
+      ],
+      "index": 2,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 4499,
+      "order_start": 3000,
+      "path": "cards/cards_002.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "9278996c5150399128921d83780b2e57571d80574e4c7cd2f5323b3024faf4ba",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1118496,
+      "contains_private_data": false,
+      "domains": [
+        "dialog_context",
+        "philosophy"
+      ],
+      "index": 3,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 5999,
+      "order_start": 4500,
+      "path": "cards/cards_003.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "b480fd442a34092d775077707294b910f49be18d91aa3fb1bb0b987f8a97f11e",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1106457,
+      "contains_private_data": false,
+      "domains": [
+        "dialog_context"
+      ],
+      "index": 4,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 7499,
+      "order_start": 6000,
+      "path": "cards/cards_004.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "9305f70d60990f64c863598e1ac41dc43e8f2da97cf955d39f8f3aa0586e2ae3",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1118559,
+      "contains_private_data": false,
+      "domains": [
+        "dialog_context"
+      ],
+      "index": 5,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 8999,
+      "order_start": 7500,
+      "path": "cards/cards_005.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "bd5435e086a8e945f2ae379e226cb0da0bd61990d45312b3681b031ea05eb142",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1108131,
+      "contains_private_data": false,
+      "domains": [
+        "dialog_context",
+        "everyday_reasoning"
+      ],
+      "index": 6,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 10499,
+      "order_start": 9000,
+      "path": "cards/cards_006.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "c99604cb97e13b7ad9f4ec269cf1928650fdb7d65b5a65991f85f9ec599df40a",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1101372,
+      "contains_private_data": false,
+      "domains": [
+        "everyday_reasoning"
+      ],
+      "index": 7,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 11999,
+      "order_start": 10500,
+      "path": "cards/cards_007.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "86f001b04281e124d79819142b776afadd17d9290e0414866209a96c3f6d5f3a",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1105518,
+      "contains_private_data": false,
+      "domains": [
+        "everyday_reasoning",
+        "life_philosophy"
+      ],
+      "index": 8,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 13499,
+      "order_start": 12000,
+      "path": "cards/cards_008.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "b8e17968229793178d19a82fe825e755669af861e3d66c0fc5984f534be4b8e4",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1088460,
+      "contains_private_data": false,
+      "domains": [
+        "epistemic",
+        "life_philosophy"
+      ],
+      "index": 9,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 14999,
+      "order_start": 13500,
+      "path": "cards/cards_009.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "f8d8ae02c804cf4fbd0fe1e9c8b243533dd4957a248a4c319710c40c5ec3c3b2",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1092993,
+      "contains_private_data": false,
+      "domains": [
+        "creative_reasoning",
+        "epistemic"
+      ],
+      "index": 10,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 16499,
+      "order_start": 15000,
+      "path": "cards/cards_010.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "dd87c63c9112aa338ccfc5a033469f8db70eb3062b0360aca32d246c1562846a",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1088787,
+      "contains_private_data": false,
+      "domains": [
+        "creative_reasoning"
+      ],
+      "index": 11,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 17999,
+      "order_start": 16500,
+      "path": "cards/cards_011.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "f8166dd920787d6d44ff1b2eb8f82a3e6fe7cce1aaa3c8e59997bb003389c2dd",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1107012,
+      "contains_private_data": false,
+      "domains": [
+        "city_life",
+        "creative_reasoning"
+      ],
+      "index": 12,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 19499,
+      "order_start": 18000,
+      "path": "cards/cards_012.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "102504d1267d0eaf14fd1a673364657a0daf00952af8e9963db0e4245df42c84",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1102239,
+      "contains_private_data": false,
+      "domains": [
+        "city_life"
+      ],
+      "index": 13,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 20999,
+      "order_start": 19500,
+      "path": "cards/cards_013.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "3a40535626f43fa3c28a6213e20b3c194a5ed9b1b8e8cdee9f1799374ddea16f",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1085394,
+      "contains_private_data": false,
+      "domains": [
+        "city_life",
+        "tech_life"
+      ],
+      "index": 14,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 22499,
+      "order_start": 21000,
+      "path": "cards/cards_014.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "ac9dcf025fe893dbce2bde8ab3441ac1d8b46d7072030cebcb2f0425632f33e6",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1081291,
+      "contains_private_data": false,
+      "domains": [
+        "tech_life"
+      ],
+      "index": 15,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 23999,
+      "order_start": 22500,
+      "path": "cards/cards_015.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "66cf4cc8343773c6f37c095d0822e80e76912c2c15acd17399feeb8f22952521",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1089573,
+      "contains_private_data": false,
+      "domains": [
+        "relation_reasoning",
+        "tech_life"
+      ],
+      "index": 16,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 25499,
+      "order_start": 24000,
+      "path": "cards/cards_016.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "f27d66924fa3613f8f2e7674c7975f866376343adfeeda78b8b7bf3a16804590",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1129134,
+      "contains_private_data": false,
+      "domains": [
+        "memory_identity",
+        "relation_reasoning"
+      ],
+      "index": 17,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 26999,
+      "order_start": 25500,
+      "path": "cards/cards_017.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "a3a8a79b9c3c0fffc39e08956edee80df56eadb0e6a40f1b7855086b97a4471f",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1104879,
+      "contains_private_data": false,
+      "domains": [
+        "memory_identity"
+      ],
+      "index": 18,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 28499,
+      "order_start": 27000,
+      "path": "cards/cards_018.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "f94c35c786dc0ff056c716716982f44bbb1c035455e1e4e7643af96256d4e6a4",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1136649,
+      "contains_private_data": false,
+      "domains": [
+        "memory_identity",
+        "postwar_philosophy"
+      ],
+      "index": 19,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 29999,
+      "order_start": 28500,
+      "path": "cards/cards_019.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "c491b95ec107dcca333a64a21c5e8f4c79d35dbb423958224ac35e7d8723ae06",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1111352,
+      "contains_private_data": false,
+      "domains": [
+        "existentialism",
+        "postwar_philosophy"
+      ],
+      "index": 20,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 31499,
+      "order_start": 30000,
+      "path": "cards/cards_020.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "1bbaaf61527da0e57943e1e5e2524bcd2f8b9368646a9fae79643f460c260e9d",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1093610,
+      "contains_private_data": false,
+      "domains": [
+        "deconstruction",
+        "existentialism",
+        "structuralism_language"
+      ],
+      "index": 21,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 32999,
+      "order_start": 31500,
+      "path": "cards/cards_021.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "231e84ab23eb0d64fe28e48658932abb9a67115366281359e5a839c683a9192d",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1095301,
+      "contains_private_data": false,
+      "domains": [
+        "deconstruction",
+        "lacanian_psychoanalysis"
+      ],
+      "index": 22,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 34499,
+      "order_start": 33000,
+      "path": "cards/cards_022.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "b9ab4b9c84f871f9120224c72927b04d98d39bfea7fefb7ac08aeb3b8b88a386",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1121407,
+      "contains_private_data": false,
+      "domains": [
+        "humanities_art",
+        "lacanian_psychoanalysis"
+      ],
+      "index": 23,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 35999,
+      "order_start": 34500,
+      "path": "cards/cards_023.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "f72944055688be6c2509f348d5c91fdf067430b29fc54dcab541bcc7ebd9e93d",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1102902,
+      "contains_private_data": false,
+      "domains": [
+        "humanities_art",
+        "photo"
+      ],
+      "index": 24,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 37499,
+      "order_start": 36000,
+      "path": "cards/cards_024.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "fe4f6a7dbd5318a469f22951ffdf34ba3a1460c47c3aeb85eaeedda05ad04ba6",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1112483,
+      "contains_private_data": false,
+      "domains": [
+        "computer_science",
+        "design_system",
+        "painting",
+        "photo",
+        "printmaking"
+      ],
+      "index": 25,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 38999,
+      "order_start": 37500,
+      "path": "cards/cards_025.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "2b0654d9269d54db9cd768251bfbfe25e8a9ceef05ad852bb948c35388c539f5",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1069281,
+      "contains_private_data": false,
+      "domains": [
+        "computer_science",
+        "culture_literature"
+      ],
+      "index": 26,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 40499,
+      "order_start": 39000,
+      "path": "cards/cards_026.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "7100236b718013f6ef9845243aadb5e6297a420cbc74f91ba5e4d7893bd3eac2",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1074856,
+      "contains_private_data": false,
+      "domains": [
+        "culture_literature",
+        "electronics",
+        "engineering",
+        "materials"
+      ],
+      "index": 27,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 41999,
+      "order_start": 40500,
+      "path": "cards/cards_027.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "2e3bda051d34078098228fa62377c808a52e007f77367bd2d9a78622913c54ee",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1092489,
+      "contains_private_data": false,
+      "domains": [
+        "biology_medicine",
+        "cooking",
+        "materials",
+        "math_logic",
+        "world_place"
+      ],
+      "index": 28,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 43499,
+      "order_start": 42000,
+      "path": "cards/cards_028.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "ed3b0215eedc15594407e2a02bf0f99adc771367a58106d6cb7382546f2840f4",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1106691,
+      "contains_private_data": false,
+      "domains": [
+        "cooking",
+        "daily_action",
+        "photo_movement",
+        "photography_theory"
+      ],
+      "index": 29,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 44999,
+      "order_start": 43500,
+      "path": "cards/cards_029.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "ef25a0f2f89376015ef49f56388e9997ef5367d4652b2e0639d0fc00a033b31a",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1131228,
+      "contains_private_data": false,
+      "domains": [
+        "photo_movement"
+      ],
+      "index": 30,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 46499,
+      "order_start": 45000,
+      "path": "cards/cards_030.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "740818925199196eb2caa9d470bc65b0b0100c781dc60bb92e24a4b2afceb248",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1123588,
+      "contains_private_data": false,
+      "domains": [
+        "art_history",
+        "photo_movement",
+        "photography_history"
+      ],
+      "index": 31,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 47999,
+      "order_start": 46500,
+      "path": "cards/cards_031.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "65e1ce6c4ca9bed97d8ff1ef5728c5b67908c4b355d103f3c5476f1598151b7d",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1116728,
+      "contains_private_data": false,
+      "domains": [
+        "art_history",
+        "art_theory"
+      ],
+      "index": 32,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 49499,
+      "order_start": 48000,
+      "path": "cards/cards_032.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "b2a3f3f202edfe4e0f2412cea24c2233f898d9bd5678c7db9111e834e5d65ded",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1122974,
+      "contains_private_data": false,
+      "domains": [
+        "art_theory",
+        "philosopher"
+      ],
+      "index": 33,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 50999,
+      "order_start": 49500,
+      "path": "cards/cards_033.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "631a765a0eb8914621bf995afe851a7e44e899514132b00d683e4c9f6e6467a9",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1149757,
+      "contains_private_data": false,
+      "domains": [
+        "philosopher"
+      ],
+      "index": 34,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 52499,
+      "order_start": 51000,
+      "path": "cards/cards_034.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "ff6cbbaf48d9a7588a2b03c6bacb32a13c9fccc59182980d9a1f8590330fa292",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 1112154,
+      "contains_private_data": false,
+      "domains": [
+        "literary_history",
+        "philosopher"
+      ],
+      "index": 35,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 53999,
+      "order_start": 52500,
+      "path": "cards/cards_035.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1500,
+      "sha256": "6e7b025f5ce50cec0d234eff6ff009432d58ec1301eb621bd08dc8d05b029f24",
+      "source_type": "repo_derived"
+    },
+    {
+      "bytes": 901043,
+      "contains_private_data": false,
+      "domains": [
+        "history_event",
+        "literary_history"
+      ],
+      "index": 36,
+      "license_or_permission": "project repository derived generated knowledge",
+      "notes": "Mechanical R24G extraction from the R24F generated build source; no factual edits.",
+      "order_end": 55150,
+      "order_start": 54000,
+      "path": "cards/cards_036.jsonl",
+      "provenance": {
+        "method": "mechanical_extract_from_r24f_build_source",
+        "source_type": "repo_derived"
+      },
+      "review_status": "mechanically_extracted_r24g",
+      "rows": 1151,
+      "sha256": "c23aad30741d8306412275cdd59bc6498646a875d514f840411be6e2b010ce2b",
+      "source_type": "repo_derived"
+    }
+  ]
+}

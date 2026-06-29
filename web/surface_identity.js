@@ -156,6 +156,9 @@ export function sanitizeSurfaceIdentity(answer, query) {
   let cleaned = String(answer || "").trim();
   if (!cleaned) return cleaned;
   const text = String(query || "").trim();
+  if (/(压短|改短|变短|缩短|总结|更直接|更口语|release note|改写)/i.test(text)) {
+    return cleaned;
+  }
   if (GATE_QUERY_RE.test(text) && BAD_GATE_SURFACE_RE.test(cleaned)) {
     return surfaceIdentityFallbackForQuery(text);
   }

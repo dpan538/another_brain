@@ -67,6 +67,19 @@ export function resolveContextualQuestion({ query = "", session = {} } = {}) {
     reasons.push("transform_last_answer_request");
   }
 
+  const taskState = session.task_state?.active_task || session.active_task || null;
+  if (
+    !success &&
+    taskState &&
+    /^(那|那么|继续|具体|这个|它|刚才|下一步|为什么|怎么|该怎么|只要|一句话|不要|按刚才|回来继续)/.test(text)
+  ) {
+    success = true;
+    binding_kind = "active_task";
+    target_ids = ["active_task"];
+    confidence = 0.88;
+    reasons.push("active_task_binding");
+  }
+
   const explicitTargets = success ? [] : explicitCultureTargets(text, session);
   if (explicitTargets.length > 0) {
     success = true;

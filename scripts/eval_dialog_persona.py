@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RULES_PATH = ROOT / "web" / "dialog_rules.js"
 SURFACE_IDENTITY_PATH = ROOT / "web" / "surface_identity.js"
 CONTEXT_STATE_PATH = ROOT / "web" / "context_state.js"
-GENERATED_KNOWLEDGE_PATH = ROOT / "web" / "knowledge_base.generated.js"
+GENERATED_KNOWLEDGE_PATH = ROOT / "build_sources" / "knowledge" / "knowledge_base.generated.js"
 OBJECT_TABLE_PATH = ROOT / "artifacts" / "object_table.json"
 SCAN_FILES = [
     ROOT / "web" / "index.html",
@@ -23,7 +23,7 @@ SCAN_FILES = [
     ROOT / "web" / "bench.html",
     ROOT / "web" / "bench.js",
     ROOT / "web" / "dialog_rules.js",
-    ROOT / "web" / "knowledge_base.generated.js",
+    ROOT / "build_sources" / "knowledge" / "knowledge_base.generated.js",
     ROOT / "web" / "dialog_methodology.js",
     ROOT / "web" / "brain_pack.js",
     ROOT / "web" / "object_table.js",
@@ -956,10 +956,33 @@ def run_js_golden_cases() -> dict[str, object]:
     context_source = CONTEXT_STATE_PATH.read_text(encoding="utf-8")
     generated_source = GENERATED_KNOWLEDGE_PATH.read_text(encoding="utf-8") if GENERATED_KNOWLEDGE_PATH.exists() else ""
     source = re.sub(r'^import \{ GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS \} from "\./knowledge_base\.generated\.js\?v=\d+";\n\n?', "", source)
+    source = re.sub(r'^import \{ cachedKnowledgeCards, knowledgeRuntimeStats \} from "\./knowledge_runtime\.js\?v=\d+";\n\n?', "", source)
     source = re.sub(r'^import \{ answerContextAction, createContextState, detectContextAction, nextContextState \} from "\./context_state\.js\?v=\d+";\n\n?', "", source)
     source = re.sub(r'^import \{ answerSurfaceIdentity, surfaceIdentityIntent \} from "\./surface_identity\.js\?v=\d+";\n\n?', "", source)
+    knowledge_runtime_stub = """
+const GENERATED_KNOWLEDGE_CARDS_SAFE = typeof GENERATED_KNOWLEDGE_CARDS !== "undefined" ? GENERATED_KNOWLEDGE_CARDS : [];
+const GENERATED_KNOWLEDGE_STATS_SAFE = typeof GENERATED_KNOWLEDGE_STATS !== "undefined" ? GENERATED_KNOWLEDGE_STATS : {};
+function cachedKnowledgeCards() {
+  return GENERATED_KNOWLEDGE_CARDS_SAFE;
+}
+function knowledgeRuntimeStats() {
+  return {
+    loadedShardCount: 43,
+    cardsCached: GENERATED_KNOWLEDGE_CARDS_SAFE.length,
+    shardCount: 43,
+    routingEntries: 0,
+    totalCards: GENERATED_KNOWLEDGE_CARDS_SAFE.length,
+    conceptCards: GENERATED_KNOWLEDGE_STATS_SAFE.concept_cards || GENERATED_KNOWLEDGE_CARDS_SAFE.length,
+    answerFields: GENERATED_KNOWLEDGE_STATS_SAFE.answer_fields || 0,
+    specificFactCards: GENERATED_KNOWLEDGE_STATS_SAFE.specific_fact_cards || 0,
+    sourceSha256: ""
+  };
+}
+"""
     executable_source = (
         generated_source.replace("export const ", "const ")
+        + "\n"
+        + knowledge_runtime_stub
         + "\n"
         + context_source.replace("export function ", "function ").replace("export const ", "const ")
         + "\n"

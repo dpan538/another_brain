@@ -39,7 +39,7 @@ Freeze anchor: route collapse must remain a named failure family.
 - Minimal reproduction prompt: `日本文学从什么开始读？`
 - Current wrong shape: gives a vague interpretive sentence, not an executable entry path.
 - Expected behavior: retrieve a culture card and render the `entry_path` move with works/authors/period anchors.
-- Likely code location: `web/dialog_rules.js` culture awareness branch; generated answerIndex entries; `web/knowledge_base.generated.js` if cards are too shallow.
+- Likely code location: `web/dialog_rules.js` culture awareness branch; generated answerIndex entries; `build_sources/knowledge/knowledge_base.generated.js` if cards are too shallow.
 - Why fixed answers cannot solve it: culture questions require composable fields, not one answer per prompt; adding text makes cards less inspectable and harder to verify.
 - Minimum fix: document a CultureCard schema and add eval fields that require question-type-specific anchors.
 - Long-term fix: runtime culture planner that maps question type to card fields and relation hops.
@@ -52,7 +52,7 @@ Freeze anchor: route collapse must remain a named failure family.
 - Minimal reproduction prompt: `之乎者也你懂什么？`
 - Current wrong shape: asks `你要问哪一边？` even when the previous turn established 罗大佑 or a related work context.
 - Expected behavior: bind to the work or album entity, then answer with a bounded explanation.
-- Likely code location: `web/context_state.js`, `web/dialog_rules.js`, `web/object_table.js`, `web/knowledge_base.generated.js`.
+- Likely code location: `web/context_state.js`, `web/dialog_rules.js`, `web/object_table.js`, `build_sources/knowledge/knowledge_base.generated.js`.
 - Why fixed answers cannot solve it: direct strings do not create reusable edges such as `created_by`, `representative_work`, `theme`, or `same_title_as`.
 - Minimum fix: schema docs must define relation-bearing culture cards and eval must include follow-up and cross-domain prompts.
 - Long-term fix: local relation index and retrieval plan used before answer rendering.

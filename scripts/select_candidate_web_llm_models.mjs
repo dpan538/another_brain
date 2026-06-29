@@ -162,6 +162,7 @@ const candidates = [
 ];
 
 async function main() {
+  console.warn("[legacy] personal_200m / 100M-200M SLM candidate selection is retained for comparison only. R25 product direction is a same-origin static browser decoder LLM.");
   const report = {
     generated_at: new Date().toISOString(),
     downloaded_weights: false,

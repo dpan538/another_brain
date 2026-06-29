@@ -28,3 +28,12 @@ Single-prompt correctness is not enough. another_brain must avoid session-level 
 
 These metrics complement endpoint correctness. The goal is not just "answers are valid"; the goal is "short, concrete, contextual, non-repetitive, and safe across a session."
 
+## Rejected Frontend Mock Cases
+
+### 2026-06-17: Crocodile Halftone Standalone Mock
+
+- Attempt: a standalone `artifacts/crocodile_halftone_mock.html` sample explored a visible pixel-crocodile background, orange/magenta halftone fields, breathing states, quiet affordance, and answer-state controls before touching the production frontend.
+- Result: rejected. The mock made the crocodile symbol too literal and decorative, shifted the surface toward a poster layer, and weakened the existing minimal answer-machine feel. The background competed with the input instead of acting as a restrained responsive signal.
+- Tooling note: direct `file://` preview was blocked by the in-app browser URL policy. A local `localhost` preview worked, but automated text entry failed because the browser virtual clipboard was unavailable. State-button clicks worked and no console errors were observed.
+- Product lesson: future frontend exploration should start from the existing `web/` interaction grammar and test small state-layer changes first: subtle symbol fragments, restrained halftone only during thinking or quiet affordance, and mobile readability checks before any full-background identity mark.
+- Action: do not integrate this mock. Delete the sample artifact after recording this log entry.

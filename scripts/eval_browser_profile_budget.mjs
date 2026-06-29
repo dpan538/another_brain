@@ -59,13 +59,15 @@ async function main() {
   const appBytes = await fileSize("web/app.js");
   const routerBytes = await fileSize("web/tiny_router_model.generated.js");
   const cultureBytes = await fileSize("web/culture_cards.generated.js");
-  const knowledgeBytes = await fileSize("web/knowledge_base.generated.js");
+  const knowledgeRuntimeBytes = await fileSize("web/knowledge_runtime.js");
+  const knowledgeRoutingBytes = await fileSize("web/knowledge_shards/routing.json");
+  const knowledgeShardBytes = await dirSize("web/knowledge_shards", new Set([".json"]));
   const coreWebBytes = await dirSize("web");
   const controlledGateBytes = await fileSize("web/controlled_gate_model.generated.js");
 
   const profiles = [
     profile("lite", {
-      total_bytes: appBytes + routerBytes + knowledgeBytes,
+      total_bytes: appBytes + routerBytes + knowledgeRuntimeBytes + knowledgeRoutingBytes,
       max_bytes: 8 * MB,
       p95_answer_latency_ms_target: 1500,
       memory_budget_mb: 128,
@@ -118,7 +120,9 @@ async function main() {
       app_mb: mb(appBytes),
       tiny_router_model_mb: mb(routerBytes),
       culture_cards_mb: mb(cultureBytes),
-      knowledge_base_mb: mb(knowledgeBytes),
+      knowledge_runtime_mb: mb(knowledgeRuntimeBytes),
+      knowledge_routing_mb: mb(knowledgeRoutingBytes),
+      knowledge_shards_static_mb: mb(knowledgeShardBytes),
       controlled_gate_model_mb: mb(controlledGateBytes),
       web_total_mb: mb(coreWebBytes)
     },

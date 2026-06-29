@@ -1,5 +1,10 @@
 # Personal 200M Mini Web-LLM Profile Plan
 
+R25 legacy note: this document is retained for historical comparison only.
+`personal_200m` and 100M-200M SLMs are not the final product target. The active
+target is a same-origin static browser decoder LLM admitted by manifest, budget,
+license/provenance, and no-backend checks.
+
 The `personal_200m` profile is an optional local profile for devices with WebGPU. It is not the default public runtime.
 
 ## Definition

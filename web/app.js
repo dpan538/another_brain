@@ -17,6 +17,7 @@ import { recordQuietAffordanceSignal } from "./non_question_affordance.js?v=1";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=6";
 import { hideQuietAffordance, showQuietAffordance } from "./affordance_ui.js?v=1";
 import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=15";
+import { warmKnowledgeForQuery } from "./knowledge_runtime.js?v=1";
 import {
   buildCompactStateFromTurns,
   compactExtractionTurnsFromState,
@@ -414,6 +415,10 @@ async function submitPrompt(event) {
   hideAffordance();
 
   try {
+    await warmKnowledgeForQuery(text).catch((error) => {
+      console.warn("knowledge warmup failed", error);
+      return [];
+    });
     const reasoningState = currentReasoningState();
     const controlled = handleConversationTurn({
       query: text,
