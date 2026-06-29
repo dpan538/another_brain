@@ -93,3 +93,9 @@ loader scaffold, stronger asset sha/cache helpers, and a first-token smoke
 harness. With no admitted artifact, R25D passes only in fixture/blocked mode:
 the fixture backend emits a deterministic smoke token, production inference is
 reported unavailable, and real first-token smoke is skipped instead of faked.
+
+R25E attempts real local artifact admission from approved inbox paths only. If
+no reviewed decoder artifact is present, the correct result is a green blocked
+report requesting one. Real weights still require a per-candidate production
+approval marker, Pro profile budget fit, real hashes, backend compatibility,
+and green R24/R25 gates before commit.

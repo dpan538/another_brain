@@ -6,6 +6,7 @@ import {
   exists,
   gitLsFiles
 } from "./static_llm_artifact_utils.mjs";
+import { checkStaticLlmAdmissionApproval } from "./check_static_llm_admission_approval.mjs";
 import {
   ROOT,
   discoverStaticLlmManifestPaths,
@@ -24,7 +25,10 @@ async function main() {
   const failures = [];
   const trackedFiles = await gitLsFiles(["ls-files", "--cached"]);
   const trackedModelLikeFiles = trackedFiles.filter(isModelWeightPath);
-  const approvalMarkerPresent = await exists(resolve(ROOT, APPROVAL_MARKER_PATH));
+  const legacyApprovalMarkerPresent = await exists(resolve(ROOT, APPROVAL_MARKER_PATH));
+  const candidateApproval = await checkStaticLlmAdmissionApproval();
+  const commitApprovalCandidates = candidateApproval.candidates.filter((candidate) => candidate.may_commit_assets);
+  const approvalMarkerPresent = legacyApprovalMarkerPresent || commitApprovalCandidates.length > 0;
 
   const admittedAssetPaths = new Set();
   for (const manifestPath of await discoverStaticLlmManifestPaths(ROOT)) {
@@ -45,13 +49,21 @@ async function main() {
       continue;
     }
     if (!admittedAssetPaths.has(path)) failures.push({ code: "tracked_model_weight_not_backed_by_admitted_manifest", path });
-    if (!approvalMarkerPresent) failures.push({ code: "tracked_model_weight_missing_explicit_approval_marker", path, approval_marker: APPROVAL_MARKER_PATH });
+    if (!approvalMarkerPresent) {
+      failures.push({
+        code: "tracked_model_weight_missing_explicit_approval_marker",
+        path,
+        approval_marker: "static_llm/inbox/<candidate>/APPROVE_STATIC_LLM_PRODUCTION_ADMISSION.json with scope commit_assets"
+      });
+    }
   }
 
   const report = {
     ok: failures.length === 0,
     tracked_model_like_files: trackedModelLikeFiles,
     approval_marker_present: approvalMarkerPresent,
+    legacy_approval_marker_present: legacyApprovalMarkerPresent,
+    commit_approval_candidate_count: commitApprovalCandidates.length,
     admitted_asset_count: admittedAssetPaths.size,
     fixture_files_allowed: true,
     failures

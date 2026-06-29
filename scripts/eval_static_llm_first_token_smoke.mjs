@@ -102,12 +102,31 @@ function outputHasForbiddenTrace(value = "") {
   return /chain[-_ ]?of[-_ ]?thought|hidden_prompt|system_prompt|private_memory|raw_private_data/i.test(String(value || ""));
 }
 
-export async function runStaticLlmFirstTokenSmoke() {
+function parseArgs(argv) {
+  const args = { candidate: "", requireProduction: false };
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === "--candidate") args.candidate = argv[++index];
+    else if (arg === "--require-production") args.requireProduction = true;
+  }
+  return args;
+}
+
+function candidateMatches(item, candidate = "") {
+  if (!candidate) return true;
+  const value = String(candidate).toLowerCase();
+  return [item.manifest.model_id, item.rel]
+    .map((entry) => String(entry || "").toLowerCase())
+    .some((entry) => entry.includes(value));
+}
+
+export async function runStaticLlmFirstTokenSmoke(options = {}) {
   const failures = [];
   const scope = createFileBackedScope();
   const manifests = await findManifests();
+  const filteredManifests = options.candidate ? manifests.filter((item) => candidateMatches(item, options.candidate)) : manifests;
   const fixture = manifests.find((item) => item.fixture);
-  const admitted = manifests.find((item) => item.admitted);
+  const admitted = filteredManifests.find((item) => item.admitted);
 
   const fixtureReport = {
     ok: false,
@@ -179,7 +198,11 @@ export async function runStaticLlmFirstTokenSmoke() {
     backend: "unavailable",
     model_id: "",
     first_token_ms: 0,
-    first_token_observed: false
+    first_token_observed: false,
+    tokenizerStatus: "not_loaded",
+    loadedBytes: 0,
+    cacheStatus: "not_used",
+    generatedTokenPreview: ""
   };
 
   if (admitted) {
@@ -203,9 +226,16 @@ export async function runStaticLlmFirstTokenSmoke() {
     productionReport.backend = generated.backend || backend.metrics().backend;
     productionReport.first_token_ms = Number(generated.firstTokenMs || backend.metrics().firstTokenMs || 0);
     productionReport.first_token_observed = Boolean(generated.ok && generated.token);
+    productionReport.tokenizerStatus = tokenizerConfig.ok ? "loaded" : "failed";
+    productionReport.loadedBytes = Number(tokenizerConfig.assets?.reduce((sum, asset) => sum + Number(asset.bytes || 0), 0) || 0);
+    productionReport.cacheStatus = "file_backed_no_browser_cache";
+    productionReport.generatedTokenPreview = String(generated.token || generated.text || "").slice(0, 24);
     productionReport.shard_headers_ok = headers.ok;
     productionReport.tokenizer_config_ok = tokenizerConfig.ok;
     productionReport.init_ok = init.ok;
+    if (/stub/i.test(productionReport.backend)) {
+      failures.push({ code: "require_real_backend_not_stub", backend: productionReport.backend });
+    }
     if (!headers.ok || !tokenizerConfig.ok || !init.ok || !productionReport.first_token_observed) {
       failures.push({
         code: "admitted_production_first_token_failed",
@@ -215,6 +245,11 @@ export async function runStaticLlmFirstTokenSmoke() {
         generated
       });
     }
+  } else if (options.requireProduction) {
+    failures.push({
+      code: "require_production_first_token_but_no_admitted_manifest",
+      candidate: options.candidate || ""
+    });
   }
 
   for (const manifest of manifests) {
@@ -236,13 +271,15 @@ export async function runStaticLlmFirstTokenSmoke() {
     },
     manifest_count: manifests.length,
     admitted_manifest_count: manifests.filter((item) => item.admitted).length,
+    candidate_filter: options.candidate || "",
+    require_production: options.requireProduction === true,
     failures
   };
   return report;
 }
 
 async function main() {
-  const report = await runStaticLlmFirstTokenSmoke();
+  const report = await runStaticLlmFirstTokenSmoke(parseArgs(process.argv.slice(2)));
   console.log(JSON.stringify(report, null, 2));
   if (!report.ok) process.exit(2);
 }

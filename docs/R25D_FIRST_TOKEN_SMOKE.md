@@ -26,3 +26,7 @@ returns `ok: true` only when:
 
 Real first-token success belongs to R25E or later, after the user supplies and
 approves a reviewed local decoder artifact under the static Pro profile.
+
+R25E adds `--require-production` mode. That mode must fail unless a production
+manifest is admitted and a real backend, not the fixture or an R25D stub,
+observes the first token.

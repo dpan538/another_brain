@@ -7,7 +7,8 @@ dataset and public browser artifacts for a local-first dialog runtime. R25
 prepares a same-origin static browser LLM path, but R25A/R25B/R25C do not train
 a model, download weights, commit real weights by default, or call external LLM
 APIs. R25D adds fixture first-token smoke coverage only; it does not add a real
-production model.
+production model. R25E adds local artifact admission checks and remains blocked
+unless a reviewed local decoder artifact is supplied.
 
 ## Public Data
 
@@ -66,11 +67,15 @@ Private data is not distributed:
 - Static LLM weights admitted in R25B: false.
 - Static LLM weights admitted in R25C: false.
 - Static LLM weights admitted in R25D: false.
+- Static LLM weights admitted in R25E: false unless a local reviewed artifact
+  and explicit approval marker pass the gate.
 - R25B LLM corpus rows: 480 generated behavioral scaffold rows.
 - R25B corpus split policy: `train`/`dev`/`heldout`, separate from evals.
 - R25C local artifact status: no reviewed local artifact admitted.
 - R25D first-token status: fixture smoke only; real model smoke skipped without
   an admitted manifest.
+- R25E artifact status: local inbox discovery and admission attempt; blocked
+  when no reviewed decoder artifact exists.
 - Training enabled by default: false.
 
 ## Evaluation

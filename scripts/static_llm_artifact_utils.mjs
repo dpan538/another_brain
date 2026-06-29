@@ -23,6 +23,7 @@ const execFileAsync = promisify(execFile);
 
 export const ARTIFACT_METADATA_FILENAME = "artifact_metadata.json";
 export const APPROVAL_MARKER_PATH = "static_llm/WEIGHT_COMMIT_APPROVAL.json";
+export const PRODUCTION_APPROVAL_MARKER_FILENAME = "APPROVE_STATIC_LLM_PRODUCTION_ADMISSION.json";
 export const APPROVED_INBOX_PATHS = Object.freeze([
   "static_llm/inbox/",
   "static_llm/models_staging/"
@@ -96,6 +97,11 @@ export function safeModelSlug(value = "") {
     .replace(/[^a-z0-9._-]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 96) || "local-static-decoder-candidate";
+}
+
+export function candidateApprovalMarkerPath(candidateDir = "") {
+  const normalized = normalizeRepoPath(candidateDir);
+  return normalized ? `${normalized}/${PRODUCTION_APPROVAL_MARKER_FILENAME}` : PRODUCTION_APPROVAL_MARKER_FILENAME;
 }
 
 export async function walkFiles(dir) {

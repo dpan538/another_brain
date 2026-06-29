@@ -42,3 +42,8 @@ When no admitted manifest exists, R25D should pass in blocked mode:
 
 The remaining input for R25E is a reviewed local decoder artifact admitted by
 the R25C gate.
+
+R25E may inspect approved local inbox artifacts, but raw checkpoints are not
+automatically browser-runnable. Real first-token success requires a production
+manifest plus a real backend binding; the R25D WebGPU/WASM classes remain stubs
+until that binding exists.

@@ -34,6 +34,10 @@ Rules:
   no real weights by default and runs no training.
 - R25D adds worker/backend and first-token smoke scaffolding. The fixture
   backend is not a production model and cannot be admitted.
+- R25E admission attempts read local candidates only from `static_llm/inbox/`
+  or `static_llm/models_staging/`. Asset copying is dry-run by default and
+  requires a candidate-local approval marker before any real staging; git
+  staging remains a separate reviewed step.
 
 The expected primary future profile is `pro_static_llm_full`; the
 `hobby_static_llm_lite` profile is a constrained fallback or comparison target.

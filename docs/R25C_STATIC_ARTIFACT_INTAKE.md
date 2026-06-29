@@ -58,3 +58,8 @@ no admitted model, fixture-only loader checks, and draft generation disabled.
 R25D builds on that blocked state by adding a fixture first-token backend and
 worker shell. If no artifact has been admitted, production first-token smoke
 must be skipped with an explicit `no_admitted_static_llm_manifest` reason.
+
+R25E is the first step that attempts local artifact admission. Without a
+candidate under `static_llm/inbox/` or `static_llm/models_staging/`, it should
+stop in a green blocked state and request a reviewed browser-ready decoder
+artifact rather than inventing progress.

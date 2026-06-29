@@ -20,14 +20,10 @@ The primary R25 target is a same-origin static decoder LLM that runs in the brow
 - Models that exceed the selected static profile budget are rejected.
 - Models with unclear license or conversion provenance are rejected until reviewed.
 
-## R25B-R25D Admission Work
+## R25B/R25C Admission Work
 
 R25B adds training-content and admission scaffolding only. It does not download, convert, benchmark, or admit real weights.
 
-R25C adds the local artifact inbox, artifact metadata schema, dry-run manifest intake, sharding plan, candidate loader eval, browser storage plan, and no-unapproved-weight guard. It still does not admit a real model without a reviewed local artifact and explicit approval.
-
-R25D adds the browser backend abstraction, worker shell, tokenizer/config loader scaffold, and fixture first-token smoke harness. The fixture smoke is not model performance and does not admit any production model.
-
-The primary review class remains a small decoder-only browser candidate such as `Qwen/Qwen2.5-0.5B-Instruct`, but it is not admitted. R25C or later must perform local artifact conversion, license/provenance review, static manifest generation with real hashes, browser budget measurement, R25D first-token readiness, and the full R24/R25 gate suite before any runtime answer path can use a real model.
+The primary review class remains a small decoder-only browser candidate such as `Qwen/Qwen2.5-0.5B-Instruct`, but it is not admitted. R25C or later must perform local artifact conversion, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.
 
 No candidate row claims real browser performance.

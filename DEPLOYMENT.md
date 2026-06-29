@@ -26,10 +26,12 @@ Training and artifact generation happen locally before release.
 R25 targets a same-origin static decoder LLM that loads in the browser. R25A
 and R25B do not add weights. R25C adds local artifact intake and dry-run
 admission only. R25D adds browser backend/worker binding and fixture
-first-token smoke tests only. A future real model can be served only as static
-files under the approved static LLM asset path, with explicit user approval, a
-reviewed manifest, real sha256 hashes, license/provenance review, first-token
-gate, and a static budget pass.
+first-token smoke tests only. R25E attempts local artifact admission from
+approved inbox paths and remains blocked when no reviewed artifact is present.
+A future real model can be served only as static files under the approved
+static LLM asset path, with explicit candidate-scoped user approval, a reviewed
+manifest, real sha256 hashes, license/provenance review, backend-format review,
+first-token gate, and a static budget pass.
 
 The public knowledge shards are derived locally from the reviewed source layer
 under `knowledge_sources/`. `scripts/build_knowledge_base.py` generates
@@ -79,6 +81,7 @@ npm run check:r25-llm-first-static
 npm run check:r25b-static-decoder-training
 npm run check:r25c-static-artifact-intake
 npm run check:r25d-browser-inference-binding
+npm run check:r25e-artifact-admission
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -113,6 +116,10 @@ under `static_llm/inbox/` and `static_llm/models_staging/` are local-only and
 ignored by default. Real static decoder artifacts can be committed only after
 reviewed license/provenance, real hashes, browser-budget checks, explicit user
 approval, and the full R24/R25 gate suite.
+
+R25E production approval must be expressed inside the candidate directory with
+`APPROVE_STATIC_LLM_PRODUCTION_ADMISSION.json`. `scope: "commit_assets"` is
+required before model-like files can be staged for git.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
