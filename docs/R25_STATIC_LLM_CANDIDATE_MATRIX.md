@@ -6,7 +6,7 @@ The primary R25 target is a same-origin static decoder LLM that runs in the brow
 
 | Candidate | Params | Architecture | Est. q size | Chinese | Hobby fit | Pro fit | Admission |
 | --- | ---: | --- | ---: | --- | --- | --- | --- |
-| Qwen/Qwen2.5-0.5B-Instruct | 500,000,000 | decoder_only | 350 MB | strong repo-known candidate | reject_over_budget | candidate_after_review | candidate_for_r25b_review |
+| Qwen/Qwen2.5-0.5B-Instruct | 500,000,000 | decoder_only | 350 MB | strong repo-known candidate | reject_over_budget | candidate_after_review | primary_review_candidate_not_admitted |
 | HuggingFaceTB/SmolLM2-135M-Instruct | 135,000,000 | decoder_only | 95 MB | unknown or weak | borderline_candidate_for_comparison | fits_but_rejected_as_final_target | rejected_as_final_product_target |
 | bert-base-multilingual-cased | 179,000,000 | encoder_only | 120 MB | yes | reject_not_decoder_llm | reject_not_decoder_llm | rejected_primary_llm_encoder_only |
 | Xenova/paraphrase-multilingual-MiniLM-L12-v2 | 118,000,000 | encoder_only | 85 MB | partial | reject_not_decoder_llm | reject_not_decoder_llm | rejected_primary_llm_encoder_only |
@@ -20,6 +20,10 @@ The primary R25 target is a same-origin static decoder LLM that runs in the brow
 - Models that exceed the selected static profile budget are rejected.
 - Models with unclear license or conversion provenance are rejected until reviewed.
 
-## R25B Work
+## R25B/R25C Admission Work
 
-R25B should choose a real decoder artifact, convert it for browser inference, place assets under the approved static LLM asset path, write a real manifest with sha256 hashes, and pass the R25 admission gate before any runtime answer path uses it.
+R25B adds training-content and admission scaffolding only. It does not download, convert, benchmark, or admit real weights.
+
+The primary review class remains a small decoder-only browser candidate such as `Qwen/Qwen2.5-0.5B-Instruct`, but it is not admitted. R25C or later must perform local artifact conversion, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.
+
+No candidate row claims real browser performance.

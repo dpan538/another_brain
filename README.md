@@ -312,29 +312,25 @@ Private local artifacts, including `artifacts/**`, `web/brain_pack.js`, local me
 
 ## Training Direction
 
-The next training work should improve the tiny router Web SLM directly.
+R25 changes the product target to a same-origin static decoder LLM running in
+the browser. The tiny router, personal-200M, mini-web-LLM, and micro-solver
+surfaces are legacy fallback, comparison, or guardrail infrastructure only.
 
-The training policy is now frozen in `docs/release_governance.md`. The governing
-question for every cycle is whether the runtime is becoming more like the
-dialog box, not whether it is becoming a generic AI assistant.
+R25B adds a reviewed LLM training-content scaffold under
+`training/llm_corpus/`. It is separated from evals, validated for
+train/dev/heldout contamination, and intended for future fine-tuning or
+distillation planning. R25B does not run training, add real weights, call
+external model APIs, or add factual knowledge-card expansion.
 
-Identity/background growth should start from `identity_pack/`: raw interview
-answers stay local, cards get visibility labels, and only redacted public or
-allowed cards should enter the browser runtime. The model should inherit
-language habits and judgment style; it should not memorize private facts in
-weights.
+The future admission path is:
 
-Launch budget:
+1. Choose a decoder-only candidate for the largest feasible static Vercel
+   profile, likely `pro_static_llm_full`.
+2. Locally convert and review the artifact in R25C or later.
+3. Add real sha256 manifests and same-origin static assets only after license,
+   provenance, budget, browser-loader, and R24/R25 gates pass.
+4. Keep R24 verifier, finalizer, fallback firewall, shard runtime, and recovery
+   gates around any LLM draft.
 
-- Tiny router Web SLM should stay above a 1.5MB capability floor before first launch; the current practical ceiling is 2.5MB unless mobile profiling says otherwise.
-- Knowledge lookup should stay comfortably sub-millisecond, with p99 under 1ms on local gates.
-- Growth should come from better daily dialog, reasoning, and personal-calibration cases, not from a generative fallback.
-
-The priority order is:
-
-1. Keep the tiny router Web SLM fast and authoritative.
-2. Expand high-signal dialog and reasoning coverage beyond the 1.5MB router floor while keeping mobile load acceptable.
-3. Add more targeted correction pairs for drift points.
-4. Keep the browser gate as the release boundary.
-
-LoRA experiments are historical research artifacts and are not required for launch.
+LoRA experiments and SLM plans are historical research artifacts and are not
+required for the R25 browser LLM launch path.

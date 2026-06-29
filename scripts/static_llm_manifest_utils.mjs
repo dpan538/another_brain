@@ -11,6 +11,7 @@ import {
   manifestAssetPathToRepoCandidates,
   normalizeRepoPath,
   pathInApprovedStaticLlmAssetDir,
+  pathInApprovedStaticLlmFixtureDir,
   profileBudgetBytes,
   resolveInsideRoot
 } from "./static_llm_policy.mjs";
@@ -48,6 +49,7 @@ const FILE_ROLES = new Set(["weights", "tokenizer", "config", "wasm_runtime", "m
 const ARCHITECTURES = new Set(["decoder_only", "encoder_decoder"]);
 const RUNTIME_BACKENDS = new Set(["webgpu", "wasm", "webnn_candidate"]);
 const EXAMPLE_REVIEW_STATUSES = new Set(["example", "example_only"]);
+const FIXTURE_REVIEW_STATUSES = new Set(["fixture", "fixture_only"]);
 const ADMITTED_REVIEW_STATUSES = new Set(["admitted", "reviewed_admitted"]);
 
 async function exists(path) {
@@ -87,6 +89,10 @@ export async function discoverStaticLlmManifestPaths(root = ROOT) {
         candidates.add(abs);
         continue;
       }
+      if (/^static_llm\/manifests\/.+\.json$/.test(rel) || /^web\/static_llm\/manifests\/.+\.json$/.test(rel)) {
+        candidates.add(abs);
+        continue;
+      }
       if (/(^|\/)(manifest|llm_manifest|static_llm_manifest)[^/]*\.json$/.test(rel)) candidates.add(abs);
     }
   }
@@ -108,6 +114,10 @@ function nonEmptyString(value) {
 
 function isExampleManifest(manifest = {}) {
   return EXAMPLE_REVIEW_STATUSES.has(String(manifest.review_status || ""));
+}
+
+function isFixtureManifest(manifest = {}) {
+  return FIXTURE_REVIEW_STATUSES.has(String(manifest.review_status || ""));
 }
 
 function isAdmittedManifest(manifest = {}) {
@@ -145,6 +155,7 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
   const failures = [];
   const warnings = [];
   const example = isExampleManifest(manifest);
+  const fixture = isFixtureManifest(manifest);
   const admitted = isAdmittedManifest(manifest);
   const admitMode = Boolean(options.admit || admitted);
 
@@ -173,6 +184,7 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
 
   if (admitMode) {
     if (example) push(failures, "example_manifest_cannot_be_admitted");
+    if (fixture) push(failures, "fixture_manifest_cannot_be_admitted");
     for (const field of ["license", "license_url", "provenance", "converted_by", "conversion_tool"]) {
       if (!nonEmptyString(manifest[field])) push(failures, "admitted_manifest_missing_review_metadata", { field });
     }
@@ -197,7 +209,7 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
     if (file.path && /(^|\/)\.\.(\/|$)/.test(normalizeRepoPath(file.path))) {
       push(failures, "file_path_must_not_escape_static_llm", prefix);
     }
-    if (file.path && !pathInApprovedStaticLlmAssetDir(file.path)) {
+    if (file.path && !pathInApprovedStaticLlmAssetDir(file.path) && !(fixture && pathInApprovedStaticLlmFixtureDir(file.path))) {
       push(failures, "file_path_outside_approved_static_llm_assets", prefix);
     }
     if (file.path && seen.has(file.path)) push(failures, "duplicate_file_path", prefix);
@@ -270,6 +282,7 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
     profile: manifest.profile || "",
     review_status: manifest.review_status || "",
     example,
+    fixture,
     admitted,
     total_bytes: totalBytes,
     budget_bytes: budget,

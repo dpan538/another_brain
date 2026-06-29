@@ -1,0 +1,8 @@
+{
+  "fixture": true,
+  "model_type": "tiny_decoder_fixture",
+  "architecture": "decoder_only",
+  "hidden_size": 4,
+  "num_layers": 1,
+  "note": "R25B loader fixture only; not a real model."
+}

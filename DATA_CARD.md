@@ -59,6 +59,9 @@ Private data is not distributed:
 - Source files copied into public runtime: false.
 - Private paths allowed in public runtime: false.
 - Static LLM weights admitted in R25A: false.
+- Static LLM weights admitted in R25B: false.
+- R25B LLM corpus rows: 480 generated behavioral scaffold rows.
+- R25B corpus split policy: `train`/`dev`/`heldout`, separate from evals.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -88,6 +91,12 @@ infrastructure. The R25 target is a browser-side static decoder LLM that drafts
 from same-origin assets and is wrapped by verifier/finalizer/fallback gates.
 SLM/personal-200M artifacts are legacy comparison surfaces, not the final
 product target.
+
+R25B adds `training/llm_corpus/` as future LLM training-content scaffolding.
+It is project-authored behavioral data, not model output, not private data, not
+chain-of-thought data, and not factual knowledge-card expansion. It must pass
+corpus validation, eval-contamination checks, and coverage reporting before any
+future training use.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

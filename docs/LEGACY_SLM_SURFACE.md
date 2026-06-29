@@ -40,6 +40,9 @@ safe to remove. Instead:
 2. Add deprecation warnings where scripts frame 100M-200M SLMs as candidates.
 3. Use `npm run audit:slm-legacy-surface` to classify legacy surface area.
 4. Move or delete archive candidates only after R25 static LLM gates stabilize.
+5. Use `npm run check:no-slm-product-target` to prevent active product docs or
+   scripts from re-promoting SLM, personal-200M, mini-web-LLM, or tiny-router
+   paths as the main intelligence layer.
 
 ## Forbidden For R25
 
@@ -50,3 +53,10 @@ safe to remove. Instead:
 - Repo-local unreviewed model weights.
 - Chain-of-thought training data.
 - Answer-bank expansion as intelligence repair.
+
+## R25B Stage 2
+
+R25B keeps old surfaces callable where they still protect the product as tests,
+fallbacks, or comparison points. It adds no training and no weights. The main
+line is the static browser decoder LLM scaffold plus R24 verifier/fallback
+wrapping.

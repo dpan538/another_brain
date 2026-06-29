@@ -111,3 +111,15 @@ as a substitute for persistence, constraint tracking, and repair behavior.
 SLM/personal-200M planning is legacy comparison surface, not the R25 final
 product target. R25B should admit a real static decoder LLM artifact only after
 manifest, budget, no-backend, provenance, and R24 recovery gates pass.
+
+## R25B LLM Corpus Separation
+
+R25B adds `training/llm_corpus/` as a separate, reviewed behavioral corpus for
+future static browser decoder LLM planning. It is not a training run, does not
+add real weights, and must not copy long-horizon seed or held-out prompts into
+train/dev rows. `check:llm-training-contamination` keeps the new corpus
+separate from R24/R25 eval prompts and from the long-horizon task files.
+
+Real decoder artifact conversion and admission move to R25C or later after
+manifest, budget, license, provenance, no-backend, contamination, and recovery
+gates pass under the largest feasible static Vercel profile.

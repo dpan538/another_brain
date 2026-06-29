@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "corpus_id": "r25b_llm_training_corpus",
+  "generator": "scripts/generate_r25b_llm_corpus.mjs",
+  "purpose": "Future static browser decoder LLM fine-tuning or distillation planning only; no training in R25B.",
+  "contains_private_data": false,
+  "called_external_api": false,
+  "trained_model": false,
+  "added_model_weights": false,
+  "split_counts": {
+    "train": 320,
+    "dev": 80,
+    "heldout": 80
+  },
+  "task_families": [
+    "static_browser_llm_policy",
+    "no_backend_no_storage",
+    "same_origin_model_assets",
+    "decoder_llm_not_slm",
+    "retrieval_grounded_draft",
+    "verifier_rejects_bad_draft",
+    "fallback_firewall_boundary",
+    "privacy_boundary",
+    "unknown_boundary",
+    "copyright_boundary",
+    "project_continuation",
+    "constraint_preservation",
+    "answer_density_control",
+    "training_direction_correction",
+    "behavior_repair_not_fact_expansion",
+    "shard_runtime_as_evidence",
+    "local_first_deployment_reasoning",
+    "bilingual_zh_en_task_following",
+    "route_plan_before_answer",
+    "no_claimed_execution"
+  ],
+  "files": [
+    "train.jsonl",
+    "dev.jsonl",
+    "heldout.jsonl"
+  ]
+}

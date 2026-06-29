@@ -1,0 +1,13 @@
+{
+  "fixture": true,
+  "type": "wordpiece-placeholder",
+  "vocab": {
+    "<pad>": 0,
+    "<bos>": 1,
+    "<eos>": 2,
+    "browser": 3,
+    "llm": 4,
+    "static": 5
+  },
+  "note": "R25B tokenizer fixture only; not a production tokenizer."
+}

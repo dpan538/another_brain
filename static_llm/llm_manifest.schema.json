@@ -54,7 +54,7 @@
     "provenance": { "type": "string" },
     "review_status": {
       "type": "string",
-      "enum": ["example_only", "candidate", "license_reviewed", "admitted", "rejected"]
+      "enum": ["example_only", "fixture", "candidate", "license_reviewed", "admitted", "reviewed_admitted", "rejected"]
     },
     "contains_private_data": { "const": false },
     "total_bytes": { "type": "integer", "minimum": 1 },

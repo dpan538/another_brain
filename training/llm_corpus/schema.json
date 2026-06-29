@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.com/schemas/r25b-llm-training-corpus.schema.json",
+  "title": "R25B LLM Training Corpus Row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sample_id",
+    "split",
+    "language",
+    "task_family",
+    "task_type",
+    "user_goal",
+    "messages",
+    "retrieved_evidence",
+    "constraints",
+    "target_answer",
+    "rejected_answers",
+    "policy_tags",
+    "expected_behavior",
+    "forbidden_behavior",
+    "provenance",
+    "review_status",
+    "contains_private_data"
+  ],
+  "properties": {
+    "sample_id": { "type": "string", "minLength": 1 },
+    "split": { "type": "string", "enum": ["train", "dev", "heldout"] },
+    "language": { "type": "string", "enum": ["zh", "en", "mixed"] },
+    "task_family": { "type": "string", "minLength": 1 },
+    "task_type": {
+      "type": "string",
+      "enum": ["draft_answer", "verify_draft", "repair_draft", "route_plan", "retrieval_grounded_answer"]
+    },
+    "user_goal": { "type": "string", "minLength": 1 },
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "content"],
+        "properties": {
+          "role": { "type": "string", "enum": ["user", "assistant"] },
+          "content": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "retrieved_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "text", "contains_private_data"],
+        "properties": {
+          "source_id": { "type": "string", "minLength": 1 },
+          "text": { "type": "string", "minLength": 1 },
+          "contains_private_data": { "const": false }
+        }
+      }
+    },
+    "constraints": { "type": "array", "items": { "type": "string" } },
+    "target_answer": { "type": "string", "minLength": 1 },
+    "rejected_answers": { "type": "array", "items": { "type": "string" } },
+    "policy_tags": { "type": "array", "items": { "type": "string" } },
+    "expected_behavior": { "type": "array", "items": { "type": "string" } },
+    "forbidden_behavior": { "type": "array", "items": { "type": "string" } },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_type", "generator", "license_or_permission", "contains_private_data"],
+      "properties": {
+        "source_type": { "type": "string", "enum": ["repo_derived", "template_generated"] },
+        "generator": { "type": "string", "const": "scripts/generate_r25b_llm_corpus.mjs" },
+        "license_or_permission": { "type": "string", "const": "project-authored" },
+        "contains_private_data": { "const": false },
+        "notes": { "type": "string" }
+      }
+    },
+    "review_status": { "type": "string", "enum": ["reviewed_template"] },
+    "contains_private_data": { "const": false }
+  }
+}

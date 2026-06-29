@@ -116,3 +116,11 @@ Future bounded LLM training may resume only after reviewer approval and all of t
 - R24F moved the monolithic build source out of `web/` and kept `check:r24-recovery-candidate` green.
 - R24G derives the generated build source from `knowledge_sources/` while keeping shard-first runtime and recovery gates green.
 - Add qualitative review notes for any future held-out prompts before using them for training or model selection.
+
+## R25B Boundary
+
+R25B keeps this recovery candidate as a safety harness around a future
+same-origin browser decoder LLM. The R24E seed and held-out prompts remain eval
+material, not training targets. New LLM training-corpus rows must stay separate,
+avoid exact eval prompt reuse, and pass contamination checks before they can be
+considered for any later reviewed training run.

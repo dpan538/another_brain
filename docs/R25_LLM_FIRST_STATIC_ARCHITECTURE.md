@@ -80,6 +80,8 @@ Future training and inference changes must be measured by R24 and R25 gates:
 - R25 static LLM manifest, budget, no-backend, candidate-matrix, and admission
   flow checks.
 
-Training remains disabled by default. Real model admission belongs to R25B or
-later, after a reviewed static decoder artifact is selected and the R25A gates
-pass.
+Training remains disabled by default. R25B adds training-content and decoder
+admission scaffolding only: a separated LLM corpus, split/contamination checks,
+fixture-only asset loader tests, and no-SLM product-target enforcement. Real
+model conversion and admission belong to R25C or later, after a reviewed static
+decoder artifact is selected and the R25A/R25B gates pass.

@@ -104,3 +104,11 @@ R25 additionally requires same-origin static LLM assets, no backend inference,
 no external model API, no external storage product for model loading, and a
 manifest/budget/license/provenance admission pass before any real decoder model
 is used.
+
+## R25B Boundary
+
+R25B does not expand factual knowledge cards. Its LLM corpus scaffold teaches
+future draft behavior: how to use retrieved shard evidence, preserve user
+constraints, and stay inside no-backend/no-storage deployment limits. Knowledge
+source rows remain public evidence inputs, while training rows remain behavioral
+examples with separate split and contamination validation.

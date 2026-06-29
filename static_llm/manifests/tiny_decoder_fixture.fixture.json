@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "model_id": "tiny-decoder-fixture-do-not-admit",
+  "model_family": "r25b_static_decoder_fixture",
+  "architecture": "decoder_only",
+  "parameter_count": 1,
+  "quantization": "fixture-only",
+  "context_length": 16,
+  "tokenizer": "tiny-decoder-fixture-tokenizer",
+  "runtime_backend": "wasm",
+  "license": "PROJECT_AUTHORED_FIXTURE",
+  "license_url": "",
+  "source_url": "project-authored-fixture",
+  "converted_by": "not-converted-fixture",
+  "conversion_tool": "scripts/create_static_llm_manifest.mjs --fixture",
+  "provenance": "R25B local fixture for static asset loader tests only. Not a real model and not admitted.",
+  "review_status": "fixture",
+  "contains_private_data": false,
+  "total_bytes": 614,
+  "profile": "hobby_static_llm_lite",
+  "files": [
+    {
+      "path": "static_llm/fixtures/tiny_decoder_fixture/config.json",
+      "bytes": 192,
+      "sha256": "66b77eeb17d6cb8d4bac414a252a3c3f060caaf1c907d75284ad2c7117d29775",
+      "role": "config",
+      "required": true
+    },
+    {
+      "path": "static_llm/fixtures/tiny_decoder_fixture/tokenizer.json",
+      "bytes": 241,
+      "sha256": "4553e900e07a7969a2aeee603b92e0938d03efccdc162b18bd6c291d9b030cec",
+      "role": "tokenizer",
+      "required": true
+    },
+    {
+      "path": "static_llm/fixtures/tiny_decoder_fixture/model-000.fixture",
+      "bytes": 181,
+      "sha256": "92c54d93d2ce1d9577c81134fe69ef0f90201b65f4ace23befaf7a4e0ba7c47e",
+      "role": "weights",
+      "required": true
+    }
+  ],
+  "shard_policy": {
+    "max_file_bytes": 64000000,
+    "target_file_bytes": 32000000,
+    "shard_count": 3
+  },
+  "same_origin_only": true,
+  "external_urls_allowed": false,
+  "backend_required": false
+}

@@ -73,11 +73,12 @@ npm run check:knowledge-runtime
 npm run eval:shard-runtime
 npm run check:vercel-build
 npm run check:r25-llm-first-static
+npm run check:r25b-static-decoder-training
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
-context stress behavior, static LLM admission scaffolding, and the Node model
-gate.
+context stress behavior, static LLM admission scaffolding, R25B training-corpus
+separation, and the Node model gate.
 
 ## Public Artifact Rule
 
@@ -100,6 +101,12 @@ Model weights are banned everywhere by default. They become deployable only
 under the approved static LLM asset path and only when
 `npm run check:static-llm-manifest`, `npm run check:static-llm-budget`, and
 `npm run check:no-backend-llm` all pass.
+
+R25B fixture files under `static_llm/fixtures/` are loader smoke-test assets
+only. They are not production weights and must not be admitted. Real static
+decoder artifacts belong to R25C or later after local conversion, reviewed
+license/provenance, real hashes, browser-budget checks, and the full R24/R25
+gate suite.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is

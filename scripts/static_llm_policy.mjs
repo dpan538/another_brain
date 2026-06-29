@@ -19,6 +19,9 @@ export const STATIC_LLM_POLICY = Object.freeze({
     "static_llm/assets/",
     "web/static_llm/assets/"
   ]),
+  approvedFixturePrefixes: Object.freeze([
+    "static_llm/fixtures/"
+  ]),
   approvedManifestPrefixes: Object.freeze([
     "static_llm/",
     "static_llm/manifests/",
@@ -74,6 +77,11 @@ export function isModelWeightPath(path = "") {
 export function pathInApprovedStaticLlmAssetDir(path = "") {
   const normalizedPath = normalizeRepoPath(path);
   return STATIC_LLM_POLICY.approvedAssetPrefixes.some((prefix) => normalizedPath.startsWith(prefix));
+}
+
+export function pathInApprovedStaticLlmFixtureDir(path = "") {
+  const normalizedPath = normalizeRepoPath(path);
+  return STATIC_LLM_POLICY.approvedFixturePrefixes.some((prefix) => normalizedPath.startsWith(prefix));
 }
 
 export function repoRelativePath(root, path) {

@@ -1,0 +1,3 @@
+R25B tiny decoder fixture.
+This is not a model, not a weight shard, and not admissible for production.
+It exists only so static asset loader checks can verify size and sha256 flow.

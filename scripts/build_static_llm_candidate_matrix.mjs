@@ -24,9 +24,10 @@ const candidates = [
     risks: [
       "needs reviewed conversion and real sha256 manifest",
       "browser latency and memory must be measured",
-      "no server inference fallback allowed"
+      "no server inference fallback allowed",
+      "local artifact conversion and admission are R25C or later"
     ],
-    admission_status: "candidate_for_r25b_review"
+    admission_status: "primary_review_candidate_not_admitted"
   },
   {
     model_id: "HuggingFaceTB/SmolLM2-135M-Instruct",
@@ -124,9 +125,13 @@ function renderMarkdown(report) {
     "- Models that exceed the selected static profile budget are rejected.",
     "- Models with unclear license or conversion provenance are rejected until reviewed.",
     "",
-    "## R25B Work",
+    "## R25B/R25C Admission Work",
     "",
-    "R25B should choose a real decoder artifact, convert it for browser inference, place assets under the approved static LLM asset path, write a real manifest with sha256 hashes, and pass the R25 admission gate before any runtime answer path uses it."
+    "R25B adds training-content and admission scaffolding only. It does not download, convert, benchmark, or admit real weights.",
+    "",
+    "The primary review class remains a small decoder-only browser candidate such as `Qwen/Qwen2.5-0.5B-Instruct`, but it is not admitted. R25C or later must perform local artifact conversion, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
+    "",
+    "No candidate row claims real browser performance."
   );
   return `${lines.join("\n")}\n`;
 }
@@ -140,7 +145,8 @@ async function main() {
     candidates,
     summary: {
       total: candidates.length,
-      r25b_candidates: candidates.filter((item) => item.admission_status === "candidate_for_r25b_review").length,
+      primary_review_candidates: candidates.filter((item) => item.admission_status === "primary_review_candidate_not_admitted").length,
+      admitted_candidates: candidates.filter((item) => /admitted/.test(item.admission_status) && !/not_admitted/.test(item.admission_status)).length,
       rejected_primary_llm_encoder_only: candidates.filter((item) => /encoder_only/.test(item.admission_status)).length,
       rejected_as_final_product_target: candidates.filter((item) => item.admission_status === "rejected_as_final_product_target").length
     }
