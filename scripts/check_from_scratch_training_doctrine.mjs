@@ -8,7 +8,7 @@ import { gitLsFiles } from "./static_llm_artifact_utils.mjs";
 import { normalizeRepoPath } from "./static_llm_policy.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const ACTIVE_RE = /^(README\.md|DEPLOYMENT\.md|DATA_CARD\.md|docs\/R25.*\.md|static_llm\/(candidate_decisions|release_decisions|request_pack|ASSET_LAYOUT\.md).+|training\/from_scratch\/.+|scripts\/(build_static_llm_candidate_matrix|report_from_scratch_training_progress|check_no_active_named_model_candidate|check_no_slm_product_target)\.mjs|package\.json)$/;
+const ACTIVE_RE = /^(README\.md|DEPLOYMENT\.md|DATA_CARD\.md|docs\/R25.*\.md|static_llm\/(candidate_decisions|release_decisions|request_pack|ASSET_LAYOUT\.md).+|training\/from_scratch\/.+|scripts\/(build_static_llm_candidate_matrix|report_from_scratch_training_progress|check_no_active_named_model_candidate|check_no_slm_product_target|build_tiny_decoder_toy_dataset|run_tiny_decoder_toy_overfit|eval_tiny_decoder_toy_overfit|check_tiny_decoder_toy_artifacts_untracked|check_r25k_toy_overfit_sanity)\.mjs|package\.json)$/;
 const SKIP_RE = /(^|\/)(artifacts|node_modules|\.git)\//;
 
 const q = String.fromCharCode(113);
@@ -52,12 +52,16 @@ const forbiddenClaims = [
   {
     code: "chain_of_thought_allowed_claim",
     pattern: /chain[-_ ]?of[-_ ]?thought.{0,80}(?:allowed|training data|stored for training)/i
+  },
+  {
+    code: "toy_output_release_artifact_claim",
+    pattern: /toy.{0,80}(?:release artifact|release candidate|product checkpoint|production checkpoint)/i
   }
 ];
 
-const allowContext = /not|no |never|without|forbidden|rejected|reject|comparison|compatibility|baseline|fixture|legacy|historical|do not|must not|cannot|is not|are not|only as|warning|non-goal|avoid|risk|rollback|trigger|failure|any claim|treating/i;
+const allowContext = /not|no |never|without|forbidden|rejected|reject|comparison|compatibility|baseline|fixture|legacy|historical|do not|must not|cannot|is not|are not|only as|warning|non-goal|avoid|risk|rollback|trigger|failure|any claim|treating|toy-only|toy sanity|pipeline mechanics|ignored artifact|ignored artifacts|no tracked weights|formal_training":false|product_model":false/i;
 const triggerContext = new RegExp(
-  `pretrained|pre-trained|external model|foundation model|LoRA|adapter|fine[- ]?tune|fine[- ]?tuning|candidate admission|training has started|training started|formal training progress|real weights admitted|production model admitted|fixture|external backend|external storage|remote model API|${vercelFunctionTerm}|${edgeFunctionTerm}|chain[-_ ]?of[-_ ]?thought`,
+  `pretrained|pre-trained|external model|foundation model|LoRA|adapter|fine[- ]?tune|fine[- ]?tuning|candidate admission|training has started|training started|formal training progress|real weights admitted|production model admitted|fixture|external backend|external storage|remote model API|${vercelFunctionTerm}|${edgeFunctionTerm}|chain[-_ ]?of[-_ ]?thought|toy.{0,80}(?:release artifact|release candidate|product checkpoint|production checkpoint)`,
   "i"
 );
 
@@ -117,10 +121,16 @@ async function main() {
     "training/from_scratch/tokenizer_dry_run_config.json",
     "training/from_scratch/toy_decoder_config.json",
     "training/from_scratch/toy_decoder_readme.md",
+    "training/from_scratch/APPROVE_R25K_TOY_OVERFIT.json",
     "static_llm/release_decisions/schema.json",
     "static_llm/release_decisions/template.self_trained.json",
     "docs/R25J_TOKENIZER_DRY_RUN.md",
-    "docs/R25J_TINY_DECODER_TOY_PIPELINE.md"
+    "docs/R25J_TINY_DECODER_TOY_PIPELINE.md",
+    "docs/R25K_TOY_OVERFIT_SANITY.md",
+    "scripts/build_tiny_decoder_toy_dataset.mjs",
+    "scripts/eval_tiny_decoder_toy_overfit.mjs",
+    "scripts/check_tiny_decoder_toy_artifacts_untracked.mjs",
+    "scripts/check_r25k_toy_overfit_sanity.mjs"
   ];
   for (const path of requiredFiles) {
     if (!files.includes(path)) {

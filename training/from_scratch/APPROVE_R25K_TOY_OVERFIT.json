@@ -1,0 +1,13 @@
+{
+  "approved": true,
+  "scope": "toy_overfit_sanity_only",
+  "reviewer": "user",
+  "phase": "phase_2_tiny_overfit_sanity",
+  "allow_formal_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_weight_commit": false,
+  "allow_artifacts_write": true,
+  "artifact_output_root": "artifacts/training_os/tiny_decoder_toy/",
+  "notes": "R25K may run a tiny toy overfit sanity loop only. Outputs must remain ignored artifacts."
+}
