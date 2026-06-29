@@ -51,6 +51,12 @@ and evaluates dev/heldout text for leakage and segmentation sanity. The tiny
 decoder overfit command is disabled by default and reports a safe skip; no
 formal decoder training starts and no weights are written or committed.
 
+R25K runs a reviewer-approved toy-only overfit sanity check. R25L expands the
+reviewed corpus into `r25l_train/dev/heldout` files, runs an expanded tokenizer
+dry-run, and plans a small decoder pilot. The pilot runner skips by default, no
+small decoder training starts, no product model exists, and formal training
+progress remains `0%`.
+
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
 The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
@@ -144,6 +150,8 @@ npm run check:r25g-candidate-decision
 npm run check:r25h-capacity-envelope
 npm run check:r25i-from-scratch-roadmap
 npm run check:r25j-tokenizer-toy-pipeline
+npm run check:r25k-toy-overfit-sanity
+npm run check:r25l-corpus-pilot-plan
 ```
 
 Build and validate the mixed context stress suite:

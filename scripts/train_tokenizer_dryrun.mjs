@@ -5,7 +5,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const CONFIG_PATH = "training/from_scratch/tokenizer_dry_run_config.json";
+const DEFAULT_CONFIG_PATH = "training/from_scratch/tokenizer_dry_run_config.json";
 
 export function normalizeTokenizerText(text = "", config = {}) {
   let value = String(text || "");
@@ -140,8 +140,14 @@ async function writeJson(path, value) {
   await writeFile(abs, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
 
+function configPathFromArgs() {
+  const index = process.argv.indexOf("--config");
+  return index >= 0 ? process.argv[index + 1] || DEFAULT_CONFIG_PATH : DEFAULT_CONFIG_PATH;
+}
+
 async function main() {
-  const config = await readJson(CONFIG_PATH);
+  const configPath = configPathFromArgs();
+  const config = await readJson(configPath);
   const artifactDir = config.artifact_dir || "artifacts/training_os/tokenizer_dryrun";
   const trainPath = `${artifactDir}/r25j_tokenizer_train.txt`;
   const trainText = await readFile(resolve(ROOT, trainPath), "utf8");
@@ -150,6 +156,7 @@ async function main() {
   const tokenizer_sha256 = createHash("sha256").update(stablePayload).digest("hex");
   const report = {
     ok: true,
+    config_path: configPath,
     tokenizer_id: tokenizer.tokenizer_id,
     tokenizer_type: tokenizer.tokenizer_type,
     production_tokenizer: false,

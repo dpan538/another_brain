@@ -18,6 +18,9 @@ and a request pack. It still does not select or admit a model.
 R25J adds tokenizer dry-run and toy decoder pipeline scaffolding. It may build
 and evaluate a local dry-run tokenizer from approved training-corpus text, but
 it does not run formal decoder training and does not commit generated artifacts.
+R25K may run a toy-only overfit sanity check after explicit approval. R25L
+expands deterministic project-authored corpus rows and plans a small decoder
+pilot, but the pilot runner skips by default and no pilot weights are written.
 
 ## Public Data
 
@@ -97,6 +100,12 @@ Private data is not distributed:
   `artifacts/training_os/tokenizer_dryrun/` paths.
 - R25J toy decoder status: overfit command is disabled by default and skips;
   no toy weights are committed.
+- R25K toy overfit status: toy-only pipeline sanity may pass after explicit
+  approval; toy artifacts remain ignored and are not release weights.
+- R25L expanded corpus status: `r25l_train/dev/heldout` are deterministic
+  project-authored behavioral rows, not eval data or factual knowledge cards.
+- R25L small decoder pilot status: plan only; `run:small-decoder-pilot` skips
+  by default and formal decoder training remains `0%`.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -142,6 +151,12 @@ R25J adds tokenizer dry-run scripts that extract text only from approved
 text. It also adds a tiny decoder toy scaffold for future phase-2 mechanics;
 the run command is disabled by default, writes no weights, and does not change
 formal training progress from `0%`.
+
+R25L tokenizer dry-run scripts may use only `training/llm_corpus/r25l_train.jsonl`
+for expanded dry-run tokenizer training and only `r25l_dev.jsonl` /
+`r25l_heldout.jsonl` for dry-run evaluation. R25L does not read root PDFs/DOCX,
+`data/public_ingestion/`, private raw data, eval prompts, or external LLM
+output.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

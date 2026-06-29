@@ -1,0 +1,32 @@
+{
+  "architecture_id": "r25l_small_decoder_pilot_v0",
+  "model_type": "decoder_only_transformer_pilot",
+  "product_model": false,
+  "formal_training_phase": "phase_3_small_decoder_pilot",
+  "training_allowed_by_default": false,
+  "requires_approval_marker": true,
+  "approval_marker_path": "training/from_scratch/APPROVE_R25M_SMALL_DECODER_PILOT.json",
+  "output_dir": "artifacts/training_os/small_decoder_pilot/",
+  "commit_weights_allowed": false,
+  "vocab_source": "tokenizer_dryrun_r25l",
+  "max_context_tokens_options": [128, 256],
+  "selected_max_context_tokens": 128,
+  "layer_options": [4, 6],
+  "hidden_size_options": [128, 192, 256],
+  "attention_heads_options": [4, 6, 8],
+  "selected_dryrun_config": {
+    "layers": 4,
+    "hidden_size": 128,
+    "attention_heads": 4,
+    "intermediate_size": 256
+  },
+  "parameter_estimate_target": "small",
+  "capacity_profile_target": "pro_static_llm_full",
+  "browser_release_target": false,
+  "notes": [
+    "pilot is for training mechanics and held-out regression only",
+    "not product",
+    "no weights committed",
+    "no browser release unless later quantized/admitted"
+  ]
+}

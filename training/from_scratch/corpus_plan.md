@@ -25,3 +25,13 @@ Rules:
 
 The corpus must teach behavior, boundaries, evidence use, and dialog control,
 not memorize answer banks.
+
+R25L expands this surface into separate `r25l_train.jsonl`, `r25l_dev.jsonl`,
+and `r25l_heldout.jsonl` files. The generator uses deterministic
+project-authored templates and generic repo-derived behavioral evidence only.
+It does not read root PDFs/DOCX, `data/public_ingestion/`, eval prompts,
+private raw data, or external model output.
+
+R25L rows are preparation material for later review. They are not eval data,
+not factual knowledge-card expansion, and not proof that formal decoder
+training has started.

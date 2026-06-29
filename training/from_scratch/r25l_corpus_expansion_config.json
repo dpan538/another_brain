@@ -1,0 +1,57 @@
+{
+  "corpus_id": "r25l_expanded_llm_corpus_v0",
+  "target_total_rows": 2400,
+  "train_rows": 1600,
+  "dev_rows": 400,
+  "heldout_rows": 400,
+  "generation_seed": "deterministic",
+  "min_families": 30,
+  "min_languages": [
+    "zh",
+    "en",
+    "mixed"
+  ],
+  "min_task_types": [
+    "draft_answer",
+    "verify_draft",
+    "repair_draft",
+    "route_plan",
+    "retrieval_grounded_answer",
+    "constraint_preservation",
+    "no_backend_policy",
+    "tokenizer_sensitive_prompt",
+    "toy_training_boundary",
+    "release_packaging_boundary"
+  ],
+  "required_policy_tags": [
+    "no_chain_of_thought",
+    "no_private_data",
+    "no_backend",
+    "no_external_model",
+    "self_trained_from_scratch",
+    "not_lora",
+    "not_finetune",
+    "not_product_toy",
+    "r24_verifier_wrapper",
+    "static_browser_release"
+  ],
+  "outputs": {
+    "train": "training/llm_corpus/r25l_train.jsonl",
+    "dev": "training/llm_corpus/r25l_dev.jsonl",
+    "heldout": "training/llm_corpus/r25l_heldout.jsonl"
+  },
+  "source_policy": {
+    "source_types": [
+      "project-authored deterministic templates",
+      "repo-derived behavioral examples"
+    ],
+    "external_llm_output": false,
+    "eval_prompt_copying": false,
+    "chain_of_thought": false,
+    "private_raw_data": false,
+    "root_pdf_docx": false,
+    "data_public_ingestion": false,
+    "factual_knowledge_card_expansion": false,
+    "answer_bank_expansion_as_intelligence_substitute": false
+  }
+}

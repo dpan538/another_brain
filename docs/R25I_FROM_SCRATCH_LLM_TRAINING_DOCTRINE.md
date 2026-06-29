@@ -8,8 +8,9 @@ Training is not started in R25I. This patch adds doctrine, schemas, phase
 planning, and anti-regression checks only.
 
 R25J may run tokenizer dry-run infrastructure, but that is not formal decoder
-training. Tiny decoder overfit remains disabled by default until a later phase
-explicitly approves a toy-only sanity run.
+training. R25K may run a reviewer-approved toy-only overfit sanity check, and
+R25L may expand corpus rows and plan a small decoder pilot. None of these are
+formal decoder training or product model training.
 
 ## Product Target
 
@@ -43,6 +44,8 @@ baseline/compatibility.
   artifacts and not production tokenizer releases.
 - Tiny toy decoder commands must skip by default and must not write tracked
   weights.
+- Small decoder pilot commands must skip by default until a later explicit
+  phase 3 approval marker exists.
 - No real model weights are added in R25I.
 - No remote model weights are downloaded.
 - No external LLM API or unreviewed external model output is used.
@@ -68,3 +71,8 @@ the project's own trained artifacts:
 Compatibility or baseline imports can still exercise these gates, but they must
 be labeled `baseline_external_for_comparison_only` and must not become the
 product target.
+
+R25L planning may move the current phase label to
+`phase_3_small_decoder_pilot_planned` after corpus, tokenizer dry-run, and
+pilot-plan checks pass. That label means planning is ready for review; formal
+training progress remains `0%`.

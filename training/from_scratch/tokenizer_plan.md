@@ -35,6 +35,14 @@ R25J dry-run output paths:
 - ignored tokenizer dry-run text and reports under
   `artifacts/training_os/tokenizer_dryrun/`
 
+R25L dry-run output paths:
+
+- ignored expanded-corpus tokenizer dry-run text and reports under
+  `artifacts/training_os/tokenizer_dryrun/r25l/`
+
+The R25L dry-run evaluates expanded dev/heldout splits only. It does not
+replace the R25J default tokenizer source and it is not a production tokenizer.
+
 Future release output paths:
 
 - ignored tokenizer training reports under `artifacts/training_os/tokenizers/`

@@ -21,6 +21,15 @@ async function readJsonIfPresent(path) {
   }
 }
 
+async function readJsonlCount(path) {
+  try {
+    const text = await readFile(resolve(ROOT, path), "utf8");
+    return text.split(/\r?\n/).filter((line) => line.trim()).length;
+  } catch {
+    return 0;
+  }
+}
+
 async function main() {
   const required = [
     "docs/R25I_FROM_SCRATCH_LLM_TRAINING_DOCTRINE.md",
@@ -44,7 +53,17 @@ async function main() {
   const toyDatasetReport = await readJsonIfPresent("artifacts/training_os/tiny_decoder_toy/r25k_toy_dataset_report.json");
   const toyRunReport = await readJsonIfPresent("artifacts/training_os/tiny_decoder_toy/r25k_toy_run_report.json");
   const toyEvalReport = await readJsonIfPresent("artifacts/training_os/tiny_decoder_toy/r25k_toy_eval_report.json");
+  const r25lTrainRows = await readJsonlCount("training/llm_corpus/r25l_train.jsonl");
+  const r25lDevRows = await readJsonlCount("training/llm_corpus/r25l_dev.jsonl");
+  const r25lHeldoutRows = await readJsonlCount("training/llm_corpus/r25l_heldout.jsonl");
+  const r25lTokenizerCorpusReport = await readJsonIfPresent("artifacts/training_os/tokenizer_dryrun/r25l/r25j_tokenizer_corpus_report.json");
+  const r25lTokenizerReport = await readJsonIfPresent("artifacts/training_os/tokenizer_dryrun/r25l/r25j_tokenizer_report.json");
+  const r25lTokenizerEvalReport = await readJsonIfPresent("artifacts/training_os/tokenizer_dryrun/r25l/r25j_tokenizer_eval_report.json");
+  const smallPilotPlanReport = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25l_small_decoder_pilot_plan.json");
+  const smallPilotSkipReport = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25l_small_decoder_pilot_skip_report.json");
   const tokenizerDryrunOk = Boolean(tokenizerCorpusReport?.ok && tokenizerReport?.ok && tokenizerEvalReport?.ok);
+  const r25lCorpusOk = r25lTrainRows >= 1600 && r25lDevRows >= 400 && r25lHeldoutRows >= 400;
+  const r25lTokenizerDryrunOk = Boolean(r25lTokenizerCorpusReport?.ok && r25lTokenizerReport?.ok && r25lTokenizerEvalReport?.ok);
   const toyPipelineOk = Boolean(toyPlanReport?.ok && toySkipReport?.ok && toySkipReport?.skipped === true);
   const toyOverfitOk = Boolean(
     toyDatasetReport?.ok &&
@@ -55,6 +74,17 @@ async function main() {
     toyRunReport?.loss_decreased === true &&
     toyEvalReport?.ok
   );
+  const smallPilotPlanOk = Boolean(
+    smallPilotPlanReport?.ok &&
+    smallPilotPlanReport?.training_will_run === false &&
+    smallPilotPlanReport?.product_model === false
+  );
+  const smallPilotTrainingSkipped = Boolean(
+    smallPilotSkipReport?.ok &&
+    smallPilotSkipReport?.skipped === true &&
+    smallPilotSkipReport?.training_ran === false
+  );
+  const r25lReadyForReview = Boolean(r25lCorpusOk && r25lTokenizerDryrunOk && smallPilotPlanOk && smallPilotTrainingSkipped);
 
   const report = {
     ok: missing.length === 0,
@@ -62,9 +92,9 @@ async function main() {
     formal_decoder_training_started: false,
     product_model_exists: false,
     formal_training_progress_percent: 0,
-    training_readiness_percent_estimate: toyOverfitOk ? 50 : tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
-    browser_product_completion_estimate: toyOverfitOk ? 27 : tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
-    current_phase: toyOverfitOk ? "phase_2_tiny_overfit_sanity" : tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
+    training_readiness_percent_estimate: r25lReadyForReview ? 55 : toyOverfitOk ? 50 : tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
+    browser_product_completion_estimate: r25lReadyForReview ? 28 : toyOverfitOk ? 27 : tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
+    current_phase: r25lReadyForReview ? "phase_3_small_decoder_pilot_planned" : toyOverfitOk ? "phase_2_tiny_overfit_sanity" : tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
     tokenizer_dryrun_status: tokenizerDryrunOk ? "passed_local_dryrun" : "not_complete",
     tokenizer_corpus_status: tokenizerCorpusReport?.ok ? {
       train_chars: tokenizerCorpusReport.train_chars,
@@ -83,16 +113,42 @@ async function main() {
       final_loss: toyRunReport.final_loss,
       train_accuracy_proxy: toyRunReport.train_accuracy_proxy
     } : null,
+    r25l_expanded_corpus_status: r25lCorpusOk ? "generated_split_separated" : "not_complete",
+    r25l_corpus_rows: {
+      train: r25lTrainRows,
+      dev: r25lDevRows,
+      heldout: r25lHeldoutRows,
+      total: r25lTrainRows + r25lDevRows + r25lHeldoutRows
+    },
+    r25l_corpus_coverage_status: r25lCorpusOk ? "coverage_targets_met" : "not_complete",
+    r25l_tokenizer_dryrun_status: r25lTokenizerDryrunOk ? "passed_expanded_corpus_dryrun" : "not_complete",
+    r25l_tokenizer_eval_summary: r25lTokenizerEvalReport?.ok ? {
+      tokenizer_id: r25lTokenizerEvalReport.tokenizer_id,
+      vocab_size: r25lTokenizerEvalReport.vocab_size,
+      unknown_rate: r25lTokenizerEvalReport.unknown_rate,
+      avg_chars_per_token: r25lTokenizerEvalReport.avg_chars_per_token,
+      warnings: r25lTokenizerEvalReport.warnings || []
+    } : null,
+    small_decoder_pilot_plan_status: smallPilotPlanOk ? "planned_no_training" : "not_complete",
+    small_decoder_pilot_training_status: smallPilotTrainingSkipped ? "skipped_default_approval_required" : "not_run",
+    small_decoder_pilot_parameter_estimate: smallPilotPlanReport?.parameter_estimate || null,
+    small_decoder_pilot_capacity_profile_fit: smallPilotPlanReport?.capacity_profile_fit || null,
     completed_infrastructure: [
       ...present,
       ...(tokenizerDryrunOk ? ["artifacts/training_os/tokenizer_dryrun/r25j_tokenizer_report.json"] : []),
       ...(toyPipelineOk ? ["artifacts/training_os/tiny_decoder_toy/r25j_toy_overfit_skip_report.json"] : []),
-      ...(toyOverfitOk ? ["artifacts/training_os/tiny_decoder_toy/r25k_toy_run_report.json"] : [])
+      ...(toyOverfitOk ? ["artifacts/training_os/tiny_decoder_toy/r25k_toy_run_report.json"] : []),
+      ...(r25lCorpusOk ? ["training/llm_corpus/r25l_train.jsonl", "training/llm_corpus/r25l_dev.jsonl", "training/llm_corpus/r25l_heldout.jsonl"] : []),
+      ...(r25lTokenizerDryrunOk ? ["artifacts/training_os/tokenizer_dryrun/r25l/r25j_tokenizer_report.json"] : []),
+      ...(smallPilotPlanOk ? ["artifacts/training_os/small_decoder_pilot/r25l_small_decoder_pilot_plan.json"] : [])
     ],
     missing_before_training: [
-      "reviewed large-scale corpus with clean train/dev/heldout split",
+      ...(r25lCorpusOk ? [] : ["reviewed expanded corpus with clean train/dev/heldout split"]),
       ...(tokenizerDryrunOk ? [] : ["tokenizer dry-run and held-out tokenizer evaluation"]),
       ...(toyOverfitOk ? [] : ["explicit phase_2 approval and passing toy-only overfit sanity"]),
+      ...(r25lTokenizerDryrunOk ? [] : ["expanded-corpus tokenizer dry-run and eval"]),
+      ...(smallPilotPlanOk ? [] : ["small decoder pilot architecture, budget, and capacity plan"]),
+      "future explicit phase_3 approval before any small decoder pilot training",
       "training hardware/runtime plan",
       "checkpoint provenance and release-decision validator",
       "R25E/R25H static release admission for a self-trained artifact"
@@ -120,6 +176,12 @@ async function main() {
       "toy checkpoint is ignored and not a release candidate",
       "formal training progress remains 0%",
       "no product model exists"
+    ],
+    r25l_boundaries: [
+      "expanded corpus and small decoder pilot planning are not formal training",
+      "small decoder pilot run skips by default until future explicit approval",
+      "pilot artifacts are ignored planning reports, not release weights",
+      "browser product completion does not imply a model artifact exists"
     ]
   };
   console.log(JSON.stringify(report, null, 2));

@@ -6,10 +6,15 @@ import { fileURLToPath } from "node:url";
 import { decodeDryrun, encodeDryrun } from "./train_tokenizer_dryrun.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const ARTIFACT_DIR = "artifacts/training_os/tokenizer_dryrun";
+const DEFAULT_CONFIG_PATH = "training/from_scratch/tokenizer_dry_run_config.json";
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
+}
+
+function configPathFromArgs() {
+  const index = process.argv.indexOf("--config");
+  return index >= 0 ? process.argv[index + 1] || DEFAULT_CONFIG_PATH : DEFAULT_CONFIG_PATH;
 }
 
 function scoreText(text, tokenizer, config) {
@@ -26,10 +31,12 @@ function scoreText(text, tokenizer, config) {
 }
 
 async function main() {
-  const config = await readJson("training/from_scratch/tokenizer_dry_run_config.json");
-  const tokenizer = await readJson(`${ARTIFACT_DIR}/r25j_tokenizer.json`);
-  const dev = await readFile(resolve(ROOT, `${ARTIFACT_DIR}/r25j_tokenizer_eval_dev.txt`), "utf8");
-  const heldout = await readFile(resolve(ROOT, `${ARTIFACT_DIR}/r25j_tokenizer_eval_heldout.txt`), "utf8");
+  const configPath = configPathFromArgs();
+  const config = await readJson(configPath);
+  const artifactDir = config.artifact_dir || "artifacts/training_os/tokenizer_dryrun";
+  const tokenizer = await readJson(`${artifactDir}/r25j_tokenizer.json`);
+  const dev = await readFile(resolve(ROOT, `${artifactDir}/r25j_tokenizer_eval_dev.txt`), "utf8");
+  const heldout = await readFile(resolve(ROOT, `${artifactDir}/r25j_tokenizer_eval_heldout.txt`), "utf8");
   const devScore = scoreText(dev, tokenizer, config);
   const heldoutScore = scoreText(heldout, tokenizer, config);
   const sampleScores = {
@@ -46,6 +53,7 @@ async function main() {
   if (!specialRoundtrip) warnings.push("special_token_roundtrip_failed");
   const output = {
     ok: combinedUnknownRate <= 0.5 && specialRoundtrip,
+    config_path: configPath,
     tokenizer_id: tokenizer.tokenizer_id,
     vocab_size: tokenizer.vocab_size,
     dev: devScore,
@@ -56,8 +64,8 @@ async function main() {
     special_token_roundtrip: specialRoundtrip,
     warnings
   };
-  await mkdir(resolve(ROOT, ARTIFACT_DIR), { recursive: true });
-  await writeFile(resolve(ROOT, `${ARTIFACT_DIR}/r25j_tokenizer_eval_report.json`), `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  await mkdir(resolve(ROOT, artifactDir), { recursive: true });
+  await writeFile(resolve(ROOT, `${artifactDir}/r25j_tokenizer_eval_report.json`), `${JSON.stringify(output, null, 2)}\n`, "utf8");
   console.log(JSON.stringify(output, null, 2));
   if (!output.ok) process.exit(2);
 }

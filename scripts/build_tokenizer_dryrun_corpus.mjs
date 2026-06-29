@@ -4,7 +4,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const CONFIG_PATH = "training/from_scratch/tokenizer_dry_run_config.json";
+const DEFAULT_CONFIG_PATH = "training/from_scratch/tokenizer_dry_run_config.json";
 const FORBIDDEN_SOURCE_RE = /^(evals\/|data\/public_ingestion\/)|\.(pdf|docx)$/i;
 const PRIVATE_PATH_RE = /\/Users\/|\/private\/var\/|\/Volumes\/|[A-Za-z]:\\Users\\/;
 const FORBIDDEN_MARKER_RE = /chain[_ -]?of[_ -]?thought|hidden_prompt|system_prompt|raw_private_data|private_memory|api_key|BEGIN PRIVATE KEY/i;
@@ -30,6 +30,11 @@ async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
 }
 
+function configPathFromArgs() {
+  const index = process.argv.indexOf("--config");
+  return index >= 0 ? process.argv[index + 1] || DEFAULT_CONFIG_PATH : DEFAULT_CONFIG_PATH;
+}
+
 async function readRows(path) {
   const text = await readFile(resolve(ROOT, path), "utf8");
   const rows = [];
@@ -47,7 +52,8 @@ async function writeText(path, text) {
 }
 
 async function main() {
-  const config = await readJson(CONFIG_PATH);
+  const configPath = configPathFromArgs();
+  const config = await readJson(configPath);
   const artifactDir = config.artifact_dir || "artifacts/training_os/tokenizer_dryrun";
   const forbidden_sources_touched = [];
   const private_data_markers = [];
@@ -91,6 +97,7 @@ async function main() {
 
   const report = {
     ok: forbidden_sources_touched.length === 0 && private_data_markers.length === 0 && chain_of_thought_markers.length === 0,
+    config_path: configPath,
     train_chars: trainText.trim().length,
     dev_chars: devText.trim().length,
     heldout_chars: heldoutText.trim().length,

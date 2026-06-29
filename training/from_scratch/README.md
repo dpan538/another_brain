@@ -3,8 +3,9 @@
 This directory holds plans, schemas, and dry-run scaffolding for a future
 project-trained decoder LLM. It contains no model weights.
 
-Current phase can report `phase_1_tokenizer_dry_run` after R25J local tokenizer
-dry-run artifacts pass. Formal decoder training progress remains `0%`.
+Current phase can report `phase_3_small_decoder_pilot_planned` after R25L
+expanded corpus, tokenizer dry-run, and pilot-plan checks pass. This is a
+planning state only. Formal decoder training progress remains `0%`.
 
 The product path is:
 
@@ -22,3 +23,7 @@ R25J adds `tokenizer_dry_run_config.json` and a tiny toy decoder config. The
 tokenizer dry-run uses approved corpus text only and writes ignored artifacts.
 The toy decoder overfit command is disabled by default and is not a product
 training path.
+
+R25L adds an expanded project-authored corpus plan/config, R25L tokenizer
+dry-run config, and a small decoder pilot plan. The pilot runner skips by
+default, writes no weights, and cannot be treated as a browser release.

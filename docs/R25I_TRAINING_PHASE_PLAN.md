@@ -1,8 +1,8 @@
 # R25I Training Phase Plan
 
-Current state after R25J tokenizer dry-run: `phase_1_tokenizer_dry_run` when
-the local dry-run artifacts and evaluations are present. Formal decoder
-training remains unstarted.
+Current state after R25L can be `phase_3_small_decoder_pilot_planned` when the
+expanded corpus, R25L tokenizer dry-run, and small pilot plan pass. That is a
+planning state only. Formal decoder training remains unstarted.
 
 Formal training progress remains `0%`. Training-readiness can improve through
 schemas, review gates, and dry-run validators, but that is not model training.
@@ -18,9 +18,9 @@ schemas, review gates, and dry-run validators, but that is not model training.
 | `phase_6_gated_browser_draft` | Real first-token gate passes | Disabled-by-default draft path behind verifier/fallback | runtime flag, browser smoke report | first-token, contract, fallback firewall | fixture output or unsafe draft surfaces |
 | `phase_7_long_run_training` | All earlier gates stable | Longer training only with split integrity and route audits green | long-run reports | held-out, route distribution, provenance | overfit, collapse, backend drift |
 
-R25J adds tokenizer dry-run commands and a toy decoder scaffold. The toy
-overfit command skips by default, so phase 2 does not begin until a later
-review explicitly allows a toy-only sanity run.
+R25J adds tokenizer dry-run commands and a toy decoder scaffold. R25K may run a
+toy-only sanity loop after explicit approval. R25L expands corpus rows and
+plans the phase 3 pilot, but `run:small-decoder-pilot` still skips by default.
 
 ## Failure Modes To Watch
 

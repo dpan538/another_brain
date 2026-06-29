@@ -40,6 +40,10 @@ path. External pretrained artifacts are baseline/compatibility only.
 R25J adds tokenizer dry-run and toy decoder pipeline scaffolding. These are
 local training-preparation checks only: generated tokenizer reports stay under
 ignored `artifacts/`, and the toy overfit command skips by default.
+R25K may run a toy-only sanity check after approval, and R25L may expand corpus
+rows and plan a small decoder pilot. The pilot runner skips by default, no
+formal decoder training starts, and no pilot checkpoint or tokenizer artifact
+is deployed.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
@@ -100,6 +104,8 @@ npm run check:r25g-candidate-decision
 npm run check:r25h-capacity-envelope
 npm run check:r25i-from-scratch-roadmap
 npm run check:r25j-tokenizer-toy-pipeline
+npm run check:r25k-toy-overfit-sanity
+npm run check:r25l-corpus-pilot-plan
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -154,6 +160,11 @@ mean training has started, and do not bypass R25E/R25H gates.
 R25J tokenizer dry-run artifacts and toy decoder reports live under ignored
 `artifacts/training_os/` directories. They are local evidence for pipeline
 readiness and must not be deployed as product assets or committed as weights.
+
+R25L expanded tokenizer dry-run artifacts and small decoder pilot planning
+reports also live under ignored `artifacts/training_os/` directories. They are
+review material only: no backend, external storage, model API, remote download,
+or deployed pilot weight is introduced.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is

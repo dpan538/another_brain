@@ -30,3 +30,7 @@ Formal training progress remains `0%`. Training-readiness may increase
 conservatively after the toy eval and artifact guards pass. Browser product
 completion should not materially increase because no browser product model
 exists yet.
+
+R25L builds on this by expanding corpus rows and planning a small decoder
+pilot. R25L does not run the small pilot, does not write pilot weights, and does
+not make the R25K toy checkpoint a product or release artifact.

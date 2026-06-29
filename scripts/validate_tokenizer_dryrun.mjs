@@ -10,8 +10,7 @@ import { decodeDryrun, encodeDryrun, trainDryrunTokenizer } from "./train_tokeni
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const execFileAsync = promisify(execFile);
-const CONFIG_PATH = "training/from_scratch/tokenizer_dry_run_config.json";
-const ARTIFACT_DIR = "artifacts/training_os/tokenizer_dryrun";
+const DEFAULT_CONFIG_PATH = "training/from_scratch/tokenizer_dry_run_config.json";
 const PRIVATE_PATH_RE = /\/Users\/|\/private\/var\/|\/Volumes\/|[A-Za-z]:\\Users\\/;
 const FORBIDDEN_MARKER_RE = /chain[_ -]?of[_ -]?thought|hidden_prompt|system_prompt|raw_private_data|private_memory|api_key|BEGIN PRIVATE KEY/i;
 
@@ -24,11 +23,22 @@ async function gitLsFiles(args) {
   return stdout.split(/\r?\n/).filter(Boolean);
 }
 
+function configPathFromArgs() {
+  const index = process.argv.indexOf("--config");
+  return index >= 0 ? process.argv[index + 1] || DEFAULT_CONFIG_PATH : DEFAULT_CONFIG_PATH;
+}
+
+function sameList(left = [], right = []) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
 async function main() {
   const failures = [];
-  const config = await readJson(CONFIG_PATH);
-  const tokenizer = await readJson(`${ARTIFACT_DIR}/r25j_tokenizer.json`).catch(() => null);
-  const trainText = await readFile(resolve(ROOT, `${ARTIFACT_DIR}/r25j_tokenizer_train.txt`), "utf8").catch(() => "");
+  const configPath = configPathFromArgs();
+  const config = await readJson(configPath);
+  const artifactDir = config.artifact_dir || "artifacts/training_os/tokenizer_dryrun";
+  const tokenizer = await readJson(`${artifactDir}/r25j_tokenizer.json`).catch(() => null);
+  const trainText = await readFile(resolve(ROOT, `${artifactDir}/r25j_tokenizer_train.txt`), "utf8").catch(() => "");
   if (!tokenizer) failures.push({ code: "tokenizer_artifact_missing" });
   else {
     if (tokenizer.tokenizer_id !== config.tokenizer_id) failures.push({ code: "tokenizer_id_mismatch" });
@@ -36,8 +46,11 @@ async function main() {
     for (const token of config.special_tokens) {
       if (!(token in tokenizer.vocab)) failures.push({ code: "missing_special_token", token });
     }
-    if ((tokenizer.training_sources_used || []).some((source) => source !== "training/llm_corpus/train.jsonl")) {
+    if (!sameList(tokenizer.training_sources_used || [], config.train_sources || [])) {
       failures.push({ code: "unexpected_training_source_used", sources: tokenizer.training_sources_used });
+    }
+    if (!sameList(tokenizer.eval_sources_not_used_for_training || [], config.eval_sources || [])) {
+      failures.push({ code: "unexpected_eval_sources_recorded", sources: tokenizer.eval_sources_not_used_for_training });
     }
     const artifactText = JSON.stringify(tokenizer);
     if (PRIVATE_PATH_RE.test(artifactText)) failures.push({ code: "private_path_in_tokenizer_artifact" });
@@ -56,11 +69,12 @@ async function main() {
     const rebuiltSha = createHash("sha256").update(JSON.stringify(rebuilt)).digest("hex");
     if (originalSha !== rebuiltSha) failures.push({ code: "deterministic_rerun_sha_mismatch", originalSha, rebuiltSha });
   }
-  const trackedArtifacts = (await gitLsFiles(["ls-files", ARTIFACT_DIR])).filter(Boolean);
+  const trackedArtifacts = (await gitLsFiles(["ls-files", artifactDir])).filter(Boolean);
   if (trackedArtifacts.length) failures.push({ code: "tokenizer_artifacts_tracked_by_git", trackedArtifacts });
 
   const output = {
     ok: failures.length === 0,
+    config_path: configPath,
     tokenizer_id: tokenizer?.tokenizer_id || "",
     vocab_size: tokenizer?.vocab_size || 0,
     deterministic: failures.every((failure) => failure.code !== "deterministic_rerun_sha_mismatch"),
