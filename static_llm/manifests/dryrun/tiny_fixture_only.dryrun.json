@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "model_id": "tiny_fixture_only",
+  "model_family": "r25h_model_agnostic_capacity_envelope",
+  "architecture": "decoder_only",
+  "parameter_count": 1,
+  "quantization": "fixture-only",
+  "context_length": 16,
+  "tokenizer": "dry_run_tokenizer_plan_only",
+  "runtime_backend": "wasm",
+  "license": "PROJECT_AUTHORED_DRY_RUN",
+  "license_url": "",
+  "source_url": "project-authored-capacity-scenario",
+  "converted_by": "not_converted_dry_run",
+  "conversion_tool": "scripts/generate_static_llm_dryrun_manifests.mjs",
+  "provenance": "R25H metadata-only capacity envelope. No real model, no weights, and not admitted.",
+  "review_status": "dry_run",
+  "admission_status": "dry_run_not_admitted",
+  "contains_private_data": false,
+  "total_bytes": 614,
+  "profile": "hobby_static_llm_lite",
+  "scenario_id": "tiny_fixture_only",
+  "synthetic_asset_plan": true,
+  "placeholder_hash_policy": "dry_run_only_do_not_admit",
+  "files": [
+    {
+      "path": "static_llm/assets/dryrun/tiny_fixture_only/config.json",
+      "bytes": 192,
+      "sha256": "example_dry_run_only_do_not_admit_000",
+      "role": "config",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/tiny_fixture_only/tokenizer.json",
+      "bytes": 241,
+      "sha256": "example_dry_run_only_do_not_admit_001",
+      "role": "tokenizer",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/tiny_fixture_only/model-000.dryrun",
+      "bytes": 181,
+      "sha256": "example_dry_run_only_do_not_admit_002",
+      "role": "weights",
+      "required": true
+    }
+  ],
+  "shard_policy": {
+    "max_file_bytes": 64000000,
+    "target_file_bytes": 32000000,
+    "shard_count": 3
+  },
+  "same_origin_only": true,
+  "external_urls_allowed": false,
+  "backend_required": false
+}

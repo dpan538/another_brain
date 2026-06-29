@@ -8,7 +8,7 @@ import { gitLsFiles } from "./static_llm_artifact_utils.mjs";
 import { normalizeRepoPath } from "./static_llm_policy.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const ACTIVE_RE = /^(README\.md|DEPLOYMENT\.md|DATA_CARD\.md|docs\/R25.*\.md|static_llm\/(?!candidate_decisions\/decisions\/).+|scripts\/(build_static_llm_candidate_matrix|validate_static_llm_candidate_decisions|score_static_decoder_candidate_decision|validate_static_llm_conversion_paths|check_no_active_named_model_candidate|check_removed_model_candidate_purge)\.mjs|package\.json)$/;
+const ACTIVE_RE = /^(README\.md|DEPLOYMENT\.md|DATA_CARD\.md|docs\/R25.*\.md|static_llm\/(?!candidate_decisions\/decisions\/).+|scripts\/(build_static_llm_candidate_matrix|validate_static_llm_candidate_decisions|score_static_decoder_candidate_decision|validate_static_llm_conversion_paths|check_no_active_named_model_candidate|check_removed_model_candidate_purge|evaluate_static_llm_capacity_envelope|generate_static_llm_dryrun_manifests|eval_static_llm_browser_memory_envelope|simulate_static_llm_deploy_payload)\.mjs|package\.json)$/;
 const SKIP_RE = /(^|\/)(artifacts|node_modules|\.git)\//;
 const GENERIC_ALLOWED_RE = /browser_decoder_candidate_tbd|local_reviewed_decoder_artifact_tbd|browser_ready_decoder_artifact_tbd|reviewed_static_decoder_candidate|local_static_decoder_candidate|tiny_decoder_fixture|example-|placeholder_|replace_with|decoder[-_ ]artifact|family_rejected|conversion_required_family_pending/i;
 const NAMED_MODEL_RE = /(?:^|[^A-Za-z0-9_.-])([A-Za-z][A-Za-z0-9.-]{1,80}\/[A-Za-z0-9][A-Za-z0-9._-]{1,100})(?:[^A-Za-z0-9_.-]|$)/;
@@ -35,7 +35,7 @@ function isRepoPathOrGateToken(token = "") {
   return /^(static_llm|web|docs|scripts|artifacts|training|evals)\//.test(token)
     || /\.(mjs|js|json|md|py|sh|html|css)$/.test(token)
     || /^R\d+[A-Z]?\/R\d+[A-Z]?/.test(token)
-    || /^(license|manifest|config|tokenizer|WebGPU|Vercel|inbox|preview|route|worker|example)\/[A-Za-z0-9_.-]+/.test(token)
+    || /^(license|manifest|config|tokenizer|WebGPU|Vercel|inbox|preview|route|worker|example|fallback|memory|browser|cache|storage|token)\/[A-Za-z0-9_.-]+/.test(token)
     || /^json-schema\.org\//.test(token)
     || /^[A-Z]{2,}\/[a-z.]+/.test(token);
 }

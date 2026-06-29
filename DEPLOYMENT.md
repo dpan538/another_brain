@@ -130,6 +130,11 @@ required before model-like files can be staged for git.
 R25F additionally requires the removed-candidate purge guard to pass before a
 static decoder artifact can become the active product target.
 
+R25H capacity dry-run manifests under `static_llm/manifests/dryrun/` are
+non-production. They test static profile fit, shard count, browser memory/cache
+risk, and deploy payload simulation, but cannot be admitted or deployed as real
+model assets.
+
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
 generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It

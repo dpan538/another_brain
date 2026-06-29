@@ -53,6 +53,7 @@ async function main() {
     result.failures.map((failure) => ({ file: result.file, ...failure }))
   );
   const admitted = manifests.filter((item) => item.validation.admitted && item.validation.ok);
+  const dryRuns = manifests.filter((item) => item.validation.dry_run);
   const admittedAssetPaths = new Set();
   const profileTotals = {};
   const profileFileCounts = {};
@@ -110,6 +111,7 @@ async function main() {
     },
     manifest_count: validations.length,
     admitted_manifest_count: admitted.length,
+    dry_run_manifest_count: dryRuns.length,
     profile_totals: profileTotals,
     profile_file_counts: profileFileCounts,
     tracked_source_file_count: trackedFiles.length,

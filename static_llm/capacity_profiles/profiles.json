@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "primary_profile": "pro_static_llm_full",
+  "profiles": {
+    "hobby_static_llm_lite": {
+      "max_total_llm_asset_bytes": 95000000,
+      "role": "constrained fallback / rejection profile"
+    },
+    "pro_static_llm_full": {
+      "max_total_llm_asset_bytes": 950000000,
+      "role": "primary static profile"
+    }
+  },
+  "shared_constraints": {
+    "target_shard_bytes": 32000000,
+    "hard_max_shard_bytes": 64000000,
+    "max_source_file_count": 15000,
+    "build_time_target_minutes": 45,
+    "same_origin_only": true,
+    "backend_required": false,
+    "external_urls_allowed": false,
+    "external_storage_allowed": false
+  }
+}

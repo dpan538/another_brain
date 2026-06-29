@@ -15,6 +15,17 @@
     "tokenizer_type",
     "expected_quantization",
     "expected_total_bytes",
+    "capacity_scenario_id",
+    "declared_total_asset_bytes",
+    "declared_largest_shard_bytes",
+    "declared_shard_count",
+    "declared_tokenizer_bytes",
+    "declared_config_bytes",
+    "expected_profile_fit",
+    "browser_memory_risk",
+    "mobile_risk",
+    "cache_pressure_risk",
+    "first_token_risk",
     "expected_profile",
     "expected_backend_format",
     "browser_runtime_status",
@@ -57,6 +68,31 @@
     "tokenizer_type": { "type": "string", "minLength": 1 },
     "expected_quantization": { "type": "string", "minLength": 1 },
     "expected_total_bytes": { "type": "integer", "minimum": 0 },
+    "capacity_scenario_id": { "type": "string", "minLength": 1 },
+    "declared_total_asset_bytes": { "type": "integer", "minimum": 0 },
+    "declared_largest_shard_bytes": { "type": "integer", "minimum": 0 },
+    "declared_shard_count": { "type": "integer", "minimum": 0 },
+    "declared_tokenizer_bytes": { "type": "integer", "minimum": 0 },
+    "declared_config_bytes": { "type": "integer", "minimum": 0 },
+    "expected_profile_fit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hobby_static_llm_lite", "pro_static_llm_full"],
+      "properties": {
+        "hobby_static_llm_lite": {
+          "type": "string",
+          "enum": ["fits", "rejects", "tbd_after_capacity_eval"]
+        },
+        "pro_static_llm_full": {
+          "type": "string",
+          "enum": ["fits", "rejects", "tbd_after_capacity_eval"]
+        }
+      }
+    },
+    "browser_memory_risk": { "type": "string", "minLength": 1 },
+    "mobile_risk": { "type": "string", "minLength": 1 },
+    "cache_pressure_risk": { "type": "string", "minLength": 1 },
+    "first_token_risk": { "type": "string", "minLength": 1 },
     "expected_profile": {
       "type": "string",
       "enum": ["hobby_static_llm_lite", "pro_static_llm_full"]

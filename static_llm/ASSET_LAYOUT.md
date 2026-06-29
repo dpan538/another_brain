@@ -42,6 +42,9 @@ Rules:
   not use a named model path until a later reviewed decision selects one.
 - R25G requires a candidate decision record and conversion path review before a
   local artifact intake attempt. The decision record does not admit weights.
+- R25H adds `static_llm/capacity_profiles/` and
+  `static_llm/manifests/dryrun/` for metadata-only capacity planning. Dry-run
+  manifests are non-production and cannot be admitted.
 
 The expected primary future profile is `pro_static_llm_full`; the
 `hobby_static_llm_lite` profile is a constrained fallback or comparison target.

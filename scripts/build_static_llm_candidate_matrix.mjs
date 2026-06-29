@@ -148,6 +148,26 @@ const candidates = [
       "candidate decision record must precede artifact admission"
     ],
     admission_status: "awaiting_candidate_decision"
+  },
+  {
+    model_id: "capacity_envelope_family_pending",
+    parameter_count: 0,
+    architecture: "decoder_only",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "tbd_review_required",
+    chinese_support: "tbd",
+    browser_backend_feasibility: "requires R25H capacity scenario and browser memory review before local artifact intake",
+    profile_fit: {
+      hobby_static_llm_lite: "often_rejects_larger_decoder_envelopes",
+      pro_static_llm_full: "primary_capacity_profile_pending_real_artifact"
+    },
+    risks: [
+      "capacity dry-runs are not production admission",
+      "candidate must declare real total bytes, shard count, largest shard, tokenizer/config sizes, and browser memory risk",
+      "no named model is selected by the capacity envelope"
+    ],
+    admission_status: "awaiting_capacity_reviewed_candidate"
   }
 ];
 
@@ -155,7 +175,7 @@ function renderMarkdown(report) {
   const lines = [
     "# R25 Static LLM Candidate Matrix",
     "",
-    "R25G keeps candidate selection model-agnostic. It does not download, train, convert, or admit model weights.",
+    "R25G and R25H keep candidate selection model-agnostic. They do not download, train, convert, or admit model weights.",
     "",
     "The primary R25 target is a same-origin static decoder LLM that runs in the browser. No named model is selected. The next candidate must be supplied locally by the user or selected in a later reviewed decision record.",
     "",
@@ -177,11 +197,11 @@ function renderMarkdown(report) {
     "- Models that exceed the selected static profile budget are rejected.",
     "- Models with unclear license or conversion provenance are rejected until reviewed.",
     "",
-    "## R25G Decision Framework",
+    "## R25G/R25H Decision And Capacity Framework",
     "",
     "R25B through R25G add training-content, loader, admission, purge, and decision scaffolding only. They do not download, convert, benchmark, or admit real weights.",
     "",
-    "The current status is `candidate_selection_reset`, `no_named_model_selected`, and `awaiting_candidate_decision`. A future patch must create a reviewed candidate decision record, check `static_llm/conversion_paths/matrix.json`, use `static_llm/request_pack/`, then perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
+    "The current status is `candidate_selection_reset`, `no_named_model_selected`, and `awaiting_candidate_decision`. R25H adds a metadata-only capacity envelope and dry-run manifests so future candidates can be measured before artifact intake. A future patch must create a reviewed candidate decision record, check `static_llm/conversion_paths/matrix.json`, use `static_llm/request_pack/`, compare the candidate to `static_llm/capacity_profiles/`, then perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
     "",
     "A candidate decision record does not admit weights. It only allows a later local artifact intake attempt.",
     "",

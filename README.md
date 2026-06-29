@@ -32,6 +32,12 @@ R25F resets model selection to a model-agnostic state. No named decoder model is
 
 R25G adds the reviewed decision framework for that future candidate: candidate decision records, conversion path review, and a request pack. These records do not admit weights.
 
+R25H adds the static capacity envelope and candidate dry-run simulator. It
+generates metadata-only non-admitted dry-run manifests, estimates browser
+memory/storage risk, and simulates deploy payload size without selecting a
+named model, creating large files, admitting assets, downloading weights, or
+training.
+
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
 The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
@@ -122,6 +128,7 @@ npm run check:r25d-browser-inference-binding
 npm run check:r25e-artifact-admission
 npm run check:r25f-candidate-purge
 npm run check:r25g-candidate-decision
+npm run check:r25h-capacity-envelope
 ```
 
 Build and validate the mixed context stress suite:

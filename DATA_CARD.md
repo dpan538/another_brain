@@ -84,6 +84,8 @@ Private data is not distributed:
   required.
 - R25G decision status: awaiting candidate decision; no decision record admits
   weights.
+- R25H capacity status: metadata-only capacity profiles and dry-run manifests;
+  no artifact admission and no real performance evidence.
 - Training enabled by default: false.
 
 ## Evaluation

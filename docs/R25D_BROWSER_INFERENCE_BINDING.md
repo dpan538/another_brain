@@ -50,3 +50,7 @@ until that binding exists.
 
 R25F leaves this backend shape model-agnostic. No named decoder candidate is
 selected by the backend layer.
+
+R25H capacity dry-runs are not backend support. They only estimate static
+asset, shard, browser memory, and cache pressure before a future reviewed
+artifact exists.

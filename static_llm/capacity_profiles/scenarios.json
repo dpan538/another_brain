@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "scenario_id": "tiny_fixture_only",
+      "architecture": "decoder_only",
+      "total_bytes": 614,
+      "tokenizer_bytes": 241,
+      "config_bytes": 192,
+      "weight_bytes": 181,
+      "estimated_context_length": 16,
+      "estimated_quantization": "fixture-only",
+      "expected_backend_format": "wasm_runtime_candidate",
+      "expected_shard_count": 1,
+      "notes": "Tiny fixture envelope for loader tests only; not model performance."
+    },
+    {
+      "scenario_id": "small_decoder_100mb",
+      "architecture": "decoder_only",
+      "total_bytes": 100000000,
+      "tokenizer_bytes": 2000000,
+      "config_bytes": 100000,
+      "weight_bytes": 97900000,
+      "estimated_context_length": 2048,
+      "estimated_quantization": "reviewed_quantization_tbd",
+      "expected_backend_format": "other_reviewed_browser_decoder_format",
+      "expected_shard_count": 4,
+      "notes": "Model-agnostic small decoder envelope; expected to exceed Hobby but fit Pro."
+    },
+    {
+      "scenario_id": "medium_decoder_300mb",
+      "architecture": "decoder_only",
+      "total_bytes": 300000000,
+      "tokenizer_bytes": 4000000,
+      "config_bytes": 200000,
+      "weight_bytes": 295800000,
+      "estimated_context_length": 4096,
+      "estimated_quantization": "reviewed_quantization_tbd",
+      "expected_backend_format": "webllm_mlc_candidate",
+      "expected_shard_count": 10,
+      "notes": "Model-agnostic medium decoder envelope for Pro static planning."
+    },
+    {
+      "scenario_id": "large_decoder_600mb",
+      "architecture": "decoder_only",
+      "total_bytes": 600000000,
+      "tokenizer_bytes": 6000000,
+      "config_bytes": 300000,
+      "weight_bytes": 593700000,
+      "estimated_context_length": 4096,
+      "estimated_quantization": "reviewed_quantization_tbd",
+      "expected_backend_format": "webllm_mlc_candidate",
+      "expected_shard_count": 19,
+      "notes": "Large Pro-profile planning envelope; browser memory risk must be reviewed."
+    },
+    {
+      "scenario_id": "upper_pro_decoder_900mb",
+      "architecture": "decoder_only",
+      "total_bytes": 900000000,
+      "tokenizer_bytes": 8000000,
+      "config_bytes": 500000,
+      "weight_bytes": 891500000,
+      "estimated_context_length": 4096,
+      "estimated_quantization": "reviewed_quantization_tbd",
+      "expected_backend_format": "webllm_mlc_candidate",
+      "expected_shard_count": 28,
+      "notes": "Upper Pro planning envelope; close to static budget and high memory/cache risk."
+    },
+    {
+      "scenario_id": "over_budget_decoder_1100mb",
+      "architecture": "decoder_only",
+      "total_bytes": 1100000000,
+      "tokenizer_bytes": 10000000,
+      "config_bytes": 500000,
+      "weight_bytes": 1089500000,
+      "estimated_context_length": 4096,
+      "estimated_quantization": "reviewed_quantization_tbd",
+      "expected_backend_format": "webllm_mlc_candidate",
+      "expected_shard_count": 35,
+      "notes": "Must be rejected by the Pro static profile."
+    }
+  ]
+}

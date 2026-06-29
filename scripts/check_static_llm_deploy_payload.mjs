@@ -45,6 +45,7 @@ async function main() {
   const seenAssetPaths = new Map();
   const profileTotals = {};
   let admittedManifestCount = 0;
+  let dryRunManifestCount = 0;
 
   for (const manifestPath of await discoverStaticLlmManifestPaths(ROOT)) {
     const relManifest = normalizeRepoPath(relative(ROOT, manifestPath));
@@ -53,8 +54,15 @@ async function main() {
     const admittedValidation = await validateStaticLlmManifestFile(manifestPath, { root: ROOT, admit: true });
     const isProduction = admittedValidation.ok && admittedValidation.admitted;
     if (isProduction) admittedManifestCount += 1;
+    if (validation.dry_run) dryRunManifestCount += 1;
     if (validation.fixture && manifest.admission_status === "admitted") {
       failures.push({ code: "fixture_manifest_treated_as_production", manifest: relManifest });
+    }
+    if (validation.dry_run && manifest.admission_status !== "dry_run_not_admitted") {
+      failures.push({ code: "dry_run_manifest_must_not_be_production", manifest: relManifest });
+    }
+    if (validation.dry_run && /[A-Za-z][A-Za-z0-9.-]{1,80}\/[A-Za-z0-9][A-Za-z0-9._-]{1,100}/.test(String(manifest.model_id || ""))) {
+      failures.push({ code: "dry_run_manifest_must_not_use_named_model_id", manifest: relManifest, model_id: manifest.model_id });
     }
     for (const failure of validation.failures) failures.push({ code: "manifest_validation_failure", manifest: relManifest, failure });
     for (const file of manifest.files || []) {
@@ -124,6 +132,7 @@ async function main() {
   const report = {
     ok: failures.length === 0,
     admitted_manifest_count: admittedManifestCount,
+    dry_run_manifest_count: dryRunManifestCount,
     manifest_count: manifestReports.length,
     manifest_reports: manifestReports,
     profile_totals: profileTotals,

@@ -31,7 +31,10 @@ async function main() {
   const approvalMarkerPresent = legacyApprovalMarkerPresent || commitApprovalCandidates.length > 0;
 
   const admittedAssetPaths = new Set();
+  let dryRunManifestCount = 0;
   for (const manifestPath of await discoverStaticLlmManifestPaths(ROOT)) {
+    const baseValidation = await validateStaticLlmManifestFile(manifestPath, { root: ROOT });
+    if (baseValidation.dry_run) dryRunManifestCount += 1;
     const validation = await validateStaticLlmManifestFile(manifestPath, { root: ROOT, admit: true });
     if (!validation.ok || !validation.admitted) continue;
     const manifest = await readStaticLlmManifest(manifestPath);
@@ -65,6 +68,7 @@ async function main() {
     legacy_approval_marker_present: legacyApprovalMarkerPresent,
     commit_approval_candidate_count: commitApprovalCandidates.length,
     admitted_asset_count: admittedAssetPaths.size,
+    dry_run_manifests_ignored_for_weight_approval: dryRunManifestCount,
     fixture_files_allowed: true,
     failures
   };

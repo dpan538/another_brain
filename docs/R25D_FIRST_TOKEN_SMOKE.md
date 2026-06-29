@@ -34,3 +34,7 @@ observes the first token.
 R25F keeps real first-token readiness model-agnostic. A future run must name a
 candidate only after a separate reviewed model decision or user-supplied local
 artifact.
+
+R25H dry-run manifests cannot satisfy the real first-token gate. Real first
+token still requires a production-admitted manifest, verified assets,
+tokenizer/config loading, and a real supported browser backend.

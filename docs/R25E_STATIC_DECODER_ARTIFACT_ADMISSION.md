@@ -36,3 +36,7 @@ same-origin browser decoder format before a real first token is possible.
 R24 remains the verifier, fallback, and recovery harness around any future LLM
 draft. The fixture first-token smoke remains a loader test only, not model
 performance.
+
+R25H adds metadata-only capacity dry-runs before any future admission attempt.
+Those dry-run manifests are not production, do not contain real weights, and do
+not replace R25E license/provenance/hash/backend checks.

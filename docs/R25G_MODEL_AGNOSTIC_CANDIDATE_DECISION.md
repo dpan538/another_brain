@@ -62,3 +62,12 @@ model-agnostic state:
 
 With no real decision files, the expected status is
 `awaiting_candidate_decision`.
+
+## R25H Capacity Inputs
+
+R25H adds capacity fields to candidate decision records. A future selected
+record must declare total asset bytes, tokenizer/config bytes, largest shard
+size, shard count, expected profile fit, browser memory risk, mobile risk,
+cache pressure risk, and first-token risk. These fields make the decision
+measurable against the static capacity envelope, but they still do not admit
+weights or select a named model.

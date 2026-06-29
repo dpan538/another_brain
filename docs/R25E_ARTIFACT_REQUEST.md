@@ -17,6 +17,12 @@ static_llm/inbox/browser_decoder_candidate_tbd/
 Codex must not download remote weights. The user supplies the local artifact.
 R25G request templates live under `static_llm/request_pack/`.
 
+Use the R25H capacity envelope before supplying a real artifact. A future
+candidate should include real total bytes, tokenizer/config sizes, shard count,
+largest shard size, backend-ready format, hashes, license, provenance, and a
+reviewed candidate decision record. Dry-run capacity manifests are not
+production admission.
+
 Required metadata includes model id, architecture, parameter count,
 quantization, context length, tokenizer type, source URL, source revision,
 license, license URL, conversion tool, conversion command, conversion date,

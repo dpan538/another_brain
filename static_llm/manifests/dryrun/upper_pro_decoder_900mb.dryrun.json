@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "model_id": "upper_pro_decoder_900mb",
+  "model_family": "r25h_model_agnostic_capacity_envelope",
+  "architecture": "decoder_only",
+  "parameter_count": 1,
+  "quantization": "reviewed_quantization_tbd",
+  "context_length": 4096,
+  "tokenizer": "dry_run_tokenizer_plan_only",
+  "runtime_backend": "webgpu",
+  "license": "PROJECT_AUTHORED_DRY_RUN",
+  "license_url": "",
+  "source_url": "project-authored-capacity-scenario",
+  "converted_by": "not_converted_dry_run",
+  "conversion_tool": "scripts/generate_static_llm_dryrun_manifests.mjs",
+  "provenance": "R25H metadata-only capacity envelope. No real model, no weights, and not admitted.",
+  "review_status": "dry_run",
+  "admission_status": "dry_run_not_admitted",
+  "contains_private_data": false,
+  "total_bytes": 900000000,
+  "profile": "pro_static_llm_full",
+  "scenario_id": "upper_pro_decoder_900mb",
+  "synthetic_asset_plan": true,
+  "placeholder_hash_policy": "dry_run_only_do_not_admit",
+  "files": [
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/config.json",
+      "bytes": 500000,
+      "sha256": "example_dry_run_only_do_not_admit_000",
+      "role": "config",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/tokenizer.json",
+      "bytes": 8000000,
+      "sha256": "example_dry_run_only_do_not_admit_001",
+      "role": "tokenizer",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-000.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_002",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-001.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_003",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-002.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_004",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-003.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_005",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-004.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_006",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-005.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_007",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-006.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_008",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-007.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_009",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-008.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_010",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-009.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_011",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-010.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_012",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-011.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_013",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-012.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_014",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-013.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_015",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-014.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_016",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-015.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_017",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-016.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_018",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-017.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_019",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-018.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_020",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-019.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_021",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-020.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_022",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-021.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_023",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-022.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_024",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-023.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_025",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-024.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_026",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-025.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_027",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-026.dryrun",
+      "bytes": 32000000,
+      "sha256": "example_dry_run_only_do_not_admit_028",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/dryrun/upper_pro_decoder_900mb/model-027.dryrun",
+      "bytes": 27500000,
+      "sha256": "example_dry_run_only_do_not_admit_029",
+      "role": "weights",
+      "required": true
+    }
+  ],
+  "shard_policy": {
+    "max_file_bytes": 64000000,
+    "target_file_bytes": 32000000,
+    "shard_count": 30
+  },
+  "same_origin_only": true,
+  "external_urls_allowed": false,
+  "backend_required": false
+}

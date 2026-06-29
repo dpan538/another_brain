@@ -107,3 +107,9 @@ user-supplied local artifact passes the admission path.
 R25G adds that reviewed model-decision framework. Candidate decision records,
 conversion path review, and the request pack come before R25E artifact
 admission, and none of those records admit weights by themselves.
+
+R25H measures the static capacity envelope with metadata-only scenarios and
+non-admitted dry-run manifests. The Pro static profile is the primary envelope;
+Hobby remains constrained and may reject realistic decoder candidates. Capacity
+dry-runs do not select a model, admit an artifact, create weights, or claim real
+browser performance.

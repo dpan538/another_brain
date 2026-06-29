@@ -50,8 +50,9 @@ const ARCHITECTURES = new Set(["decoder_only", "encoder_decoder"]);
 const RUNTIME_BACKENDS = new Set(["webgpu", "wasm", "webnn_candidate"]);
 const EXAMPLE_REVIEW_STATUSES = new Set(["example", "example_only"]);
 const FIXTURE_REVIEW_STATUSES = new Set(["fixture", "fixture_only"]);
+const DRY_RUN_REVIEW_STATUSES = new Set(["dry_run", "dry_run_only"]);
 const ADMITTED_REVIEW_STATUSES = new Set(["admitted", "reviewed_admitted"]);
-const ADMISSION_STATUSES = new Set(["not_admitted", "admitted", "rejected"]);
+const ADMISSION_STATUSES = new Set(["not_admitted", "dry_run_not_admitted", "admitted", "rejected"]);
 
 async function exists(path) {
   try {
@@ -125,6 +126,11 @@ function isAdmittedManifest(manifest = {}) {
   return ADMITTED_REVIEW_STATUSES.has(String(manifest.review_status || ""));
 }
 
+function isDryRunManifest(manifest = {}) {
+  return DRY_RUN_REVIEW_STATUSES.has(String(manifest.review_status || ""))
+    || String(manifest.admission_status || "") === "dry_run_not_admitted";
+}
+
 async function validateAssetExists(root, file, failures) {
   const candidates = manifestAssetPathToRepoCandidates(file.path)
     .map((candidate) => resolveInsideRoot(root, candidate))
@@ -157,6 +163,7 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
   const warnings = [];
   const example = isExampleManifest(manifest);
   const fixture = isFixtureManifest(manifest);
+  const dryRun = isDryRunManifest(manifest);
   const admitted = isAdmittedManifest(manifest);
   const admitMode = Boolean(options.admit || admitted);
 
@@ -189,6 +196,7 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
   if (admitMode) {
     if (example) push(failures, "example_manifest_cannot_be_admitted");
     if (fixture) push(failures, "fixture_manifest_cannot_be_admitted");
+    if (dryRun) push(failures, "dry_run_manifest_cannot_be_admitted");
     if (manifest.admission_status && manifest.admission_status !== "admitted") {
       push(failures, "admitted_manifest_must_have_admitted_status", { admission_status: manifest.admission_status });
     }
@@ -198,6 +206,10 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
     if (!/reviewed|admitted/i.test(String(manifest.provenance || ""))) {
       warnings.push({ code: "admitted_manifest_provenance_should_name_review", field: "provenance" });
     }
+  }
+
+  if (dryRun && manifest.admission_status !== "dry_run_not_admitted") {
+    push(failures, "dry_run_manifest_must_be_not_admitted", { admission_status: manifest.admission_status || "" });
   }
 
   const files = Array.isArray(manifest.files) ? manifest.files : [];
@@ -241,7 +253,7 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
     push(failures, "total_bytes_must_equal_file_sum", { total_bytes: manifest.total_bytes, file_sum: totalBytes });
   }
   const budget = profileBudgetBytes(manifest.profile);
-  if (budget > 0 && totalBytes > budget) {
+  if (budget > 0 && totalBytes > budget && !dryRun) {
     push(failures, "profile_budget_exceeded", { profile: manifest.profile, total_bytes: totalBytes, max_bytes: budget });
   }
 
@@ -290,6 +302,7 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
     review_status: manifest.review_status || "",
     example,
     fixture,
+    dry_run: dryRun,
     admitted,
     total_bytes: totalBytes,
     budget_bytes: budget,

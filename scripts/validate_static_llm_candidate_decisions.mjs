@@ -34,6 +34,17 @@ const REQUIRED_FIELDS = [
   "tokenizer_type",
   "expected_quantization",
   "expected_total_bytes",
+  "capacity_scenario_id",
+  "declared_total_asset_bytes",
+  "declared_largest_shard_bytes",
+  "declared_shard_count",
+  "declared_tokenizer_bytes",
+  "declared_config_bytes",
+  "expected_profile_fit",
+  "browser_memory_risk",
+  "mobile_risk",
+  "cache_pressure_risk",
+  "first_token_risk",
   "expected_profile",
   "expected_backend_format",
   "browser_runtime_status",
@@ -164,10 +175,28 @@ function validateDecision(record, path, options = {}) {
   if (!BACKEND_FORMATS.has(record.expected_backend_format)) failures.push({ code: "invalid_backend_format", path, value: record.expected_backend_format });
   if (!RUNTIME_STATUSES.has(record.browser_runtime_status)) failures.push({ code: "invalid_browser_runtime_status", path, value: record.browser_runtime_status });
 
-  for (const field of ["parameter_count", "context_length", "expected_total_bytes"]) {
+  for (const field of [
+    "parameter_count",
+    "context_length",
+    "expected_total_bytes",
+    "declared_total_asset_bytes",
+    "declared_largest_shard_bytes",
+    "declared_shard_count",
+    "declared_tokenizer_bytes",
+    "declared_config_bytes"
+  ]) {
     if (!Number.isInteger(record[field]) || record[field] < 0) failures.push({ code: "invalid_integer_field", path, field });
   }
   if (!Array.isArray(record.conversion_risks)) failures.push({ code: "conversion_risks_must_be_array", path });
+  if (!record.expected_profile_fit || typeof record.expected_profile_fit !== "object" || Array.isArray(record.expected_profile_fit)) {
+    failures.push({ code: "expected_profile_fit_must_be_object", path });
+  } else {
+    for (const profile of ["hobby_static_llm_lite", "pro_static_llm_full"]) {
+      if (!["fits", "rejects", "tbd_after_capacity_eval"].includes(record.expected_profile_fit[profile])) {
+        failures.push({ code: "invalid_expected_profile_fit", path, profile, value: record.expected_profile_fit[profile] });
+      }
+    }
+  }
 
   const joined = JSON.stringify(record);
   if (hasRemovedTerm(joined)) failures.push({ code: "purged_candidate_string_present", path });
@@ -208,6 +237,22 @@ function validateDecision(record, path, options = {}) {
     if (record.architecture === "encoder_only") failures.push({ code: "encoder_only_cannot_be_selected", path });
     if (record.browser_runtime_status === "unsupported") failures.push({ code: "unsupported_runtime_cannot_be_selected", path });
     if (record.expected_total_bytes > profileBudgetBytes(record.expected_profile)) failures.push({ code: "selected_candidate_exceeds_profile_budget", path });
+    if (record.declared_total_asset_bytes <= 0) failures.push({ code: "selected_candidate_missing_declared_total_asset_bytes", path });
+    if (record.declared_total_asset_bytes > profileBudgetBytes("pro_static_llm_full")) failures.push({ code: "selected_candidate_exceeds_pro_static_profile", path });
+    if (record.declared_total_asset_bytes > profileBudgetBytes(record.expected_profile)) failures.push({ code: "selected_candidate_declared_bytes_exceed_expected_profile", path });
+    if (record.declared_largest_shard_bytes <= 0 || record.declared_largest_shard_bytes > STATIC_LLM_POLICY.maxShardFileBytes) {
+      failures.push({ code: "selected_candidate_invalid_largest_shard_bytes", path, declared_largest_shard_bytes: record.declared_largest_shard_bytes });
+    }
+    if (record.declared_shard_count <= 0) failures.push({ code: "selected_candidate_missing_declared_shard_count", path });
+    if (record.expected_profile_fit?.hobby_static_llm_lite === "fits" && record.declared_total_asset_bytes > profileBudgetBytes("hobby_static_llm_lite")) {
+      failures.push({ code: "selected_candidate_claims_hobby_fit_but_exceeds_hobby_budget", path });
+    }
+    if (record.expected_profile_fit?.[record.expected_profile] !== "fits") {
+      failures.push({ code: "selected_candidate_expected_profile_must_fit", path, expected_profile: record.expected_profile });
+    }
+    if (/ready|passed|observed|real first token/i.test(String(record.first_token_risk || ""))) {
+      failures.push({ code: "selected_candidate_cannot_claim_real_first_token_without_artifact_backend_evidence", path });
+    }
     if (/slm|small language model|100m.{0,20}200m/i.test(joined)) failures.push({ code: "slm_final_product_target_cannot_be_selected", path });
   }
 
