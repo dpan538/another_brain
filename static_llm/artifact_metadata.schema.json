@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.com/schemas/static-llm-artifact-metadata.schema.json",
+  "title": "Another Brain Static LLM Artifact Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "model_id",
+    "model_family",
+    "architecture",
+    "parameter_count",
+    "quantization",
+    "context_length",
+    "tokenizer_type",
+    "source_url",
+    "source_commit_or_revision",
+    "license",
+    "license_url",
+    "converted_by",
+    "conversion_tool",
+    "conversion_command",
+    "conversion_date",
+    "contains_private_data",
+    "review_status",
+    "reviewer",
+    "target_profile",
+    "expected_total_bytes",
+    "expected_shard_count",
+    "notes"
+  ],
+  "properties": {
+    "model_id": { "type": "string", "minLength": 1 },
+    "model_family": { "type": "string", "minLength": 1 },
+    "architecture": {
+      "type": "string",
+      "enum": ["decoder_only", "encoder_decoder", "encoder_only"]
+    },
+    "parameter_count": { "type": "integer", "minimum": 1 },
+    "quantization": { "type": "string", "minLength": 1 },
+    "context_length": { "type": "integer", "minimum": 1 },
+    "tokenizer_type": { "type": "string", "minLength": 1 },
+    "source_url": { "type": "string", "minLength": 1 },
+    "source_commit_or_revision": { "type": "string", "minLength": 1 },
+    "license": { "type": "string", "minLength": 1 },
+    "license_url": { "type": "string", "minLength": 1 },
+    "converted_by": { "type": "string", "minLength": 1 },
+    "conversion_tool": { "type": "string", "minLength": 1 },
+    "conversion_command": { "type": "string", "minLength": 1 },
+    "conversion_date": { "type": "string", "minLength": 1 },
+    "contains_private_data": { "const": false },
+    "review_status": {
+      "type": "string",
+      "enum": ["example", "candidate", "reviewed", "approved", "rejected"]
+    },
+    "reviewer": { "type": "string" },
+    "target_profile": {
+      "type": "string",
+      "enum": ["hobby_static_llm_lite", "pro_static_llm_full"]
+    },
+    "expected_total_bytes": { "type": "integer", "minimum": 1 },
+    "expected_shard_count": { "type": "integer", "minimum": 1 },
+    "notes": { "type": "string" }
+  }
+}

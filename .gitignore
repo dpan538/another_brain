@@ -25,6 +25,46 @@ models/*
 !models/manifest.json
 !models/README.md
 
+# R25C local static LLM intake areas may hold reviewed-but-uncommitted model
+# artifacts. Real weights stay ignored unless a later patch explicitly admits
+# them through the static manifest and approval gates.
+static_llm/inbox/*.safetensors
+static_llm/inbox/**/*.safetensors
+static_llm/inbox/*.gguf
+static_llm/inbox/**/*.gguf
+static_llm/inbox/*.bin
+static_llm/inbox/**/*.bin
+static_llm/inbox/*.pt
+static_llm/inbox/**/*.pt
+static_llm/inbox/*.pth
+static_llm/inbox/**/*.pth
+static_llm/inbox/*.onnx
+static_llm/inbox/**/*.onnx
+static_llm/inbox/*.mlmodel
+static_llm/inbox/**/*.mlmodel
+static_llm/inbox/*.mlpackage
+static_llm/inbox/**/*.mlpackage
+static_llm/inbox/*.ckpt
+static_llm/inbox/**/*.ckpt
+static_llm/models_staging/*.safetensors
+static_llm/models_staging/**/*.safetensors
+static_llm/models_staging/*.gguf
+static_llm/models_staging/**/*.gguf
+static_llm/models_staging/*.bin
+static_llm/models_staging/**/*.bin
+static_llm/models_staging/*.pt
+static_llm/models_staging/**/*.pt
+static_llm/models_staging/*.pth
+static_llm/models_staging/**/*.pth
+static_llm/models_staging/*.onnx
+static_llm/models_staging/**/*.onnx
+static_llm/models_staging/*.mlmodel
+static_llm/models_staging/**/*.mlmodel
+static_llm/models_staging/*.mlpackage
+static_llm/models_staging/**/*.mlpackage
+static_llm/models_staging/*.ckpt
+static_llm/models_staging/**/*.ckpt
+
 # Runtime-only links and vendored WebLLM experiments are not used by the public
 # tiny-router Web SLM path.
 web/models

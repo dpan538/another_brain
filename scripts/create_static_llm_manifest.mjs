@@ -9,6 +9,13 @@ import {
   validateStaticLlmManifestObject
 } from "./static_llm_manifest_utils.mjs";
 import {
+  buildStaticManifestFromInspection,
+  inspectArtifactDirectory,
+  safeModelSlug,
+  validateArtifactMetadata,
+  writeJson
+} from "./static_llm_artifact_utils.mjs";
+import {
   STATIC_LLM_POLICY,
   isExternalUrl,
   isValidSha256,
@@ -24,13 +31,29 @@ const FIXTURE_FILES = [
 ];
 
 function parseArgs(argv) {
-  const args = { fixture: false, dryRun: false, out: DEFAULT_OUT };
+  const args = {
+    fixture: false,
+    fromArtifact: "",
+    profile: "pro_static_llm_full",
+    dryRun: true,
+    write: false,
+    admitProduction: false,
+    out: ""
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--fixture") args.fixture = true;
+    else if (arg === "--from-artifact") args.fromArtifact = argv[++index];
+    else if (arg === "--profile") args.profile = argv[++index];
     else if (arg === "--dry-run") args.dryRun = true;
+    else if (arg === "--write") {
+      args.write = true;
+      args.dryRun = false;
+    }
+    else if (arg === "--admit-production") args.admitProduction = true;
     else if (arg === "--out") args.out = argv[++index];
   }
+  if (!args.out && args.fixture) args.out = DEFAULT_OUT;
   return args;
 }
 
@@ -97,11 +120,64 @@ function productionPreflight(manifest) {
   return failures;
 }
 
+async function buildArtifactManifest(args) {
+  const inspection = await inspectArtifactDirectory(args.fromArtifact, { production: args.admitProduction });
+  const metadataValidation = validateArtifactMetadata(inspection.metadata || {}, { production: args.admitProduction });
+  const manifest = buildStaticManifestFromInspection(inspection, {
+    profile: args.profile,
+    admitProduction: args.admitProduction && inspection.ok && metadataValidation.ok
+  });
+  const slug = safeModelSlug(manifest.model_id);
+  const out = args.out || `static_llm/manifests/${slug}.${args.admitProduction ? "pro" : "candidate"}.json`;
+  const validation = await validateStaticLlmManifestObject(manifest, { root: ROOT });
+  const admittedValidation = await validateStaticLlmManifestObject(manifest, { root: ROOT, admit: true });
+  const productionFailures = productionPreflight(manifest);
+  const productionAllowed = args.admitProduction && inspection.ok && metadataValidation.ok && admittedValidation.ok && productionFailures.length === 0;
+  const ok = args.admitProduction ? productionAllowed : validation.ok && !admittedValidation.ok && productionFailures.length === 0;
+
+  let wrote = false;
+  if (ok && args.write) {
+    await writeJson(resolve(ROOT, out), manifest);
+    wrote = true;
+  }
+
+  return {
+    ok,
+    mode: "from_artifact",
+    dry_run: args.dryRun,
+    write_requested: args.write,
+    wrote,
+    out: normalizeRepoPath(out),
+    artifact_dir: inspection.dir,
+    admission_status: manifest.admission_status,
+    manifest_id: manifest.model_id,
+    profile: manifest.profile,
+    total_bytes: manifest.total_bytes,
+    inspection_ok: inspection.ok,
+    inspection_failures: inspection.failures,
+    metadata_validation_ok: metadataValidation.ok,
+    metadata_failures: metadataValidation.failures,
+    normal_validation_ok: validation.ok,
+    validation_failures: validation.failures,
+    admitted_validation_ok: admittedValidation.ok,
+    admitted_rejection_codes: admittedValidation.failures.map((failure) => failure.code),
+    production_preflight_failures: productionFailures,
+    manifest: args.dryRun ? manifest : undefined
+  };
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  if (!args.fixture) {
-    console.error("Only --fixture manifest generation is supported in R25B. Real model manifests belong to R25C admission.");
+  if (!args.fixture && !args.fromArtifact) {
+    console.error("Usage: npm run create:static-llm-manifest -- --fixture [--dry-run] OR -- --from-artifact <dir> [--profile pro_static_llm_full] [--dry-run]");
     process.exit(2);
+  }
+
+  if (args.fromArtifact) {
+    const report = await buildArtifactManifest(args);
+    console.log(JSON.stringify(report, null, 2));
+    if (!report.ok) process.exit(2);
+    return;
   }
 
   const manifest = await buildFixtureManifest();
@@ -111,7 +187,7 @@ async function main() {
   const ok = validation.ok && !admittedValidation.ok && productionFailures.length === 0;
 
   let wrote = false;
-  if (ok && !args.dryRun) {
+  if (ok && args.write) {
     const out = resolve(ROOT, args.out);
     await mkdir(dirname(out), { recursive: true });
     await writeFile(out, JSON.stringify(manifest, null, 2) + "\n", "utf8");
@@ -122,6 +198,7 @@ async function main() {
     ok,
     fixture: true,
     dry_run: args.dryRun,
+    write_requested: args.write,
     wrote,
     out: normalizeRepoPath(args.out),
     manifest_id: manifest.model_id,

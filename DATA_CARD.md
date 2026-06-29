@@ -4,8 +4,9 @@
 
 The project uses local build scripts to generate a short-answer distillation
 dataset and public browser artifacts for a local-first dialog runtime. R25
-prepares a same-origin static browser LLM path, but R25A does not add model
-weights, train a model, or call external LLM APIs.
+prepares a same-origin static browser LLM path, but R25A/R25B/R25C do not train
+a model, download weights, commit real weights by default, or call external LLM
+APIs.
 
 ## Public Data
 
@@ -24,6 +25,8 @@ Public generated files may include:
 - `identity_pack/interview_question_bank.md`
 - `static_llm/llm_manifest.schema.json`
 - `static_llm/example_manifest.*.json`
+- `static_llm/artifact_metadata.schema.json`
+- `static_llm/inbox/artifact_metadata.example.json`
 
 These files are generated for this project and are covered by the repository
 license.
@@ -60,8 +63,10 @@ Private data is not distributed:
 - Private paths allowed in public runtime: false.
 - Static LLM weights admitted in R25A: false.
 - Static LLM weights admitted in R25B: false.
+- Static LLM weights admitted in R25C: false.
 - R25B LLM corpus rows: 480 generated behavioral scaffold rows.
 - R25B corpus split policy: `train`/`dev`/`heldout`, separate from evals.
+- R25C local artifact status: no reviewed local artifact admitted.
 - Training enabled by default: false.
 
 ## Evaluation

@@ -73,5 +73,7 @@ Before real weights can be committed in R25C or later:
 - asset loader and browser budget evals pass with real assets
 - R24 recovery, shard, Vercel, anti-lobotomy, and dialogue gates remain green
 
-R25B only adds the corpus, fixture, and admission scaffolding needed for that
-future decision.
+R25C extends this with local artifact inbox policy, artifact metadata intake,
+dry-run manifest generation from local artifacts, sharding plans, candidate
+loader checks, and no-unapproved-weight guards. R25C still does not train,
+download, benchmark, or commit real weights by default.

@@ -22,6 +22,10 @@ export const STATIC_LLM_POLICY = Object.freeze({
   approvedFixturePrefixes: Object.freeze([
     "static_llm/fixtures/"
   ]),
+  approvedInboxPrefixes: Object.freeze([
+    "static_llm/inbox/",
+    "static_llm/models_staging/"
+  ]),
   approvedManifestPrefixes: Object.freeze([
     "static_llm/",
     "static_llm/manifests/",

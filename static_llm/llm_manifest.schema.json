@@ -56,6 +56,10 @@
       "type": "string",
       "enum": ["example_only", "fixture", "candidate", "license_reviewed", "admitted", "reviewed_admitted", "rejected"]
     },
+    "admission_status": {
+      "type": "string",
+      "enum": ["not_admitted", "admitted", "rejected"]
+    },
     "contains_private_data": { "const": false },
     "total_bytes": { "type": "integer", "minimum": 1 },
     "profile": {

@@ -82,6 +82,8 @@ Future training and inference changes must be measured by R24 and R25 gates:
 
 Training remains disabled by default. R25B adds training-content and decoder
 admission scaffolding only: a separated LLM corpus, split/contamination checks,
-fixture-only asset loader tests, and no-SLM product-target enforcement. Real
-model conversion and admission belong to R25C or later, after a reviewed static
-decoder artifact is selected and the R25A/R25B gates pass.
+fixture-only asset loader tests, and no-SLM product-target enforcement. R25C
+adds local artifact intake, dry-run manifest generation, sharding plans, and
+no-unapproved-weight guards. Real model commitment still requires explicit user
+approval after a reviewed static decoder artifact passes the R25A/R25B/R25C
+gates.

@@ -51,6 +51,7 @@ const RUNTIME_BACKENDS = new Set(["webgpu", "wasm", "webnn_candidate"]);
 const EXAMPLE_REVIEW_STATUSES = new Set(["example", "example_only"]);
 const FIXTURE_REVIEW_STATUSES = new Set(["fixture", "fixture_only"]);
 const ADMITTED_REVIEW_STATUSES = new Set(["admitted", "reviewed_admitted"]);
+const ADMISSION_STATUSES = new Set(["not_admitted", "admitted", "rejected"]);
 
 async function exists(path) {
   try {
@@ -181,10 +182,16 @@ export async function validateStaticLlmManifestObject(manifest, options = {}) {
   if (manifest.external_urls_allowed !== false) push(failures, "external_urls_allowed_must_be_false");
   if (manifest.backend_required !== false) push(failures, "backend_required_must_be_false");
   if (!STATIC_LLM_POLICY.profiles[manifest.profile]) push(failures, "invalid_profile", { value: manifest.profile });
+  if ("admission_status" in manifest && !ADMISSION_STATUSES.has(manifest.admission_status)) {
+    push(failures, "invalid_admission_status", { value: manifest.admission_status });
+  }
 
   if (admitMode) {
     if (example) push(failures, "example_manifest_cannot_be_admitted");
     if (fixture) push(failures, "fixture_manifest_cannot_be_admitted");
+    if (manifest.admission_status && manifest.admission_status !== "admitted") {
+      push(failures, "admitted_manifest_must_have_admitted_status", { admission_status: manifest.admission_status });
+    }
     for (const field of ["license", "license_url", "provenance", "converted_by", "conversion_tool"]) {
       if (!nonEmptyString(manifest[field])) push(failures, "admitted_manifest_missing_review_metadata", { field });
     }

@@ -19,6 +19,9 @@ static_llm/
 
 Rules:
 
+- R25C local intake happens under `static_llm/inbox/` or
+  `static_llm/models_staging/`; real files there remain ignored and unstaged by
+  default.
 - Assets must be same-origin static files.
 - Production assets must live under `static_llm/assets/` or
   `web/static_llm/assets/`.
@@ -27,7 +30,8 @@ Rules:
   and R25 budget/admission checks.
 - Fixture files under `static_llm/fixtures/` are only for loader smoke tests and
   cannot be admitted as production models.
-- R25B adds no real weights and runs no training.
+- R25C may inspect a local artifact and generate dry-run reports, but it adds
+  no real weights by default and runs no training.
 
 The expected primary future profile is `pro_static_llm_full`; the
 `hobby_static_llm_lite` profile is a constrained fallback or comparison target.

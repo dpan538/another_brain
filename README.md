@@ -26,9 +26,9 @@ user input
 
 The old tiny router and personal-200M / mini-web SLM planning surface is now legacy fallback and test harness. It is not the final product target. It remains useful for R24 regression gates, sanity checks, and bounded fallback behavior while R25 prepares static LLM admission.
 
-R25A does not ship model weights. A real model can be introduced only in R25B or later after the static manifest, budget, no-backend, license/provenance, and admission gates pass.
+R25A/R25B do not ship model weights. R25C adds local artifact intake and dry-run admission gates only; a real model can be committed only after explicit user approval and a reviewed local artifact passes manifest, budget, no-backend, license/provenance, and R24/R25 gates.
 
-The reasoning path is deliberately small. It trains the SLM to choose a response strategy, not to expose long chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic rather than a generative LLM.
+The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
 The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
 
@@ -112,6 +112,8 @@ Run the R25 static LLM scaffold gate:
 
 ```bash
 npm run check:r25-llm-first-static
+npm run check:r25b-static-decoder-training
+npm run check:r25c-static-artifact-intake
 ```
 
 Build and validate the mixed context stress suite:

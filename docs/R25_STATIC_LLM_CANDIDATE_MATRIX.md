@@ -24,6 +24,8 @@ The primary R25 target is a same-origin static decoder LLM that runs in the brow
 
 R25B adds training-content and admission scaffolding only. It does not download, convert, benchmark, or admit real weights.
 
+R25C adds the local artifact inbox, artifact metadata schema, dry-run manifest intake, sharding plan, candidate loader eval, browser storage plan, and no-unapproved-weight guard. It still does not admit a real model without a reviewed local artifact and explicit approval.
+
 The primary review class remains a small decoder-only browser candidate such as `Qwen/Qwen2.5-0.5B-Instruct`, but it is not admitted. R25C or later must perform local artifact conversion, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.
 
 No candidate row claims real browser performance.

@@ -24,9 +24,11 @@ hosted vector store, or any third-party storage product for model loading.
 Training and artifact generation happen locally before release.
 
 R25 targets a same-origin static decoder LLM that loads in the browser. R25A
-does not add weights. A future R25B model can be served only as static files
-under the approved static LLM asset path, with a reviewed manifest, real sha256
-hashes, license/provenance review, and a static budget pass.
+and R25B do not add weights. R25C adds local artifact intake and dry-run
+admission only. A future real model can be served only as static files under
+the approved static LLM asset path, with explicit user approval, a reviewed
+manifest, real sha256 hashes, license/provenance review, and a static budget
+pass.
 
 The public knowledge shards are derived locally from the reviewed source layer
 under `knowledge_sources/`. `scripts/build_knowledge_base.py` generates
@@ -74,6 +76,7 @@ npm run eval:shard-runtime
 npm run check:vercel-build
 npm run check:r25-llm-first-static
 npm run check:r25b-static-decoder-training
+npm run check:r25c-static-artifact-intake
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -103,10 +106,11 @@ under the approved static LLM asset path and only when
 `npm run check:no-backend-llm` all pass.
 
 R25B fixture files under `static_llm/fixtures/` are loader smoke-test assets
-only. They are not production weights and must not be admitted. Real static
-decoder artifacts belong to R25C or later after local conversion, reviewed
-license/provenance, real hashes, browser-budget checks, and the full R24/R25
-gate suite.
+only. They are not production weights and must not be admitted. R25C inbox files
+under `static_llm/inbox/` and `static_llm/models_staging/` are local-only and
+ignored by default. Real static decoder artifacts can be committed only after
+reviewed license/provenance, real hashes, browser-budget checks, explicit user
+approval, and the full R24/R25 gate suite.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
