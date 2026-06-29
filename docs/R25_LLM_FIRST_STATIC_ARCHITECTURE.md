@@ -87,3 +87,9 @@ adds local artifact intake, dry-run manifest generation, sharding plans, and
 no-unapproved-weight guards. Real model commitment still requires explicit user
 approval after a reviewed static decoder artifact passes the R25A/R25B/R25C
 gates.
+
+R25D adds the browser backend abstraction, worker shell, tokenizer/config
+loader scaffold, stronger asset sha/cache helpers, and a first-token smoke
+harness. With no admitted artifact, R25D passes only in fixture/blocked mode:
+the fixture backend emits a deterministic smoke token, production inference is
+reported unavailable, and real first-token smoke is skipped instead of faked.

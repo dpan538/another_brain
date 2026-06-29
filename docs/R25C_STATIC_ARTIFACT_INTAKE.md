@@ -54,3 +54,7 @@ Before real weights can be committed:
 
 If no local artifact exists, the correct R25C result is a green blocked state:
 no admitted model, fixture-only loader checks, and draft generation disabled.
+
+R25D builds on that blocked state by adding a fixture first-token backend and
+worker shell. If no artifact has been admitted, production first-token smoke
+must be skipped with an explicit `no_admitted_static_llm_manifest` reason.

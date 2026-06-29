@@ -18,6 +18,7 @@ import { sanitizeSurfaceIdentity } from "./surface_identity.js?v=6";
 import { hideQuietAffordance, showQuietAffordance } from "./affordance_ui.js?v=1";
 import { tinyDirectAnswer, tinyIntentHint, TINY_ROUTER_STATS } from "./tiny_router.js?v=15";
 import { warmKnowledgeForQuery } from "./knowledge_runtime.js?v=1";
+import { getStaticLlmRuntimeStatus } from "./static_llm_runtime.js?v=1";
 import {
   buildCompactStateFromTurns,
   compactExtractionTurnsFromState,
@@ -499,7 +500,8 @@ window.exportAnotherBrainDebugReport = function exportAnotherBrainDebugReport(op
     includeTranscript: Boolean(options.includeTranscript),
     visibleContextTurnLimit: VISIBLE_CONTEXT_TURN_LIMIT,
     rawRuntimeContextTurnLimit: RAW_RUNTIME_CONTEXT_TURN_LIMIT,
-    internalCompactContextTurnLimit: REASONING_CONTEXT_TURN_LIMIT
+    internalCompactContextTurnLimit: REASONING_CONTEXT_TURN_LIMIT,
+    staticLlmStatus: getStaticLlmRuntimeStatus()
   });
   if (options.download !== false) downloadDebugReport(report);
   return report;

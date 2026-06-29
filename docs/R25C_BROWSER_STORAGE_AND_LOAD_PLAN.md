@@ -24,3 +24,8 @@ is allowed for model loading.
 
 The draft path stays disabled until a production manifest is admitted and a
 browser inference backend is bound.
+
+R25D binds the backend interface and worker shell, but keeps the production
+draft path disabled unless an admitted manifest and real backend pass the
+first-token gate. The fixture path may test cache, sha, tokenizer/config, and
+worker plumbing only.

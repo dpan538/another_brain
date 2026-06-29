@@ -25,10 +25,11 @@ Training and artifact generation happen locally before release.
 
 R25 targets a same-origin static decoder LLM that loads in the browser. R25A
 and R25B do not add weights. R25C adds local artifact intake and dry-run
-admission only. A future real model can be served only as static files under
-the approved static LLM asset path, with explicit user approval, a reviewed
-manifest, real sha256 hashes, license/provenance review, and a static budget
-pass.
+admission only. R25D adds browser backend/worker binding and fixture
+first-token smoke tests only. A future real model can be served only as static
+files under the approved static LLM asset path, with explicit user approval, a
+reviewed manifest, real sha256 hashes, license/provenance review, first-token
+gate, and a static budget pass.
 
 The public knowledge shards are derived locally from the reviewed source layer
 under `knowledge_sources/`. `scripts/build_knowledge_base.py` generates
@@ -77,6 +78,7 @@ npm run check:vercel-build
 npm run check:r25-llm-first-static
 npm run check:r25b-static-decoder-training
 npm run check:r25c-static-artifact-intake
+npm run check:r25d-browser-inference-binding
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,

@@ -32,6 +32,8 @@ Rules:
   cannot be admitted as production models.
 - R25C may inspect a local artifact and generate dry-run reports, but it adds
   no real weights by default and runs no training.
+- R25D adds worker/backend and first-token smoke scaffolding. The fixture
+  backend is not a production model and cannot be admitted.
 
 The expected primary future profile is `pro_static_llm_full`; the
 `hobby_static_llm_lite` profile is a constrained fallback or comparison target.

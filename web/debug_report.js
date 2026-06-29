@@ -35,7 +35,8 @@ export function buildDebugReport(options = {}) {
     runtime: {
       visible_context_turn_limit: Number(options.visibleContextTurnLimit || 4),
       raw_runtime_context_turn_limit: Number(options.rawRuntimeContextTurnLimit || 4),
-      internal_compact_context_turn_limit: Number(options.internalCompactContextTurnLimit || 16)
+      internal_compact_context_turn_limit: Number(options.internalCompactContextTurnLimit || 16),
+      static_llm: options.staticLlmStatus || null
     }
   };
 

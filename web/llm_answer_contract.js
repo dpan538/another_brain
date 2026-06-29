@@ -78,6 +78,9 @@ export function validateLlmDraft({ draft = "", query = "", session = {}, evidenc
   if (/server|cloud|api call|OpenAI|Anthropic|Hugging Face|Vercel Function|Edge Function/i.test(text)) {
     failures.push("draft_claims_server_or_external_model_capability");
   }
+  if (/I (ran|executed|called) (a )?(command|script|tool)|我(已经)?(运行|执行)了(命令|脚本)|命令已执行/i.test(text)) {
+    failures.push("draft_claims_unverified_command_execution");
+  }
   if (/\/Users\/|\/private\/|完整歌词|全文如下|身份证|护照|银行卡|电话|邮箱/.test(text)) {
     failures.push("draft_trips_privacy_or_copyright_boundary");
   }
@@ -98,8 +101,16 @@ export function validateLlmDraft({ draft = "", query = "", session = {}, evidenc
   };
 }
 
-export async function finalizeLlmCandidate({ draft = "", verifier = null, fallbackFirewall = null } = {}) {
-  const validation = validateLlmDraft({ draft });
+export async function finalizeLlmCandidate({
+  draft = "",
+  query = "",
+  session = {},
+  evidence = [],
+  policy = {},
+  verifier = null,
+  fallbackFirewall = null
+} = {}) {
+  const validation = validateLlmDraft({ draft, query, session, evidence, policy });
   if (!validation.ok) {
     return {
       ok: false,

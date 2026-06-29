@@ -26,7 +26,7 @@ user input
 
 The old tiny router and personal-200M / mini-web SLM planning surface is now legacy fallback and test harness. It is not the final product target. It remains useful for R24 regression gates, sanity checks, and bounded fallback behavior while R25 prepares static LLM admission.
 
-R25A/R25B do not ship model weights. R25C adds local artifact intake and dry-run admission gates only; a real model can be committed only after explicit user approval and a reviewed local artifact passes manifest, budget, no-backend, license/provenance, and R24/R25 gates.
+R25A/R25B do not ship model weights. R25C adds local artifact intake and dry-run admission gates only. R25D adds the browser backend/worker scaffold and fixture first-token smoke harness. A real model can be committed only after explicit user approval and a reviewed local artifact passes manifest, budget, no-backend, license/provenance, first-token, and R24/R25 gates.
 
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
@@ -114,6 +114,7 @@ Run the R25 static LLM scaffold gate:
 npm run check:r25-llm-first-static
 npm run check:r25b-static-decoder-training
 npm run check:r25c-static-artifact-intake
+npm run check:r25d-browser-inference-binding
 ```
 
 Build and validate the mixed context stress suite:
