@@ -8,7 +8,10 @@ import { expandLastAnswer, rewriteLastAnswer, simplifyLastAnswer } from "./last_
 import { selectResponseMode } from "./response_mode_manager.js";
 import { classifyUserTurn } from "./user_turn_classifier.js";
 import { classifyTurnFunction } from "./turn_function_classifier.js";
+import { classifyAnswerability } from "./answerability_classifier.js";
+import { answerProjectContinuation } from "./project_continuation.js";
 import {
+  solveMicroTask,
   solveChineseArithmetic,
   solveSetQuantifierFromText,
   solveSyllogismFromText,
@@ -97,7 +100,33 @@ function makeVerifiedSolverResult({ intent, solverResult, operation, questionTyp
   return { ...result, solverResult, verifier: verification };
 }
 
-function answerWithMicroSolvers(text) {
+function answerWithGeneralMicroSolver(text, state = {}, answerability = null) {
+  const micro = solveMicroTask({ query: text, session: state });
+  if (!micro?.ok) return null;
+  const result = makeVerifiedSolverResult({
+    intent: micro.intent || "operation_micro_task",
+    solverResult: {
+      ok: true,
+      answer: micro.answer,
+      solver: micro.solver || "micro_solver",
+      operation: micro.solver || "micro_solver"
+    },
+    operation: micro.solver || "micro_solver",
+    questionType: micro.intent || "micro_task"
+  });
+  if (!result) return null;
+  return {
+    ...result,
+    route: "micro_solver",
+    microSolver: micro,
+    answerability
+  };
+}
+
+function answerWithMicroSolvers(text, state = {}, answerability = null) {
+  const general = answerWithGeneralMicroSolver(text, state, answerability);
+  if (general) return general;
+
   const arithmetic = solveChineseArithmetic(text);
   if (arithmetic.ok) {
     return makeVerifiedSolverResult({
@@ -144,6 +173,90 @@ function answerWithMicroSolvers(text) {
   }
 
   return null;
+}
+
+function answerExternalUnknown(text, answerability = null) {
+  if (answerability?.answerability !== "external_unknown") return null;
+  if (/(今天|昨晚|早饭|早餐|午饭|晚饭|桌面|电脑.*窗口|开了哪些窗口|门牌号|家门牌|房间|墙上挂)/.test(text)) {
+    return makeResult({
+      intent: "operation_unknown_private_or_current",
+      operation: "bounded_unknown_current_context",
+      questionType: "known_unknown",
+      contextAction: "ANSWER_WITH_UNCERTAINTY",
+      answer: "不知道；我没有这类当前或私人信息，不能猜。"
+    });
+  }
+  if (/(2029|还没发布|未来|会上线|已经上线|不存在的项目|R99)/i.test(text)) {
+    return makeResult({
+      intent: "operation_unknown_future_or_unverified",
+      operation: "bounded_unknown_external_fact",
+      questionType: "known_unknown",
+      contextAction: "ANSWER_WITH_UNCERTAINTY",
+      answer: "不确定，不能确认；没有可靠材料时不能把未来或外部状态说成事实。"
+    });
+  }
+  if (/(月亮|花园|开花|发生了吗|叫什么)/.test(text)) {
+    return makeResult({
+      intent: "operation_unknown_unverified_claim",
+      operation: "bounded_unknown_external_fact",
+      questionType: "known_unknown",
+      contextAction: "ANSWER_WITH_UNCERTAINTY",
+      answer: "不知道，也不能确认；需要可靠材料才答。"
+    });
+  }
+  return makeResult({
+    intent: "operation_unknown_external_fact",
+    operation: "bounded_unknown_external_fact",
+    questionType: "known_unknown",
+    contextAction: "ANSWER_WITH_UNCERTAINTY",
+    answer: "不知道；没有可验证材料时不能猜。"
+  });
+}
+
+function answerIdentityBoundary(text) {
+  if (/云端大模型|cloud/i.test(text)) {
+    return makeResult({
+      intent: "surface_identity_boundary",
+      operation: "identity_scope_check",
+      questionType: "identity_boundary",
+      contextAction: "SURFACE_IDENTITY",
+      answer: "不是云端推理路径；这里优先用本地规则、检索和静态运行时回答。"
+    });
+  }
+  if (/假装.*用户|用户本人|替代人的判断/.test(text)) {
+    return makeResult({
+      intent: "surface_identity_boundary",
+      operation: "identity_scope_check",
+      questionType: "identity_boundary",
+      contextAction: "SURFACE_IDENTITY",
+      answer: "不能。我不是用户本人，也不该替代人的判断。"
+    });
+  }
+  if (/搜索引擎/.test(text)) {
+    return makeResult({
+      intent: "surface_identity_boundary",
+      operation: "identity_scope_check",
+      questionType: "identity_boundary",
+      contextAction: "SURFACE_IDENTITY",
+      answer: "不一样；搜索引擎给网页入口，我这里做对话式回答和边界判断。"
+    });
+  }
+  if (/不知道的事说成知道/.test(text)) {
+    return makeResult({
+      intent: "surface_identity_boundary",
+      operation: "identity_scope_check",
+      questionType: "identity_boundary",
+      contextAction: "SURFACE_IDENTITY",
+      answer: "不能。未确认的事不能说成事实。"
+    });
+  }
+  return makeResult({
+    intent: "surface_identity_boundary",
+    operation: "identity_scope_check",
+    questionType: "identity_boundary",
+    contextAction: "SURFACE_IDENTITY",
+    answer: "我是这个网页里的回答对话框；能答就直接答，越界就说明边界。"
+  });
 }
 
 function parseNumber(value) {
@@ -372,7 +485,7 @@ function answerUnknownBoundary(text) {
 }
 
 function answerPrivacyBoundary(text) {
-  if (!/(真实姓名|我的姓名|私人身份|身份证号|身份证|手机号|住址|你知道我是谁|我是谁)/.test(text)) return null;
+  if (!/(真实姓名|我的姓名|私人身份|身份证号|身份证|手机号|电话号码|住址|我的地址|私人地址|银行卡|密码|私人记忆包|memory pack|本地文件路径|本地路径|公开用户|你知道我是谁|我是谁)/i.test(text)) return null;
   if (/你知道我是谁/.test(text)) {
     return makeResult({
       intent: "relation_memory_boundary",
@@ -382,13 +495,31 @@ function answerPrivacyBoundary(text) {
       answer: "这一句我不知道你是谁；前面忘了也不该猜。"
     });
   }
-  if (/身份证|手机号|住址/.test(text)) {
+  if (/密码/.test(text)) {
     return makeResult({
       intent: "operation_privacy_boundary",
       operation: "privacy_scope_check",
       questionType: "verify",
       contextAction: "ANSWER_MEMORY_BOUNDARY",
-      answer: "不能猜也不能生成证件号、手机号或住址这类私人信息。"
+      answer: "不会保存或复述密码；这类私人凭据不该进入回答。"
+    });
+  }
+  if (/银行卡|身份证|手机号|电话号码|住址|我的地址|私人地址/.test(text)) {
+    return makeResult({
+      intent: "operation_privacy_boundary",
+      operation: "privacy_scope_check",
+      questionType: "verify",
+      contextAction: "ANSWER_MEMORY_BOUNDARY",
+      answer: "不能猜、复述或生成银行卡、证件号、手机号或住址这类私人信息。"
+    });
+  }
+  if (/私人记忆包|memory pack|本地文件路径|本地路径|公开用户/i.test(text)) {
+    return makeResult({
+      intent: "operation_privacy_boundary",
+      operation: "privacy_public_boundary",
+      questionType: "verify",
+      contextAction: "ANSWER_MEMORY_BOUNDARY",
+      answer: "不能把私人记忆包或本地路径暴露给公开用户；公开页只能用已审查的安全材料。"
     });
   }
   if (/真实姓名|我的姓名/.test(text)) {
@@ -1218,9 +1349,68 @@ function answerCoverageRelationGuard(text, state = {}) {
   return null;
 }
 
-function answerReasoning(text) {
+function answerLocalCultureJudgment(text) {
+  if (/照片.*觉得旧|旧.*照片/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_photo_judgment",
+      operation: "local_photo_judgment",
+      questionType: "photo_judgment",
+      contextAction: "ANSWER_CULTURE",
+      answer: "照片会让人觉得旧，常因为时间痕迹、褪色、颗粒和记忆感一起出现。"
+    });
+  }
+  if (/摄影.*光线.*重要|光线.*摄影.*重要/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_photo_judgment",
+      operation: "local_photo_judgment",
+      questionType: "photo_judgment",
+      contextAction: "ANSWER_CULTURE",
+      answer: "光线决定照片里什么被看见，也决定阴影、层次和情绪。"
+    });
+  }
+  if (/照片.*不只是记录|不只是记录.*照片/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_photo_judgment",
+      operation: "local_photo_judgment",
+      questionType: "photo_judgment",
+      contextAction: "ANSWER_CULTURE",
+      answer: "照片不只是记录；它还包含取景选择、观看位置和人与对象的关系。"
+    });
+  }
+  if (/艺术评论.*不能.*百科|不能只背百科/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_art_judgment",
+      operation: "local_art_judgment",
+      questionType: "art_judgment",
+      contextAction: "ANSWER_CULTURE",
+      answer: "艺术评论要有判断：看作品怎样组织形式、观看和理解，不能只背百科。"
+    });
+  }
+  if (/照片.*留白|留白.*照片/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_photo_judgment",
+      operation: "local_photo_judgment",
+      questionType: "photo_judgment",
+      contextAction: "ANSWER_CULTURE",
+      answer: "留白让画面有空白和距离，给观看者停顿、想象和注意力。"
+    });
+  }
+  if (/黑白照片|照片.*黑白|黑白.*观看/.test(text)) {
+    return makeResult({
+      intent: "operation_culture_photo_judgment",
+      operation: "local_photo_judgment",
+      questionType: "photo_judgment",
+      contextAction: "ANSWER_CULTURE",
+      answer: "黑白照片拿掉颜色后，会让人更注意光影、形状和观看节奏。"
+    });
+  }
+  return null;
+}
+
+function answerReasoning(text, state = {}) {
+  const answerability = classifyAnswerability({ query: text, session: state });
   return (
-    answerWithMicroSolvers(text) ||
+    answerWithMicroSolvers(text, state, answerability) ||
     answerSafetyBoundary(text) ||
     answerGenericCopyrightBoundary(text) ||
     answerSourceBoundary(text) ||
@@ -1274,17 +1464,35 @@ function answerVerifiedCultureRuntime(text, state, responseMode) {
 export function answerWithOperationLayer(query, state = {}) {
   const text = clean(query);
   if (!text) return null;
-  if (/^(把这句话|把这句|请把这句话|请把这句).{0,8}(缩短|改短|精简|简短)|缩短[:：]/.test(text)) {
-    return null;
-  }
   const userTurn = classifyUserTurn({ query: text, session: state });
   const responseMode = selectResponseMode({ query: text, session: state });
   const turnFunction = classifyTurnFunction({ query: text, session: state, userTurn });
+  const answerability = classifyAnswerability({ query: text, session: state, routeHint: responseMode.mode, intentHint: turnFunction.turn_function });
   const safetyBoundary = answerSafetyBoundary(text);
   if (safetyBoundary) return withResponseMode(safetyBoundary, responseMode);
-  if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|地址|账号|密码/])) return withResponseMode(answerPrivacyBoundary(text), responseMode);
+  if (includesAny(text, [/银行卡|身份证|护照|签证|手机号|电话号码|住址|我的地址|私人地址|账号|密码/])) return withResponseMode(answerPrivacyBoundary(text), responseMode);
   const hardContentBoundary = answerGenericCopyrightBoundary(text, state) || answerSourceBoundary(text);
   if (hardContentBoundary) return withResponseMode(hardContentBoundary, responseMode);
+
+  if (answerability.answerability === "privacy_boundary") {
+    return withResponseMode(answerPrivacyBoundary(text), responseMode);
+  }
+
+  if (answerability.answerability === "identity_boundary") {
+    return withResponseMode(answerIdentityBoundary(text), responseMode);
+  }
+
+  if (answerability.shouldUseMicroSolver || answerability.shouldAvoidFallback) {
+    const micro = answerWithGeneralMicroSolver(text, state, answerability);
+    if (micro) return withResponseMode(micro, responseMode);
+  }
+
+  const externalUnknown = answerExternalUnknown(text, answerability);
+  if (externalUnknown) return withResponseMode(externalUnknown, responseMode);
+
+  const projectContinuation = answerProjectContinuation({ query: text, session: state });
+  if (projectContinuation?.answer) return withResponseMode(makeResult(projectContinuation), responseMode);
+
   const unknownBoundary = answerUnknownBoundary(text);
   if (unknownBoundary) return withResponseMode(unknownBoundary, responseMode);
   if (responseMode.mode === "solver_answer") {
@@ -1330,6 +1538,8 @@ export function answerWithOperationLayer(query, state = {}) {
 
   const coverageRelation = answerCoverageRelationGuard(text, state);
   if (coverageRelation) return withResponseMode(coverageRelation, responseMode);
+  const localCulture = answerLocalCultureJudgment(text);
+  if (localCulture) return withResponseMode(localCulture, responseMode);
 
   const cultureFirstTurnFunctions = new Set([
     "information_question",

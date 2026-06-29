@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build static knowledge shards from the checked-in generated JS artifact."""
+"""Build static knowledge shards from the checked-in generated JS build source."""
 
 from __future__ import annotations
 
@@ -12,9 +12,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = ROOT / "web" / "knowledge_base.generated.js"
+DEFAULT_SOURCE = ROOT / "build_sources" / "knowledge" / "knowledge_base.generated.js"
 DEFAULT_OUT_DIR = ROOT / "web" / "knowledge_shards"
 DEFAULT_MAX_BYTES = 180_000
+DEFAULT_SOURCE_OF_TRUTH = ROOT / "knowledge_sources" / "registry.json"
+NORMALIZE_RE = re.compile(r"[\s\-＿_—–~～`\"'“”‘’.,，。!?！？:：;；、()[\]{}<>《》「」『』]")
 
 STATS_RE = re.compile(
     r"export const GENERATED_KNOWLEDGE_STATS = (.*?);\n\n"
@@ -47,6 +49,10 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def normalize_term(text: object) -> str:
+    return NORMALIZE_RE.sub("", str(text or "").lower()).strip()
+
+
 def pack_shards(rows: list[list], max_bytes: int) -> list[list[list]]:
     shards: list[list[list]] = []
     current: list[list] = []
@@ -67,7 +73,47 @@ def pack_shards(rows: list[list], max_bytes: int) -> list[list[list]]:
     return shards
 
 
+def build_routing(manifest: dict, shards: list[list[list]], source_sha: str) -> dict:
+    entry_map: dict[str, set[int]] = {}
+
+    for index, cards in enumerate(shards):
+        for row in cards:
+            if len(row) < 3:
+                continue
+            terms = [row[1], *(row[2] if isinstance(row[2], list) else [])]
+            for term in terms:
+                normalized = normalize_term(term)
+                if not normalized:
+                    continue
+                entry_map.setdefault(normalized, set()).add(index)
+
+    entries = [[term, sorted(indexes)] for term, indexes in sorted(entry_map.items(), key=lambda item: item[0])]
+    routing = {
+        "schema_version": 1,
+        "source_sha256": source_sha,
+        "source_path": manifest["source"]["path"],
+        "shard_count": manifest["shard_count"],
+        "shards": [
+            {
+                "index": shard["index"],
+                "file": shard["file"],
+                "bytes": shard["bytes"],
+                "domains": shard.get("domains", []),
+                "first_label": shard.get("first_label", ""),
+                "last_label": shard.get("last_label", ""),
+            }
+            for shard in manifest["shards"]
+        ],
+        "entries": entries,
+    }
+    if "source_of_truth" in manifest:
+        routing["source_of_truth"] = manifest["source_of_truth"]
+    return routing
+
+
 def build(source: Path, out_dir: Path, max_bytes: int) -> dict:
+    source = source.resolve()
+    out_dir = out_dir.resolve()
     stats, rows = parse_source(source)
     if out_dir.exists():
         shutil.rmtree(out_dir)
@@ -102,7 +148,7 @@ def build(source: Path, out_dir: Path, max_bytes: int) -> dict:
     manifest = {
         "schema_version": 1,
         "source": {
-            "path": source.relative_to(ROOT).as_posix(),
+            "path": source.relative_to(ROOT).as_posix() if source.is_relative_to(ROOT) else source.as_posix(),
             "sha256": source_sha,
             "bytes": source.stat().st_size,
         },
@@ -112,8 +158,21 @@ def build(source: Path, out_dir: Path, max_bytes: int) -> dict:
         "shard_count": len(manifest_shards),
         "shards": manifest_shards,
     }
+    if DEFAULT_SOURCE_OF_TRUTH.exists():
+        registry = json.loads(DEFAULT_SOURCE_OF_TRUTH.read_text(encoding="utf-8"))
+        manifest["source_of_truth"] = {
+            "path": DEFAULT_SOURCE_OF_TRUTH.relative_to(ROOT).as_posix(),
+            "source_set_id": registry.get("source_set_id", ""),
+            "row_count": registry.get("row_count", len(rows)),
+            "chunk_count": len(registry.get("sources", [])),
+        }
     (out_dir / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    routing = build_routing(manifest, shards, source_sha)
+    (out_dir / "routing.json").write_text(
+        json.dumps(routing, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n",
         encoding="utf-8",
     )
     return manifest

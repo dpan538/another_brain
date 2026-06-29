@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "aliases": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "answers": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object"
+    },
+    "contains_private_data": {
+      "const": false
+    },
+    "domain": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "label": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "license_or_permission": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "order": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "source_path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "source_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "source_type": {
+          "enum": [
+            "human_seed",
+            "repo_derived",
+            "extracted_from_r24f_build_source",
+            "synthetic_llm",
+            "eval_fixture"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_type",
+        "source_path",
+        "source_sha256",
+        "method"
+      ],
+      "type": "object"
+    },
+    "review_status": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_id": {
+      "pattern": "^r24g_card_[0-9]{6}$",
+      "type": "string"
+    },
+    "source_type": {
+      "enum": [
+        "human_seed",
+        "repo_derived",
+        "extracted_from_r24f_build_source",
+        "synthetic_llm",
+        "eval_fixture"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_id",
+    "order",
+    "domain",
+    "label",
+    "aliases",
+    "answers",
+    "source_type",
+    "provenance",
+    "review_status",
+    "contains_private_data",
+    "license_or_permission",
+    "notes"
+  ],
+  "type": "object"
+}

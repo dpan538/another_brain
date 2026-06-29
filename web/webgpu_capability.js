@@ -135,7 +135,7 @@ export function selectInferenceBackend({
   const profile = String(runtimeProfile || "standard");
 
   if (/personal_200m|experimental|full/.test(profile) && !webgpuAvailable) {
-    warnings.push(`${profile} requires WebGPU for default enablement; degrade to standard local runtime`);
+    warnings.push(`${profile} is a legacy comparison profile and requires WebGPU; degrade to standard local runtime`);
   }
   if (answerSlaMs > 3000) warnings.push("answer SLA exceeds R17 3000ms target");
 

@@ -1,5 +1,10 @@
 # Browser Mini Web-LLM Profile
 
+R25 legacy note: this profile is retained for comparison only. Mini-web and
+personal-200M SLM planning is no longer the product target; R25 targets a
+same-origin static browser decoder LLM admitted by manifest, budget,
+license/provenance, and no-backend gates.
+
 another_brain remains a local-first browser runtime. Browser readiness is about budget, fallback, and safety, not about adding cloud inference.
 
 ## Profiles

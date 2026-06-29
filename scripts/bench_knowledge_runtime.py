@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RULES_PATH = ROOT / "web" / "dialog_rules.js"
-GENERATED_KNOWLEDGE_PATH = ROOT / "web" / "knowledge_base.generated.js"
+GENERATED_KNOWLEDGE_PATH = ROOT / "build_sources" / "knowledge" / "knowledge_base.generated.js"
 SURFACE_IDENTITY_PATH = ROOT / "web" / "surface_identity.js"
 CONTEXT_STATE_PATH = ROOT / "web" / "context_state.js"
 OBJECT_TABLE_PATH = ROOT / "artifacts" / "object_table.json"
@@ -144,6 +144,11 @@ def build_js(iterations: int) -> str:
         source,
     )
     source = re.sub(
+        r'^import \{ cachedKnowledgeCards, knowledgeRuntimeStats \} from "\./knowledge_runtime\.js\?v=\d+";\n\n?',
+        "",
+        source,
+    )
+    source = re.sub(
         r'^import \{ answerContextAction, createContextState, detectContextAction, nextContextState \} from "\./context_state\.js\?v=\d+";\n\n?',
         "",
         source,
@@ -153,8 +158,30 @@ def build_js(iterations: int) -> str:
         "",
         source,
     )
+    knowledge_runtime_stub = """
+const GENERATED_KNOWLEDGE_CARDS_SAFE = typeof GENERATED_KNOWLEDGE_CARDS !== "undefined" ? GENERATED_KNOWLEDGE_CARDS : [];
+const GENERATED_KNOWLEDGE_STATS_SAFE = typeof GENERATED_KNOWLEDGE_STATS !== "undefined" ? GENERATED_KNOWLEDGE_STATS : {};
+function cachedKnowledgeCards() {
+  return GENERATED_KNOWLEDGE_CARDS_SAFE;
+}
+function knowledgeRuntimeStats() {
+  return {
+    loadedShardCount: 43,
+    cardsCached: GENERATED_KNOWLEDGE_CARDS_SAFE.length,
+    shardCount: 43,
+    routingEntries: 0,
+    totalCards: GENERATED_KNOWLEDGE_CARDS_SAFE.length,
+    conceptCards: GENERATED_KNOWLEDGE_STATS_SAFE.concept_cards || GENERATED_KNOWLEDGE_CARDS_SAFE.length,
+    answerFields: GENERATED_KNOWLEDGE_STATS_SAFE.answer_fields || 0,
+    specificFactCards: GENERATED_KNOWLEDGE_STATS_SAFE.specific_fact_cards || 0,
+    sourceSha256: ""
+  };
+}
+"""
     executable_source = (
         generated_source.replace("export const ", "const ")
+        + "\n"
+        + knowledge_runtime_stub
         + "\n"
         + context_state_source.replace("export function ", "function ").replace("export const ", "const ")
         + "\n"

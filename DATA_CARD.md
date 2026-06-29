@@ -3,13 +3,14 @@
 ## Purpose
 
 The project uses local build scripts to generate a short-answer distillation
-dataset and public browser artifacts for a local-first dialog runtime.
+dataset and public browser artifacts for a local-first dialog runtime. R25
+prepares a same-origin static browser LLM path, but R25A does not add model
+weights, train a model, or call external LLM APIs.
 
 ## Public Data
 
 Public generated files may include:
 
-- `web/knowledge_base.generated.js`
 - `web/knowledge_shards/*.json`
 - `web/tiny_router_model.generated.js`
 - `web/model_inference_cases.json`
@@ -21,9 +22,17 @@ Public generated files may include:
 - `identity_pack/schemas/*.json`
 - `identity_pack/cards/seed_identity_cards.jsonl`
 - `identity_pack/interview_question_bank.md`
+- `static_llm/llm_manifest.schema.json`
+- `static_llm/example_manifest.*.json`
 
 These files are generated for this project and are covered by the repository
 license.
+
+The reviewed knowledge source of truth lives in `knowledge_sources/registry.json`
+and `knowledge_sources/cards/*.jsonl`. `build_sources/knowledge/knowledge_base.generated.js`
+is generated from those reviewed chunks and remains outside the public runtime.
+It is an intermediate build input for shard generation, not a deployable browser
+artifact.
 
 ## Private Data
 
@@ -39,6 +48,7 @@ Private data is not distributed:
 - unredacted identity/background cards
 - model checkpoints and LoRA adapters
 - local model weights
+- unreviewed static LLM assets
 
 ## Current Dataset Snapshot
 
@@ -48,6 +58,8 @@ Private data is not distributed:
 - Cloud teacher used: false.
 - Source files copied into public runtime: false.
 - Private paths allowed in public runtime: false.
+- Static LLM weights admitted in R25A: false.
+- Training enabled by default: false.
 
 ## Evaluation
 
@@ -70,6 +82,12 @@ gate now scores routing, evidence sufficiency, privacy behavior, distractor
 handling, contradiction handling, and short-answer style, but it should still be
 expanded with harder held-out case families before claiming broad reasoning
 ability.
+
+R24 recovery and shard gates are retained as guardrail, fallback, and regression
+infrastructure. The R25 target is a browser-side static decoder LLM that drafts
+from same-origin assets and is wrapped by verifier/finalizer/fallback gates.
+SLM/personal-200M artifacts are legacy comparison surfaces, not the final
+product target.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

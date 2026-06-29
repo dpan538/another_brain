@@ -1,4 +1,4 @@
-import { GENERATED_KNOWLEDGE_CARDS, GENERATED_KNOWLEDGE_STATS } from "./knowledge_base.generated.js?v=10";
+import { cachedKnowledgeCards, knowledgeRuntimeStats } from "./knowledge_runtime.js?v=1";
 import { answerContextAction, createContextState, detectContextAction, nextContextState } from "./context_state.js?v=2";
 import { answerSurfaceIdentity, surfaceIdentityIntent } from "./surface_identity.js?v=4";
 
@@ -1833,13 +1833,14 @@ function buildKnowledgeAliasIndex(entries) {
 function candidateKnowledgeAliasEntries(query) {
   const lower = query.toLowerCase();
   const keys = new Set(Array.from(lower).filter((char) => /\S/.test(char)));
+  const aliasCache = currentKnowledgeAliasCache();
   for (const word of lower.match(/[a-z][a-z0-9_+\-]{1,}/g) || []) {
     keys.add(word[0]);
   }
   const seen = new Set();
   const candidates = [];
   for (const key of keys) {
-    for (const entry of KNOWLEDGE_ALIAS_INDEX.get(key) || []) {
+    for (const entry of aliasCache.index.get(key) || []) {
       if (seen.has(entry.entryIndex)) continue;
       seen.add(entry.entryIndex);
       candidates.push(entry);
@@ -1848,9 +1849,32 @@ function candidateKnowledgeAliasEntries(query) {
   return candidates.sort((left, right) => left.entryIndex - right.entryIndex);
 }
 
-const ALL_KNOWLEDGE_CARDS = dedupeKnowledgeCards([...BASE_KNOWLEDGE_CARDS, ...GENERATED_KNOWLEDGE_CARDS]);
-const KNOWLEDGE_ALIAS_ENTRIES = buildKnowledgeAliasEntries(ALL_KNOWLEDGE_CARDS);
-const KNOWLEDGE_ALIAS_INDEX = buildKnowledgeAliasIndex(KNOWLEDGE_ALIAS_ENTRIES);
+let knowledgeAliasCacheKey = "";
+let knowledgeAliasCache = {
+  cards: [],
+  entries: [],
+  index: new Map()
+};
+
+function currentKnowledgeCards() {
+  return dedupeKnowledgeCards([...BASE_KNOWLEDGE_CARDS, ...cachedKnowledgeCards()]);
+}
+
+function currentKnowledgeAliasCache() {
+  const stats = knowledgeRuntimeStats();
+  const cacheKey = `${stats.loadedShardCount}:${stats.cardsCached}`;
+  if (cacheKey !== knowledgeAliasCacheKey) {
+    const cards = currentKnowledgeCards();
+    const entries = buildKnowledgeAliasEntries(cards);
+    knowledgeAliasCache = {
+      cards,
+      entries,
+      index: buildKnowledgeAliasIndex(entries)
+    };
+    knowledgeAliasCacheKey = cacheKey;
+  }
+  return knowledgeAliasCache;
+}
 
 function metaKnowledgeIntent(query) {
   const text = String(query || "").trim();
@@ -2053,12 +2077,24 @@ function cultureAwarenessIntent(query) {
 
 export const KNOWLEDGE_RUNTIME_STATS = Object.freeze({
   curatedConceptCards: BASE_KNOWLEDGE_CARDS.length,
-  generatedConceptCards: GENERATED_KNOWLEDGE_STATS.concept_cards,
-  totalConceptCards: ALL_KNOWLEDGE_CARDS.length,
-  aliasEntries: KNOWLEDGE_ALIAS_ENTRIES.length,
-  aliasIndexKeys: KNOWLEDGE_ALIAS_INDEX.size,
-  generatedAnswerFields: GENERATED_KNOWLEDGE_STATS.answer_fields,
-  generatedSpecificFactCards: GENERATED_KNOWLEDGE_STATS.specific_fact_cards
+  get generatedConceptCards() {
+    return knowledgeRuntimeStats().conceptCards;
+  },
+  get totalConceptCards() {
+    return currentKnowledgeAliasCache().cards.length;
+  },
+  get aliasEntries() {
+    return currentKnowledgeAliasCache().entries.length;
+  },
+  get aliasIndexKeys() {
+    return currentKnowledgeAliasCache().index.size;
+  },
+  get generatedAnswerFields() {
+    return knowledgeRuntimeStats().answerFields;
+  },
+  get generatedSpecificFactCards() {
+    return knowledgeRuntimeStats().specificFactCards;
+  }
 });
 
 export function detectIntent(query, state = {}) {

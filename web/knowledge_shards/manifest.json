@@ -34,7 +34,7 @@
       "first_label": "毛巾",
       "index": 0,
       "last_label": "博物馆",
-      "sha256": "627dbe4920ab97f1593202f07b69f647394f207476588df40075b4d5ac94eb43"
+      "sha256": "b8cbd166d47282c9ae34e1b8f6d4e27df09b95a9c818c9a43fbcf0202219facd"
     },
     {
       "bytes": 179959,
@@ -62,7 +62,7 @@
       "first_label": "画廊",
       "index": 1,
       "last_label": "约翰内斯堡",
-      "sha256": "83c898fe8b28c8afe16f147edbb03220273c046c4b0c153d270c6fb7fbe367fc"
+      "sha256": "daeac74ec622cf045ba4dd14582c9bcb8ea4b972b9932d5f6e4213440d82bf8f"
     },
     {
       "bytes": 179945,
@@ -91,7 +91,7 @@
       "first_label": "内罗毕",
       "index": 2,
       "last_label": "差异系统",
-      "sha256": "ac451a45ed282839176f566018133517f41893cd908e0065d892fbc24abeca06"
+      "sha256": "1abc15759393ad99b58015e17e8db5cf1f0547e586e2ae1ad41fa33c67e38297"
     },
     {
       "bytes": 179991,
@@ -113,7 +113,7 @@
       "first_label": "语言系统",
       "index": 3,
       "last_label": "证据语气",
-      "sha256": "f16cf941cdc81edb94b2b21e9fda42096e206de00f389e27093573aa9e19864b"
+      "sha256": "c6f84414a2feab46579ff51c2ca7b071ae20b28493ab50394567d56df6215e81"
     },
     {
       "bytes": 179861,
@@ -621,9 +621,15 @@
     }
   ],
   "source": {
-    "bytes": 7645757,
-    "path": "web/knowledge_base.generated.js",
-    "sha256": "803a20373a02685e9d7f98e732b1a622c848ac886b3bcd290cc693c7cbf46454"
+    "bytes": 7645750,
+    "path": "build_sources/knowledge/knowledge_base.generated.js",
+    "sha256": "b9b011efaa47c423b35fd8f09f88d7761d56ad5fd8aba88a26c7709c40a8108c"
+  },
+  "source_of_truth": {
+    "chunk_count": 37,
+    "path": "knowledge_sources/registry.json",
+    "row_count": 55151,
+    "source_set_id": "r24g_knowledge_sources"
   },
   "stats": {
     "answer_fields": 58975,
@@ -702,7 +708,7 @@
       "web",
       "world_place"
     ],
-    "generated_at": "2026-06-14T03:17:20.005540+00:00",
+    "generated_at": "2026-06-28T00:00:00+00:00",
     "policy": {
       "cloud_inference_api_allowed": false,
       "contains_internal_asset_labels": false,

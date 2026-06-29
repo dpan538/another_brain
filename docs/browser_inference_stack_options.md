@@ -1,5 +1,9 @@
 # Browser Inference Stack Options
 
+R25 legacy note: 100M-200M personal-profile discussion is retained only as
+historical comparison. R25 chooses a same-origin static browser decoder LLM path
+and rejects encoder-only or SLM-sized models as the final product target.
+
 another_brain can support several local inference stacks, but the public runtime must remain no-cloud and verifier-gated.
 
 ## Stack Summary

@@ -21,7 +21,7 @@ export const RESPONSE_MODES = Object.freeze({
 });
 
 const BAD_QUALITY = new Set(["bad_fallback", "firewall_rewritten", "verifier_rejected", "accepted_but_too_generic"]);
-const SIMPLIFY_RE = /(是否能简单一点|能不能简单|简单一点|简单点|再短一点|短一点|说简单点|说人话|别那么玄|别那么复杂)/;
+const SIMPLIFY_RE = /(是否能简单一点|能不能简单|简单一点|简单点|再短一点|短一点|一句话|说简单点|说人话|别那么玄|别那么复杂)/;
 const REWRITE_RE = /(换个说法|重新说|说清楚|更具体|别这样说|别这么玄|换一种说法|讲清楚一点)/;
 const EXPAND_RE = /(展开一点|展开说|详细一点|再具体一点|说具体点|具体点|多说一点|继续展开)/;
 const EXPLICIT_REPAIR_RE = /(什么发生过|发生过什么|哪一边|什么哪一边|我不是已经问了吗|不是已经问|我已经问|已经问了|你刚才答偏|你没接住|刚才没接住|不是这个意思|你又绕回|你说的哪一边是什么意思|你刚才说.{0,20}是什么意思|你刚才什么意思|你刚才说什么|为什么这么答|是不是答偏|是不是在绕圈)/;

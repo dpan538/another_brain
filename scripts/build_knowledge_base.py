@@ -13,7 +13,8 @@ from typing import Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_JSON_OUT = ROOT / "artifacts" / "knowledge_base.generated.json"
-DEFAULT_WEB_OUT = ROOT / "web" / "knowledge_base.generated.js"
+DEFAULT_BUILD_SOURCE_OUT = ROOT / "build_sources" / "knowledge" / "knowledge_base.generated.js"
+DEFAULT_SOURCE_REGISTRY = ROOT / "knowledge_sources" / "registry.json"
 
 
 def terms(text: str) -> list[str]:
@@ -40,6 +41,60 @@ def alias_parts(label: str) -> list[str]:
 
 def clean_label(label: str) -> str:
     return alias_parts(label)[0]
+
+
+def read_jsonl(path: Path) -> list[dict]:
+    rows = []
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        try:
+            rows.append(json.loads(stripped))
+        except json.JSONDecodeError as error:
+            raise SystemExit(f"invalid knowledge source JSONL: {path}:{line_number}: {error}") from error
+    return rows
+
+
+def build_cards_from_sources(registry_path: Path) -> tuple[list[dict], str | None]:
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    sources = registry.get("sources", [])
+    if not isinstance(sources, list) or not sources:
+        raise SystemExit(f"knowledge source registry has no sources: {registry_path}")
+
+    cards: list[dict] = []
+    seen_orders: set[int] = set()
+    seen_ids: set[str] = set()
+    for source in sorted(sources, key=lambda item: (item.get("index", 0), item.get("path", ""))):
+        source_path = ROOT / "knowledge_sources" / source["path"]
+        for row in read_jsonl(source_path):
+            source_id = str(row.get("source_id") or "")
+            order = row.get("order")
+            if not source_id:
+                raise SystemExit(f"knowledge source row missing source_id: {source_path}")
+            if source_id in seen_ids:
+                raise SystemExit(f"duplicate knowledge source_id: {source_id}")
+            if not isinstance(order, int):
+                raise SystemExit(f"knowledge source row has non-integer order: {source_id}")
+            if order in seen_orders:
+                raise SystemExit(f"duplicate knowledge source order: {order}")
+            seen_ids.add(source_id)
+            seen_orders.add(order)
+            cards.append(
+                {
+                    "order": order,
+                    "domain": str(row.get("domain") or ""),
+                    "label": str(row.get("label") or ""),
+                    "aliases": row.get("aliases") if isinstance(row.get("aliases"), list) else [],
+                    "answers": row.get("answers") if isinstance(row.get("answers"), dict) else {},
+                }
+            )
+
+    cards.sort(key=lambda card: card["order"])
+    for expected, card in enumerate(cards):
+        if card["order"] != expected:
+            raise SystemExit(f"knowledge source order is not contiguous at {expected}: {card['order']}")
+    return [{key: card[key] for key in ("domain", "label", "aliases", "answers")} for card in cards], registry.get("generated_at")
 
 
 def style_line(label: str, domain: str) -> str:
@@ -4263,13 +4318,13 @@ def build_cards() -> list[dict]:
     return deduped
 
 
-def write_outputs(cards: list[dict], json_out: Path, web_out: Path) -> dict:
+def write_outputs(cards: list[dict], json_out: Path, build_source_out: Path, generated_at: str | None = None) -> dict:
     json_out.parent.mkdir(parents=True, exist_ok=True)
-    web_out.parent.mkdir(parents=True, exist_ok=True)
+    build_source_out.parent.mkdir(parents=True, exist_ok=True)
 
     stats = {
         "schema_version": 1,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": generated_at or datetime.now(timezone.utc).isoformat(),
         "concept_cards": len(cards),
         "answer_fields": sum(len(card["answers"]) for card in cards),
         "specific_fact_cards": sum(1 for card in cards if card["label"] in SPECIFIC_FACTS),
@@ -4305,11 +4360,11 @@ def write_outputs(cards: list[dict], json_out: Path, web_out: Path) -> dict:
         + '  label, aliases, kind: "common_knowledge", domain, answers\n'
         + "}));\n"
     )
-    web_out.write_text(web_text, encoding="utf-8")
+    build_source_out.write_text(web_text, encoding="utf-8")
 
     return {
         "json_out": json_out.as_posix(),
-        "web_out": web_out.as_posix(),
+        "build_source_out": build_source_out.as_posix(),
         "sha256": hashlib.sha256(json_text.encode("utf-8")).hexdigest(),
         **stats,
     }
@@ -4318,11 +4373,27 @@ def write_outputs(cards: list[dict], json_out: Path, web_out: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build generated local common-knowledge cards.")
     parser.add_argument("--json-out", default=DEFAULT_JSON_OUT)
-    parser.add_argument("--web-out", default=DEFAULT_WEB_OUT)
+    parser.add_argument(
+        "--build-source-out",
+        "--web-out",
+        dest="build_source_out",
+        default=DEFAULT_BUILD_SOURCE_OUT,
+        help="generated JS build source path; --web-out is kept as a compatibility alias",
+    )
+    parser.add_argument("--registry", default=DEFAULT_SOURCE_REGISTRY)
+    parser.add_argument(
+        "--legacy-script-source",
+        action="store_true",
+        help="ignore knowledge_sources/registry.json and rebuild from the legacy script-defined generator",
+    )
     args = parser.parse_args()
 
-    cards = build_cards()
-    result = write_outputs(cards, Path(args.json_out), Path(args.web_out))
+    registry_path = Path(args.registry)
+    if not args.legacy_script_source and registry_path.exists():
+        cards, generated_at = build_cards_from_sources(registry_path)
+    else:
+        cards, generated_at = build_cards(), None
+    result = write_outputs(cards, Path(args.json_out), Path(args.build_source_out), generated_at=generated_at)
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 

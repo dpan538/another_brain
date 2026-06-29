@@ -1,5 +1,10 @@
 # Mini Web-LLM Readiness
 
+R25 legacy note: this readiness audit is retained for historical comparison and
+fallback planning only. It is not static LLM admission and does not define the
+final product target. R25 targets a same-origin static browser decoder LLM, not
+an expanded SLM/rule-heavy path.
+
 another_brain should be evaluated as a hybrid local runtime, not as a generic chatbot and not as a tiny answer bank.
 
 ```text

@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "model_id": "example-hobby-decoder-do-not-admit",
+  "model_family": "example_decoder_family",
+  "architecture": "decoder_only",
+  "parameter_count": 350000000,
+  "quantization": "q4-example",
+  "context_length": 4096,
+  "tokenizer": "example-tokenizer-do-not-admit",
+  "runtime_backend": "webgpu",
+  "license": "EXAMPLE_ONLY",
+  "license_url": "",
+  "source_url": "example-only-no-runtime-url",
+  "converted_by": "example-only",
+  "conversion_tool": "example-converter",
+  "provenance": "Example manifest only. Not reviewed. Do not admit.",
+  "review_status": "example_only",
+  "contains_private_data": false,
+  "total_bytes": 86000000,
+  "profile": "hobby_static_llm_lite",
+  "files": [
+    {
+      "path": "static_llm/assets/example-hobby-do-not-admit/model-q4-shard-00001.bin.example",
+      "bytes": 32000000,
+      "sha256": "example_hobby_weights_00001_DO_NOT_ADMIT",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/example-hobby-do-not-admit/model-q4-shard-00002.bin.example",
+      "bytes": 32000000,
+      "sha256": "example_hobby_weights_00002_DO_NOT_ADMIT",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/example-hobby-do-not-admit/model-q4-shard-00003.bin.example",
+      "bytes": 18000000,
+      "sha256": "example_hobby_weights_00003_DO_NOT_ADMIT",
+      "role": "weights",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/example-hobby-do-not-admit/tokenizer.json.example",
+      "bytes": 3000000,
+      "sha256": "example_hobby_tokenizer_DO_NOT_ADMIT",
+      "role": "tokenizer",
+      "required": true
+    },
+    {
+      "path": "static_llm/assets/example-hobby-do-not-admit/config.json.example",
+      "bytes": 1000000,
+      "sha256": "example_hobby_config_DO_NOT_ADMIT",
+      "role": "config",
+      "required": true
+    }
+  ],
+  "shard_policy": {
+    "max_file_bytes": 64000000,
+    "target_file_bytes": 32000000,
+    "shard_count": 5
+  },
+  "same_origin_only": true,
+  "external_urls_allowed": false,
+  "backend_required": false
+}

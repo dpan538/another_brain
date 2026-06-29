@@ -10,6 +10,8 @@ models/**
 !models/README.md
 
 web/brain_pack.js
+# Defensive guard: R24F moved this build source to build_sources/knowledge/.
+web/knowledge_base.generated.js
 web/models
 web/vendor
 

@@ -33,6 +33,7 @@ function passScore(condition, value = 1) {
 }
 
 async function main() {
+  console.warn("[legacy] mini web LLM readiness is a historical audit, not R25 static LLM admission.");
   const r9 = await readJson("artifacts/training_os/r9_regression_report.json");
   const r10 = await readJson("artifacts/training_os/r10_culture_report.json");
   const r11 = await readJson("artifacts/training_os/r11_reasoning_report.json");

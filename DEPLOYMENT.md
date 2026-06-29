@@ -9,14 +9,29 @@ Vercel static hosting
   -> web/index.html
   -> web/app.js
   -> web/dialog_rules.js
-  -> web/knowledge_base.generated.js
-  -> web/knowledge_shards/*.json
-  -> web/tiny_router_model.generated.js
+  -> web/knowledge_runtime.js
+  -> web/knowledge_shards/manifest.json
+  -> web/knowledge_shards/routing.json
+  -> selected web/knowledge_shards/shard_XXX.json files
+  -> legacy fallback/runtime guardrails
+  -> future same-origin /static_llm/assets/... files after admission
 ```
 
-Vercel must not run model inference, generate private memory artifacts, or build
-local memory packs. Training and artifact generation happen locally before
-release.
+Vercel must not run model inference, generate private memory artifacts, build
+local memory packs, call external model APIs, or use Functions/Edge Functions
+for LLM inference. It must not rely on Blob, KV, Postgres, Redis, AI Gateway, a
+hosted vector store, or any third-party storage product for model loading.
+Training and artifact generation happen locally before release.
+
+R25 targets a same-origin static decoder LLM that loads in the browser. R25A
+does not add weights. A future R25B model can be served only as static files
+under the approved static LLM asset path, with a reviewed manifest, real sha256
+hashes, license/provenance review, and a static budget pass.
+
+The public knowledge shards are derived locally from the reviewed source layer
+under `knowledge_sources/`. `scripts/build_knowledge_base.py` generates
+`build_sources/knowledge/knowledge_base.generated.js` from that source layer,
+then `scripts/build_knowledge_shards.py` generates the deployable shard files.
 
 ## Vercel Settings
 
@@ -54,11 +69,15 @@ Run:
 ```bash
 npm run check
 npm run check:knowledge-shards
+npm run check:knowledge-runtime
+npm run eval:shard-runtime
 npm run check:vercel-build
+npm run check:r25-llm-first-static
 ```
 
-This validates release safety, distillation metadata, tiny router readiness,
-persona behavior, context stress behavior, and the Node model gate.
+This validates release safety, legacy fallback readiness, persona behavior,
+context stress behavior, static LLM admission scaffolding, and the Node model
+gate.
 
 ## Public Artifact Rule
 
@@ -66,10 +85,26 @@ Only public runtime files under `web/` should be deployed. Do not deploy:
 
 - `artifacts/**`
 - `web/brain_pack.js`
+- `web/knowledge_base.generated.js`
 - `web/models`
 - `web/vendor`
+- unadmitted `web/static_llm/assets/**`
+- static LLM manifests with external asset URLs
 - local checkpoints
 - LoRA adapters
 - drive inventories
-- source materials
+- source materials outside the reviewed build-source set
 - `.env` or Vercel credentials
+
+Model weights are banned everywhere by default. They become deployable only
+under the approved static LLM asset path and only when
+`npm run check:static-llm-manifest`, `npm run check:static-llm-budget`, and
+`npm run check:no-backend-llm` all pass.
+
+The monolithic generated knowledge build source lives at
+`build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
+generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It
+is used by `npm run build:knowledge` to regenerate `web/knowledge_shards/`, but
+it must not be copied into deployable public runtime JavaScript. The public
+knowledge runtime should use `web/knowledge_runtime.js`, `manifest.json`,
+`routing.json`, and lazily selected shard JSON files.
