@@ -1,14 +1,15 @@
 # Static LLM Asset Layout
 
-R25B keeps real model weights out of the repository. The target layout for a
-future admitted static decoder LLM is:
+R25B keeps real model weights out of the repository. R25I clarifies that the
+main target layout is for a future self-trained release artifact produced by
+the project's from-scratch training pipeline:
 
 ```text
 static_llm/
   manifests/
-    <model-id>.json
+    <release-id>.json
   assets/
-    <model-id>/
+    <release-id>/
       config.json
       tokenizer.json
       model-00001.<reviewed-format>
@@ -45,6 +46,9 @@ Rules:
 - R25H adds `static_llm/capacity_profiles/` and
   `static_llm/manifests/dryrun/` for metadata-only capacity planning. Dry-run
   manifests are non-production and cannot be admitted.
+- R25I adds `static_llm/release_decisions/` for future self-trained release
+  records. External artifacts are baseline/compatibility only, and LoRA or
+  adapter paths are not the final strategy.
 
 The expected primary future profile is `pro_static_llm_full`; the
 `hobby_static_llm_lite` profile is a constrained fallback or comparison target.

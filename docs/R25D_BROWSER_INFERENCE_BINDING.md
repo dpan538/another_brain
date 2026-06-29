@@ -54,3 +54,7 @@ selected by the backend layer.
 R25H capacity dry-runs are not backend support. They only estimate static
 asset, shard, browser memory, and cache pressure before a future reviewed
 artifact exists.
+
+R25I clarifies that the eventual production backend should bind to a future
+self-trained release artifact. Existing pretrained artifacts are baseline or
+compatibility inputs only, and LoRA/adapters are not the final strategy.

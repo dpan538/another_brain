@@ -24,8 +24,10 @@ returns `ok: true` only when:
 - no backend, external storage, or remote model URL is used
 - fixture output does not expose hidden prompts or chain-of-thought markers
 
-Real first-token success belongs to R25E or later, after the user supplies and
-approves a reviewed local decoder artifact under the static Pro profile.
+Real first-token success belongs to R25E or later, after a future self-trained
+release artifact is produced, reviewed, admitted, and approved under the static
+Pro profile. A user-supplied external artifact may exercise the path only as a
+baseline or compatibility input.
 
 R25E adds `--require-production` mode. That mode must fail unless a production
 manifest is admitted and a real backend, not the fixture or an R25D stub,
@@ -38,3 +40,7 @@ artifact.
 R25H dry-run manifests cannot satisfy the real first-token gate. Real first
 token still requires a production-admitted manifest, verified assets,
 tokenizer/config loading, and a real supported browser backend.
+
+R25I does not run training and does not create a real first-token target. It
+only clarifies that the eventual real token should come from the project's own
+trained release artifact, not a LoRA/adapted pretrained model as final strategy.

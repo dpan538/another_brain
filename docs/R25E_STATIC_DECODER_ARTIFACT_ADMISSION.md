@@ -2,17 +2,21 @@
 
 R25E attempts admission of a reviewed local decoder artifact under the
 `pro_static_llm_full` profile. It does not download, train, or commit weights.
-R25F resets candidate selection, so R25E remains model-agnostic unless the user
-supplies a reviewed local decoder artifact.
-R25G adds a candidate decision step before that artifact intake. A reviewed
-decision record may authorize inspection, but it still does not admit weights.
+R25I reframes the main path: R25E should primarily admit a future self-trained
+release artifact produced by the project's from-scratch training pipeline.
+External artifacts may use the same gate only as reviewed baseline or
+compatibility inputs.
+
+R25F resets candidate selection, and R25G adds a decision step before artifact
+intake. R25I adds release decisions for self-trained artifacts. Neither
+decision record admits weights.
 
 Approved local search paths:
 
 - `static_llm/inbox/`
 - `static_llm/models_staging/`
 
-If no candidate directory with `artifact_metadata.json` exists, R25E is
+If no release or baseline directory with `artifact_metadata.json` exists, R25E is
 blocked with `no_local_decoder_artifact_found`. That blocked result is green
 only because it proves the repo did not fake model admission.
 
@@ -40,3 +44,7 @@ performance.
 R25H adds metadata-only capacity dry-runs before any future admission attempt.
 Those dry-run manifests are not production, do not contain real weights, and do
 not replace R25E license/provenance/hash/backend checks.
+
+R25I adds the from-scratch doctrine: candidate admission is release packaging,
+not external model selection. LoRA, fine-tuning, and adapters are rejected as
+the final product strategy.

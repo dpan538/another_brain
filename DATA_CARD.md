@@ -4,11 +4,13 @@
 
 The project uses local build scripts to generate a short-answer distillation
 dataset and public browser artifacts for a local-first dialog runtime. R25
-prepares a same-origin static browser LLM path, but R25A/R25B/R25C do not train
-a model, download weights, commit real weights by default, or call external LLM
-APIs. R25D adds fixture first-token smoke coverage only; it does not add a real
+prepares a same-origin static browser LLM path. R25I clarifies that the final
+target is a project-trained decoder LLM trained from scratch, then exported as
+a static browser release artifact. R25A/R25B/R25C do not train a model,
+download weights, commit real weights by default, or call external LLM APIs.
+R25D adds fixture first-token smoke coverage only; it does not add a real
 production model. R25E adds local artifact admission checks and remains blocked
-unless a reviewed local decoder artifact is supplied.
+unless a reviewed release artifact is supplied.
 R25F resets the model-selection surface to a model-agnostic reviewed decoder
 artifact placeholder and does not introduce a new named candidate.
 R25G adds model-agnostic candidate decision records, conversion path review,
@@ -86,6 +88,8 @@ Private data is not distributed:
   weights.
 - R25H capacity status: metadata-only capacity profiles and dry-run manifests;
   no artifact admission and no real performance evidence.
+- R25I training status: from-scratch doctrine and plans only; formal training
+  progress `0%`.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -121,6 +125,10 @@ It is project-authored behavioral data, not model output, not private data, not
 chain-of-thought data, and not factual knowledge-card expansion. It must pass
 corpus validation, eval-contamination checks, and coverage reporting before any
 future training use.
+
+R25I adds `training/from_scratch/` as the doctrine and planning surface for the
+future model. LoRA, fine-tuning, adapters, and pretrained imports are not the
+final product strategy; external artifacts are comparison or compatibility only.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

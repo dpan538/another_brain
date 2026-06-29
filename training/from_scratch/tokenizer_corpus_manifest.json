@@ -1,0 +1,20 @@
+{
+  "tokenizer_id": "project_bilingual_tokenizer_tbd",
+  "status": "planned_not_trained",
+  "languages": ["zh", "en", "mixed"],
+  "normalization": "deterministic_unicode_normalization_review_required",
+  "target_vocab_sizes": [16000, 24000, 32000],
+  "special_tokens": ["<pad>", "<bos>", "<eos>", "<unk>", "<user>", "<assistant>", "<evidence>", "<final>"],
+  "forbidden_sources": [
+    "raw_private_data",
+    "chain_of_thought",
+    "eval_prompt_copying",
+    "long_copyrighted_text",
+    "unreviewed_external_model_output"
+  ],
+  "heldout_eval_required": true,
+  "future_artifact_paths": [
+    "artifacts/training_os/tokenizers/",
+    "static_llm/assets/<release>/tokenizer.json"
+  ]
+}

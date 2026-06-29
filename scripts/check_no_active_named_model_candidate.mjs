@@ -36,6 +36,7 @@ function isRepoPathOrGateToken(token = "") {
     || /\.(mjs|js|json|md|py|sh|html|css)$/.test(token)
     || /^R\d+[A-Z]?\/R\d+[A-Z]?/.test(token)
     || /^(license|manifest|config|tokenizer|WebGPU|Vercel|inbox|preview|route|worker|example|fallback|memory|browser|cache|storage|token)\/[A-Za-z0-9_.-]+/.test(token)
+    || /^(baseline|compatibility|candidate|release|training|self-trained)\/[A-Za-z0-9_.-]+/.test(token)
     || /^json-schema\.org\//.test(token)
     || /^[A-Z]{2,}\/[a-z.]+/.test(token);
 }

@@ -1,0 +1,20 @@
+{
+  "release_id": "template-self-trained-release",
+  "model_origin": "self_trained_from_scratch",
+  "training_run_id": "placeholder_training_run_id",
+  "architecture_id": "browser_decoder_v0",
+  "tokenizer_id": "placeholder_tokenizer_id",
+  "corpus_version": "placeholder_corpus_version",
+  "checkpoint_id": "placeholder_checkpoint_id",
+  "quantization": "placeholder_quantization",
+  "static_profile": "pro_static_llm_full",
+  "total_asset_bytes": 0,
+  "shard_count": 0,
+  "largest_shard_bytes": 0,
+  "backend_format": "placeholder_browser_backend_format",
+  "license": "project-authored",
+  "provenance": "placeholder_training_provenance",
+  "reviewer": "",
+  "admission_status": "template",
+  "notes": "Template only. A release decision does not commit weights or bypass R25E/R25H gates."
+}

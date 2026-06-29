@@ -9,45 +9,65 @@ const JSON_OUT = resolve(ROOT, "artifacts/training_os/r25_static_llm_candidate_m
 
 const candidates = [
   {
-    model_id: "local_reviewed_decoder_artifact_tbd",
+    model_id: "self_trained_browser_decoder_release_tbd",
     parameter_count: 0,
     architecture: "decoder_only",
     expected_quantized_size_mb: 0,
     tokenizer_size_mb: 0,
-    license: "tbd_review_required",
-    chinese_support: "tbd",
-    browser_backend_feasibility: "awaiting local artifact metadata and browser budget review",
+    license: "project-authored-after-training",
+    chinese_support: "planned_zh_en_mixed_tokenizer_and_corpus",
+    browser_backend_feasibility: "future project-trained release must pass R25E/R25H static gates",
     profile_fit: {
-      hobby_static_llm_lite: "tbd_after_artifact_review",
-      pro_static_llm_full: "awaiting_reviewed_local_decoder_artifact"
+      hobby_static_llm_lite: "optional_likely_rejects_scaled_release",
+      pro_static_llm_full: "primary_profile_for_self_trained_release"
     },
     risks: [
-      "no named model is selected in R25G",
-      "user must supply or approve a reviewed local decoder artifact later",
-      "license, provenance, manifest hashes, static budget, and backend support remain required",
-      "no browser performance claim before measurement"
+      "training has not started",
+      "architecture, tokenizer, corpus, checkpoint, quantization, and backend format remain pending",
+      "release decision does not commit weights or bypass admission gates",
+      "no browser performance claim before a real self-trained artifact passes first-token checks"
     ],
-    admission_status: "candidate_selection_reset"
+    admission_status: "from_scratch_release_planned_not_trained"
   },
   {
-    model_id: "browser_ready_decoder_artifact_tbd",
+    model_id: "project_tiny_decoder_sanity_model_not_product",
+    parameter_count: 0,
+    architecture: "decoder_only",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "project-authored-after-training",
+    chinese_support: "pipeline_sanity_only",
+    profile_fit: {
+      hobby_static_llm_lite: "may_fit_if_tiny",
+      pro_static_llm_full: "fits_if_tiny"
+    },
+    risks: [
+      "toy overfit sanity model is not the product",
+      "must never be represented as capability progress beyond pipeline testing",
+      "no training command is added in R25I"
+    ],
+    browser_backend_feasibility: "future toy pipeline check only",
+    admission_status: "future_toy_sanity_not_product"
+  },
+  {
+    model_id: "baseline_external_decoder_comparison_only",
     parameter_count: 0,
     architecture: "decoder_only",
     expected_quantized_size_mb: 0,
     tokenizer_size_mb: 0,
     license: "tbd_review_required",
-    chinese_support: "tbd",
-    browser_backend_feasibility: "requires browser-ready format, same-origin assets, and reviewed local conversion",
+    chinese_support: "comparison_only",
+    browser_backend_feasibility: "compatibility or baseline only; not product selection",
     profile_fit: {
-      hobby_static_llm_lite: "optional_fit_if_under_budget",
-      pro_static_llm_full: "primary_profile_after_review"
+      hobby_static_llm_lite: "tbd_if_reviewed_baseline",
+      pro_static_llm_full: "tbd_if_reviewed_baseline"
     },
     risks: [
-      "format may still need browser backend binding",
-      "candidate must not be downloaded by Codex",
-      "real weights remain absent until explicit approval and green gates"
+      "external pretrained artifacts are not the final product target",
+      "must be explicitly marked baseline_external_for_comparison_only",
+      "must not imply LoRA, fine-tuning, or external model adaptation is the final strategy"
     ],
-    admission_status: "no_named_model_selected"
+    admission_status: "baseline_only_not_product"
   },
   {
     model_id: "encoder_only_family_rejected",
@@ -80,6 +100,22 @@ const candidates = [
     },
     risks: ["SLM and personal_200m surfaces remain fallback or comparison only"],
     admission_status: "rejected_as_final_product_target"
+  },
+  {
+    model_id: "lora_adapter_path_rejected_as_final_strategy",
+    parameter_count: 0,
+    architecture: "decoder_only",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "varies",
+    chinese_support: "varies",
+    browser_backend_feasibility: "not final strategy",
+    profile_fit: {
+      hobby_static_llm_lite: "reject_as_final_strategy",
+      pro_static_llm_full: "reject_as_final_strategy"
+    },
+    risks: ["LoRA, fine-tuning, and adapters are not the final product strategy"],
+    admission_status: "rejected_as_final_strategy"
   },
   {
     model_id: "server_required_family_rejected",
@@ -177,7 +213,7 @@ function renderMarkdown(report) {
     "",
     "R25G and R25H keep candidate selection model-agnostic. They do not download, train, convert, or admit model weights.",
     "",
-    "The primary R25 target is a same-origin static decoder LLM that runs in the browser. No named model is selected. The next candidate must be supplied locally by the user or selected in a later reviewed decision record.",
+    "R25I reorients the product path toward a project-trained decoder LLM trained from scratch, then packaged as a static browser release. No named pretrained model is selected. External artifacts are compatibility or baseline-only unless explicitly reviewed as such.",
     "",
     "| Candidate | Params | Architecture | Est. q size | Chinese | Hobby fit | Pro fit | Admission |",
     "| --- | ---: | --- | ---: | --- | --- | --- | --- |"
@@ -193,17 +229,18 @@ function renderMarkdown(report) {
     "",
     "- Encoder-only models are rejected as the primary LLM because the R25 answer path needs a decoder draft model.",
     "- 100M-200M SLMs are rejected as the final product target, even if they remain useful fallback or comparison artifacts.",
+    "- LoRA, fine-tuning, adapters, and external pretrained adaptation are rejected as the final product strategy.",
     "- Models that require server inference, Vercel Functions, Edge Functions, remote APIs, or external storage are rejected.",
     "- Models that exceed the selected static profile budget are rejected.",
     "- Models with unclear license or conversion provenance are rejected until reviewed.",
     "",
-    "## R25G/R25H Decision And Capacity Framework",
+    "## R25I Release And Capacity Framework",
     "",
-    "R25B through R25G add training-content, loader, admission, purge, and decision scaffolding only. They do not download, convert, benchmark, or admit real weights.",
+    "R25B through R25H add training-content, loader, admission, purge, decision, and capacity scaffolding only. R25I adds from-scratch training doctrine and release-decision framing. None of these patches train, download, convert, benchmark, or admit real weights.",
     "",
-    "The current status is `candidate_selection_reset`, `no_named_model_selected`, and `awaiting_candidate_decision`. R25H adds a metadata-only capacity envelope and dry-run manifests so future candidates can be measured before artifact intake. A future patch must create a reviewed candidate decision record, check `static_llm/conversion_paths/matrix.json`, use `static_llm/request_pack/`, compare the candidate to `static_llm/capacity_profiles/`, then perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
+    "The current status is `from_scratch_release_planned_not_trained`, `no_named_model_selected`, and `awaiting_self_trained_release_decision`. R25H adds a metadata-only capacity envelope and dry-run manifests so future release artifacts can be measured before artifact intake. A future patch must create a reviewed self-trained release decision, check `static_llm/conversion_paths/matrix.json`, compare the release to `static_llm/capacity_profiles/`, then perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
     "",
-    "A candidate decision record does not admit weights. It only allows a later local artifact intake attempt.",
+    "A release decision record does not admit weights. It only allows a later local artifact intake attempt for a future self-trained artifact.",
     "",
     "No candidate row claims real browser performance."
   );

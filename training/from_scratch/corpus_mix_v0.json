@@ -1,0 +1,146 @@
+{
+  "corpus_mix_id": "from_scratch_corpus_mix_v0",
+  "status": "planned_not_generated",
+  "categories": [
+    {
+      "category_id": "project_authored_behavioral_dialog",
+      "target_rows_pilot": 2000,
+      "target_rows_larger_phase": 50000,
+      "source_provenance_requirements": "project-authored and reviewed",
+      "split_policy": "hash by scenario family before generation",
+      "contamination_risk": "medium",
+      "forbidden_content": ["eval prompt copying", "private raw data", "chain_of_thought"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "long_horizon_task_continuation",
+      "target_rows_pilot": 1500,
+      "target_rows_larger_phase": 40000,
+      "source_provenance_requirements": "project-authored task continuations with heldout separation",
+      "split_policy": "hold out project-state templates by family",
+      "contamination_risk": "high",
+      "forbidden_content": ["eval answers as targets", "claimed execution without evidence"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "retrieval_grounded_answer_drafting",
+      "target_rows_pilot": 2000,
+      "target_rows_larger_phase": 60000,
+      "source_provenance_requirements": "reviewed evidence snippets with license/provenance",
+      "split_policy": "split by source and task family",
+      "contamination_risk": "high",
+      "forbidden_content": ["long copyrighted text", "answer-bank expansion"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "verifier_rejection_examples",
+      "target_rows_pilot": 1000,
+      "target_rows_larger_phase": 25000,
+      "source_provenance_requirements": "project-authored bad-draft examples",
+      "split_policy": "split by boundary type",
+      "contamination_risk": "medium",
+      "forbidden_content": ["hidden prompts", "private memory"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "static_deployment_and_local_first_reasoning",
+      "target_rows_pilot": 800,
+      "target_rows_larger_phase": 15000,
+      "source_provenance_requirements": "repo policy-derived and reviewed",
+      "split_policy": "split by policy surface",
+      "contamination_risk": "medium",
+      "forbidden_content": ["backend claims", "external storage claims"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "chinese_language_and_style_control",
+      "target_rows_pilot": 2500,
+      "target_rows_larger_phase": 80000,
+      "source_provenance_requirements": "project-authored bilingual style data",
+      "split_policy": "split by style and task family",
+      "contamination_risk": "medium",
+      "forbidden_content": ["private personal text", "copied long passages"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "bilingual_instruction_following",
+      "target_rows_pilot": 1500,
+      "target_rows_larger_phase": 40000,
+      "source_provenance_requirements": "project-authored mixed-language prompts",
+      "split_policy": "split by instruction pattern",
+      "contamination_risk": "medium",
+      "forbidden_content": ["eval prompt copying"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "unknown_privacy_copyright_boundaries",
+      "target_rows_pilot": 1500,
+      "target_rows_larger_phase": 40000,
+      "source_provenance_requirements": "project-authored boundary cases",
+      "split_policy": "split by protected boundary",
+      "contamination_risk": "high",
+      "forbidden_content": ["raw private data", "long copyrighted text"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "reasoning_operations",
+      "target_rows_pilot": 1500,
+      "target_rows_larger_phase": 50000,
+      "source_provenance_requirements": "observable final-answer reasoning tasks only",
+      "split_policy": "split by operation",
+      "contamination_risk": "high",
+      "forbidden_content": ["chain_of_thought", "hidden rationales"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "tool_status_honesty",
+      "target_rows_pilot": 800,
+      "target_rows_larger_phase": 15000,
+      "source_provenance_requirements": "project-authored command-status examples",
+      "split_policy": "split by tool claim type",
+      "contamination_risk": "medium",
+      "forbidden_content": ["fake command execution claims"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "knowledge_shard_evidence_use",
+      "target_rows_pilot": 1200,
+      "target_rows_larger_phase": 30000,
+      "source_provenance_requirements": "reviewed shard evidence and source-of-truth records",
+      "split_policy": "split by source chunk",
+      "contamination_risk": "high",
+      "forbidden_content": ["manual factual card expansion as substitute"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "self_description_boundaries",
+      "target_rows_pilot": 600,
+      "target_rows_larger_phase": 12000,
+      "source_provenance_requirements": "project-authored identity and capability boundaries",
+      "split_policy": "split by identity surface",
+      "contamination_risk": "medium",
+      "forbidden_content": ["server capability claims", "private memory claims"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "no_backend_no_storage_policy",
+      "target_rows_pilot": 600,
+      "target_rows_larger_phase": 10000,
+      "source_provenance_requirements": "repo policy-derived",
+      "split_policy": "split by forbidden dependency",
+      "contamination_risk": "low",
+      "forbidden_content": ["remote model API usage"],
+      "review_status": "planned"
+    },
+    {
+      "category_id": "browser_llm_runtime_status_explanations",
+      "target_rows_pilot": 600,
+      "target_rows_larger_phase": 10000,
+      "source_provenance_requirements": "project-authored runtime status cases",
+      "split_policy": "split by runtime status",
+      "contamination_risk": "medium",
+      "forbidden_content": ["fixture performance claims"],
+      "review_status": "planned"
+    }
+  ]
+}

@@ -1,12 +1,14 @@
 # R25B Static Decoder Admission
 
 R25B prepares admission infrastructure for a future same-origin static browser
-decoder LLM. It does not admit, train, download, convert, or commit real model
-weights.
+decoder LLM. R25I reframes that infrastructure as release packaging for a
+future project-trained decoder trained from scratch. It does not admit, train,
+download, convert, or commit real model weights.
 
 ## Target
 
 - Primary product target: static same-origin browser decoder LLM.
+- Final model origin: self-trained from scratch by this project.
 - Primary static profile: `pro_static_llm_full`.
 - Optional constrained profile: `hobby_static_llm_lite`.
 - Runtime host: Vercel static files only.
@@ -20,15 +22,19 @@ can remain as fallback, comparison, or guardrail surfaces, but the answer path
 must be designed around a decoder LLM draft wrapped by the R24 verifier,
 finalizer, and fallback firewall.
 
+Existing pretrained imports, LoRA, fine-tuning, and adapters are not the final
+product strategy. External artifacts may exercise the admission path only as
+reviewed baselines or compatibility fixtures.
+
 ## Expected Asset Layout
 
-Production candidates should use:
+Production releases should use:
 
 ```text
-static_llm/manifests/<model-id>.json
-static_llm/assets/<model-id>/config.json
-static_llm/assets/<model-id>/tokenizer.json
-static_llm/assets/<model-id>/model-00001.<reviewed-format>
+static_llm/manifests/<release-id>.json
+static_llm/assets/<release-id>/config.json
+static_llm/assets/<release-id>/tokenizer.json
+static_llm/assets/<release-id>/model-00001.<reviewed-format>
 ```
 
 Shard policy:
@@ -63,9 +69,11 @@ instead of generating a draft.
 
 ## Admission Criteria
 
-Before real weights can be committed in R25C or later:
+Before real self-trained release weights can be committed in R25C or later:
 
-- local artifact conversion is reviewed
+- training run, architecture, tokenizer, corpus, checkpoint, and quantization
+  are reviewed in a release decision
+- local artifact export/conversion is reviewed
 - license/provenance is reviewed
 - manifest validates in admitted mode
 - static budget checks pass
@@ -82,5 +90,6 @@ R25D adds the browser backend and worker binding scaffold plus first-token smoke
 tests. It still does not admit a model. Real production first-token success
 requires an admitted local artifact and a real browser inference backend.
 
-R25F resets named-model selection. Future admission starts from a generic
-reviewed decoder artifact, not from a preselected model id.
+R25F resets named-model selection. R25I goes further: future product admission
+starts from a self-trained release decision, not from a preselected external
+model id.

@@ -12,7 +12,9 @@ intelligence layer. They wrap and test the future LLM path.
 
 ## Deployment Boundary
 
-The target is a same-origin static decoder LLM running in the browser.
+The target is a same-origin static decoder LLM running in the browser. R25I
+clarifies that the final model should be trained from scratch by this project,
+then exported as a static browser release artifact.
 
 - Vercel hosts static files only.
 - Static model assets must be served from the same origin.
@@ -23,8 +25,10 @@ The target is a same-origin static decoder LLM running in the browser.
 - No hosted vector store, Blob, KV, Postgres, Redis, AI Gateway, or third-party
   model hosting is allowed for model loading.
 
-R25A does not download, train, convert, or commit model weights. R25B should
-choose and admit a real decoder artifact only after these gates are green.
+R25A does not download, train, convert, or commit model weights. R25B through
+R25H build the corpus, loader, admission, and capacity gates. R25I reorients
+those gates toward packaging the project's own future self-trained artifact,
+not selecting an existing pretrained model as the product.
 
 ## Main Answer Path
 
@@ -113,3 +117,10 @@ non-admitted dry-run manifests. The Pro static profile is the primary envelope;
 Hobby remains constrained and may reject realistic decoder candidates. Capacity
 dry-runs do not select a model, admit an artifact, create weights, or claim real
 browser performance.
+
+R25I defines the from-scratch training doctrine. Existing candidate/admission
+surfaces become release-packaging gates for a future project-trained decoder
+artifact. External pretrained artifacts can be used only as explicitly reviewed
+baseline or compatibility inputs, and LoRA, fine-tuning, or adapters are not the
+final product strategy. Formal training remains `0%` complete and disabled by
+default.

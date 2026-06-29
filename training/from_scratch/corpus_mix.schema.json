@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "From-Scratch Corpus Mix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["corpus_mix_id", "status", "categories"],
+  "properties": {
+    "corpus_mix_id": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "enum": ["planned_not_generated", "pilot_ready_after_review"] },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category_id",
+          "target_rows_pilot",
+          "target_rows_larger_phase",
+          "source_provenance_requirements",
+          "split_policy",
+          "contamination_risk",
+          "forbidden_content",
+          "review_status"
+        ],
+        "properties": {
+          "category_id": { "type": "string", "minLength": 1 },
+          "target_rows_pilot": { "type": "integer", "minimum": 0 },
+          "target_rows_larger_phase": { "type": "integer", "minimum": 0 },
+          "source_provenance_requirements": { "type": "string", "minLength": 1 },
+          "split_policy": { "type": "string", "minLength": 1 },
+          "contamination_risk": { "type": "string", "minLength": 1 },
+          "forbidden_content": { "type": "array", "items": { "type": "string" } },
+          "review_status": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

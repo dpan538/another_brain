@@ -1,8 +1,9 @@
 # R25H Static Capacity Envelope
 
 R25H quantifies the static decoder artifact envelope without selecting a named
-model, admitting an artifact, downloading weights, or training. It keeps R25
-model-agnostic while making future candidate decisions measurable.
+model, admitting an artifact, downloading weights, or training. R25I keeps this
+capacity envelope but points it at future self-trained release artifacts, not
+external pretrained model selection.
 
 ## Current State
 
@@ -11,6 +12,7 @@ model-agnostic while making future candidate decisions measurable.
 - No production artifact is admitted.
 - No real model weights are committed.
 - No training is run.
+- Formal training progress is `0%`.
 - R25 remains a same-origin static browser decoder LLM architecture.
 - R24 remains fallback, verifier, and recovery harness.
 
@@ -81,9 +83,9 @@ first-token performance. Larger envelopes should be treated as WebGPU-required
 unless a reviewed backend proves otherwise. WASM fallback remains degraded or
 possibly unsupported for large decoders.
 
-## Future Candidate Requirements
+## Future Release Requirements
 
-A future reviewed candidate must provide:
+A future reviewed self-trained release artifact must provide:
 
 - real total asset bytes
 - real tokenizer and config sizes
@@ -95,6 +97,7 @@ A future reviewed candidate must provide:
 - browser memory/cache risk review
 - R24/R25 gate review
 
-Capacity review does not replace R25E artifact admission. It only tells a
-future candidate decision what size and shard envelope it must satisfy before
-local artifact intake.
+Capacity review does not replace R25E artifact admission. It tells a future
+self-trained release decision what size and shard envelope it must satisfy
+before local artifact intake. External baseline artifacts may use the same
+checks only when explicitly labeled comparison-only.

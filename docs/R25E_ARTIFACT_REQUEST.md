@@ -1,8 +1,10 @@
 # R25E Artifact Request
 
-No reviewed local decoder artifact is currently admitted. To continue R25E,
-first prepare a reviewed candidate decision record, then place a browser-ready
-decoder candidate under an approved inbox path:
+No reviewed local decoder artifact is currently admitted. For the main product
+path, continue by preparing a future self-trained release artifact produced by
+the project's from-scratch training pipeline. Compatibility or baseline
+artifacts may still use this inbox path only when explicitly reviewed as
+comparison-only.
 
 ```text
 static_llm/inbox/browser_decoder_candidate_tbd/
@@ -14,13 +16,15 @@ static_llm/inbox/browser_decoder_candidate_tbd/
   checksums.sha256
 ```
 
-Codex must not download remote weights. The user supplies the local artifact.
-R25G request templates live under `static_llm/request_pack/`.
+Codex must not download remote weights. The main-path artifact should come
+from the future project training run; user-supplied external artifacts are
+baseline/compatibility only. R25G/R25I request templates live under
+`static_llm/request_pack/` and `static_llm/release_decisions/`.
 
-Use the R25H capacity envelope before supplying a real artifact. A future
-candidate should include real total bytes, tokenizer/config sizes, shard count,
-largest shard size, backend-ready format, hashes, license, provenance, and a
-reviewed candidate decision record. Dry-run capacity manifests are not
+Use the R25H capacity envelope before supplying a real release artifact. A
+future release should include real total bytes, tokenizer/config sizes, shard
+count, largest shard size, backend-ready format, hashes, license, provenance,
+and a reviewed release decision record. Dry-run capacity manifests are not
 production admission.
 
 Required metadata includes model id, architecture, parameter count,

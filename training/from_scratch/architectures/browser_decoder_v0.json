@@ -1,0 +1,31 @@
+{
+  "architecture_id": "browser_decoder_v0",
+  "model_type": "decoder_only_transformer",
+  "tokenizer_id": "project_bilingual_tokenizer_tbd",
+  "vocab_size_target": [16000, 24000, 32000],
+  "context_length_target": [1024, 2048, 4096],
+  "hidden_size_options": [384, 512, 768, 1024],
+  "layer_count_options": [8, 12, 16, 20],
+  "attention_heads_options": [6, 8, 12, 16],
+  "intermediate_size_options": [1024, 1536, 2048, 4096],
+  "activation": "silu_or_gelu_review_required",
+  "normalization": "rmsnorm_or_layernorm_review_required",
+  "positional_encoding": "rope_or_alibi_review_required",
+  "quantization_target": "q4_or_browser_supported_low_bit_after_training",
+  "expected_parameter_ranges": [
+    "toy_sanity_under_10m_not_product",
+    "pilot_20m_to_80m_not_final_claim",
+    "scaled_decoder_range_tbd_by_capacity_and_quality"
+  ],
+  "expected_static_asset_ranges": [
+    "hobby may fit only tiny or very small releases",
+    "pro static profile is primary for larger self-trained releases",
+    "upper bound must remain under R25H Pro capacity envelope"
+  ],
+  "expected_profile_fit": [
+    "hobby_static_llm_lite optional and likely rejecting larger releases",
+    "pro_static_llm_full primary"
+  ],
+  "browser_backend_target": "webgpu_primary_with_reviewed_wasm_degraded_fallback",
+  "notes": "Design envelope only. No final architecture is selected and no weights exist."
+}

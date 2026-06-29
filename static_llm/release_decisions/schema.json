@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "R25I Static LLM Release Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "release_id",
+    "model_origin",
+    "training_run_id",
+    "architecture_id",
+    "tokenizer_id",
+    "corpus_version",
+    "checkpoint_id",
+    "quantization",
+    "static_profile",
+    "total_asset_bytes",
+    "shard_count",
+    "largest_shard_bytes",
+    "backend_format",
+    "license",
+    "provenance",
+    "reviewer",
+    "admission_status",
+    "notes"
+  ],
+  "properties": {
+    "release_id": { "type": "string", "minLength": 1 },
+    "model_origin": {
+      "type": "string",
+      "enum": [
+        "self_trained_from_scratch",
+        "baseline_external_for_comparison_only",
+        "fixture"
+      ]
+    },
+    "training_run_id": { "type": "string", "minLength": 1 },
+    "architecture_id": { "type": "string", "minLength": 1 },
+    "tokenizer_id": { "type": "string", "minLength": 1 },
+    "corpus_version": { "type": "string", "minLength": 1 },
+    "checkpoint_id": { "type": "string", "minLength": 1 },
+    "quantization": { "type": "string", "minLength": 1 },
+    "static_profile": {
+      "type": "string",
+      "enum": ["hobby_static_llm_lite", "pro_static_llm_full"]
+    },
+    "total_asset_bytes": { "type": "integer", "minimum": 0 },
+    "shard_count": { "type": "integer", "minimum": 0 },
+    "largest_shard_bytes": { "type": "integer", "minimum": 0 },
+    "backend_format": { "type": "string", "minLength": 1 },
+    "license": { "type": "string", "minLength": 1 },
+    "provenance": { "type": "string", "minLength": 1 },
+    "reviewer": { "type": "string" },
+    "admission_status": {
+      "type": "string",
+      "enum": [
+        "template",
+        "draft",
+        "reviewed_not_admitted",
+        "admitted_after_r25_gates",
+        "rejected"
+      ]
+    },
+    "notes": { "type": "string" }
+  }
+}

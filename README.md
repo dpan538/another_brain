@@ -1,6 +1,6 @@
 # Another Brain
 
-Another Brain is the source repository for Answer Machine, a local-first browser-side answer web app at `efishother.com`. R25 changes the target architecture to an LLM-first static browser runtime: a future same-origin decoder LLM drafts in the browser, while the R24 recovery gates, shard runtime, verifier, finalizer, and fallback firewall wrap that draft.
+Another Brain is the source repository for Answer Machine, a local-first browser-side answer web app at `efishother.com`. R25 changes the target architecture to an LLM-first static browser runtime: a future project-trained decoder LLM drafts in the browser, while the R24 recovery gates, shard runtime, verifier, finalizer, and fallback firewall wrap that draft.
 
 The public UI is intentionally small: one input box, no account, no cloud inference, and no remote LLM call. The browser path is designed to stay light enough for mobile devices.
 
@@ -12,7 +12,7 @@ GitHub description: `Answer Machine: local-first browser-side answers with deter
 
 ## Runtime Shape
 
-The active product target is a same-origin static decoder LLM running in the browser. Vercel is used only for static hosting: no Vercel Function inference, no Edge Function inference, no external LLM API, and no external storage product for model loading. Browser cache/storage is allowed because it is user-local.
+The active product target is a same-origin static decoder LLM running in the browser. R25I clarifies the final model strategy: train a decoder LLM from scratch for this project, then export a static browser release artifact that fits the Vercel static envelope. Vercel is used only for static hosting: no Vercel Function inference, no Edge Function inference, no external LLM API, and no external storage product for model loading. Browser cache/storage is allowed because it is user-local.
 
 This is not an omniscient assistant or a generic chatbot. The private design model can talk about subject, Crocodile, body, symbol, and copy, but the front-stage dialog does not explain itself that way. Its public identity is deliberately smaller: it is a dialog box; it was once called Crocodile; the rest stays before or after the conversation.
 
@@ -37,6 +37,13 @@ generates metadata-only non-admitted dry-run manifests, estimates browser
 memory/storage risk, and simulates deploy payload size without selecting a
 named model, creating large files, admitting assets, downloading weights, or
 training.
+
+R25I adds the from-scratch training doctrine, release-decision schema,
+architecture envelope, tokenizer plan, corpus mix plan, and phase plan. Formal
+training progress remains `0%`: no training command runs, no weights are
+created, and LoRA/fine-tuning/adapters are rejected as the final strategy.
+Existing pretrained artifacts can only be baseline or compatibility inputs, not
+the main product path.
 
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
@@ -129,6 +136,7 @@ npm run check:r25e-artifact-admission
 npm run check:r25f-candidate-purge
 npm run check:r25g-candidate-decision
 npm run check:r25h-capacity-envelope
+npm run check:r25i-from-scratch-roadmap
 ```
 
 Build and validate the mixed context stress suite:

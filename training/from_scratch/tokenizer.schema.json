@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "From-Scratch Tokenizer Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "tokenizer_id",
+    "status",
+    "languages",
+    "normalization",
+    "target_vocab_sizes",
+    "special_tokens",
+    "forbidden_sources",
+    "heldout_eval_required",
+    "future_artifact_paths"
+  ],
+  "properties": {
+    "tokenizer_id": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "enum": ["planned_not_trained", "dry_run_ready", "trained_after_future_approval"] },
+    "languages": { "type": "array", "items": { "type": "string", "enum": ["zh", "en", "mixed"] } },
+    "normalization": { "type": "string", "minLength": 1 },
+    "target_vocab_sizes": { "type": "array", "items": { "type": "integer", "minimum": 1 } },
+    "special_tokens": { "type": "array", "items": { "type": "string" } },
+    "forbidden_sources": { "type": "array", "items": { "type": "string" } },
+    "heldout_eval_required": { "type": "boolean" },
+    "future_artifact_paths": { "type": "array", "items": { "type": "string" } }
+  }
+}

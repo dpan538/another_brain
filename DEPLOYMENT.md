@@ -21,7 +21,10 @@ Vercel must not run model inference, generate private memory artifacts, build
 local memory packs, call external model APIs, or use Functions/Edge Functions
 for LLM inference. It must not rely on Blob, KV, Postgres, Redis, AI Gateway, a
 hosted vector store, or any third-party storage product for model loading.
-Training and artifact generation happen locally before release.
+Training and artifact generation happen locally before release. R25I clarifies
+that the main model artifact should come from a future from-scratch project
+training pipeline, not from LoRA, adapters, fine-tuning, or selecting an
+existing pretrained model as the final product.
 
 R25 targets a same-origin static decoder LLM that loads in the browser. R25A
 and R25B do not add weights. R25C adds local artifact intake and dry-run
@@ -31,9 +34,12 @@ approved inbox paths and remains blocked when no reviewed artifact is present.
 R25F removes the prior named candidate from the active repo surface and resets
 selection to a model-agnostic reviewed-decoder placeholder.
 R25G adds candidate decision records, conversion path review, and a request
-pack before artifact admission; those records do not admit weights.
+pack before artifact admission; those records do not admit weights. R25I adds
+release decisions for future self-trained artifacts and makes that the product
+path. External pretrained artifacts are baseline/compatibility only.
+
 A future real model can be served only as static files under the approved
-static LLM asset path, with explicit candidate-scoped user approval, a reviewed
+static LLM asset path, with explicit release-scoped approval, a reviewed
 manifest, real sha256 hashes, license/provenance review, backend-format review,
 first-token gate, and a static budget pass.
 
@@ -88,6 +94,8 @@ npm run check:r25d-browser-inference-binding
 npm run check:r25e-artifact-admission
 npm run check:r25f-candidate-purge
 npm run check:r25g-candidate-decision
+npm run check:r25h-capacity-envelope
+npm run check:r25i-from-scratch-roadmap
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -134,6 +142,10 @@ R25H capacity dry-run manifests under `static_llm/manifests/dryrun/` are
 non-production. They test static profile fit, shard count, browser memory/cache
 risk, and deploy payload simulation, but cannot be admitted or deployed as real
 model assets.
+
+R25I release decisions under `static_llm/release_decisions/` are planning
+records for future self-trained artifacts. They do not admit weights, do not
+mean training has started, and do not bypass R25E/R25H gates.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
