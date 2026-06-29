@@ -1,7 +1,8 @@
 # R25E Artifact Request
 
 No reviewed local decoder artifact is currently admitted. To continue R25E,
-place a browser-ready decoder candidate under an approved inbox path:
+first prepare a reviewed candidate decision record, then place a browser-ready
+decoder candidate under an approved inbox path:
 
 ```text
 static_llm/inbox/browser_decoder_candidate_tbd/
@@ -14,6 +15,7 @@ static_llm/inbox/browser_decoder_candidate_tbd/
 ```
 
 Codex must not download remote weights. The user supplies the local artifact.
+R25G request templates live under `static_llm/request_pack/`.
 
 Required metadata includes model id, architecture, parameter count,
 quantization, context length, tokenizer type, source URL, source revision,

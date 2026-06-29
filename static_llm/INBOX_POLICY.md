@@ -29,5 +29,8 @@ Rules:
 - R25F keeps inbox examples model-agnostic. Use
   `static_llm/inbox/browser_decoder_candidate_tbd/` until a later reviewed
   decision selects a candidate.
+- R25G adds `static_llm/request_pack/` and candidate decision records. A
+  decision record may precede inbox placement, but it does not make real model
+  files safe to stage.
 - If no local artifact is present, the R25C gate should still pass with no
   admitted model and the static LLM draft path disabled.

@@ -50,7 +50,7 @@ function lineMatches(text, pattern) {
 function isPolicyProhibitionLine(text) {
   const value = String(text || "");
   return (
-    /\b(no|not|never|must not|forbidden|reject|rejected|without|do not|does not|禁止|不得)\b/i.test(value) ||
+    /\b(no|not|never|must not|cannot|forbidden|reject|rejected|without|do not|does not|禁止|不得)\b/i.test(value) ||
     /^\s*-\s*(cloud inference|server inference|vercel function|edge function|external model api|external model apis)/i.test(value)
   );
 }

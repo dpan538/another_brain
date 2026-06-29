@@ -1,0 +1,32 @@
+{
+  "decision_id": "draft-browser-decoder-candidate",
+  "status": "draft",
+  "candidate_label": "browser_decoder_candidate_tbd",
+  "model_id": "replace_with_reviewed_model_id",
+  "model_family": "replace_with_reviewed_model_family",
+  "architecture": "decoder_only",
+  "parameter_count": 0,
+  "context_length": 0,
+  "tokenizer_type": "replace_with_tokenizer_type",
+  "expected_quantization": "replace_with_expected_quantization",
+  "expected_total_bytes": 0,
+  "expected_profile": "pro_static_llm_full",
+  "expected_backend_format": "other_reviewed_browser_decoder_format",
+  "browser_runtime_status": "needs_conversion",
+  "license": "replace_with_license",
+  "license_url": "https://example.invalid/license",
+  "source_url": "https://example.invalid/source",
+  "source_revision": "replace_with_source_revision",
+  "conversion_path": "replace_with_local_conversion_path",
+  "conversion_risks": [
+    "review browser runtime support before artifact admission"
+  ],
+  "chinese_support_review": "replace_with_language_review",
+  "privacy_review": "artifact metadata must set contains_private_data false",
+  "static_budget_review": "expected bytes must fit selected profile",
+  "no_backend_review": "same-origin browser runtime only",
+  "r24_r25_gate_review": "all R24/R25 gates must remain green",
+  "reviewer": "replace_with_reviewer",
+  "review_date": "YYYY-MM-DD",
+  "notes": "Draft only. This does not admit weights."
+}

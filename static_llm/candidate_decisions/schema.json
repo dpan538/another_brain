@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "R25G Static Decoder Candidate Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_id",
+    "status",
+    "candidate_label",
+    "model_id",
+    "model_family",
+    "architecture",
+    "parameter_count",
+    "context_length",
+    "tokenizer_type",
+    "expected_quantization",
+    "expected_total_bytes",
+    "expected_profile",
+    "expected_backend_format",
+    "browser_runtime_status",
+    "license",
+    "license_url",
+    "source_url",
+    "source_revision",
+    "conversion_path",
+    "conversion_risks",
+    "chinese_support_review",
+    "privacy_review",
+    "static_budget_review",
+    "no_backend_review",
+    "r24_r25_gate_review",
+    "reviewer",
+    "review_date",
+    "notes"
+  ],
+  "properties": {
+    "decision_id": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": [
+        "template",
+        "draft",
+        "reviewed",
+        "rejected",
+        "selected_for_local_artifact_intake"
+      ]
+    },
+    "candidate_label": { "type": "string", "minLength": 1 },
+    "model_id": { "type": "string", "minLength": 1 },
+    "model_family": { "type": "string", "minLength": 1 },
+    "architecture": {
+      "type": "string",
+      "enum": ["decoder_only", "encoder_decoder", "encoder_only"]
+    },
+    "parameter_count": { "type": "integer", "minimum": 0 },
+    "context_length": { "type": "integer", "minimum": 0 },
+    "tokenizer_type": { "type": "string", "minLength": 1 },
+    "expected_quantization": { "type": "string", "minLength": 1 },
+    "expected_total_bytes": { "type": "integer", "minimum": 0 },
+    "expected_profile": {
+      "type": "string",
+      "enum": ["hobby_static_llm_lite", "pro_static_llm_full"]
+    },
+    "expected_backend_format": {
+      "type": "string",
+      "enum": [
+        "webllm_mlc_candidate",
+        "transformers_js_candidate",
+        "wasm_runtime_candidate",
+        "other_reviewed_browser_decoder_format"
+      ]
+    },
+    "browser_runtime_status": {
+      "type": "string",
+      "enum": ["known_supported", "needs_binding", "needs_conversion", "unsupported"]
+    },
+    "license": { "type": "string", "minLength": 1 },
+    "license_url": { "type": "string" },
+    "source_url": { "type": "string" },
+    "source_revision": { "type": "string", "minLength": 1 },
+    "conversion_path": { "type": "string", "minLength": 1 },
+    "conversion_risks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "chinese_support_review": { "type": "string", "minLength": 1 },
+    "privacy_review": { "type": "string", "minLength": 1 },
+    "static_budget_review": { "type": "string", "minLength": 1 },
+    "no_backend_review": { "type": "string", "minLength": 1 },
+    "r24_r25_gate_review": { "type": "string", "minLength": 1 },
+    "reviewer": { "type": "string" },
+    "review_date": { "type": "string" },
+    "notes": { "type": "string" }
+  }
+}

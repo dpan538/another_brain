@@ -11,6 +11,8 @@ production model. R25E adds local artifact admission checks and remains blocked
 unless a reviewed local decoder artifact is supplied.
 R25F resets the model-selection surface to a model-agnostic reviewed decoder
 artifact placeholder and does not introduce a new named candidate.
+R25G adds model-agnostic candidate decision records, conversion path review,
+and a request pack. It still does not select or admit a model.
 
 ## Public Data
 
@@ -80,6 +82,8 @@ Private data is not distributed:
   when no reviewed decoder artifact exists.
 - R25F candidate status: no named model selected; removed-candidate purge guard
   required.
+- R25G decision status: awaiting candidate decision; no decision record admits
+  weights.
 - Training enabled by default: false.
 
 ## Evaluation

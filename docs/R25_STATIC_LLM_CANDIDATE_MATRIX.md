@@ -1,8 +1,8 @@
 # R25 Static LLM Candidate Matrix
 
-R25F resets candidate selection to a model-agnostic state. It does not download, train, convert, or admit model weights.
+R25G keeps candidate selection model-agnostic. It does not download, train, convert, or admit model weights.
 
-The primary R25 target is a same-origin static decoder LLM that runs in the browser. No named model is selected. The next candidate must be supplied locally by the user or selected in a later reviewed decision.
+The primary R25 target is a same-origin static decoder LLM that runs in the browser. No named model is selected. The next candidate must be supplied locally by the user or selected in a later reviewed decision record.
 
 | Candidate | Params | Architecture | Est. q size | Chinese | Hobby fit | Pro fit | Admission |
 | --- | ---: | --- | ---: | --- | --- | --- | --- |
@@ -13,6 +13,7 @@ The primary R25 target is a same-origin static decoder LLM that runs in the brow
 | server_required_family_rejected | 0 | decoder_only | 0 MB | varies | reject_requires_backend | reject_requires_backend | rejected_for_r25 |
 | over_budget_decoder_family_rejected | 0 | decoder_only | 0 MB | varies | reject_over_budget | reject_over_budget | rejected_over_budget |
 | unclear_license_family_rejected | 0 | decoder_only | 0 MB | varies | reject_until_reviewed | reject_until_reviewed | rejected_unclear_license |
+| conversion_required_family_pending | 0 | decoder_only | 0 MB | tbd | tbd_after_conversion_review | pending_conversion_path_review | awaiting_candidate_decision |
 
 ## Explicit Rejections
 
@@ -22,10 +23,12 @@ The primary R25 target is a same-origin static decoder LLM that runs in the brow
 - Models that exceed the selected static profile budget are rejected.
 - Models with unclear license or conversion provenance are rejected until reviewed.
 
-## R25B/R25C Admission Work
+## R25G Decision Framework
 
-R25B through R25F add training-content, loader, and admission scaffolding only. They do not download, convert, benchmark, or admit real weights.
+R25B through R25G add training-content, loader, admission, purge, and decision scaffolding only. They do not download, convert, benchmark, or admit real weights.
 
-The current status is `candidate_selection_reset`, `no_named_model_selected`, and `awaiting_reviewed_local_decoder_artifact`. A future patch must perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.
+The current status is `candidate_selection_reset`, `no_named_model_selected`, and `awaiting_candidate_decision`. A future patch must create a reviewed candidate decision record, check `static_llm/conversion_paths/matrix.json`, use `static_llm/request_pack/`, then perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.
+
+A candidate decision record does not admit weights. It only allows a later local artifact intake attempt.
 
 No candidate row claims real browser performance.

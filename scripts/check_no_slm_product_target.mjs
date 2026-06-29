@@ -30,7 +30,7 @@ const CLAIM_PATTERNS = [
   /tiny router.{0,80}(main answer path|main intelligence|primary answer source)/i
 ];
 
-const ALLOW_CONTEXT = /legacy|fallback|harness|comparison|compare|demot|deprecated|reject|rejected|not final|not the final|not.*product target|no longer.*product target|must not|do not|historical|archive|guardrail|safety/i;
+const ALLOW_CONTEXT = /legacy|fallback|harness|comparison|compare|demot|deprecated|reject|rejected|cannot|not final|not the final|not.*product target|no longer.*product target|must not|do not|historical|archive|guardrail|safety/i;
 
 async function walk(path) {
   const out = [];

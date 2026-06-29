@@ -40,6 +40,8 @@ Rules:
   staging remains a separate reviewed step.
 - R25F resets model selection to generic reviewed decoder artifact paths. Do
   not use a named model path until a later reviewed decision selects one.
+- R25G requires a candidate decision record and conversion path review before a
+  local artifact intake attempt. The decision record does not admit weights.
 
 The expected primary future profile is `pro_static_llm_full`; the
 `hobby_static_llm_lite` profile is a constrained fallback or comparison target.

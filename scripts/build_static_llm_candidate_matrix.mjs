@@ -22,7 +22,7 @@ const candidates = [
       pro_static_llm_full: "awaiting_reviewed_local_decoder_artifact"
     },
     risks: [
-      "no named model is selected in R25F",
+      "no named model is selected in R25G",
       "user must supply or approve a reviewed local decoder artifact later",
       "license, provenance, manifest hashes, static budget, and backend support remain required",
       "no browser performance claim before measurement"
@@ -128,6 +128,26 @@ const candidates = [
     },
     risks: ["unclear license or conversion provenance"],
     admission_status: "rejected_unclear_license"
+  },
+  {
+    model_id: "conversion_required_family_pending",
+    parameter_count: 0,
+    architecture: "decoder_only",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "tbd_review_required",
+    chinese_support: "tbd",
+    browser_backend_feasibility: "requires conversion path matrix review before local artifact intake",
+    profile_fit: {
+      hobby_static_llm_lite: "tbd_after_conversion_review",
+      pro_static_llm_full: "pending_conversion_path_review"
+    },
+    risks: [
+      "raw checkpoints are not automatically browser-runnable",
+      "backend-ready format must be reviewed before first-token claims",
+      "candidate decision record must precede artifact admission"
+    ],
+    admission_status: "awaiting_candidate_decision"
   }
 ];
 
@@ -135,9 +155,9 @@ function renderMarkdown(report) {
   const lines = [
     "# R25 Static LLM Candidate Matrix",
     "",
-    "R25F resets candidate selection to a model-agnostic state. It does not download, train, convert, or admit model weights.",
+    "R25G keeps candidate selection model-agnostic. It does not download, train, convert, or admit model weights.",
     "",
-    "The primary R25 target is a same-origin static decoder LLM that runs in the browser. No named model is selected. The next candidate must be supplied locally by the user or selected in a later reviewed decision.",
+    "The primary R25 target is a same-origin static decoder LLM that runs in the browser. No named model is selected. The next candidate must be supplied locally by the user or selected in a later reviewed decision record.",
     "",
     "| Candidate | Params | Architecture | Est. q size | Chinese | Hobby fit | Pro fit | Admission |",
     "| --- | ---: | --- | ---: | --- | --- | --- | --- |"
@@ -157,11 +177,13 @@ function renderMarkdown(report) {
     "- Models that exceed the selected static profile budget are rejected.",
     "- Models with unclear license or conversion provenance are rejected until reviewed.",
     "",
-    "## R25B/R25C Admission Work",
+    "## R25G Decision Framework",
     "",
-    "R25B through R25F add training-content, loader, and admission scaffolding only. They do not download, convert, benchmark, or admit real weights.",
+    "R25B through R25G add training-content, loader, admission, purge, and decision scaffolding only. They do not download, convert, benchmark, or admit real weights.",
     "",
-    "The current status is `candidate_selection_reset`, `no_named_model_selected`, and `awaiting_reviewed_local_decoder_artifact`. A future patch must perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
+    "The current status is `candidate_selection_reset`, `no_named_model_selected`, and `awaiting_candidate_decision`. A future patch must create a reviewed candidate decision record, check `static_llm/conversion_paths/matrix.json`, use `static_llm/request_pack/`, then perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
+    "",
+    "A candidate decision record does not admit weights. It only allows a later local artifact intake attempt.",
     "",
     "No candidate row claims real browser performance."
   );

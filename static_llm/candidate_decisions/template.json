@@ -1,0 +1,32 @@
+{
+  "decision_id": "template-static-decoder-candidate",
+  "status": "template",
+  "candidate_label": "browser_decoder_candidate_tbd",
+  "model_id": "placeholder_model_id_do_not_select",
+  "model_family": "placeholder_model_family_do_not_select",
+  "architecture": "decoder_only",
+  "parameter_count": 0,
+  "context_length": 0,
+  "tokenizer_type": "placeholder_tokenizer_type",
+  "expected_quantization": "placeholder_quantization",
+  "expected_total_bytes": 0,
+  "expected_profile": "pro_static_llm_full",
+  "expected_backend_format": "other_reviewed_browser_decoder_format",
+  "browser_runtime_status": "needs_conversion",
+  "license": "placeholder_license",
+  "license_url": "https://example.invalid/license",
+  "source_url": "https://example.invalid/source",
+  "source_revision": "placeholder_revision",
+  "conversion_path": "placeholder_conversion_path",
+  "conversion_risks": [
+    "replace every placeholder before draft, reviewed, or selected status"
+  ],
+  "chinese_support_review": "placeholder_language_review",
+  "privacy_review": "contains_private_data must be false in artifact metadata",
+  "static_budget_review": "expected bytes must fit selected profile",
+  "no_backend_review": "same-origin browser runtime only",
+  "r24_r25_gate_review": "all R24/R25 gates must remain green before admission",
+  "reviewer": "",
+  "review_date": "",
+  "notes": "Template only. This record does not select a model or admit weights."
+}

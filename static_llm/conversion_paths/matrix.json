@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "generated_for": "R25G model-agnostic decoder candidate decision",
+  "entries": [
+    {
+      "format_id": "webllm_mlc_candidate",
+      "browser_backend": "webgpu",
+      "conversion_required": true,
+      "tokenizer_requirements": "tokenizer and config must be emitted as same-origin static assets",
+      "expected_asset_shape": "manifest plus config, tokenizer, metadata, and sharded browser-ready model artifacts",
+      "same_origin_compatible": true,
+      "external_runtime_allowed": false,
+      "backend_required": false,
+      "first_token_possible_without_conversion": false,
+      "risks": [
+        "conversion provenance must be reviewed",
+        "browser memory and WebGPU support must be measured",
+        "fixture smoke is not production performance"
+      ],
+      "admission_notes": "candidate only after local conversion, hashes, budget, and real backend binding"
+    },
+    {
+      "format_id": "transformers_js_candidate",
+      "browser_backend": "webgpu_or_wasm",
+      "conversion_required": true,
+      "tokenizer_requirements": "supported tokenizer files and config must be local static assets",
+      "expected_asset_shape": "manifest plus tokenizer/config and converted browser runtime files",
+      "same_origin_compatible": true,
+      "external_runtime_allowed": false,
+      "backend_required": false,
+      "first_token_possible_without_conversion": false,
+      "risks": [
+        "decoder support and size may vary by converted format",
+        "runtime must not be loaded from an external CDN",
+        "first-token gate must use a real admitted manifest"
+      ],
+      "admission_notes": "candidate only with local browser-ready files and reviewed runtime support"
+    },
+    {
+      "format_id": "wasm_runtime_candidate",
+      "browser_backend": "wasm",
+      "conversion_required": true,
+      "tokenizer_requirements": "tokenizer must be validated locally before production admission",
+      "expected_asset_shape": "manifest plus wasm runtime metadata and sharded local model assets",
+      "same_origin_compatible": true,
+      "external_runtime_allowed": false,
+      "backend_required": false,
+      "first_token_possible_without_conversion": false,
+      "risks": [
+        "runtime size counts toward static budget",
+        "CPU latency may be too slow for product use",
+        "must not claim real performance before benchmark"
+      ],
+      "admission_notes": "candidate only when the wasm runtime is same-origin and reviewed"
+    },
+    {
+      "format_id": "unsupported_raw_checkpoint",
+      "browser_backend": "none",
+      "conversion_required": true,
+      "tokenizer_requirements": "raw tokenizer/config may still need browser-compatible conversion",
+      "expected_asset_shape": "source checkpoint only; not deployable as production browser runtime",
+      "same_origin_compatible": false,
+      "external_runtime_allowed": false,
+      "backend_required": false,
+      "first_token_possible_without_conversion": false,
+      "risks": [
+        "not automatically browser-runnable",
+        "may exceed profile budget",
+        "conversion and license provenance still required"
+      ],
+      "admission_notes": "reject for production until converted into a reviewed browser decoder format"
+    },
+    {
+      "format_id": "unsupported_gguf_without_browser_runtime",
+      "browser_backend": "none",
+      "conversion_required": true,
+      "tokenizer_requirements": "tokenizer and runtime compatibility must be reviewed",
+      "expected_asset_shape": "single local artifact or shards without approved browser runtime",
+      "same_origin_compatible": false,
+      "external_runtime_allowed": false,
+      "backend_required": false,
+      "first_token_possible_without_conversion": false,
+      "risks": [
+        "not accepted without approved browser runtime path",
+        "may require unsupported native assumptions",
+        "must not be treated as production because a file exists"
+      ],
+      "admission_notes": "reject for production until an approved same-origin browser runtime exists"
+    },
+    {
+      "format_id": "unknown_requires_review",
+      "browser_backend": "unknown",
+      "conversion_required": true,
+      "tokenizer_requirements": "unknown until artifact metadata is reviewed",
+      "expected_asset_shape": "unknown",
+      "same_origin_compatible": false,
+      "external_runtime_allowed": false,
+      "backend_required": false,
+      "first_token_possible_without_conversion": false,
+      "risks": [
+        "missing format evidence",
+        "missing browser backend evidence",
+        "missing first-token plan"
+      ],
+      "admission_notes": "blocked until candidate decision and artifact metadata are reviewed"
+    }
+  ]
+}

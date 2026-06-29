@@ -30,6 +30,8 @@ R25A/R25B do not ship model weights. R25C adds local artifact intake and dry-run
 
 R25F resets model selection to a model-agnostic state. No named decoder model is selected, no replacement candidate is introduced, and the next candidate must arrive through a later reviewed decision or a user-supplied local decoder artifact.
 
+R25G adds the reviewed decision framework for that future candidate: candidate decision records, conversion path review, and a request pack. These records do not admit weights.
+
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
 The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
@@ -119,6 +121,7 @@ npm run check:r25c-static-artifact-intake
 npm run check:r25d-browser-inference-binding
 npm run check:r25e-artifact-admission
 npm run check:r25f-candidate-purge
+npm run check:r25g-candidate-decision
 ```
 
 Build and validate the mixed context stress suite:

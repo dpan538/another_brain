@@ -103,3 +103,7 @@ and green R24/R25 gates before commit.
 R25F resets candidate selection to a model-agnostic state. The active repo must
 not name a primary decoder model until a later reviewed model decision or a
 user-supplied local artifact passes the admission path.
+
+R25G adds that reviewed model-decision framework. Candidate decision records,
+conversion path review, and the request pack come before R25E artifact
+admission, and none of those records admit weights by themselves.

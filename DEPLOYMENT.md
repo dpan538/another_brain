@@ -30,6 +30,8 @@ first-token smoke tests only. R25E attempts local artifact admission from
 approved inbox paths and remains blocked when no reviewed artifact is present.
 R25F removes the prior named candidate from the active repo surface and resets
 selection to a model-agnostic reviewed-decoder placeholder.
+R25G adds candidate decision records, conversion path review, and a request
+pack before artifact admission; those records do not admit weights.
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit candidate-scoped user approval, a reviewed
 manifest, real sha256 hashes, license/provenance review, backend-format review,
@@ -85,6 +87,7 @@ npm run check:r25c-static-artifact-intake
 npm run check:r25d-browser-inference-binding
 npm run check:r25e-artifact-admission
 npm run check:r25f-candidate-purge
+npm run check:r25g-candidate-decision
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,

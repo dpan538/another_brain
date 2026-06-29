@@ -1,0 +1,8 @@
+{
+  "approved": true,
+  "model_id": "replace_with_reviewed_model_id",
+  "reviewer": "replace_with_reviewer",
+  "date": "YYYY-MM-DD",
+  "scope": "inspect_only",
+  "notes": "Use commit_assets only after all admission gates pass and the user explicitly approves committing real assets."
+}

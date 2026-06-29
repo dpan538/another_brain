@@ -27,6 +27,10 @@ user-supplied local decoder artifact or from a separate model-selection review,
 but it must not be implied by stale docs, scripts, generated matrices, corpus
 rows, fixture paths, or package outputs.
 
+R25G formalizes that later reviewed step with model-agnostic candidate decision
+records, a conversion path matrix, and a request pack. A decision record still
+does not admit weights; it only allows a later local artifact intake attempt.
+
 The reviewed candidate still must satisfy the existing R25 constraints:
 
 - same-origin static assets only
