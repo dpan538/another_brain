@@ -122,25 +122,6 @@ const candidates = [
     admission_status: "rejected"
   },
   {
-    model_id: "Qwen/Qwen2.5-0.5B-Instruct",
-    source: "Qwen",
-    parameter_count: 500000000,
-    architecture: "decoder",
-    runtime: ["webllm", "transformers.js"],
-    quantization_available: ["q4", "q8"],
-    license_name: "Apache-2.0",
-    license_url: "https://github.com/QwenLM/Qwen2.5/blob/main/LICENSE",
-    license_confidence: "likely",
-    browser_feasibility: "low",
-    expected_artifact_size_mb: 350,
-    supports_chinese: "yes",
-    supports_classification: false,
-    supports_generation: true,
-    recommended_use: "reject",
-    risks: ["above 200M target", "likely over 3s SLA on many devices", "generator risk"],
-    admission_status: "rejected"
-  },
-  {
     model_id: "sentence-transformers/LaBSE",
     source: "Hugging Face / Sentence Transformers",
     parameter_count: 470000000,

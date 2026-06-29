@@ -59,8 +59,6 @@ FRONTEND_CHECK_FILES = [
 ]
 OLD_MODEL_MARKERS = [
     "0." + "8B",
-    "qwen3_5_0_" + "8b",
-    "Qwen3.5-" + "0." + "8B",
 ]
 PROJECT_CHECK_FILES = [
     "README.md",

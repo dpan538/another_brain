@@ -47,3 +47,6 @@ R25E may inspect approved local inbox artifacts, but raw checkpoints are not
 automatically browser-runnable. Real first-token success requires a production
 manifest plus a real backend binding; the R25D WebGPU/WASM classes remain stubs
 until that binding exists.
+
+R25F leaves this backend shape model-agnostic. No named decoder candidate is
+selected by the backend layer.

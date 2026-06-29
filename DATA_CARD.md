@@ -9,6 +9,8 @@ a model, download weights, commit real weights by default, or call external LLM
 APIs. R25D adds fixture first-token smoke coverage only; it does not add a real
 production model. R25E adds local artifact admission checks and remains blocked
 unless a reviewed local decoder artifact is supplied.
+R25F resets the model-selection surface to a model-agnostic reviewed decoder
+artifact placeholder and does not introduce a new named candidate.
 
 ## Public Data
 
@@ -76,6 +78,8 @@ Private data is not distributed:
   an admitted manifest.
 - R25E artifact status: local inbox discovery and admission attempt; blocked
   when no reviewed decoder artifact exists.
+- R25F candidate status: no named model selected; removed-candidate purge guard
+  required.
 - Training enabled by default: false.
 
 ## Evaluation

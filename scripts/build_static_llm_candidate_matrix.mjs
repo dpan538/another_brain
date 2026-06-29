@@ -9,55 +9,55 @@ const JSON_OUT = resolve(ROOT, "artifacts/training_os/r25_static_llm_candidate_m
 
 const candidates = [
   {
-    model_id: "Qwen/Qwen2.5-0.5B-Instruct",
-    parameter_count: 500000000,
+    model_id: "local_reviewed_decoder_artifact_tbd",
+    parameter_count: 0,
     architecture: "decoder_only",
-    expected_quantized_size_mb: 350,
-    tokenizer_size_mb: 8,
-    license: "Apache-2.0, exact source review still required",
-    chinese_support: "strong repo-known candidate",
-    browser_backend_feasibility: "pro_static_llm_full candidate; hobby budget unlikely",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "tbd_review_required",
+    chinese_support: "tbd",
+    browser_backend_feasibility: "awaiting local artifact metadata and browser budget review",
     profile_fit: {
-      hobby_static_llm_lite: "reject_over_budget",
-      pro_static_llm_full: "candidate_after_review"
+      hobby_static_llm_lite: "tbd_after_artifact_review",
+      pro_static_llm_full: "awaiting_reviewed_local_decoder_artifact"
     },
     risks: [
-      "needs reviewed conversion and real sha256 manifest",
-      "browser latency and memory must be measured",
-      "no server inference fallback allowed",
-      "local artifact conversion and admission are R25C or later"
+      "no named model is selected in R25F",
+      "user must supply or approve a reviewed local decoder artifact later",
+      "license, provenance, manifest hashes, static budget, and backend support remain required",
+      "no browser performance claim before measurement"
     ],
-    admission_status: "primary_review_candidate_not_admitted"
+    admission_status: "candidate_selection_reset"
   },
   {
-    model_id: "HuggingFaceTB/SmolLM2-135M-Instruct",
-    parameter_count: 135000000,
+    model_id: "browser_ready_decoder_artifact_tbd",
+    parameter_count: 0,
     architecture: "decoder_only",
-    expected_quantized_size_mb: 95,
-    tokenizer_size_mb: 4,
-    license: "Apache-2.0 likely, exact source review still required",
-    chinese_support: "unknown or weak",
-    browser_backend_feasibility: "fits hobby only at the edge; not final product target by size alone",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "tbd_review_required",
+    chinese_support: "tbd",
+    browser_backend_feasibility: "requires browser-ready format, same-origin assets, and reviewed local conversion",
     profile_fit: {
-      hobby_static_llm_lite: "borderline_candidate_for_comparison",
-      pro_static_llm_full: "fits_but_rejected_as_final_target"
+      hobby_static_llm_lite: "optional_fit_if_under_budget",
+      pro_static_llm_full: "primary_profile_after_review"
     },
     risks: [
-      "100M-200M SLM class must not become final product target",
-      "Chinese quality uncertain",
-      "generator must remain verifier-gated"
+      "format may still need browser backend binding",
+      "candidate must not be downloaded by Codex",
+      "real weights remain absent until explicit approval and green gates"
     ],
-    admission_status: "rejected_as_final_product_target"
+    admission_status: "no_named_model_selected"
   },
   {
-    model_id: "bert-base-multilingual-cased",
-    parameter_count: 179000000,
+    model_id: "encoder_only_family_rejected",
+    parameter_count: 0,
     architecture: "encoder_only",
-    expected_quantized_size_mb: 120,
-    tokenizer_size_mb: 2,
-    license: "Apache-2.0",
-    chinese_support: "yes",
-    browser_backend_feasibility: "may be useful for gate/embedding comparison only",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "varies",
+    chinese_support: "varies",
+    browser_backend_feasibility: "comparison or verifier support only",
     profile_fit: {
       hobby_static_llm_lite: "reject_not_decoder_llm",
       pro_static_llm_full: "reject_not_decoder_llm"
@@ -66,36 +66,68 @@ const candidates = [
     admission_status: "rejected_primary_llm_encoder_only"
   },
   {
-    model_id: "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
-    parameter_count: 118000000,
-    architecture: "encoder_only",
-    expected_quantized_size_mb: 85,
-    tokenizer_size_mb: 2,
-    license: "Apache-2.0 likely, exact source review still required",
-    chinese_support: "partial",
-    browser_backend_feasibility: "embedding/rerank comparison only",
+    model_id: "legacy_slm_family_rejected",
+    parameter_count: 0,
+    architecture: "decoder_only",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "varies",
+    chinese_support: "varies",
+    browser_backend_feasibility: "legacy comparison only",
     profile_fit: {
-      hobby_static_llm_lite: "reject_not_decoder_llm",
-      pro_static_llm_full: "reject_not_decoder_llm"
+      hobby_static_llm_lite: "reject_as_final_target",
+      pro_static_llm_full: "reject_as_final_target"
     },
-    risks: ["not generative", "community conversion provenance must be reviewed"],
-    admission_status: "rejected_primary_llm_encoder_only"
+    risks: ["SLM and personal_200m surfaces remain fallback or comparison only"],
+    admission_status: "rejected_as_final_product_target"
   },
   {
-    model_id: "server-required-or-remote-api-model",
-    parameter_count: 7000000000,
+    model_id: "server_required_family_rejected",
+    parameter_count: 0,
     architecture: "decoder_only",
-    expected_quantized_size_mb: 4000,
-    tokenizer_size_mb: 20,
-    license: "unclear",
-    chinese_support: "unknown",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "varies",
+    chinese_support: "varies",
     browser_backend_feasibility: "requires server inference or remote API",
     profile_fit: {
       hobby_static_llm_lite: "reject_requires_backend",
       pro_static_llm_full: "reject_requires_backend"
     },
-    risks: ["exceeds static budgets", "requires forbidden backend or external API", "unclear license"],
+    risks: ["requires forbidden backend or external API"],
     admission_status: "rejected_for_r25"
+  },
+  {
+    model_id: "over_budget_decoder_family_rejected",
+    parameter_count: 0,
+    architecture: "decoder_only",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "varies",
+    chinese_support: "varies",
+    browser_backend_feasibility: "static profile budget rejection",
+    profile_fit: {
+      hobby_static_llm_lite: "reject_over_budget",
+      pro_static_llm_full: "reject_over_budget"
+    },
+    risks: ["exceeds deployable static asset budget"],
+    admission_status: "rejected_over_budget"
+  },
+  {
+    model_id: "unclear_license_family_rejected",
+    parameter_count: 0,
+    architecture: "decoder_only",
+    expected_quantized_size_mb: 0,
+    tokenizer_size_mb: 0,
+    license: "unclear",
+    chinese_support: "varies",
+    browser_backend_feasibility: "blocked until license and provenance review",
+    profile_fit: {
+      hobby_static_llm_lite: "reject_until_reviewed",
+      pro_static_llm_full: "reject_until_reviewed"
+    },
+    risks: ["unclear license or conversion provenance"],
+    admission_status: "rejected_unclear_license"
   }
 ];
 
@@ -103,9 +135,9 @@ function renderMarkdown(report) {
   const lines = [
     "# R25 Static LLM Candidate Matrix",
     "",
-    "R25A does not download, train, convert, or admit model weights. This matrix is manually curated from repo-known candidate names and earlier local planning surfaces only.",
+    "R25F resets candidate selection to a model-agnostic state. It does not download, train, convert, or admit model weights.",
     "",
-    "The primary R25 target is a same-origin static decoder LLM that runs in the browser. Encoder-only models, 100M-200M SLMs, server-required models, over-budget models, and unclear-license models are not accepted as the final product target.",
+    "The primary R25 target is a same-origin static decoder LLM that runs in the browser. No named model is selected. The next candidate must be supplied locally by the user or selected in a later reviewed decision.",
     "",
     "| Candidate | Params | Architecture | Est. q size | Chinese | Hobby fit | Pro fit | Admission |",
     "| --- | ---: | --- | ---: | --- | --- | --- | --- |"
@@ -127,9 +159,9 @@ function renderMarkdown(report) {
     "",
     "## R25B/R25C Admission Work",
     "",
-    "R25B adds training-content and admission scaffolding only. It does not download, convert, benchmark, or admit real weights.",
+    "R25B through R25F add training-content, loader, and admission scaffolding only. They do not download, convert, benchmark, or admit real weights.",
     "",
-    "The primary review class remains a small decoder-only browser candidate such as `Qwen/Qwen2.5-0.5B-Instruct`, but it is not admitted. R25C or later must perform local artifact conversion, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
+    "The current status is `candidate_selection_reset`, `no_named_model_selected`, and `awaiting_reviewed_local_decoder_artifact`. A future patch must perform local artifact review, license/provenance review, static manifest generation with real hashes, browser budget measurement, and the full R24/R25 gate suite before any runtime answer path can use a real model.",
     "",
     "No candidate row claims real browser performance."
   );
@@ -145,7 +177,7 @@ async function main() {
     candidates,
     summary: {
       total: candidates.length,
-      primary_review_candidates: candidates.filter((item) => item.admission_status === "primary_review_candidate_not_admitted").length,
+      primary_review_candidates: 0,
       admitted_candidates: candidates.filter((item) => /admitted/.test(item.admission_status) && !/not_admitted/.test(item.admission_status)).length,
       rejected_primary_llm_encoder_only: candidates.filter((item) => /encoder_only/.test(item.admission_status)).length,
       rejected_as_final_product_target: candidates.filter((item) => item.admission_status === "rejected_as_final_product_target").length

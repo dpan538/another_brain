@@ -27,9 +27,10 @@ the final product target. Decoder-only remains preferred.
 
 ## Decision Boundary
 
-The primary review class remains a small decoder-only browser candidate such as
-`Qwen/Qwen2.5-0.5B-Instruct` if no better local artifact is supplied. It is not
-admitted unless a local artifact passes the R25C gate. A q4-ish artifact in the
+The primary review class is reset to a model-agnostic decoder-only browser
+candidate. No named model is selected until a later reviewed decision or a
+user-supplied local artifact is provided. It is not admitted unless a local
+artifact passes the R25C gate. A q4-ish artifact in the
 hundreds of MB can be acceptable for `pro_static_llm_full` if it stays below
 the policy budget and shard limits. `hobby_static_llm_lite` may reject it.
 

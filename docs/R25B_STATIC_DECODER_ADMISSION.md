@@ -81,3 +81,6 @@ download, benchmark, or commit real weights by default.
 R25D adds the browser backend and worker binding scaffold plus first-token smoke
 tests. It still does not admit a model. Real production first-token success
 requires an admitted local artifact and a real browser inference backend.
+
+R25F resets named-model selection. Future admission starts from a generic
+reviewed decoder artifact, not from a preselected model id.

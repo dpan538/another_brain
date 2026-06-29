@@ -30,3 +30,7 @@ approves a reviewed local decoder artifact under the static Pro profile.
 R25E adds `--require-production` mode. That mode must fail unless a production
 manifest is admitted and a real backend, not the fixture or an R25D stub,
 observes the first token.
+
+R25F keeps real first-token readiness model-agnostic. A future run must name a
+candidate only after a separate reviewed model decision or user-supplied local
+artifact.

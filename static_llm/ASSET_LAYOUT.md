@@ -38,6 +38,8 @@ Rules:
   or `static_llm/models_staging/`. Asset copying is dry-run by default and
   requires a candidate-local approval marker before any real staging; git
   staging remains a separate reviewed step.
+- R25F resets model selection to generic reviewed decoder artifact paths. Do
+  not use a named model path until a later reviewed decision selects one.
 
 The expected primary future profile is `pro_static_llm_full`; the
 `hobby_static_llm_lite` profile is a constrained fallback or comparison target.

@@ -15,6 +15,6 @@ general-purpose generative language model.
 
 Third-party dependencies, if added later, remain subject to their own licenses.
 Any future use of WebLLM, Transformers.js, ONNX Runtime Web, MLC-LLM, Hugging
-Face models, Qwen, Phi, Gemma, Llama, or other model families must include the
+Face models, or other model families must include the
 corresponding license, model card, attribution, and notice files required by
 those projects.

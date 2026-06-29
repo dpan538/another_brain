@@ -7,7 +7,7 @@ download, train, or call a hosted model API.
 Expected candidate layout:
 
 ```text
-static_llm/inbox/<candidate>/
+static_llm/inbox/browser_decoder_candidate_tbd/
   artifact_metadata.json
   config.json
   tokenizer.json

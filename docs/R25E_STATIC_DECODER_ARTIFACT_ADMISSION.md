@@ -2,6 +2,8 @@
 
 R25E attempts admission of a reviewed local decoder artifact under the
 `pro_static_llm_full` profile. It does not download, train, or commit weights.
+R25F resets candidate selection, so R25E remains model-agnostic unless the user
+supplies a reviewed local decoder artifact.
 
 Approved local search paths:
 

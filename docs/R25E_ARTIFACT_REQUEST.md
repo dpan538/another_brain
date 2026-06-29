@@ -4,7 +4,7 @@ No reviewed local decoder artifact is currently admitted. To continue R25E,
 place a browser-ready decoder candidate under an approved inbox path:
 
 ```text
-static_llm/inbox/qwen2_5_0_5b_instruct_q4/
+static_llm/inbox/browser_decoder_candidate_tbd/
   artifact_metadata.json
   config.json
   tokenizer.json

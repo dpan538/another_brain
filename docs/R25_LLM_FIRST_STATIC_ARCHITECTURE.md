@@ -99,3 +99,7 @@ no reviewed decoder artifact is present, the correct result is a green blocked
 report requesting one. Real weights still require a per-candidate production
 approval marker, Pro profile budget fit, real hashes, backend compatibility,
 and green R24/R25 gates before commit.
+
+R25F resets candidate selection to a model-agnostic state. The active repo must
+not name a primary decoder model until a later reviewed model decision or a
+user-supplied local artifact passes the admission path.
