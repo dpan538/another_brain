@@ -1,0 +1,42 @@
+{
+  "tokenizer_id": "r25j_dryrun_tokenizer_v0",
+  "tokenizer_type": "deterministic_project_bpe_dryrun",
+  "vocab_size_target_options": [4096, 8192, 16384],
+  "selected_dryrun_vocab_size": 4096,
+  "normalization": {
+    "unicode_nfc": true,
+    "lowercase_ascii": false,
+    "preserve_chinese": true,
+    "collapse_whitespace": true
+  },
+  "special_tokens": [
+    "<pad>",
+    "<bos>",
+    "<eos>",
+    "<unk>",
+    "<sep>",
+    "<user>",
+    "<assistant>",
+    "<evidence>",
+    "<constraint>",
+    "<draft>",
+    "<reject>"
+  ],
+  "train_sources": ["training/llm_corpus/train.jsonl"],
+  "eval_sources": [
+    "training/llm_corpus/dev.jsonl",
+    "training/llm_corpus/heldout.jsonl"
+  ],
+  "forbidden_sources": [
+    "evals/**",
+    "training/long_horizon/heldout_tasks.jsonl unless used only for evaluation",
+    "root PDFs/DOCX",
+    "data/public_ingestion/",
+    "private data",
+    "hidden prompts",
+    "chain-of-thought"
+  ],
+  "artifact_dir": "artifacts/training_os/tokenizer_dryrun",
+  "production_tokenizer": false,
+  "formal_decoder_training": false
+}

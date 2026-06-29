@@ -45,6 +45,12 @@ created, and LoRA/fine-tuning/adapters are rejected as the final strategy.
 Existing pretrained artifacts can only be baseline or compatibility inputs, not
 the main product path.
 
+R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
+pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
+and evaluates dev/heldout text for leakage and segmentation sanity. The tiny
+decoder overfit command is disabled by default and reports a safe skip; no
+formal decoder training starts and no weights are written or committed.
+
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
 The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
@@ -137,6 +143,7 @@ npm run check:r25f-candidate-purge
 npm run check:r25g-candidate-decision
 npm run check:r25h-capacity-envelope
 npm run check:r25i-from-scratch-roadmap
+npm run check:r25j-tokenizer-toy-pipeline
 ```
 
 Build and validate the mixed context stress suite:

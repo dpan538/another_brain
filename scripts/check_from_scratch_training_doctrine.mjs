@@ -114,8 +114,13 @@ async function main() {
     "training/from_scratch/corpus_plan.md",
     "training/from_scratch/corpus_mix.schema.json",
     "training/from_scratch/corpus_mix_v0.json",
+    "training/from_scratch/tokenizer_dry_run_config.json",
+    "training/from_scratch/toy_decoder_config.json",
+    "training/from_scratch/toy_decoder_readme.md",
     "static_llm/release_decisions/schema.json",
-    "static_llm/release_decisions/template.self_trained.json"
+    "static_llm/release_decisions/template.self_trained.json",
+    "docs/R25J_TOKENIZER_DRY_RUN.md",
+    "docs/R25J_TINY_DECODER_TOY_PIPELINE.md"
   ];
   for (const path of requiredFiles) {
     if (!files.includes(path)) {

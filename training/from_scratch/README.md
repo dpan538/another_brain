@@ -1,9 +1,10 @@
 # From-Scratch Training Program
 
-This directory holds plans and schemas for a future project-trained decoder LLM.
-It contains no model weights and runs no training in R25I.
+This directory holds plans, schemas, and dry-run scaffolding for a future
+project-trained decoder LLM. It contains no model weights.
 
-Current phase: `phase_0_no_training_current`.
+Current phase can report `phase_1_tokenizer_dry_run` after R25J local tokenizer
+dry-run artifacts pass. Formal decoder training progress remains `0%`.
 
 The product path is:
 
@@ -16,3 +17,8 @@ The product path is:
 
 External pretrained artifacts are comparison or compatibility surfaces only.
 LoRA, fine-tuning, and adapters are not the final strategy.
+
+R25J adds `tokenizer_dry_run_config.json` and a tiny toy decoder config. The
+tokenizer dry-run uses approved corpus text only and writes ignored artifacts.
+The toy decoder overfit command is disabled by default and is not a product
+training path.

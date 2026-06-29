@@ -1,6 +1,8 @@
 # R25I Training Phase Plan
 
-Current state: `phase_0_no_training_current`.
+Current state after R25J tokenizer dry-run: `phase_1_tokenizer_dry_run` when
+the local dry-run artifacts and evaluations are present. Formal decoder
+training remains unstarted.
 
 Formal training progress remains `0%`. Training-readiness can improve through
 schemas, review gates, and dry-run validators, but that is not model training.
@@ -16,8 +18,9 @@ schemas, review gates, and dry-run validators, but that is not model training.
 | `phase_6_gated_browser_draft` | Real first-token gate passes | Disabled-by-default draft path behind verifier/fallback | runtime flag, browser smoke report | first-token, contract, fallback firewall | fixture output or unsafe draft surfaces |
 | `phase_7_long_run_training` | All earlier gates stable | Longer training only with split integrity and route audits green | long-run reports | held-out, route distribution, provenance | overfit, collapse, backend drift |
 
-Commands for later phases must be added only when their entry criteria are met.
-R25I adds no training commands.
+R25J adds tokenizer dry-run commands and a toy decoder scaffold. The toy
+overfit command skips by default, so phase 2 does not begin until a later
+review explicitly allows a toy-only sanity run.
 
 ## Failure Modes To Watch
 

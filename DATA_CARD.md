@@ -15,6 +15,9 @@ R25F resets the model-selection surface to a model-agnostic reviewed decoder
 artifact placeholder and does not introduce a new named candidate.
 R25G adds model-agnostic candidate decision records, conversion path review,
 and a request pack. It still does not select or admit a model.
+R25J adds tokenizer dry-run and toy decoder pipeline scaffolding. It may build
+and evaluate a local dry-run tokenizer from approved training-corpus text, but
+it does not run formal decoder training and does not commit generated artifacts.
 
 ## Public Data
 
@@ -90,6 +93,10 @@ Private data is not distributed:
   no artifact admission and no real performance evidence.
 - R25I training status: from-scratch doctrine and plans only; formal training
   progress `0%`.
+- R25J tokenizer status: dry-run artifacts are generated only under ignored
+  `artifacts/training_os/tokenizer_dryrun/` paths.
+- R25J toy decoder status: overfit command is disabled by default and skips;
+  no toy weights are committed.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -129,6 +136,12 @@ future training use.
 R25I adds `training/from_scratch/` as the doctrine and planning surface for the
 future model. LoRA, fine-tuning, adapters, and pretrained imports are not the
 final product strategy; external artifacts are comparison or compatibility only.
+
+R25J adds tokenizer dry-run scripts that extract text only from approved
+`training/llm_corpus/train.jsonl` fields and evaluate on dev/heldout corpus
+text. It also adds a tiny decoder toy scaffold for future phase-2 mechanics;
+the run command is disabled by default, writes no weights, and does not change
+formal training progress from `0%`.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

@@ -7,6 +7,11 @@ Formal from-scratch training needs orders of magnitude more reviewed rows or
 generated-and-reviewed data. R25I defines the mix; it does not generate a large
 corpus and does not start training.
 
+R25J uses the existing reviewed scaffold only for tokenizer dry-run extraction:
+`training/llm_corpus/train.jsonl` supplies tokenizer training text, while
+`dev.jsonl` and `heldout.jsonl` are evaluation-only. Eval prompt files, root
+PDFs/DOCX, and public-ingestion scratch data are excluded.
+
 Rules:
 
 - no chain-of-thought

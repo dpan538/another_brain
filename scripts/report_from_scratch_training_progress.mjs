@@ -13,6 +13,14 @@ async function exists(path) {
   }
 }
 
+async function readJsonIfPresent(path) {
+  try {
+    return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
+  } catch {
+    return null;
+  }
+}
+
 async function main() {
   const required = [
     "docs/R25I_FROM_SCRATCH_LLM_TRAINING_DOCTRINE.md",
@@ -28,19 +36,37 @@ async function main() {
     if (await exists(path)) present.push(path);
     else missing.push(path);
   }
+  const tokenizerCorpusReport = await readJsonIfPresent("artifacts/training_os/tokenizer_dryrun/r25j_tokenizer_corpus_report.json");
+  const tokenizerReport = await readJsonIfPresent("artifacts/training_os/tokenizer_dryrun/r25j_tokenizer_report.json");
+  const tokenizerEvalReport = await readJsonIfPresent("artifacts/training_os/tokenizer_dryrun/r25j_tokenizer_eval_report.json");
+  const toyPlanReport = await readJsonIfPresent("artifacts/training_os/tiny_decoder_toy/r25j_toy_training_plan_report.json");
+  const toySkipReport = await readJsonIfPresent("artifacts/training_os/tiny_decoder_toy/r25j_toy_overfit_skip_report.json");
+  const tokenizerDryrunOk = Boolean(tokenizerCorpusReport?.ok && tokenizerReport?.ok && tokenizerEvalReport?.ok);
+  const toyPipelineOk = Boolean(toyPlanReport?.ok && toySkipReport?.ok && toySkipReport?.skipped === true);
 
   const report = {
     ok: missing.length === 0,
     training_started: false,
     formal_training_progress_percent: 0,
-    training_readiness_percent_estimate: 40,
-    browser_product_completion_estimate: 25,
-    current_phase: "phase_0_no_training_current",
-    completed_infrastructure: present,
+    training_readiness_percent_estimate: tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
+    browser_product_completion_estimate: tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
+    current_phase: tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
+    tokenizer_dryrun_status: tokenizerDryrunOk ? "passed_local_dryrun" : "not_complete",
+    tokenizer_corpus_status: tokenizerCorpusReport?.ok ? {
+      train_chars: tokenizerCorpusReport.train_chars,
+      dev_chars: tokenizerCorpusReport.dev_chars,
+      heldout_chars: tokenizerCorpusReport.heldout_chars
+    } : "not_built",
+    toy_decoder_pipeline_status: toyPipelineOk ? "planned_and_default_skip_passed" : "not_complete",
+    completed_infrastructure: [
+      ...present,
+      ...(tokenizerDryrunOk ? ["artifacts/training_os/tokenizer_dryrun/r25j_tokenizer_report.json"] : []),
+      ...(toyPipelineOk ? ["artifacts/training_os/tiny_decoder_toy/r25j_toy_overfit_skip_report.json"] : [])
+    ],
     missing_before_training: [
       "reviewed large-scale corpus with clean train/dev/heldout split",
-      "tokenizer dry-run and held-out tokenizer evaluation",
-      "tiny toy decoder pipeline approval",
+      ...(tokenizerDryrunOk ? [] : ["tokenizer dry-run and held-out tokenizer evaluation"]),
+      "explicit phase_2 approval for toy-only overfit sanity",
       "training hardware/runtime plan",
       "checkpoint provenance and release-decision validator",
       "R25E/R25H static release admission for a self-trained artifact"

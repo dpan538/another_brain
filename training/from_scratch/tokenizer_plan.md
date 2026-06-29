@@ -1,7 +1,9 @@
 # Tokenizer Training Plan
 
 The project tokenizer should be trained from reviewed project corpus only after
-future approval. R25I does not train a tokenizer.
+future approval. R25J adds a local deterministic dry-run tokenizer to test
+normalization, source boundaries, and held-out tokenization behavior. This
+dry-run tokenizer is not the production tokenizer.
 
 Requirements:
 
@@ -28,7 +30,12 @@ Special tokens should be reviewed before training and may include:
 
 Target vocab sizes for review: `16000`, `24000`, and `32000`.
 
-Future local output paths:
+R25J dry-run output paths:
+
+- ignored tokenizer dry-run text and reports under
+  `artifacts/training_os/tokenizer_dryrun/`
+
+Future release output paths:
 
 - ignored tokenizer training reports under `artifacts/training_os/tokenizers/`
 - admitted release tokenizer under

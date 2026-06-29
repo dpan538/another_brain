@@ -37,6 +37,9 @@ R25G adds candidate decision records, conversion path review, and a request
 pack before artifact admission; those records do not admit weights. R25I adds
 release decisions for future self-trained artifacts and makes that the product
 path. External pretrained artifacts are baseline/compatibility only.
+R25J adds tokenizer dry-run and toy decoder pipeline scaffolding. These are
+local training-preparation checks only: generated tokenizer reports stay under
+ignored `artifacts/`, and the toy overfit command skips by default.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
@@ -96,6 +99,7 @@ npm run check:r25f-candidate-purge
 npm run check:r25g-candidate-decision
 npm run check:r25h-capacity-envelope
 npm run check:r25i-from-scratch-roadmap
+npm run check:r25j-tokenizer-toy-pipeline
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -146,6 +150,10 @@ model assets.
 R25I release decisions under `static_llm/release_decisions/` are planning
 records for future self-trained artifacts. They do not admit weights, do not
 mean training has started, and do not bypass R25E/R25H gates.
+
+R25J tokenizer dry-run artifacts and toy decoder reports live under ignored
+`artifacts/training_os/` directories. They are local evidence for pipeline
+readiness and must not be deployed as product assets or committed as weights.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is

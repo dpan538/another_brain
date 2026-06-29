@@ -1,0 +1,15 @@
+{
+  "architecture_id": "r25j_tiny_decoder_toy_v0",
+  "model_type": "decoder_only_transformer_toy",
+  "vocab_source": "tokenizer_dryrun",
+  "max_context_tokens": 64,
+  "layers": 2,
+  "hidden_size": 64,
+  "attention_heads": 4,
+  "intermediate_size": 128,
+  "parameter_estimate_target": "very small",
+  "product_model": false,
+  "commit_weights_allowed": false,
+  "formal_decoder_training": false,
+  "output_dir": "artifacts/training_os/tiny_decoder_toy/"
+}

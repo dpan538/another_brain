@@ -7,6 +7,10 @@ that fits the measured Vercel static envelope.
 Training is not started in R25I. This patch adds doctrine, schemas, phase
 planning, and anti-regression checks only.
 
+R25J may run tokenizer dry-run infrastructure, but that is not formal decoder
+training. Tiny decoder overfit remains disabled by default until a later phase
+explicitly approves a toy-only sanity run.
+
 ## Product Target
 
 - Final model origin: project-trained from scratch.
@@ -35,6 +39,10 @@ baseline/compatibility.
 
 - Training remains disabled by default.
 - Formal training progress is currently `0%`.
+- Tokenizer dry-run artifacts, when present, are local ignored preparation
+  artifacts and not production tokenizer releases.
+- Tiny toy decoder commands must skip by default and must not write tracked
+  weights.
 - No real model weights are added in R25I.
 - No remote model weights are downloaded.
 - No external LLM API or unreviewed external model output is used.
