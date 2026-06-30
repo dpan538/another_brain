@@ -10,5 +10,10 @@
   "allow_weight_commit": false,
   "allow_artifacts_write": true,
   "artifact_output_root": "artifacts/training_os/small_decoder_pilot/",
+  "consumed": true,
+  "allow_additional_runs": false,
+  "consumed_by_commit": "56613c64ef2c7400f13be051030c09883877fa5d",
+  "consumed_by_phase": "R25M",
+  "consumed_reason": "one-shot approval already used; future runs require a new approval marker",
   "notes": "R25M may run a bounded small from-scratch decoder pilot to ignored artifacts only. It is not a product model or release checkpoint."
 }

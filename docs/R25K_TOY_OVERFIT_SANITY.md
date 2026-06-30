@@ -34,3 +34,8 @@ exists yet.
 R25L builds on this by expanding corpus rows and planning a small decoder
 pilot. R25L does not run the small pilot, does not write pilot weights, and does
 not make the R25K toy checkpoint a product or release artifact.
+
+R25N consumes the R25K one-shot approval marker after commit
+`0a3b5a65f4a28e09aed66aa2cd722608a2b377ba`. Routine gates must validate R25K
+history without rerunning toy training. Any future toy run needs a fresh
+approval marker.

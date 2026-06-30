@@ -26,6 +26,12 @@ That pilot writes ignored artifacts only, is not long-term or product-scale
 training, is not release checkpoint admission, and leaves product training
 progress at `0%`.
 
+R25N evaluates the R25M outputs and consumes the R25K/R25M one-shot approval
+markers. It does not run new training. If analysis and structural held-out
+evaluation pass, the phase label may become
+`phase_3_small_decoder_pilot_evaluated`; product training progress remains
+`0%`, and future training still requires a fresh approval marker.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -34,3 +40,4 @@ progress at `0%`.
 - Allowing eval prompts into training.
 - Claiming first-token success from fixture output.
 - Weakening R24 recovery gates to make a model appear better.
+- Reusing a consumed approval marker to rerun toy or small-pilot training.

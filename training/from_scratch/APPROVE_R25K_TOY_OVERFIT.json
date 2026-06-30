@@ -9,5 +9,10 @@
   "allow_weight_commit": false,
   "allow_artifacts_write": true,
   "artifact_output_root": "artifacts/training_os/tiny_decoder_toy/",
+  "consumed": true,
+  "allow_additional_runs": false,
+  "consumed_by_commit": "0a3b5a65f4a28e09aed66aa2cd722608a2b377ba",
+  "consumed_by_phase": "R25K",
+  "consumed_reason": "one-shot approval already used; future runs require a new approval marker",
   "notes": "R25K may run a tiny toy overfit sanity loop only. Outputs must remain ignored artifacts."
 }

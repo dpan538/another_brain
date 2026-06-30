@@ -13,6 +13,8 @@ const ARTIFACT_DIR = "artifacts/training_os/tiny_decoder_toy/";
 const CHECKPOINT_PATH = `${ARTIFACT_DIR}r25k_toy_checkpoint.json`;
 const METRICS_PATH = `${ARTIFACT_DIR}r25k_toy_metrics.json`;
 const RUN_REPORT_PATH = `${ARTIFACT_DIR}r25k_toy_run_report.json`;
+const CONSUMED_SKIP_REPORT_PATH = `${ARTIFACT_DIR}r25n_r25k_consumed_approval_skip_report.json`;
+const DEFAULT_REQUESTED_RUN_ID = "r25k_toy_overfit_sanity_v0";
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
@@ -36,6 +38,11 @@ async function isIgnored(path) {
   } catch {
     return false;
   }
+}
+
+function argValue(name, fallback = null) {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] || fallback : fallback;
 }
 
 function seededRandom(seed = 2525) {
@@ -158,8 +165,38 @@ async function main() {
   }
 
   const failures = [];
-  const approval = await readJson(APPROVAL_PATH).catch(() => null);
+  const approvalPath = argValue("--approval-marker", APPROVAL_PATH);
+  const requestedRunId = argValue("--run-id", DEFAULT_REQUESTED_RUN_ID);
+  const approval = await readJson(approvalPath).catch(() => null);
+
+  if (approval?.consumed === true) {
+    const report = {
+      ok: true,
+      skipped: true,
+      reason: "approval_marker_consumed_new_approval_required",
+      approval_marker: approvalPath,
+      requested_run_id: requestedRunId,
+      toy_training_ran: false,
+      formal_training: false,
+      product_model: false,
+      weights_written: false,
+      weights_committed: false,
+      notes: [
+        "The historical R25K one-shot approval has already been consumed.",
+        "R25N must not rerun toy training.",
+        "A future toy run requires a separate unconsumed approval marker with a matching run_id."
+      ]
+    };
+    await writeJson(CONSUMED_SKIP_REPORT_PATH, report);
+    console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+
   if (!approval?.approved) failures.push({ code: "r25k_approval_missing_or_not_approved", path: APPROVAL_PATH });
+  if (approvalPath === APPROVAL_PATH) failures.push({ code: "historical_r25k_approval_marker_cannot_be_reused", path: APPROVAL_PATH });
+  if (approval?.consumed !== false) failures.push({ code: "fresh_r25k_approval_must_mark_consumed_false", consumed: approval?.consumed });
+  if (approval?.allow_additional_runs === true) failures.push({ code: "fresh_r25k_approval_must_not_allow_additional_runs" });
+  if (approval?.run_id !== requestedRunId) failures.push({ code: "fresh_r25k_approval_run_id_mismatch", expected: requestedRunId, actual: approval?.run_id });
   if (approval?.scope !== "toy_overfit_sanity_only") failures.push({ code: "r25k_approval_scope_invalid", scope: approval?.scope });
   if (approval?.phase !== "phase_2_tiny_overfit_sanity") failures.push({ code: "r25k_approval_phase_invalid", phase: approval?.phase });
   if (approval?.allow_formal_training !== false) failures.push({ code: "r25k_approval_must_not_allow_formal_training" });

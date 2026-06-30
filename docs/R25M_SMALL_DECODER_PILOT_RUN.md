@@ -21,3 +21,9 @@ metric reporting can run locally; they do not prove product intelligence.
 After the pilot, R24/R25 recovery, split-integrity, no-hardcoding, artifact, and
 Vercel static gates remain required. No generated checkpoint, tokenizer artifact,
 or training report may be staged or committed.
+
+R25N consumes the R25M one-shot approval marker after commit
+`56613c64ef2c7400f13be051030c09883877fa5d`. The consumed marker is historical
+only and cannot authorize another pilot run. R25N may analyze the ignored R25M
+reports and run structural held-out evaluation, but it must not rerun small
+pilot training.

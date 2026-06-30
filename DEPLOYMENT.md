@@ -173,6 +173,11 @@ and checkpoint digests only, not release checkpoints or browser assets. They
 must not be copied into `web/`, `static_llm/assets/`, `build_sources/`, or
 `knowledge_sources/`, and they must not be staged or committed.
 
+R25N reports live under ignored `artifacts/training_os/small_decoder_pilot/r25n/`.
+They are evaluation and approval-safety reports only. They do not authorize
+deployment, backend inference, static release admission, external storage, or
+committing weights.
+
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
 generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It

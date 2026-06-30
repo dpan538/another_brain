@@ -164,6 +164,11 @@ evaluation. They must not read evals, heldout as training, root PDFs/DOCX,
 `data/public_ingestion/`, knowledge-source cards, private raw data, external
 LLM output, or chain-of-thought data.
 
+R25N does not train. It may read `training/llm_corpus/r25l_heldout.jsonl` for
+held-out pilot evaluation only, and may compare against train/eval text for
+contamination checks. It must not convert held-out text into training data and
+must not read root PDFs/DOCX or `data/public_ingestion/`.
+
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,

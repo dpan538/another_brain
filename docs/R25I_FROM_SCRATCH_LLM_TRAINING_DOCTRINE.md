@@ -14,6 +14,9 @@ reviewer-approved bounded small decoder pilot to ignored artifacts. None of
 these are product model training, release checkpoint admission, or static
 browser deployment.
 
+R25N evaluates the R25M outputs, adds structural held-out pilot evaluation, and
+consumes the R25K/R25M one-shot approval markers. R25N is not a training run.
+
 ## Product Target
 
 - Final model origin: project-trained from scratch.
@@ -51,6 +54,8 @@ baseline/compatibility.
   bounded small pilot may run, and its artifacts must stay ignored.
 - R25M loss decrease is a mechanics signal only; product training progress
   remains `0%`.
+- R25N approval-marker consumption means R25K/R25M markers are audit records,
+  not reusable permission for new runs.
 - No real model weights are added in R25I.
 - No remote model weights are downloaded.
 - No external LLM API or unreviewed external model output is used.
@@ -86,3 +91,8 @@ R25M may move the current phase label to `phase_3_small_decoder_pilot` only
 after the approval-gated bounded pilot, pilot eval, artifact guard, and R24/R25
 gates pass. It does not admit release weights and does not create a product
 model.
+
+R25N may move the current phase label to
+`phase_3_small_decoder_pilot_evaluated` after analysis, held-out structural
+evaluation, approval-marker validation, and R24/R25 gates pass. It does not
+start new training and does not approve the next pilot automatically.

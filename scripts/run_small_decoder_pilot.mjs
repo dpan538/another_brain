@@ -13,6 +13,7 @@ const APPROVAL_PATH = "training/from_scratch/APPROVE_R25M_SMALL_DECODER_PILOT.js
 const BACKEND_REPORT_PATH = "artifacts/training_os/small_decoder_pilot/r25m/r25m_numeric_backend_report.json";
 const DATASET_REPORT_PATH = "artifacts/training_os/small_decoder_pilot/r25m/r25m_dataset_report.json";
 const RUN_REPORT_PATH = "artifacts/training_os/small_decoder_pilot/r25m/r25m_small_decoder_run_report.json";
+const CONSUMED_SKIP_REPORT_PATH = "artifacts/training_os/small_decoder_pilot/r25m/r25n_r25m_consumed_approval_skip_report.json";
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
@@ -47,6 +48,11 @@ async function isIgnored(path) {
   }
 }
 
+function argValue(name, fallback = null) {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] || fallback : fallback;
+}
+
 async function main() {
   const config = await readJson(CONFIG_PATH);
   const allow = process.argv.includes("--allow-small-pilot-training");
@@ -71,9 +77,41 @@ async function main() {
 
   const failures = [];
   const runConfig = await readJson(RUN_CONFIG_PATH).catch(() => null);
-  const approval = await readJson(APPROVAL_PATH).catch(() => null);
+  const approvalPath = argValue("--approval-marker", APPROVAL_PATH);
+  const requestedRunId = argValue("--run-id", runConfig?.run_id || "r25m_small_decoder_pilot_v0");
+  const approval = await readJson(approvalPath).catch(() => null);
+
+  if (approval?.consumed === true) {
+    const report = {
+      ok: true,
+      skipped: true,
+      reason: "approval_marker_consumed_new_approval_required",
+      approval_marker: approvalPath,
+      requested_run_id: requestedRunId,
+      small_pilot_training_ran: false,
+      formal_product_training: false,
+      long_term_training: false,
+      product_model: false,
+      release_checkpoint: false,
+      weights_written: false,
+      weights_committed: false,
+      notes: [
+        "The historical R25M one-shot approval has already been consumed.",
+        "R25N must not rerun small decoder pilot training.",
+        "A future pilot run requires a separate unconsumed approval marker with a matching run_id."
+      ]
+    };
+    await writeJson(CONSUMED_SKIP_REPORT_PATH, report);
+    console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+
   if (!runConfig) failures.push({ code: "r25m_run_config_missing", path: RUN_CONFIG_PATH });
   if (!approval?.approved) failures.push({ code: "r25m_approval_missing_or_not_approved", path: APPROVAL_PATH });
+  if (approvalPath === APPROVAL_PATH) failures.push({ code: "historical_r25m_approval_marker_cannot_be_reused", path: APPROVAL_PATH });
+  if (approval?.consumed !== false) failures.push({ code: "fresh_r25m_approval_must_mark_consumed_false", consumed: approval?.consumed });
+  if (approval?.allow_additional_runs === true) failures.push({ code: "fresh_r25m_approval_must_not_allow_additional_runs" });
+  if (approval?.run_id !== requestedRunId) failures.push({ code: "fresh_r25m_approval_run_id_mismatch", expected: requestedRunId, actual: approval?.run_id });
   if (approval?.scope !== "small_decoder_pilot_only") failures.push({ code: "r25m_approval_scope_invalid", scope: approval?.scope });
   if (approval?.phase !== "phase_3_small_decoder_pilot") failures.push({ code: "r25m_approval_phase_invalid", phase: approval?.phase });
   if (approval?.allow_small_pilot_training !== true) failures.push({ code: "r25m_approval_must_allow_small_pilot_training" });

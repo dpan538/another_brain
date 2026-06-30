@@ -2,22 +2,11 @@
 import { spawnSync } from "node:child_process";
 
 const steps = [
-  { script: "build:tokenizer-dryrun-corpus" },
-  { script: "train:tokenizer-dryrun" },
-  { script: "check:tokenizer-data-boundaries" },
-  { script: "check:tokenizer-dryrun" },
-  { script: "eval:tokenizer-dryrun" },
-  { script: "build:tiny-decoder-toy-dataset" },
-  { script: "plan:tiny-decoder-toy" },
-  { script: "check:tiny-decoder-toy-pipeline" },
-  { script: "run:tiny-decoder-toy-overfit", extraArgs: ["--", "--allow-toy-training"] },
-  { script: "eval:tiny-decoder-toy-overfit" },
-  { script: "check:tiny-decoder-toy-artifacts-untracked" },
-  { script: "check:from-scratch-training-doctrine" },
-  { script: "report:from-scratch-training-progress" },
+  { script: "check:training-approval-markers" },
+  { script: "check:r25k-toy-overfit-history" },
 
   // R25J already flattens the R25I/H/G/F/E/D/C/B/A and R24 leaves to avoid
-  // recursive aggregate replay. R25K reuses that once after its toy-only checks.
+  // recursive aggregate replay. R25K reuses that once after its history check.
   { script: "check:r25j-tokenizer-toy-pipeline" }
 ];
 
@@ -64,6 +53,7 @@ console.log(JSON.stringify({
   ok: true,
   gate: "check:r25k-toy-overfit-sanity",
   recursive_gate_replay: false,
+  training_rerun: false,
   toy_training_scope: "toy_overfit_sanity_only",
   formal_training_progress_percent: 0,
   scripts_run: results.length,

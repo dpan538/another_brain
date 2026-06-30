@@ -25,3 +25,7 @@ R25M supplies that narrow reviewer approval for one bounded run only. The run
 still writes ignored artifacts only, does not authorize long-term or
 product-scale training, does not authorize static release admission, and does
 not permit committing checkpoint or tokenizer artifacts.
+
+R25N consumes the R25M approval marker and evaluates the R25M outputs. Later
+small-pilot work requires a new one-shot marker; routine gates must use
+history/evaluation checks and must not rerun the R25M pilot.

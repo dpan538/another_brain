@@ -3,28 +3,14 @@ import { spawnSync } from "node:child_process";
 
 const steps = [
   ["check:training-approval-markers"],
-  ["check:r25m-small-pilot-history"],
   ["analyze:small-decoder-pilot"],
   ["eval:small-decoder-pilot-heldout"],
   ["report:small-pilot-regression-snapshot"],
   ["report:r25n-next-pilot-decision"],
-  ["check:small-decoder-pilot-plan"],
   ["check:from-scratch-training-doctrine"],
   ["report:from-scratch-training-progress"],
-  ["check:r25l-corpus-pilot-plan"],
-  ["check:r25k-toy-overfit-sanity"],
-  ["check:r25j-tokenizer-toy-pipeline"],
-  ["check:r25i-from-scratch-roadmap"],
-  ["check:r25h-capacity-envelope"],
-  ["check:r25g-candidate-decision"],
-  ["check:r25f-candidate-purge"],
-  ["check:r25e-artifact-admission"],
-  ["check:r25d-browser-inference-binding"],
-  ["check:r25c-static-artifact-intake"],
-  ["check:r25b-static-decoder-training"],
-  ["check:r25-llm-first-static"],
-  ["check:r24-recovery-candidate"],
-  ["check:vercel-build"]
+  ["check:r25m-small-pilot-history"],
+  ["check:r25k-toy-overfit-history"]
 ];
 
 function tail(text = "", lines = 80) {
@@ -35,11 +21,11 @@ const results = [];
 
 for (const [script, ...args] of steps) {
   const startedAt = Date.now();
-  console.log(`\n[r25m-gate] npm run ${script}${args.length ? ` -- ${args.join(" ")}` : ""}`);
+  console.log(`\n[r25n-gate] npm run ${script}${args.length ? ` -- ${args.join(" ")}` : ""}`);
   const result = spawnSync("npm", ["run", script, ...(args.length ? ["--", ...args] : [])], {
     cwd: process.cwd(),
     encoding: "utf8",
-    maxBuffer: 96 * 1024 * 1024
+    maxBuffer: 256 * 1024 * 1024
   });
   const durationMs = Date.now() - startedAt;
   const item = {
@@ -54,6 +40,7 @@ for (const [script, ...args] of steps) {
   if (result.status !== 0) {
     console.error(JSON.stringify({
       ok: false,
+      gate: "check:r25n-small-pilot-evaluation",
       failed_script: script,
       failed_args: args,
       stdout_tail: tail(result.stdout),
@@ -67,13 +54,31 @@ for (const [script, ...args] of steps) {
 
 console.log(JSON.stringify({
   ok: true,
-  gate: "check:r25m-small-decoder-pilot",
+  gate: "check:r25n-small-pilot-evaluation",
   recursive_gate_replay: false,
   training_rerun: false,
+  toy_training_rerun: false,
+  small_pilot_training_rerun: false,
   product_training: false,
   long_term_training: false,
-  release_checkpoint: false,
   tracked_weights: false,
+  prior_gates_required_separately: [
+    "check:r25m-small-decoder-pilot",
+    "check:r25l-corpus-pilot-plan",
+    "check:r25k-toy-overfit-sanity",
+    "check:r25j-tokenizer-toy-pipeline",
+    "check:r25i-from-scratch-roadmap",
+    "check:r25h-capacity-envelope",
+    "check:r25g-candidate-decision",
+    "check:r25f-candidate-purge",
+    "check:r25e-artifact-admission",
+    "check:r25d-browser-inference-binding",
+    "check:r25c-static-artifact-intake",
+    "check:r25b-static-decoder-training",
+    "check:r25-llm-first-static",
+    "check:r24-recovery-candidate",
+    "check:vercel-build"
+  ],
   scripts_run: results.length,
   results
 }, null, 2));

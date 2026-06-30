@@ -381,3 +381,8 @@ artifacts only. It is not long-term training, not product-scale training, not a
 release checkpoint, and not a static browser deployment. Product training
 progress remains `0%`; the pilot only checks local dataset, tokenizer, numeric
 training, and metric plumbing.
+
+R25N evaluates the R25M outputs and consumes the R25K/R25M one-shot approval
+markers. Routine gates now validate history and held-out structural sanity
+without rerunning toy or small-pilot training. Any later R25O/R25M2 run needs a
+fresh reviewer approval marker.
