@@ -1,0 +1,21 @@
+{
+  "approved": true,
+  "consumed": true,
+  "scope": "second_small_decoder_pilot_only",
+  "reviewer": "user",
+  "phase": "phase_3_small_decoder_pilot",
+  "run_id": "r25p_more_sequences_128",
+  "variant_id": "r25p_more_sequences_128",
+  "allow_small_pilot_training": true,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "allow_additional_runs": false,
+  "allow_artifacts_write": true,
+  "artifact_output_root": "artifacts/training_os/small_decoder_pilot/r25p/",
+  "notes": "R25P may run exactly one bounded second small decoder pilot variant, r25p_more_sequences_128, to ignored artifacts only.",
+  "consumed_by_commit": "pending_r25p_commit",
+  "consumed_by_phase": "R25P",
+  "consumed_reason": "one-shot approval used for r25p_more_sequences_128; future runs require a new approval marker"
+}

@@ -60,6 +60,9 @@ baseline/compatibility.
   not reusable permission for new runs.
 - R25O R25P approval template is committed with `approved:false`; template
   markers and consumed markers cannot authorize training.
+- R25P may run exactly one fresh-approved second bounded pilot variant,
+  `r25p_more_sequences_128`, and must consume that approval immediately after
+  the run.
 - Replayable small-pilot checkpoints, if a future approved run writes them,
   must remain ignored JSON artifacts and must not be release checkpoints.
 - No real model weights are added in R25I.
@@ -107,3 +110,10 @@ R25O may move the current phase label to
 `phase_3_second_small_pilot_designed` after the second-pilot plan, replayable
 checkpoint schema, replay-heldout scaffold, historical comparison, and approval
 template validation pass. This is still design-only and does not run R25P.
+
+R25P may move the current phase label to
+`phase_3_second_small_pilot_completed` only after the approved
+`r25p_more_sequences_128` run, replayable checkpoint validation, held-out replay
+eval, approval consumption, artifact guard, and R24/R25 gates pass. It is still
+not phase 4 scaled training, product-scale training, long-term training,
+release checkpoint admission, or browser static deployment.

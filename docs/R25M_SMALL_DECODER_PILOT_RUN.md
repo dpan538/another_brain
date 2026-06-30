@@ -32,3 +32,7 @@ R25O classifies the R25M checkpoint as a non-replayable legacy digest. It is
 useful for audit and comparison, but not for true held-out loss replay. Any
 future R25P checkpoint should use the R25O replayable JSON schema while staying
 ignored, untracked, non-product, and non-release.
+
+R25P does not retroactively change R25M. R25M remains the first bounded pilot
+baseline, with a non-replayable digest checkpoint. R25P comparisons should treat
+R25M as historical evidence only and must not rerun R25M training.

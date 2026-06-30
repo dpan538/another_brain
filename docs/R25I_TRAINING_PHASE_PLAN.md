@@ -38,6 +38,14 @@ approval template, and history comparison pass. This is still a design state
 only: no second pilot is approved, no new training runs, product training
 progress remains `0%`, and pilot progress remains separate at the R25M level.
 
+R25P may run exactly one reviewer-approved second bounded pilot variant,
+`r25p_more_sequences_128`, and then must consume its approval marker. If the
+run, dev sanity eval, replayable checkpoint validation, and held-out replay pass,
+the label may become `phase_3_second_small_pilot_completed`. This still is not
+phase 4 scaled training, product-scale training, long-term training, release
+checkpoint admission, or browser static deployment. Product and formal training
+progress remain `0%`; pilot progress remains separate.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.

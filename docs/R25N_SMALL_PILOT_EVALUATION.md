@@ -33,3 +33,8 @@ R25O follows this by designing R25P only. It records that the R25M checkpoint is
 not replayable for true held-out loss because it has no serialized tensors, and
 it adds a replayable ignored JSON checkpoint protocol for any later approved
 R25P run. R25O itself does not train.
+
+R25P may run only after a fresh one-shot approval. It must consume that approval
+after the bounded `r25p_more_sequences_128` run, write replayable JSON
+checkpoint data only to ignored artifacts, and keep product/formal training
+progress at `0%`.

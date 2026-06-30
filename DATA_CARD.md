@@ -182,6 +182,12 @@ R25O also does not train. It may read existing ignored R25M/R25N reports to
 plan a second bounded pilot and compare history. Future replayable checkpoints
 remain ignored JSON artifacts only and are not product or release checkpoints.
 
+R25P may train only the approved `r25p_more_sequences_128` second bounded pilot.
+It may use `r25l_train.jsonl` for training, `r25l_dev.jsonl` for dev sanity,
+and `r25l_heldout.jsonl` for replay evaluation only. R25P must not read evals,
+root PDFs/DOCX, `data/public_ingestion/`, private raw data, factual knowledge
+cards, external model output, or chain-of-thought data.
+
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,

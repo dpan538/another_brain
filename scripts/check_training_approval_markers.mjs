@@ -30,6 +30,16 @@ const MARKERS = [
     expectedPhase: "phase_3_small_decoder_pilot",
     template: true,
     trainingFlagKeys: ["allow_small_pilot_training"]
+  },
+  {
+    id: "r25p_second_small_pilot",
+    path: "training/from_scratch/APPROVE_R25P_SECOND_SMALL_PILOT.json",
+    expectedScope: "second_small_decoder_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    consumedByCommit: "pending_r25p_commit",
+    expectedRunId: "r25p_more_sequences_128",
+    expectedVariantId: "r25p_more_sequences_128",
+    trainingFlagKeys: ["allow_small_pilot_training"]
   }
 ];
 
@@ -81,6 +91,8 @@ async function main() {
 
     if (marker.scope !== spec.expectedScope) failures.push({ marker: spec.id, code: "scope_mismatch", expected: spec.expectedScope, actual: marker.scope });
     if (marker.phase !== spec.expectedPhase) failures.push({ marker: spec.id, code: "phase_mismatch", expected: spec.expectedPhase, actual: marker.phase });
+    if (spec.expectedRunId && marker.run_id !== spec.expectedRunId) failures.push({ marker: spec.id, code: "run_id_mismatch", expected: spec.expectedRunId, actual: marker.run_id });
+    if (spec.expectedVariantId && marker.variant_id !== spec.expectedVariantId) failures.push({ marker: spec.id, code: "variant_id_mismatch", expected: spec.expectedVariantId, actual: marker.variant_id });
     if (spec.template) {
       if (marker.approved !== false) failures.push({ marker: spec.id, code: "template_must_not_be_approved" });
       if (marker.allow_small_pilot_training !== false) failures.push({ marker: spec.id, code: "template_must_not_allow_small_pilot_training" });

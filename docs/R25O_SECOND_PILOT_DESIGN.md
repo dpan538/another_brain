@@ -33,3 +33,9 @@ R25O keeps these boundaries:
 
 R24/R25 gates remain required before and after any later approved R25P run.
 Product training progress remains `0%`; pilot progress remains separate.
+
+R25P follows this design with a fresh reviewer approval for exactly
+`r25p_more_sequences_128`. The R25P approval is one-shot, is consumed after the
+run, and does not authorize any other variant, long-term training,
+product-scale training, release admission, backend inference, external APIs,
+downloads, or committed weights.

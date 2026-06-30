@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import base64
 import hashlib
 import json
 import math
@@ -22,6 +23,19 @@ def write_json(path, value):
     with open(out, "w", encoding="utf-8") as handle:
         json.dump(value, handle, ensure_ascii=False, indent=2)
         handle.write("\n")
+
+
+def sha256_file(path):
+    digest = hashlib.sha256()
+    with open(ROOT / path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def sha256_json(value):
+    text = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(text).hexdigest()
 
 
 def finite(value):
@@ -57,6 +71,27 @@ def tensor_digest(named_tensors):
             "std": float(array.std())
         })
     return digest.hexdigest(), summaries
+
+
+def replay_tensor(name, tensor):
+    if hasattr(tensor, "detach"):
+        array = tensor.detach().cpu().contiguous().numpy()
+    else:
+        array = tensor
+    try:
+        import numpy as np
+        array = np.asarray(array, dtype="<f4")
+    except Exception:
+        pass
+    raw = array.tobytes()
+    return {
+        "name": name,
+        "shape": list(array.shape),
+        "dtype": "float32",
+        "encoding": "base64_float32_le",
+        "values": base64.b64encode(raw).decode("ascii"),
+        "sha256": hashlib.sha256(raw).hexdigest()
+    }
 
 
 def count_parameters_torch(model):
@@ -163,7 +198,7 @@ def run_torch(config, train_sequences, dev_sequences, tokenizer, backend):
     state_sha256, param_summaries = tensor_digest([(name, param) for name, param in sorted(model.state_dict().items())])
     return {
         "backend": backend,
-        "model_type": "micro_causal_decoder_transformer_pilot",
+        "model_type": "causal_decoder_pilot",
         "parameter_count": count_parameters_torch(model),
         "initial_train_loss": initial_train_loss,
         "final_train_loss": final_train_loss,
@@ -172,7 +207,11 @@ def run_torch(config, train_sequences, dev_sequences, tokenizer, backend):
         "history": history,
         "sample_generation_preview": decode_preview(generated, tokenizer),
         "state_sha256": state_sha256,
-        "param_summaries": param_summaries[:12]
+        "param_summaries": param_summaries[:12],
+        "parameter_tensors": [
+            replay_tensor(name, param)
+            for name, param in sorted(model.state_dict().items())
+        ]
     }
 
 
@@ -252,10 +291,12 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
         if next_id == pad_id:
             break
         generated.append(next_id)
-    state_sha256, param_summaries = tensor_digest([("embedding", emb), ("output", out), ("bias", bias)])
+    named_tensors = [("embedding", emb), ("output", out), ("bias", bias)]
+    state_sha256, param_summaries = tensor_digest(named_tensors)
     return {
         "backend": backend,
-        "model_type": "numpy_decoder_like_next_token_pilot",
+        "model_type": "decoder_like_next_token_pilot",
+        "implementation_type": "numpy_decoder_like_next_token_pilot",
         "parameter_count": int(emb.size + out.size + bias.size),
         "initial_train_loss": initial_train_loss,
         "final_train_loss": score(train_x, train_y),
@@ -264,8 +305,13 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
         "history": history,
         "sample_generation_preview": decode_preview(generated, tokenizer),
         "state_sha256": state_sha256,
-        "param_summaries": param_summaries
+        "param_summaries": param_summaries,
+        "parameter_tensors": [replay_tensor(name, tensor) for name, tensor in named_tensors]
     }
+
+
+def run_prefix(config):
+    return "r25p" if str(config.get("run_id", "")).startswith("r25p_") else "r25m"
 
 
 def main():
@@ -275,13 +321,15 @@ def main():
     args = parser.parse_args()
 
     config = read_json(args.config)
+    prefix = run_prefix(config)
     tokenizer_config = read_json(config["tokenizer_config"])
     artifact_dir = tokenizer_config.get("artifact_dir", "artifacts/training_os/tokenizer_dryrun/r25l")
     tokenizer = read_json(f"{artifact_dir}/r25j_tokenizer.json")
-    train_dataset, train_sequences = load_sequences(f"{config['output_dir']}r25m_train_sequences.json")
-    dev_dataset, dev_sequences = load_sequences(f"{config['output_dir']}r25m_dev_sequences.json")
+    train_dataset, train_sequences = load_sequences(f"{config['output_dir']}{prefix}_train_sequences.json")
+    dev_dataset, dev_sequences = load_sequences(f"{config['output_dir']}{prefix}_dev_sequences.json")
+    heldout_dataset = read_json(f"{config['output_dir']}{prefix}_heldout_sequences.json") if prefix == "r25p" and Path(ROOT / f"{config['output_dir']}{prefix}_heldout_sequences.json").exists() else {"sequences": []}
     if not train_sequences or not dev_sequences:
-        raise SystemExit("R25M pilot sequences are missing")
+        raise SystemExit("Small decoder pilot sequences are missing")
 
     if args.backend == "python_torch":
         metrics = run_torch(config, train_sequences, dev_sequences, tokenizer, args.backend)
@@ -293,36 +341,22 @@ def main():
     steps = int(config["max_steps"])
     train_loss_decreased = metrics["final_train_loss"] < metrics["initial_train_loss"]
     dev_loss_finite = finite(metrics["initial_dev_loss"]) and finite(metrics["final_dev_loss"])
+    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix == "r25p"
+    checkpoint_path = f"{config['output_dir']}{prefix}_replayable_checkpoint.json" if replayable_enabled else f"{config['output_dir']}{prefix}_small_decoder_checkpoint.json"
+    metrics_path = f"{config['output_dir']}{prefix}_small_decoder_metrics.json"
+    run_report_path = f"{config['output_dir']}{prefix}_small_decoder_run_report.json"
     artifact_paths = [
-        f"{config['output_dir']}r25m_small_decoder_checkpoint.json",
-        f"{config['output_dir']}r25m_small_decoder_metrics.json",
-        f"{config['output_dir']}r25m_small_decoder_run_report.json"
+        checkpoint_path,
+        metrics_path,
+        run_report_path
     ]
-    checkpoint = {
-        "checkpoint_id": "r25m_small_decoder_checkpoint_digest_v0",
-        "run_id": config["run_id"],
-        "architecture_id": config["architecture_id"],
-        "toy_or_pilot_only": True,
-        "model_type": metrics["model_type"],
-        "product_model": False,
-        "release_checkpoint": False,
-        "formal_product_training": False,
-        "long_term_training": False,
-        "weights_serialized": False,
-        "state_sha256": metrics["state_sha256"],
-        "parameter_count": metrics["parameter_count"],
-        "parameter_summaries": metrics["param_summaries"],
-        "notes": [
-            "This JSON is an ignored pilot checkpoint digest, not a release checkpoint.",
-            "Full runtime weights are not serialized to a tracked path.",
-            "R25M is a bounded mechanics pilot only."
-        ]
-    }
     metric_report = {
         "ok": train_loss_decreased and dev_loss_finite,
         "run_id": config["run_id"],
+        "variant_id": config.get("variant_id"),
         "backend": metrics["backend"],
         "model_type": metrics["model_type"],
+        "implementation_type": metrics.get("implementation_type", metrics["model_type"]),
         "parameter_count": metrics["parameter_count"],
         "steps": steps,
         "initial_train_loss": metrics["initial_train_loss"],
@@ -333,8 +367,70 @@ def main():
         "dev_loss_finite": dev_loss_finite,
         "history": metrics["history"]
     }
+    if replayable_enabled:
+        checkpoint = {
+            "schema_version": "r25o_small_decoder_checkpoint_v1",
+            "run_id": config["run_id"],
+            "phase": "phase_3_small_decoder_pilot",
+            "model_type": metrics["model_type"],
+            "architecture": {
+                "type": config["architecture"]["type"],
+                "layers": int(config["architecture"].get("layers", 1)),
+                "hidden_size": int(config["architecture"]["hidden_size"]),
+                "attention_heads": int(config["architecture"].get("attention_heads", 1)),
+                "intermediate_size": int(config["architecture"].get("intermediate_size", config["architecture"]["hidden_size"])),
+                "positional_encoding": "none_for_decoder_like_next_token" if metrics["model_type"] == "decoder_like_next_token_pilot" else "learned",
+                "normalization": "none_for_decoder_like_next_token" if metrics["model_type"] == "decoder_like_next_token_pilot" else "layer_norm"
+            },
+            "tokenizer_id": tokenizer_config.get("tokenizer_id", "r25l_dryrun_tokenizer_v0"),
+            "vocab_size": int(tokenizer["vocab_size"]),
+            "max_context_tokens": int(config["max_context_tokens"]),
+            "parameter_count": int(metrics["parameter_count"]),
+            "parameter_tensors": metrics["parameter_tensors"],
+            "optimizer_state_optional": None,
+            "training_config_digest": sha256_file(args.config),
+            "dataset_digest": sha256_json({
+                "train": train_dataset,
+                "dev": dev_dataset,
+                "heldout_sequence_count": len(heldout_dataset.get("sequences", []))
+            }),
+            "tokenizer_digest": sha256_file(f"{artifact_dir}/r25j_tokenizer.json"),
+            "metrics_digest": sha256_json(metric_report),
+            "product_model": False,
+            "release_checkpoint": False,
+            "commit_allowed": False,
+            "created_for": "small_decoder_pilot_only",
+            "notes": [
+                "R25P replayable JSON checkpoint for ignored held-out replay only.",
+                "Not a product model, not a release checkpoint, and not commit-allowed.",
+                "Serialized tensors are included only because this is a bounded small-pilot artifact under ignored artifacts/."
+            ]
+        }
+    else:
+        checkpoint = {
+            "checkpoint_id": "r25m_small_decoder_checkpoint_digest_v0",
+            "run_id": config["run_id"],
+            "architecture_id": config["architecture_id"],
+            "toy_or_pilot_only": True,
+            "model_type": metrics["model_type"],
+            "product_model": False,
+            "release_checkpoint": False,
+            "formal_product_training": False,
+            "long_term_training": False,
+            "weights_serialized": False,
+            "state_sha256": metrics["state_sha256"],
+            "parameter_count": metrics["parameter_count"],
+            "parameter_summaries": metrics["param_summaries"],
+            "notes": [
+                "This JSON is an ignored pilot checkpoint digest, not a release checkpoint.",
+                "Full runtime weights are not serialized to a tracked path.",
+                "R25M is a bounded mechanics pilot only."
+            ]
+        }
     run_report = {
         "ok": metric_report["ok"],
+        "run_id": config["run_id"],
+        "variant_id": config.get("variant_id"),
         "small_pilot_training_ran": True,
         "formal_product_training": False,
         "long_term_training": False,
@@ -342,27 +438,36 @@ def main():
         "release_checkpoint": False,
         "backend": metrics["backend"],
         "architecture_type": metrics["model_type"],
+        "implementation_type": metrics.get("implementation_type", metrics["model_type"]),
         "parameter_count": metrics["parameter_count"],
         "steps": steps,
+        "train_sequences": len(train_sequences),
+        "dev_sequences": len(dev_sequences),
+        "heldout_sequences_prepared": len(heldout_dataset.get("sequences", [])),
         "initial_train_loss": metrics["initial_train_loss"],
         "final_train_loss": metrics["final_train_loss"],
         "initial_dev_loss": metrics["initial_dev_loss"],
         "final_dev_loss": metrics["final_dev_loss"],
         "train_loss_decreased": train_loss_decreased,
         "dev_loss_finite": dev_loss_finite,
+        "replayable_checkpoint_written": replayable_enabled,
+        "replayable_checkpoint_path": checkpoint_path if replayable_enabled else "",
         "sample_generation_preview": metrics["sample_generation_preview"],
         "artifact_paths": artifact_paths,
         "weights_tracked": False,
-        "train_sequences": len(train_sequences),
-        "dev_sequences": len(dev_sequences),
         "source_files": {
             "train": train_dataset.get("source_files", []),
-            "dev": dev_dataset.get("source_files", [])
+            "dev": dev_dataset.get("source_files", []),
+            "heldout": heldout_dataset.get("source_files", [])
         },
         "notes": [
-            "R25M ran only because the narrow approval marker and allow flag were present.",
+            f"{prefix.upper()} ran only because the narrow approval marker and allow flag were present.",
             "This is bounded small-pilot training, not product-scale or long-term training.",
-            "Loss decrease is a mechanics signal only, not product intelligence or release admission."
+            "Loss decrease is a mechanics signal only, not product intelligence or release admission.",
+            *(
+                ["Replayable checkpoint is JSON-only and ignored; it is not a release artifact."]
+                if replayable_enabled else []
+            )
         ]
     }
     write_json(artifact_paths[0], checkpoint)

@@ -7,7 +7,17 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const execFileAsync = promisify(execFile);
-const REPORT_PATH = "artifacts/training_os/small_decoder_pilot/r25m/r25m_numeric_backend_report.json";
+const DEFAULT_OUTPUT_DIR = "artifacts/training_os/small_decoder_pilot/r25m/";
+const DEFAULT_PREFIX = "r25m";
+
+function argValue(name, fallback = null) {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] || fallback : fallback;
+}
+
+function normalizedDir(path) {
+  return path.endsWith("/") ? path : `${path}/`;
+}
 
 async function writeJson(path, value) {
   const abs = resolve(ROOT, path);
@@ -46,9 +56,12 @@ async function checkPythonModule(moduleName, snippet, timeoutMs = 90000) {
 }
 
 async function main() {
+  const outputDir = normalizedDir(argValue("--output-dir", DEFAULT_OUTPUT_DIR));
+  const prefix = argValue("--prefix", DEFAULT_PREFIX);
+  const reportPath = `${outputDir}${prefix}_numeric_backend_report.json`;
   const notes = [
     "Detection uses only local Python imports and does not install packages.",
-    "R25M prefers an already installed torch backend, then an already installed numpy fallback.",
+    "The small decoder pilot prefers an already installed torch backend, then an already installed numpy fallback.",
     "No network access, package registry, remote model, or external inference service is used."
   ];
   const torch = await checkPythonModule("torch", [
@@ -69,7 +82,7 @@ async function main() {
       backend_details: torch,
       notes
     };
-    await writeJson(REPORT_PATH, output);
+    await writeJson(reportPath, output);
     console.log(JSON.stringify(output, null, 2));
     return;
   }
@@ -94,7 +107,7 @@ async function main() {
         "The numpy path is a decoder-like fallback, not a transformer equivalence claim."
       ]
     };
-    await writeJson(REPORT_PATH, output);
+    await writeJson(reportPath, output);
     console.log(JSON.stringify(output, null, 2));
     return;
   }
@@ -107,10 +120,10 @@ async function main() {
     backend_details: { torch, numpy },
     notes: [
       ...notes,
-      "R25M may pass in documented blocked mode when no numeric backend is available."
+      "A small decoder pilot may pass in documented blocked mode when no numeric backend is available."
     ]
   };
-  await writeJson(REPORT_PATH, output);
+  await writeJson(reportPath, output);
   console.log(JSON.stringify(output, null, 2));
 }
 

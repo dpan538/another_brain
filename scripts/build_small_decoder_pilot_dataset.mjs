@@ -40,6 +40,15 @@ async function readRows(path) {
   return rows;
 }
 
+function argValue(name, fallback = null) {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] || fallback : fallback;
+}
+
+function runPrefix(config) {
+  return String(config.run_id || "").startsWith("r25p_") ? "r25p" : "r25m";
+}
+
 function normalizeText(value = "") {
   return String(value || "").normalize("NFC").replace(/\s+/g, " ").trim();
 }
@@ -118,7 +127,9 @@ function buildSequences(rows, split, limit, sourcePath, tokenizer, tokenizerConf
 async function main() {
   const failures = [];
   const forbidden_sources_touched = [];
-  const config = await readJson(RUN_CONFIG_PATH);
+  const configPath = argValue("--config", RUN_CONFIG_PATH);
+  const config = await readJson(configPath);
+  const prefix = runPrefix(config);
   const tokenizerConfig = await readJson(config.tokenizer_config);
   const artifactDir = tokenizerConfig.artifact_dir || "artifacts/training_os/tokenizer_dryrun/r25l";
   const tokenizerPath = `${artifactDir}/r25j_tokenizer.json`;
@@ -129,20 +140,29 @@ async function main() {
   for (const path of [config.train_source, config.dev_source]) {
     if (FORBIDDEN_SOURCE_RE.test(path)) forbidden_sources_touched.push(path);
   }
+  if (config.heldout_source && FORBIDDEN_SOURCE_RE.test(config.heldout_source)) {
+    if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") forbidden_sources_touched.push(config.heldout_source);
+  }
   if (config.train_source !== "training/llm_corpus/r25l_train.jsonl") failures.push({ code: "unexpected_train_source", path: config.train_source });
   if (config.dev_source !== "training/llm_corpus/r25l_dev.jsonl") failures.push({ code: "unexpected_dev_source", path: config.dev_source });
+  if (config.heldout_source && config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", path: config.heldout_source });
 
   const tokenizer = failures.length ? null : await readJson(tokenizerPath);
   const tokenizerReport = failures.length ? null : await readJson(tokenizerReportPath);
   const trainRows = await readRows(config.train_source);
   const devRows = await readRows(config.dev_source);
+  const heldoutRows = config.heldout_source ? await readRows(config.heldout_source) : [];
   const trainSequences = tokenizer ? buildSequences(trainRows, "train", Number(config.max_train_rows || 64), config.train_source, tokenizer, tokenizerConfig, config, failures) : [];
   const devSequences = tokenizer ? buildSequences(devRows, "dev", Number(config.max_dev_rows || 32), config.dev_source, tokenizer, tokenizerConfig, config, failures) : [];
+  const heldoutSequences = tokenizer && config.heldout_source
+    ? buildSequences(heldoutRows, "heldout", Number(config.max_heldout_rows || 0), config.heldout_source, tokenizer, tokenizerConfig, config, failures)
+    : [];
   if (trainSequences.length < Number(config.max_train_rows || 64)) failures.push({ code: "too_few_train_sequences", count: trainSequences.length });
   if (devSequences.length < Number(config.max_dev_rows || 32)) failures.push({ code: "too_few_dev_sequences", count: devSequences.length });
+  if (config.heldout_source && heldoutSequences.length < Number(config.max_heldout_rows || 0)) failures.push({ code: "too_few_heldout_sequences", count: heldoutSequences.length });
 
   const datasetBase = {
-    dataset_id: "r25m_small_decoder_pilot_sequences_v0",
+    dataset_id: `${config.run_id || "r25m_small_decoder_pilot_v0"}_sequences_v0`,
     purpose: "small_decoder_pilot_only",
     product_model: false,
     release_checkpoint: false,
@@ -174,26 +194,42 @@ async function main() {
     source_files: [config.dev_source],
     sequences: devSequences
   };
+  const heldoutDataset = {
+    ...datasetBase,
+    ok: failures.length === 0 && forbidden_sources_touched.length === 0,
+    split: "heldout",
+    source_files: config.heldout_source ? [config.heldout_source] : [],
+    evaluation_only: true,
+    not_used_for_training: true,
+    sequences: heldoutSequences
+  };
   const report = {
     ok: trainDataset.ok && devDataset.ok,
+    run_id: config.run_id || "r25m_small_decoder_pilot_v0",
+    variant_id: config.variant_id || null,
+    config_path: configPath,
     train_rows_used: trainSequences.length,
     dev_rows_used: devSequences.length,
+    heldout_rows_prepared: heldoutSequences.length,
     train_sequences: trainSequences.length,
     dev_sequences: devSequences.length,
+    heldout_sequences_prepared: heldoutSequences.length,
     max_context_tokens: datasetBase.max_context_tokens,
     tokenizer_id: datasetBase.tokenizer_id,
     forbidden_sources_touched,
     notes: [
-      "R25M pilot dataset reads only R25L train/dev JSONL files.",
+      `${config.run_id || "R25M"} pilot dataset reads only approved R25L JSONL files.`,
       "Training uses R25L train rows only; dev rows are used for bounded sanity evaluation only.",
+      "Heldout rows, when present, are prepared only for replay evaluation and are not used for training.",
       "No evals, heldout training, root documents, public ingestion data, knowledge cards, or private data are read."
     ],
     failures
   };
 
-  await writeJson(`${config.output_dir}r25m_train_sequences.json`, trainDataset);
-  await writeJson(`${config.output_dir}r25m_dev_sequences.json`, devDataset);
-  await writeJson(`${config.output_dir}r25m_dataset_report.json`, report);
+  await writeJson(`${config.output_dir}${prefix}_train_sequences.json`, trainDataset);
+  await writeJson(`${config.output_dir}${prefix}_dev_sequences.json`, devDataset);
+  if (config.heldout_source) await writeJson(`${config.output_dir}${prefix}_heldout_sequences.json`, heldoutDataset);
+  await writeJson(`${config.output_dir}${prefix}_dataset_report.json`, report);
   console.log(JSON.stringify(report, null, 2));
   if (!report.ok) process.exit(2);
 }

@@ -4,7 +4,10 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const OUTPUT_PATH = "artifacts/training_os/small_decoder_pilot/r25o/r25o_history_comparison.json";
+const INCLUDE_R25P = process.argv.includes("--include-r25p");
+const OUTPUT_PATH = INCLUDE_R25P
+  ? "artifacts/training_os/small_decoder_pilot/r25p/r25p_history_comparison.json"
+  : "artifacts/training_os/small_decoder_pilot/r25o/r25o_history_comparison.json";
 
 async function exists(path) {
   try {
@@ -41,6 +44,8 @@ async function main() {
   const r25nAnalysis = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25n/r25n_small_pilot_analysis.json");
   const r25nHeldout = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25n/r25n_heldout_eval_report.json");
   const r25p = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25p/r25p_small_decoder_run_report.json");
+  const r25pHeldout = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25p/r25p_heldout_eval_report.json");
+  const r25pEval = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25p/r25p_small_decoder_eval_report.json");
   const runs = [];
 
   if (toy?.ok) {
@@ -76,21 +81,33 @@ async function main() {
     });
   }
 
-  if (r25p?.ok) {
+  if (INCLUDE_R25P && r25p?.ok) {
     runs.push({
       id: "R25P",
-      kind: "future_second_small_decoder_pilot",
+      kind: "second_bounded_small_decoder_pilot",
       train_loss_change: lossDelta(r25p.initial_train_loss, r25p.final_train_loss),
       dev_loss_change: lossDelta(r25p.initial_dev_loss, r25p.final_dev_loss),
-      heldout_structural_metric: r25p.heldout_metric ?? null,
+      heldout_loss: r25pHeldout?.heldout_loss ?? null,
+      heldout_loss_finite: r25pHeldout?.heldout_loss_finite === true,
       parameter_count: r25p.parameter_count,
       sequence_count: r25p.train_sequences,
       dev_sequence_count: r25p.dev_sequences,
+      heldout_sequence_count: r25pHeldout?.heldout_sequences ?? r25p.heldout_sequences_prepared ?? null,
       steps: r25p.steps,
       backend: r25p.backend,
-      artifact_type: "ignored_replayable_checkpoint_json_expected"
+      artifact_type: "ignored_replayable_checkpoint_json",
+      replayable_checkpoint_available: r25p.replayable_checkpoint_written === true && r25pEval?.checkpoint_validates === true
     });
   }
+
+  const r25mRun = runs.find((run) => run.id === "R25M");
+  const r25pRun = runs.find((run) => run.id === "R25P");
+  const dataset_size_difference = r25mRun && r25pRun
+    ? {
+        train_sequences_delta: Number(r25pRun.sequence_count || 0) - Number(r25mRun.sequence_count || 0),
+        dev_sequences_delta: Number(r25pRun.dev_sequence_count || 0) - Number(r25mRun.dev_sequence_count || 0)
+      }
+    : null;
 
   const report = {
     ok: true,
@@ -99,10 +116,14 @@ async function main() {
     product_model: false,
     release_checkpoint: false,
     runs,
+    dataset_size_difference,
+    recommendation: INCLUDE_R25P ? "stop_and_review" : "future_r25p_requires_fresh_approval",
     notes: [
-      "R25O comparison does not train.",
-      "R25M is the current small-pilot baseline.",
-      "Future R25P results should be added only from ignored artifacts after fresh approval."
+      INCLUDE_R25P ? "R25P comparison does not train; it reads ignored reports only." : "R25O comparison does not train.",
+      "R25M is the first small-pilot baseline.",
+      INCLUDE_R25P
+        ? "R25P is a second bounded pilot, not approval to scale automatically."
+        : "Future R25P results should be added only from ignored artifacts after fresh approval."
     ]
   };
   await writeJson(OUTPUT_PATH, report);

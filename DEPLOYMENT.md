@@ -185,6 +185,13 @@ history-comparison reports only. The R25P approval template is committed with
 checkpoints must remain ignored and are still not browser assets, release
 checkpoints, or commit-allowed weights.
 
+R25P reports and replayable checkpoints live under ignored
+`artifacts/training_os/small_decoder_pilot/r25p/`. They are local pilot evidence
+only. They must not be copied into `web/`, `static_llm/assets/`,
+`build_sources/`, or `knowledge_sources/`, and they must not be staged or
+committed. R25P does not authorize Vercel backend inference, external storage,
+release checkpoint admission, or static LLM production deployment.
+
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
 generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It

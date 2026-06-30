@@ -29,3 +29,8 @@ hashes, provenance, backend-format checks, capacity checks, and R24/R25 gates.
 `eval:small-decoder-pilot-replay-heldout` prepares the true held-out replay
 entry point. In R25O it skips because no replayable checkpoint exists and the
 R25M digest is intentionally classified as non-replayable.
+
+R25P is the first approved user of this protocol. Its replayable JSON checkpoint
+is still an ignored pilot artifact only. It may be used to compute held-out
+loss, but it must not be treated as a release checkpoint, browser asset,
+tracked weight, or product model.

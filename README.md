@@ -394,3 +394,9 @@ R25N evaluates the R25M outputs and consumes the R25K/R25M one-shot approval
 markers. Routine gates now validate history and held-out structural sanity
 without rerunning toy or small-pilot training. Any later R25O/R25M2 run needs a
 fresh reviewer approval marker.
+
+R25O designs the second bounded pilot and replayable checkpoint protocol.
+R25P may run exactly one fresh-approved `r25p_more_sequences_128` pilot to
+ignored artifacts only. Its replayable JSON checkpoint enables held-out replay
+loss, but it is not a product model, release checkpoint, browser static asset,
+or committed weight. Product and formal training progress remain `0%`.

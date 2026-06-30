@@ -1,0 +1,45 @@
+{
+  "run_id": "r25p_more_sequences_128",
+  "variant_id": "r25p_more_sequences_128",
+  "architecture_id": "r25p_more_sequences_128",
+  "product_model": false,
+  "release_checkpoint": false,
+  "formal_product_training": false,
+  "long_term_training": false,
+  "commit_weights_allowed": false,
+  "output_dir": "artifacts/training_os/small_decoder_pilot/r25p/",
+  "train_source": "training/llm_corpus/r25l_train.jsonl",
+  "dev_source": "training/llm_corpus/r25l_dev.jsonl",
+  "heldout_source": "training/llm_corpus/r25l_heldout.jsonl",
+  "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25l.json",
+  "max_train_rows": 128,
+  "max_dev_rows": 32,
+  "max_heldout_rows": 32,
+  "max_context_tokens": 64,
+  "batch_size": 4,
+  "max_steps": 80,
+  "eval_every": 20,
+  "learning_rate": 0.01,
+  "seed": 25,
+  "architecture": {
+    "type": "causal_decoder_or_decoder_like_pilot",
+    "selected_backend": "auto_detect",
+    "target_if_available": "numpy_decoder_like_next_token_pilot",
+    "layers": 1,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128
+  },
+  "fallback_if_transformer_unavailable": "skip_or_use_documented_decoder_like_pilot",
+  "replayable_checkpoint": {
+    "enabled": true,
+    "format": "json",
+    "schema": "training/from_scratch/small_decoder_checkpoint.schema.json"
+  },
+  "notes": [
+    "bounded second pilot only",
+    "not product",
+    "ignored artifacts only",
+    "replayable checkpoint required if backend supports it"
+  ]
+}
