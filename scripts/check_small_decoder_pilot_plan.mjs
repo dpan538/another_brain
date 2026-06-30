@@ -9,6 +9,7 @@ import { dirname } from "node:path";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const execFileAsync = promisify(execFile);
 const CONFIG_PATH = "training/from_scratch/small_decoder_pilot_config.json";
+const RUN_CONFIG_PATH = "training/from_scratch/small_decoder_pilot_run_config.json";
 const PLAN_PATH = "artifacts/training_os/small_decoder_pilot/r25l_small_decoder_pilot_plan.json";
 const WEIGHT_RE = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i;
 const q = String.fromCharCode(113);
@@ -56,8 +57,10 @@ function collectStrings(value, out = []) {
 async function main() {
   const failures = [];
   const config = await readJson(CONFIG_PATH).catch(() => null);
+  const runConfig = await readJson(RUN_CONFIG_PATH).catch(() => null);
   const plan = await readJson(PLAN_PATH).catch(() => null);
   if (!config) failures.push({ code: "small_decoder_pilot_config_missing" });
+  if (!runConfig) failures.push({ code: "small_decoder_pilot_run_config_missing", path: RUN_CONFIG_PATH });
   if (!plan) failures.push({ code: "small_decoder_pilot_plan_missing", path: PLAN_PATH });
   if (config) {
     if (config.product_model !== false) failures.push({ code: "pilot_config_must_not_be_product" });
@@ -69,6 +72,20 @@ async function main() {
     if (PURGED_CANDIDATE_RE.test(text)) failures.push({ code: "purged_candidate_reference_in_pilot_config" });
     if (FORBIDDEN_PRODUCT_RE.test(text)) failures.push({ code: "forbidden_model_strategy_claim_in_pilot_config" });
     if (BACKEND_RE.test(text)) failures.push({ code: "backend_or_storage_claim_in_pilot_config" });
+  }
+  if (runConfig) {
+    if (runConfig.product_model !== false) failures.push({ code: "pilot_run_config_must_not_be_product" });
+    if (runConfig.release_checkpoint !== false) failures.push({ code: "pilot_run_config_must_not_be_release_checkpoint" });
+    if (runConfig.commit_weights_allowed !== false) failures.push({ code: "pilot_run_config_must_not_allow_weight_commit" });
+    if (!String(runConfig.output_dir || "").startsWith("artifacts/training_os/small_decoder_pilot/r25m/")) failures.push({ code: "pilot_run_output_dir_must_be_r25m_ignored_artifacts" });
+    if (!(await isIgnored(`${runConfig.output_dir}probe`))) failures.push({ code: "pilot_run_output_dir_not_ignored", output_dir: runConfig.output_dir });
+    if (runConfig.train_source !== "training/llm_corpus/r25l_train.jsonl") failures.push({ code: "pilot_run_train_source_invalid", train_source: runConfig.train_source });
+    if (runConfig.dev_source !== "training/llm_corpus/r25l_dev.jsonl") failures.push({ code: "pilot_run_dev_source_invalid", dev_source: runConfig.dev_source });
+    if (Number(runConfig.max_steps || 0) > 80) failures.push({ code: "pilot_run_steps_exceed_bound", max_steps: runConfig.max_steps });
+    const runText = collectStrings(runConfig).join("\n");
+    if (PURGED_CANDIDATE_RE.test(runText)) failures.push({ code: "purged_candidate_reference_in_pilot_run_config" });
+    if (FORBIDDEN_PRODUCT_RE.test(runText)) failures.push({ code: "forbidden_model_strategy_claim_in_pilot_run_config" });
+    if (BACKEND_RE.test(runText)) failures.push({ code: "backend_or_storage_claim_in_pilot_run_config" });
   }
   if (plan) {
     if (plan.ok !== true) failures.push({ code: "pilot_plan_not_ok" });
@@ -89,6 +106,7 @@ async function main() {
     product_model: false,
     training_allowed_by_default: false,
     commit_weights_allowed: false,
+    run_config_path: RUN_CONFIG_PATH,
     plan_path: PLAN_PATH,
     parameter_estimate: plan?.parameter_estimate || 0,
     estimated_fp32_bytes: plan?.estimated_fp32_bytes || 0,

@@ -1,0 +1,14 @@
+{
+  "approved": true,
+  "scope": "small_decoder_pilot_only",
+  "reviewer": "user",
+  "phase": "phase_3_small_decoder_pilot",
+  "allow_small_pilot_training": true,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "allow_artifacts_write": true,
+  "artifact_output_root": "artifacts/training_os/small_decoder_pilot/",
+  "notes": "R25M may run a bounded small from-scratch decoder pilot to ignored artifacts only. It is not a product model or release checkpoint."
+}

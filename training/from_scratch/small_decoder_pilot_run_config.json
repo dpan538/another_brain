@@ -1,0 +1,32 @@
+{
+  "run_id": "r25m_small_decoder_pilot_v0",
+  "architecture_id": "r25m_micro_causal_decoder_v0",
+  "product_model": false,
+  "release_checkpoint": false,
+  "commit_weights_allowed": false,
+  "output_dir": "artifacts/training_os/small_decoder_pilot/r25m/",
+  "train_source": "training/llm_corpus/r25l_train.jsonl",
+  "dev_source": "training/llm_corpus/r25l_dev.jsonl",
+  "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25l.json",
+  "max_train_rows": 64,
+  "max_dev_rows": 32,
+  "max_context_tokens": 64,
+  "batch_size": 4,
+  "max_steps": 80,
+  "eval_every": 20,
+  "learning_rate": 0.01,
+  "seed": 25,
+  "architecture": {
+    "type": "causal_decoder_pilot",
+    "layers": 1,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128
+  },
+  "fallback_if_transformer_unavailable": "skip_or_use_documented_decoder_like_pilot",
+  "notes": [
+    "bounded pilot only",
+    "not product",
+    "ignored artifacts only"
+  ]
+}

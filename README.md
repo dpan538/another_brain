@@ -374,3 +374,10 @@ The future admission path is:
 
 LoRA experiments and SLM plans are historical research artifacts and are not
 required for the R25 browser LLM launch path.
+
+R25L expands the reviewed behavioral corpus and plans a small decoder pilot.
+R25M may run one reviewer-approved bounded small decoder pilot to ignored
+artifacts only. It is not long-term training, not product-scale training, not a
+release checkpoint, and not a static browser deployment. Product training
+progress remains `0%`; the pilot only checks local dataset, tokenizer, numeric
+training, and metric plumbing.

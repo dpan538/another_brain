@@ -21,6 +21,10 @@ schemas, review gates, and dry-run validators, but that is not model training.
 R25J adds tokenizer dry-run commands and a toy decoder scaffold. R25K may run a
 toy-only sanity loop after explicit approval. R25L expands corpus rows and
 plans the phase 3 pilot, but `run:small-decoder-pilot` still skips by default.
+R25M may run one bounded phase 3 small decoder pilot after explicit approval.
+That pilot writes ignored artifacts only, is not long-term or product-scale
+training, is not release checkpoint admission, and leaves product training
+progress at `0%`.
 
 ## Failure Modes To Watch
 

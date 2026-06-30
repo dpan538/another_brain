@@ -158,6 +158,12 @@ for expanded dry-run tokenizer training and only `r25l_dev.jsonl` /
 `data/public_ingestion/`, private raw data, eval prompts, or external LLM
 output.
 
+R25M pilot dataset scripts may use only `training/llm_corpus/r25l_train.jsonl`
+for bounded pilot training and `training/llm_corpus/r25l_dev.jsonl` for sanity
+evaluation. They must not read evals, heldout as training, root PDFs/DOCX,
+`data/public_ingestion/`, knowledge-source cards, private raw data, external
+LLM output, or chain-of-thought data.
+
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,

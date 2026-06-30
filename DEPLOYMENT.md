@@ -106,6 +106,7 @@ npm run check:r25i-from-scratch-roadmap
 npm run check:r25j-tokenizer-toy-pipeline
 npm run check:r25k-toy-overfit-sanity
 npm run check:r25l-corpus-pilot-plan
+npm run check:r25m-small-decoder-pilot
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -165,6 +166,12 @@ R25L expanded tokenizer dry-run artifacts and small decoder pilot planning
 reports also live under ignored `artifacts/training_os/` directories. They are
 review material only: no backend, external storage, model API, remote download,
 or deployed pilot weight is introduced.
+
+R25M small decoder pilot artifacts live under ignored
+`artifacts/training_os/small_decoder_pilot/r25m/`. They are local pilot reports
+and checkpoint digests only, not release checkpoints or browser assets. They
+must not be copied into `web/`, `static_llm/assets/`, `build_sources/`, or
+`knowledge_sources/`, and they must not be staged or committed.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is

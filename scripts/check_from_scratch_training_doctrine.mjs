@@ -8,7 +8,7 @@ import { gitLsFiles } from "./static_llm_artifact_utils.mjs";
 import { normalizeRepoPath } from "./static_llm_policy.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const ACTIVE_RE = /^(README\.md|DEPLOYMENT\.md|DATA_CARD\.md|docs\/R25.*\.md|static_llm\/(candidate_decisions|release_decisions|request_pack|ASSET_LAYOUT\.md).+|training\/from_scratch\/.+|scripts\/(build_static_llm_candidate_matrix|report_from_scratch_training_progress|check_no_active_named_model_candidate|check_no_slm_product_target|build_tiny_decoder_toy_dataset|run_tiny_decoder_toy_overfit|eval_tiny_decoder_toy_overfit|check_tiny_decoder_toy_artifacts_untracked|check_r25k_toy_overfit_sanity|generate_r25l_expanded_llm_corpus|validate_r25l_expanded_corpus|check_r25l_corpus_contamination|report_r25l_corpus_coverage|plan_small_decoder_pilot|run_small_decoder_pilot|check_small_decoder_pilot_plan|check_r25l_corpus_pilot_plan)\.mjs|package\.json)$/;
+const ACTIVE_RE = /^(README\.md|DEPLOYMENT\.md|DATA_CARD\.md|docs\/R25.*\.md|static_llm\/(candidate_decisions|release_decisions|request_pack|ASSET_LAYOUT\.md).+|training\/from_scratch\/.+|scripts\/(build_static_llm_candidate_matrix|report_from_scratch_training_progress|check_no_active_named_model_candidate|check_no_slm_product_target|build_tiny_decoder_toy_dataset|run_tiny_decoder_toy_overfit|eval_tiny_decoder_toy_overfit|check_tiny_decoder_toy_artifacts_untracked|check_r25k_toy_overfit_sanity|generate_r25l_expanded_llm_corpus|validate_r25l_expanded_corpus|check_r25l_corpus_contamination|report_r25l_corpus_coverage|plan_small_decoder_pilot|run_small_decoder_pilot|check_small_decoder_pilot_plan|check_r25l_corpus_pilot_plan|check_small_decoder_numeric_backend|build_small_decoder_pilot_dataset|eval_small_decoder_pilot|check_small_decoder_pilot_artifacts_untracked|report_small_decoder_pilot_gate_snapshot|check_r25m_small_decoder_pilot)\.mjs|scripts\/train_small_decoder_pilot\.py|package\.json)$/;
 const SKIP_RE = /(^|\/)(artifacts|node_modules|\.git)\//;
 
 const q = String.fromCharCode(113);
@@ -59,7 +59,7 @@ const forbiddenClaims = [
   }
 ];
 
-const allowContext = /not|no |never|without|forbidden|rejected|reject|comparison|compatibility|baseline|fixture|legacy|historical|do not|must not|cannot|is not|are not|only as|warning|non-goal|avoid|risk|rollback|trigger|failure|any claim|treating|toy-only|toy sanity|pipeline mechanics|ignored artifact|ignored artifacts|no tracked weights|formal_training":false|product_model":false|R25L|small decoder pilot plan|small decoder pilot planning|skips by default|planned_no_training|training_will_run":false|PURGED_CANDIDATE_RE|FINAL_STRATEGY_RE|FORBIDDEN_PRODUCT_RE|BACKEND_RE|RegExp/i;
+const allowContext = /not|no |never|without|forbidden|rejected|reject|comparison|compatibility|baseline|fixture|legacy|historical|do not|must not|cannot|is not|are not|only as|warning|non-goal|avoid|risk|rollback|trigger|failure|any claim|treating|toy-only|toy sanity|pipeline mechanics|ignored artifact|ignored artifacts|no tracked weights|formal_training":false|formal_product_training":false|long_term_training":false|release_checkpoint":false|product_model":false|R25L|R25M|small decoder pilot plan|small decoder pilot planning|bounded small|bounded pilot|small decoder pilot is bounded|skips by default|planned_no_training|training_will_run":false|small_pilot_training_ran|pilot_training_progress_percent|PURGED_CANDIDATE_RE|FINAL_STRATEGY_RE|FORBIDDEN_PRODUCT_RE|BACKEND_RE|RegExp/i;
 const triggerContext = new RegExp(
   `pretrained|pre-trained|external model|foundation model|LoRA|adapter|fine[- ]?tune|fine[- ]?tuning|candidate admission|training has started|training started|formal training progress|real weights admitted|production model admitted|fixture|external backend|external storage|remote model API|${vercelFunctionTerm}|${edgeFunctionTerm}|chain[-_ ]?of[-_ ]?thought|toy.{0,80}(?:release artifact|release candidate|product checkpoint|production checkpoint)`,
   "i"
@@ -145,7 +145,17 @@ async function main() {
     "scripts/plan_small_decoder_pilot.mjs",
     "scripts/run_small_decoder_pilot.mjs",
     "scripts/check_small_decoder_pilot_plan.mjs",
-    "scripts/check_r25l_corpus_pilot_plan.mjs"
+    "scripts/check_r25l_corpus_pilot_plan.mjs",
+    "training/from_scratch/APPROVE_R25M_SMALL_DECODER_PILOT.json",
+    "training/from_scratch/small_decoder_pilot_run_config.json",
+    "docs/R25M_SMALL_DECODER_PILOT_RUN.md",
+    "scripts/check_small_decoder_numeric_backend.mjs",
+    "scripts/build_small_decoder_pilot_dataset.mjs",
+    "scripts/train_small_decoder_pilot.py",
+    "scripts/eval_small_decoder_pilot.mjs",
+    "scripts/check_small_decoder_pilot_artifacts_untracked.mjs",
+    "scripts/report_small_decoder_pilot_gate_snapshot.mjs",
+    "scripts/check_r25m_small_decoder_pilot.mjs"
   ];
   for (const path of requiredFiles) {
     if (!files.includes(path)) {

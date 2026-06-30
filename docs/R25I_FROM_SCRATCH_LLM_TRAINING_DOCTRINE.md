@@ -8,9 +8,11 @@ Training is not started in R25I. This patch adds doctrine, schemas, phase
 planning, and anti-regression checks only.
 
 R25J may run tokenizer dry-run infrastructure, but that is not formal decoder
-training. R25K may run a reviewer-approved toy-only overfit sanity check, and
-R25L may expand corpus rows and plan a small decoder pilot. None of these are
-formal decoder training or product model training.
+training. R25K may run a reviewer-approved toy-only overfit sanity check, R25L
+may expand corpus rows and plan a small decoder pilot, and R25M may run one
+reviewer-approved bounded small decoder pilot to ignored artifacts. None of
+these are product model training, release checkpoint admission, or static
+browser deployment.
 
 ## Product Target
 
@@ -45,7 +47,10 @@ baseline/compatibility.
 - Tiny toy decoder commands must skip by default and must not write tracked
   weights.
 - Small decoder pilot commands must skip by default until a later explicit
-  phase 3 approval marker exists.
+  phase 3 approval marker exists. With the R25M approval marker, only the
+  bounded small pilot may run, and its artifacts must stay ignored.
+- R25M loss decrease is a mechanics signal only; product training progress
+  remains `0%`.
 - No real model weights are added in R25I.
 - No remote model weights are downloaded.
 - No external LLM API or unreviewed external model output is used.
@@ -76,3 +81,8 @@ R25L planning may move the current phase label to
 `phase_3_small_decoder_pilot_planned` after corpus, tokenizer dry-run, and
 pilot-plan checks pass. That label means planning is ready for review; formal
 training progress remains `0%`.
+
+R25M may move the current phase label to `phase_3_small_decoder_pilot` only
+after the approval-gated bounded pilot, pilot eval, artifact guard, and R24/R25
+gates pass. It does not admit release weights and does not create a product
+model.
