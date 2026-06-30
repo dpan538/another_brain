@@ -1,0 +1,50 @@
+{
+  "run_id": "r25s_data_first_balanced_192",
+  "variant_id": "r25s_data_first_balanced_192",
+  "training_allowed_by_default": false,
+  "requires_fresh_approval": true,
+  "product_model": false,
+  "release_checkpoint": false,
+  "commit_weights_allowed": false,
+  "train_source": "training/llm_corpus/r25l_train.jsonl",
+  "dev_source": "training/llm_corpus/r25l_dev.jsonl",
+  "heldout_source": "training/llm_corpus/r25l_heldout.jsonl",
+  "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25l.json",
+  "max_train_rows": 192,
+  "max_dev_rows": 48,
+  "max_heldout_rows": 48,
+  "max_context_tokens": 64,
+  "max_steps": 80,
+  "learning_rate": 0.005,
+  "seed": 26,
+  "sampling_strategy": {
+    "type": "balanced_from_r25q_weak_buckets",
+    "upweight_task_types": [
+      "release_packaging_boundary",
+      "toy_training_boundary",
+      "verify_draft"
+    ],
+    "upweight_families": [
+      "from_scratch_training_direction"
+    ],
+    "balance_languages": [
+      "zh",
+      "mixed",
+      "en"
+    ],
+    "avoid_exact_heldout_copy": true,
+    "avoid_eval_prompt_copy": true
+  },
+  "regularization_plan": {
+    "lower_learning_rate": true,
+    "shuffle_train_rows": true,
+    "cap_repeated_targets": true,
+    "dev_check_every": 20,
+    "stop_if_dev_loss_worsens": true
+  },
+  "notes": [
+    "R25R design only; this config must not run training.",
+    "R25S requires fresh reviewer approval before any bounded pilot run.",
+    "Heldout rows are for evaluation planning only and must not be used for training."
+  ]
+}

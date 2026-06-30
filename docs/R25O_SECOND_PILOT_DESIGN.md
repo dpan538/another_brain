@@ -44,3 +44,7 @@ R25Q analyzes the R25P result before any R25R decision. R25Q must not run
 training. It adds an inert R25R approval template with `approved:false`; that
 template cannot authorize training and exists only to document the fields a
 future reviewer would need to fill explicitly.
+
+R25R chooses a data-first R25S design rather than architecture scale. The R25S
+templates are inert, use `approved:false`, and do not authorize training.
+Phase 4 scaled training remains unapproved.

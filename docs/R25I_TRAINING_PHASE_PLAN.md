@@ -52,6 +52,13 @@ R25Q decision report pass. R25Q does not run training, does not rerun R25P, and
 does not approve R25R or phase 4 scaled training. Product and formal training
 progress remain `0%`; pilot progress remains separate at `2%`.
 
+R25R may move the label to `phase_3_data_first_third_pilot_designed` after the
+R25S balanced sampling plan, R25S inert approval template, R25S run-config
+template, design validator, and reviewer decision report pass. R25R does not
+run training, does not rerun R25P, does not approve R25S, and does not approve
+phase 4 scaled training. Product and formal training progress remain `0%`;
+pilot progress remains separate at `2%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -63,3 +70,4 @@ progress remain `0%`; pilot progress remains separate at `2%`.
 - Reusing a consumed approval marker to rerun toy or small-pilot training.
 - Treating a replayable ignored small-pilot checkpoint as a release checkpoint.
 - Treating R25Q analysis as automatic approval for R25R or phase 4 scaling.
+- Treating the R25S inert template as approval to run a third pilot.

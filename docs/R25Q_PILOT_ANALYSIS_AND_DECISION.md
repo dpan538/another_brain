@@ -45,3 +45,10 @@ R25Q keeps these boundaries:
 - no committed checkpoints, tokenizer artifacts, replay reports, or weights
 
 R24/R25 gates remain required before any later approved pilot.
+
+R25R follows this recommendation with a data-first design for R25S. It does
+not run training. The proposed R25S variant is
+`r25s_data_first_balanced_192`, which uses balanced sampling, weaker-bucket
+upweighting, a lower learning rate, and regularization checks instead of
+architecture scale. R25S remains unapproved until a reviewer issues a fresh
+one-shot approval marker.

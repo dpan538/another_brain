@@ -48,6 +48,16 @@ const MARKERS = [
     expectedPhase: "phase_3_small_decoder_pilot",
     template: true,
     trainingFlagKeys: ["allow_small_pilot_training"]
+  },
+  {
+    id: "r25s_data_first_pilot_template",
+    path: "training/from_scratch/APPROVE_R25S_DATA_FIRST_PILOT.template.json",
+    expectedScope: "data_first_small_decoder_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    expectedRunId: "r25s_data_first_balanced_192",
+    expectedVariantId: "r25s_data_first_balanced_192",
+    template: true,
+    trainingFlagKeys: ["allow_small_pilot_training"]
   }
 ];
 

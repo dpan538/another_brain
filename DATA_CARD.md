@@ -28,6 +28,9 @@ R25P runs exactly one approved second bounded pilot and writes a replayable
 ignored checkpoint. R25Q analyzes that output only; it does not run training,
 does not approve scaling, and does not change product training progress from
 `0%`.
+R25R designs a data-first R25S candidate only. It adds balanced sampling and
+regularization plans, but R25S is not approved, no training runs, and product
+training progress remains `0%`.
 
 ## Public Data
 
@@ -123,6 +126,8 @@ Private data is not distributed:
   ignored replayable checkpoint evidence and consumed its approval.
 - R25Q analysis status: evaluates R25P behavior, replay determinism, held-out
   breakdown, and next-step recommendation without training.
+- R25R design status: prepares an R25S data-first balanced sampling plan and
+  inert approval template without running training.
 - Training enabled by default: false.
 
 ## Evaluation

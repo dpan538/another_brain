@@ -68,6 +68,8 @@ baseline/compatibility.
   the run.
 - R25Q analyzes R25P replay, held-out breakdown, and overfit risk without
   training. It may add an R25R approval template only with `approved:false`.
+- R25R may design an R25S data-first balanced pilot with inert templates only.
+  It must not run training, approve R25S, or approve phase 4 scaled training.
 - Replayable small-pilot checkpoints, if a future approved run writes them,
   must remain ignored JSON artifacts and must not be release checkpoints.
 - No real model weights are added in R25I.
@@ -128,3 +130,9 @@ R25Q may move the current phase label to
 held-out breakdown, history comparison, R25R template validation, and R24/R25
 gates pass. It does not run new training, does not rerun R25P, does not approve
 R25R, and does not approve phase 4 scaled training.
+
+R25R may move the current phase label to
+`phase_3_data_first_third_pilot_designed` after the R25S balanced sampling
+plan, inert approval template, run-config template, design validator, decision
+report, and R24/R25 gates pass. It does not run training, does not approve
+R25S, and does not approve phase 4 scaled training.

@@ -39,3 +39,7 @@ R25Q analyzes the R25P outputs after the one-shot approval has been consumed.
 That analysis is evaluation-only: it may compute train/dev/held-out gaps,
 overfit risk, replay determinism, and held-out breakdowns, but it must not rerun
 R25P or start any new training. Phase 4 scaled training remains unapproved.
+
+R25R uses the R25Q result to design a data-first R25S candidate. It does not
+rerun R25P and does not approve another pilot. R25S must use a fresh one-shot
+approval before any future bounded run.

@@ -48,6 +48,9 @@ R25P may run exactly one approved second bounded pilot to ignored artifacts.
 R25Q analyzes that replayable checkpoint and held-out behavior only. Neither
 R25P nor R25Q admits a release checkpoint, deploys a browser model artifact, or
 permits backend inference.
+R25R designs a future data-first R25S pilot only. R25S is not approved by
+R25R, phase 4 scaled training is not approved, and no checkpoint or replay
+report from these pilot phases may be deployed.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
@@ -113,6 +116,7 @@ npm run check:r25l-corpus-pilot-plan
 npm run check:r25m-small-decoder-pilot
 npm run check:r25p-second-small-pilot
 npm run check:r25q-pilot-analysis
+npm run check:r25r-data-first-pilot-design
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
