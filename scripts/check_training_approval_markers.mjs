@@ -68,6 +68,14 @@ const MARKERS = [
     expectedRunId: "r25s_data_first_balanced_192",
     expectedVariantId: "r25s_data_first_balanced_192",
     trainingFlagKeys: ["allow_small_pilot_training"]
+  },
+  {
+    id: "r25u_architecture_ablation_template",
+    path: "training/from_scratch/APPROVE_R25U_ARCHITECTURE_ABLATION.template.json",
+    expectedScope: "architecture_ablation_design_or_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    template: true,
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_architecture_ablation_training"]
   }
 ];
 
@@ -123,7 +131,9 @@ async function main() {
     if (spec.expectedVariantId && marker.variant_id !== spec.expectedVariantId) failures.push({ marker: spec.id, code: "variant_id_mismatch", expected: spec.expectedVariantId, actual: marker.variant_id });
     if (spec.template) {
       if (marker.approved !== false) failures.push({ marker: spec.id, code: "template_must_not_be_approved" });
-      if (marker.allow_small_pilot_training !== false) failures.push({ marker: spec.id, code: "template_must_not_allow_small_pilot_training" });
+      for (const key of spec.trainingFlagKeys) {
+        if (marker[key] !== false) failures.push({ marker: spec.id, code: "template_training_flag_must_be_false", key });
+      }
       if (marker.reviewer !== "") failures.push({ marker: spec.id, code: "template_reviewer_must_be_blank" });
       if (!spec.path.endsWith(".template.json")) failures.push({ marker: spec.id, code: "template_path_must_end_template_json" });
     } else {

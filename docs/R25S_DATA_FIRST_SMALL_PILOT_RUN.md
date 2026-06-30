@@ -36,3 +36,15 @@ R25S boundaries:
 - no LoRA, adapters, or fine-tuning path is introduced as the final strategy
 
 R24/R25 gates remain required after the run.
+
+## R25T Review Boundary
+
+R25T analyzes R25S before any further pilot is considered. It compares R25S
+against R25P on train/dev/held-out behavior, train-to-eval gaps, and weaker
+bucket held-out losses. R25T does not run training, does not rerun R25S, and
+does not approve phase_4 scaled training.
+
+If R25T recommends an architecture ablation design, that is still design-only.
+Any R25U/R25V training requires a fresh one-shot reviewer approval marker, and
+the R25S replayable checkpoint remains an ignored pilot artifact rather than a
+release checkpoint.

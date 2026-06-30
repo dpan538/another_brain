@@ -69,6 +69,11 @@ still keeps product and formal training progress at `0%`.
 R25R designs a data-first R25S candidate with balanced sampling and lower
 learning rate, but it does not run training, does not approve R25S, and does
 not approve phase 4 scaled training. Product training progress remains `0%`.
+R25S runs exactly one approved data-first pilot and consumes its approval.
+R25T analyzes R25S against R25P, checks whether balancing improved held-out
+behavior, adds an inert R25U architecture-ablation approval template, and still
+does not run training or approve phase 4 scaled training. Product training
+progress remains `0%`.
 
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
@@ -170,6 +175,8 @@ npm run check:r25o-second-pilot-design
 npm run check:r25p-second-small-pilot
 npm run check:r25q-pilot-analysis
 npm run check:r25r-data-first-pilot-design
+npm run check:r25s-data-first-pilot-history
+npm run check:r25t-r25s-analysis
 ```
 
 Build and validate the mixed context stress suite:

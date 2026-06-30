@@ -52,3 +52,12 @@ R25S may run only with a fresh one-shot approval for
 pilot, not phase_4 scaled training and not product training. Its replayable
 checkpoint must stay ignored and untracked, and the approval must be consumed
 after the run.
+
+## R25T Follow-Up
+
+R25T is the analysis pass after R25S. It checks whether the data-first design
+actually improved dev/held-out behavior and weak buckets compared with R25P.
+R25T does not train, does not rerun R25S, and does not automatically approve a
+next pilot. If R25T points toward R25U architecture ablation, that is a design
+recommendation only and still requires fresh reviewer approval before any
+training.

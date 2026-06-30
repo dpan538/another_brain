@@ -31,6 +31,10 @@ does not approve scaling, and does not change product training progress from
 R25R designs a data-first R25S candidate only. It adds balanced sampling and
 regularization plans, but R25S is not approved, no training runs, and product
 training progress remains `0%`.
+R25S runs exactly one approved data-first bounded pilot to ignored artifacts and
+then consumes its approval. R25T analyzes R25S, compares it with R25P, checks
+weak-bucket behavior, and adds an inert R25U architecture-ablation template; it
+does not train and does not approve phase_4 scaled training.
 
 ## Public Data
 
@@ -128,6 +132,10 @@ Private data is not distributed:
   breakdown, and next-step recommendation without training.
 - R25R design status: prepares an R25S data-first balanced sampling plan and
   inert approval template without running training.
+- R25S data-first pilot status: one approved bounded pilot wrote ignored
+  replayable checkpoint evidence and consumed its approval.
+- R25T analysis status: evaluates R25S versus R25P, reports whether
+  data-first balancing helped, and keeps R25U approval inert.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -210,6 +218,11 @@ bounded pilot. It may use R25L train rows for training, R25L dev rows for dev
 sanity, and R25L held-out rows for replay evaluation only. It must not read
 evals, root PDFs/DOCX, `data/public_ingestion/`, private raw data, factual
 knowledge cards, external model output, or chain-of-thought data.
+
+R25T does not train. It may read ignored R25S reports, the replayable ignored
+checkpoint, and `r25l_heldout.jsonl` for evaluation-only breakdowns. It must
+not use held-out text for training, must not rerun R25S/R25P/R25M/toy pilots,
+and must not authorize R25U or phase_4 scaled training automatically.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

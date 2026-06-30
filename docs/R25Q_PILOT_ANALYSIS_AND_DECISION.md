@@ -57,3 +57,8 @@ R25S, if approved and run, remains a bounded phase 3 data-first pilot. It is
 not product training, not long-term training, not phase_4 scaled training, and
 not release checkpoint admission. R25T must analyze R25S before any further
 pilot or architecture ablation is considered.
+
+R25T keeps that boundary. It analyzes R25S against R25P, reports whether
+data-first balancing helped, and may recommend pause, another data-first pass,
+or architecture ablation design. It does not approve R25U automatically, does
+not run training, and does not change product training progress from `0%`.

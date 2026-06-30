@@ -51,6 +51,10 @@ permits backend inference.
 R25R designs a future data-first R25S pilot only. R25S is not approved by
 R25R, phase 4 scaled training is not approved, and no checkpoint or replay
 report from these pilot phases may be deployed.
+R25S may run only once with fresh approval and writes ignored pilot artifacts
+only. R25T analyzes those R25S artifacts and adds an inert R25U template; it
+does not train, does not approve R25U, and does not approve phase 4 scaled
+training or deployment.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
@@ -117,6 +121,8 @@ npm run check:r25m-small-decoder-pilot
 npm run check:r25p-second-small-pilot
 npm run check:r25q-pilot-analysis
 npm run check:r25r-data-first-pilot-design
+npm run check:r25s-data-first-pilot-history
+npm run check:r25t-r25s-analysis
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -213,6 +219,13 @@ R25S reports and replayable checkpoints live under ignored
 only. They are not product weights, not phase_4 scaled-training outputs, not
 release checkpoints, and not browser static assets. They must not be staged,
 committed, deployed, or copied into runtime/static asset directories.
+
+R25T reports live under ignored `artifacts/training_os/small_decoder_pilot/r25t/`.
+They are analysis, held-out breakdown, generalization comparison, and next-step
+decision reports only. The R25U template is committed with `approved:false` and
+cannot authorize training. R25T reports and any future R25U artifacts must not
+be deployed, staged as weights, copied into `web/`, or treated as release
+admission evidence.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
