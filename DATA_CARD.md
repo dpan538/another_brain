@@ -24,6 +24,10 @@ pilot, but the pilot runner skips by default and no pilot weights are written.
 R25M runs one bounded approved small pilot to ignored artifacts; R25N evaluates
 it and consumes the approval markers. R25O designs the next R25P pilot and a
 replayable ignored-checkpoint protocol, but it does not run training.
+R25P runs exactly one approved second bounded pilot and writes a replayable
+ignored checkpoint. R25Q analyzes that output only; it does not run training,
+does not approve scaling, and does not change product training progress from
+`0%`.
 
 ## Public Data
 
@@ -115,6 +119,10 @@ Private data is not distributed:
   passed, old approvals consumed, and active training approvals are `0`.
 - R25O second-pilot design status: R25P approval template is `approved:false`;
   replayable checkpoint schema and replay-heldout scaffold are design-only.
+- R25P second pilot status: one approved `r25p_more_sequences_128` pilot wrote
+  ignored replayable checkpoint evidence and consumed its approval.
+- R25Q analysis status: evaluates R25P behavior, replay determinism, held-out
+  breakdown, and next-step recommendation without training.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -187,6 +195,10 @@ It may use `r25l_train.jsonl` for training, `r25l_dev.jsonl` for dev sanity,
 and `r25l_heldout.jsonl` for replay evaluation only. R25P must not read evals,
 root PDFs/DOCX, `data/public_ingestion/`, private raw data, factual knowledge
 cards, external model output, or chain-of-thought data.
+
+R25Q does not train. It may read ignored R25P reports, the replayable ignored
+checkpoint, and `r25l_heldout.jsonl` for evaluation-only breakdowns. It must
+not use held-out text for training and must not authorize R25R automatically.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

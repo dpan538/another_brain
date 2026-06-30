@@ -41,7 +41,7 @@ def token_pairs(sequences, pad_id):
     return np.asarray(xs, dtype="int64"), np.asarray(ys, dtype="int64")
 
 
-def decoder_like_loss(checkpoint, heldout_dataset):
+def decoder_like_loss(checkpoint, heldout_dataset, emit_sequence_losses=False):
     import numpy as np
 
     tensors = tensor_map(checkpoint)
@@ -56,10 +56,11 @@ def decoder_like_loss(checkpoint, heldout_dataset):
             "heldout_loss_finite": False
         }
     embedding = tensors["embedding"]
-    output = tensors["output"]
+    output_weights = tensors["output"]
     bias = tensors["bias"]
     pad_id = int(heldout_dataset.get("pad_token_id", 0))
-    xs, ys = token_pairs(heldout_dataset.get("sequences", []), pad_id)
+    sequences = heldout_dataset.get("sequences", [])
+    xs, ys = token_pairs(sequences, pad_id)
     if len(xs) == 0:
         return {
             "ok": False,
@@ -72,23 +73,38 @@ def decoder_like_loss(checkpoint, heldout_dataset):
     for start in range(0, len(xs), 256):
         xb = xs[start:start + 256]
         yb = ys[start:start + 256]
-        logits = embedding[xb] @ output + bias
+        logits = embedding[xb] @ output_weights + bias
         logits -= logits.max(axis=1, keepdims=True)
         exp = np.exp(logits)
         denom = exp.sum(axis=1, keepdims=True)
         probs = exp / denom
         losses.append(float((-np.log(probs[np.arange(len(yb)), yb] + 1e-12)).mean()))
     heldout_loss = float(sum(losses) / max(len(losses), 1))
-    return {
+    output = {
         "ok": math.isfinite(heldout_loss),
         "reason": None,
         "heldout_pairs": int(len(xs)),
         "heldout_loss": heldout_loss,
         "heldout_loss_finite": math.isfinite(heldout_loss)
     }
+    if emit_sequence_losses:
+        sequence_losses = []
+        for row in sequences:
+            row_x, row_y = token_pairs([row], pad_id)
+            if len(row_x) == 0:
+                sequence_losses.append({"sample_id": row.get("sample_id"), "loss": None, "pairs": 0, "finite": False})
+                continue
+            logits = embedding[row_x] @ output_weights + bias
+            logits -= logits.max(axis=1, keepdims=True)
+            exp = np.exp(logits)
+            probs = exp / exp.sum(axis=1, keepdims=True)
+            loss = float((-np.log(probs[np.arange(len(row_y)), row_y] + 1e-12)).mean())
+            sequence_losses.append({"sample_id": row.get("sample_id"), "loss": loss, "pairs": int(len(row_y)), "finite": math.isfinite(loss)})
+        output["sequence_losses"] = sequence_losses
+    return output
 
 
-def causal_decoder_loss(checkpoint, heldout_dataset):
+def causal_decoder_loss(checkpoint, heldout_dataset, emit_sequence_losses=False):
     import numpy as np
     import torch
     import torch.nn as nn
@@ -162,27 +178,54 @@ def causal_decoder_loss(checkpoint, heldout_dataset):
             loss = F.cross_entropy(logits.reshape(-1, vocab_size), labels.reshape(-1), ignore_index=pad_id)
             losses.append(float(loss.item()))
     heldout_loss = float(sum(losses) / max(len(losses), 1))
-    return {
+    output = {
         "ok": math.isfinite(heldout_loss),
         "reason": None,
         "heldout_pairs": pairs,
         "heldout_loss": heldout_loss,
         "heldout_loss_finite": math.isfinite(heldout_loss)
     }
+    if emit_sequence_losses:
+        sequence_losses = []
+        with torch.no_grad():
+            for row in heldout_dataset.get("sequences", []):
+                ids = row.get("token_ids", [])
+                if not ids:
+                    sequence_losses.append({"sample_id": row.get("sample_id"), "loss": None, "pairs": 0, "finite": False})
+                    continue
+                batch = torch.tensor([ids], dtype=torch.long)
+                inputs = batch[:, :-1]
+                labels = batch[:, 1:]
+                pair_count = int((labels != pad_id).sum().item())
+                if pair_count == 0:
+                    sequence_losses.append({"sample_id": row.get("sample_id"), "loss": None, "pairs": 0, "finite": False})
+                    continue
+                logits = model(inputs)
+                loss = F.cross_entropy(logits.reshape(-1, vocab_size), labels.reshape(-1), ignore_index=pad_id)
+                loss_value = float(loss.item())
+                sequence_losses.append({
+                    "sample_id": row.get("sample_id"),
+                    "loss": loss_value,
+                    "pairs": pair_count,
+                    "finite": math.isfinite(loss_value)
+                })
+        output["sequence_losses"] = sequence_losses
+    return output
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--heldout", required=True)
+    parser.add_argument("--emit-sequence-losses", action="store_true")
     args = parser.parse_args()
 
     checkpoint = read_json(args.checkpoint)
     heldout_dataset = read_json(args.heldout)
     if checkpoint.get("model_type") == "decoder_like_next_token_pilot":
-        output = decoder_like_loss(checkpoint, heldout_dataset)
+        output = decoder_like_loss(checkpoint, heldout_dataset, args.emit_sequence_losses)
     elif checkpoint.get("model_type") == "causal_decoder_pilot":
-        output = causal_decoder_loss(checkpoint, heldout_dataset)
+        output = causal_decoder_loss(checkpoint, heldout_dataset, args.emit_sequence_losses)
     else:
         output = {
             "ok": False,

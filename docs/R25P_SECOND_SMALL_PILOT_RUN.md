@@ -34,3 +34,8 @@ Future training after R25P requires a new reviewer approval marker. R25P does
 not authorize another pilot run, architecture scaling, release admission,
 backend inference, external APIs, downloads, LoRA, adapters, fine-tuning, or
 committed weights.
+
+R25Q analyzes the R25P outputs after the one-shot approval has been consumed.
+That analysis is evaluation-only: it may compute train/dev/held-out gaps,
+overfit risk, replay determinism, and held-out breakdowns, but it must not rerun
+R25P or start any new training. Phase 4 scaled training remains unapproved.

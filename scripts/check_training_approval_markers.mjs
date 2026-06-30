@@ -40,6 +40,14 @@ const MARKERS = [
     expectedRunId: "r25p_more_sequences_128",
     expectedVariantId: "r25p_more_sequences_128",
     trainingFlagKeys: ["allow_small_pilot_training"]
+  },
+  {
+    id: "r25r_next_small_pilot_template",
+    path: "training/from_scratch/APPROVE_R25R_NEXT_SMALL_PILOT.template.json",
+    expectedScope: "next_small_decoder_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    template: true,
+    trainingFlagKeys: ["allow_small_pilot_training"]
   }
 ];
 

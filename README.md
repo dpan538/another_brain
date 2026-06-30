@@ -62,6 +62,10 @@ evaluates that output, consumes the R25K/R25M approvals, and keeps active
 training approvals at zero. R25O designs a future R25P second pilot and
 replayable ignored checkpoint protocol only; it does not run training, does not
 approve R25P, and does not change product training progress from `0%`.
+R25P runs exactly one approved `r25p_more_sequences_128` pilot and writes a
+replayable ignored checkpoint. R25Q analyzes that result, checks replay
+determinism and held-out breakdowns, adds an inert R25R approval template, and
+still keeps product and formal training progress at `0%`.
 
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
@@ -160,6 +164,8 @@ npm run check:r25k-toy-overfit-sanity
 npm run check:r25l-corpus-pilot-plan
 npm run check:r25n-small-pilot-evaluation
 npm run check:r25o-second-pilot-design
+npm run check:r25p-second-small-pilot
+npm run check:r25q-pilot-analysis
 ```
 
 Build and validate the mixed context stress suite:
@@ -400,3 +406,9 @@ R25P may run exactly one fresh-approved `r25p_more_sequences_128` pilot to
 ignored artifacts only. Its replayable JSON checkpoint enables held-out replay
 loss, but it is not a product model, release checkpoint, browser static asset,
 or committed weight. Product and formal training progress remain `0%`.
+
+R25Q analyzes R25P without running training. It reports loss gaps,
+deterministic replay status, held-out breakdowns, and a reviewer-facing next
+step recommendation. R25R is represented only by an inert approval template;
+any next pilot requires fresh one-shot approval, and phase 4 scaled training is
+not approved.

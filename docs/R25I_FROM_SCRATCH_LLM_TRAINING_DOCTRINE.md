@@ -18,6 +18,9 @@ R25N evaluates the R25M outputs, adds structural held-out pilot evaluation, and
 consumes the R25K/R25M one-shot approval markers. R25N is not a training run.
 R25O designs the next bounded pilot and replayable ignored-checkpoint protocol
 only; it is also not a training run and does not approve R25P.
+R25P may run exactly one approved second bounded pilot, and R25Q analyzes that
+result without running training. R25Q does not approve R25R or phase 4 scaled
+training.
 
 ## Product Target
 
@@ -63,6 +66,8 @@ baseline/compatibility.
 - R25P may run exactly one fresh-approved second bounded pilot variant,
   `r25p_more_sequences_128`, and must consume that approval immediately after
   the run.
+- R25Q analyzes R25P replay, held-out breakdown, and overfit risk without
+  training. It may add an R25R approval template only with `approved:false`.
 - Replayable small-pilot checkpoints, if a future approved run writes them,
   must remain ignored JSON artifacts and must not be release checkpoints.
 - No real model weights are added in R25I.
@@ -117,3 +122,9 @@ R25P may move the current phase label to
 eval, approval consumption, artifact guard, and R24/R25 gates pass. It is still
 not phase 4 scaled training, product-scale training, long-term training,
 release checkpoint admission, or browser static deployment.
+
+R25Q may move the current phase label to
+`phase_3_second_small_pilot_analyzed` after R25P analysis, replay determinism,
+held-out breakdown, history comparison, R25R template validation, and R24/R25
+gates pass. It does not run new training, does not rerun R25P, does not approve
+R25R, and does not approve phase 4 scaled training.

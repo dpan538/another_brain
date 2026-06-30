@@ -39,3 +39,8 @@ R25P follows this design with a fresh reviewer approval for exactly
 run, and does not authorize any other variant, long-term training,
 product-scale training, release admission, backend inference, external APIs,
 downloads, or committed weights.
+
+R25Q analyzes the R25P result before any R25R decision. R25Q must not run
+training. It adds an inert R25R approval template with `approved:false`; that
+template cannot authorize training and exists only to document the fields a
+future reviewer would need to fill explicitly.

@@ -29,3 +29,8 @@ Replay boundaries:
 Any future replayable checkpoint with a different architecture must add a
 matching replay implementation before held-out loss can be treated as a valid
 pilot metric.
+
+R25Q extends this replay path with deterministic repeat checks and held-out
+breakdowns by language, task type, task family, and policy tag when the ignored
+R25P artifacts are present. These reports are structural pilot analysis only
+and must remain ignored local artifacts.

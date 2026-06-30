@@ -44,6 +44,10 @@ R25K may run a toy-only sanity check after approval, and R25L may expand corpus
 rows and plan a small decoder pilot. The pilot runner skips by default, no
 formal decoder training starts, and no pilot checkpoint or tokenizer artifact
 is deployed.
+R25P may run exactly one approved second bounded pilot to ignored artifacts.
+R25Q analyzes that replayable checkpoint and held-out behavior only. Neither
+R25P nor R25Q admits a release checkpoint, deploys a browser model artifact, or
+permits backend inference.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
@@ -107,6 +111,8 @@ npm run check:r25j-tokenizer-toy-pipeline
 npm run check:r25k-toy-overfit-sanity
 npm run check:r25l-corpus-pilot-plan
 npm run check:r25m-small-decoder-pilot
+npm run check:r25p-second-small-pilot
+npm run check:r25q-pilot-analysis
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -191,6 +197,12 @@ only. They must not be copied into `web/`, `static_llm/assets/`,
 `build_sources/`, or `knowledge_sources/`, and they must not be staged or
 committed. R25P does not authorize Vercel backend inference, external storage,
 release checkpoint admission, or static LLM production deployment.
+
+R25Q reports live under ignored `artifacts/training_os/small_decoder_pilot/r25q/`.
+They are analysis, replay determinism, held-out breakdown, history comparison,
+and next-step decision reports only. They must not be deployed or committed,
+and they do not authorize R25R, phase 4 scaled training, release admission,
+backend inference, external storage, or committed weights.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
