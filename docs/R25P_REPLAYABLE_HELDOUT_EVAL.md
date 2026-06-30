@@ -34,3 +34,8 @@ R25Q extends this replay path with deterministic repeat checks and held-out
 breakdowns by language, task type, task family, and policy tag when the ignored
 R25P artifacts are present. These reports are structural pilot analysis only
 and must remain ignored local artifacts.
+
+R25S reuses the replay path with `eval:small-decoder-pilot-heldout:r25s` for
+the approved data-first bounded pilot. It remains evaluation-only and does not
+authorize another run, phase_4 scaled training, product release, or committed
+weights.

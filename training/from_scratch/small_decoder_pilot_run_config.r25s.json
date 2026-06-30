@@ -16,6 +16,7 @@
   "heldout_source": "training/llm_corpus/r25l_heldout.jsonl",
   "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25l.json",
   "sampling_plan": "artifacts/training_os/small_decoder_pilot/r25r/r25s_balanced_dataset_plan.json",
+  "sampling_strategy": "balanced_from_r25q_weak_buckets",
   "max_train_rows": 192,
   "max_dev_rows": 48,
   "max_heldout_rows": 48,
@@ -47,8 +48,11 @@
     "schema": "training/from_scratch/small_decoder_checkpoint.schema.json"
   },
   "notes": [
-    "Template only; not approved by default.",
-    "Future R25S must use a fresh approval marker before any run.",
-    "Ignored artifacts only; not product and not release admission."
+    "bounded data-first third pilot only",
+    "not product",
+    "not long-term training",
+    "not phase_4 scaled training",
+    "ignored artifacts only",
+    "replayable checkpoint required"
   ]
 }

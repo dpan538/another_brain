@@ -43,3 +43,6 @@ R25P or start any new training. Phase 4 scaled training remains unapproved.
 R25R uses the R25Q result to design a data-first R25S candidate. It does not
 rerun R25P and does not approve another pilot. R25S must use a fresh one-shot
 approval before any future bounded run.
+
+After R25S, R25P remains a historical comparison baseline. Routine gates must
+continue to validate R25P history without rerunning it.

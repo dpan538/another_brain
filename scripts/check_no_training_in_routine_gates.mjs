@@ -8,7 +8,8 @@ const ROOT = resolve(new URL("..", import.meta.url).pathname);
 const execFileAsync = promisify(execFile);
 
 const ALLOWED_ONE_SHOT_SCRIPTS = new Set([
-  "run:r25p-second-small-pilot-once"
+  "run:r25p-second-small-pilot-once",
+  "run:r25s-data-first-pilot-once"
 ]);
 
 const RUNNER_SCRIPT_ALLOWLIST = new Set([

@@ -59,6 +59,16 @@ run training, does not rerun R25P, does not approve R25S, and does not approve
 phase 4 scaled training. Product and formal training progress remain `0%`;
 pilot progress remains separate at `2%`.
 
+R25S may run exactly one reviewer-approved data-first bounded pilot variant,
+`r25s_data_first_balanced_192`, and then must consume its approval marker. If
+the run, replayable checkpoint validation, held-out replay, history comparison,
+artifact guard, and R24/R25 gates pass, the label may become
+`phase_3_data_first_third_pilot_completed`. This remains phase 3 small-pilot
+work: not product-scale training, not long-term training, not phase_4 scaled
+training, not release checkpoint admission, and not browser static deployment.
+Product and formal training progress remain `0%`; pilot progress may increase
+separately to `3%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -71,3 +81,4 @@ pilot progress remains separate at `2%`.
 - Treating a replayable ignored small-pilot checkpoint as a release checkpoint.
 - Treating R25Q analysis as automatic approval for R25R or phase 4 scaling.
 - Treating the R25S inert template as approval to run a third pilot.
+- Treating the R25S bounded pilot as approval for phase_4 scaled training.

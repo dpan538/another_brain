@@ -44,3 +44,11 @@ R25R boundaries:
 
 R24/R25 gates remain required before and after any later reviewer-approved R25S
 run.
+
+## R25S Result Boundary
+
+R25S may run only with a fresh one-shot approval for
+`r25s_data_first_balanced_192`. If run, it remains a bounded phase 3 data-first
+pilot, not phase_4 scaled training and not product training. Its replayable
+checkpoint must stay ignored and untracked, and the approval must be consumed
+after the run.

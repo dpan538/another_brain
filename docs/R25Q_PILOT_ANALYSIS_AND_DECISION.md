@@ -52,3 +52,8 @@ not run training. The proposed R25S variant is
 upweighting, a lower learning rate, and regularization checks instead of
 architecture scale. R25S remains unapproved until a reviewer issues a fresh
 one-shot approval marker.
+
+R25S, if approved and run, remains a bounded phase 3 data-first pilot. It is
+not product training, not long-term training, not phase_4 scaled training, and
+not release checkpoint admission. R25T must analyze R25S before any further
+pilot or architecture ablation is considered.

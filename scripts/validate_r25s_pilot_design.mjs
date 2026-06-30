@@ -30,6 +30,7 @@ async function readJson(path) {
 function checkCommonConfig(label, value, failures) {
   if (value.product_model !== false) failures.push({ code: `${label}_product_model_must_be_false` });
   if (value.release_checkpoint !== false) failures.push({ code: `${label}_release_checkpoint_must_be_false` });
+  if (value.phase_4_scaled_training === true) failures.push({ code: `${label}_phase_4_scaled_training_must_not_be_true` });
   if (value.commit_weights_allowed !== false && value.commit_weight_commit !== false) {
     failures.push({ code: `${label}_commit_weights_allowed_must_be_false` });
   }
@@ -85,6 +86,7 @@ async function main() {
     if (approvalTemplate.allow_small_pilot_training !== false) failures.push({ code: "approval_template_must_not_allow_training" });
     if (approvalTemplate.allow_long_term_training !== false) failures.push({ code: "approval_template_must_not_allow_long_term_training" });
     if (approvalTemplate.allow_product_model_training !== false) failures.push({ code: "approval_template_must_not_allow_product_training" });
+    if (approvalTemplate.allow_phase_4_scaled_training === true) failures.push({ code: "approval_template_must_not_allow_phase_4_scaled_training" });
     if (approvalTemplate.allow_release_checkpoint !== false) failures.push({ code: "approval_template_must_not_allow_release_checkpoint" });
     if (approvalTemplate.allow_weight_commit !== false) failures.push({ code: "approval_template_must_not_allow_weight_commit" });
     if (!String(approvalTemplate.artifact_output_root || "").startsWith("artifacts/training_os/small_decoder_pilot/r25s/")) {

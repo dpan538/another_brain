@@ -46,7 +46,10 @@ function argValue(name, fallback = null) {
 }
 
 function runPrefix(config) {
-  return String(config.run_id || "").startsWith("r25p_") ? "r25p" : "r25m";
+  const runId = String(config.run_id || "");
+  if (runId.startsWith("r25s_")) return "r25s";
+  if (runId.startsWith("r25p_")) return "r25p";
+  return "r25m";
 }
 
 function normalizeText(value = "") {
@@ -124,12 +127,44 @@ function buildSequences(rows, split, limit, sourcePath, tokenizer, tokenizerConf
   return sequences;
 }
 
+async function readSamplingPlan(config, configPath) {
+  const explicit = argValue("--sampling-plan", null);
+  const planPath = explicit || config.sampling_plan || null;
+  if (!planPath) return { planPath: null, plan: null };
+  const plan = await readJson(planPath);
+  if (config.run_id?.startsWith("r25s_") && plan.run_id !== config.run_id) {
+    throw new Error(`Sampling plan run_id ${plan.run_id} does not match ${config.run_id} from ${configPath}`);
+  }
+  return { planPath, plan };
+}
+
+function rowsFromPlan(rows, split, plan, failures) {
+  if (!plan) return rows;
+  const ids = plan.split_summaries?.[split]?.row_ids;
+  if (!Array.isArray(ids)) {
+    failures.push({ code: "sampling_plan_missing_split_row_ids", split });
+    return rows;
+  }
+  const byId = new Map(rows.map((row) => [row.sample_id, row]));
+  const selected = [];
+  for (const id of ids) {
+    const row = byId.get(id);
+    if (!row) {
+      failures.push({ code: "sampling_plan_row_id_missing_from_source", split, sample_id: id });
+      continue;
+    }
+    selected.push(row);
+  }
+  return selected;
+}
+
 async function main() {
   const failures = [];
   const forbidden_sources_touched = [];
   const configPath = argValue("--config", RUN_CONFIG_PATH);
   const config = await readJson(configPath);
   const prefix = runPrefix(config);
+  const { planPath: samplingPlanPath, plan: samplingPlan } = await readSamplingPlan(config, configPath);
   const tokenizerConfig = await readJson(config.tokenizer_config);
   const artifactDir = tokenizerConfig.artifact_dir || "artifacts/training_os/tokenizer_dryrun/r25l";
   const tokenizerPath = `${artifactDir}/r25j_tokenizer.json`;
@@ -152,10 +187,13 @@ async function main() {
   const trainRows = await readRows(config.train_source);
   const devRows = await readRows(config.dev_source);
   const heldoutRows = config.heldout_source ? await readRows(config.heldout_source) : [];
-  const trainSequences = tokenizer ? buildSequences(trainRows, "train", Number(config.max_train_rows || 64), config.train_source, tokenizer, tokenizerConfig, config, failures) : [];
-  const devSequences = tokenizer ? buildSequences(devRows, "dev", Number(config.max_dev_rows || 32), config.dev_source, tokenizer, tokenizerConfig, config, failures) : [];
+  const selectedTrainRows = rowsFromPlan(trainRows, "train", samplingPlan, failures);
+  const selectedDevRows = rowsFromPlan(devRows, "dev", samplingPlan, failures);
+  const selectedHeldoutRows = rowsFromPlan(heldoutRows, "heldout", samplingPlan, failures);
+  const trainSequences = tokenizer ? buildSequences(selectedTrainRows, "train", Number(config.max_train_rows || 64), config.train_source, tokenizer, tokenizerConfig, config, failures) : [];
+  const devSequences = tokenizer ? buildSequences(selectedDevRows, "dev", Number(config.max_dev_rows || 32), config.dev_source, tokenizer, tokenizerConfig, config, failures) : [];
   const heldoutSequences = tokenizer && config.heldout_source
-    ? buildSequences(heldoutRows, "heldout", Number(config.max_heldout_rows || 0), config.heldout_source, tokenizer, tokenizerConfig, config, failures)
+    ? buildSequences(selectedHeldoutRows, "heldout", Number(config.max_heldout_rows || 0), config.heldout_source, tokenizer, tokenizerConfig, config, failures)
     : [];
   if (trainSequences.length < Number(config.max_train_rows || 64)) failures.push({ code: "too_few_train_sequences", count: trainSequences.length });
   if (devSequences.length < Number(config.max_dev_rows || 32)) failures.push({ code: "too_few_dev_sequences", count: devSequences.length });
@@ -208,6 +246,8 @@ async function main() {
     run_id: config.run_id || "r25m_small_decoder_pilot_v0",
     variant_id: config.variant_id || null,
     config_path: configPath,
+    sampling_plan_path: samplingPlanPath,
+    balanced_sampling_used: Boolean(samplingPlan),
     train_rows_used: trainSequences.length,
     dev_rows_used: devSequences.length,
     heldout_rows_prepared: heldoutSequences.length,

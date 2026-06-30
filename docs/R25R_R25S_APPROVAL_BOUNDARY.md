@@ -23,3 +23,8 @@ checkpoint admission, and not browser static deployment.
 Routine gates must not invoke approval-gated training commands. They may run
 history checks, replay evaluation, sampling-plan validation, doctrine checks,
 and report generation only.
+
+After R25S runs, the real approval marker must be consumed with
+`allow_additional_runs:false`. Routine gates must then use
+`check:r25s-data-first-pilot-history`, which validates ignored artifacts and
+reports without invoking training.

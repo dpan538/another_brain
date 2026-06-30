@@ -205,6 +205,12 @@ R25Q does not train. It may read ignored R25P reports, the replayable ignored
 checkpoint, and `r25l_heldout.jsonl` for evaluation-only breakdowns. It must
 not use held-out text for training and must not authorize R25R automatically.
 
+R25S may train only the approved `r25s_data_first_balanced_192` data-first
+bounded pilot. It may use R25L train rows for training, R25L dev rows for dev
+sanity, and R25L held-out rows for replay evaluation only. It must not read
+evals, root PDFs/DOCX, `data/public_ingestion/`, private raw data, factual
+knowledge cards, external model output, or chain-of-thought data.
+
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,

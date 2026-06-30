@@ -416,3 +416,9 @@ deterministic replay status, held-out breakdowns, and a reviewer-facing next
 step recommendation. R25R is represented only by an inert approval template;
 any next pilot requires fresh one-shot approval, and phase 4 scaled training is
 not approved.
+
+R25S may run exactly one fresh-approved data-first bounded pilot,
+`r25s_data_first_balanced_192`, to ignored artifacts only. It is not product
+training, long-term training, phase_4 scaled training, release admission, or a
+browser static artifact. Its replayable checkpoint remains ignored and
+untracked, and the approval is consumed after the run.

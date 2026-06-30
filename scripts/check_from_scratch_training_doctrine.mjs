@@ -8,7 +8,7 @@ import { gitLsFiles } from "./static_llm_artifact_utils.mjs";
 import { normalizeRepoPath } from "./static_llm_policy.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const ACTIVE_RE = /^(README\.md|DEPLOYMENT\.md|DATA_CARD\.md|docs\/R25.*\.md|static_llm\/(candidate_decisions|release_decisions|request_pack|ASSET_LAYOUT\.md).+|training\/from_scratch\/.+|scripts\/(build_static_llm_candidate_matrix|report_from_scratch_training_progress|check_no_active_named_model_candidate|check_no_slm_product_target|build_tiny_decoder_toy_dataset|run_tiny_decoder_toy_overfit|eval_tiny_decoder_toy_overfit|check_tiny_decoder_toy_artifacts_untracked|check_r25k_toy_overfit_sanity|check_r25k_toy_overfit_history|generate_r25l_expanded_llm_corpus|validate_r25l_expanded_corpus|check_r25l_corpus_contamination|report_r25l_corpus_coverage|plan_small_decoder_pilot|run_small_decoder_pilot|check_small_decoder_pilot_plan|check_r25l_corpus_pilot_plan|check_small_decoder_numeric_backend|build_small_decoder_pilot_dataset|eval_small_decoder_pilot|eval_small_decoder_pilot_r25p|check_small_decoder_pilot_artifacts_untracked|report_small_decoder_pilot_gate_snapshot|check_r25m_small_decoder_pilot|check_r25m_small_pilot_history|check_training_approval_markers|check_no_training_in_routine_gates|analyze_small_decoder_pilot_outputs|eval_small_decoder_pilot_heldout|report_small_pilot_regression_snapshot|report_r25n_next_pilot_decision|check_r25n_small_pilot_evaluation|plan_second_small_decoder_pilot|validate_small_decoder_checkpoint_schema|eval_small_decoder_pilot_replay_heldout|compare_small_pilot_history|check_r25o_second_pilot_design|check_r25p_second_small_pilot|analyze_r25p_pilot_results|check_r25p_replay_determinism|eval_r25p_heldout_breakdown|report_r25q_next_step_decision|plan_r25s_balanced_pilot_dataset|validate_r25s_pilot_design|report_r25r_decision|check_r25r_data_first_pilot_design)\.mjs|scripts\/train_small_decoder_pilot\.py|scripts\/eval_small_decoder_replay_heldout\.py|package\.json)$/;
+const ACTIVE_RE = /^(README\.md|DEPLOYMENT\.md|DATA_CARD\.md|docs\/R25.*\.md|static_llm\/(candidate_decisions|release_decisions|request_pack|ASSET_LAYOUT\.md).+|training\/from_scratch\/.+|scripts\/(build_static_llm_candidate_matrix|report_from_scratch_training_progress|check_no_active_named_model_candidate|check_no_slm_product_target|build_tiny_decoder_toy_dataset|run_tiny_decoder_toy_overfit|eval_tiny_decoder_toy_overfit|check_tiny_decoder_toy_artifacts_untracked|check_r25k_toy_overfit_sanity|check_r25k_toy_overfit_history|generate_r25l_expanded_llm_corpus|validate_r25l_expanded_corpus|check_r25l_corpus_contamination|report_r25l_corpus_coverage|plan_small_decoder_pilot|run_small_decoder_pilot|check_small_decoder_pilot_plan|check_r25l_corpus_pilot_plan|check_small_decoder_numeric_backend|build_small_decoder_pilot_dataset|eval_small_decoder_pilot|eval_small_decoder_pilot_r25p|eval_small_decoder_pilot_r25s|check_small_decoder_pilot_artifacts_untracked|report_small_decoder_pilot_gate_snapshot|check_r25m_small_decoder_pilot|check_r25m_small_pilot_history|check_training_approval_markers|check_no_training_in_routine_gates|analyze_small_decoder_pilot_outputs|eval_small_decoder_pilot_heldout|report_small_pilot_regression_snapshot|report_r25n_next_pilot_decision|check_r25n_small_pilot_evaluation|plan_second_small_decoder_pilot|validate_small_decoder_checkpoint_schema|eval_small_decoder_pilot_replay_heldout|compare_small_pilot_history|check_r25o_second_pilot_design|check_r25p_second_small_pilot|check_r25s_data_first_pilot_history|analyze_r25p_pilot_results|check_r25p_replay_determinism|eval_r25p_heldout_breakdown|report_r25q_next_step_decision|plan_r25s_balanced_pilot_dataset|validate_r25s_pilot_design|report_r25r_decision|check_r25r_data_first_pilot_design)\.mjs|scripts\/train_small_decoder_pilot\.py|scripts\/eval_small_decoder_replay_heldout\.py|package\.json)$/;
 const SKIP_RE = /(^|\/)(artifacts|node_modules|\.git)\//;
 
 const q = String.fromCharCode(113);
@@ -40,6 +40,10 @@ const forbiddenClaims = [
   {
     code: "training_started_claim",
     pattern: /(?:training has started|training started|formal training progress[^0-9]{0,20}[1-9][0-9]*%|real weights admitted|production model admitted)/i
+  },
+  {
+    code: "phase_4_scaled_training_claim",
+    pattern: /phase_4 scaled training.{0,80}(?:started|ran|approved|allowed|product|release)/i
   },
   {
     code: "fixture_performance_claim",
@@ -200,7 +204,13 @@ async function main() {
     "scripts/plan_r25s_balanced_pilot_dataset.mjs",
     "scripts/validate_r25s_pilot_design.mjs",
     "scripts/report_r25r_decision.mjs",
-    "scripts/check_r25r_data_first_pilot_design.mjs"
+    "scripts/check_r25r_data_first_pilot_design.mjs",
+    "training/from_scratch/APPROVE_R25S_DATA_FIRST_PILOT.json",
+    "training/from_scratch/small_decoder_pilot_run_config.r25s.json",
+    "docs/R25S_DATA_FIRST_SMALL_PILOT_RUN.md",
+    "docs/R25S_BALANCED_HELDOUT_EVAL.md",
+    "scripts/eval_small_decoder_pilot_r25s.mjs",
+    "scripts/check_r25s_data_first_pilot_history.mjs"
   ];
   for (const path of requiredFiles) {
     if (!files.includes(path)) {

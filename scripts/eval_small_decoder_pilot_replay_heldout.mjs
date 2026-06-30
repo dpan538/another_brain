@@ -9,6 +9,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const execFileAsync = promisify(execFile);
 const R25M_CHECKPOINT_PATH = "artifacts/training_os/small_decoder_pilot/r25m/r25m_small_decoder_checkpoint.json";
 const FUTURE_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25p/r25p_replayable_checkpoint.json";
+const R25S_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25s/r25s_replayable_checkpoint.json";
 const R25O_OUTPUT_PATH = "artifacts/training_os/small_decoder_pilot/r25o/r25o_replay_heldout_eval_report.json";
 const MODEL_WEIGHT_RE = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i;
 
@@ -138,26 +139,27 @@ async function runDefaultScaffoldMode() {
   if (!report.ok) process.exit(2);
 }
 
-async function runR25pReplayMode() {
-  const configPath = argValue("--config", "training/from_scratch/small_decoder_pilot_run_config.r25p.json");
-  const checkpointPath = argValue("--checkpoint", FUTURE_REPLAYABLE_PATH);
+async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, defaultCheckpointPath }) {
+  const configPath = argValue("--config", defaultConfigPath);
+  const checkpointPath = argValue("--checkpoint", defaultCheckpointPath);
   const config = await readJson(configPath);
   const outputDir = config.output_dir.endsWith("/") ? config.output_dir : `${config.output_dir}/`;
-  const outputPath = `${outputDir}r25p_heldout_eval_report.json`;
-  const trainPath = `${outputDir}r25p_train_sequences.json`;
-  const devPath = `${outputDir}r25p_dev_sequences.json`;
-  const heldoutPath = `${outputDir}r25p_heldout_sequences.json`;
+  const outputPath = `${outputDir}${prefix}_heldout_eval_report.json`;
+  const trainPath = `${outputDir}${prefix}_train_sequences.json`;
+  const devPath = `${outputDir}${prefix}_dev_sequences.json`;
+  const heldoutPath = `${outputDir}${prefix}_heldout_sequences.json`;
   const failures = [];
 
-  if (config.run_id !== "r25p_more_sequences_128") failures.push({ code: "unexpected_r25p_run_id", actual: config.run_id });
+  if (config.run_id !== expectedRunId) failures.push({ code: `unexpected_${prefix}_run_id`, expected: expectedRunId, actual: config.run_id });
   if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", actual: config.heldout_source });
+  if (prefix === "r25s" && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
   if (!(await exists(checkpointPath))) failures.push({ code: "replayable_checkpoint_missing", checkpointPath });
   if (!(await exists(heldoutPath))) failures.push({ code: "heldout_sequences_missing", heldoutPath });
   if (!(await isIgnored(checkpointPath))) failures.push({ code: "checkpoint_not_ignored", checkpointPath });
   const trackedWeights = (await gitLines(["ls-files"])).filter((path) => MODEL_WEIGHT_RE.test(path));
   const trackedArtifacts = await gitLines(["ls-files", "--cached", outputDir]);
   if (trackedWeights.length) failures.push({ code: "tracked_model_like_weight_extension", trackedWeights });
-  if (trackedArtifacts.length) failures.push({ code: "r25p_artifacts_tracked_or_staged", trackedArtifacts });
+  if (trackedArtifacts.length) failures.push({ code: `${prefix}_artifacts_tracked_or_staged`, trackedArtifacts });
 
   let checkpoint = null;
   let trainDataset = null;
@@ -200,7 +202,7 @@ async function runR25pReplayMode() {
 
   const report = {
     ok: failures.length === 0,
-    run_id: "r25p_more_sequences_128",
+    run_id: expectedRunId,
     heldout_sequences: heldoutDataset?.sequences?.length || 0,
     heldout_pairs: replay?.heldout_pairs || 0,
     heldout_loss: replay?.heldout_loss ?? null,
@@ -211,8 +213,9 @@ async function runR25pReplayMode() {
     training_ran: false,
     product_model: false,
     release_checkpoint: false,
+    phase_4_scaled_training: false,
     notes: [
-      "R25P held-out replay evaluates an already-written ignored JSON checkpoint and does not train.",
+      `${prefix.toUpperCase()} held-out replay evaluates an already-written ignored JSON checkpoint and does not train.`,
       "Held-out rows come from the R25L heldout split only and are not used for training.",
       "The replayable checkpoint remains ignored and is not a release checkpoint."
     ],
@@ -226,7 +229,21 @@ async function runR25pReplayMode() {
 async function main() {
   const run = argValue("--run", "r25o");
   if (run === "r25p") {
-    await runR25pReplayMode();
+    await runPilotReplayMode({
+      prefix: "r25p",
+      expectedRunId: "r25p_more_sequences_128",
+      defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25p.json",
+      defaultCheckpointPath: FUTURE_REPLAYABLE_PATH
+    });
+    return;
+  }
+  if (run === "r25s") {
+    await runPilotReplayMode({
+      prefix: "r25s",
+      expectedRunId: "r25s_data_first_balanced_192",
+      defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25s.json",
+      defaultCheckpointPath: R25S_REPLAYABLE_PATH
+    });
     return;
   }
   await runDefaultScaffoldMode();

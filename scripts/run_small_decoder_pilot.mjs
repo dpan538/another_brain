@@ -11,6 +11,7 @@ const PLAN_CONFIG_PATH = "training/from_scratch/small_decoder_pilot_config.json"
 const DEFAULT_RUN_CONFIG_PATH = "training/from_scratch/small_decoder_pilot_run_config.json";
 const DEFAULT_APPROVAL_PATH = "training/from_scratch/APPROVE_R25M_SMALL_DECODER_PILOT.json";
 const R25P_APPROVAL_PATH = "training/from_scratch/APPROVE_R25P_SECOND_SMALL_PILOT.json";
+const R25S_APPROVAL_PATH = "training/from_scratch/APPROVE_R25S_DATA_FIRST_PILOT.json";
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
@@ -46,15 +47,24 @@ function normalizedDir(path) {
 }
 
 function runPrefix(runConfig) {
-  return String(runConfig?.run_id || "").startsWith("r25p_") ? "r25p" : "r25m";
+  const runId = String(runConfig?.run_id || "");
+  if (runId.startsWith("r25s_")) return "r25s";
+  if (runId.startsWith("r25p_")) return "r25p";
+  return "r25m";
 }
 
 function expectedScope(runConfig) {
-  return runPrefix(runConfig) === "r25p" ? "second_small_decoder_pilot_only" : "small_decoder_pilot_only";
+  const prefix = runPrefix(runConfig);
+  if (prefix === "r25s") return "data_first_small_decoder_pilot_only";
+  if (prefix === "r25p") return "second_small_decoder_pilot_only";
+  return "small_decoder_pilot_only";
 }
 
 function defaultApproval(runConfig) {
-  return runPrefix(runConfig) === "r25p" ? R25P_APPROVAL_PATH : DEFAULT_APPROVAL_PATH;
+  const prefix = runPrefix(runConfig);
+  if (prefix === "r25s") return R25S_APPROVAL_PATH;
+  if (prefix === "r25p") return R25P_APPROVAL_PATH;
+  return DEFAULT_APPROVAL_PATH;
 }
 
 function reportPaths(runConfig) {
@@ -86,15 +96,19 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (approval?.scope !== scope) failures.push({ code: "approval_scope_invalid", expected: scope, actual: approval?.scope });
   if (approval?.phase !== "phase_3_small_decoder_pilot") failures.push({ code: "approval_phase_invalid", phase: approval?.phase });
   if (approval?.run_id !== requestedRunId) failures.push({ code: "approval_run_id_mismatch", expected: requestedRunId, actual: approval?.run_id });
-  if (prefix === "r25p" && approval?.variant_id !== requestedVariantId) {
+  if ((prefix === "r25p" || prefix === "r25s") && approval?.variant_id !== requestedVariantId) {
     failures.push({ code: "approval_variant_id_mismatch", expected: requestedVariantId, actual: approval?.variant_id });
   }
   if (prefix === "r25p" && requestedVariantId !== "r25p_more_sequences_128") {
     failures.push({ code: "r25p_only_more_sequences_128_is_approved", actual: requestedVariantId });
   }
+  if (prefix === "r25s" && requestedVariantId !== "r25s_data_first_balanced_192") {
+    failures.push({ code: "r25s_only_data_first_balanced_192_is_approved", actual: requestedVariantId });
+  }
   if (approval?.allow_small_pilot_training !== true) failures.push({ code: "approval_must_allow_small_pilot_training" });
   if (approval?.allow_long_term_training !== false) failures.push({ code: "approval_must_not_allow_long_term_training" });
   if (approval?.allow_product_model_training !== false) failures.push({ code: "approval_must_not_allow_product_model_training" });
+  if (prefix === "r25s" && approval?.allow_phase_4_scaled_training !== false) failures.push({ code: "approval_must_not_allow_phase_4_scaled_training" });
   if (approval?.allow_release_checkpoint !== false) failures.push({ code: "approval_must_not_allow_release_checkpoint" });
   if (approval?.allow_weight_commit !== false) failures.push({ code: "approval_must_not_allow_weight_commit" });
   if (approval?.allow_artifacts_write !== true) failures.push({ code: "approval_must_allow_ignored_artifact_write" });
@@ -109,6 +123,7 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (runConfig.release_checkpoint !== false) failures.push({ code: "run_config_must_not_be_release_checkpoint" });
   if (runConfig.formal_product_training === true) failures.push({ code: "run_config_must_not_enable_formal_product_training" });
   if (runConfig.long_term_training === true) failures.push({ code: "run_config_must_not_enable_long_term_training" });
+  if (prefix === "r25s" && runConfig.phase_4_scaled_training !== false) failures.push({ code: "run_config_must_not_enable_phase_4_scaled_training" });
   if (runConfig.commit_weights_allowed !== false) failures.push({ code: "run_config_must_not_allow_weight_commit" });
   if (!normalizedDir(runConfig.output_dir).startsWith("artifacts/training_os/small_decoder_pilot/")) {
     failures.push({ code: "output_dir_outside_ignored_small_pilot_root", output_dir: runConfig.output_dir });
@@ -116,18 +131,23 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (prefix === "r25p" && configPath !== "training/from_scratch/small_decoder_pilot_run_config.r25p.json") {
     failures.push({ code: "r25p_must_use_r25p_run_config", configPath });
   }
+  if (prefix === "r25s" && configPath !== "training/from_scratch/small_decoder_pilot_run_config.r25s.json") {
+    failures.push({ code: "r25s_must_use_r25s_run_config", configPath });
+  }
   return failures;
 }
 
-async function consumeR25pApproval(approvalPath, approval) {
-  if (approvalPath !== R25P_APPROVAL_PATH) return;
+async function consumePilotApproval(approvalPath, approval, runConfig) {
+  const prefix = runPrefix(runConfig);
+  if (approvalPath !== R25P_APPROVAL_PATH && approvalPath !== R25S_APPROVAL_PATH) return;
+  const consumedByPhase = prefix.toUpperCase();
   const consumed = {
     ...approval,
     consumed: true,
     allow_additional_runs: false,
-    consumed_by_commit: "pending_r25p_commit",
-    consumed_by_phase: "R25P",
-    consumed_reason: "one-shot approval used for r25p_more_sequences_128; future runs require a new approval marker"
+    consumed_by_commit: prefix === "r25s" ? "pending_r25s_commit" : "pending_r25p_commit",
+    consumed_by_phase: consumedByPhase,
+    consumed_reason: `one-shot approval used for ${runConfig.run_id}; future runs require a new approval marker`
   };
   await writeJson(approvalPath, consumed);
 }
@@ -153,6 +173,7 @@ async function main() {
       small_pilot_training_ran: false,
       formal_product_training: false,
       long_term_training: false,
+      phase_4_scaled_training: false,
       product_model: false,
       release_checkpoint: false,
       weights_written: false,
@@ -177,6 +198,7 @@ async function main() {
       small_pilot_training_ran: false,
       formal_product_training: false,
       long_term_training: false,
+      phase_4_scaled_training: false,
       product_model: false,
       release_checkpoint: false,
       weights_written: false,
@@ -202,6 +224,7 @@ async function main() {
       small_pilot_training_ran: false,
       formal_product_training: false,
       long_term_training: false,
+      phase_4_scaled_training: false,
       product_model: false,
       release_checkpoint: false,
       failures
@@ -246,7 +269,7 @@ async function main() {
         "No pilot progress or training-readiness increase should be claimed from blocked mode."
       ]
     };
-    await consumeR25pApproval(approvalPath, approval);
+    await consumePilotApproval(approvalPath, approval, runConfig);
     await writeJson(paths.run, blocked);
     console.log(JSON.stringify(blocked, null, 2));
     return;
@@ -261,6 +284,7 @@ async function main() {
       small_pilot_training_ran: false,
       formal_product_training: false,
       long_term_training: false,
+      phase_4_scaled_training: false,
       product_model: false,
       release_checkpoint: false,
       backend: backendReport.backend,
@@ -284,7 +308,7 @@ async function main() {
   });
 
   const report = await readJson(paths.run);
-  await consumeR25pApproval(approvalPath, approval);
+  await consumePilotApproval(approvalPath, approval, runConfig);
   const trackedArtifacts = await gitLines(["ls-files", "--cached", paths.outputDir]);
   if (trackedArtifacts.length) {
     report.ok = false;

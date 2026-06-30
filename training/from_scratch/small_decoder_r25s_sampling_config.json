@@ -5,6 +5,7 @@
   "requires_fresh_approval": true,
   "product_model": false,
   "release_checkpoint": false,
+  "phase_4_scaled_training": false,
   "commit_weights_allowed": false,
   "train_source": "training/llm_corpus/r25l_train.jsonl",
   "dev_source": "training/llm_corpus/r25l_dev.jsonl",

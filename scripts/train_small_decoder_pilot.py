@@ -311,7 +311,12 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
 
 
 def run_prefix(config):
-    return "r25p" if str(config.get("run_id", "")).startswith("r25p_") else "r25m"
+    run_id = str(config.get("run_id", ""))
+    if run_id.startswith("r25s_"):
+        return "r25s"
+    if run_id.startswith("r25p_"):
+        return "r25p"
+    return "r25m"
 
 
 def main():
@@ -327,7 +332,8 @@ def main():
     tokenizer = read_json(f"{artifact_dir}/r25j_tokenizer.json")
     train_dataset, train_sequences = load_sequences(f"{config['output_dir']}{prefix}_train_sequences.json")
     dev_dataset, dev_sequences = load_sequences(f"{config['output_dir']}{prefix}_dev_sequences.json")
-    heldout_dataset = read_json(f"{config['output_dir']}{prefix}_heldout_sequences.json") if prefix == "r25p" and Path(ROOT / f"{config['output_dir']}{prefix}_heldout_sequences.json").exists() else {"sequences": []}
+    heldout_path = f"{config['output_dir']}{prefix}_heldout_sequences.json"
+    heldout_dataset = read_json(heldout_path) if Path(ROOT / heldout_path).exists() else {"sequences": []}
     if not train_sequences or not dev_sequences:
         raise SystemExit("Small decoder pilot sequences are missing")
 
@@ -341,7 +347,7 @@ def main():
     steps = int(config["max_steps"])
     train_loss_decreased = metrics["final_train_loss"] < metrics["initial_train_loss"]
     dev_loss_finite = finite(metrics["initial_dev_loss"]) and finite(metrics["final_dev_loss"])
-    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix == "r25p"
+    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s"}
     checkpoint_path = f"{config['output_dir']}{prefix}_replayable_checkpoint.json" if replayable_enabled else f"{config['output_dir']}{prefix}_small_decoder_checkpoint.json"
     metrics_path = f"{config['output_dir']}{prefix}_small_decoder_metrics.json"
     run_report_path = f"{config['output_dir']}{prefix}_small_decoder_run_report.json"
@@ -401,7 +407,7 @@ def main():
             "commit_allowed": False,
             "created_for": "small_decoder_pilot_only",
             "notes": [
-                "R25P replayable JSON checkpoint for ignored held-out replay only.",
+                f"{prefix.upper()} replayable JSON checkpoint for ignored held-out replay only.",
                 "Not a product model, not a release checkpoint, and not commit-allowed.",
                 "Serialized tensors are included only because this is a bounded small-pilot artifact under ignored artifacts/."
             ]
@@ -434,6 +440,7 @@ def main():
         "small_pilot_training_ran": True,
         "formal_product_training": False,
         "long_term_training": False,
+        "phase_4_scaled_training": False,
         "product_model": False,
         "release_checkpoint": False,
         "backend": metrics["backend"],
