@@ -22,6 +22,14 @@ const MARKERS = [
     expectedPhase: "phase_3_small_decoder_pilot",
     consumedByCommit: "56613c64ef2c7400f13be051030c09883877fa5d",
     trainingFlagKeys: ["allow_small_pilot_training"]
+  },
+  {
+    id: "r25p_second_small_pilot_template",
+    path: "training/from_scratch/APPROVE_R25P_SECOND_SMALL_PILOT.template.json",
+    expectedScope: "second_small_decoder_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    template: true,
+    trainingFlagKeys: ["allow_small_pilot_training"]
   }
 ];
 
@@ -33,6 +41,7 @@ async function readJson(path) {
 
 function markerAllowsTraining(marker, spec) {
   if (!marker?.approved || marker.consumed === true) return false;
+  if (spec.template || spec.path.endsWith(".template.json")) return false;
   if (spec.id === "r25k_toy_overfit") return marker.scope === spec.expectedScope;
   return spec.trainingFlagKeys.some((key) => marker[key] === true);
 }
@@ -44,6 +53,7 @@ function markerSummary(spec, marker, failures) {
     approved: marker?.approved === true,
     consumed: marker?.consumed === true,
     allow_additional_runs: marker?.allow_additional_runs === true,
+    template: spec.template === true,
     active_training_approval: markerAllowsTraining(marker, spec),
     active_product_training_approval: marker?.consumed !== true && marker?.allow_product_model_training === true,
     active_weight_commit_approval: marker?.consumed !== true && marker?.allow_weight_commit === true,
@@ -71,13 +81,20 @@ async function main() {
 
     if (marker.scope !== spec.expectedScope) failures.push({ marker: spec.id, code: "scope_mismatch", expected: spec.expectedScope, actual: marker.scope });
     if (marker.phase !== spec.expectedPhase) failures.push({ marker: spec.id, code: "phase_mismatch", expected: spec.expectedPhase, actual: marker.phase });
-    if (marker.consumed !== true) failures.push({ marker: spec.id, code: "approval_marker_not_consumed" });
-    if (marker.allow_additional_runs !== false) failures.push({ marker: spec.id, code: "allow_additional_runs_must_be_false" });
-    if (marker.consumed_by_commit !== spec.consumedByCommit) {
-      failures.push({ marker: spec.id, code: "consumed_by_commit_mismatch", expected: spec.consumedByCommit, actual: marker.consumed_by_commit });
-    }
-    if (!String(marker.consumed_reason || "").includes("future runs require a new approval marker")) {
-      failures.push({ marker: spec.id, code: "consumed_reason_missing_new_marker_requirement" });
+    if (spec.template) {
+      if (marker.approved !== false) failures.push({ marker: spec.id, code: "template_must_not_be_approved" });
+      if (marker.allow_small_pilot_training !== false) failures.push({ marker: spec.id, code: "template_must_not_allow_small_pilot_training" });
+      if (marker.reviewer !== "") failures.push({ marker: spec.id, code: "template_reviewer_must_be_blank" });
+      if (!spec.path.endsWith(".template.json")) failures.push({ marker: spec.id, code: "template_path_must_end_template_json" });
+    } else {
+      if (marker.consumed !== true) failures.push({ marker: spec.id, code: "approval_marker_not_consumed" });
+      if (marker.allow_additional_runs !== false) failures.push({ marker: spec.id, code: "allow_additional_runs_must_be_false" });
+      if (marker.consumed_by_commit !== spec.consumedByCommit) {
+        failures.push({ marker: spec.id, code: "consumed_by_commit_mismatch", expected: spec.consumedByCommit, actual: marker.consumed_by_commit });
+      }
+      if (!String(marker.consumed_reason || "").includes("future runs require a new approval marker")) {
+        failures.push({ marker: spec.id, code: "consumed_reason_missing_new_marker_requirement" });
+      }
     }
     if (marker.allow_weight_commit !== false) failures.push({ marker: spec.id, code: "allow_weight_commit_must_be_false" });
     if (marker.allow_long_term_training !== false) failures.push({ marker: spec.id, code: "allow_long_term_training_must_be_false" });

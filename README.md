@@ -57,6 +57,12 @@ dry-run, and plans a small decoder pilot. The pilot runner skips by default, no
 small decoder training starts, no product model exists, and formal training
 progress remains `0%`.
 
+R25M runs one bounded small decoder pilot after explicit approval. R25N
+evaluates that output, consumes the R25K/R25M approvals, and keeps active
+training approvals at zero. R25O designs a future R25P second pilot and
+replayable ignored checkpoint protocol only; it does not run training, does not
+approve R25P, and does not change product training progress from `0%`.
+
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
 The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
@@ -152,6 +158,8 @@ npm run check:r25i-from-scratch-roadmap
 npm run check:r25j-tokenizer-toy-pipeline
 npm run check:r25k-toy-overfit-sanity
 npm run check:r25l-corpus-pilot-plan
+npm run check:r25n-small-pilot-evaluation
+npm run check:r25o-second-pilot-design
 ```
 
 Build and validate the mixed context stress suite:

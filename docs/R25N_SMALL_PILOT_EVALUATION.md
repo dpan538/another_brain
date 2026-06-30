@@ -28,3 +28,8 @@ storage, or release checkpoints are added.
 
 Any R25O or second bounded pilot must be reviewer-approved with a fresh
 one-shot approval marker and must run R24/R25 gates before and after the run.
+
+R25O follows this by designing R25P only. It records that the R25M checkpoint is
+not replayable for true held-out loss because it has no serialized tensors, and
+it adds a replayable ignored JSON checkpoint protocol for any later approved
+R25P run. R25O itself does not train.

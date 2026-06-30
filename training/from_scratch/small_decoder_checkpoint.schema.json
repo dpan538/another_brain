@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "training/from_scratch/small_decoder_checkpoint.schema.json",
+  "title": "Replayable Small Decoder Pilot Checkpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "phase",
+    "model_type",
+    "architecture",
+    "tokenizer_id",
+    "vocab_size",
+    "max_context_tokens",
+    "parameter_count",
+    "parameter_tensors",
+    "training_config_digest",
+    "dataset_digest",
+    "tokenizer_digest",
+    "metrics_digest",
+    "product_model",
+    "release_checkpoint",
+    "commit_allowed",
+    "created_for",
+    "notes"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "r25o_small_decoder_checkpoint_v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^r25[p-z][a-z0-9_]*$"
+    },
+    "phase": {
+      "type": "string",
+      "const": "phase_3_small_decoder_pilot"
+    },
+    "model_type": {
+      "type": "string",
+      "enum": [
+        "decoder_like_next_token_pilot",
+        "causal_decoder_pilot",
+        "decoder_only_transformer_pilot"
+      ]
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "layers",
+        "hidden_size",
+        "attention_heads",
+        "intermediate_size"
+      ],
+      "properties": {
+        "type": { "type": "string" },
+        "layers": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "hidden_size": { "type": "integer", "minimum": 16, "maximum": 256 },
+        "attention_heads": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "intermediate_size": { "type": "integer", "minimum": 16, "maximum": 512 },
+        "positional_encoding": { "type": "string" },
+        "normalization": { "type": "string" }
+      }
+    },
+    "tokenizer_id": { "type": "string", "minLength": 1 },
+    "vocab_size": { "type": "integer", "minimum": 2, "maximum": 32768 },
+    "max_context_tokens": { "type": "integer", "minimum": 8, "maximum": 512 },
+    "parameter_count": { "type": "integer", "minimum": 1 },
+    "parameter_tensors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "shape",
+          "dtype",
+          "encoding",
+          "values"
+        ],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "shape": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "integer", "minimum": 1 }
+          },
+          "dtype": {
+            "type": "string",
+            "enum": ["float32", "float64", "int32", "uint16"]
+          },
+          "encoding": {
+            "type": "string",
+            "enum": ["json_nested_array", "json_flat_array", "base64_float32_le"]
+          },
+          "values": {
+            "oneOf": [
+              {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    { "type": "number" },
+                    { "type": "array" }
+                  ]
+                }
+              },
+              { "type": "string" }
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "optimizer_state_optional": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "training_config_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "dataset_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "tokenizer_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "metrics_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "product_model": { "type": "boolean", "const": false },
+    "release_checkpoint": { "type": "boolean", "const": false },
+    "commit_allowed": { "type": "boolean", "const": false },
+    "created_for": {
+      "type": "string",
+      "const": "small_decoder_pilot_only"
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

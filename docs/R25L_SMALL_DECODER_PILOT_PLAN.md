@@ -29,3 +29,8 @@ not permit committing checkpoint or tokenizer artifacts.
 R25N consumes the R25M approval marker and evaluates the R25M outputs. Later
 small-pilot work requires a new one-shot marker; routine gates must use
 history/evaluation checks and must not rerun the R25M pilot.
+
+R25O designs that later work without running it. The second-pilot config
+contains candidate R25P variants, and the committed R25P approval template is
+`approved:false`. The plan can recommend a variant for review, but it does not
+authorize training or change product progress.

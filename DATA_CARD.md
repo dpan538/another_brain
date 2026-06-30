@@ -21,6 +21,9 @@ it does not run formal decoder training and does not commit generated artifacts.
 R25K may run a toy-only overfit sanity check after explicit approval. R25L
 expands deterministic project-authored corpus rows and plans a small decoder
 pilot, but the pilot runner skips by default and no pilot weights are written.
+R25M runs one bounded approved small pilot to ignored artifacts; R25N evaluates
+it and consumes the approval markers. R25O designs the next R25P pilot and a
+replayable ignored-checkpoint protocol, but it does not run training.
 
 ## Public Data
 
@@ -106,6 +109,12 @@ Private data is not distributed:
   project-authored behavioral rows, not eval data or factual knowledge cards.
 - R25L small decoder pilot status: plan only; `run:small-decoder-pilot` skips
   by default and formal decoder training remains `0%`.
+- R25M small decoder pilot status: one bounded approved run wrote ignored
+  reports and a non-replayable checkpoint digest only.
+- R25N evaluation status: R25M outputs analyzed, structural held-out eval
+  passed, old approvals consumed, and active training approvals are `0`.
+- R25O second-pilot design status: R25P approval template is `approved:false`;
+  replayable checkpoint schema and replay-heldout scaffold are design-only.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -168,6 +177,10 @@ R25N does not train. It may read `training/llm_corpus/r25l_heldout.jsonl` for
 held-out pilot evaluation only, and may compare against train/eval text for
 contamination checks. It must not convert held-out text into training data and
 must not read root PDFs/DOCX or `data/public_ingestion/`.
+
+R25O also does not train. It may read existing ignored R25M/R25N reports to
+plan a second bounded pilot and compare history. Future replayable checkpoints
+remain ignored JSON artifacts only and are not product or release checkpoints.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

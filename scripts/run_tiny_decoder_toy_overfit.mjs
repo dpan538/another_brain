@@ -193,6 +193,7 @@ async function main() {
   }
 
   if (!approval?.approved) failures.push({ code: "r25k_approval_missing_or_not_approved", path: APPROVAL_PATH });
+  if (approvalPath.endsWith(".template.json")) failures.push({ code: "approval_template_cannot_authorize_training", path: approvalPath });
   if (approvalPath === APPROVAL_PATH) failures.push({ code: "historical_r25k_approval_marker_cannot_be_reused", path: APPROVAL_PATH });
   if (approval?.consumed !== false) failures.push({ code: "fresh_r25k_approval_must_mark_consumed_false", consumed: approval?.consumed });
   if (approval?.allow_additional_runs === true) failures.push({ code: "fresh_r25k_approval_must_not_allow_additional_runs" });
@@ -204,6 +205,7 @@ async function main() {
   if (approval?.allow_product_model_training !== false) failures.push({ code: "r25k_approval_must_not_allow_product_model_training" });
   if (approval?.allow_weight_commit !== false) failures.push({ code: "r25k_approval_must_not_allow_weight_commit" });
   if (approval?.allow_artifacts_write !== true) failures.push({ code: "r25k_approval_must_allow_ignored_artifact_write" });
+  if (approval?.is_template === true || approval?.template === true) failures.push({ code: "approval_template_flag_cannot_authorize_training" });
   if (approval?.artifact_output_root !== ARTIFACT_DIR) failures.push({ code: "r25k_artifact_root_mismatch", artifact_output_root: approval?.artifact_output_root });
   if (config.commit_weights_allowed !== false) failures.push({ code: "toy_config_must_not_allow_weight_commit" });
   if (config.product_model !== false) failures.push({ code: "toy_config_must_not_be_product" });

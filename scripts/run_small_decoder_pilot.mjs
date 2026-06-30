@@ -107,6 +107,7 @@ async function main() {
   }
 
   if (!runConfig) failures.push({ code: "r25m_run_config_missing", path: RUN_CONFIG_PATH });
+  if (approvalPath.endsWith(".template.json")) failures.push({ code: "approval_template_cannot_authorize_training", path: approvalPath });
   if (!approval?.approved) failures.push({ code: "r25m_approval_missing_or_not_approved", path: APPROVAL_PATH });
   if (approvalPath === APPROVAL_PATH) failures.push({ code: "historical_r25m_approval_marker_cannot_be_reused", path: APPROVAL_PATH });
   if (approval?.consumed !== false) failures.push({ code: "fresh_r25m_approval_must_mark_consumed_false", consumed: approval?.consumed });
@@ -120,6 +121,7 @@ async function main() {
   if (approval?.allow_release_checkpoint !== false) failures.push({ code: "r25m_approval_must_not_allow_release_checkpoint" });
   if (approval?.allow_weight_commit !== false) failures.push({ code: "r25m_approval_must_not_allow_weight_commit" });
   if (approval?.allow_artifacts_write !== true) failures.push({ code: "r25m_approval_must_allow_ignored_artifact_write" });
+  if (approval?.is_template === true || approval?.template === true) failures.push({ code: "approval_template_flag_cannot_authorize_training" });
   if (approval?.artifact_output_root !== config.output_dir) failures.push({ code: "r25m_artifact_root_mismatch", approval_root: approval?.artifact_output_root, config_root: config.output_dir });
   if (runConfig) {
     if (runConfig.product_model !== false) failures.push({ code: "r25m_run_config_must_not_be_product" });

@@ -32,6 +32,12 @@ evaluation pass, the phase label may become
 `phase_3_small_decoder_pilot_evaluated`; product training progress remains
 `0%`, and future training still requires a fresh approval marker.
 
+R25O may move the planning label to `phase_3_second_small_pilot_designed` after
+the second-pilot plan, replayable checkpoint schema, replay-heldout scaffold,
+approval template, and history comparison pass. This is still a design state
+only: no second pilot is approved, no new training runs, product training
+progress remains `0%`, and pilot progress remains separate at the R25M level.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -41,3 +47,4 @@ evaluation pass, the phase label may become
 - Claiming first-token success from fixture output.
 - Weakening R24 recovery gates to make a model appear better.
 - Reusing a consumed approval marker to rerun toy or small-pilot training.
+- Treating a replayable ignored small-pilot checkpoint as a release checkpoint.

@@ -16,6 +16,8 @@ browser deployment.
 
 R25N evaluates the R25M outputs, adds structural held-out pilot evaluation, and
 consumes the R25K/R25M one-shot approval markers. R25N is not a training run.
+R25O designs the next bounded pilot and replayable ignored-checkpoint protocol
+only; it is also not a training run and does not approve R25P.
 
 ## Product Target
 
@@ -56,6 +58,10 @@ baseline/compatibility.
   remains `0%`.
 - R25N approval-marker consumption means R25K/R25M markers are audit records,
   not reusable permission for new runs.
+- R25O R25P approval template is committed with `approved:false`; template
+  markers and consumed markers cannot authorize training.
+- Replayable small-pilot checkpoints, if a future approved run writes them,
+  must remain ignored JSON artifacts and must not be release checkpoints.
 - No real model weights are added in R25I.
 - No remote model weights are downloaded.
 - No external LLM API or unreviewed external model output is used.
@@ -96,3 +102,8 @@ R25N may move the current phase label to
 `phase_3_small_decoder_pilot_evaluated` after analysis, held-out structural
 evaluation, approval-marker validation, and R24/R25 gates pass. It does not
 start new training and does not approve the next pilot automatically.
+
+R25O may move the current phase label to
+`phase_3_second_small_pilot_designed` after the second-pilot plan, replayable
+checkpoint schema, replay-heldout scaffold, historical comparison, and approval
+template validation pass. This is still design-only and does not run R25P.

@@ -1,0 +1,14 @@
+{
+  "approved": false,
+  "scope": "second_small_decoder_pilot_only",
+  "reviewer": "",
+  "phase": "phase_3_small_decoder_pilot",
+  "allow_small_pilot_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "allow_artifacts_write": true,
+  "artifact_output_root": "artifacts/training_os/small_decoder_pilot/r25p/",
+  "notes": "Template only. R25P requires a fresh explicit approval with approved:true and allow_small_pilot_training:true."
+}

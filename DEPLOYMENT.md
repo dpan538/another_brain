@@ -178,6 +178,13 @@ They are evaluation and approval-safety reports only. They do not authorize
 deployment, backend inference, static release admission, external storage, or
 committing weights.
 
+R25O reports live under ignored `artifacts/training_os/small_decoder_pilot/r25o/`.
+They are second-pilot design, schema validation, replay-heldout scaffold, and
+history-comparison reports only. The R25P approval template is committed with
+`approved:false`; it cannot authorize training. Future replayable JSON
+checkpoints must remain ignored and are still not browser assets, release
+checkpoints, or commit-allowed weights.
+
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
 generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It

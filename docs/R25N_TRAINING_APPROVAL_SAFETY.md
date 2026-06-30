@@ -29,3 +29,8 @@ The approval marker safety gate reports:
 
 For R25N all three must be `0`. This is the lock that prevents R25K/R25M
 history from quietly becoming permission for another run.
+
+R25O adds the R25P approval template with `approved:false`. Template approval
+markers are inert by design and must not authorize a runner even if passed on
+the command line. A future R25P run requires a copied marker, explicit approval,
+matching run id, and `consumed:false` before the runner can proceed.

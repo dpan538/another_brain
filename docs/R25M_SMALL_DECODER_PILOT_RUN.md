@@ -27,3 +27,8 @@ R25N consumes the R25M one-shot approval marker after commit
 only and cannot authorize another pilot run. R25N may analyze the ignored R25M
 reports and run structural held-out evaluation, but it must not rerun small
 pilot training.
+
+R25O classifies the R25M checkpoint as a non-replayable legacy digest. It is
+useful for audit and comparison, but not for true held-out loss replay. Any
+future R25P checkpoint should use the R25O replayable JSON schema while staying
+ignored, untracked, non-product, and non-release.
