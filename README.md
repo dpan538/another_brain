@@ -74,6 +74,10 @@ R25T analyzes R25S against R25P, checks whether balancing improved held-out
 behavior, adds an inert R25U architecture-ablation approval template, and still
 does not run training or approve phase 4 scaled training. Product training
 progress remains `0%`.
+R25U defines phase-3 exit criteria, reports phase_4 readiness as not approved,
+and designs architecture ablation options for a future R25V review. It does not
+train, does not approve R25V, and does not approve phase_4 scaled training.
+Product training progress remains `0%`.
 
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 

@@ -1,0 +1,166 @@
+{
+  "schema_version": "r25u_architecture_ablation_plan_v0",
+  "phase": "phase_3_small_decoder_pilot",
+  "training_allowed_by_default": false,
+  "requires_fresh_approval": true,
+  "product_model": false,
+  "release_checkpoint": false,
+  "phase_4_scaled_training": false,
+  "commit_weights_allowed": false,
+  "base_reference": {
+    "run_id": "r25s_data_first_balanced_192",
+    "max_train_rows": 192,
+    "max_dev_rows": 48,
+    "max_heldout_rows": 48,
+    "max_context_tokens": 64,
+    "learning_rate": 0.005,
+    "steps": 80,
+    "parameter_count": 566080
+  },
+  "candidate_ablations": [
+    {
+      "run_id": "r25u_same_data_lower_lr",
+      "variant_id": "same_data_lower_lr",
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "product_model": false,
+      "release_checkpoint": false,
+      "commit_weights_allowed": false,
+      "parameter_estimate": 566080,
+      "estimated_artifact_bytes": 2800000,
+      "expected_risk": "low",
+      "expected_question_answered": "Does lowering learning rate reduce train/eval gap without changing architecture?",
+      "required_before_run": [
+        "fresh one-shot approval",
+        "R25U phase decision reviewed",
+        "R24/R25 gates green"
+      ],
+      "rollback_triggers": [
+        "dev loss worsens materially",
+        "heldout loss is not finite",
+        "approval marker is missing or consumed"
+      ]
+    },
+    {
+      "run_id": "r25u_two_layer_same_width",
+      "variant_id": "two_layer_same_width",
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "product_model": false,
+      "release_checkpoint": false,
+      "commit_weights_allowed": false,
+      "parameter_estimate": 1090000,
+      "estimated_artifact_bytes": 5400000,
+      "expected_risk": "moderate",
+      "expected_question_answered": "Does one additional decoder layer improve heldout behavior after data balancing?",
+      "required_before_run": [
+        "fresh one-shot approval for this run_id",
+        "same R25S balanced split boundaries",
+        "replayable checkpoint schema validated"
+      ],
+      "rollback_triggers": [
+        "train/dev gap exceeds phase3 threshold",
+        "heldout loss regresses against R25S",
+        "checkpoint path leaves ignored artifacts"
+      ]
+    },
+    {
+      "run_id": "r25u_wider_hidden_96",
+      "variant_id": "wider_hidden_96",
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "product_model": false,
+      "release_checkpoint": false,
+      "commit_weights_allowed": false,
+      "parameter_estimate": 1130000,
+      "estimated_artifact_bytes": 5600000,
+      "expected_risk": "moderate_high",
+      "expected_question_answered": "Does width help more than depth on the same balanced data?",
+      "required_before_run": [
+        "fresh reviewer approval",
+        "capacity envelope sanity check",
+        "same heldout replay gate"
+      ],
+      "rollback_triggers": [
+        "memory or artifact estimate exceeds small-pilot envelope",
+        "dev loss fails to improve",
+        "phase_4 language appears in run output"
+      ]
+    },
+    {
+      "run_id": "r25u_context_128_same_params",
+      "variant_id": "context_128_same_params",
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "product_model": false,
+      "release_checkpoint": false,
+      "commit_weights_allowed": false,
+      "parameter_estimate": 566080,
+      "estimated_artifact_bytes": 2800000,
+      "expected_risk": "moderate",
+      "expected_question_answered": "Does longer context help weak buckets without increasing parameter count?",
+      "required_before_run": [
+        "fresh one-shot approval",
+        "sequence memory risk check",
+        "heldout overlap check"
+      ],
+      "rollback_triggers": [
+        "sequence memory risk becomes high",
+        "heldout loss is not finite",
+        "runtime exceeds bounded pilot budget"
+      ]
+    },
+    {
+      "run_id": "r25u_regularized_dropout_if_backend_supports",
+      "variant_id": "regularized_dropout_if_backend_supports",
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "product_model": false,
+      "release_checkpoint": false,
+      "commit_weights_allowed": false,
+      "parameter_estimate": 566080,
+      "estimated_artifact_bytes": 2800000,
+      "expected_risk": "moderate",
+      "expected_question_answered": "Does mild regularization reduce overfit risk without architecture scale?",
+      "required_before_run": [
+        "fresh reviewer approval",
+        "backend deterministic dropout support confirmed",
+        "replay determinism plan updated"
+      ],
+      "rollback_triggers": [
+        "replay becomes nondeterministic",
+        "train loss or dev loss becomes NaN",
+        "regularization changes are not documented"
+      ]
+    },
+    {
+      "run_id": "r25u_data_first_repeat_if_needed",
+      "variant_id": "data_first_repeat_if_needed",
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "product_model": false,
+      "release_checkpoint": false,
+      "commit_weights_allowed": false,
+      "parameter_estimate": 566080,
+      "estimated_artifact_bytes": 2800000,
+      "expected_risk": "low",
+      "expected_question_answered": "If review rejects architecture ablation, can another balanced data pass improve mixed-language buckets?",
+      "required_before_run": [
+        "fresh reviewer approval",
+        "R25T weak-bucket review",
+        "no heldout-to-train leakage"
+      ],
+      "rollback_triggers": [
+        "weak buckets regress",
+        "split overlap is detected",
+        "approval marker is missing or consumed"
+      ]
+    }
+  ],
+  "must_not_do": [
+    "do not run any candidate in R25U",
+    "do not approve phase_4 scaled training",
+    "do not commit checkpoints or generated reports",
+    "do not introduce external models, LoRA, adapters, fine-tuning, backend inference, or external storage"
+  ]
+}

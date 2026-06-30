@@ -224,6 +224,11 @@ checkpoint, and `r25l_heldout.jsonl` for evaluation-only breakdowns. It must
 not use held-out text for training, must not rerun R25S/R25P/R25M/toy pilots,
 and must not authorize R25U or phase_4 scaled training automatically.
 
+R25U does not train. It defines phase 3 exit criteria, checks phase_4 scaled
+training readiness as not approved, and plans possible architecture ablations or
+data follow-ups for future review. R25V is represented only by an inert
+`approved:false` template and cannot authorize training.
+
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,

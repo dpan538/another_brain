@@ -40,3 +40,8 @@ The committed R25U approval template is inert: `approved:false`,
 `allow_small_pilot_training:false`, and
 `allow_architecture_ablation_training:false`. It cannot authorize training.
 Routine R25 gates must stay history/eval/report only.
+
+R25U follows this analysis with phase 3 exit criteria and architecture ablation
+planning only. It may recommend an R25V phase 3 design direction, but it must
+not run a fourth pilot, approve phase_4 scaled training, or change product
+training progress from `0%`.

@@ -55,6 +55,10 @@ R25S may run only once with fresh approval and writes ignored pilot artifacts
 only. R25T analyzes those R25S artifacts and adds an inert R25U template; it
 does not train, does not approve R25U, and does not approve phase 4 scaled
 training or deployment.
+R25U defines phase-3 exit criteria and architecture ablation planning only. It
+does not run training, does not approve R25V, and reports phase_4 scaled
+training as not approved. Any future R25V run would need fresh reviewer
+approval and must still write only ignored artifacts.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed

@@ -75,7 +75,15 @@ const MARKERS = [
     expectedScope: "architecture_ablation_design_or_pilot_only",
     expectedPhase: "phase_3_small_decoder_pilot",
     template: true,
-    trainingFlagKeys: ["allow_small_pilot_training", "allow_architecture_ablation_training"]
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_architecture_ablation_training", "allow_phase_4_scaled_training"]
+  },
+  {
+    id: "r25v_next_pilot_template",
+    path: "training/from_scratch/APPROVE_R25V_NEXT_PILOT.template.json",
+    expectedScope: "next_phase3_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    template: true,
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_architecture_ablation_training", "allow_phase_4_scaled_training"]
   }
 ];
 
@@ -149,7 +157,7 @@ async function main() {
     if (marker.allow_weight_commit !== false) failures.push({ marker: spec.id, code: "allow_weight_commit_must_be_false" });
     if (marker.allow_long_term_training !== false) failures.push({ marker: spec.id, code: "allow_long_term_training_must_be_false" });
     if (marker.allow_product_model_training !== false) failures.push({ marker: spec.id, code: "allow_product_model_training_must_be_false" });
-    if (spec.id.includes("r25s") && marker.allow_phase_4_scaled_training === true) failures.push({ marker: spec.id, code: "allow_phase_4_scaled_training_must_not_be_true" });
+    if (marker.allow_phase_4_scaled_training === true) failures.push({ marker: spec.id, code: "allow_phase_4_scaled_training_must_not_be_true" });
     if (marker.allow_release_checkpoint === true) failures.push({ marker: spec.id, code: "allow_release_checkpoint_must_not_be_true" });
     if (SECRET_RE.test(JSON.stringify(marker))) failures.push({ marker: spec.id, code: "private_path_or_secret_marker_present" });
 

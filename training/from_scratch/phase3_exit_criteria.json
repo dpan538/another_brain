@@ -1,0 +1,59 @@
+{
+  "schema_version": "r25u_phase3_exit_criteria_v0",
+  "phase": "phase_3_small_decoder_pilot",
+  "product_model": false,
+  "phase4_approved": false,
+  "reviewer_approval_required_before_phase4": true,
+  "minimum_reviewed_bounded_pilot_runs": 3,
+  "required_reviewed_pilots": [
+    "r25m_small_decoder_pilot",
+    "r25p_more_sequences_128",
+    "r25s_data_first_balanced_192"
+  ],
+  "replayable_checkpoint_required": true,
+  "finite_heldout_loss_required": true,
+  "gap_thresholds": {
+    "latest_pilot_max_train_dev_gap": 3,
+    "latest_pilot_max_train_heldout_gap": 3,
+    "allow_explained_exception": false
+  },
+  "required_reviews": [
+    "weak_bucket_breakdown_reviewed",
+    "r25p_vs_r25s_generalization_compared",
+    "approval_markers_consumed",
+    "routine_gates_no_training_rerun"
+  ],
+  "required_green_gates": [
+    "r24_recovery_candidate",
+    "no_eval_hardcoding",
+    "eval_split_integrity",
+    "training_provenance",
+    "anti_lobotomy",
+    "dialogue_boundary",
+    "vercel_static_build",
+    "r25_static_release_gates"
+  ],
+  "required_boundaries": {
+    "no_tracked_weights": true,
+    "no_product_claim": true,
+    "no_release_checkpoint": true,
+    "no_external_backend_or_storage": true,
+    "no_external_llm_api": true,
+    "no_remote_downloads": true,
+    "no_chain_of_thought_data": true,
+    "no_eval_prompt_training": true,
+    "no_named_pretrained_product_target": true,
+    "no_lora_adapter_finetune_final_strategy": true
+  },
+  "phase4_blockers": [
+    "phase_4_scaled_training_is_not_approved",
+    "fresh_reviewer_approval_required",
+    "static_admission_not_started",
+    "product_training_progress_remains_0"
+  ],
+  "notes": [
+    "R25U defines exit criteria and does not run training.",
+    "Passing these criteria is necessary but not sufficient for phase_4; reviewer approval is still required.",
+    "Ignored replayable pilot checkpoints are not release checkpoints and must not be committed."
+  ]
+}

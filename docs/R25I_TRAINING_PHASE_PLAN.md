@@ -75,6 +75,14 @@ R25T next-step decision report pass. R25T does not run training, does not rerun
 R25S, and does not approve R25U or phase 4 scaled training. Product and formal
 training progress remain `0%`; pilot progress remains separate at `3%`.
 
+R25U may move the label to `phase_3_exit_criteria_and_ablation_planned` after
+phase 3 exit criteria, phase_4 readiness reporting, architecture ablation
+planning, and the R25U phase decision report pass. R25U does not run training,
+does not approve R25V, and does not approve phase_4 scaled training. Phase_4
+remains blocked until criteria pass and a reviewer gives fresh explicit
+approval. Product and formal training progress remain `0%`; pilot progress
+remains separate at `3%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -89,3 +97,4 @@ training progress remain `0%`; pilot progress remains separate at `3%`.
 - Treating the R25S inert template as approval to run a third pilot.
 - Treating the R25S bounded pilot as approval for phase_4 scaled training.
 - Treating R25T analysis as approval to run R25U or phase_4 scaled training.
+- Treating R25U exit criteria or an R25V template as approval for training.

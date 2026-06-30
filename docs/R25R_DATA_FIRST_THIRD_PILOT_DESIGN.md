@@ -61,3 +61,7 @@ R25T does not train, does not rerun R25S, and does not automatically approve a
 next pilot. If R25T points toward R25U architecture ablation, that is a design
 recommendation only and still requires fresh reviewer approval before any
 training.
+
+R25U adds explicit phase 3 exit criteria before any later step. It can design a
+future R25V ablation or data follow-up, but R25V remains inert until fresh
+approval and phase_4 scaled training remains not approved.
