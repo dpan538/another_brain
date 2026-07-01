@@ -433,3 +433,10 @@ R25S may run exactly one fresh-approved data-first bounded pilot,
 training, long-term training, phase_4 scaled training, release admission, or a
 browser static artifact. Its replayable checkpoint remains ignored and
 untracked, and the approval is consumed after the run.
+
+R25V may run or safely block exactly one fresh-approved architecture ablation,
+`r25v_two_layer_same_width`, to ignored artifacts only. It tests a real
+two-layer same-width phase 3 pilot against the R25S data strategy when the
+local backend supports it. It is not product training, phase_4 scaled training,
+release admission, or static deployment, and the approval is consumed after the
+attempt.

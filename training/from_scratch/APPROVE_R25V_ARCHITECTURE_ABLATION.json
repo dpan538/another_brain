@@ -1,0 +1,23 @@
+{
+  "approved": true,
+  "scope": "phase3_architecture_ablation_pilot_only",
+  "reviewer": "user",
+  "phase": "phase_3_small_decoder_pilot",
+  "run_id": "r25v_two_layer_same_width",
+  "variant_id": "two_layer_same_width",
+  "allow_small_pilot_training": true,
+  "allow_architecture_ablation_training": true,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "allow_artifacts_write": true,
+  "artifact_output_root": "artifacts/training_os/small_decoder_pilot/r25v/",
+  "consumed": true,
+  "allow_additional_runs": false,
+  "notes": "R25V may run exactly one bounded phase_3 architecture ablation pilot, two_layer_same_width, to ignored artifacts only.",
+  "consumed_by_commit": "pending_r25v_commit",
+  "consumed_by_phase": "R25V",
+  "consumed_reason": "one-shot approval used or attempted for r25v_two_layer_same_width; future runs require a new approval marker"
+}

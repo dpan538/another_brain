@@ -48,3 +48,7 @@ If R25T recommends an architecture ablation design, that is still design-only.
 Any R25U/R25V training requires a fresh one-shot reviewer approval marker, and
 the R25S replayable checkpoint remains an ignored pilot artifact rather than a
 release checkpoint.
+
+R25V, if approved, compares a two-layer same-width architecture ablation against
+this R25S baseline. R25S artifacts remain ignored baseline evidence only and do
+not authorize any R25V rerun, phase_4 training, or release admission.

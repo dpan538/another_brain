@@ -6,14 +6,18 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const INCLUDE_R25P = process.argv.includes("--include-r25p");
 const INCLUDE_R25S = process.argv.includes("--include-r25s");
+const INCLUDE_R25V = process.argv.includes("--include-r25v");
 const DECISION_MODE = process.argv.includes("--decision-mode");
-const OUTPUT_PATH = DECISION_MODE
-  ? INCLUDE_R25S
-    ? "artifacts/training_os/small_decoder_pilot/r25s/r25s_history_comparison.json"
-    : "artifacts/training_os/small_decoder_pilot/r25q/r25q_history_comparison.json"
-  : INCLUDE_R25P
-  ? "artifacts/training_os/small_decoder_pilot/r25p/r25p_history_comparison.json"
-  : "artifacts/training_os/small_decoder_pilot/r25o/r25o_history_comparison.json";
+
+function outputPath() {
+  if (INCLUDE_R25V) return "artifacts/training_os/small_decoder_pilot/r25v/r25v_history_comparison.json";
+  if (DECISION_MODE && INCLUDE_R25S) return "artifacts/training_os/small_decoder_pilot/r25s/r25s_history_comparison.json";
+  if (DECISION_MODE) return "artifacts/training_os/small_decoder_pilot/r25q/r25q_history_comparison.json";
+  if (INCLUDE_R25P) return "artifacts/training_os/small_decoder_pilot/r25p/r25p_history_comparison.json";
+  return "artifacts/training_os/small_decoder_pilot/r25o/r25o_history_comparison.json";
+}
+
+const OUTPUT_PATH = outputPath();
 
 async function exists(path) {
   try {
@@ -70,6 +74,22 @@ function chooseR25sRecommendation(r25sRun, r25sHeldout, r25pRun, r25pHeldout) {
   return "stop_and_review";
 }
 
+function chooseR25vRecommendation(r25vRun, r25vHeldout, r25sRun, r25sHeldout) {
+  if (r25vRun?.skipped && String(r25vRun.reason || "").includes("unsupported_backend")) return "stop_and_review";
+  if (!r25vRun?.ok || !r25vHeldout?.ok) return "stop_and_review";
+  if (!Number.isFinite(Number(r25vHeldout.heldout_loss))) return "stop_and_review";
+  if (!r25sRun || !r25sHeldout) return "stop_and_review";
+  const r25vDev = Number(r25vRun.final_dev_loss);
+  const r25sDev = Number(r25sRun.final_dev_loss);
+  const r25vHeld = Number(r25vHeldout.heldout_loss);
+  const r25sHeld = Number(r25sHeldout.heldout_loss);
+  if (Number.isFinite(r25vDev) && Number.isFinite(r25sDev) && Number.isFinite(r25vHeld) && Number.isFinite(r25sHeld)) {
+    if (r25vDev <= r25sDev && r25vHeld <= r25sHeld) return "architecture_ablation_helped_review_next";
+    if (r25vHeld > r25sHeld) return "data_first_still_better";
+  }
+  return "phase4_still_not_approved";
+}
+
 async function main() {
   const toy = await readJsonIfPresent("artifacts/training_os/tiny_decoder_toy/r25k_toy_run_report.json");
   const r25m = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25m/r25m_small_decoder_run_report.json");
@@ -83,6 +103,10 @@ async function main() {
   const r25sHeldout = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25s/r25s_heldout_eval_report.json");
   const r25sEval = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25s/r25s_small_decoder_eval_report.json");
   const r25sDataset = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25s/r25s_dataset_report.json");
+  const r25v = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25v/r25v_small_decoder_run_report.json");
+  const r25vHeldout = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25v/r25v_heldout_eval_report.json");
+  const r25vEval = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25v/r25v_small_decoder_eval_report.json");
+  const r25vDataset = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25v/r25v_dataset_report.json");
   const runs = [];
 
   if (toy?.ok) {
@@ -163,9 +187,35 @@ async function main() {
     });
   }
 
+  if (INCLUDE_R25V && r25v) {
+    runs.push({
+      id: "R25V",
+      kind: "bounded_architecture_ablation_pilot",
+      train_loss_change: r25v.small_pilot_training_ran ? lossDelta(r25v.initial_train_loss, r25v.final_train_loss) : null,
+      dev_loss_change: r25v.small_pilot_training_ran ? lossDelta(r25v.initial_dev_loss, r25v.final_dev_loss) : null,
+      heldout_loss: r25vHeldout?.heldout_loss ?? null,
+      heldout_loss_finite: r25vHeldout?.heldout_loss_finite === true,
+      parameter_count: r25v.parameter_count || null,
+      sequence_count: r25v.train_sequences || null,
+      dev_sequence_count: r25v.dev_sequences || null,
+      heldout_sequence_count: r25vHeldout?.heldout_sequences ?? r25v.heldout_sequences_prepared ?? null,
+      steps: r25v.steps || 0,
+      backend: r25v.backend,
+      artifact_type: r25v.small_pilot_training_ran ? "ignored_replayable_checkpoint_json" : "blocked_no_checkpoint",
+      replayable_checkpoint_available: r25v.replayable_checkpoint_written === true && r25vEval?.checkpoint_validates === true,
+      balanced_sampling_used: r25vDataset?.balanced_sampling_used === true,
+      architecture_ablation_training: r25v.architecture_ablation_training === true,
+      actual_layers: r25v.actual_layers ?? null,
+      phase_4_scaled_training: false,
+      blocked: r25v.skipped === true,
+      blocked_reason: r25v.skipped ? r25v.reason || null : null
+    });
+  }
+
   const r25mRun = runs.find((run) => run.id === "R25M");
   const r25pRun = runs.find((run) => run.id === "R25P");
   const r25sRun = runs.find((run) => run.id === "R25S");
+  const r25vRun = runs.find((run) => run.id === "R25V");
   const dataset_size_difference = r25mRun && r25pRun
     ? {
         train_sequences_delta: Number(r25pRun.sequence_count || 0) - Number(r25mRun.sequence_count || 0),
@@ -182,11 +232,38 @@ async function main() {
         heldout_loss_delta: Number(r25sHeldout?.heldout_loss) - Number(r25pHeldout?.heldout_loss)
       }
     : null;
+  const r25v_vs_r25s = r25vRun && r25sRun
+    ? {
+        train_sequence_delta: Number(r25vRun.sequence_count || 0) - Number(r25sRun.sequence_count || 0),
+        dev_sequence_delta: Number(r25vRun.dev_sequence_count || 0) - Number(r25sRun.dev_sequence_count || 0),
+        heldout_sequence_delta: Number(r25vRun.heldout_sequence_count || 0) - Number(r25sRun.heldout_sequence_count || 0),
+        parameter_count_delta: Number(r25vRun.parameter_count || 0) - Number(r25sRun.parameter_count || 0),
+        final_train_loss_delta: Number(r25v?.final_train_loss) - Number(r25s?.final_train_loss),
+        final_dev_loss_delta: Number(r25v?.final_dev_loss) - Number(r25s?.final_dev_loss),
+        heldout_loss_delta: Number(r25vHeldout?.heldout_loss) - Number(r25sHeldout?.heldout_loss)
+      }
+    : null;
+  const r25v_vs_r25p = r25vRun && r25pRun
+    ? {
+        train_sequence_delta: Number(r25vRun.sequence_count || 0) - Number(r25pRun.sequence_count || 0),
+        dev_sequence_delta: Number(r25vRun.dev_sequence_count || 0) - Number(r25pRun.dev_sequence_count || 0),
+        heldout_sequence_delta: Number(r25vRun.heldout_sequence_count || 0) - Number(r25pRun.heldout_sequence_count || 0),
+        parameter_count_delta: Number(r25vRun.parameter_count || 0) - Number(r25pRun.parameter_count || 0),
+        final_train_loss_delta: Number(r25v?.final_train_loss) - Number(r25p?.final_train_loss),
+        final_dev_loss_delta: Number(r25v?.final_dev_loss) - Number(r25p?.final_dev_loss),
+        heldout_loss_delta: Number(r25vHeldout?.heldout_loss) - Number(r25pHeldout?.heldout_loss)
+      }
+    : null;
   const r25sRecommendation = INCLUDE_R25S
     ? chooseR25sRecommendation(r25s, r25sHeldout, r25p, r25pHeldout)
     : null;
+  const r25vRecommendation = INCLUDE_R25V
+    ? chooseR25vRecommendation(r25v, r25vHeldout, r25s, r25sHeldout)
+    : null;
   const recommendationCategory = DECISION_MODE
-    ? INCLUDE_R25S
+    ? INCLUDE_R25V
+      ? r25vRecommendation
+      : INCLUDE_R25S
       ? r25sRecommendation
       : chooseDecisionRecommendation(r25pAnalysis, r25pRun)
     : INCLUDE_R25P
@@ -203,23 +280,32 @@ async function main() {
     runs,
     dataset_size_difference,
     r25s_vs_r25p,
+    r25v_vs_r25s,
+    r25v_vs_r25p,
     balanced_data_improved_weak_buckets: INCLUDE_R25S
       ? (Number.isFinite(Number(r25sHeldout?.heldout_loss)) && Number.isFinite(Number(r25pHeldout?.heldout_loss))
           ? Number(r25sHeldout.heldout_loss) <= Number(r25pHeldout.heldout_loss)
+          : null)
+      : null,
+    two_layer_ablation_helped: INCLUDE_R25V
+      ? (Number.isFinite(Number(r25vHeldout?.heldout_loss)) && Number.isFinite(Number(r25sHeldout?.heldout_loss))
+          ? Number(r25vHeldout.heldout_loss) <= Number(r25sHeldout.heldout_loss)
           : null)
       : null,
     r25m_non_replayable_limitation: Boolean(r25mRun) ? "R25M stored a digest checkpoint and cannot provide true replayed held-out loss." : null,
     r25p_replayability: r25pRun?.replayable_checkpoint_available === true ? "replayable_checkpoint_available" : INCLUDE_R25P ? "not_available_or_not_validated" : "not_requested",
     recommendation_category: recommendationCategory,
     recommendation: DECISION_MODE
-      ? INCLUDE_R25S ? "stop_and_review_before_any_further_training_or_scaling" : "review_required_before_any_r25r_or_scaling"
+      ? INCLUDE_R25V ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25S ? "stop_and_review_before_any_further_training_or_scaling" : "review_required_before_any_r25r_or_scaling"
       : INCLUDE_R25P ? "stop_and_review" : "future_r25p_requires_fresh_approval",
     notes: [
       DECISION_MODE
-        ? INCLUDE_R25S ? "R25S history comparison does not train; it reads ignored reports only." : "R25Q decision comparison does not train; it reads ignored reports only."
+        ? INCLUDE_R25V ? "R25V history comparison does not train; it reads ignored reports only." : INCLUDE_R25S ? "R25S history comparison does not train; it reads ignored reports only." : "R25Q decision comparison does not train; it reads ignored reports only."
         : INCLUDE_R25P ? "R25P comparison does not train; it reads ignored reports only." : "R25O comparison does not train.",
       "R25M is the first small-pilot baseline.",
-      INCLUDE_R25S
+      INCLUDE_R25V
+        ? "R25V is a bounded architecture ablation pilot; another run or phase_4 scaling still requires review and fresh approval."
+        : INCLUDE_R25S
         ? "R25S is a bounded data-first pilot; another run or phase_4 scaling still requires review and fresh approval."
         : DECISION_MODE
         ? "R25Q must not approve automatic phase_4 scaling or another training run."

@@ -83,6 +83,16 @@ remains blocked until criteria pass and a reviewer gives fresh explicit
 approval. Product and formal training progress remain `0%`; pilot progress
 remains separate at `3%`.
 
+R25V may run or safely block exactly one reviewer-approved architecture
+ablation variant, `two_layer_same_width`, and then must consume its approval
+marker. If the run, replayable checkpoint validation, held-out replay, history
+comparison, artifact guard, and R24/R25 gates pass, the label may become
+`phase_3_architecture_ablation_pilot_completed`. This remains phase 3
+small-pilot work: not product-scale training, not long-term training, not
+phase_4 scaled training, not release checkpoint admission, and not browser
+static deployment. Product and formal training progress remain `0%`; pilot
+progress may increase separately to `4%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -98,3 +108,4 @@ remains separate at `3%`.
 - Treating the R25S bounded pilot as approval for phase_4 scaled training.
 - Treating R25T analysis as approval to run R25U or phase_4 scaled training.
 - Treating R25U exit criteria or an R25V template as approval for training.
+- Treating R25V ablation output as phase_4 approval or a release checkpoint.

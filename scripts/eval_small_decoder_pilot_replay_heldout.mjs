@@ -10,6 +10,7 @@ const execFileAsync = promisify(execFile);
 const R25M_CHECKPOINT_PATH = "artifacts/training_os/small_decoder_pilot/r25m/r25m_small_decoder_checkpoint.json";
 const FUTURE_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25p/r25p_replayable_checkpoint.json";
 const R25S_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25s/r25s_replayable_checkpoint.json";
+const R25V_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25v/r25v_replayable_checkpoint.json";
 const R25O_OUTPUT_PATH = "artifacts/training_os/small_decoder_pilot/r25o/r25o_replay_heldout_eval_report.json";
 const MODEL_WEIGHT_RE = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i;
 
@@ -148,12 +149,43 @@ async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, de
   const trainPath = `${outputDir}${prefix}_train_sequences.json`;
   const devPath = `${outputDir}${prefix}_dev_sequences.json`;
   const heldoutPath = `${outputDir}${prefix}_heldout_sequences.json`;
+  const runReportPath = `${outputDir}${prefix}_small_decoder_run_report.json`;
   const failures = [];
 
   if (config.run_id !== expectedRunId) failures.push({ code: `unexpected_${prefix}_run_id`, expected: expectedRunId, actual: config.run_id });
   if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", actual: config.heldout_source });
-  if (prefix === "r25s" && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
-  if (!(await exists(checkpointPath))) failures.push({ code: "replayable_checkpoint_missing", checkpointPath });
+  if ((prefix === "r25s" || prefix === "r25v") && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
+  if (!(await exists(checkpointPath))) {
+    const runReport = await readJson(runReportPath).catch(() => null);
+    if (prefix === "r25v" && runReport?.small_pilot_training_ran === false && String(runReport?.reason || "").includes("unsupported_backend")) {
+      const report = {
+        ok: true,
+        skipped: true,
+        reason: "r25v_blocked_no_replayable_checkpoint",
+        run_id: expectedRunId,
+        heldout_sequences: 0,
+        heldout_pairs: 0,
+        heldout_loss: null,
+        heldout_loss_finite: false,
+        train_dev_heldout_overlap: false,
+        checkpoint_path: checkpointPath,
+        replayable_checkpoint_used: false,
+        training_ran: false,
+        product_model: false,
+        release_checkpoint: false,
+        phase_4_scaled_training: false,
+        notes: [
+          "R25V blocked before training because the requested two-layer backend was unavailable.",
+          "No checkpoint was written and no held-out replay loss is claimed."
+        ],
+        failures: []
+      };
+      await writeJson(outputPath, report);
+      console.log(JSON.stringify(report, null, 2));
+      return;
+    }
+    failures.push({ code: "replayable_checkpoint_missing", checkpointPath });
+  }
   if (!(await exists(heldoutPath))) failures.push({ code: "heldout_sequences_missing", heldoutPath });
   if (!(await isIgnored(checkpointPath))) failures.push({ code: "checkpoint_not_ignored", checkpointPath });
   const trackedWeights = (await gitLines(["ls-files"])).filter((path) => MODEL_WEIGHT_RE.test(path));
@@ -243,6 +275,15 @@ async function main() {
       expectedRunId: "r25s_data_first_balanced_192",
       defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25s.json",
       defaultCheckpointPath: R25S_REPLAYABLE_PATH
+    });
+    return;
+  }
+  if (run === "r25v") {
+    await runPilotReplayMode({
+      prefix: "r25v",
+      expectedRunId: "r25v_two_layer_same_width",
+      defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25v.json",
+      defaultCheckpointPath: R25V_REPLAYABLE_PATH
     });
     return;
   }

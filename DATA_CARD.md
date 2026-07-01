@@ -229,6 +229,13 @@ training readiness as not approved, and plans possible architecture ablations or
 data follow-ups for future review. R25V is represented only by an inert
 `approved:false` template and cannot authorize training.
 
+R25V may train only the approved `r25v_two_layer_same_width` architecture
+ablation if a local backend can run a real two-layer pilot. It may use R25L
+train rows for training, R25L dev rows for dev sanity, and R25L held-out rows
+for replay evaluation only. It must not read evals, root PDFs/DOCX,
+`data/public_ingestion/`, private raw data, factual knowledge cards, external
+model output, or chain-of-thought data.
+
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,

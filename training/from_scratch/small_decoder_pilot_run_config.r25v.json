@@ -1,0 +1,52 @@
+{
+  "run_id": "r25v_two_layer_same_width",
+  "variant_id": "two_layer_same_width",
+  "architecture_id": "r25v_two_layer_same_width",
+  "product_model": false,
+  "release_checkpoint": false,
+  "formal_product_training": false,
+  "long_term_training": false,
+  "phase_4_scaled_training": false,
+  "commit_weights_allowed": false,
+  "approval_required": true,
+  "approved_by_default": false,
+  "output_dir": "artifacts/training_os/small_decoder_pilot/r25v/",
+  "train_source": "training/llm_corpus/r25l_train.jsonl",
+  "dev_source": "training/llm_corpus/r25l_dev.jsonl",
+  "heldout_source": "training/llm_corpus/r25l_heldout.jsonl",
+  "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25l.json",
+  "sampling_plan": "artifacts/training_os/small_decoder_pilot/r25r/r25s_balanced_dataset_plan.json",
+  "sampling_strategy": "reuse_r25s_balanced_data_strategy",
+  "max_train_rows": 192,
+  "max_dev_rows": 48,
+  "max_heldout_rows": 48,
+  "max_context_tokens": 64,
+  "batch_size": 4,
+  "max_steps": 80,
+  "eval_every": 20,
+  "learning_rate": 0.005,
+  "seed": 27,
+  "architecture": {
+    "type": "causal_decoder_pilot",
+    "ablation": "two_layer_same_width",
+    "layers": 2,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128,
+    "selected_backend": "auto_detect",
+    "target_if_available": "causal_decoder_pilot"
+  },
+  "replayable_checkpoint": {
+    "enabled": true,
+    "format": "json",
+    "schema": "training/from_scratch/small_decoder_checkpoint.schema.json"
+  },
+  "notes": [
+    "bounded architecture ablation pilot only",
+    "not product",
+    "not long-term training",
+    "not phase_4 scaled training",
+    "ignored artifacts only",
+    "replayable checkpoint required if training runs"
+  ]
+}

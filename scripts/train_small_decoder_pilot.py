@@ -115,12 +115,13 @@ def run_torch(config, train_sequences, dev_sequences, tokenizer, backend):
     hidden = int(arch["hidden_size"])
     heads = int(arch["attention_heads"])
     intermediate = int(arch["intermediate_size"])
+    layers = int(arch.get("layers", 1))
     batch_size = int(config["batch_size"])
     max_steps = int(config["max_steps"])
     eval_every = int(config["eval_every"])
     lr = float(config["learning_rate"])
 
-    class MicroCausalDecoder(nn.Module):
+    class LegacySingleBlockCausalDecoder(nn.Module):
         def __init__(self):
             super().__init__()
             self.token_embedding = nn.Embedding(vocab_size, hidden)
@@ -143,7 +144,39 @@ def run_torch(config, train_sequences, dev_sequences, tokenizer, backend):
             x = x + self.mlp(self.ln_2(x))
             return self.output(self.ln_f(x))
 
-    model = MicroCausalDecoder().to(device)
+    class DecoderBlock(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.ln_1 = nn.LayerNorm(hidden)
+            self.attention = nn.MultiheadAttention(hidden, heads, batch_first=True)
+            self.ln_2 = nn.LayerNorm(hidden)
+            self.mlp = nn.Sequential(nn.Linear(hidden, intermediate), nn.GELU(), nn.Linear(intermediate, hidden))
+
+        def forward(self, x, causal_mask):
+            attn_in = self.ln_1(x)
+            attn_out, _ = self.attention(attn_in, attn_in, attn_in, attn_mask=causal_mask, need_weights=False)
+            x = x + attn_out
+            return x + self.mlp(self.ln_2(x))
+
+    class StackedCausalDecoder(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.token_embedding = nn.Embedding(vocab_size, hidden)
+            self.position_embedding = nn.Embedding(max_context, hidden)
+            self.blocks = nn.ModuleList([DecoderBlock() for _ in range(layers)])
+            self.ln_f = nn.LayerNorm(hidden)
+            self.output = nn.Linear(hidden, vocab_size)
+
+        def forward(self, tokens):
+            batch, seq = tokens.shape
+            positions = torch.arange(seq, device=tokens.device).unsqueeze(0).expand(batch, seq)
+            x = self.token_embedding(tokens) + self.position_embedding(positions)
+            causal_mask = torch.triu(torch.ones(seq, seq, device=tokens.device, dtype=torch.bool), diagonal=1)
+            for block in self.blocks:
+                x = block(x, causal_mask)
+            return self.output(self.ln_f(x))
+
+    model = (LegacySingleBlockCausalDecoder() if layers == 1 else StackedCausalDecoder()).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=0.0)
     train_tensor = torch.tensor(train_sequences, dtype=torch.long, device=device)
     dev_tensor = torch.tensor(dev_sequences, dtype=torch.long, device=device)
@@ -198,7 +231,10 @@ def run_torch(config, train_sequences, dev_sequences, tokenizer, backend):
     state_sha256, param_summaries = tensor_digest([(name, param) for name, param in sorted(model.state_dict().items())])
     return {
         "backend": backend,
+        "backend_library_version": getattr(torch, "__version__", "unknown"),
         "model_type": "causal_decoder_pilot",
+        "actual_layers": layers,
+        "architecture_ablation_training": layers > 1,
         "parameter_count": count_parameters_torch(model),
         "initial_train_loss": initial_train_loss,
         "final_train_loss": final_train_loss,
@@ -295,8 +331,11 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
     state_sha256, param_summaries = tensor_digest(named_tensors)
     return {
         "backend": backend,
+        "backend_library_version": getattr(np, "__version__", "unknown"),
         "model_type": "decoder_like_next_token_pilot",
         "implementation_type": "numpy_decoder_like_next_token_pilot",
+        "actual_layers": 0,
+        "architecture_ablation_training": False,
         "parameter_count": int(emb.size + out.size + bias.size),
         "initial_train_loss": initial_train_loss,
         "final_train_loss": score(train_x, train_y),
@@ -312,6 +351,8 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
 
 def run_prefix(config):
     run_id = str(config.get("run_id", ""))
+    if run_id.startswith("r25v_"):
+        return "r25v"
     if run_id.startswith("r25s_"):
         return "r25s"
     if run_id.startswith("r25p_"):
@@ -347,7 +388,7 @@ def main():
     steps = int(config["max_steps"])
     train_loss_decreased = metrics["final_train_loss"] < metrics["initial_train_loss"]
     dev_loss_finite = finite(metrics["initial_dev_loss"]) and finite(metrics["final_dev_loss"])
-    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s"}
+    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s", "r25v"}
     checkpoint_path = f"{config['output_dir']}{prefix}_replayable_checkpoint.json" if replayable_enabled else f"{config['output_dir']}{prefix}_small_decoder_checkpoint.json"
     metrics_path = f"{config['output_dir']}{prefix}_small_decoder_metrics.json"
     run_report_path = f"{config['output_dir']}{prefix}_small_decoder_run_report.json"
@@ -361,8 +402,11 @@ def main():
         "run_id": config["run_id"],
         "variant_id": config.get("variant_id"),
         "backend": metrics["backend"],
+        "backend_library_version": metrics.get("backend_library_version"),
         "model_type": metrics["model_type"],
         "implementation_type": metrics.get("implementation_type", metrics["model_type"]),
+        "actual_layers": metrics.get("actual_layers"),
+        "architecture_ablation_training": metrics.get("architecture_ablation_training", False),
         "parameter_count": metrics["parameter_count"],
         "steps": steps,
         "initial_train_loss": metrics["initial_train_loss"],
@@ -381,7 +425,8 @@ def main():
             "model_type": metrics["model_type"],
             "architecture": {
                 "type": config["architecture"]["type"],
-                "layers": int(config["architecture"].get("layers", 1)),
+                "ablation": config["architecture"].get("ablation"),
+                "layers": int(metrics.get("actual_layers", config["architecture"].get("layers", 1))),
                 "hidden_size": int(config["architecture"]["hidden_size"]),
                 "attention_heads": int(config["architecture"].get("attention_heads", 1)),
                 "intermediate_size": int(config["architecture"].get("intermediate_size", config["architecture"]["hidden_size"])),
@@ -444,8 +489,11 @@ def main():
         "product_model": False,
         "release_checkpoint": False,
         "backend": metrics["backend"],
+        "backend_library_version": metrics.get("backend_library_version"),
         "architecture_type": metrics["model_type"],
         "implementation_type": metrics.get("implementation_type", metrics["model_type"]),
+        "actual_layers": metrics.get("actual_layers"),
+        "architecture_ablation_training": metrics.get("architecture_ablation_training", False),
         "parameter_count": metrics["parameter_count"],
         "steps": steps,
         "train_sequences": len(train_sequences),

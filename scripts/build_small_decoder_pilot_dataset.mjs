@@ -47,6 +47,7 @@ function argValue(name, fallback = null) {
 
 function runPrefix(config) {
   const runId = String(config.run_id || "");
+  if (runId.startsWith("r25v_")) return "r25v";
   if (runId.startsWith("r25s_")) return "r25s";
   if (runId.startsWith("r25p_")) return "r25p";
   return "r25m";
@@ -134,6 +135,9 @@ async function readSamplingPlan(config, configPath) {
   const plan = await readJson(planPath);
   if (config.run_id?.startsWith("r25s_") && plan.run_id !== config.run_id) {
     throw new Error(`Sampling plan run_id ${plan.run_id} does not match ${config.run_id} from ${configPath}`);
+  }
+  if (config.run_id?.startsWith("r25v_") && plan.run_id !== "r25s_data_first_balanced_192") {
+    throw new Error(`R25V reuses the R25S balanced sampling plan; found ${plan.run_id} in ${planPath}`);
   }
   return { planPath, plan };
 }

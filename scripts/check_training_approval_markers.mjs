@@ -84,6 +84,16 @@ const MARKERS = [
     expectedPhase: "phase_3_small_decoder_pilot",
     template: true,
     trainingFlagKeys: ["allow_small_pilot_training", "allow_architecture_ablation_training", "allow_phase_4_scaled_training"]
+  },
+  {
+    id: "r25v_architecture_ablation",
+    path: "training/from_scratch/APPROVE_R25V_ARCHITECTURE_ABLATION.json",
+    expectedScope: "phase3_architecture_ablation_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    consumedByCommit: "pending_r25v_commit",
+    expectedRunId: "r25v_two_layer_same_width",
+    expectedVariantId: "two_layer_same_width",
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_architecture_ablation_training", "allow_phase_4_scaled_training"]
   }
 ];
 

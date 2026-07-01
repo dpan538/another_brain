@@ -115,10 +115,11 @@ def causal_decoder_loss(checkpoint, heldout_dataset, emit_sequence_losses=False)
     hidden = int(arch["hidden_size"])
     heads = int(arch["attention_heads"])
     intermediate = int(arch["intermediate_size"])
+    layers = int(arch.get("layers", 1))
     max_context = int(checkpoint["max_context_tokens"])
     pad_id = int(heldout_dataset.get("pad_token_id", 0))
 
-    class MicroCausalDecoder(nn.Module):
+    class LegacySingleBlockCausalDecoder(nn.Module):
         def __init__(self):
             super().__init__()
             self.token_embedding = nn.Embedding(vocab_size, hidden)
@@ -141,8 +142,41 @@ def causal_decoder_loss(checkpoint, heldout_dataset, emit_sequence_losses=False)
             x = x + self.mlp(self.ln_2(x))
             return self.output(self.ln_f(x))
 
+    class DecoderBlock(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.ln_1 = nn.LayerNorm(hidden)
+            self.attention = nn.MultiheadAttention(hidden, heads, batch_first=True)
+            self.ln_2 = nn.LayerNorm(hidden)
+            self.mlp = nn.Sequential(nn.Linear(hidden, intermediate), nn.GELU(), nn.Linear(intermediate, hidden))
+
+        def forward(self, x, causal_mask):
+            attn_in = self.ln_1(x)
+            attn_out, _ = self.attention(attn_in, attn_in, attn_in, attn_mask=causal_mask, need_weights=False)
+            x = x + attn_out
+            return x + self.mlp(self.ln_2(x))
+
+    class StackedCausalDecoder(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.token_embedding = nn.Embedding(vocab_size, hidden)
+            self.position_embedding = nn.Embedding(max_context, hidden)
+            self.blocks = nn.ModuleList([DecoderBlock() for _ in range(layers)])
+            self.ln_f = nn.LayerNorm(hidden)
+            self.output = nn.Linear(hidden, vocab_size)
+
+        def forward(self, tokens):
+            batch, seq = tokens.shape
+            positions = torch.arange(seq, device=tokens.device).unsqueeze(0).expand(batch, seq)
+            x = self.token_embedding(tokens) + self.position_embedding(positions)
+            causal_mask = torch.triu(torch.ones(seq, seq, device=tokens.device, dtype=torch.bool), diagonal=1)
+            for block in self.blocks:
+                x = block(x, causal_mask)
+            return self.output(self.ln_f(x))
+
     tensors = tensor_map(checkpoint)
-    model = MicroCausalDecoder()
+    uses_stacked_tensors = any(name.startswith("blocks.") for name in tensors)
+    model = StackedCausalDecoder() if layers > 1 or uses_stacked_tensors else LegacySingleBlockCausalDecoder()
     state = {}
     for name, array in tensors.items():
         state[name] = torch.tensor(np.asarray(array), dtype=torch.float32)

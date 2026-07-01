@@ -231,6 +231,13 @@ cannot authorize training. R25T reports and any future R25U artifacts must not
 be deployed, staged as weights, copied into `web/`, or treated as release
 admission evidence.
 
+R25V reports and replayable checkpoints live under ignored
+`artifacts/training_os/small_decoder_pilot/r25v/`. They are architecture
+ablation pilot evidence only. They are not product weights, not phase_4 scaled
+training outputs, not release checkpoints, and not browser static assets. They
+must not be staged, committed, deployed, or copied into runtime/static asset
+directories.
+
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
 generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It

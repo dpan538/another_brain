@@ -37,7 +37,7 @@ async function gitFiles(paths) {
 function lineClaimsPhase4Approved(line, block) {
   if (!/(phase[_ ]?4|scaled training|scaled decoder training)/i.test(line)) return false;
   if (!/(approved|allowed|started|ran|product|release|admitted)/i.test(line)) return false;
-  if (/(not|no |never|without|blocked|false|must not|cannot|does not|do not|is not|remains unapproved|not approved|approved:false|forbidden|template|allow_phase_4_scaled_training|phase_4_scaled_training_approved|pattern:|RegExp|ACTIVE_RE|check_phase4_scaled_training_readiness)/i.test(block)) return false;
+  if (/(not|no |none|never|without|blocked|false|must not|cannot|does not|do not|is not|remains unapproved|not approved|approved:false|forbidden|template|allow_phase_4_scaled_training|phase_4_scaled_training_approved|lineClaimsPhase4Approved|forbiddenPhase4Claims|pattern:|RegExp|ACTIVE_RE|check_phase4_scaled_training_readiness)/i.test(block)) return false;
   return true;
 }
 

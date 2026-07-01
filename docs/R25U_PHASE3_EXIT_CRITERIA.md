@@ -32,3 +32,7 @@ not phase_4 training.
 
 R25V remains inert unless a reviewer later creates a fresh approval marker. The
 committed R25V template uses `approved:false` and cannot authorize training.
+
+When R25V is explicitly approved, it still remains phase 3. Even if the
+two-layer ablation runs and held-out replay is finite, it does not satisfy
+phase_4 approval by itself and does not admit a release checkpoint.

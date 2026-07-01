@@ -38,3 +38,9 @@ R25U boundaries:
 - no chain-of-thought data
 - no LoRA, adapters, or fine-tuning as final strategy
 - R24/R25 gates remain required
+
+R25V implements the first approved ablation candidate only if a fresh
+one-shot approval exists. The selected candidate is `two_layer_same_width`,
+mapped to `r25v_two_layer_same_width`. It keeps R25S data selection fixed where
+possible and blocks rather than falling back if the local backend cannot run a
+real two-layer pilot.

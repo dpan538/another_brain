@@ -45,3 +45,7 @@ R25U follows this analysis with phase 3 exit criteria and architecture ablation
 planning only. It may recommend an R25V phase 3 design direction, but it must
 not run a fourth pilot, approve phase_4 scaled training, or change product
 training progress from `0%`.
+
+R25V may test `two_layer_same_width` only after fresh reviewer approval. That
+ablation remains phase 3, must keep the R25S data strategy fixed where
+possible, and must not approve phase_4 scaled training.
