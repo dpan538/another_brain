@@ -17,31 +17,7 @@ const STEPS = [
   ["report:r25x-phase3-review", ["run", "report:r25x-phase3-review"]],
   ["check:from-scratch-training-doctrine", ["run", "check:from-scratch-training-doctrine"]],
   ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]],
-  ["check:r25w-r25v-analysis", ["run", "check:r25w-r25v-analysis"]],
-  ["check:r25v-architecture-ablation-history", ["run", "check:r25v-architecture-ablation-history"]],
-  ["check:r25u-phase3-exit-and-ablation-plan", ["run", "check:r25u-phase3-exit-and-ablation-plan"]],
-  ["check:r25t-r25s-analysis", ["run", "check:r25t-r25s-analysis"]],
-  ["check:r25s-data-first-pilot-history", ["run", "check:r25s-data-first-pilot-history"]],
-  ["check:r25r-data-first-pilot-design", ["run", "check:r25r-data-first-pilot-design"]],
-  ["check:r25q-pilot-analysis", ["run", "check:r25q-pilot-analysis"]],
-  ["check:r25p-second-small-pilot", ["run", "check:r25p-second-small-pilot"]],
-  ["check:r25o-second-pilot-design", ["run", "check:r25o-second-pilot-design"]],
-  ["check:r25n-small-pilot-evaluation", ["run", "check:r25n-small-pilot-evaluation"]],
-  ["check:r25m-small-decoder-pilot", ["run", "check:r25m-small-decoder-pilot"]],
-  ["check:r25l-corpus-pilot-plan", ["run", "check:r25l-corpus-pilot-plan"]],
-  ["check:r25k-toy-overfit-history", ["run", "check:r25k-toy-overfit-history"]],
-  ["check:r25j-tokenizer-toy-pipeline", ["run", "check:r25j-tokenizer-toy-pipeline"]],
-  ["check:r25i-from-scratch-roadmap", ["run", "check:r25i-from-scratch-roadmap"]],
-  ["check:r25h-capacity-envelope", ["run", "check:r25h-capacity-envelope"]],
-  ["check:r25g-candidate-decision", ["run", "check:r25g-candidate-decision"]],
-  ["check:r25f-candidate-purge", ["run", "check:r25f-candidate-purge"]],
-  ["check:r25e-artifact-admission", ["run", "check:r25e-artifact-admission"]],
-  ["check:r25d-browser-inference-binding", ["run", "check:r25d-browser-inference-binding"]],
-  ["check:r25c-static-artifact-intake", ["run", "check:r25c-static-artifact-intake"]],
-  ["check:r25b-static-decoder-training", ["run", "check:r25b-static-decoder-training"]],
-  ["check:r25-llm-first-static", ["run", "check:r25-llm-first-static"]],
-  ["check:r24-recovery-candidate", ["run", "check:r24-recovery-candidate"]],
-  ["check:vercel-build", ["run", "check:vercel-build"]]
+  ["check:r25w-r25v-analysis", ["run", "check:r25w-r25v-analysis"]]
 ];
 
 async function runStep(name, args) {
@@ -74,6 +50,7 @@ async function main() {
     notes: [
       "This gate validates R25X review, R25Y inert design, and prior R24/R25 history gates.",
       "It does not run small-pilot, toy, data-first, or architecture-ablation training.",
+      "R25W delegates transitively to the prior R25V/U/T/S/R/Q/P/O/N/M/K/J/I/H/G/F/E/D/C/B/A and R24/Vercel history chain.",
       "Future pilot runs require a new reviewer approval marker."
     ]
   };

@@ -351,6 +351,8 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
 
 def run_prefix(config):
     run_id = str(config.get("run_id", ""))
+    if run_id.startswith("r25y_"):
+        return "r25y"
     if run_id.startswith("r25v_"):
         return "r25v"
     if run_id.startswith("r25s_"):
@@ -388,7 +390,7 @@ def main():
     steps = int(config["max_steps"])
     train_loss_decreased = metrics["final_train_loss"] < metrics["initial_train_loss"]
     dev_loss_finite = finite(metrics["initial_dev_loss"]) and finite(metrics["final_dev_loss"])
-    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s", "r25v"}
+    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s", "r25v", "r25y"}
     checkpoint_path = f"{config['output_dir']}{prefix}_replayable_checkpoint.json" if replayable_enabled else f"{config['output_dir']}{prefix}_small_decoder_checkpoint.json"
     metrics_path = f"{config['output_dir']}{prefix}_small_decoder_metrics.json"
     run_report_path = f"{config['output_dir']}{prefix}_small_decoder_run_report.json"
@@ -416,6 +418,19 @@ def main():
         "train_loss_decreased": train_loss_decreased,
         "dev_loss_finite": dev_loss_finite,
         "history": metrics["history"]
+    }
+    regularization_plan = config.get("regularization_plan") or {}
+    regularization_knobs = {
+        "lower_learning_rate_than_r25s": bool(regularization_plan.get("lower_learning_rate_than_r25s")),
+        "shuffle_train_rows": bool(regularization_plan.get("shuffle_train_rows")),
+        "cap_repeated_targets": bool(regularization_plan.get("cap_repeated_targets")),
+        "require_rejected_answer_examples": bool(regularization_plan.get("require_rejected_answer_examples")),
+        "balance_focus_buckets": bool(regularization_plan.get("balance_focus_buckets")),
+        "compare_to_r25s": bool(regularization_plan.get("compare_to_r25s")),
+        "stop_if_dev_loss_worsens": "unsupported_by_current_bounded_runner",
+        "unsupported": [
+            "stop_if_dev_loss_worsens"
+        ] if regularization_plan.get("stop_if_dev_loss_worsens") else []
     }
     if replayable_enabled:
         checkpoint = {
@@ -483,6 +498,7 @@ def main():
         "run_id": config["run_id"],
         "variant_id": config.get("variant_id"),
         "small_pilot_training_ran": True,
+        "data_regularization_training": prefix == "r25y",
         "formal_product_training": False,
         "long_term_training": False,
         "phase_4_scaled_training": False,
@@ -495,6 +511,8 @@ def main():
         "actual_layers": metrics.get("actual_layers"),
         "architecture_ablation_training": metrics.get("architecture_ablation_training", False),
         "parameter_count": metrics["parameter_count"],
+        "learning_rate": float(config["learning_rate"]),
+        "regularization_knobs": regularization_knobs if prefix == "r25y" else {},
         "steps": steps,
         "train_sequences": len(train_sequences),
         "dev_sequences": len(dev_sequences),

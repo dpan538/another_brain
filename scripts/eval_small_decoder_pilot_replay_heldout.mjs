@@ -11,6 +11,7 @@ const R25M_CHECKPOINT_PATH = "artifacts/training_os/small_decoder_pilot/r25m/r25
 const FUTURE_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25p/r25p_replayable_checkpoint.json";
 const R25S_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25s/r25s_replayable_checkpoint.json";
 const R25V_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25v/r25v_replayable_checkpoint.json";
+const R25Y_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25y/r25y_replayable_checkpoint.json";
 const R25O_OUTPUT_PATH = "artifacts/training_os/small_decoder_pilot/r25o/r25o_replay_heldout_eval_report.json";
 const MODEL_WEIGHT_RE = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i;
 
@@ -186,7 +187,7 @@ async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, de
 
   if (config.run_id !== expectedRunId) failures.push({ code: `unexpected_${prefix}_run_id`, expected: expectedRunId, actual: config.run_id });
   if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", actual: config.heldout_source });
-  if ((prefix === "r25s" || prefix === "r25v") && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y") && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
   if (!(await exists(checkpointPath))) {
     const runReport = await readJson(runReportPath).catch(() => null);
     if (prefix === "r25v" && runReport?.small_pilot_training_ran === false && String(runReport?.reason || "").includes("unsupported_backend")) {
@@ -316,6 +317,15 @@ async function main() {
       expectedRunId: "r25v_two_layer_same_width",
       defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25v.json",
       defaultCheckpointPath: R25V_REPLAYABLE_PATH
+    });
+    return;
+  }
+  if (run === "r25y") {
+    await runPilotReplayMode({
+      prefix: "r25y",
+      expectedRunId: "r25y_data_regularized_192",
+      defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25y.json",
+      defaultCheckpointPath: R25Y_REPLAYABLE_PATH
     });
     return;
   }

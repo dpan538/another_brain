@@ -107,6 +107,16 @@ R25X does not run training, does not rerun any consumed pilot, does not approve
 R25Y, and does not approve phase_4 scaled training. Product and formal training
 progress remain `0%`; pilot progress remains separate at `4%`.
 
+R25Y may run exactly one reviewer-approved data-regularization pilot variant,
+`r25y_data_regularized_192`, and then must consume its approval marker. If the
+run, replayable checkpoint validation, held-out replay, history comparison,
+artifact guard, and R24/R25 gates pass, the label may become
+`phase_3_data_regularization_pilot_completed`. This remains phase 3 small-pilot
+work: not product-scale training, not long-term training, not phase_4 scaled
+training, not release checkpoint admission, and not browser static deployment.
+Product and formal training progress remain `0%`; pilot progress may increase
+separately to `5%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -127,3 +137,5 @@ progress remain `0%`; pilot progress remains separate at `4%`.
   training or phase_4 scaled training.
 - Treating R25X review or the R25Y inert template as approval for a
   data-regularization pilot or phase_4 scaled training.
+- Treating R25Y data-regularization output as phase_4 approval, release
+  admission, product progress, or permission to run another pilot.

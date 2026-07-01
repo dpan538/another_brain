@@ -83,6 +83,7 @@ async function main() {
   const design = await readJson(DESIGN_PATH);
   const runTemplate = await readJson(RUN_TEMPLATE_PATH);
   const approvalTemplate = await readJson(APPROVAL_TEMPLATE_PATH);
+  const approvalMarker = await readJson("training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json").catch(() => null);
   checkCommonConfig(design, failures, DESIGN_PATH);
   checkCommonConfig(runTemplate, failures, RUN_TEMPLATE_PATH);
   failIf(runTemplate.output_dir !== "artifacts/training_os/small_decoder_pilot/r25y/", failures, "output_dir_must_be_ignored_r25y_path", { actual: runTemplate.output_dir });
@@ -109,7 +110,10 @@ async function main() {
   }
   failIf(approvalTemplate.reviewer !== "", failures, "approval_template_reviewer_must_be_blank");
   failIf(approvalTemplate.artifact_output_root !== "artifacts/training_os/small_decoder_pilot/r25y/", failures, "approval_artifact_root_mismatch");
-  failIf(await exists("training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json"), failures, "active_r25y_approval_marker_must_not_exist");
+  if (approvalMarker) {
+    failIf(approvalMarker.consumed !== true, failures, "active_r25y_approval_marker_must_not_exist");
+    failIf(approvalMarker.allow_additional_runs !== false, failures, "consumed_r25y_marker_must_not_allow_additional_runs");
+  }
   for (const [source, value] of Object.entries({ design, runTemplate, approvalTemplate })) {
     const text = JSON.stringify(value);
     failIf(FORBIDDEN_TEXT_RE.test(text), failures, "forbidden_text_in_r25y_design", { source });
@@ -120,6 +124,7 @@ async function main() {
     training_will_run: false,
     r25y_design_status: failures.length === 0 ? "valid_inert_data_regularization_design" : "invalid",
     approval_template_status: approvalTemplate.approved === false ? "inert_template_approved_false" : "needs_review",
+    consumed_approval_marker_status: approvalMarker?.consumed === true ? "consumed_history_marker_inert" : "not_present",
     output_dir: runTemplate.output_dir,
     active_training_approval_count: 0,
     product_model: false,

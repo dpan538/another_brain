@@ -45,3 +45,7 @@ or release readiness.
 R25X adds a phase 3 review ledger after R25W. The ledger keeps R25S as the
 best-so-far pilot and prepares only a data-regularization design for possible
 future review. No R25X training runs.
+
+R25Y later ran the data-regularization follow-up without changing architecture
+depth. R25Y beat R25V on held-out replay loss, which reinforces that the
+two-layer ablation should not be treated as the direction for phase_4 scaling.

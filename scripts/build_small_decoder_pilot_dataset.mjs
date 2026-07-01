@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -47,6 +48,7 @@ function argValue(name, fallback = null) {
 
 function runPrefix(config) {
   const runId = String(config.run_id || "");
+  if (runId.startsWith("r25y_")) return "r25y";
   if (runId.startsWith("r25v_")) return "r25v";
   if (runId.startsWith("r25s_")) return "r25s";
   if (runId.startsWith("r25p_")) return "r25p";
@@ -139,6 +141,9 @@ async function readSamplingPlan(config, configPath) {
   if (config.run_id?.startsWith("r25v_") && plan.run_id !== "r25s_data_first_balanced_192") {
     throw new Error(`R25V reuses the R25S balanced sampling plan; found ${plan.run_id} in ${planPath}`);
   }
+  if (config.run_id?.startsWith("r25y_") && plan.run_id !== "r25s_data_first_balanced_192") {
+    throw new Error(`R25Y data regularization reuses the R25S balanced sampling plan; found ${plan.run_id} in ${planPath}`);
+  }
   return { planPath, plan };
 }
 
@@ -160,6 +165,78 @@ function rowsFromPlan(rows, split, plan, failures) {
     selected.push(row);
   }
   return selected;
+}
+
+function stableHash(value) {
+  return createHash("sha256").update(String(value)).digest("hex");
+}
+
+function normalizeTarget(row) {
+  return normalizeText(row.target_answer || "").toLowerCase();
+}
+
+function hasRejectedAnswer(row) {
+  return Array.isArray(row.rejected_answers) && row.rejected_answers.length > 0;
+}
+
+function applyR25yRegularization(rows, split, config) {
+  if (!config.run_id?.startsWith("r25y_") || split !== "train") {
+    return { rows, stats: null };
+  }
+  const requested = Number(config.max_train_rows || rows.length);
+  const plan = config.regularization_plan || {};
+  let working = [...rows];
+  const stats = {
+    lower_learning_rate_than_r25s: Boolean(plan.lower_learning_rate_than_r25s),
+    shuffle_train_rows: false,
+    cap_repeated_targets: false,
+    require_rejected_answer_examples: false,
+    balance_focus_buckets: Boolean(plan.balance_focus_buckets),
+    stop_if_dev_loss_worsens: "unsupported_by_current_bounded_runner_reported_only",
+    compare_to_r25s: Boolean(plan.compare_to_r25s),
+    unsupported: []
+  };
+
+  if (plan.shuffle_train_rows) {
+    const seed = config.seed ?? 28;
+    working.sort((left, right) => stableHash(`${seed}:${left.sample_id}`).localeCompare(stableHash(`${seed}:${right.sample_id}`)));
+    stats.shuffle_train_rows = true;
+  }
+
+  if (plan.require_rejected_answer_examples) {
+    working.sort((left, right) => Number(hasRejectedAnswer(right)) - Number(hasRejectedAnswer(left)));
+    stats.require_rejected_answer_examples = true;
+  }
+
+  if (plan.cap_repeated_targets) {
+    const selected = [];
+    const counts = new Map();
+    const pushIfUnder = (row, cap) => {
+      const key = normalizeTarget(row) || `missing:${row.sample_id}`;
+      const current = counts.get(key) || 0;
+      if (current >= cap || selected.includes(row)) return;
+      selected.push(row);
+      counts.set(key, current + 1);
+    };
+    for (const row of working) pushIfUnder(row, 1);
+    if (selected.length < requested) {
+      for (const row of working) {
+        if (selected.length >= requested) break;
+        pushIfUnder(row, 2);
+      }
+    }
+    working = selected;
+    stats.cap_repeated_targets = true;
+    stats.max_target_repeat_after_cap = Math.max(0, ...counts.values());
+    stats.unique_target_answers_after_cap = counts.size;
+  }
+
+  if (plan.stop_if_dev_loss_worsens) {
+    stats.unsupported.push("stop_if_dev_loss_worsens");
+  }
+
+  stats.rows_after_regularization = Math.min(working.length, requested);
+  return { rows: working, stats };
 }
 
 async function main() {
@@ -194,7 +271,8 @@ async function main() {
   const selectedTrainRows = rowsFromPlan(trainRows, "train", samplingPlan, failures);
   const selectedDevRows = rowsFromPlan(devRows, "dev", samplingPlan, failures);
   const selectedHeldoutRows = rowsFromPlan(heldoutRows, "heldout", samplingPlan, failures);
-  const trainSequences = tokenizer ? buildSequences(selectedTrainRows, "train", Number(config.max_train_rows || 64), config.train_source, tokenizer, tokenizerConfig, config, failures) : [];
+  const trainRegularization = applyR25yRegularization(selectedTrainRows, "train", config);
+  const trainSequences = tokenizer ? buildSequences(trainRegularization.rows, "train", Number(config.max_train_rows || 64), config.train_source, tokenizer, tokenizerConfig, config, failures) : [];
   const devSequences = tokenizer ? buildSequences(selectedDevRows, "dev", Number(config.max_dev_rows || 32), config.dev_source, tokenizer, tokenizerConfig, config, failures) : [];
   const heldoutSequences = tokenizer && config.heldout_source
     ? buildSequences(selectedHeldoutRows, "heldout", Number(config.max_heldout_rows || 0), config.heldout_source, tokenizer, tokenizerConfig, config, failures)
@@ -252,6 +330,8 @@ async function main() {
     config_path: configPath,
     sampling_plan_path: samplingPlanPath,
     balanced_sampling_used: Boolean(samplingPlan),
+    data_regularization_used: prefix === "r25y",
+    regularization_stats: trainRegularization.stats,
     train_rows_used: trainSequences.length,
     dev_rows_used: devSequences.length,
     heldout_rows_prepared: heldoutSequences.length,

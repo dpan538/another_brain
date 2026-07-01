@@ -23,6 +23,7 @@ architecture and data-first basis. The design lowers the learning rate, keeps
 the same bounded row counts, asks for target repetition caps, and preserves
 held-out rows for evaluation only.
 
-R25Y is not approved. Phase_4 scaled training is not approved. Product and
-formal training progress remain `0%`; pilot progress remains whatever R25W
-reported.
+At R25X time, R25Y was not approved. A later R25Y run required a fresh
+one-shot approval marker and could not be authorized by the R25X template.
+Phase_4 scaled training remains not approved. Product and formal training
+progress remain `0%`; pilot progress remains separate from product progress.

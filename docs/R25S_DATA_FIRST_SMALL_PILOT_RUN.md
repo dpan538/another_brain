@@ -56,3 +56,7 @@ not authorize any R25V rerun, phase_4 training, or release admission.
 R25W/R25X keep R25S as the best pilot so far when the R25V ablation worsens
 dev and held-out loss. Any future data-regularization pilot must preserve the
 split boundary and requires fresh reviewer approval.
+
+R25Y later ran one such data-regularization pilot and preserved the R25S
+one-layer architecture. R25Y improved held-out loss versus R25P and R25V but
+not versus R25S, so R25S remains the best-so-far baseline for phase 3 review.

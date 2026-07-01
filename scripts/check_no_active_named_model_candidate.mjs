@@ -32,7 +32,8 @@ function shouldScan(file) {
 }
 
 function isRepoPathOrGateToken(token = "") {
-  return /^(static_llm|web|docs|scripts|artifacts|training|evals)\//.test(token)
+  return token === "PDFs/DOCX"
+    || /^(static_llm|web|docs|scripts|artifacts|training|evals|data)\//.test(token)
     || /\.(mjs|js|json|md|py|sh|html|css)$/.test(token)
     || /^R\d+[A-Z]?\/R\d+[A-Z]?/.test(token)
     || /^(license|manifest|config|tokenizer|WebGPU|Vercel|inbox|preview|route|worker|example|fallback|memory|browser|cache|storage|token)\/[A-Za-z0-9_.-]+/.test(token)

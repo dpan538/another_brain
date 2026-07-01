@@ -32,3 +32,8 @@ progress remains `0%`.
 R25X follows this recommendation by reviewing the phase 3 ledger and designing
 an inert R25Y data-regularization pilot. R25X does not train, does not approve
 R25Y, and keeps phase_4 scaled training blocked.
+
+R25Y later tested that data-regularization design with fresh one-shot approval.
+It improved held-out loss versus R25P and R25V but did not beat the R25S
+data-first baseline, so R25S remains the best local phase 3 pilot by current
+metrics and phase_4 remains blocked.

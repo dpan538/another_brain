@@ -13,6 +13,7 @@ const DEFAULT_APPROVAL_PATH = "training/from_scratch/APPROVE_R25M_SMALL_DECODER_
 const R25P_APPROVAL_PATH = "training/from_scratch/APPROVE_R25P_SECOND_SMALL_PILOT.json";
 const R25S_APPROVAL_PATH = "training/from_scratch/APPROVE_R25S_DATA_FIRST_PILOT.json";
 const R25V_APPROVAL_PATH = "training/from_scratch/APPROVE_R25V_ARCHITECTURE_ABLATION.json";
+const R25Y_APPROVAL_PATH = "training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json";
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
@@ -49,6 +50,7 @@ function normalizedDir(path) {
 
 function runPrefix(runConfig) {
   const runId = String(runConfig?.run_id || "");
+  if (runId.startsWith("r25y_")) return "r25y";
   if (runId.startsWith("r25v_")) return "r25v";
   if (runId.startsWith("r25s_")) return "r25s";
   if (runId.startsWith("r25p_")) return "r25p";
@@ -57,6 +59,7 @@ function runPrefix(runConfig) {
 
 function expectedScope(runConfig) {
   const prefix = runPrefix(runConfig);
+  if (prefix === "r25y") return "data_regularization_small_decoder_pilot_only";
   if (prefix === "r25v") return "phase3_architecture_ablation_pilot_only";
   if (prefix === "r25s") return "data_first_small_decoder_pilot_only";
   if (prefix === "r25p") return "second_small_decoder_pilot_only";
@@ -65,6 +68,7 @@ function expectedScope(runConfig) {
 
 function defaultApproval(runConfig) {
   const prefix = runPrefix(runConfig);
+  if (prefix === "r25y") return R25Y_APPROVAL_PATH;
   if (prefix === "r25v") return R25V_APPROVAL_PATH;
   if (prefix === "r25s") return R25S_APPROVAL_PATH;
   if (prefix === "r25p") return R25P_APPROVAL_PATH;
@@ -100,7 +104,7 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (approval?.scope !== scope) failures.push({ code: "approval_scope_invalid", expected: scope, actual: approval?.scope });
   if (approval?.phase !== "phase_3_small_decoder_pilot") failures.push({ code: "approval_phase_invalid", phase: approval?.phase });
   if (approval?.run_id !== requestedRunId) failures.push({ code: "approval_run_id_mismatch", expected: requestedRunId, actual: approval?.run_id });
-  if ((prefix === "r25p" || prefix === "r25s" || prefix === "r25v") && approval?.variant_id !== requestedVariantId) {
+  if ((prefix === "r25p" || prefix === "r25s" || prefix === "r25v" || prefix === "r25y") && approval?.variant_id !== requestedVariantId) {
     failures.push({ code: "approval_variant_id_mismatch", expected: requestedVariantId, actual: approval?.variant_id });
   }
   if (prefix === "r25p" && requestedVariantId !== "r25p_more_sequences_128") {
@@ -112,13 +116,19 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (prefix === "r25v" && requestedVariantId !== "two_layer_same_width") {
     failures.push({ code: "r25v_only_two_layer_same_width_is_approved", actual: requestedVariantId });
   }
+  if (prefix === "r25y" && requestedVariantId !== "r25y_data_regularized_192") {
+    failures.push({ code: "r25y_only_data_regularized_192_is_approved", actual: requestedVariantId });
+  }
   if (approval?.allow_small_pilot_training !== true) failures.push({ code: "approval_must_allow_small_pilot_training" });
+  if (prefix === "r25y" && approval?.allow_data_regularization_training !== true) {
+    failures.push({ code: "approval_must_allow_data_regularization_training" });
+  }
   if (prefix === "r25v" && approval?.allow_architecture_ablation_training !== true) {
     failures.push({ code: "approval_must_allow_architecture_ablation_training" });
   }
   if (approval?.allow_long_term_training !== false) failures.push({ code: "approval_must_not_allow_long_term_training" });
   if (approval?.allow_product_model_training !== false) failures.push({ code: "approval_must_not_allow_product_model_training" });
-  if ((prefix === "r25s" || prefix === "r25v") && approval?.allow_phase_4_scaled_training !== false) failures.push({ code: "approval_must_not_allow_phase_4_scaled_training" });
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y") && approval?.allow_phase_4_scaled_training !== false) failures.push({ code: "approval_must_not_allow_phase_4_scaled_training" });
   if (approval?.allow_release_checkpoint !== false) failures.push({ code: "approval_must_not_allow_release_checkpoint" });
   if (approval?.allow_weight_commit !== false) failures.push({ code: "approval_must_not_allow_weight_commit" });
   if (approval?.allow_artifacts_write !== true) failures.push({ code: "approval_must_allow_ignored_artifact_write" });
@@ -133,7 +143,13 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (runConfig.release_checkpoint !== false) failures.push({ code: "run_config_must_not_be_release_checkpoint" });
   if (runConfig.formal_product_training === true) failures.push({ code: "run_config_must_not_enable_formal_product_training" });
   if (runConfig.long_term_training === true) failures.push({ code: "run_config_must_not_enable_long_term_training" });
-  if ((prefix === "r25s" || prefix === "r25v") && runConfig.phase_4_scaled_training !== false) failures.push({ code: "run_config_must_not_enable_phase_4_scaled_training" });
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y") && runConfig.phase_4_scaled_training !== false) failures.push({ code: "run_config_must_not_enable_phase_4_scaled_training" });
+  if (prefix === "r25y" && runConfig.architecture?.basis !== "r25s_baseline_data_first") {
+    failures.push({ code: "r25y_must_use_r25s_data_first_basis", actual: runConfig.architecture?.basis });
+  }
+  if (prefix === "r25y" && Number(runConfig.architecture?.layers || 0) !== 1) {
+    failures.push({ code: "r25y_must_keep_one_layer_r25s_baseline", actual: runConfig.architecture?.layers });
+  }
   if (prefix === "r25v" && runConfig.architecture?.ablation !== "two_layer_same_width") {
     failures.push({ code: "r25v_architecture_ablation_must_be_two_layer_same_width", actual: runConfig.architecture?.ablation });
   }
@@ -153,21 +169,26 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (prefix === "r25v" && configPath !== "training/from_scratch/small_decoder_pilot_run_config.r25v.json") {
     failures.push({ code: "r25v_must_use_r25v_run_config", configPath });
   }
+  if (prefix === "r25y" && configPath !== "training/from_scratch/small_decoder_pilot_run_config.r25y.json") {
+    failures.push({ code: "r25y_must_use_r25y_run_config", configPath });
+  }
   return failures;
 }
 
 async function consumePilotApproval(approvalPath, approval, runConfig) {
   const prefix = runPrefix(runConfig);
-  if (approvalPath !== R25P_APPROVAL_PATH && approvalPath !== R25S_APPROVAL_PATH && approvalPath !== R25V_APPROVAL_PATH) return;
+  if (approvalPath !== R25P_APPROVAL_PATH && approvalPath !== R25S_APPROVAL_PATH && approvalPath !== R25V_APPROVAL_PATH && approvalPath !== R25Y_APPROVAL_PATH) return;
   const consumedByPhase = prefix.toUpperCase();
   const consumed = {
     ...approval,
     consumed: true,
     allow_additional_runs: false,
-    consumed_by_commit: prefix === "r25v" ? "pending_r25v_commit" : prefix === "r25s" ? "pending_r25s_commit" : "pending_r25p_commit",
+    consumed_by_commit: prefix === "r25y" ? "pending_r25y_commit" : prefix === "r25v" ? "pending_r25v_commit" : prefix === "r25s" ? "pending_r25s_commit" : "pending_r25p_commit",
     consumed_by_phase: consumedByPhase,
     consumed_reason: prefix === "r25v"
       ? "one-shot approval used or attempted for r25v_two_layer_same_width; future runs require a new approval marker"
+      : prefix === "r25y"
+      ? "one-shot approval used or attempted for r25y_data_regularized_192; future runs require a new approval marker"
       : `one-shot approval used for ${runConfig.run_id}; future runs require a new approval marker`
   };
   await writeJson(approvalPath, consumed);

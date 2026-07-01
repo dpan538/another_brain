@@ -127,6 +127,13 @@ async function main() {
   const r25yDataRegularizationConfig = await readJsonIfPresent("training/from_scratch/small_decoder_r25y_data_regularization_config.json");
   const r25yRunConfigTemplate = await readJsonIfPresent("training/from_scratch/small_decoder_pilot_run_config.r25y.template.json");
   const r25yApprovalTemplate = await readJsonIfPresent("training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.template.json");
+  const r25yApproval = await readJsonIfPresent("training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json");
+  const r25yRunConfig = await readJsonIfPresent("training/from_scratch/small_decoder_pilot_run_config.r25y.json");
+  const r25yDatasetReport = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25y/r25y_dataset_report.json");
+  const r25yRunReport = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25y/r25y_small_decoder_run_report.json");
+  const r25yEvalReport = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25y/r25y_small_decoder_eval_report.json");
+  const r25yHeldoutReport = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25y/r25y_heldout_eval_report.json");
+  const r25yHistoryReport = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25y/r25y_history_comparison.json");
   const r25xPhase3ReviewReport = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25x/r25x_phase3_review_report.json");
   const tokenizerDryrunOk = Boolean(tokenizerCorpusReport?.ok && tokenizerReport?.ok && tokenizerEvalReport?.ok);
   const r25lCorpusOk = r25lTrainRows >= 1600 && r25lDevRows >= 400 && r25lHeldoutRows >= 400;
@@ -177,7 +184,8 @@ async function main() {
     r25mApproval?.allow_additional_runs === false &&
     (!r25pApproval || (r25pApproval?.consumed === true && r25pApproval?.allow_additional_runs === false)) &&
     (!r25sApproval || (r25sApproval?.consumed === true && r25sApproval?.allow_additional_runs === false)) &&
-    (!r25vApproval || (r25vApproval?.consumed === true && r25vApproval?.allow_additional_runs === false))
+    (!r25vApproval || (r25vApproval?.consumed === true && r25vApproval?.allow_additional_runs === false)) &&
+    (!r25yApproval || (r25yApproval?.consumed === true && r25yApproval?.allow_additional_runs === false))
   );
   const activeTrainingApprovalCount = [
     r25kApproval?.approved && r25kApproval?.consumed !== true && r25kApproval?.scope === "toy_overfit_sanity_only",
@@ -185,6 +193,7 @@ async function main() {
     r25pApproval?.approved && r25pApproval?.consumed !== true && r25pApproval?.allow_small_pilot_training === true,
     r25sApproval?.approved && r25sApproval?.consumed !== true && r25sApproval?.allow_small_pilot_training === true,
     r25vApproval?.approved && r25vApproval?.consumed !== true && (r25vApproval?.allow_small_pilot_training === true || r25vApproval?.allow_architecture_ablation_training === true || r25vApproval?.allow_phase_4_scaled_training === true),
+    r25yApproval?.approved && r25yApproval?.consumed !== true && (r25yApproval?.allow_small_pilot_training === true || r25yApproval?.allow_data_regularization_training === true || r25yApproval?.allow_phase_4_scaled_training === true),
     r25rApprovalTemplate?.approved && r25rApprovalTemplate?.allow_small_pilot_training === true,
     r25sApprovalTemplate?.approved && r25sApprovalTemplate?.allow_small_pilot_training === true,
     r25uApprovalTemplate?.approved && (r25uApprovalTemplate?.allow_small_pilot_training === true || r25uApprovalTemplate?.allow_architecture_ablation_training === true || r25uApprovalTemplate?.allow_phase_4_scaled_training === true),
@@ -198,6 +207,7 @@ async function main() {
     r25pApproval?.consumed !== true && r25pApproval?.allow_product_model_training === true,
     r25sApproval?.consumed !== true && r25sApproval?.allow_product_model_training === true,
     r25vApproval?.consumed !== true && r25vApproval?.allow_product_model_training === true,
+    r25yApproval?.consumed !== true && r25yApproval?.allow_product_model_training === true,
     r25rApprovalTemplate?.allow_product_model_training === true,
     r25sApprovalTemplate?.allow_product_model_training === true,
     r25uApprovalTemplate?.allow_product_model_training === true,
@@ -211,6 +221,7 @@ async function main() {
     r25pApproval?.consumed !== true && r25pApproval?.allow_weight_commit === true,
     r25sApproval?.consumed !== true && r25sApproval?.allow_weight_commit === true,
     r25vApproval?.consumed !== true && r25vApproval?.allow_weight_commit === true,
+    r25yApproval?.consumed !== true && r25yApproval?.allow_weight_commit === true,
     r25rApprovalTemplate?.allow_weight_commit === true,
     r25sApprovalTemplate?.allow_weight_commit === true,
     r25uApprovalTemplate?.allow_weight_commit === true,
@@ -481,6 +492,41 @@ async function main() {
     r25xPhase3ReviewReport?.fresh_approval_required === true &&
     activeTrainingApprovalCount === 0
   );
+  const r25yRunOk = Boolean(
+    r25yDatasetReport?.ok &&
+    r25yRunReport?.ok &&
+    r25yRunReport?.run_id === "r25y_data_regularized_192" &&
+    r25yRunReport?.variant_id === "r25y_data_regularized_192" &&
+    r25yRunReport?.small_pilot_training_ran === true &&
+    r25yRunReport?.data_regularization_training === true &&
+    Number(r25yRunReport?.actual_layers) === 1 &&
+    r25yRunReport?.formal_product_training === false &&
+    r25yRunReport?.long_term_training === false &&
+    r25yRunReport?.phase_4_scaled_training === false &&
+    r25yRunReport?.product_model === false &&
+    r25yRunReport?.release_checkpoint === false &&
+    r25yRunReport?.train_loss_decreased === true &&
+    r25yRunReport?.dev_loss_finite === true &&
+    r25yRunReport?.replayable_checkpoint_written === true &&
+    r25yEvalReport?.ok
+  );
+  const r25yHeldoutOk = Boolean(
+    r25yHeldoutReport?.ok &&
+    r25yHeldoutReport?.heldout_loss_finite === true &&
+    r25yHeldoutReport?.train_dev_heldout_overlap === false
+  );
+  const r25yDataRegularizationHelped = Boolean(
+    r25yHistoryReport?.data_regularization_helped === true ||
+    r25yHistoryReport?.recommendation_category === "data_regularization_helped_review_next"
+  );
+  const r25yCompleteOk = Boolean(
+    r25yRunOk &&
+    r25yHeldoutOk &&
+    r25yApproval?.consumed === true &&
+    activeTrainingApprovalCount === 0 &&
+    activeProductTrainingApprovalCount === 0 &&
+    activeWeightCommitApprovalCount === 0
+  );
 
   const report = {
     ok: missing.length === 0,
@@ -489,11 +535,11 @@ async function main() {
     product_model_exists: false,
     formal_training_progress_percent: 0,
     product_training_progress_percent: 0,
-    pilot_training_progress_percent: r25vCompleteOk ? 4 : r25sCompleteOk ? 3 : r25pCompleteOk ? 2 : smallPilotRanOk ? 1 : 0,
-    from_scratch_program_progress_percent: r25vCompleteOk ? 6 : r25sCompleteOk ? 5 : r25pCompleteOk ? 4 : smallPilotRanOk ? 3 : r25lReadyForReview ? 2 : toyOverfitOk ? 1 : 0,
-    training_readiness_percent_estimate: r25xReviewOk ? 73 : r25wAnalysisOk ? 72 : r25vCompleteOk ? 72 : r25vBlockedOk ? 70 : r25uPlanningOk ? 70 : r25tAnalysisOk ? 69 : r25sCompleteOk ? 68 : r25sDesignOk ? 67 : r25qAnalysisOk ? 66 : r25pCompleteOk ? 65 : r25oDesignOk ? 63 : smallPilotEvaluationOk ? 62 : smallPilotRanOk ? 60 : r25lReadyForReview ? 55 : toyOverfitOk ? 50 : tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
-    browser_product_completion_estimate: r25vCompleteOk ? 32 : r25vBlockedOk ? 31 : r25uPlanningOk ? 31 : r25tAnalysisOk ? 31 : r25sCompleteOk ? 31 : r25pCompleteOk ? 30 : smallPilotRanOk ? 29 : r25lReadyForReview ? 28 : toyOverfitOk ? 27 : tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
-    current_phase: r25xReviewOk ? "phase_3_review_and_data_regularization_designed" : r25wAnalysisOk ? "phase_3_architecture_ablation_analyzed" : r25vCompleteOk ? "phase_3_architecture_ablation_pilot_completed" : r25vBlockedOk ? "phase_3_architecture_ablation_pilot_blocked" : r25uPlanningOk ? "phase_3_exit_criteria_and_ablation_planned" : r25tAnalysisOk ? "phase_3_data_first_pilot_analyzed" : r25sCompleteOk ? "phase_3_data_first_third_pilot_completed" : r25sDesignOk ? "phase_3_data_first_third_pilot_designed" : r25qAnalysisOk ? "phase_3_second_small_pilot_analyzed" : r25pCompleteOk ? "phase_3_second_small_pilot_completed" : r25oDesignOk ? "phase_3_second_small_pilot_designed" : smallPilotEvaluationOk ? "phase_3_small_decoder_pilot_evaluated" : smallPilotRanOk ? "phase_3_small_decoder_pilot" : r25lReadyForReview ? "phase_3_small_decoder_pilot_planned" : toyOverfitOk ? "phase_2_tiny_overfit_sanity" : tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
+    pilot_training_progress_percent: r25yCompleteOk ? 5 : r25vCompleteOk ? 4 : r25sCompleteOk ? 3 : r25pCompleteOk ? 2 : smallPilotRanOk ? 1 : 0,
+    from_scratch_program_progress_percent: r25yCompleteOk ? 7 : r25vCompleteOk ? 6 : r25sCompleteOk ? 5 : r25pCompleteOk ? 4 : smallPilotRanOk ? 3 : r25lReadyForReview ? 2 : toyOverfitOk ? 1 : 0,
+    training_readiness_percent_estimate: r25yCompleteOk && r25yDataRegularizationHelped ? 74 : r25xReviewOk ? 73 : r25wAnalysisOk ? 72 : r25vCompleteOk ? 72 : r25vBlockedOk ? 70 : r25uPlanningOk ? 70 : r25tAnalysisOk ? 69 : r25sCompleteOk ? 68 : r25sDesignOk ? 67 : r25qAnalysisOk ? 66 : r25pCompleteOk ? 65 : r25oDesignOk ? 63 : smallPilotEvaluationOk ? 62 : smallPilotRanOk ? 60 : r25lReadyForReview ? 55 : toyOverfitOk ? 50 : tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
+    browser_product_completion_estimate: r25yCompleteOk && r25yDataRegularizationHelped ? 33 : r25vCompleteOk ? 32 : r25vBlockedOk ? 31 : r25uPlanningOk ? 31 : r25tAnalysisOk ? 31 : r25sCompleteOk ? 31 : r25pCompleteOk ? 30 : smallPilotRanOk ? 29 : r25lReadyForReview ? 28 : toyOverfitOk ? 27 : tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
+    current_phase: r25yCompleteOk ? "phase_3_data_regularization_pilot_completed" : r25xReviewOk ? "phase_3_review_and_data_regularization_designed" : r25wAnalysisOk ? "phase_3_architecture_ablation_analyzed" : r25vCompleteOk ? "phase_3_architecture_ablation_pilot_completed" : r25vBlockedOk ? "phase_3_architecture_ablation_pilot_blocked" : r25uPlanningOk ? "phase_3_exit_criteria_and_ablation_planned" : r25tAnalysisOk ? "phase_3_data_first_pilot_analyzed" : r25sCompleteOk ? "phase_3_data_first_third_pilot_completed" : r25sDesignOk ? "phase_3_data_first_third_pilot_designed" : r25qAnalysisOk ? "phase_3_second_small_pilot_analyzed" : r25pCompleteOk ? "phase_3_second_small_pilot_completed" : r25oDesignOk ? "phase_3_second_small_pilot_designed" : smallPilotEvaluationOk ? "phase_3_small_decoder_pilot_evaluated" : smallPilotRanOk ? "phase_3_small_decoder_pilot" : r25lReadyForReview ? "phase_3_small_decoder_pilot_planned" : toyOverfitOk ? "phase_2_tiny_overfit_sanity" : tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
     approval_markers_consumed_status: approvalMarkersConsumedOk ? "consumed_one_shot_markers_inert" : "needs_review",
     active_training_approval_count: activeTrainingApprovalCount,
     active_product_training_approval_count: activeProductTrainingApprovalCount,
@@ -617,6 +663,23 @@ async function main() {
     r25x_best_pilot_rows_status: r25xBestPilotRows?.ok ? "r25s_best_rows_summarized" : r25xBestPilotRows?.skipped ? "skipped_ignored_artifacts_missing" : "not_run",
     r25y_design_status: r25yDesignOk ? "data_regularization_design_validated_inert" : "not_present_or_needs_review",
     r25y_approval_template_status: r25yApprovalTemplateSafe ? "inert_template_approved_false" : "not_present_or_needs_review",
+    r25y_run_status: r25yCompleteOk ? "passed_data_regularization_bounded_pilot" : r25yRunReport?.small_pilot_training_ran ? "needs_review" : r25yRunReport?.skipped ? "blocked_or_skipped" : "not_run",
+    r25y_variant: r25yRunReport?.variant_id || r25yApproval?.variant_id || r25yRunConfig?.variant_id || r25yDataRegularizationConfig?.variant_id || null,
+    r25y_actual_layers: r25yRunReport?.actual_layers ?? null,
+    r25y_train_loss_decreased: r25yRunReport?.train_loss_decreased === true,
+    r25y_dev_loss_finite: r25yRunReport?.dev_loss_finite === true,
+    r25y_heldout_loss_status: r25yHeldoutOk ? "finite_replay_loss" : r25yHeldoutReport?.ok ? "needs_review" : "not_run",
+    r25y_heldout_loss: Number.isFinite(Number(r25yHeldoutReport?.heldout_loss)) ? r25yHeldoutReport.heldout_loss : null,
+    r25y_replayable_checkpoint_status: r25yEvalReport?.checkpoint_validates ? "valid_ignored_replayable_checkpoint" : r25yRunReport?.replayable_checkpoint_written ? "written_needs_validation" : "not_written",
+    r25y_approval_consumed_status: r25yApproval?.consumed === true ? "consumed_one_shot_marker_inert" : r25yApproval?.approved ? "active_needs_consumption_after_attempt" : "not_present_or_not_approved",
+    r25y_phase4_scaled_training: false,
+    r25y_regularization_status: r25yRunReport?.data_regularization_training ? {
+      learning_rate: r25yRunReport.learning_rate,
+      knobs: r25yRunReport.regularization_knobs || null,
+      helped_against_r25s: r25yHistoryReport?.data_regularization_helped ?? null,
+      recommendation: r25yHistoryReport?.recommendation_category || null
+    } : "not_run",
+    r25y_history_comparison_status: r25yHistoryReport?.ok ? r25yHistoryReport.status : "not_run",
     r25x_recommendation: r25xPhase3ReviewReport?.ok ? r25xPhase3ReviewReport.recommendation : "not_run",
     r25s_sampling_counts: r25sSamplingPlan?.ok ? {
       train: r25sSamplingPlan.train_row_count,
@@ -729,6 +792,14 @@ async function main() {
         "artifacts/training_os/small_decoder_pilot/r25x/r25x_data_quality_audit.json",
         "artifacts/training_os/small_decoder_pilot/r25x/r25x_r25s_best_rows.json",
         "artifacts/training_os/small_decoder_pilot/r25x/r25x_phase3_review_report.json"
+      ] : []),
+      ...(r25yCompleteOk ? [
+        "training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json",
+        "training/from_scratch/small_decoder_pilot_run_config.r25y.json",
+        "artifacts/training_os/small_decoder_pilot/r25y/r25y_small_decoder_run_report.json",
+        "artifacts/training_os/small_decoder_pilot/r25y/r25y_replayable_checkpoint.json",
+        "artifacts/training_os/small_decoder_pilot/r25y/r25y_heldout_eval_report.json",
+        "artifacts/training_os/small_decoder_pilot/r25y/r25y_history_comparison.json"
       ] : [])
     ],
     missing_before_training: [
@@ -738,7 +809,7 @@ async function main() {
       ...(r25lTokenizerDryrunOk ? [] : ["expanded-corpus tokenizer dry-run and eval"]),
       ...(smallPilotPlanOk ? [] : ["small decoder pilot architecture, budget, and capacity plan"]),
       ...(r25pCompleteOk
-        ? [r25xReviewOk ? "review R25X and obtain fresh reviewer approval before any R25Y data-regularization pilot; phase_4 remains blocked" : r25wAnalysisOk ? "pause phase_3 for review or design data/regularization only after fresh approval; phase_4 remains blocked" : r25vCompleteOk || r25vBlockedOk ? "review R25V against R25S before any additional phase_3 pilot; phase_4 remains blocked" : r25uPlanningOk ? "fresh reviewer approval before any R25V phase_3 ablation or data follow-up; phase_4 remains blocked" : r25sCompleteOk ? "review R25S against R25P before any additional pilot, architecture ablation, or scaling" : r25sDesignOk ? "fresh reviewer approval before any R25S data-first bounded pilot" : r25qAnalysisOk ? "review R25Q before any R25R approval or architecture scaling" : "review R25P against R25M before any additional pilot or architecture scaling"]
+        ? [r25yCompleteOk ? "review R25Y against R25S/R25V/R25P before any R25Z decision, repeat data regularization, or phase_4 readiness review; phase_4 remains blocked" : r25xReviewOk ? "review R25X and obtain fresh reviewer approval before any R25Y data-regularization pilot; phase_4 remains blocked" : r25wAnalysisOk ? "pause phase_3 for review or design data/regularization only after fresh approval; phase_4 remains blocked" : r25vCompleteOk || r25vBlockedOk ? "review R25V against R25S before any additional phase_3 pilot; phase_4 remains blocked" : r25uPlanningOk ? "fresh reviewer approval before any R25V phase_3 ablation or data follow-up; phase_4 remains blocked" : r25sCompleteOk ? "review R25S against R25P before any additional pilot, architecture ablation, or scaling" : r25sDesignOk ? "fresh reviewer approval before any R25S data-first bounded pilot" : r25qAnalysisOk ? "review R25Q before any R25R approval or architecture scaling" : "review R25P against R25M before any additional pilot or architecture scaling"]
         : smallPilotRanOk
           ? ["review R25M/R25N outputs before any second or larger run"]
           : ["future explicit phase_3 approval before any small decoder pilot training"]),
@@ -847,6 +918,12 @@ async function main() {
       "R25Y data-regularization design is inert until fresh reviewer approval",
       "phase_4 scaled training remains not approved",
       "product training progress remains 0% and pilot progress remains 4%"
+    ],
+    r25y_boundaries: [
+      "R25Y runs or safely blocks exactly one approved data-regularization phase_3 pilot attempt",
+      "R25Y is not product-scale training, long-term training, phase_4 scaled training, release admission, or a browser static artifact",
+      "R25Y replayable checkpoint, if written, is ignored and not commit-allowed",
+      "future training requires a fresh reviewer approval marker"
     ]
   };
   console.log(JSON.stringify(report, null, 2));

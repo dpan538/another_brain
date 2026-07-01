@@ -21,6 +21,7 @@ A future R25Y run would need a separate explicit approval marker with:
 R25X routine gates must remain history/eval/report only. Consumed approval
 markers cannot rerun training, and approval templates cannot trigger training.
 
-R25Y, if later approved, would still be phase 3 only. It would not be product
-training, phase_4 scaled training, release checkpoint admission, or browser
-static deployment.
+R25Y, if later approved, is still phase 3 only. It is not product training,
+phase_4 scaled training, release checkpoint admission, or browser static
+deployment. Once the R25Y approval is consumed, it cannot authorize a second
+run.

@@ -256,6 +256,13 @@ only. The committed R25Y template is `approved:false` and cannot authorize
 training. R25X keeps phase_4 scaled training blocked and must not deploy,
 stage, or copy any pilot artifact into runtime/static asset directories.
 
+R25Y reports and replayable checkpoints live under ignored
+`artifacts/training_os/small_decoder_pilot/r25y/`. They are data-regularization
+pilot evidence only. They are not product weights, not phase_4 scaled-training
+outputs, not release checkpoints, and not browser static assets. They must not
+be staged, committed, deployed, or copied into runtime/static asset
+directories. The consumed R25Y approval cannot authorize another run.
+
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
 generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It

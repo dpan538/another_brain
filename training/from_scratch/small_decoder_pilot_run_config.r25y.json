@@ -1,0 +1,58 @@
+{
+  "run_id": "r25y_data_regularized_192",
+  "variant_id": "r25y_data_regularized_192",
+  "training_allowed_by_default": false,
+  "requires_fresh_approval": true,
+  "product_model": false,
+  "release_checkpoint": false,
+  "formal_product_training": false,
+  "long_term_training": false,
+  "phase_4_scaled_training": false,
+  "commit_weights_allowed": false,
+  "output_dir": "artifacts/training_os/small_decoder_pilot/r25y/",
+  "train_source": "training/llm_corpus/r25l_train.jsonl",
+  "dev_source": "training/llm_corpus/r25l_dev.jsonl",
+  "heldout_source": "training/llm_corpus/r25l_heldout.jsonl",
+  "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25l.json",
+  "sampling_plan": "artifacts/training_os/small_decoder_pilot/r25r/r25s_balanced_dataset_plan.json",
+  "max_train_rows": 192,
+  "max_dev_rows": 48,
+  "max_heldout_rows": 48,
+  "max_context_tokens": 64,
+  "batch_size": 4,
+  "max_steps": 80,
+  "eval_every": 20,
+  "learning_rate": 0.003,
+  "seed": 28,
+  "sampling_strategy": "r25s_data_first_balanced_with_regularization",
+  "architecture": {
+    "type": "causal_decoder_pilot",
+    "basis": "r25s_baseline_data_first",
+    "layers": 1,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128,
+    "selected_backend": "auto_detect"
+  },
+  "regularization_plan": {
+    "lower_learning_rate_than_r25s": true,
+    "shuffle_train_rows": true,
+    "cap_repeated_targets": true,
+    "require_rejected_answer_examples": true,
+    "balance_focus_buckets": true,
+    "stop_if_dev_loss_worsens": true,
+    "compare_to_r25s": true
+  },
+  "replayable_checkpoint": {
+    "enabled": true,
+    "format": "json",
+    "schema": "training/from_scratch/small_decoder_checkpoint.schema.json"
+  },
+  "approval_required": true,
+  "approved_by_default": false,
+  "notes": [
+    "Bounded R25Y data-regularization pilot only.",
+    "Keeps the R25S one-layer data-first architecture and does not use the R25V two-layer ablation.",
+    "Ignored artifacts only; not product training, not long-term training, and not phase_4 scaled training."
+  ]
+}

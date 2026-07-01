@@ -456,3 +456,11 @@ data-regularization pilot. It audits the R25L/R25S data surface, keeps R25S as
 best-so-far when R25W metrics hold, and keeps phase_4 scaled training blocked.
 R25Y is not approved, product training progress remains `0%`, and no weights
 or ignored artifacts are committed.
+
+R25Y later ran exactly one fresh-approved data-regularization pilot,
+`r25y_data_regularized_192`, to ignored artifacts only. It kept the R25S
+one-layer baseline, lowered the learning rate, capped repeated targets, and
+produced a replayable held-out checkpoint. R25Y improved held-out loss versus
+R25P and R25V but did not beat R25S, so the recommendation is to stop and
+review before any further pilot or phase_4 readiness review. Product and formal
+training progress remain `0%`, and phase_4 scaled training remains blocked.

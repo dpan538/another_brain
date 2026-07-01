@@ -263,6 +263,15 @@ data-regularization pilot based on R25S, not architecture scaling. R25X must
 not use held-out text for training, must not rerun any consumed pilot, and must
 not authorize R25Y or phase_4 scaled training automatically.
 
+R25Y may train only the approved `r25y_data_regularized_192`
+data-regularization pilot. It uses R25L train rows for training, R25L dev rows
+for dev sanity, and R25L held-out rows for replay evaluation only. It must not
+read evals, root PDFs/DOCX, `data/public_ingestion/`, private raw data,
+factual knowledge cards, external model output, or chain-of-thought data.
+After the one-shot attempt, the approval is consumed and future training
+requires a new reviewer approval marker. Phase_4 scaled training remains
+blocked.
+
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,

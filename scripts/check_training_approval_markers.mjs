@@ -112,6 +112,16 @@ const MARKERS = [
     expectedVariantId: "r25y_data_regularized_192",
     template: true,
     trainingFlagKeys: ["allow_small_pilot_training", "allow_data_regularization_training", "allow_phase_4_scaled_training"]
+  },
+  {
+    id: "r25y_data_regularization_pilot",
+    path: "training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json",
+    expectedScope: "data_regularization_small_decoder_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    consumedByCommit: "pending_r25y_commit",
+    expectedRunId: "r25y_data_regularized_192",
+    expectedVariantId: "r25y_data_regularized_192",
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_data_regularization_training", "allow_phase_4_scaled_training"]
   }
 ];
 
@@ -186,7 +196,7 @@ async function main() {
     if (marker.allow_long_term_training !== false) failures.push({ marker: spec.id, code: "allow_long_term_training_must_be_false" });
     if (marker.allow_product_model_training !== false) failures.push({ marker: spec.id, code: "allow_product_model_training_must_be_false" });
     if (marker.allow_data_refinement_training === true) failures.push({ marker: spec.id, code: "allow_data_refinement_training_must_not_be_true" });
-    if (marker.allow_data_regularization_training === true) failures.push({ marker: spec.id, code: "allow_data_regularization_training_must_not_be_true" });
+    if (marker.allow_data_regularization_training === true && marker.consumed !== true) failures.push({ marker: spec.id, code: "allow_data_regularization_training_must_not_be_true" });
     if (marker.allow_phase_4_scaled_training === true) failures.push({ marker: spec.id, code: "allow_phase_4_scaled_training_must_not_be_true" });
     if (marker.allow_release_checkpoint === true) failures.push({ marker: spec.id, code: "allow_release_checkpoint_must_not_be_true" });
     if (SECRET_RE.test(JSON.stringify(marker))) failures.push({ marker: spec.id, code: "private_path_or_secret_marker_present" });
