@@ -100,6 +100,13 @@ training, does not rerun R25V/R25S/R25P/R25M/toy pilots, and does not approve
 R25X or phase_4 scaled training. Product and formal training progress remain
 `0%`; pilot progress remains separate at `4%`.
 
+R25X may move the label to `phase_3_review_and_data_regularization_designed`
+after the phase 3 review ledger, R25X data-quality audit, R25S best-row
+analysis, inert R25Y design/template validation, and R25X decision report pass.
+R25X does not run training, does not rerun any consumed pilot, does not approve
+R25Y, and does not approve phase_4 scaled training. Product and formal training
+progress remain `0%`; pilot progress remains separate at `4%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -118,3 +125,5 @@ R25X or phase_4 scaled training. Product and formal training progress remain
 - Treating R25V ablation output as phase_4 approval or a release checkpoint.
 - Treating R25W analysis or the R25X inert template as approval for new
   training or phase_4 scaled training.
+- Treating R25X review or the R25Y inert template as approval for a
+  data-regularization pilot or phase_4 scaled training.

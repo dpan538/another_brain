@@ -28,3 +28,7 @@ reviewer approval later exists, consider regularization/data refinement before
 any further capacity increase. Future training requires a fresh one-shot
 approval marker and all R24/R25 gates before and after. Product training
 progress remains `0%`.
+
+R25X follows this recommendation by reviewing the phase 3 ledger and designing
+an inert R25Y data-regularization pilot. R25X does not train, does not approve
+R25Y, and keeps phase_4 scaled training blocked.

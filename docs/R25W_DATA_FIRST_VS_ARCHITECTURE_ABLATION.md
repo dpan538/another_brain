@@ -25,3 +25,7 @@ Boundaries remain unchanged:
   remain ignored and untracked
 - no external APIs, downloads, backend/storage, chain-of-thought data, named
   pretrained model, LoRA, adapters, or fine-tuning final path
+
+R25X uses this comparison to keep the next design data/regularization focused
+instead of architecture scaling. The R25Y template is inert and cannot run
+without a fresh reviewer approval marker.

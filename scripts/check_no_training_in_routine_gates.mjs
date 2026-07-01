@@ -55,6 +55,10 @@ const TRAINING_RERUN_PATTERNS = [
   {
     code: "future_r25x_training_nested_in_routine_gate",
     pattern: /run:[^"\n]*r25x[^"\n]*(?:--allow-small-pilot-training|--allow-data-refinement-training|--allow-architecture-ablation-training|--allow-phase-4-scaled-training)/i
+  },
+  {
+    code: "future_r25y_training_nested_in_routine_gate",
+    pattern: /run:[^"\n]*r25y[^"\n]*(?:--allow-small-pilot-training|--allow-data-regularization-training|--allow-phase-4-scaled-training)/i
   }
 ];
 

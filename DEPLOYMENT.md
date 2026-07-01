@@ -59,6 +59,11 @@ R25U defines phase-3 exit criteria and architecture ablation planning only. It
 does not run training, does not approve R25V, and reports phase_4 scaled
 training as not approved. Any future R25V run would need fresh reviewer
 approval and must still write only ignored artifacts.
+R25V runs one approved architecture ablation to ignored artifacts only. R25W
+analyzes it and records that data-first R25S remains stronger than the
+two-layer ablation. R25X reviews phase 3 and designs inert R25Y data
+regularization only; it does not train, approve R25Y, or approve phase_4
+scaled training.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
@@ -244,6 +249,12 @@ next-step decision reports only. The committed R25X template is
 `approved:false` and cannot authorize training. R25W keeps phase_4 scaled
 training blocked and must not deploy, stage, or copy any pilot artifact into
 runtime/static asset directories.
+
+R25X reports live under ignored `artifacts/training_os/small_decoder_pilot/r25x/`.
+They are data-quality audit, best-row analysis, and phase-3 review reports
+only. The committed R25Y template is `approved:false` and cannot authorize
+training. R25X keeps phase_4 scaled training blocked and must not deploy,
+stage, or copy any pilot artifact into runtime/static asset directories.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is

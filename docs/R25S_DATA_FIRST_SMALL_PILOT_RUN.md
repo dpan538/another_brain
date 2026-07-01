@@ -52,3 +52,7 @@ release checkpoint.
 R25V, if approved, compares a two-layer same-width architecture ablation against
 this R25S baseline. R25S artifacts remain ignored baseline evidence only and do
 not authorize any R25V rerun, phase_4 training, or release admission.
+
+R25W/R25X keep R25S as the best pilot so far when the R25V ablation worsens
+dev and held-out loss. Any future data-regularization pilot must preserve the
+split boundary and requires fresh reviewer approval.

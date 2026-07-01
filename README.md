@@ -78,6 +78,10 @@ R25U defines phase-3 exit criteria, reports phase_4 readiness as not approved,
 and designs architecture ablation options for a future R25V review. It does not
 train, does not approve R25V, and does not approve phase_4 scaled training.
 Product training progress remains `0%`.
+R25V runs one approved two-layer architecture ablation and consumes its marker.
+R25W analyzes that result and keeps R25S data-first as best-so-far because the
+ablation worsened dev/held-out loss. R25X reviews phase 3 and designs inert
+R25Y data regularization only; no new training or phase_4 approval happens.
 
 The fallback policy path is deliberately small. It chooses a response strategy without exposing chain-of-thought: missing premise, ask for the premise; unclear direction, counterquestion; encyclopedia request, send the user to search; uncertain memory, answer with bounded uncertainty. The browser runtime now runs a structured fallback check after direct answers and legacy tiny-router answers, so route misses are still handled by deterministic route/evidence/verifier logic until a real static LLM is admitted.
 
@@ -446,3 +450,9 @@ train loss slightly against R25S but worsened dev and held-out replay loss, so
 data-first remains the best phase 3 pilot direction so far. Phase_4 scaled
 training remains blocked, product training progress remains `0%`, and the R25X
 future-pilot template is inert until a fresh reviewer approval exists.
+
+R25X reviews the full phase 3 pilot ledger and designs an inert R25Y
+data-regularization pilot. It audits the R25L/R25S data surface, keeps R25S as
+best-so-far when R25W metrics hold, and keeps phase_4 scaled training blocked.
+R25Y is not approved, product training progress remains `0%`, and no weights
+or ignored artifacts are committed.

@@ -35,6 +35,11 @@ R25S runs exactly one approved data-first bounded pilot to ignored artifacts and
 then consumes its approval. R25T analyzes R25S, compares it with R25P, checks
 weak-bucket behavior, and adds an inert R25U architecture-ablation template; it
 does not train and does not approve phase_4 scaled training.
+R25V runs one approved two-layer architecture ablation to ignored artifacts.
+R25W analyzes that ablation and finds data-first R25S remains stronger on
+dev/held-out behavior. R25X reviews phase 3, audits data quality, and creates
+an inert R25Y data-regularization design; it does not train, does not approve
+R25Y, and does not approve phase_4 scaled training.
 
 ## Public Data
 
@@ -136,6 +141,14 @@ Private data is not distributed:
   replayable checkpoint evidence and consumed its approval.
 - R25T analysis status: evaluates R25S versus R25P, reports whether
   data-first balancing helped, and keeps R25U approval inert.
+- R25U planning status: defines phase 3 exit criteria and keeps phase_4 scaled
+  training unapproved.
+- R25V architecture ablation status: one approved two-layer pilot wrote ignored
+  replayable checkpoint evidence and consumed its approval.
+- R25W analysis status: reports that R25V did not improve dev/held-out behavior
+  versus R25S and keeps phase_4 blocked.
+- R25X review status: audits data quality, summarizes R25S best rows, and adds
+  an inert R25Y data-regularization design without training.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -242,6 +255,13 @@ breakdowns. It records that the R25V two-layer ablation did not improve
 dev/held-out behavior versus R25S. R25W must not use held-out text for
 training, must not rerun any consumed pilot, and must not authorize R25X or
 phase_4 scaled training automatically.
+
+R25X does not train. It may read R25L train/dev/held-out corpus files for data
+quality auditing, read existing ignored R25S/R25V/R25W reports for review, and
+write ignored R25X audit reports only. It designs R25Y as an inert
+data-regularization pilot based on R25S, not architecture scaling. R25X must
+not use held-out text for training, must not rerun any consumed pilot, and must
+not authorize R25Y or phase_4 scaled training automatically.
 
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under

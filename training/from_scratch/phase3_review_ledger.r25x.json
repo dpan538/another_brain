@@ -1,0 +1,69 @@
+{
+  "ledger_id": "r25x_phase3_review_ledger",
+  "phase": "phase_3_small_decoder_pilot",
+  "generated_by": "R25X phase-3 review",
+  "training_ran": false,
+  "product_training_progress_percent": 0,
+  "formal_training_progress_percent": 0,
+  "phase4_scaled_training_approved": false,
+  "next_training_requires_fresh_approval": true,
+  "pilots": [
+    {
+      "phase": "R25M",
+      "run_id": "r25m_small_decoder_pilot_v0",
+      "summary": "Weak pipeline sanity baseline. The pilot proved bounded local mechanics but stored no replayable tensor checkpoint.",
+      "replayable_checkpoint": false,
+      "heldout_replay_loss": null,
+      "decision_value": "baseline_only"
+    },
+    {
+      "phase": "R25P",
+      "run_id": "r25p_more_sequences_128",
+      "summary": "Replayable second small pilot with strong train loss decrease and finite dev/heldout loss, but a moderate train/dev and train/heldout gap.",
+      "replayable_checkpoint": true,
+      "heldout_replay_loss": 5.250599265098572,
+      "decision_value": "useful_replayable_baseline"
+    },
+    {
+      "phase": "R25S",
+      "run_id": "r25s_data_first_balanced_192",
+      "summary": "Data-first balanced sampling improved dev and heldout loss over R25P while reducing the train/dev and train/heldout gaps.",
+      "replayable_checkpoint": true,
+      "heldout_replay_loss": 5.069218635559082,
+      "decision_value": "best_so_far"
+    },
+    {
+      "phase": "R25V",
+      "run_id": "r25v_two_layer_same_width",
+      "summary": "Two-layer same-width architecture ablation improved train loss slightly versus R25S but worsened dev and heldout loss.",
+      "replayable_checkpoint": true,
+      "heldout_replay_loss": 5.244127511978149,
+      "decision_value": "ablation_did_not_help_generalization"
+    }
+  ],
+  "current_best_pilot": "r25s_data_first_balanced_192",
+  "current_decision": {
+    "recommended_next_direction": "data_regularization_design",
+    "phase3_continue_or_pause": "pause_for_review",
+    "recommended_next_training": "none_by_default",
+    "possible_next_design": "r25y_data_regularized_192",
+    "phase4_scaled_training_approved": false,
+    "next_training_requires_fresh_approval": true
+  },
+  "why_data_regularization": [
+    "R25S improved dev and heldout behavior without increasing architecture depth.",
+    "R25V added depth and parameter count but worsened dev and heldout loss versus R25S.",
+    "R25Q/R25T weak buckets point to data balance, repeated templates, and regularization as safer phase_3 questions."
+  ],
+  "why_phase4_not_approved": [
+    "Phase_3 pilots are still bounded mechanics and generalization checks, not product training.",
+    "The best heldout loss is still from a tiny pilot corpus and does not establish product capability.",
+    "Reviewer approval is required before any phase_4 scaled decoder training review can begin."
+  ],
+  "must_not_do": [
+    "Do not run R25Y or any future pilot from an inert template.",
+    "Do not approve phase_4 scaled training in R25X.",
+    "Do not commit checkpoints, tokenizer artifacts, replay reports, or model-like binaries.",
+    "Do not introduce external models, LoRA, adapters, fine-tuning, backend inference, or external storage."
+  ]
+}

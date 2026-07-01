@@ -41,3 +41,7 @@ improved final train loss slightly versus R25S but worsened final dev and
 held-out replay loss. That means the two-layer same-width ablation did not help
 generalization and must not be treated as phase_4 approval, product progress,
 or release readiness.
+
+R25X adds a phase 3 review ledger after R25W. The ledger keeps R25S as the
+best-so-far pilot and prepares only a data-regularization design for possible
+future review. No R25X training runs.

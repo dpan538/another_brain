@@ -1,0 +1,50 @@
+{
+  "audit_id": "r25x_data_quality_audit",
+  "train_source": "training/llm_corpus/r25l_train.jsonl",
+  "dev_source": "training/llm_corpus/r25l_dev.jsonl",
+  "heldout_source": "training/llm_corpus/r25l_heldout.jsonl",
+  "focus_buckets": [
+    "release_packaging_boundary",
+    "toy_training_boundary",
+    "verify_draft",
+    "from_scratch_training_direction",
+    "zh",
+    "mixed"
+  ],
+  "checks": [
+    "target_answer_repetition",
+    "template_near_duplicates",
+    "rejected_answer_coverage",
+    "policy_tag_balance",
+    "language_balance",
+    "task_type_balance",
+    "train_dev_heldout_overlap",
+    "short_target_bias",
+    "excessive_boilerplate",
+    "eval_prompt_similarity",
+    "hidden_prompt_or_chain_of_thought_markers",
+    "private_path_or_secret_markers"
+  ],
+  "hard_failure_checks": [
+    "train_dev_heldout_overlap",
+    "eval_prompt_copying",
+    "chain_of_thought_fields",
+    "hidden_prompt_fields",
+    "private_data_markers",
+    "local_private_paths",
+    "secret_like_strings"
+  ],
+  "soft_warning_checks": [
+    "high_template_repetition",
+    "weak_rejected_answer_coverage",
+    "unbalanced_buckets",
+    "short_target_bias"
+  ],
+  "training_will_run": false,
+  "product_model": false,
+  "phase4_scaled_training_approved": false,
+  "notes": [
+    "R25X audit reads only reviewed R25L corpus files plus eval text for contamination string comparison.",
+    "R25X does not train, approve training, or write weights."
+  ]
+}
