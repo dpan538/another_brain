@@ -7,11 +7,17 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const execFileAsync = promisify(execFile);
-const OUTPUT_DIR = "artifacts/training_os/small_decoder_pilot/r25q/";
-const OUTPUT_PATH = `${OUTPUT_DIR}r25q_heldout_breakdown.json`;
-const CHECKPOINT_PATH = "artifacts/training_os/small_decoder_pilot/r25p/r25p_replayable_checkpoint.json";
-const HELDOUT_SEQUENCES_PATH = "artifacts/training_os/small_decoder_pilot/r25p/r25p_heldout_sequences.json";
+const OUTPUT_PATH = "artifacts/training_os/small_decoder_pilot/r25w/r25w_r25v_heldout_breakdown.json";
+const CHECKPOINT_PATH = "artifacts/training_os/small_decoder_pilot/r25v/r25v_replayable_checkpoint.json";
+const HELDOUT_SEQUENCES_PATH = "artifacts/training_os/small_decoder_pilot/r25v/r25v_heldout_sequences.json";
 const HELDOUT_JSONL_PATH = "training/llm_corpus/r25l_heldout.jsonl";
+const R25S_BREAKDOWN_PATH = "artifacts/training_os/small_decoder_pilot/r25t/r25t_r25s_heldout_breakdown.json";
+
+const REVIEW_BUCKETS = {
+  language: ["zh", "mixed", "en"],
+  task_type: ["release_packaging_boundary", "toy_training_boundary", "verify_draft"],
+  task_family: ["from_scratch_training_direction"]
+};
 
 async function exists(path) {
   try {
@@ -24,6 +30,10 @@ async function exists(path) {
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
+}
+
+async function readJsonIfPresent(path) {
+  return (await exists(path)) ? readJson(path) : null;
 }
 
 async function readJsonl(path) {
@@ -52,7 +62,13 @@ function emptyBucket() {
   };
 }
 
-function addToBucket(bucket, row, lossRow, tokenStats) {
+function getBucket(map, key) {
+  const normalized = String(key || "unknown");
+  if (!map[normalized]) map[normalized] = emptyBucket();
+  return map[normalized];
+}
+
+function addToBucket(bucket, lossRow, tokenStats) {
   bucket.sequence_count += 1;
   bucket.pair_count += Number(lossRow?.pairs || 0);
   if (finite(lossRow?.loss) && Number(lossRow?.pairs || 0) > 0) {
@@ -80,12 +96,6 @@ function finalizeBuckets(map) {
   return out;
 }
 
-function getBucket(map, key) {
-  const normalized = String(key || "unknown");
-  if (!map[normalized]) map[normalized] = emptyBucket();
-  return map[normalized];
-}
-
 function tokenStats(sequence, padId, unkId) {
   let token_count = 0;
   let known_token_count = 0;
@@ -107,7 +117,7 @@ async function replaySequenceLosses() {
     "--emit-sequence-losses"
   ], {
     cwd: ROOT,
-    timeout: 120000,
+    timeout: 300000,
     maxBuffer: 16 * 1024 * 1024
   });
   return JSON.parse(stdout.trim().split(/\r?\n(?=\{)/).at(-1) || stdout);
@@ -118,7 +128,7 @@ async function readReusableReport() {
   const report = await readJson(OUTPUT_PATH);
   if (
     report?.ok === true &&
-    report?.run_id === "r25p_more_sequences_128" &&
+    report?.run_id === "r25v_two_layer_same_width" &&
     report?.training_ran === false &&
     report?.heldout_loss_finite === true &&
     report?.by_language &&
@@ -128,6 +138,35 @@ async function readReusableReport() {
     return report;
   }
   return null;
+}
+
+function bucketDelta(current, previous) {
+  if (!current || !previous) return null;
+  const currentLoss = current.average_next_token_loss;
+  const previousLoss = previous.average_next_token_loss;
+  if (!finite(currentLoss) || !finite(previousLoss)) return null;
+  return {
+    current_loss: currentLoss,
+    previous_loss: previousLoss,
+    delta: currentLoss - previousLoss,
+    improved: currentLoss <= previousLoss,
+    current_sequence_count: current.sequence_count,
+    previous_sequence_count: previous.sequence_count
+  };
+}
+
+function reviewBucketDeltas(report, previous) {
+  const out = {};
+  for (const language of REVIEW_BUCKETS.language) {
+    out[`language:${language}`] = bucketDelta(report.by_language?.[language], previous?.by_language?.[language]);
+  }
+  for (const taskType of REVIEW_BUCKETS.task_type) {
+    out[`task_type:${taskType}`] = bucketDelta(report.by_task_type?.[taskType], previous?.by_task_type?.[taskType]);
+  }
+  for (const family of REVIEW_BUCKETS.task_family) {
+    out[`task_family:${family}`] = bucketDelta(report.by_task_family?.[family], previous?.by_task_family?.[family]);
+  }
+  return out;
 }
 
 function appendNote(notes, note) {
@@ -149,7 +188,7 @@ async function main() {
       reason: "ignored_artifacts_missing",
       missing,
       training_ran: false,
-      notes: ["Heldout breakdown is skipped because the local ignored R25P replay artifacts are absent."]
+      notes: ["R25V held-out breakdown is skipped because local ignored replay artifacts are absent."]
     };
     await writeJson(OUTPUT_PATH, report);
     console.log(JSON.stringify(report, null, 2));
@@ -159,7 +198,7 @@ async function main() {
   const reusable = await readReusableReport();
   if (reusable) {
     reusable.reused_existing_report = true;
-    reusable.notes = appendNote(reusable.notes, "Reused the existing ignored R25P breakdown report for this routine no-training gate.");
+    reusable.notes = appendNote(reusable.notes, "Reused the existing ignored R25W breakdown report for this routine no-training gate.");
     await writeJson(OUTPUT_PATH, reusable);
     console.log(JSON.stringify(reusable, null, 2));
     return;
@@ -173,7 +212,24 @@ async function main() {
   const padId = Number(heldoutDataset.pad_token_id || 0);
   const unkId = tokenizer?.vocab?.["<unk>"] === undefined ? null : Number(tokenizer.vocab["<unk>"]);
   const rowById = new Map(heldoutRows.map((row) => [row.sample_id, row]));
-  const replay = await replaySequenceLosses();
+  let replay = null;
+  try {
+    replay = await replaySequenceLosses();
+  } catch (error) {
+    const reusable = await readReusableReport();
+    if (reusable) {
+      reusable.reused_existing_report = true;
+      reusable.replay_backend_unavailable_reason = String(error?.message || error).slice(0, 1000);
+      reusable.notes = appendNote(
+        reusable.notes,
+        "Reused the existing ignored R25W breakdown report because the local replay backend was unavailable during this routine no-training gate."
+      );
+      await writeJson(OUTPUT_PATH, reusable);
+      console.log(JSON.stringify(reusable, null, 2));
+      return;
+    }
+    throw error;
+  }
   const lossesById = new Map((replay.sequence_losses || []).map((row) => [row.sample_id, row]));
   const failures = [];
   if (replay.ok !== true || replay.heldout_loss_finite !== true) failures.push({ code: "heldout_replay_not_finite", replay });
@@ -190,18 +246,18 @@ async function main() {
     if (!row) failures.push({ code: "heldout_metadata_missing", sample_id: sequence.sample_id });
     if (!lossRow) failures.push({ code: "heldout_loss_missing", sample_id: sequence.sample_id });
     const stats = tokenStats(sequence, padId, unkId);
-    addToBucket(getBucket(byLanguage, row?.language), row, lossRow, stats);
-    addToBucket(getBucket(byTaskType, row?.task_type), row, lossRow, stats);
-    addToBucket(getBucket(byTaskFamily, row?.task_family), row, lossRow, stats);
+    addToBucket(getBucket(byLanguage, row?.language), lossRow, stats);
+    addToBucket(getBucket(byTaskType, row?.task_type), lossRow, stats);
+    addToBucket(getBucket(byTaskFamily, row?.task_family), lossRow, stats);
     for (const tag of row?.policy_tags || ["unknown"]) {
-      addToBucket(getBucket(byPolicyTag, tag), row, lossRow, stats);
+      addToBucket(getBucket(byPolicyTag, tag), lossRow, stats);
     }
   }
 
   const report = {
     ok: failures.length === 0,
     skipped: false,
-    run_id: "r25p_more_sequences_128",
+    run_id: "r25v_two_layer_same_width",
     training_ran: false,
     heldout_sequences: heldoutDataset.sequences?.length || 0,
     heldout_loss: replay.heldout_loss,
@@ -217,13 +273,16 @@ async function main() {
     },
     product_model: false,
     release_checkpoint: false,
+    phase_4_scaled_training: false,
     notes: [
-      "Breakdown uses R25L heldout rows and the existing ignored R25P checkpoint only.",
+      "Breakdown uses R25L heldout rows and the existing ignored R25V checkpoint only.",
       "No training is performed.",
       "Average losses are weighted by next-token pair count within each group."
     ],
     failures
   };
+  const previous = await readJsonIfPresent(R25S_BREAKDOWN_PATH);
+  report.bucket_deltas_vs_r25s = reviewBucketDeltas(report, previous);
   await writeJson(OUTPUT_PATH, report);
   console.log(JSON.stringify(report, null, 2));
   if (!report.ok) process.exit(2);

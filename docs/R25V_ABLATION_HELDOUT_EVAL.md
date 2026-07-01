@@ -18,3 +18,7 @@ Held-out replay loss is a phase 3 mechanics and generalization signal only. It
 is not a product benchmark, not release admission, and not evidence that browser
 static deployment is ready. R24/R25 gates remain required before any later
 training or release decision.
+
+R25W uses the same replay evidence for analysis only. It may produce bucketed
+held-out comparisons against R25S, but it must not train, update weights, copy
+held-out text into training, or authorize another pilot automatically.

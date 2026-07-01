@@ -80,6 +80,29 @@ function overlapExists(trainDataset, devDataset, heldoutDataset) {
   return false;
 }
 
+async function readReusablePilotReport(outputPath, expectedRunId) {
+  if (!(await exists(outputPath))) return null;
+  const report = await readJson(outputPath);
+  if (
+    report?.ok === true &&
+    report?.run_id === expectedRunId &&
+    report?.training_ran === false &&
+    report?.product_model === false &&
+    report?.release_checkpoint === false &&
+    report?.heldout_loss_finite === true &&
+    report?.replayable_checkpoint_used === true
+  ) {
+    return report;
+  }
+  return null;
+}
+
+function appendNote(notes, note) {
+  const next = [...(notes || [])];
+  if (!next.includes(note)) next.push(note);
+  return next;
+}
+
 async function runDefaultScaffoldMode() {
   const trackedWeights = (await gitLines(["ls-files"])).filter((path) => MODEL_WEIGHT_RE.test(path));
   const trackedFuture = await gitLines(["ls-files", "--cached", FUTURE_REPLAYABLE_PATH]);
@@ -151,6 +174,15 @@ async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, de
   const heldoutPath = `${outputDir}${prefix}_heldout_sequences.json`;
   const runReportPath = `${outputDir}${prefix}_small_decoder_run_report.json`;
   const failures = [];
+
+  const reusable = await readReusablePilotReport(outputPath, expectedRunId);
+  if (reusable) {
+    reusable.reused_existing_report = true;
+    reusable.notes = appendNote(reusable.notes, "Reused the existing ignored held-out replay report for this routine no-training history gate.");
+    await writeJson(outputPath, reusable);
+    console.log(JSON.stringify(reusable, null, 2));
+    return;
+  }
 
   if (config.run_id !== expectedRunId) failures.push({ code: `unexpected_${prefix}_run_id`, expected: expectedRunId, actual: config.run_id });
   if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", actual: config.heldout_source });

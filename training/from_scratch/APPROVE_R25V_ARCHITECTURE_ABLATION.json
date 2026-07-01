@@ -17,7 +17,7 @@
   "consumed": true,
   "allow_additional_runs": false,
   "notes": "R25V may run exactly one bounded phase_3 architecture ablation pilot, two_layer_same_width, to ignored artifacts only.",
-  "consumed_by_commit": "pending_r25v_commit",
+  "consumed_by_commit": "76530ac",
   "consumed_by_phase": "R25V",
   "consumed_reason": "one-shot approval used or attempted for r25v_two_layer_same_width; future runs require a new approval marker"
 }

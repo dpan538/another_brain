@@ -49,3 +49,8 @@ training progress from `0%`.
 R25V may test `two_layer_same_width` only after fresh reviewer approval. That
 ablation remains phase 3, must keep the R25S data strategy fixed where
 possible, and must not approve phase_4 scaled training.
+
+R25W analyzes the approved R25V output. If the R25V metrics match the reported
+run, R25S remains the best phase 3 pilot so far because the two-layer ablation
+worsened dev and held-out replay loss. R25W does not train and does not
+authorize R25X or phase_4 scaled training.

@@ -93,6 +93,13 @@ phase_4 scaled training, not release checkpoint admission, and not browser
 static deployment. Product and formal training progress remain `0%`; pilot
 progress may increase separately to `4%`.
 
+R25W may move the label to `phase_3_architecture_ablation_analyzed` after R25V
+analysis, R25V held-out breakdown, data-vs-architecture comparison, the phase 3
+decision ledger, and the R25W next-step decision report pass. R25W does not run
+training, does not rerun R25V/R25S/R25P/R25M/toy pilots, and does not approve
+R25X or phase_4 scaled training. Product and formal training progress remain
+`0%`; pilot progress remains separate at `4%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -109,3 +116,5 @@ progress may increase separately to `4%`.
 - Treating R25T analysis as approval to run R25U or phase_4 scaled training.
 - Treating R25U exit criteria or an R25V template as approval for training.
 - Treating R25V ablation output as phase_4 approval or a release checkpoint.
+- Treating R25W analysis or the R25X inert template as approval for new
+  training or phase_4 scaled training.

@@ -440,3 +440,9 @@ two-layer same-width phase 3 pilot against the R25S data strategy when the
 local backend supports it. It is not product training, phase_4 scaled training,
 release admission, or static deployment, and the approval is consumed after the
 attempt.
+
+R25W analyzes R25V without running training. The two-layer ablation improved
+train loss slightly against R25S but worsened dev and held-out replay loss, so
+data-first remains the best phase 3 pilot direction so far. Phase_4 scaled
+training remains blocked, product training progress remains `0%`, and the R25X
+future-pilot template is inert until a fresh reviewer approval exists.

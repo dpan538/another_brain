@@ -44,3 +44,8 @@ one-shot approval exists. The selected candidate is `two_layer_same_width`,
 mapped to `r25v_two_layer_same_width`. It keeps R25S data selection fixed where
 possible and blocks rather than falling back if the local backend cannot run a
 real two-layer pilot.
+
+R25W records the result of that ablation. The two-layer candidate did not
+improve dev or held-out behavior versus R25S, so architecture expansion is not
+the next default recommendation. Any later R25X work must be an inert design or
+a separately approved bounded run; phase_4 remains blocked.

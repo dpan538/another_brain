@@ -152,6 +152,29 @@ function weakBucketDeltas(report, previous) {
   return out;
 }
 
+async function readReusableReport() {
+  if (!(await exists(OUTPUT_PATH))) return null;
+  const report = await readJson(OUTPUT_PATH);
+  if (
+    report?.ok === true &&
+    report?.run_id === "r25s_data_first_balanced_192" &&
+    report?.training_ran === false &&
+    report?.heldout_loss_finite === true &&
+    report?.by_language &&
+    report?.by_task_type &&
+    report?.by_task_family
+  ) {
+    return report;
+  }
+  return null;
+}
+
+function appendNote(notes, note) {
+  const next = [...(notes || [])];
+  if (!next.includes(note)) next.push(note);
+  return next;
+}
+
 async function main() {
   const required = [CHECKPOINT_PATH, HELDOUT_SEQUENCES_PATH, HELDOUT_JSONL_PATH];
   const missing = [];
@@ -169,6 +192,15 @@ async function main() {
     };
     await writeJson(OUTPUT_PATH, report);
     console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+
+  const reusable = await readReusableReport();
+  if (reusable) {
+    reusable.reused_existing_report = true;
+    reusable.notes = appendNote(reusable.notes, "Reused the existing ignored R25S breakdown report for this routine no-training gate.");
+    await writeJson(OUTPUT_PATH, reusable);
+    console.log(JSON.stringify(reusable, null, 2));
     return;
   }
 

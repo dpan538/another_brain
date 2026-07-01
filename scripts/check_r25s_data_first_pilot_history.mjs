@@ -39,7 +39,9 @@ async function runStep(name, args) {
 async function main() {
   const results = [];
   for (const [name, args] of STEPS) {
+    console.error(`[r25s-history] running ${name}`);
     results.push(await runStep(name, args));
+    console.error(`[r25s-history] passed ${name}`);
   }
   const report = {
     ok: true,

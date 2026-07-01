@@ -90,10 +90,18 @@ const MARKERS = [
     path: "training/from_scratch/APPROVE_R25V_ARCHITECTURE_ABLATION.json",
     expectedScope: "phase3_architecture_ablation_pilot_only",
     expectedPhase: "phase_3_small_decoder_pilot",
-    consumedByCommit: "pending_r25v_commit",
+    consumedByCommit: "76530ac",
     expectedRunId: "r25v_two_layer_same_width",
     expectedVariantId: "two_layer_same_width",
     trainingFlagKeys: ["allow_small_pilot_training", "allow_architecture_ablation_training", "allow_phase_4_scaled_training"]
+  },
+  {
+    id: "r25x_future_pilot_template",
+    path: "training/from_scratch/APPROVE_R25X_FUTURE_PILOT.template.json",
+    expectedScope: "future_phase3_pilot_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    template: true,
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_data_refinement_training", "allow_architecture_ablation_training", "allow_phase_4_scaled_training"]
   }
 ];
 
@@ -167,6 +175,7 @@ async function main() {
     if (marker.allow_weight_commit !== false) failures.push({ marker: spec.id, code: "allow_weight_commit_must_be_false" });
     if (marker.allow_long_term_training !== false) failures.push({ marker: spec.id, code: "allow_long_term_training_must_be_false" });
     if (marker.allow_product_model_training !== false) failures.push({ marker: spec.id, code: "allow_product_model_training_must_be_false" });
+    if (marker.allow_data_refinement_training === true) failures.push({ marker: spec.id, code: "allow_data_refinement_training_must_not_be_true" });
     if (marker.allow_phase_4_scaled_training === true) failures.push({ marker: spec.id, code: "allow_phase_4_scaled_training_must_not_be_true" });
     if (marker.allow_release_checkpoint === true) failures.push({ marker: spec.id, code: "allow_release_checkpoint_must_not_be_true" });
     if (SECRET_RE.test(JSON.stringify(marker))) failures.push({ marker: spec.id, code: "private_path_or_secret_marker_present" });

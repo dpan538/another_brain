@@ -1,0 +1,76 @@
+{
+  "schema_version": "r25w_phase3_decision_ledger_v0",
+  "phase": "phase_3_small_decoder_pilot",
+  "product_model": false,
+  "phase4_scaled_training_approved": false,
+  "product_training_progress_percent": 0,
+  "formal_training_progress_percent": 0,
+  "next_training_requires_fresh_approval": true,
+  "reviewed_pilots": [
+    {
+      "id": "R25M",
+      "run_id": "r25m_small_decoder_pilot_v0",
+      "role": "weak pipeline sanity baseline",
+      "replayable_checkpoint": false,
+      "summary": "Bounded first small-pilot loop ran and showed finite losses, but stored only legacy digest/non-replayable artifacts for true held-out replay."
+    },
+    {
+      "id": "R25P",
+      "run_id": "r25p_more_sequences_128",
+      "role": "first replayable held-out-evaluable pilot",
+      "replayable_checkpoint": true,
+      "summary": "Training improved strongly and held-out replay loss became available, but train-to-eval gaps remained moderate."
+    },
+    {
+      "id": "R25S",
+      "run_id": "r25s_data_first_balanced_192",
+      "role": "data-first balanced pilot",
+      "replayable_checkpoint": true,
+      "summary": "Balanced sampling and lower learning rate improved dev/held-out behavior versus R25P and became the strongest phase_3 baseline."
+    },
+    {
+      "id": "R25V",
+      "run_id": "r25v_two_layer_same_width",
+      "role": "two-layer same-width architecture ablation",
+      "replayable_checkpoint": true,
+      "summary": "Extra depth improved train loss slightly versus R25S but worsened dev and held-out loss, so the ablation did not help generalization."
+    }
+  ],
+  "current_best_pilot": "r25s_data_first_balanced_192",
+  "current_decision": {
+    "phase3_continue_or_pause": "pause_for_review",
+    "phase4_scaled_training_approved": false,
+    "recommended_next_training": "none_by_default",
+    "possible_next_design": "regularization_or_data_refinement_only_if_reviewer_approves_later",
+    "fresh_reviewer_approval_required": true
+  },
+  "stop_or_continue_criteria": {
+    "pause_phase3_if": [
+      "new ablation improves train loss but worsens dev or held-out loss",
+      "train/dev or train/held-out gap widens without a reviewed explanation",
+      "routine gates could rerun consumed approval markers",
+      "phase_4 language appears before explicit reviewer approval"
+    ],
+    "consider_data_refinement_if": [
+      "R25S remains best held-out baseline",
+      "weak buckets show data coverage or balance issues",
+      "reviewer approves one named bounded follow-up run"
+    ],
+    "consider_regularization_only_if": [
+      "capacity increases regress held-out loss",
+      "reviewer wants an ablation that changes optimization rather than scale",
+      "fresh one-shot approval explicitly names the run_id"
+    ],
+    "do_not_do": [
+      "do not start phase_4 scaled training",
+      "do not treat replayable pilot checkpoints as release checkpoints",
+      "do not commit ignored checkpoint, tokenizer, or replay artifacts",
+      "do not add external models, backend inference, storage, LoRA, adapters, or fine-tuning as final strategy"
+    ]
+  },
+  "notes": [
+    "R25W records a decision ledger and does not run training.",
+    "The ledger is reviewer-facing and does not authorize R25X or phase_4.",
+    "Phase_4 remains blocked until exit criteria pass and a fresh reviewer approval explicitly allows it."
+  ]
+}

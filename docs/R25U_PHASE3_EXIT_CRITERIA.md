@@ -36,3 +36,7 @@ committed R25V template uses `approved:false` and cannot authorize training.
 When R25V is explicitly approved, it still remains phase 3. Even if the
 two-layer ablation runs and held-out replay is finite, it does not satisfy
 phase_4 approval by itself and does not admit a release checkpoint.
+
+R25W adds a decision ledger after R25V. Because the reported R25V run worsened
+dev and held-out loss versus R25S, phase_4 remains blocked and the next default
+state is review rather than scaling.

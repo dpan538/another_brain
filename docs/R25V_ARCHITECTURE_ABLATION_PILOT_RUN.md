@@ -33,3 +33,11 @@ R25V boundaries:
 - no backend inference or external storage
 - no LoRA, adapters, or fine-tuning as final strategy
 - phase_4 remains blocked until exit criteria and fresh reviewer approval pass
+
+## R25W Review
+
+R25W reviews the R25V result without rerunning it. In the reported run, R25V
+improved final train loss slightly versus R25S but worsened final dev and
+held-out replay loss. That means the two-layer same-width ablation did not help
+generalization and must not be treated as phase_4 approval, product progress,
+or release readiness.

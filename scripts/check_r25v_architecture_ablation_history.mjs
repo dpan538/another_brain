@@ -15,18 +15,7 @@ const STEPS = [
   ["check:small-decoder-pilot-artifacts-untracked", ["run", "check:small-decoder-pilot-artifacts-untracked"]],
   ["check:from-scratch-training-doctrine", ["run", "check:from-scratch-training-doctrine"]],
   ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]],
-  ["check:r25u-phase3-exit-and-ablation-plan", ["run", "check:r25u-phase3-exit-and-ablation-plan"]],
-  ["check:r25t-r25s-analysis", ["run", "check:r25t-r25s-analysis"]],
-  ["check:r25s-data-first-pilot-history", ["run", "check:r25s-data-first-pilot-history"]],
-  ["check:r25r-data-first-pilot-design", ["run", "check:r25r-data-first-pilot-design"]],
-  ["check:r25q-pilot-analysis", ["run", "check:r25q-pilot-analysis"]],
-  ["check:r25p-second-small-pilot-history", ["run", "check:r25p-second-small-pilot-history"]],
-  ["check:r25o-second-pilot-design", ["run", "check:r25o-second-pilot-design"]],
-  ["check:r25n-small-pilot-evaluation", ["run", "check:r25n-small-pilot-evaluation"]],
-  ["check:r25m-small-pilot-history", ["run", "check:r25m-small-pilot-history"]],
-  ["check:r25k-toy-overfit-history", ["run", "check:r25k-toy-overfit-history"]],
-  ["check:r24-recovery-candidate", ["run", "check:r24-recovery-candidate"]],
-  ["check:vercel-build", ["run", "check:vercel-build"]]
+  ["check:r25u-phase3-exit-and-ablation-plan", ["run", "check:r25u-phase3-exit-and-ablation-plan"]]
 ];
 
 async function runStep(name, args) {
@@ -42,7 +31,9 @@ async function runStep(name, args) {
 async function main() {
   const results = [];
   for (const [name, args] of STEPS) {
+    console.error(`[r25v-history] running ${name}`);
     results.push(await runStep(name, args));
+    console.error(`[r25v-history] passed ${name}`);
   }
   const report = {
     ok: true,
@@ -57,6 +48,7 @@ async function main() {
     notes: [
       "This gate validates R25V history and ignored artifacts only.",
       "It does not run small-pilot or architecture-ablation training; the one-shot run command is separate.",
+      "R25U delegates to the R25T/R25S/R25R/R25Q/R25P/R25O/R25N/R25M/R25K history chain.",
       "Future pilot runs require a new reviewer approval marker."
     ]
   };

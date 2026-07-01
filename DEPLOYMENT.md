@@ -238,6 +238,13 @@ training outputs, not release checkpoints, and not browser static assets. They
 must not be staged, committed, deployed, or copied into runtime/static asset
 directories.
 
+R25W reports live under ignored `artifacts/training_os/small_decoder_pilot/r25w/`.
+They are analysis, held-out breakdown, data-vs-architecture comparison, and
+next-step decision reports only. The committed R25X template is
+`approved:false` and cannot authorize training. R25W keeps phase_4 scaled
+training blocked and must not deploy, stage, or copy any pilot artifact into
+runtime/static asset directories.
+
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
 generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It

@@ -236,6 +236,13 @@ for replay evaluation only. It must not read evals, root PDFs/DOCX,
 `data/public_ingestion/`, private raw data, factual knowledge cards, external
 model output, or chain-of-thought data.
 
+R25W does not train. It may read existing ignored R25V reports, the replayable
+ignored R25V checkpoint, and `r25l_heldout.jsonl` for evaluation-only
+breakdowns. It records that the R25V two-layer ablation did not improve
+dev/held-out behavior versus R25S. R25W must not use held-out text for
+training, must not rerun any consumed pilot, and must not authorize R25X or
+phase_4 scaled training automatically.
+
 The clone logic/ethics v0.1 casepacks are held-out evaluation assets. They are
 real-event-derived and intended to test bounded dialog-surface judgment under
 pressure: fact/inference separation, layered responsibility, uncertainty,
