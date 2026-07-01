@@ -45,6 +45,10 @@ created, and LoRA/fine-tuning/adapters are rejected as the final strategy.
 Existing pretrained artifacts can only be baseline or compatibility inputs, not
 the main product path.
 
+R25AA pauses phase 3 for review after R25Y/R25Z: R25S remains the best small
+pilot, phase_4 readiness review is analysis-only, and phase_4 scaled training
+is not approved. Product training progress remains `0%`.
+
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
 and evaluates dev/heldout text for leakage and segmentation sanity. The tiny

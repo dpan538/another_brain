@@ -124,6 +124,14 @@ training, does not rerun R25Y/R25V/R25S/R25P/R25M/toy pilots, and does not
 approve R25AA or phase_4 scaled training. Product and formal training progress
 remain `0%`; pilot progress remains separate at `5%`.
 
+R25AA may move the label to
+`phase_3_paused_phase4_readiness_review_only` after the final phase 3 review
+ledger, phase_4 readiness review, static envelope evaluation, pause decision
+report, and R24/R25 gates pass. R25AA does not run training, does not rerun any
+pilot, does not approve R25AB, and does not approve phase_4 scaled training.
+Product and formal training progress remain `0%`; pilot progress remains
+separate at `5%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -148,3 +156,6 @@ remain `0%`; pilot progress remains separate at `5%`.
   admission, product progress, or permission to run another pilot.
 - Treating R25Z analysis or the R25AA inert template as approval for another
   pilot, phase_4 readiness work, or phase_4 scaled training.
+- Treating R25AA readiness review or the R25AB inert template as approval for
+  phase_4 design work, phase_4 scaled training, release admission, or product
+  model progress.

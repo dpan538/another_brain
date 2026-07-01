@@ -15,7 +15,7 @@ const steps = [
   ["run:small-decoder-pilot"],
   ["check:from-scratch-training-doctrine"],
   ["report:from-scratch-training-progress"],
-  ["check:r25k-toy-overfit-sanity"],
+  ["check:r25k-toy-overfit-history"],
   ["check:vercel-build"]
 ];
 

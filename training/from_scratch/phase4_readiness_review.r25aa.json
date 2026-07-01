@@ -1,0 +1,52 @@
+{
+  "review_id": "r25aa_phase4_readiness_review",
+  "phase": "phase_4_scaled_decoder_training_review",
+  "training_ran": false,
+  "phase4_scaled_training_approved": false,
+  "phase4_ready": "review_required",
+  "best_phase3_pilot_identified": true,
+  "best_phase3_pilot": "r25s_data_first_balanced_192",
+  "criteria": {
+    "at_least_one_replayable_checkpoint_exists": true,
+    "heldout_loss_finite": true,
+    "weak_bucket_breakdown_reviewed": true,
+    "no_automatic_phase4_approval": true,
+    "r24_recovery_candidate_green": true,
+    "r24g_source_derivation_green": true,
+    "r24b_shard_runtime_green": true,
+    "vercel_build_green": true,
+    "no_eval_hardcoding_green": true,
+    "eval_split_integrity_green": true,
+    "training_provenance_green": true,
+    "anti_lobotomy_green": true,
+    "dialogue_boundary_green": true,
+    "no_tracked_weights": true,
+    "no_generated_checkpoint_artifacts_committed": true,
+    "no_chain_of_thought_data": true,
+    "no_named_model_selected": true,
+    "no_lora_finetune_final_strategy": true,
+    "no_backend_storage_api_path": true,
+    "static_capacity_review_for_future_release": "planning_only",
+    "reviewer_approval_required_before_phase4": true,
+    "phase4_training_approval_marker_absent_or_inert": true
+  },
+  "blocking_items": [
+    "fresh reviewer approval required",
+    "phase_4 run design not reviewed",
+    "scaled capacity projection not reviewed for selected architecture",
+    "release path not validated"
+  ],
+  "allowed_next_step": "phase4_readiness_design_review_without_training",
+  "not_allowed": [
+    "phase_4_scaled_training",
+    "product_training",
+    "long_term_training",
+    "release_checkpoint_admission",
+    "tracked_weight_commit"
+  ],
+  "notes": [
+    "R25AA can review phase_4 readiness only as analysis.",
+    "This file does not approve a scaled run or select a final architecture.",
+    "Any future phase_4 work requires a fresh explicit reviewer approval and separate run design."
+  ]
+}

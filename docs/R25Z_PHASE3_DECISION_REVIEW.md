@@ -25,3 +25,7 @@ R25AA is an inert template only. It does not authorize training, phase_4 scaled
 training, release checkpoint admission, tracked weights, external APIs, remote
 downloads, backend inference, external storage, LoRA/adapters/fine-tuning, or a
 named pretrained product target.
+
+R25AA later records the phase 3 final review ledger and keeps the phase_4 path
+in readiness-review-only mode. Phase_4 training remains blocked until a fresh,
+explicit reviewer approval and a separate design review exist.

@@ -9,8 +9,7 @@ const steps = [
   ["compare:r25p-r25s-generalization"],
   ["report:r25t-next-step"],
   ["check:from-scratch-training-doctrine"],
-  ["report:from-scratch-training-progress"],
-  ["check:r25s-data-first-pilot-history"]
+  ["report:from-scratch-training-progress"]
 ];
 
 function tail(text = "", lines = 80) {
@@ -65,21 +64,10 @@ console.log(JSON.stringify({
   phase_4_scaled_training_approved: false,
   r25u_approved: false,
   tracked_weights: false,
-  prior_gates_preserved: [
-    "check:r25s-data-first-pilot-history",
-    "check:r25r-data-first-pilot-design",
-    "check:r25q-pilot-analysis",
-    "check:r25p-second-small-pilot-history",
-    "check:r25o-second-pilot-design",
-    "check:r25n-small-pilot-evaluation",
-    "check:r25m-small-pilot-history",
-    "check:r25k-toy-overfit-history",
-    "check:r24-recovery-candidate",
-    "check:vercel-build"
-  ],
+  prior_gates_run_separately: true,
   notes: [
-    "R25T validates the new analysis and then delegates prior pilot state to the compact R25S history gate.",
-    "Older R25/R24 gates remain available as their own scripts; R25T does not replay every historical gate independently.",
+    "R25T validates R25S analysis and comparison reports.",
+    "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25T.",
     "No approval-gated training command is invoked by this routine gate."
   ],
   scripts_run: results.length,

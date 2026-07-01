@@ -8,8 +8,7 @@ const steps = [
   ["plan:architecture-ablation"],
   ["report:r25u-phase-decision"],
   ["check:from-scratch-training-doctrine"],
-  ["report:from-scratch-training-progress"],
-  ["check:r25t-r25s-analysis"]
+  ["report:from-scratch-training-progress"]
 ];
 
 function tail(text = "", lines = 80) {
@@ -62,22 +61,11 @@ console.log(JSON.stringify({
   phase_4_scaled_training_approved: false,
   r25v_approved: false,
   tracked_weights: false,
-  prior_gates_preserved: [
-    "check:r25t-r25s-analysis",
-    "check:r25s-data-first-pilot-history",
-    "check:r25r-data-first-pilot-design",
-    "check:r25q-pilot-analysis",
-    "check:r25p-second-small-pilot-history",
-    "check:r25o-second-pilot-design",
-    "check:r25n-small-pilot-evaluation",
-    "check:r25m-small-pilot-history",
-    "check:r25k-toy-overfit-history",
-    "check:r24-recovery-candidate",
-    "check:vercel-build"
-  ],
+  prior_gates_run_separately: true,
   notes: [
     "R25U validates phase_3 exit criteria and architecture ablation planning only.",
     "No approval-gated training command is invoked by this routine gate.",
+    "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25U.",
     "Phase_4 scaled training remains not approved."
   ],
   scripts_run: results.length,

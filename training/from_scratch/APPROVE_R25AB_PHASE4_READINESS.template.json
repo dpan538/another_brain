@@ -1,0 +1,17 @@
+{
+  "approved": false,
+  "scope": "phase4_readiness_review_only",
+  "reviewer": "",
+  "phase": "phase_4_scaled_decoder_training_review",
+  "run_id": "",
+  "variant_id": "",
+  "allow_phase4_design": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "allow_artifacts_write": true,
+  "artifact_output_root": "artifacts/training_os/phase4_readiness/",
+  "notes": "Template only. R25AB may review phase_4 design only after explicit approval. This template does not authorize training."
+}

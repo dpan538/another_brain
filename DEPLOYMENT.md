@@ -37,6 +37,9 @@ R25G adds candidate decision records, conversion path review, and a request
 pack before artifact admission; those records do not admit weights. R25I adds
 release decisions for future self-trained artifacts and makes that the product
 path. External pretrained artifacts are baseline/compatibility only.
+R25AA adds a static envelope review for possible future phase_4 planning, but
+does not approve phase_4 scaled training, add backend inference, add external
+storage, or admit any release checkpoint.
 R25J adds tokenizer dry-run and toy decoder pipeline scaffolding. These are
 local training-preparation checks only: generated tokenizer reports stay under
 ignored `artifacts/`, and the toy overfit command skips by default.

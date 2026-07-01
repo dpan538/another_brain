@@ -4,11 +4,9 @@ import { spawnSync } from "node:child_process";
 const steps = [
   ["check:training-approval-markers"],
   ["check:no-training-in-routine-gates"],
-  ["analyze:r25p-pilot"],
-  ["eval:r25p-heldout-breakdown"],
-  ["plan:r25s-balanced-dataset"],
-  ["check:r25s-pilot-design"],
-  ["report:r25r-decision"],
+  ["check:phase4-scaled-training-readiness"],
+  ["eval:phase4-static-envelope"],
+  ["report:r25aa-phase3-pause"],
   ["check:from-scratch-training-doctrine"],
   ["report:from-scratch-training-progress"]
 ];
@@ -18,31 +16,28 @@ function tail(text = "", lines = 80) {
 }
 
 const results = [];
-
 for (const [script, ...args] of steps) {
   const startedAt = Date.now();
-  console.log(`\n[r25r-gate] npm run ${script}${args.length ? ` -- ${args.join(" ")}` : ""}`);
+  console.log(`\n[r25aa-gate] npm run ${script}${args.length ? ` -- ${args.join(" ")}` : ""}`);
   const result = spawnSync("npm", ["run", script, ...(args.length ? ["--", ...args] : [])], {
     cwd: process.cwd(),
     encoding: "utf8",
     maxBuffer: 256 * 1024 * 1024
   });
-  const durationMs = Date.now() - startedAt;
   const item = {
     script,
     args,
     ok: result.status === 0,
     status: result.status,
     signal: result.signal,
-    durationMs
+    durationMs: Date.now() - startedAt
   };
   results.push(item);
   if (result.status !== 0) {
     console.error(JSON.stringify({
       ok: false,
-      gate: "check:r25r-data-first-pilot-design",
+      gate: "check:r25aa-phase4-readiness-review",
       failed_script: script,
-      failed_args: args,
       stdout_tail: tail(result.stdout),
       stderr_tail: tail(result.stderr),
       results
@@ -54,20 +49,23 @@ for (const [script, ...args] of steps) {
 
 console.log(JSON.stringify({
   ok: true,
-  gate: "check:r25r-data-first-pilot-design",
-  recursive_prior_gate_replay: false,
+  gate: "check:r25aa-phase4-readiness-review",
   training_rerun: false,
   toy_training_rerun: false,
   small_pilot_training_rerun: false,
+  phase_4_scaled_training_ran: false,
+  phase_4_scaled_training_approved: false,
   product_training: false,
   long_term_training: false,
-  phase_4_scaled_training_approved: false,
-  r25s_approved: false,
-  tracked_weights: false,
+  active_training_approval_count_expected: 0,
+  active_phase4_training_approval_count_expected: 0,
+  recursive_prior_gate_replay: false,
   prior_gates_run_separately: true,
   notes: [
-    "R25R validates the R25S design and sampling plan only.",
-    "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25R."
+    "R25AA validates phase_3 pause and phase_4 readiness review only.",
+    "No approval-gated training command is invoked by this routine gate.",
+    "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25AA.",
+    "Phase_4 scaled training remains not approved."
   ],
   scripts_run: results.length,
   results

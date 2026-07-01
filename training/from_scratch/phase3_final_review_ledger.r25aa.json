@@ -1,0 +1,55 @@
+{
+  "ledger_id": "r25aa_phase3_final_review",
+  "phase": "phase_3_small_decoder_pilot_review",
+  "training_ran_in_r25aa": false,
+  "phase4_scaled_training_approved": false,
+  "product_training_progress_percent": 0,
+  "formal_training_progress_percent": 0,
+  "pilot_training_progress_percent": 5,
+  "best_pilot": "r25s_data_first_balanced_192",
+  "pilots": {
+    "R25M": {
+      "role": "weak pipeline sanity baseline",
+      "replayable_checkpoint": false,
+      "not_best_reason": "bounded mechanics signal only; non-replayable and weak loss signal"
+    },
+    "R25P": {
+      "role": "first replayable stronger pilot",
+      "heldout_loss": 5.250599265098572,
+      "not_best_reason": "clear train loss decrease but moderate train/dev and train/heldout gaps"
+    },
+    "R25S": {
+      "role": "data-first balanced pilot",
+      "heldout_loss": 5.069218635559082,
+      "best_reason": "best dev/heldout result so far and balanced weak-bucket sampling"
+    },
+    "R25V": {
+      "role": "two-layer same-width architecture ablation",
+      "heldout_loss": 5.244127511978149,
+      "not_best_reason": "train loss slightly improved against R25S, but dev and heldout worsened"
+    },
+    "R25Y": {
+      "role": "data regularization pilot",
+      "heldout_loss": 5.1359784205754595,
+      "not_best_reason": "better than R25P/R25V but worse than R25S; does not justify immediate repeat"
+    },
+    "R25Z": {
+      "role": "R25Y analysis and phase-3 decision review",
+      "recommendation": "pause_phase3_for_review"
+    }
+  },
+  "phase3_status": "pause_for_review",
+  "phase4_status": "not_ready_not_approved",
+  "next_training": {
+    "approved": false,
+    "recommended": "none_by_default",
+    "fresh_approval_required": true
+  },
+  "must_not_do": [
+    "do not run training from R25AA",
+    "do not approve phase_4 scaled training",
+    "do not treat R25S or any pilot as a product model",
+    "do not commit checkpoints or ignored reports",
+    "do not add external APIs, backend inference, storage, named pretrained targets, LoRA, adapters, or fine-tuning as final strategy"
+  ]
+}

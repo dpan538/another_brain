@@ -1,0 +1,90 @@
+{
+  "review_id": "r25aa_phase4_static_envelope_review",
+  "phase": "phase_4_scaled_decoder_training_review",
+  "training_ran": false,
+  "phase4_scaled_training_approved": false,
+  "architecture_selected": false,
+  "target_static_profile": "pro_static_llm_full",
+  "candidate_envelopes": [
+    {
+      "architecture_id": "phase4_micro_plus",
+      "product_model": false,
+      "phase4_scaled_training_approved": false,
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "target_static_profile": "pro_static_llm_full",
+      "expected_parameter_range": [5000000, 15000000],
+      "expected_fp32_bytes": [20000000, 60000000],
+      "expected_q8_bytes": [5000000, 15000000],
+      "expected_q4_bytes": [2500000, 7500000],
+      "expected_shard_count_q4": 1,
+      "largest_shard_estimate": 7500000,
+      "expected_context_tokens": 128,
+      "expected_backend_format": "future_self_trained_static_shards",
+      "memory_risk": "low_to_moderate",
+      "browser_release_risk": "planning_only_low_capacity",
+      "blocking_requirements_before_run": [
+        "fresh reviewer approval",
+        "phase_4 run design",
+        "training hardware/runtime plan",
+        "release admission remains separate"
+      ]
+    },
+    {
+      "architecture_id": "phase4_small_static_candidate",
+      "product_model": false,
+      "phase4_scaled_training_approved": false,
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "target_static_profile": "pro_static_llm_full",
+      "expected_parameter_range": [25000000, 75000000],
+      "expected_fp32_bytes": [100000000, 300000000],
+      "expected_q8_bytes": [25000000, 75000000],
+      "expected_q4_bytes": [12500000, 37500000],
+      "expected_shard_count_q4": 2,
+      "largest_shard_estimate": 32000000,
+      "expected_context_tokens": 256,
+      "expected_backend_format": "future_self_trained_static_shards",
+      "memory_risk": "moderate",
+      "browser_release_risk": "requires_static_capacity_review",
+      "blocking_requirements_before_run": [
+        "fresh reviewer approval",
+        "selected architecture capacity projection",
+        "browser memory review",
+        "checkpoint provenance plan",
+        "release admission remains separate"
+      ]
+    },
+    {
+      "architecture_id": "phase4_upper_static_candidate",
+      "product_model": false,
+      "phase4_scaled_training_approved": false,
+      "training_allowed_by_default": false,
+      "requires_fresh_approval": true,
+      "target_static_profile": "pro_static_llm_full",
+      "expected_parameter_range": [200000000, 450000000],
+      "expected_fp32_bytes": [800000000, 1800000000],
+      "expected_q8_bytes": [200000000, 450000000],
+      "expected_q4_bytes": [100000000, 225000000],
+      "expected_shard_count_q4": 8,
+      "largest_shard_estimate": 32000000,
+      "expected_context_tokens": 512,
+      "expected_backend_format": "future_self_trained_static_shards",
+      "memory_risk": "high",
+      "browser_release_risk": "requires_strict_pro_static_review",
+      "blocking_requirements_before_run": [
+        "fresh reviewer approval",
+        "phase_4 run design",
+        "scaled capacity projection",
+        "browser memory and startup review",
+        "R25E/R25H static admission plan",
+        "release admission remains separate"
+      ]
+    }
+  ],
+  "notes": [
+    "These envelopes are planning ranges only.",
+    "No phase_4 architecture is selected or approved.",
+    "No training command, checkpoint, model weight, or release artifact is created by R25AA."
+  ]
+}

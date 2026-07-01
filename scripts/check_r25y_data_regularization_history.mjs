@@ -15,8 +15,7 @@ const STEPS = [
   ["compare:small-pilot-history:r25y", ["run", "compare:small-pilot-history:r25y"]],
   ["check:small-decoder-pilot-artifacts-untracked", ["run", "check:small-decoder-pilot-artifacts-untracked"]],
   ["check:from-scratch-training-doctrine", ["run", "check:from-scratch-training-doctrine"]],
-  ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]],
-  ["check:r25x-phase3-review", ["run", "check:r25x-phase3-review"]]
+  ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]]
 ];
 
 async function runStep(name, args) {
@@ -46,11 +45,13 @@ async function main() {
     phase_4_scaled_training_ran: false,
     phase_4_scaled_training_approved: false,
     release_checkpoint_admitted: false,
+    recursive_prior_gate_replay: false,
+    prior_gates_run_separately: true,
     steps: results,
     notes: [
       "This gate validates R25Y history and ignored artifacts only.",
       "It does not run small-pilot or data-regularization training; the one-shot run command is separate.",
-      "R25X delegates transitively to prior R25W/V/U/T/S/R/Q/P/O/N/M/K/J/I/H/G/F/E/D/C/B/A and R24/Vercel history gates.",
+      "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25Y.",
       "Future pilot runs require a new reviewer approval marker.",
       "Phase_4 scaled training remains blocked."
     ]

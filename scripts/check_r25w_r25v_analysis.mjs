@@ -15,8 +15,7 @@ const STEPS = [
   ["compare:data-vs-architecture-ablation", ["run", "compare:data-vs-architecture-ablation"]],
   ["report:r25w-next-step", ["run", "report:r25w-next-step"]],
   ["check:from-scratch-training-doctrine", ["run", "check:from-scratch-training-doctrine"]],
-  ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]],
-  ["check:r25v-architecture-ablation-history", ["run", "check:r25v-architecture-ablation-history"]]
+  ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]]
 ];
 
 async function runStep(name, args) {
@@ -45,11 +44,13 @@ async function main() {
     phase_4_scaled_training_ran: false,
     phase_4_scaled_training_approved: false,
     release_checkpoint_admitted: false,
+    recursive_prior_gate_replay: false,
+    prior_gates_run_separately: true,
     steps: results,
     notes: [
-      "This gate validates R25W analysis, R25V history, and prior R24/R25 gates.",
+      "This gate validates R25W analysis and R25V comparison reports.",
       "It does not run small-pilot, toy, data-first, or architecture-ablation training.",
-      "R25V history delegates transitively to the R25U/T/S/R/Q/P/O/N/M/K/J/I/H/G/F/E/D/C/B/A and R24/Vercel history chain.",
+      "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25W.",
       "Future pilot runs require a new reviewer approval marker."
     ]
   };

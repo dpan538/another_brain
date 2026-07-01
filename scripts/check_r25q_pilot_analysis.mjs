@@ -10,14 +10,7 @@ const steps = [
   ["compare:small-pilot-history:r25q"],
   ["report:r25q-next-step"],
   ["check:from-scratch-training-doctrine"],
-  ["report:from-scratch-training-progress"],
-  ["check:r25p-second-small-pilot-history"],
-  ["check:r25o-second-pilot-design"],
-  ["check:r25n-small-pilot-evaluation"],
-  ["check:r25m-small-pilot-history"],
-  ["check:r25k-toy-overfit-history"],
-  ["check:r24-recovery-candidate"],
-  ["check:vercel-build"]
+  ["report:from-scratch-training-progress"]
 ];
 
 function tail(text = "", lines = 80) {
@@ -70,18 +63,10 @@ console.log(JSON.stringify({
   long_term_training: false,
   phase_4_scaled_training_approved: false,
   tracked_weights: false,
-  prior_gates_required_separately: [
-    "check:r25l-corpus-pilot-plan",
-    "check:r25j-tokenizer-toy-pipeline",
-    "check:r25i-from-scratch-roadmap",
-    "check:r25h-capacity-envelope",
-    "check:r25g-candidate-decision",
-    "check:r25f-candidate-purge",
-    "check:r25e-artifact-admission",
-    "check:r25d-browser-inference-binding",
-    "check:r25c-static-artifact-intake",
-    "check:r25b-static-decoder-training",
-    "check:r25-llm-first-static"
+  prior_gates_run_separately: true,
+  notes: [
+    "R25Q validates R25P analysis and replay evaluation reports.",
+    "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25Q."
   ],
   scripts_run: results.length,
   results

@@ -189,6 +189,10 @@ R25I adds `training/from_scratch/` as the doctrine and planning surface for the
 future model. LoRA, fine-tuning, adapters, and pretrained imports are not the
 final product strategy; external artifacts are comparison or compatibility only.
 
+R25AA adds a phase 3 pause packet and phase_4 readiness review only. It adds no
+new corpus rows, factual knowledge cards, chain-of-thought data, or training
+run, and phase_4 scaled training remains unapproved.
+
 R25J adds tokenizer dry-run scripts that extract text only from approved
 `training/llm_corpus/train.jsonl` fields and evaluate on dev/heldout corpus
 text. It also adds a tiny decoder toy scaffold for future phase-2 mechanics;

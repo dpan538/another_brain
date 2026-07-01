@@ -21,6 +21,10 @@ R25Z recommendation is conservative: pause phase 3 for review before any
 additional pilot. A phase_4 readiness review may be discussed separately, but
 phase_4 scaled training is not approved by R25Z.
 
+R25AA turns that recommendation into a phase 3 pause packet and phase_4
+readiness review. It still does not run training, approve phase_4 scaled
+training, or select a scaled architecture.
+
 Boundaries:
 
 - product training progress remains `0%`

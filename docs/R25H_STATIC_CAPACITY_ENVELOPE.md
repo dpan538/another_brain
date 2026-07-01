@@ -101,3 +101,14 @@ Capacity review does not replace R25E artifact admission. It tells a future
 self-trained release decision what size and shard envelope it must satisfy
 before local artifact intake. External baseline artifacts may use the same
 checks only when explicitly labeled comparison-only.
+
+## R25AA Phase 4 Static Envelope Review
+
+R25AA adds `training/from_scratch/phase4_scaled_architecture_envelope.r25aa.json`
+and `npm run eval:phase4-static-envelope` as planning-only checks for possible
+future phase_4 candidates. The review estimates q4 byte ranges and shard counts
+against the Hobby and Pro profiles.
+
+No phase_4 architecture is selected. No phase_4 training is approved. No
+checkpoint, model weight, release manifest, or browser static artifact is
+created by this review.

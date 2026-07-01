@@ -5,7 +5,7 @@ import { dirname, resolve } from "node:path";
 import { promisify } from "node:util";
 
 const ROOT = resolve(new URL("..", import.meta.url).pathname);
-const OUTPUT_PATH = "artifacts/training_os/small_decoder_pilot/r25u/r25u_phase4_readiness_report.json";
+const OUTPUT_PATH = "artifacts/training_os/phase4_readiness/r25aa_phase4_readiness_check_report.json";
 const execFileAsync = promisify(execFile);
 
 async function readJsonIfPresent(path) {
@@ -34,10 +34,38 @@ async function gitFiles(paths) {
   return stdout.split(/\r?\n/).filter(Boolean);
 }
 
+async function activePhase4ApprovalCount() {
+  const markers = [
+    "training/from_scratch/APPROVE_R25U_ARCHITECTURE_ABLATION.template.json",
+    "training/from_scratch/APPROVE_R25V_NEXT_PILOT.template.json",
+    "training/from_scratch/APPROVE_R25V_ARCHITECTURE_ABLATION.json",
+    "training/from_scratch/APPROVE_R25X_FUTURE_PILOT.template.json",
+    "training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.template.json",
+    "training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json",
+    "training/from_scratch/APPROVE_R25AA_NEXT_STEP.template.json",
+    "training/from_scratch/APPROVE_R25AB_PHASE4_READINESS.template.json"
+  ];
+  let active = 0;
+  const summaries = [];
+  for (const path of markers) {
+    const marker = await readJsonIfPresent(path);
+    const isActive = Boolean(marker?.approved === true && marker?.consumed !== true && marker?.allow_phase_4_scaled_training === true);
+    if (isActive) active += 1;
+    summaries.push({
+      path,
+      approved: marker?.approved === true,
+      consumed: marker?.consumed === true,
+      allow_phase_4_scaled_training: marker?.allow_phase_4_scaled_training === true,
+      active_phase4_training_approval: isActive
+    });
+  }
+  return { active, summaries };
+}
+
 function lineClaimsPhase4Approved(line, block) {
   if (!/(phase[_ ]?4|scaled training|scaled decoder training)/i.test(line)) return false;
-  if (!/(approved|allowed|started|ran|product|release|admitted)/i.test(line)) return false;
-  if (/(not|no |none|never|without|blocked|false|must not|cannot|does not|do not|is not|remains unapproved|not approved|approved:false|forbidden|template|allow_phase_4_scaled_training|phase_4_scaled_training_approved|lineClaimsPhase4Approved|forbiddenPhase4Claims|pattern:|RegExp|ACTIVE_RE|check_phase4_scaled_training_readiness)/i.test(block)) return false;
+  if (!/\b(approved|allowed|started|ran|product|release|admitted)\b/i.test(line)) return false;
+  if (/(not|no |none|never|without|blocked|false|must not|cannot|does not|do not|is not|remains unapproved|not approved|approved:false|forbidden|template|required|not_reviewed|review_only|analysis_only|approval_required|allow_phase_4_scaled_training|phase_4_scaled_training_approved|phase4_scaled_training_approved|!== true|lineClaimsPhase4Approved|forbiddenPhase4Claims|pattern:|RegExp|ACTIVE_RE|check_phase4_scaled_training_readiness)/i.test(block)) return false;
   return true;
 }
 
@@ -66,6 +94,11 @@ async function main() {
   const r25sAnalysis = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25t/r25t_r25s_analysis.json");
   const r25sBreakdown = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25t/r25t_r25s_heldout_breakdown.json");
   const r25tComparison = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25t/r25t_r25p_r25s_generalization.json");
+  const r25aaLedger = await readJsonIfPresent("training/from_scratch/phase3_final_review_ledger.r25aa.json");
+  const r25aaReview = await readJsonIfPresent("training/from_scratch/phase4_readiness_review.r25aa.json");
+  const r25aaEnvelope = await readJsonIfPresent("training/from_scratch/phase4_scaled_architecture_envelope.r25aa.json");
+  const r25aaPauseReport = await readJsonIfPresent("artifacts/training_os/phase4_readiness/r25aa_phase3_pause_decision.json");
+  const phase4Approvals = await activePhase4ApprovalCount();
   const forbiddenPhase4Claims = await findForbiddenPhase4Claims();
 
   const reviewedPilotRuns = [
@@ -102,11 +135,19 @@ async function main() {
   if (r25sBreakdown?.ok !== true) missingCriteria.push("weak_bucket_breakdown_reviewed");
   if (r25tComparison?.ok !== true) missingCriteria.push("r25p_vs_r25s_generalization_compared");
   missingCriteria.push("fresh_reviewer_phase4_approval");
+  if (!r25aaLedger) missingCriteria.push("r25aa_phase3_final_review_ledger");
+  if (!r25aaReview) missingCriteria.push("r25aa_phase4_readiness_review");
+  if (!r25aaEnvelope) missingCriteria.push("r25aa_phase4_static_envelope");
 
   const report = {
-    ok: forbiddenPhase4Claims.length === 0,
+    ok: forbiddenPhase4Claims.length === 0 &&
+      phase4Approvals.active === 0 &&
+      r25aaReview?.phase4_scaled_training_approved !== true &&
+      r25aaEnvelope?.phase4_scaled_training_approved !== true &&
+      r25aaLedger?.phase4_scaled_training_approved !== true,
     phase4_approved: false,
     ready: false,
+    status: "not_ready_not_approved",
     criteria_passed_without_reviewer_approval: criteriaPassedWithoutApproval,
     reviewed_bounded_pilot_runs: reviewedPilotRuns,
     latest_pilot: {
@@ -117,9 +158,17 @@ async function main() {
       train_heldout_gap: finite(trainHeldoutGap) ? trainHeldoutGap : null
     },
     missing_criteria: missingCriteria,
+    phase3_final_review_status: r25aaLedger?.phase3_status || null,
+    phase4_readiness_review_status: r25aaReview?.phase4_ready || null,
+    phase4_static_envelope_status: r25aaEnvelope ? "planning_only_no_architecture_selected" : null,
+    active_phase4_training_approval_count: phase4Approvals.active,
+    phase4_approval_markers: phase4Approvals.summaries,
+    r25aa_pause_decision: r25aaPauseReport?.phase3_decision || null,
     blocking_risks: [
       "phase_4 scaled training is not approved",
       "reviewer approval is required even if phase_3 criteria are structurally satisfied",
+      "phase_4 run design has not been reviewed",
+      "scaled capacity projection has not been reviewed for a selected architecture",
       "static release admission has not started",
       "product training progress remains 0"
     ],

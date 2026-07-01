@@ -16,8 +16,7 @@ const STEPS = [
   ["compare:r25y-data-regularization", ["run", "compare:r25y-data-regularization"]],
   ["report:r25z-next-step", ["run", "report:r25z-next-step"]],
   ["check:from-scratch-training-doctrine", ["run", "check:from-scratch-training-doctrine"]],
-  ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]],
-  ["check:r25y-data-regularization-history", ["run", "check:r25y-data-regularization-history"]]
+  ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]]
 ];
 
 async function runStep(name, args) {
@@ -46,11 +45,13 @@ async function main() {
     long_term_training_ran: false,
     phase_4_scaled_training_ran: false,
     phase_4_scaled_training_approved: false,
+    recursive_prior_gate_replay: false,
+    prior_gates_run_separately: true,
     steps: results,
     notes: [
       "This gate validates R25Z analysis and R25Y history only.",
       "It does not run R25Y or any other training.",
-      "R25Y history delegates transitively to prior R25X/W/V/U/T/S/R/Q/P/O/N/M/K/J/I/H/G/F/E/D/C/B/A and R24/Vercel history gates.",
+      "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25Z.",
       "Future training requires a new reviewer approval marker.",
       "Phase_4 scaled training remains blocked."
     ]

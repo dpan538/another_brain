@@ -8,11 +8,7 @@ const steps = [
   ["eval:small-decoder-pilot-replay-heldout"],
   ["compare:small-pilot-history"],
   ["report:from-scratch-training-progress"],
-  ["check:from-scratch-training-doctrine"],
-  ["check:r25n-small-pilot-evaluation"],
-  ["check:r25m-small-pilot-history"],
-  ["check:r25k-toy-overfit-history"],
-  ["check:vercel-build"]
+  ["check:from-scratch-training-doctrine"]
 ];
 
 function tail(text = "", lines = 80) {
@@ -66,21 +62,10 @@ console.log(JSON.stringify({
   release_checkpoint: false,
   tracked_weights: false,
   recursive_prior_gate_replay: false,
-  prior_gates_required_separately: [
-    "check:r25m-small-decoder-pilot",
-    "check:r25l-corpus-pilot-plan",
-    "check:r25k-toy-overfit-sanity",
-    "check:r25j-tokenizer-toy-pipeline",
-    "check:r25i-from-scratch-roadmap",
-    "check:r25h-capacity-envelope",
-    "check:r25g-candidate-decision",
-    "check:r25f-candidate-purge",
-    "check:r25e-artifact-admission",
-    "check:r25d-browser-inference-binding",
-    "check:r25c-static-artifact-intake",
-    "check:r25b-static-decoder-training",
-    "check:r25-llm-first-static",
-    "check:r24-recovery-candidate"
+  prior_gates_run_separately: true,
+  notes: [
+    "R25O validates second-pilot design and replay protocol only.",
+    "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25O."
   ],
   scripts_run: results.length,
   results

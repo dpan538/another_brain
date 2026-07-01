@@ -14,16 +14,7 @@ const STEPS = [
   ["compare:small-pilot-history:r25s", ["run", "compare:small-pilot-history:r25s"]],
   ["check:small-decoder-pilot-artifacts-untracked", ["run", "check:small-decoder-pilot-artifacts-untracked"]],
   ["check:from-scratch-training-doctrine", ["run", "check:from-scratch-training-doctrine"]],
-  ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]],
-  ["check:r25r-data-first-pilot-design", ["run", "check:r25r-data-first-pilot-design"]],
-  ["check:r25q-pilot-analysis", ["run", "check:r25q-pilot-analysis"]],
-  ["check:r25p-second-small-pilot-history", ["run", "check:r25p-second-small-pilot-history"]],
-  ["check:r25o-second-pilot-design", ["run", "check:r25o-second-pilot-design"]],
-  ["check:r25n-small-pilot-evaluation", ["run", "check:r25n-small-pilot-evaluation"]],
-  ["check:r25m-small-pilot-history", ["run", "check:r25m-small-pilot-history"]],
-  ["check:r25k-toy-overfit-history", ["run", "check:r25k-toy-overfit-history"]],
-  ["check:r24-recovery-candidate", ["run", "check:r24-recovery-candidate"]],
-  ["check:vercel-build", ["run", "check:vercel-build"]]
+  ["report:from-scratch-training-progress", ["run", "report:from-scratch-training-progress"]]
 ];
 
 async function runStep(name, args) {
@@ -51,10 +42,13 @@ async function main() {
     long_term_training_ran: false,
     phase_4_scaled_training_ran: false,
     release_checkpoint_admitted: false,
+    recursive_prior_gate_replay: false,
+    prior_gates_run_separately: true,
     steps: results,
     notes: [
       "This gate validates R25S history and ignored artifacts only.",
       "It does not run small-pilot training; the one-shot run command is separate.",
+      "Prior milestone gates remain separate routine checks and are not recursively replayed inside R25S.",
       "Future pilot runs require a new reviewer approval marker."
     ]
   };
