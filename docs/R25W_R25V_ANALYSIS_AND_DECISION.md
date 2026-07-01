@@ -37,3 +37,8 @@ R25Y later tested that data-regularization design with fresh one-shot approval.
 It improved held-out loss versus R25P and R25V but did not beat the R25S
 data-first baseline, so R25S remains the best local phase 3 pilot by current
 metrics and phase_4 remains blocked.
+
+R25Z formalizes that review: no new training, R25S remains best-so-far, R25AA
+is only an inert template, and the recommended next step is to pause phase 3
+for review before considering any fresh-approved follow-up or phase_4 readiness
+review without training.

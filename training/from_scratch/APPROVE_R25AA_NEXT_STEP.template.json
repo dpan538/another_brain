@@ -1,0 +1,19 @@
+{
+  "approved": false,
+  "scope": "future_reviewed_next_step_only",
+  "reviewer": "",
+  "phase": "phase_3_or_phase4_review",
+  "run_id": "",
+  "variant_id": "",
+  "allow_small_pilot_training": false,
+  "allow_data_regularization_training": false,
+  "allow_architecture_ablation_training": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "allow_artifacts_write": true,
+  "artifact_output_root": "artifacts/training_os/",
+  "notes": "Template only. Future training or phase_4 review requires fresh explicit approval and cannot be inferred from R25Z."
+}

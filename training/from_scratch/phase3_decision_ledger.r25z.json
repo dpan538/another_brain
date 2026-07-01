@@ -1,0 +1,52 @@
+{
+  "ledger_id": "r25z_phase3_decision_review",
+  "phase": "phase_3_small_decoder_pilot",
+  "training_ran_in_r25z": false,
+  "phase4_scaled_training_approved": false,
+  "next_training_requires_fresh_approval": true,
+  "product_training_progress_percent": 0,
+  "formal_training_progress_percent": 0,
+  "pilot_training_progress_percent": 5,
+  "pilots": {
+    "R25M": {
+      "summary": "Weak pipeline sanity baseline; bounded numpy decoder-like pilot with non-replayable digest checkpoint.",
+      "replayable_checkpoint": false,
+      "role": "mechanics baseline"
+    },
+    "R25P": {
+      "summary": "Replayable stronger pilot with clear train/dev decrease and moderate generalization gap.",
+      "heldout_loss": 5.250599265098572,
+      "role": "first replayable heldout baseline"
+    },
+    "R25S": {
+      "summary": "Data-first balanced pilot; best-so-far heldout replay loss among R25P/R25S/R25V/R25Y.",
+      "heldout_loss": 5.069218635559082,
+      "role": "current best pilot"
+    },
+    "R25V": {
+      "summary": "Two-layer same-width architecture ablation; train improved slightly but dev and heldout worsened versus R25S.",
+      "heldout_loss": 5.244127511978149,
+      "role": "architecture ablation that did not help"
+    },
+    "R25Y": {
+      "summary": "Data-regularization pilot; improved over R25P and R25V but did not beat R25S.",
+      "heldout_loss": 5.1359784205754595,
+      "role": "regularization attempt that did not improve best baseline"
+    }
+  },
+  "current_best_pilot": "r25s_data_first_balanced_192",
+  "current_decision": {
+    "phase3_status": "pause_for_review",
+    "phase4_scaled_training_approved": false,
+    "next_training_requires_fresh_approval": true,
+    "recommended_next_training": "none_by_default",
+    "allowed_next_review": "phase4_readiness_review_no_training_or_data_regularization_redesign_after_reviewer_decision"
+  },
+  "must_not_do": [
+    "do not run training from R25Z",
+    "do not approve phase_4 scaled training",
+    "do not commit checkpoints or ignored reports",
+    "do not treat pilot checkpoints as release artifacts",
+    "do not add external model, LoRA, adapter, fine-tune, backend inference, or external storage paths"
+  ]
+}

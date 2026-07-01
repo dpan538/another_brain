@@ -32,3 +32,7 @@ scaling is approved.
 The replayable checkpoint remains an ignored pilot artifact only. It must not
 be committed, copied into browser runtime assets, treated as a release
 checkpoint, or used as static LLM production deployment evidence.
+
+R25Z may reuse this existing ignored held-out report and checkpoint for
+breakdown analysis. That replay analysis is evaluation-only and does not
+authorize another R25Y run, a future R25AA run, or phase_4 scaled training.

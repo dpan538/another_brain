@@ -263,6 +263,13 @@ outputs, not release checkpoints, and not browser static assets. They must not
 be staged, committed, deployed, or copied into runtime/static asset
 directories. The consumed R25Y approval cannot authorize another run.
 
+R25Z reports live under ignored `artifacts/training_os/small_decoder_pilot/r25z/`.
+They are analysis, held-out breakdown, data-regularization comparison, and
+next-step decision reports only. The committed R25AA template is
+`approved:false` and cannot authorize training or phase_4 scaled training.
+R25Z reports must not be deployed, staged, or copied into runtime/static asset
+directories.
+
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is
 generated from `knowledge_sources/registry.json` plus reviewed JSONL chunks. It

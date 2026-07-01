@@ -117,6 +117,13 @@ training, not release checkpoint admission, and not browser static deployment.
 Product and formal training progress remain `0%`; pilot progress may increase
 separately to `5%`.
 
+R25Z may move the label to `phase_3_data_regularization_pilot_analyzed` after
+R25Y analysis, R25Y held-out breakdown, R25Y-vs-prior comparison, the R25Z
+decision ledger, and the R25Z next-step decision report pass. R25Z does not run
+training, does not rerun R25Y/R25V/R25S/R25P/R25M/toy pilots, and does not
+approve R25AA or phase_4 scaled training. Product and formal training progress
+remain `0%`; pilot progress remains separate at `5%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -139,3 +146,5 @@ separately to `5%`.
   data-regularization pilot or phase_4 scaled training.
 - Treating R25Y data-regularization output as phase_4 approval, release
   admission, product progress, or permission to run another pilot.
+- Treating R25Z analysis or the R25AA inert template as approval for another
+  pilot, phase_4 readiness work, or phase_4 scaled training.

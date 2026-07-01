@@ -60,3 +60,8 @@ Boundaries:
 - no LoRA, adapters, or fine-tuning path is introduced as the final strategy
 
 R24/R25 gates remain required after the run.
+
+R25Z analyzes this run without retraining. Its comparison confirms that R25Y
+improved over R25P and R25V but did not beat R25S; the phase 3 recommendation
+therefore remains pause-for-review rather than another automatic pilot or
+phase_4 scaled training.

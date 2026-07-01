@@ -27,3 +27,8 @@ At R25X time, R25Y was not approved. A later R25Y run required a fresh
 one-shot approval marker and could not be authorized by the R25X template.
 Phase_4 scaled training remains not approved. Product and formal training
 progress remain `0%`; pilot progress remains separate from product progress.
+
+R25Z later analyzed R25Y and found that the data-regularization run improved
+over R25P and R25V but still did not beat R25S. The R25X data-regularization
+design therefore remains useful as an experiment, not as evidence to continue
+training automatically. Phase_4 scaled training remains blocked.

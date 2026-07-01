@@ -464,3 +464,9 @@ produced a replayable held-out checkpoint. R25Y improved held-out loss versus
 R25P and R25V but did not beat R25S, so the recommendation is to stop and
 review before any further pilot or phase_4 readiness review. Product and formal
 training progress remain `0%`, and phase_4 scaled training remains blocked.
+
+R25Z analyzes R25Y without running training. It records R25S as best-so-far,
+adds an R25Z phase 3 decision ledger, and introduces only an inert R25AA
+template. The conservative next step is pause phase 3 for review; any future
+training or phase_4 readiness work requires fresh explicit approval, and
+phase_4 scaled training remains unapproved.

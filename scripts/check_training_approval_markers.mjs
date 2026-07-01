@@ -122,6 +122,14 @@ const MARKERS = [
     expectedRunId: "r25y_data_regularized_192",
     expectedVariantId: "r25y_data_regularized_192",
     trainingFlagKeys: ["allow_small_pilot_training", "allow_data_regularization_training", "allow_phase_4_scaled_training"]
+  },
+  {
+    id: "r25aa_next_step_template",
+    path: "training/from_scratch/APPROVE_R25AA_NEXT_STEP.template.json",
+    expectedScope: "future_reviewed_next_step_only",
+    expectedPhase: "phase_3_or_phase4_review",
+    template: true,
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_data_regularization_training", "allow_architecture_ablation_training", "allow_phase_4_scaled_training"]
   }
 ];
 
