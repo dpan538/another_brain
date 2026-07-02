@@ -35,3 +35,11 @@ R25AC follows this doctrine when approved: it targets `zh >= 70%`, mixed
 Chinese/English near `20%`, and `en <= 10%`; English remains secondary and
 technical. Its held-out reports must keep `zh`, `mixed`, and `en` buckets
 separate so Chinese quality cannot be hidden by aggregate loss.
+
+## R25AD Corpus Lesson
+
+R25AD shows that sampling can satisfy the Chinese-first ratio while quality
+still regresses against R25S. Future R25AE work should add reviewed zh and
+mixed Chinese-personal rows, not merely repeat the same R25L rows. R25AE is a
+future corpus-expansion review design only in R25AD; it does not authorize
+training, phase_4, product progress, release checkpoints, or committed weights.

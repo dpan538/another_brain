@@ -29,3 +29,10 @@ otherwise.
 R25AC artifacts must stay under ignored `artifacts/` paths. No artifacts or
 weights from this evaluation may be committed or copied into `web/`,
 `static_llm/assets/`, `build_sources/`, or `knowledge_sources/`.
+
+R25AD reads this held-out evidence and keeps the interpretation bounded. R25AC
+held-out loss is `5.424156606197357`, worse than the R25S reference
+`5.069218635559082`; therefore R25S remains the best phase 3 loss reference.
+The review recommends future reviewed Chinese-personal corpus expansion before
+any new micro-cycle. It does not approve R25AE, training, phase_4, release
+admission, or committed weights.

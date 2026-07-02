@@ -52,3 +52,14 @@ weights, backend inference, storage, API routes, or third-party hosting.
 
 Product training progress remains `0%`. Formal decoder training progress
 remains `0%`. Pilot progress may rise only as a bounded phase 3 pilot signal.
+
+## R25AD Review
+
+R25AD analyzes this completed micro-cycle only. It does not rerun R25AC, does
+not train, and does not approve phase_4. The review classifies R25AC as
+`language_mix_success_quality_regressed_vs_r25s`: the Chinese-first and
+personal-target mechanisms worked, but held-out loss stayed worse than R25S.
+
+The next recommended step is R25AE corpus expansion review, not another
+micro-cycle from the consumed approval. R25AE is not approved in R25AD, and any
+future training still requires a separate fresh bounded approval.

@@ -48,6 +48,11 @@ R25AC runs exactly one fresh-approved Chinese-first personal micro-cycle from
 reviewed R25L rows only. It writes ignored local pilot artifacts, consumes the
 approval marker, keeps product/formal training progress at `0%`, does not
 approve phase_4 scaled training, and commits no weights or artifacts.
+R25AD analyzes that micro-cycle without training or corpus mutation. R25AC hit
+the `zh >= 70%` and `en <= 10%` sampling target but did not beat R25S held-out
+loss, so R25AD recommends a future R25AE Chinese-personal corpus-expansion
+review pass only. R25AE is not approved in R25AD, no external LLM generation or
+private sources are allowed, and no weights or artifacts are committed.
 
 ## Public Data
 

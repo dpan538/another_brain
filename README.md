@@ -63,6 +63,13 @@ the attempt, and remains non-product: no phase_4 scaled training, no release
 checkpoint, no static browser artifact, no committed weights, and product/formal
 training progress stays `0%`.
 
+R25AD analyzes R25AC without training or rerunning any pilot. R25AC met the
+Chinese-first sampling target but regressed against R25S on held-out loss, so
+R25S remains the best phase 3 loss reference. R25AD recommends R25AE as a
+future Chinese-personal corpus-expansion review pass only; R25AE is not
+approved, phase_4 remains blocked, no artifacts or weights are committed, and
+product/formal training progress stays `0%`.
+
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
 and evaluates dev/heldout text for leakage and segmentation sanity. The tiny

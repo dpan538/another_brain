@@ -1,0 +1,120 @@
+{
+  "plan_id": "r25ae_chinese_personal_corpus_expansion",
+  "status": "future_design_only_not_approved",
+  "scope": "chinese_personal_corpus_expansion_design_only",
+  "training_allowed": false,
+  "corpus_generation_allowed_in_r25ad": false,
+  "requires_fresh_approval_for_r25ae": true,
+  "product_model_training_allowed": false,
+  "phase_4_scaled_training_approved": false,
+  "release_checkpoint_allowed": false,
+  "commit_weights_allowed": false,
+  "external_llm_generation_allowed": false,
+  "private_raw_data_allowed": false,
+  "chain_of_thought_allowed": false,
+  "eval_prompt_training_allowed": false,
+  "backend_or_external_storage_allowed": false,
+  "basis": {
+    "r25ac_run_id": "r25ac_chinese_personal_microcycle_256",
+    "r25ac_analysis": "language_mix_success_quality_regressed_vs_r25s",
+    "best_reference_pilot": "r25s_data_first_balanced_192",
+    "current_r25l_mix": "balanced_thirds",
+    "decision": "expand_reviewed_chinese_personal_corpus_before_any_followup_microcycle"
+  },
+  "target_language_mix": {
+    "zh_min": 0.7,
+    "mixed_target": 0.2,
+    "en_max": 0.1
+  },
+  "candidate_total_row_targets": [
+    {
+      "total_rows": 3000,
+      "target_counts": {
+        "zh": 2100,
+        "mixed": 600,
+        "en": 300
+      },
+      "additional_reviewed_rows_needed_from_current_r25l": {
+        "zh": 1300,
+        "mixed": 0,
+        "en": 0
+      },
+      "requires_en_cap_or_downselection": true
+    },
+    {
+      "total_rows": 5000,
+      "target_counts": {
+        "zh": 3500,
+        "mixed": 1000,
+        "en": 500
+      },
+      "additional_reviewed_rows_needed_from_current_r25l": {
+        "zh": 2700,
+        "mixed": 200,
+        "en": 0
+      },
+      "requires_en_cap_or_downselection": true
+    },
+    {
+      "total_rows": 10000,
+      "target_counts": {
+        "zh": 7000,
+        "mixed": 2000,
+        "en": 1000
+      },
+      "additional_reviewed_rows_needed_from_current_r25l": {
+        "zh": 6200,
+        "mixed": 1200,
+        "en": 200
+      },
+      "requires_en_cap_or_downselection": false
+    }
+  ],
+  "allowed_source_categories": [
+    "project-authored Chinese tone samples written for this repo",
+    "reviewed project decision history",
+    "reviewed public or project-authored style examples",
+    "user-approved preference statements",
+    "observable local-first static-browser constraints",
+    "reviewed repair-after-weak-answer examples",
+    "reviewed bounded-judgment examples"
+  ],
+  "active_source_paths": [
+    "training/llm_corpus/r25l_train.jsonl",
+    "training/llm_corpus/r25l_dev.jsonl",
+    "training/llm_corpus/r25l_heldout.jsonl"
+  ],
+  "forbidden_source_categories": [
+    "root PDFs or DOCX",
+    "data/public_ingestion",
+    "hidden prompts",
+    "private raw memory",
+    "secrets",
+    "local private paths",
+    "unreviewed personal documents",
+    "exact eval prompt copies"
+  ],
+  "personal_color_targets": [
+    "project_continuation",
+    "repair_after_weak_answer",
+    "local_first_static_browser_reasoning",
+    "style_preference",
+    "tool_status_honesty",
+    "bounded_judgment"
+  ],
+  "expansion_guidance": [
+    "Prefer new reviewed zh and mixed rows over repeated upsampling of the same R25L rows.",
+    "Keep English secondary and limited to technical terms, code terms, package names, and bilingual robustness.",
+    "Track zh, mixed, and en held-out buckets separately.",
+    "Keep personal color as reviewed style and project preference data, not private raw-data leakage.",
+    "Do not use held-out eval text for training.",
+    "Do not use factual knowledge cards as an intelligence substitute."
+  ],
+  "r25ae_status": "not_approved",
+  "r25ad_training_ran": false,
+  "notes": [
+    "R25AD designs R25AE only; it does not generate corpus rows.",
+    "R25AE may later be approved only as a corpus expansion review pass, not a training run.",
+    "Any later micro-cycle still needs a separate fresh approval after corpus review."
+  ]
+}

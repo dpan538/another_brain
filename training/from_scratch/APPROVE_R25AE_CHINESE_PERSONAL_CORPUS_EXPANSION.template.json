@@ -1,0 +1,19 @@
+{
+  "approved": false,
+  "scope": "chinese_personal_corpus_expansion_only",
+  "reviewer": "",
+  "phase": "phase_3_corpus_expansion",
+  "run_id": "r25ae_chinese_personal_corpus_expansion",
+  "allow_corpus_generation": false,
+  "allow_training": false,
+  "allow_small_pilot_training": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_external_llm_generation": false,
+  "allow_private_data_sources": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "artifact_output_root": "artifacts/training_os/small_decoder_pilot/r25ae/",
+  "notes": "Template only. R25AE requires fresh explicit approval with approved:true for corpus expansion design execution. This does not approve training, phase_4, product training, external LLM generation, private sources, release checkpoints, or weight commits."
+}

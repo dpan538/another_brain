@@ -49,3 +49,11 @@ prepared for. If run, it must remain one fresh-approved phase 3 pilot attempt
 to ignored artifacts only, consume its approval, and preserve the same project
 meaning: Chinese-first, project-trained, personally colored, non-product, and
 not phase_4.
+
+## R25AD Outcome
+
+R25AD confirms the project meaning after the first Chinese-personal
+micro-cycle. R25AC met the intended language mix and structural personal-target
+coverage, but R25S still has the better held-out loss. The next appropriate
+work is reviewed Chinese-personal corpus expansion, not project reset, not a
+repeat run from the consumed approval, and not phase_4 scaled training.

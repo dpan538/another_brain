@@ -158,6 +158,26 @@ const MARKERS = [
     expectedRunId: "r25ac_chinese_personal_microcycle_256",
     expectedVariantId: "r25ac_chinese_personal_microcycle_256",
     trainingFlagKeys: ["allow_small_pilot_training", "allow_chinese_personal_microcycle", "allow_phase_4_scaled_training"]
+  },
+  {
+    id: "r25ae_chinese_personal_corpus_expansion_template",
+    path: "training/from_scratch/APPROVE_R25AE_CHINESE_PERSONAL_CORPUS_EXPANSION.template.json",
+    expectedScope: "chinese_personal_corpus_expansion_only",
+    expectedPhase: "phase_3_corpus_expansion",
+    expectedRunId: "r25ae_chinese_personal_corpus_expansion",
+    template: true,
+    trainingFlagKeys: [
+      "allow_corpus_generation",
+      "allow_training",
+      "allow_small_pilot_training",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training",
+      "allow_external_llm_generation",
+      "allow_private_data_sources",
+      "allow_release_checkpoint",
+      "allow_weight_commit"
+    ]
   }
 ];
 

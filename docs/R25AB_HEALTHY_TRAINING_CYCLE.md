@@ -37,3 +37,8 @@ When R25AC is approved and run, it is the example of this cadence: design,
 fresh approval, one bounded run, replay checkpoint, held-out evaluation,
 R24/R25 gates, comparison to R25S, consumed approval, analysis, and pause. A
 good loss still does not authorize a repeat run or phase_4 scaled training.
+
+R25AD is the analysis and pause stage after R25AC. It consumes no new approval,
+runs no training, reruns no pilot, and recommends only a future R25AE corpus
+review. Any later micro-cycle still needs a separate fresh approval, and
+phase_4 remains blocked.

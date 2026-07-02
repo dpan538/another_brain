@@ -150,6 +150,18 @@ not phase_4 scaled training, not release checkpoint admission, and not browser
 static deployment. Product and formal training progress remain `0%`; pilot
 progress may increase separately to `6%`.
 
+R25AD may move the label to
+`phase_3_chinese_personal_microcycle_analyzed_corpus_expansion_design_pause`
+after no-training R25AC analysis, personal-target coverage audit, corpus-gap
+report, R25AE inert design/template validation, next-step decision, and R24/R25
+gates pass. It does not train, rerun pilots, generate corpus rows, approve
+R25AE, approve phase_4 scaled training, or commit weights. Product and formal
+training progress remain `0%`; pilot progress remains `6%`.
+
+R25AE may later be approved only as a Chinese-personal corpus-expansion review
+pass. It is not training approval, not phase_4 approval, not product training,
+and not release admission.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -181,3 +193,5 @@ progress may increase separately to `6%`.
   approval to run R25AC without a fresh reviewer approval.
 - Treating R25AC as permission to repeat the micro-cycle, approve phase_4,
   commit weights, or select a product model.
+- Treating R25AD analysis or the inert R25AE template as approval to generate
+  corpus rows, train, approve phase_4, or commit weights.

@@ -10,8 +10,10 @@ const INCLUDE_R25V = process.argv.includes("--include-r25v");
 const INCLUDE_R25Y = process.argv.includes("--include-r25y");
 const INCLUDE_R25AC = process.argv.includes("--include-r25ac");
 const DECISION_MODE = process.argv.includes("--decision-mode");
+const CHINESE_PERSONAL_REVIEW = process.argv.includes("--chinese-personal-review");
 
 function outputPath() {
+  if (CHINESE_PERSONAL_REVIEW) return "artifacts/training_os/small_decoder_pilot/r25ad/r25ad_small_pilot_history_comparison.json";
   if (INCLUDE_R25AC) return "artifacts/training_os/small_decoder_pilot/r25ac/r25ac_history_comparison.json";
   if (INCLUDE_R25Y) return "artifacts/training_os/small_decoder_pilot/r25y/r25y_history_comparison.json";
   if (INCLUDE_R25V) return "artifacts/training_os/small_decoder_pilot/r25v/r25v_history_comparison.json";
@@ -453,6 +455,7 @@ async function main() {
     ok: true,
     status: runs.length > 1 ? "history_compared" : runs.length === 1 ? "single_run_baseline" : "no_local_ignored_artifacts",
     decision_mode: DECISION_MODE,
+    chinese_personal_review: CHINESE_PERSONAL_REVIEW,
     training_ran: false,
     product_model: false,
     release_checkpoint: false,
@@ -486,11 +489,27 @@ async function main() {
     chinese_first_personal_helped: INCLUDE_R25AC
       ? r25acRecommendation === "chinese_personal_helped_review_next"
       : null,
+    r25ad_interpretation: CHINESE_PERSONAL_REVIEW ? {
+      language_mix_mechanism_worked: Boolean(
+        r25acRun?.actual_language_mix &&
+        Number(r25acRun.actual_language_mix.zh || 0) >= 0.7 &&
+        Number(r25acRun.actual_language_mix.en || 0) <= 0.1
+      ),
+      r25s_remains_best_by_heldout_loss: Number.isFinite(Number(r25sHeldout?.heldout_loss)) &&
+        [r25pHeldout, r25sHeldout, r25vHeldout, r25yHeldout, r25acHeldout]
+          .filter(Boolean)
+          .every((report) => Number(r25sHeldout.heldout_loss) <= Number(report.heldout_loss)),
+      r25ac_quality_regressed_vs_r25s: Number.isFinite(Number(r25acHeldout?.heldout_loss)) &&
+        Number.isFinite(Number(r25sHeldout?.heldout_loss)) &&
+        Number(r25acHeldout.heldout_loss) > Number(r25sHeldout.heldout_loss),
+      r25ae_corpus_expansion_preferred_before_repeat: true,
+      phase_4_scaled_training_approved: false
+    } : null,
     r25m_non_replayable_limitation: Boolean(r25mRun) ? "R25M stored a digest checkpoint and cannot provide true replayed held-out loss." : null,
     r25p_replayability: r25pRun?.replayable_checkpoint_available === true ? "replayable_checkpoint_available" : INCLUDE_R25P ? "not_available_or_not_validated" : "not_requested",
     recommendation_category: recommendationCategory,
     recommendation: DECISION_MODE
-      ? INCLUDE_R25AC ? "stop_and_review_before_any_repeat_or_phase_4_design_review" : INCLUDE_R25Y ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25V ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25S ? "stop_and_review_before_any_further_training_or_scaling" : "review_required_before_any_r25r_or_scaling"
+      ? CHINESE_PERSONAL_REVIEW ? "expand_chinese_personal_corpus_before_any_repeat_or_phase_4_design_review" : INCLUDE_R25AC ? "stop_and_review_before_any_repeat_or_phase_4_design_review" : INCLUDE_R25Y ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25V ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25S ? "stop_and_review_before_any_further_training_or_scaling" : "review_required_before_any_r25r_or_scaling"
       : INCLUDE_R25P ? "stop_and_review" : "future_r25p_requires_fresh_approval",
     notes: [
       DECISION_MODE

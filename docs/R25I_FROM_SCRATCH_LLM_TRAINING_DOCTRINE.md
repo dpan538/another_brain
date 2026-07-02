@@ -180,3 +180,17 @@ R25AC may use R25L train rows for training, R25L dev rows for dev sanity, and
 R25L held-out rows for replay evaluation only. It must not read evals, root
 PDFs/DOCX, `data/public_ingestion/`, private raw data, factual knowledge cards,
 external model output, or chain-of-thought data.
+
+R25AD may move the current phase label to
+`phase_3_chinese_personal_microcycle_analyzed_corpus_expansion_design_pause`
+after R25AC analysis, personal-target coverage audit, Chinese-personal corpus
+gap report, R25AE inert design validation, next-step report, and R24/R25 gates
+pass. R25AD does not train, does not rerun R25AC or any prior pilot, does not
+generate corpus rows, does not approve R25AE, and does not approve phase_4
+scaled training. Product and formal training progress remain `0%`; pilot
+progress remains separate at `6%`.
+
+R25AE is only a possible future corpus-expansion review pass. It may not train,
+approve phase_4, create release checkpoints, commit weights, call external LLM
+APIs, or use private raw sources. Any later bounded Chinese-personal micro-cycle
+still requires separate fresh approval after corpus review.

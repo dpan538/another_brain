@@ -75,6 +75,11 @@ R25AC runs exactly one approved Chinese-first personal micro-cycle to ignored
 local artifacts only. It does not approve phase_4 scaled training, does not
 create deployable assets, does not admit a release checkpoint, and does not
 change product or formal training progress from `0%`.
+R25AD analyzes R25AC only. It records that the Chinese-first mix worked but
+held-out loss regressed against R25S, so the next possible step is an R25AE
+Chinese-personal corpus-expansion review pass, not deployment and not training.
+R25AE is not approved by R25AD. No R25AD or R25AE report, checkpoint, corpus
+artifact, or weight may be deployed as a static asset.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
