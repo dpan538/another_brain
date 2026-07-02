@@ -1,0 +1,18 @@
+{
+  "approved": false,
+  "scope": "chinese_personal_microcycle_only",
+  "reviewer": "",
+  "phase": "phase_3_small_decoder_pilot",
+  "run_id": "r25ac_chinese_personal_microcycle_256",
+  "variant_id": "r25ac_chinese_personal_microcycle_256",
+  "allow_small_pilot_training": false,
+  "allow_chinese_personal_microcycle": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "allow_artifacts_write": true,
+  "artifact_output_root": "artifacts/training_os/small_decoder_pilot/r25ac/",
+  "notes": "Template only. R25AC requires fresh explicit approval with approved:true. This does not approve phase_4 or product training."
+}

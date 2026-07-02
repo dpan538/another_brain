@@ -4,9 +4,10 @@
 
 The project uses local build scripts to generate a short-answer distillation
 dataset and public browser artifacts for a local-first dialog runtime. R25
-prepares a same-origin static browser LLM path. R25I clarifies that the final
-target is a project-trained decoder LLM trained from scratch, then exported as
-a static browser release artifact. R25A/R25B/R25C do not train a model,
+prepares a same-origin static browser LLM path. R25I/R25AB clarify that the
+final target is a Chinese-first, project-trained decoder LLM trained for this
+project, not a project reset, then exported as a static browser release
+artifact. R25A/R25B/R25C do not train a model,
 download weights, commit real weights by default, or call external LLM APIs.
 R25D adds fixture first-token smoke coverage only; it does not add a real
 production model. R25E adds local artifact admission checks and remains blocked
@@ -40,6 +41,9 @@ R25W analyzes that ablation and finds data-first R25S remains stronger on
 dev/held-out behavior. R25X reviews phase 3, audits data quality, and creates
 an inert R25Y data-regularization design; it does not train, does not approve
 R25Y, and does not approve phase_4 scaled training.
+R25AB aligns the next cycle around a Chinese-first personal model goal. It
+adds doctrine and inert R25AC design files only: no training, no phase_4
+approval, no product progress, and no committed weights.
 
 ## Public Data
 
@@ -149,6 +153,9 @@ Private data is not distributed:
   versus R25S and keeps phase_4 blocked.
 - R25X review status: audits data quality, summarizes R25S best rows, and adds
   an inert R25Y data-regularization design without training.
+- R25AB Chinese-first status: doctrine and checks only; English is secondary,
+  R25AC is not approved, phase_4 remains unapproved, and no weights are
+  committed.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -186,12 +193,22 @@ corpus validation, eval-contamination checks, and coverage reporting before any
 future training use.
 
 R25I adds `training/from_scratch/` as the doctrine and planning surface for the
-future model. LoRA, fine-tuning, adapters, and pretrained imports are not the
+future model. R25AB clarifies that project-trained and self-trained mean
+continuing this project toward a Chinese-first personal decoder, not resetting
+R24/R25 work. LoRA, fine-tuning, adapters, and pretrained imports are not the
 final product strategy; external artifacts are comparison or compatibility only.
 
 R25AA adds a phase 3 pause packet and phase_4 readiness review only. It adds no
 new corpus rows, factual knowledge cards, chain-of-thought data, or training
 run, and phase_4 scaled training remains unapproved.
+
+R25AB adds Chinese-first direction docs, a personal-color boundary, a healthy
+training-cycle spec, an inert R25AC approval template, and a corpus language
+audit. Personal color may come only from reviewed public/project-authored style,
+user-approved preferences, project decisions, observable constraints, and repo
+Chinese tone examples. It must not come from raw private memory, root PDFs/DOCX,
+`data/public_ingestion/`, hidden prompts, secrets, exact eval prompt copies, or
+unreviewed personal documents.
 
 R25J adds tokenizer dry-run scripts that extract text only from approved
 `training/llm_corpus/train.jsonl` fields and evaluate on dev/heldout corpus

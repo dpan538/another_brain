@@ -1,8 +1,9 @@
 # R25I From-Scratch LLM Training Doctrine
 
 R25I corrects the R25 roadmap: the final target is a project-trained decoder
-LLM trained from scratch, then exported as a same-origin static browser artifact
-that fits the measured Vercel static envelope.
+LLM trained for this project, then exported as a same-origin static browser
+artifact that fits the measured Vercel static envelope. R25AB clarifies that
+this means a Chinese-first self-trained personal model, not a project reset.
 
 Training is not started in R25I. This patch adds doctrine, schemas, phase
 planning, and anti-regression checks only.
@@ -45,6 +46,8 @@ baseline/compatibility.
   temporary compatibility fixtures.
 - Fixture first-token smoke is not model performance.
 - Factual knowledge-card expansion is not an intelligence substitute.
+- The goal is a healthy Chinese-first personal model, not a perfect GPT clone
+  or a generic benchmark-optimization machine.
 
 ## Training Boundaries
 
@@ -84,6 +87,9 @@ baseline/compatibility.
   text may enter the training corpus.
 - No Vercel backend, storage product, hosted vector store, remote model API, or
   server inference path may be used.
+- Personal color must come from reviewed project-authored style, approved
+  preferences, project decisions, and safe Chinese tone examples, not raw
+  private memory or unreviewed personal documents.
 
 ## How Existing R25 Gates Change Meaning
 
@@ -147,3 +153,11 @@ R25S may move the current phase label to
 replay eval, approval consumption, artifact guard, history comparison, and
 R24/R25 gates pass. Product and formal training progress remain `0%`; pilot
 progress remains separate and may rise only conservatively.
+
+R25AB may move the current phase label to
+`phase_3_chinese_personal_cycle_aligned_review_only` after project-meaning,
+Chinese-first, personal-color-boundary, healthy-cycle, R25AC inert-design,
+corpus-audit, and R24/R25 gates pass. R25AB does not run training, does not
+approve R25AC, does not approve phase_4 scaled training, and does not commit
+weights. Product and formal training progress remain `0%`; pilot progress
+remains separate at `5%`.

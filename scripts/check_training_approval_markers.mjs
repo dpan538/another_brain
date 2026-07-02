@@ -138,6 +138,16 @@ const MARKERS = [
     expectedPhase: "phase_4_scaled_decoder_training_review",
     template: true,
     trainingFlagKeys: ["allow_phase4_design", "allow_phase_4_scaled_training"]
+  },
+  {
+    id: "r25ac_chinese_personal_microcycle_template",
+    path: "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.template.json",
+    expectedScope: "chinese_personal_microcycle_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    expectedRunId: "r25ac_chinese_personal_microcycle_256",
+    expectedVariantId: "r25ac_chinese_personal_microcycle_256",
+    template: true,
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_chinese_personal_microcycle", "allow_phase_4_scaled_training"]
   }
 ];
 

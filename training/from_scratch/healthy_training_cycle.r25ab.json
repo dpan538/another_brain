@@ -1,0 +1,29 @@
+{
+  "cycle_id": "r25ab_healthy_training_cycle",
+  "phase": "phase_3_chinese_personal_cycle_alignment",
+  "training_ran_in_r25ab": false,
+  "stages": [
+    "design",
+    "reviewer_approval",
+    "one_bounded_run",
+    "replayable_checkpoint",
+    "heldout_eval",
+    "r24_r25_gates",
+    "comparison_to_best_pilot",
+    "approval_consumed",
+    "analysis",
+    "pause"
+  ],
+  "rules": {
+    "continuous_unbounded_training_allowed": false,
+    "repeated_run_from_same_approval_allowed": false,
+    "automatic_scale_after_good_loss_allowed": false,
+    "phase_4_requires_readiness_review_and_fresh_approval": true,
+    "best_pilot_is_reference_not_product_model": true,
+    "product_training_progress_percent": 0,
+    "formal_training_progress_percent": 0
+  },
+  "best_reference_pilot": "r25s_data_first_balanced_192",
+  "r25ac_status": "future_design_only_not_approved",
+  "phase_4_scaled_training_approved": false
+}

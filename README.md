@@ -1,6 +1,6 @@
 # Another Brain
 
-Another Brain is the source repository for Answer Machine, a local-first browser-side answer web app at `efishother.com`. R25 changes the target architecture to an LLM-first static browser runtime: a future project-trained decoder LLM drafts in the browser, while the R24 recovery gates, shard runtime, verifier, finalizer, and fallback firewall wrap that draft.
+Another Brain is the source repository for Answer Machine, a local-first browser-side answer web app at `efishother.com`. R25 changes the target architecture to an LLM-first static browser runtime: a future Chinese-first, project-trained decoder LLM drafts in the browser, while the R24 recovery gates, shard runtime, verifier, finalizer, and fallback firewall wrap that draft.
 
 The public UI is intentionally small: one input box, no account, no cloud inference, and no remote LLM call. The browser path is designed to stay light enough for mobile devices.
 
@@ -12,7 +12,7 @@ GitHub description: `Answer Machine: local-first browser-side answers with deter
 
 ## Runtime Shape
 
-The active product target is a same-origin static decoder LLM running in the browser. R25I clarifies the final model strategy: train a decoder LLM from scratch for this project, then export a static browser release artifact that fits the Vercel static envelope. Vercel is used only for static hosting: no Vercel Function inference, no Edge Function inference, no external LLM API, and no external storage product for model loading. Browser cache/storage is allowed because it is user-local.
+The active product target is a same-origin static decoder LLM running in the browser. R25I/R25AB clarify the final model strategy: train a Chinese-first project-trained decoder LLM for this project, without resetting the project history, then export a static browser release artifact that fits the Vercel static envelope. Vercel is used only for static hosting: no Vercel Function inference, no Edge Function inference, no external LLM API, and no external storage product for model loading. Browser cache/storage is allowed because it is user-local.
 
 This is not an omniscient assistant or a generic chatbot. The private design model can talk about subject, Crocodile, body, symbol, and copy, but the front-stage dialog does not explain itself that way. Its public identity is deliberately smaller: it is a dialog box; it was once called Crocodile; the rest stays before or after the conversation.
 
@@ -38,7 +38,7 @@ memory/storage risk, and simulates deploy payload size without selecting a
 named model, creating large files, admitting assets, downloading weights, or
 training.
 
-R25I adds the from-scratch training doctrine, release-decision schema,
+R25I adds the project-trained training doctrine, release-decision schema,
 architecture envelope, tokenizer plan, corpus mix plan, and phase plan. Formal
 training progress remains `0%`: no training command runs, no weights are
 created, and LoRA/fine-tuning/adapters are rejected as the final strategy.
@@ -48,6 +48,13 @@ the main product path.
 R25AA pauses phase 3 for review after R25Y/R25Z: R25S remains the best small
 pilot, phase_4 readiness review is analysis-only, and phase_4 scaled training
 is not approved. Product training progress remains `0%`.
+
+R25AB reframes the next cycle around a Chinese-first personal model goal. The
+target is a healthy personally colored decoder, not a perfect GPT clone.
+Project-trained and self-trained do not mean project reset: all R24/R25 gates,
+datasets, pilots, and decisions remain part of the system. R25AB runs no
+training, commits no weights, keeps phase_4 unapproved, and designs R25AC only
+as a possible future bounded Chinese-personal micro-cycle.
 
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
@@ -395,15 +402,15 @@ surfaces are legacy fallback, comparison, or guardrail infrastructure only.
 
 R25B adds a reviewed LLM training-content scaffold under
 `training/llm_corpus/`. It is separated from evals, validated for
-train/dev/heldout contamination, and intended for future fine-tuning or
-distillation planning. R25B does not run training, add real weights, call
-external model APIs, or add factual knowledge-card expansion.
+train/dev/heldout contamination, and intended for future project-trained
+decoder planning. R25B does not run training, add real weights, call external
+model APIs, or add factual knowledge-card expansion.
 
 The future admission path is:
 
-1. Choose a decoder-only candidate for the largest feasible static Vercel
-   profile, likely `pro_static_llm_full`.
-2. Locally convert and review the artifact in R25C or later.
+1. Train a reviewed Chinese-first project decoder through bounded approved
+   cycles, starting only after explicit approval.
+2. Compare replayable checkpoints against the best pilot and held-out buckets.
 3. Add real sha256 manifests and same-origin static assets only after license,
    provenance, budget, browser-loader, and R24/R25 gates pass.
 4. Keep R24 verifier, finalizer, fallback firewall, shard runtime, and recovery
@@ -474,3 +481,8 @@ adds an R25Z phase 3 decision ledger, and introduces only an inert R25AA
 template. The conservative next step is pause phase 3 for review; any future
 training or phase_4 readiness work requires fresh explicit approval, and
 phase_4 scaled training remains unapproved.
+
+R25AB adds Chinese-first personal cycle alignment without running training.
+Future R25AC work may be approved only as one bounded Chinese-personal
+micro-cycle using reviewed sources; phase_4 remains blocked, product/formal
+training progress remains `0%`, and no weights or artifacts are committed.

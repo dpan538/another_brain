@@ -2,17 +2,14 @@
 import { spawnSync } from "node:child_process";
 
 const steps = [
-  ["generate:r25l-expanded-corpus"],
+  ["check:training-approval-markers"],
+  ["check:no-training-in-routine-gates"],
   ["check:r25l-expanded-corpus"],
   ["check:r25l-corpus-contamination"],
   ["report:r25l-corpus-coverage"],
-  ["build:tokenizer-dryrun-corpus:r25l"],
-  ["train:tokenizer-dryrun:r25l"],
   ["check:tokenizer-dryrun:r25l"],
   ["eval:tokenizer-dryrun:r25l"],
-  ["plan:small-decoder-pilot"],
   ["check:small-decoder-pilot-plan"],
-  ["run:small-decoder-pilot"],
   ["check:from-scratch-training-doctrine"],
   ["report:from-scratch-training-progress"],
   ["check:r25k-toy-overfit-history"],
@@ -61,8 +58,15 @@ console.log(JSON.stringify({
   ok: true,
   gate: "check:r25l-corpus-pilot-plan",
   recursive_gate_replay: false,
+  history_only: true,
+  corpus_generation_rerun: false,
+  tokenizer_training_rerun: false,
   formal_decoder_training: false,
   small_decoder_pilot_training: false,
+  notes: [
+    "R25L routine gate validates existing corpus, tokenizer dry-run, and pilot-plan evidence only.",
+    "It does not regenerate R25L corpus rows, retrain tokenizer dry-run artifacts, or run a small decoder pilot."
+  ],
   scripts_run: results.length,
   results
 }, null, 2));

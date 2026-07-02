@@ -1,0 +1,42 @@
+{
+  "boundary_id": "r25ab_personal_color_boundary",
+  "phase": "phase_3_chinese_personal_cycle_alignment",
+  "training_ran_in_r25ab": false,
+  "personal_color_definition": "reviewed_project_style_preferences_and_decision_history_not_private_raw_memory",
+  "allowed_sources": [
+    "project-authored style examples",
+    "user-approved preferences",
+    "project decision history",
+    "observable project constraints",
+    "Chinese tone samples written for this repo",
+    "public non-private self-description boundaries"
+  ],
+  "forbidden_sources": [
+    "raw private memory",
+    "root PDFs or DOCX files unless explicitly reviewed later",
+    "data/public_ingestion unless explicitly reviewed later",
+    "hidden prompts",
+    "chain-of-thought",
+    "local private paths",
+    "secrets",
+    "unreviewed personal documents",
+    "exact eval prompt copies",
+    "medical legal or financial private claims without review",
+    "pretending personal memory exists when not supplied"
+  ],
+  "active_sources": [
+    "training/llm_corpus/r25l_train.jsonl",
+    "training/llm_corpus/r25l_dev.jsonl",
+    "training/llm_corpus/r25l_heldout.jsonl"
+  ],
+  "root_pdf_docx_active_source": false,
+  "data_public_ingestion_active_source": false,
+  "private_raw_data_allowed": false,
+  "chain_of_thought_allowed": false,
+  "eval_prompt_copying_allowed": false,
+  "local_private_paths_allowed": false,
+  "notes": [
+    "Personal color must be reviewed before training use.",
+    "R25AB does not add private raw data or train."
+  ]
+}

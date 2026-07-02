@@ -132,6 +132,14 @@ pilot, does not approve R25AB, and does not approve phase_4 scaled training.
 Product and formal training progress remain `0%`; pilot progress remains
 separate at `5%`.
 
+R25AB may move the label to
+`phase_3_chinese_personal_cycle_aligned_review_only` after Chinese-first
+project-meaning doctrine, personal-color boundaries, healthy training cadence,
+R25AC inert design/template checks, corpus language audit, and R24/R25 gates
+pass. It does not train, does not approve R25AC, does not approve phase_4
+scaled training, and does not commit weights. Product and formal training
+progress remain `0%`; pilot progress remains separate at `5%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -159,3 +167,5 @@ separate at `5%`.
 - Treating R25AA readiness review or the R25AB inert template as approval for
   phase_4 design work, phase_4 scaled training, release admission, or product
   model progress.
+- Treating "project-trained" as project reset, or treating R25AB alignment as
+  approval to run R25AC without a fresh reviewer approval.

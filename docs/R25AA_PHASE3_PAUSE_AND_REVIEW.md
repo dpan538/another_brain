@@ -16,3 +16,9 @@ training is not approved, and no phase_4 run config is authorized.
 
 Future work requires fresh reviewer approval before any training. R24/R25 gates
 remain required before and after any approved future run.
+
+R25AB keeps this pause intact and reframes the next possible cycle around a
+Chinese-first personal model. That alignment is not a reset: all R24/R25 gates,
+datasets, pilots, and decisions remain part of the project. R25AB runs no
+training, commits no weights, and may only design R25AC as a future bounded
+Chinese-personal micro-cycle that still requires fresh approval.

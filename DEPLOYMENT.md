@@ -21,10 +21,10 @@ Vercel must not run model inference, generate private memory artifacts, build
 local memory packs, call external model APIs, or use Functions/Edge Functions
 for LLM inference. It must not rely on Blob, KV, Postgres, Redis, AI Gateway, a
 hosted vector store, or any third-party storage product for model loading.
-Training and artifact generation happen locally before release. R25I clarifies
-that the main model artifact should come from a future from-scratch project
-training pipeline, not from LoRA, adapters, fine-tuning, or selecting an
-existing pretrained model as the final product.
+Training and artifact generation happen locally before release. R25I/R25AB
+clarify that the main model artifact should come from a future Chinese-first
+project-trained pipeline, not from a project reset, LoRA, adapters,
+fine-tuning, or selecting an existing pretrained model as the final product.
 
 R25 targets a same-origin static decoder LLM that loads in the browser. R25A
 and R25B do not add weights. R25C adds local artifact intake and dry-run
@@ -67,6 +67,10 @@ analyzes it and records that data-first R25S remains stronger than the
 two-layer ablation. R25X reviews phase 3 and designs inert R25Y data
 regularization only; it does not train, approve R25Y, or approve phase_4
 scaled training.
+R25AB aligns the future cycle around a Chinese-first personal decoder and
+designs R25AC as a possible bounded micro-cycle only. It does not train, does
+not approve R25AC, does not approve phase_4 scaled training, and does not
+create deployable artifacts or weights.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
@@ -272,6 +276,11 @@ next-step decision reports only. The committed R25AA template is
 `approved:false` and cannot authorize training or phase_4 scaled training.
 R25Z reports must not be deployed, staged, or copied into runtime/static asset
 directories.
+
+R25AB reports live under ignored `artifacts/training_os/small_decoder_pilot/r25ab/`.
+They are corpus language audits only. R25AC configs and templates are design
+records with `approved:false`; they are not deployment approval, product
+training approval, release checkpoints, browser assets, or weights.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is

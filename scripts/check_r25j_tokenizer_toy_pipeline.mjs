@@ -2,59 +2,14 @@
 import { spawnSync } from 'node:child_process';
 
 const scripts = [
-  'build:tokenizer-dryrun-corpus',
-  'train:tokenizer-dryrun',
+  'check:training-approval-markers',
+  'check:no-training-in-routine-gates',
   'check:tokenizer-data-boundaries',
   'check:tokenizer-dryrun',
   'eval:tokenizer-dryrun',
-  'plan:tiny-decoder-toy',
   'check:tiny-decoder-toy-pipeline',
-  'run:tiny-decoder-toy-overfit',
   'check:from-scratch-training-doctrine',
   'report:from-scratch-training-progress',
-
-  // R25I/H/G/F policy and capacity checks, flattened to avoid recursive gate replay.
-  'check:removed-model-candidates',
-  'check:no-active-named-model-candidate',
-  'build:static-llm-candidates',
-  'check:no-slm-product-target',
-  'check:static-llm-candidate-decisions',
-  'score:static-decoder-candidates',
-  'eval:static-llm-capacity-envelope',
-  'generate:static-llm-dryrun-manifests',
-  'check:static-llm-manifest',
-  'check:static-llm-budget',
-  'eval:static-llm-browser-memory-envelope',
-  'simulate:static-llm-deploy-payload',
-  'check:static-llm-conversion-paths',
-
-  // R25B-E artifact, runtime, and training-corpus gates.
-  'generate:r25b-llm-corpus',
-  'check:llm-training-corpus',
-  'check:llm-training-contamination',
-  'report:llm-training-coverage',
-  'build:r25b-training-pack',
-  'audit:slm-legacy-surface',
-  'check:no-backend-llm',
-  'eval:static-llm-asset-loader',
-  'eval:static-llm-browser-budget',
-  'eval:r25-static-llm-admission',
-  'discover:static-llm-artifacts',
-  'audit:static-llm-inbox',
-  'check:static-llm-admission-approval',
-  'check:no-unapproved-model-weights',
-  'audit:static-llm-backend-format',
-  'check:static-llm-deploy-payload',
-  'eval:static-llm-candidate-loader',
-  'eval:static-llm-first-token',
-  'eval:llm-answer-contract',
-  'report:static-llm-readiness',
-  'eval:static-llm-storage-plan',
-
-  // R24 safety harness and static deploy checks, run once at the end.
-  'check:r24-recovery-candidate',
-  'check:r24g-source-derivation',
-  'check:r24b-shard-runtime',
   'check:vercel-build'
 ];
 
@@ -90,6 +45,15 @@ console.log(JSON.stringify({
   ok: true,
   gate: 'check:r25j-tokenizer-toy-pipeline',
   recursive_gate_replay: false,
+  history_only: true,
+  tokenizer_corpus_build_rerun: false,
+  tokenizer_training_rerun: false,
+  toy_training_rerun: false,
+  formal_decoder_training: false,
+  notes: [
+    'R25J routine gate validates existing tokenizer dry-run and toy-pipeline evidence only.',
+    'It does not rebuild tokenizer corpus, retrain tokenizer dry-run artifacts, or run toy overfit.'
+  ],
   scripts_run: results.length,
   results
 }, null, 2));

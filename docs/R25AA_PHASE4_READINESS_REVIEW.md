@@ -24,3 +24,9 @@ training has started, or a release artifact exists.
 
 R25AB may review phase_4 design only after explicit approval. The R25AB template
 is inert and does not authorize training.
+
+R25AB alignment does not change this readiness result. The project target is
+Chinese-first, project-trained, and personally colored, but phase_4 remains
+`review_required / not ready`, scaled training remains unapproved, active
+phase_4 training approvals remain `0`, product training progress remains `0%`,
+and no weights are committed.
