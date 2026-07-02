@@ -140,6 +140,16 @@ pass. It does not train, does not approve R25AC, does not approve phase_4
 scaled training, and does not commit weights. Product and formal training
 progress remain `0%`; pilot progress remains separate at `5%`.
 
+R25AC may move the label to
+`phase_3_chinese_personal_microcycle_completed_review_pause` only after the
+approved `r25ac_chinese_personal_microcycle_256` run, replayable checkpoint
+validation, held-out replay, Chinese/personal breakdown, history comparison,
+approval consumption, artifact guard, and R24/R25 gates pass. This remains
+phase 3 small-pilot work: not product-scale training, not long-term training,
+not phase_4 scaled training, not release checkpoint admission, and not browser
+static deployment. Product and formal training progress remain `0%`; pilot
+progress may increase separately to `6%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -169,3 +179,5 @@ progress remain `0%`; pilot progress remains separate at `5%`.
   model progress.
 - Treating "project-trained" as project reset, or treating R25AB alignment as
   approval to run R25AC without a fresh reviewer approval.
+- Treating R25AC as permission to repeat the micro-cycle, approve phase_4,
+  commit weights, or select a product model.

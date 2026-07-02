@@ -32,3 +32,8 @@ training loop.
 The current reference pilot remains `r25s_data_first_balanced_192`. R25AC may
 be designed as a future Chinese-first personal micro-cycle, but it must start
 from fresh approval and stop after one bounded run.
+
+When R25AC is approved and run, it is the example of this cadence: design,
+fresh approval, one bounded run, replay checkpoint, held-out evaluation,
+R24/R25 gates, comparison to R25S, consumed approval, analysis, and pause. A
+good loss still does not authorize a repeat run or phase_4 scaled training.

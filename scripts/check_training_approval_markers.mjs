@@ -148,6 +148,16 @@ const MARKERS = [
     expectedVariantId: "r25ac_chinese_personal_microcycle_256",
     template: true,
     trainingFlagKeys: ["allow_small_pilot_training", "allow_chinese_personal_microcycle", "allow_phase_4_scaled_training"]
+  },
+  {
+    id: "r25ac_chinese_personal_microcycle",
+    path: "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.json",
+    expectedScope: "chinese_personal_microcycle_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    consumedByCommit: "pending_r25ac_commit",
+    expectedRunId: "r25ac_chinese_personal_microcycle_256",
+    expectedVariantId: "r25ac_chinese_personal_microcycle_256",
+    trainingFlagKeys: ["allow_small_pilot_training", "allow_chinese_personal_microcycle", "allow_phase_4_scaled_training"]
   }
 ];
 

@@ -48,12 +48,59 @@ function argValue(name, fallback = null) {
 
 function runPrefix(config) {
   const runId = String(config.run_id || "");
+  if (runId.startsWith("r25ac_")) return "r25ac";
   if (runId.startsWith("r25y_")) return "r25y";
   if (runId.startsWith("r25v_")) return "r25v";
   if (runId.startsWith("r25s_")) return "r25s";
   if (runId.startsWith("r25p_")) return "r25p";
   return "r25m";
 }
+
+const PERSONAL_TARGET_FAMILIES = {
+  project_continuation: [
+    "recovery_candidate_green",
+    "training_progress_truth",
+    "from_scratch_training_direction",
+    "approval_marker_boundary",
+    "small_pilot_planning"
+  ],
+  repair_after_weak_answer: [
+    "repair_after_rejection",
+    "rejected_answer_learning",
+    "heldout_regression",
+    "fallback_firewall"
+  ],
+  local_first_static_browser_reasoning: [
+    "static_browser_runtime",
+    "no_backend_policy",
+    "same_origin_assets",
+    "static_cache_boundary",
+    "runtime_worker_boundary",
+    "release_packaging_boundary"
+  ],
+  style_preference: [
+    "dialogue_density",
+    "mobile_response_shape",
+    "reviewer_reportability",
+    "bilingual_following",
+    "mixed_context_followup"
+  ],
+  tool_status_honesty: [
+    "no_claimed_execution",
+    "training_progress_truth",
+    "approval_marker_boundary",
+    "checkpoint_hygiene",
+    "artifact_admission"
+  ],
+  bounded_judgment: [
+    "constraint_preservation",
+    "evidence_absence_unknown",
+    "fallback_firewall",
+    "privacy_boundary",
+    "provenance_review",
+    "product_claim_boundary"
+  ]
+};
 
 function normalizeText(value = "") {
   return String(value || "").normalize("NFC").replace(/\s+/g, " ").trim();
@@ -80,6 +127,17 @@ function collectSafeText(row) {
   }
   if (typeof row.target_answer === "string") out.push(`<assistant> ${shortText(row.target_answer)}`);
   return out.map(normalizeText).filter(Boolean);
+}
+
+function rowPersonalTargets(row, targets = []) {
+  const family = String(row.task_family || "");
+  const tags = new Set(Array.isArray(row.policy_tags) ? row.policy_tags : []);
+  const matched = [];
+  for (const target of targets) {
+    const families = PERSONAL_TARGET_FAMILIES[target] || [];
+    if (families.includes(family) || families.some((item) => tags.has(item))) matched.push(target);
+  }
+  return matched;
 }
 
 function scanText(text, source, failures) {
@@ -122,12 +180,150 @@ function buildSequences(rows, split, limit, sourcePath, tokenizer, tokenizerConf
       source: sourcePath,
       source_line: row.__line,
       split,
+      language: row.language || "unknown",
+      task_family: row.task_family || "unknown",
+      task_type: row.task_type || "unknown",
+      policy_tags: Array.isArray(row.policy_tags) ? row.policy_tags : [],
+      personal_targets: rowPersonalTargets(row, config.personal_color_targets || []),
       safe_fields: ["messages", "constraints", "retrieved_evidence", "target_answer"],
       token_count: fixed.token_count,
       token_ids: fixed.token_ids
     });
   }
   return sequences;
+}
+
+function countBy(rows, key) {
+  const out = {};
+  for (const row of rows) {
+    const value = typeof key === "function" ? key(row) : row[key];
+    out[value || "unknown"] = (out[value || "unknown"] || 0) + 1;
+  }
+  return out;
+}
+
+function shareFromCounts(counts) {
+  const total = Number(counts.total || 0);
+  return {
+    zh: total ? (counts.zh || 0) / total : 0,
+    mixed: total ? (counts.mixed || 0) / total : 0,
+    en: total ? (counts.en || 0) / total : 0,
+    other: total ? (counts.other || 0) / total : 0
+  };
+}
+
+function languageCounts(rows) {
+  const counts = { zh: 0, mixed: 0, en: 0, other: 0, total: rows.length };
+  for (const row of rows) {
+    if (row.language === "zh") counts.zh += 1;
+    else if (row.language === "mixed") counts.mixed += 1;
+    else if (row.language === "en") counts.en += 1;
+    else counts.other += 1;
+  }
+  return counts;
+}
+
+function targetLanguageCounts(limit, mixTarget) {
+  const enMax = Math.floor(limit * Number(mixTarget?.en_max ?? 0.1));
+  const zhMin = Math.ceil(limit * Number(mixTarget?.zh_min ?? 0.7));
+  let mixedTarget = Math.round(limit * Number(mixTarget?.mixed_target ?? 0.2));
+  if (zhMin + mixedTarget + enMax > limit) mixedTarget = Math.max(0, limit - zhMin - enMax);
+  const zhTarget = limit - mixedTarget - enMax;
+  return {
+    zh: Math.max(zhMin, zhTarget),
+    mixed: mixedTarget,
+    en: enMax
+  };
+}
+
+function stableScore(row, seed) {
+  return stableHash(`${seed}:${row.sample_id || ""}:${row.__source || ""}:${row.__line || 0}`);
+}
+
+function personalScore(row, targets) {
+  const matched = rowPersonalTargets(row, targets);
+  const tagScore = Array.isArray(row.policy_tags) && row.policy_tags.includes("reviewer_note") ? 0.1 : 0;
+  return matched.length + tagScore;
+}
+
+function rankRows(rows, targets, seed) {
+  return [...rows].sort((left, right) => {
+    const scoreDiff = personalScore(right, targets) - personalScore(left, targets);
+    if (scoreDiff !== 0) return scoreDiff;
+    return stableScore(left, seed).localeCompare(stableScore(right, seed));
+  });
+}
+
+function selectRowsByChinesePersonalMix(rows, split, limit, config, failures) {
+  if (!config.run_id?.startsWith("r25ac_")) return rows;
+  const targets = config.personal_color_targets || [];
+  const desired = targetLanguageCounts(limit, config.language_mix_target || {});
+  const byLanguage = {
+    zh: rows.filter((row) => row.language === "zh"),
+    mixed: rows.filter((row) => row.language === "mixed"),
+    en: rows.filter((row) => row.language === "en")
+  };
+  const enoughRows = Object.entries(desired).every(([language, count]) => byLanguage[language].length >= count);
+  const selected = [];
+  const selectedIds = new Set();
+  const take = (language, count) => {
+    for (const row of rankRows(byLanguage[language] || [], targets, config.seed ?? 29)) {
+      if (selected.length >= limit || selectedIds.has(row.sample_id) || count <= 0) continue;
+      selected.push(row);
+      selectedIds.add(row.sample_id);
+      count -= 1;
+    }
+    return count;
+  };
+  const missing = {
+    zh: take("zh", desired.zh),
+    mixed: take("mixed", desired.mixed),
+    en: take("en", desired.en)
+  };
+  if (selected.length < limit) {
+    for (const row of rankRows(rows, targets, config.seed ?? 29)) {
+      if (selected.length >= limit) break;
+      if (selectedIds.has(row.sample_id)) continue;
+      selected.push(row);
+      selectedIds.add(row.sample_id);
+    }
+  }
+  const counts = languageCounts(selected);
+  const share = shareFromCounts(counts);
+  if (enoughRows) {
+    if (share.zh < Number(config.language_mix_target?.zh_min ?? 0.7)) failures.push({ code: "r25ac_zh_primary_target_not_met", split, counts, share });
+    if (share.en > Number(config.language_mix_target?.en_max ?? 0.1)) failures.push({ code: "r25ac_en_cap_not_met", split, counts, share });
+  }
+  return selected;
+}
+
+function splitOverlap(trainRows, devRows, heldoutRows) {
+  const trainIds = new Set(trainRows.map((row) => row.sample_id).filter(Boolean));
+  const devIds = new Set(devRows.map((row) => row.sample_id).filter(Boolean));
+  const heldoutIds = new Set(heldoutRows.map((row) => row.sample_id).filter(Boolean));
+  const trainDev = [...trainIds].filter((id) => devIds.has(id));
+  const trainHeldout = [...trainIds].filter((id) => heldoutIds.has(id));
+  const devHeldout = [...devIds].filter((id) => heldoutIds.has(id));
+  return {
+    train_dev_count: trainDev.length,
+    train_heldout_count: trainHeldout.length,
+    dev_heldout_count: devHeldout.length,
+    any_overlap: trainDev.length + trainHeldout.length + devHeldout.length > 0
+  };
+}
+
+function personalCoverage(rows, targets = []) {
+  const coverage = {};
+  for (const target of targets) {
+    const matchedRows = rows.filter((row) => rowPersonalTargets(row, [target]).length > 0);
+    coverage[target] = {
+      rows: matchedRows.length,
+      sample_ids: matchedRows.slice(0, 12).map((row) => row.sample_id),
+      source: "task_family_or_policy_tags",
+      fabricated: false
+    };
+  }
+  return coverage;
 }
 
 async function readSamplingPlan(config, configPath) {
@@ -271,15 +467,26 @@ async function main() {
   const selectedTrainRows = rowsFromPlan(trainRows, "train", samplingPlan, failures);
   const selectedDevRows = rowsFromPlan(devRows, "dev", samplingPlan, failures);
   const selectedHeldoutRows = rowsFromPlan(heldoutRows, "heldout", samplingPlan, failures);
+  const trainLimit = Number(config.max_train_rows || 64);
+  const devLimit = Number(config.max_dev_rows || 32);
+  const heldoutLimit = Number(config.max_heldout_rows || 0);
   const trainRegularization = applyR25yRegularization(selectedTrainRows, "train", config);
-  const trainSequences = tokenizer ? buildSequences(trainRegularization.rows, "train", Number(config.max_train_rows || 64), config.train_source, tokenizer, tokenizerConfig, config, failures) : [];
-  const devSequences = tokenizer ? buildSequences(selectedDevRows, "dev", Number(config.max_dev_rows || 32), config.dev_source, tokenizer, tokenizerConfig, config, failures) : [];
+  const trainRowsForSelection = selectRowsByChinesePersonalMix(trainRegularization.rows, "train", trainLimit, config, failures);
+  const devRowsForSelection = selectRowsByChinesePersonalMix(selectedDevRows, "dev", devLimit, config, failures);
+  const heldoutRowsForSelection = selectRowsByChinesePersonalMix(selectedHeldoutRows, "heldout", heldoutLimit, config, failures);
+  const trainSequences = tokenizer ? buildSequences(trainRowsForSelection, "train", trainLimit, config.train_source, tokenizer, tokenizerConfig, config, failures) : [];
+  const devSequences = tokenizer ? buildSequences(devRowsForSelection, "dev", devLimit, config.dev_source, tokenizer, tokenizerConfig, config, failures) : [];
   const heldoutSequences = tokenizer && config.heldout_source
-    ? buildSequences(selectedHeldoutRows, "heldout", Number(config.max_heldout_rows || 0), config.heldout_source, tokenizer, tokenizerConfig, config, failures)
+    ? buildSequences(heldoutRowsForSelection, "heldout", heldoutLimit, config.heldout_source, tokenizer, tokenizerConfig, config, failures)
     : [];
   if (trainSequences.length < Number(config.max_train_rows || 64)) failures.push({ code: "too_few_train_sequences", count: trainSequences.length });
   if (devSequences.length < Number(config.max_dev_rows || 32)) failures.push({ code: "too_few_dev_sequences", count: devSequences.length });
   if (config.heldout_source && heldoutSequences.length < Number(config.max_heldout_rows || 0)) failures.push({ code: "too_few_heldout_sequences", count: heldoutSequences.length });
+  const overlap = splitOverlap(trainRowsForSelection, devRowsForSelection, heldoutRowsForSelection);
+  if (overlap.any_overlap) failures.push({ code: "split_overlap_detected", overlap });
+  const trainLanguageCounts = languageCounts(trainRowsForSelection);
+  const devLanguageCounts = languageCounts(devRowsForSelection);
+  const heldoutLanguageCounts = languageCounts(heldoutRowsForSelection);
 
   const datasetBase = {
     dataset_id: `${config.run_id || "r25m_small_decoder_pilot_v0"}_sequences_v0`,
@@ -330,11 +537,29 @@ async function main() {
     config_path: configPath,
     sampling_plan_path: samplingPlanPath,
     balanced_sampling_used: Boolean(samplingPlan),
+    chinese_personal_sampling_used: prefix === "r25ac",
     data_regularization_used: prefix === "r25y",
     regularization_stats: trainRegularization.stats,
+    train_rows: trainSequences.length,
+    dev_rows: devSequences.length,
+    heldout_rows: heldoutSequences.length,
     train_rows_used: trainSequences.length,
     dev_rows_used: devSequences.length,
     heldout_rows_prepared: heldoutSequences.length,
+    train_language_counts: trainLanguageCounts,
+    dev_language_counts: devLanguageCounts,
+    heldout_language_counts: heldoutLanguageCounts,
+    actual_train_language_mix: shareFromCounts(trainLanguageCounts),
+    actual_dev_language_mix: shareFromCounts(devLanguageCounts),
+    actual_heldout_language_mix: shareFromCounts(heldoutLanguageCounts),
+    target_language_mix: config.language_mix_target || null,
+    personal_target_coverage: personalCoverage(trainRowsForSelection, config.personal_color_targets || []),
+    split_overlap: overlap,
+    task_family_counts: {
+      train: countBy(trainRowsForSelection, "task_family"),
+      dev: countBy(devRowsForSelection, "task_family"),
+      heldout: countBy(heldoutRowsForSelection, "task_family")
+    },
     train_sequences: trainSequences.length,
     dev_sequences: devSequences.length,
     heldout_sequences_prepared: heldoutSequences.length,

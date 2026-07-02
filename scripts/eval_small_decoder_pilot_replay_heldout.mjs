@@ -12,6 +12,7 @@ const FUTURE_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25p/r
 const R25S_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25s/r25s_replayable_checkpoint.json";
 const R25V_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25v/r25v_replayable_checkpoint.json";
 const R25Y_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25y/r25y_replayable_checkpoint.json";
+const R25AC_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25ac/r25ac_replayable_checkpoint.json";
 const R25O_OUTPUT_PATH = "artifacts/training_os/small_decoder_pilot/r25o/r25o_replay_heldout_eval_report.json";
 const MODEL_WEIGHT_RE = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i;
 
@@ -79,6 +80,18 @@ function overlapExists(trainDataset, devDataset, heldoutDataset) {
     if (devIds.has(row.sample_id)) return true;
   }
   return false;
+}
+
+function languageCounts(dataset) {
+  const counts = { zh: 0, mixed: 0, en: 0, other: 0, total: 0 };
+  for (const row of dataset?.sequences || []) {
+    counts.total += 1;
+    if (row.language === "zh") counts.zh += 1;
+    else if (row.language === "mixed") counts.mixed += 1;
+    else if (row.language === "en") counts.en += 1;
+    else counts.other += 1;
+  }
+  return counts;
 }
 
 async function readReusablePilotReport(outputPath, expectedRunId) {
@@ -187,7 +200,7 @@ async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, de
 
   if (config.run_id !== expectedRunId) failures.push({ code: `unexpected_${prefix}_run_id`, expected: expectedRunId, actual: config.run_id });
   if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", actual: config.heldout_source });
-  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y") && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac") && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
   if (!(await exists(checkpointPath))) {
     const runReport = await readJson(runReportPath).catch(() => null);
     if (prefix === "r25v" && runReport?.small_pilot_training_ran === false && String(runReport?.reason || "").includes("unsupported_backend")) {
@@ -272,6 +285,8 @@ async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, de
     heldout_pairs: replay?.heldout_pairs || 0,
     heldout_loss: replay?.heldout_loss ?? null,
     heldout_loss_finite: Number.isFinite(replay?.heldout_loss),
+    heldout_language_counts: languageCounts(heldoutDataset),
+    heldout_loss_by_language: null,
     train_dev_heldout_overlap: trainDevHeldoutOverlap,
     checkpoint_path: checkpointPath,
     replayable_checkpoint_used: failures.length === 0,
@@ -282,6 +297,7 @@ async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, de
     notes: [
       `${prefix.toUpperCase()} held-out replay evaluates an already-written ignored JSON checkpoint and does not train.`,
       "Held-out rows come from the R25L heldout split only and are not used for training.",
+      "Per-language replay loss is not available in this lightweight replay path; language bucket coverage is reported structurally.",
       "The replayable checkpoint remains ignored and is not a release checkpoint."
     ],
     failures
@@ -326,6 +342,15 @@ async function main() {
       expectedRunId: "r25y_data_regularized_192",
       defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25y.json",
       defaultCheckpointPath: R25Y_REPLAYABLE_PATH
+    });
+    return;
+  }
+  if (run === "r25ac") {
+    await runPilotReplayMode({
+      prefix: "r25ac",
+      expectedRunId: "r25ac_chinese_personal_microcycle_256",
+      defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25ac.json",
+      defaultCheckpointPath: R25AC_REPLAYABLE_PATH
     });
     return;
   }

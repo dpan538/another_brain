@@ -30,3 +30,7 @@ Chinese-first, project-trained, and personally colored, but phase_4 remains
 `review_required / not ready`, scaled training remains unapproved, active
 phase_4 training approvals remain `0`, product training progress remains `0%`,
 and no weights are committed.
+
+R25AC, if run, remains a phase 3 bounded micro-cycle only. Its Chinese-first
+pilot artifacts do not satisfy phase_4 readiness, do not approve scaled
+training, do not admit a release checkpoint, and do not create a product model.

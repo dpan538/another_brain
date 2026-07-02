@@ -22,3 +22,8 @@ Chinese-first personal model. That alignment is not a reset: all R24/R25 gates,
 datasets, pilots, and decisions remain part of the project. R25AB runs no
 training, commits no weights, and may only design R25AC as a future bounded
 Chinese-personal micro-cycle that still requires fresh approval.
+
+R25AC may later run exactly one such fresh-approved bounded micro-cycle, but it
+does not lift the pause into phase_4. R25S remains the reference pilot until a
+separate review decides otherwise, phase_4 scaled training remains unapproved,
+and product/formal training progress remains `0%`.

@@ -44,6 +44,10 @@ R25Y, and does not approve phase_4 scaled training.
 R25AB aligns the next cycle around a Chinese-first personal model goal. It
 adds doctrine and inert R25AC design files only: no training, no phase_4
 approval, no product progress, and no committed weights.
+R25AC runs exactly one fresh-approved Chinese-first personal micro-cycle from
+reviewed R25L rows only. It writes ignored local pilot artifacts, consumes the
+approval marker, keeps product/formal training progress at `0%`, does not
+approve phase_4 scaled training, and commits no weights or artifacts.
 
 ## Public Data
 
@@ -154,8 +158,10 @@ Private data is not distributed:
 - R25X review status: audits data quality, summarizes R25S best rows, and adds
   an inert R25Y data-regularization design without training.
 - R25AB Chinese-first status: doctrine and checks only; English is secondary,
-  R25AC is not approved, phase_4 remains unapproved, and no weights are
-  committed.
+  phase_4 remains unapproved, and no weights are committed.
+- R25AC Chinese-first micro-cycle status: one bounded approved run may write
+  ignored artifacts only; approval is consumed after the attempt, active
+  training approvals return to `0`, and no artifacts or weights are committed.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -209,6 +215,13 @@ user-approved preferences, project decisions, observable constraints, and repo
 Chinese tone examples. It must not come from raw private memory, root PDFs/DOCX,
 `data/public_ingestion/`, hidden prompts, secrets, exact eval prompt copies, or
 unreviewed personal documents.
+
+R25AC may use only the approved R25L train/dev/held-out splits for its bounded
+Chinese-first personal micro-cycle. Held-out rows are evaluation-only, not
+training data. The micro-cycle must not read root PDFs/DOCX,
+`data/public_ingestion/`, private raw data, eval prompts, factual knowledge
+cards as an intelligence substitute, external model output, or chain-of-thought
+data.
 
 R25J adds tokenizer dry-run scripts that extract text only from approved
 `training/llm_corpus/train.jsonl` fields and evaluate on dev/heldout corpus

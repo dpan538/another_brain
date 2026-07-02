@@ -71,6 +71,10 @@ R25AB aligns the future cycle around a Chinese-first personal decoder and
 designs R25AC as a possible bounded micro-cycle only. It does not train, does
 not approve R25AC, does not approve phase_4 scaled training, and does not
 create deployable artifacts or weights.
+R25AC runs exactly one approved Chinese-first personal micro-cycle to ignored
+local artifacts only. It does not approve phase_4 scaled training, does not
+create deployable assets, does not admit a release checkpoint, and does not
+change product or formal training progress from `0%`.
 
 A future real model can be served only as static files under the approved
 static LLM asset path, with explicit release-scoped approval, a reviewed
@@ -139,6 +143,7 @@ npm run check:r25q-pilot-analysis
 npm run check:r25r-data-first-pilot-design
 npm run check:r25s-data-first-pilot-history
 npm run check:r25t-r25s-analysis
+npm run check:r25ac-chinese-personal-microcycle-history
 ```
 
 This validates release safety, legacy fallback readiness, persona behavior,
@@ -278,9 +283,19 @@ R25Z reports must not be deployed, staged, or copied into runtime/static asset
 directories.
 
 R25AB reports live under ignored `artifacts/training_os/small_decoder_pilot/r25ab/`.
-They are corpus language audits only. R25AC configs and templates are design
-records with `approved:false`; they are not deployment approval, product
-training approval, release checkpoints, browser assets, or weights.
+They are corpus language audits only. The R25AC template remains
+`approved:false`; the real R25AC approval is valid only as a consumed one-shot
+history marker after the bounded attempt. Neither is deployment approval,
+product training approval, release checkpoint admission, browser assets, or
+weights.
+
+R25AC reports and replayable checkpoints live under ignored
+`artifacts/training_os/small_decoder_pilot/r25ac/`. They are local
+Chinese-first personal micro-cycle evidence only. They are not product weights,
+not phase_4 scaled-training outputs, not release checkpoints, and not browser
+static assets. They must not be staged, committed, deployed, or copied into
+runtime/static asset directories. The consumed R25AC approval cannot authorize
+another run.
 
 The monolithic generated knowledge build source lives at
 `build_sources/knowledge/knowledge_base.generated.js`, outside `web/`, and is

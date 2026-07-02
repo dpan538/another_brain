@@ -14,6 +14,7 @@ const R25P_APPROVAL_PATH = "training/from_scratch/APPROVE_R25P_SECOND_SMALL_PILO
 const R25S_APPROVAL_PATH = "training/from_scratch/APPROVE_R25S_DATA_FIRST_PILOT.json";
 const R25V_APPROVAL_PATH = "training/from_scratch/APPROVE_R25V_ARCHITECTURE_ABLATION.json";
 const R25Y_APPROVAL_PATH = "training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json";
+const R25AC_APPROVAL_PATH = "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.json";
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
@@ -50,6 +51,7 @@ function normalizedDir(path) {
 
 function runPrefix(runConfig) {
   const runId = String(runConfig?.run_id || "");
+  if (runId.startsWith("r25ac_")) return "r25ac";
   if (runId.startsWith("r25y_")) return "r25y";
   if (runId.startsWith("r25v_")) return "r25v";
   if (runId.startsWith("r25s_")) return "r25s";
@@ -59,6 +61,7 @@ function runPrefix(runConfig) {
 
 function expectedScope(runConfig) {
   const prefix = runPrefix(runConfig);
+  if (prefix === "r25ac") return "chinese_personal_microcycle_only";
   if (prefix === "r25y") return "data_regularization_small_decoder_pilot_only";
   if (prefix === "r25v") return "phase3_architecture_ablation_pilot_only";
   if (prefix === "r25s") return "data_first_small_decoder_pilot_only";
@@ -68,6 +71,7 @@ function expectedScope(runConfig) {
 
 function defaultApproval(runConfig) {
   const prefix = runPrefix(runConfig);
+  if (prefix === "r25ac") return R25AC_APPROVAL_PATH;
   if (prefix === "r25y") return R25Y_APPROVAL_PATH;
   if (prefix === "r25v") return R25V_APPROVAL_PATH;
   if (prefix === "r25s") return R25S_APPROVAL_PATH;
@@ -104,8 +108,11 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (approval?.scope !== scope) failures.push({ code: "approval_scope_invalid", expected: scope, actual: approval?.scope });
   if (approval?.phase !== "phase_3_small_decoder_pilot") failures.push({ code: "approval_phase_invalid", phase: approval?.phase });
   if (approval?.run_id !== requestedRunId) failures.push({ code: "approval_run_id_mismatch", expected: requestedRunId, actual: approval?.run_id });
-  if ((prefix === "r25p" || prefix === "r25s" || prefix === "r25v" || prefix === "r25y") && approval?.variant_id !== requestedVariantId) {
+  if ((prefix === "r25p" || prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac") && approval?.variant_id !== requestedVariantId) {
     failures.push({ code: "approval_variant_id_mismatch", expected: requestedVariantId, actual: approval?.variant_id });
+  }
+  if (prefix === "r25ac" && requestedVariantId !== "r25ac_chinese_personal_microcycle_256") {
+    failures.push({ code: "r25ac_only_chinese_personal_microcycle_256_is_approved", actual: requestedVariantId });
   }
   if (prefix === "r25p" && requestedVariantId !== "r25p_more_sequences_128") {
     failures.push({ code: "r25p_only_more_sequences_128_is_approved", actual: requestedVariantId });
@@ -120,6 +127,9 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
     failures.push({ code: "r25y_only_data_regularized_192_is_approved", actual: requestedVariantId });
   }
   if (approval?.allow_small_pilot_training !== true) failures.push({ code: "approval_must_allow_small_pilot_training" });
+  if (prefix === "r25ac" && approval?.allow_chinese_personal_microcycle !== true) {
+    failures.push({ code: "approval_must_allow_chinese_personal_microcycle" });
+  }
   if (prefix === "r25y" && approval?.allow_data_regularization_training !== true) {
     failures.push({ code: "approval_must_allow_data_regularization_training" });
   }
@@ -128,7 +138,7 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   }
   if (approval?.allow_long_term_training !== false) failures.push({ code: "approval_must_not_allow_long_term_training" });
   if (approval?.allow_product_model_training !== false) failures.push({ code: "approval_must_not_allow_product_model_training" });
-  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y") && approval?.allow_phase_4_scaled_training !== false) failures.push({ code: "approval_must_not_allow_phase_4_scaled_training" });
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac") && approval?.allow_phase_4_scaled_training !== false) failures.push({ code: "approval_must_not_allow_phase_4_scaled_training" });
   if (approval?.allow_release_checkpoint !== false) failures.push({ code: "approval_must_not_allow_release_checkpoint" });
   if (approval?.allow_weight_commit !== false) failures.push({ code: "approval_must_not_allow_weight_commit" });
   if (approval?.allow_artifacts_write !== true) failures.push({ code: "approval_must_allow_ignored_artifact_write" });
@@ -143,7 +153,18 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (runConfig.release_checkpoint !== false) failures.push({ code: "run_config_must_not_be_release_checkpoint" });
   if (runConfig.formal_product_training === true) failures.push({ code: "run_config_must_not_enable_formal_product_training" });
   if (runConfig.long_term_training === true) failures.push({ code: "run_config_must_not_enable_long_term_training" });
-  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y") && runConfig.phase_4_scaled_training !== false) failures.push({ code: "run_config_must_not_enable_phase_4_scaled_training" });
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac") && runConfig.phase_4_scaled_training !== false) failures.push({ code: "run_config_must_not_enable_phase_4_scaled_training" });
+  if (prefix === "r25ac") {
+    if (runConfig.formal_product_training !== false) failures.push({ code: "r25ac_must_not_enable_formal_product_training" });
+    if (runConfig.architecture?.basis !== "r25s_baseline_data_first") {
+      failures.push({ code: "r25ac_must_use_r25s_data_first_basis", actual: runConfig.architecture?.basis });
+    }
+    if (Number(runConfig.architecture?.layers || 0) !== 1) {
+      failures.push({ code: "r25ac_must_keep_one_layer_baseline", actual: runConfig.architecture?.layers });
+    }
+    if (Number(runConfig.language_mix_target?.zh_min || 0) < 0.7) failures.push({ code: "r25ac_zh_min_below_required" });
+    if (Number(runConfig.language_mix_target?.en_max || 1) > 0.1) failures.push({ code: "r25ac_en_max_above_required" });
+  }
   if (prefix === "r25y" && runConfig.architecture?.basis !== "r25s_baseline_data_first") {
     failures.push({ code: "r25y_must_use_r25s_data_first_basis", actual: runConfig.architecture?.basis });
   }
@@ -172,23 +193,28 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (prefix === "r25y" && configPath !== "training/from_scratch/small_decoder_pilot_run_config.r25y.json") {
     failures.push({ code: "r25y_must_use_r25y_run_config", configPath });
   }
+  if (prefix === "r25ac" && configPath !== "training/from_scratch/small_decoder_pilot_run_config.r25ac.json") {
+    failures.push({ code: "r25ac_must_use_r25ac_run_config", configPath });
+  }
   return failures;
 }
 
 async function consumePilotApproval(approvalPath, approval, runConfig) {
   const prefix = runPrefix(runConfig);
-  if (approvalPath !== R25P_APPROVAL_PATH && approvalPath !== R25S_APPROVAL_PATH && approvalPath !== R25V_APPROVAL_PATH && approvalPath !== R25Y_APPROVAL_PATH) return;
+  if (approvalPath !== R25P_APPROVAL_PATH && approvalPath !== R25S_APPROVAL_PATH && approvalPath !== R25V_APPROVAL_PATH && approvalPath !== R25Y_APPROVAL_PATH && approvalPath !== R25AC_APPROVAL_PATH) return;
   const consumedByPhase = prefix.toUpperCase();
   const consumed = {
     ...approval,
     consumed: true,
     allow_additional_runs: false,
-    consumed_by_commit: prefix === "r25y" ? "pending_r25y_commit" : prefix === "r25v" ? "pending_r25v_commit" : prefix === "r25s" ? "pending_r25s_commit" : "pending_r25p_commit",
+    consumed_by_commit: prefix === "r25ac" ? "pending_r25ac_commit" : prefix === "r25y" ? "pending_r25y_commit" : prefix === "r25v" ? "pending_r25v_commit" : prefix === "r25s" ? "pending_r25s_commit" : "pending_r25p_commit",
     consumed_by_phase: consumedByPhase,
     consumed_reason: prefix === "r25v"
       ? "one-shot approval used or attempted for r25v_two_layer_same_width; future runs require a new approval marker"
       : prefix === "r25y"
       ? "one-shot approval used or attempted for r25y_data_regularized_192; future runs require a new approval marker"
+      : prefix === "r25ac"
+      ? "one-shot approval used or attempted for r25ac_chinese_personal_microcycle_256; future runs require a new approval marker"
       : `one-shot approval used for ${runConfig.run_id}; future runs require a new approval marker`
   };
   await writeJson(approvalPath, consumed);
@@ -405,6 +431,21 @@ async function main() {
   }
 
   const report = await readJson(paths.run);
+  if (runPrefix(runConfig) === "r25ac") {
+    report.chinese_personal_microcycle = true;
+    report.actual_language_mix = datasetReport.actual_train_language_mix || null;
+    report.personal_target_coverage = datasetReport.personal_target_coverage || {};
+    report.personal_target_undercovered = Object.fromEntries(
+      Object.entries(datasetReport.personal_target_coverage || {}).map(([target, coverage]) => [target, Number(coverage?.rows || 0) === 0])
+    );
+    report.dataset_report_path = paths.dataset;
+    report.notes = [
+      ...(report.notes || []),
+      "R25AC records Chinese-first sampling and project/personal target coverage from reviewed R25L labels only.",
+      "Personal color coverage is structural and project-authored; no private raw data was fabricated or used."
+    ];
+    await writeJson(paths.run, report);
+  }
   await consumePilotApproval(approvalPath, approval, runConfig);
   const trackedArtifacts = await gitLines(["ls-files", "--cached", paths.outputDir]);
   if (trackedArtifacts.length) {

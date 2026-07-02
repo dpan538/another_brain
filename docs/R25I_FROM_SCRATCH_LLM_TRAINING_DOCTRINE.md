@@ -22,6 +22,9 @@ only; it is also not a training run and does not approve R25P.
 R25P may run exactly one approved second bounded pilot, and R25Q analyzes that
 result without running training. R25Q does not approve R25R or phase 4 scaled
 training.
+R25AC may run exactly one approved Chinese-first personal micro-cycle to
+ignored artifacts only. It does not approve phase_4 scaled training, product
+training, release admission, or repeat runs.
 
 ## Product Target
 
@@ -90,6 +93,9 @@ baseline/compatibility.
 - Personal color must come from reviewed project-authored style, approved
   preferences, project decisions, and safe Chinese tone examples, not raw
   private memory or unreviewed personal documents.
+- R25AC may train only `r25ac_chinese_personal_microcycle_256` after fresh
+  approval, using Chinese-first sampling from reviewed R25L rows. The approval
+  must be consumed after one attempt.
 
 ## How Existing R25 Gates Change Meaning
 
@@ -161,3 +167,16 @@ corpus-audit, and R24/R25 gates pass. R25AB does not run training, does not
 approve R25AC, does not approve phase_4 scaled training, and does not commit
 weights. Product and formal training progress remain `0%`; pilot progress
 remains separate at `5%`.
+
+R25AC may move the current phase label to
+`phase_3_chinese_personal_microcycle_completed_review_pause` only after one
+fresh-approved bounded run, replayable checkpoint validation, held-out replay,
+Chinese/personal breakdown, history comparison, approval consumption, artifact
+guard, and R24/R25 gates pass. It remains phase 3 small-pilot training only:
+not product-scale, not long-term, not phase_4, not release admission, and not a
+browser static artifact.
+
+R25AC may use R25L train rows for training, R25L dev rows for dev sanity, and
+R25L held-out rows for replay evaluation only. It must not read evals, root
+PDFs/DOCX, `data/public_ingestion/`, private raw data, factual knowledge cards,
+external model output, or chain-of-thought data.

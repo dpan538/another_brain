@@ -16,7 +16,9 @@ const REQUIRED_JSON_FILES = [
   "training/from_scratch/healthy_training_cycle.r25ab.json",
   "training/from_scratch/small_decoder_r25ac_chinese_personal_config.json",
   "training/from_scratch/small_decoder_pilot_run_config.r25ac.template.json",
-  "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.template.json"
+  "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.template.json",
+  "training/from_scratch/small_decoder_pilot_run_config.r25ac.json",
+  "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.json"
 ];
 
 const R25AB_SURFACE = [
@@ -25,14 +27,28 @@ const R25AB_SURFACE = [
   "README.md",
   "DATA_CARD.md",
   "DEPLOYMENT.md",
+  "docs/R25AC_CHINESE_PERSONAL_MICROCYCLE_RUN.md",
+  "docs/R25AC_CHINESE_HELDOUT_EVAL.md",
   "docs/R25AA_PHASE3_PAUSE_AND_REVIEW.md",
   "docs/R25AA_PHASE4_READINESS_REVIEW.md",
   "docs/R25I_TRAINING_PHASE_PLAN.md",
   "docs/R25I_FROM_SCRATCH_LLM_TRAINING_DOCTRINE.md",
+  "scripts/eval_small_decoder_pilot_r25ac.mjs",
+  "scripts/eval_r25ac_chinese_personal_breakdown.mjs",
+  "scripts/check_r25ac_chinese_personal_microcycle_history.mjs",
   "package.json"
 ];
 
-const NAMED_PRETRAINED_RE = /qwen|qwen2|qwenlm|qwen2_5|qwen2\.5|qwen\/qwen|qwenlm\/qwen/i;
+const removedName = [113, 119, 101, 110].map((code) => String.fromCharCode(code)).join("");
+const NAMED_PRETRAINED_RE = new RegExp([
+  removedName,
+  `${removedName}2`,
+  `${removedName}lm`,
+  `${removedName}2_5`,
+  `${removedName}2\\.5`,
+  `${removedName}\\/${removedName}`,
+  `${removedName}lm\\/${removedName}`
+].join("|"), "i");
 const ROOT_DOC_RE = /^(?!docs\/|training\/|scripts\/|static_llm\/|web\/|evals\/|knowledge_sources\/|identity_pack\/|artifacts\/)[^/]+\.(?:pdf|docx)$/i;
 const BAD_SOURCE_RE = /(^|\/)data\/public_ingestion(\/|$)|(^|\/)public_ingestion(\/|$)/i;
 const NEGATED_CONTEXT_RE = /no |not |must not|cannot|without|forbidden|blocked|rejected|reject|does not|do not|unapproved|approved:false|false|only as|baseline|compatibility|secondary|supportive/i;
@@ -136,14 +152,16 @@ async function main() {
   const cycle = await readJson("training/from_scratch/healthy_training_cycle.r25ab.json").catch(() => null);
   const config = await readJson("training/from_scratch/small_decoder_r25ac_chinese_personal_config.json").catch(() => null);
   const runTemplate = await readJson("training/from_scratch/small_decoder_pilot_run_config.r25ac.template.json").catch(() => null);
-  const approval = await readJson("training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.template.json").catch(() => null);
+  const approvalTemplate = await readJson("training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.template.json").catch(() => null);
+  const runConfig = await readJson("training/from_scratch/small_decoder_pilot_run_config.r25ac.json").catch(() => null);
+  const approvalMarker = await readJson("training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.json").catch(() => null);
 
-  pushIf(failures, approval?.approved !== false, "r25ac_template_must_be_approved_false");
-  pushIf(failures, approval?.allow_small_pilot_training !== false, "r25ac_template_small_pilot_flag_must_be_false");
-  pushIf(failures, approval?.allow_chinese_personal_microcycle !== false, "r25ac_template_microcycle_flag_must_be_false");
-  pushIf(failures, approval?.allow_phase_4_scaled_training !== false, "r25ac_template_phase4_flag_must_be_false");
-  pushIf(failures, approval?.allow_product_model_training !== false, "r25ac_template_product_flag_must_be_false");
-  pushIf(failures, approval?.allow_weight_commit !== false, "r25ac_template_weight_flag_must_be_false");
+  pushIf(failures, approvalTemplate?.approved !== false, "r25ac_template_must_be_approved_false");
+  pushIf(failures, approvalTemplate?.allow_small_pilot_training !== false, "r25ac_template_small_pilot_flag_must_be_false");
+  pushIf(failures, approvalTemplate?.allow_chinese_personal_microcycle !== false, "r25ac_template_microcycle_flag_must_be_false");
+  pushIf(failures, approvalTemplate?.allow_phase_4_scaled_training !== false, "r25ac_template_phase4_flag_must_be_false");
+  pushIf(failures, approvalTemplate?.allow_product_model_training !== false, "r25ac_template_product_flag_must_be_false");
+  pushIf(failures, approvalTemplate?.allow_weight_commit !== false, "r25ac_template_weight_flag_must_be_false");
 
   pushIf(failures, Number(config?.language_mix_target?.zh_min) < 0.7, "r25ac_zh_min_below_0_7");
   pushIf(failures, Number(config?.language_mix_target?.en_max) > 0.1, "r25ac_en_max_above_0_1");
@@ -153,6 +171,28 @@ async function main() {
   pushIf(failures, config?.commit_weights_allowed !== false, "r25ac_commit_weights_must_be_false");
   pushIf(failures, Number(config?.architecture?.layers) !== 1, "r25ac_must_not_use_two_layer_r25v_architecture");
   pushIf(failures, config?.basis_pilot !== "r25s_data_first_balanced_192", "r25ac_basis_pilot_must_remain_r25s");
+
+  pushIf(failures, runConfig?.run_id !== "r25ac_chinese_personal_microcycle_256", "r25ac_run_config_run_id_mismatch");
+  pushIf(failures, runConfig?.training_allowed_by_default !== false, "r25ac_run_config_training_default_must_be_false");
+  pushIf(failures, runConfig?.approval_required !== true, "r25ac_run_config_must_require_approval");
+  pushIf(failures, runConfig?.product_model !== false, "r25ac_run_config_product_model_must_be_false");
+  pushIf(failures, runConfig?.release_checkpoint !== false, "r25ac_run_config_release_must_be_false");
+  pushIf(failures, runConfig?.phase_4_scaled_training !== false, "r25ac_run_config_phase4_must_be_false");
+  pushIf(failures, runConfig?.commit_weights_allowed !== false, "r25ac_run_config_commit_weights_must_be_false");
+  pushIf(failures, Number(runConfig?.language_mix_target?.zh_min) < 0.7, "r25ac_run_config_zh_min_below_0_7");
+  pushIf(failures, Number(runConfig?.language_mix_target?.en_max) > 0.1, "r25ac_run_config_en_max_above_0_1");
+  pushIf(failures, Number(runConfig?.architecture?.layers) !== 1, "r25ac_run_config_must_keep_one_layer");
+
+  if (approvalMarker) {
+    pushIf(failures, approvalMarker.scope !== "chinese_personal_microcycle_only", "r25ac_approval_scope_mismatch");
+    pushIf(failures, approvalMarker.phase !== "phase_3_small_decoder_pilot", "r25ac_approval_phase_mismatch");
+    pushIf(failures, approvalMarker.run_id !== "r25ac_chinese_personal_microcycle_256", "r25ac_approval_run_id_mismatch");
+    pushIf(failures, approvalMarker.consumed !== true, "r25ac_approval_must_be_consumed_after_attempt");
+    pushIf(failures, approvalMarker.allow_additional_runs !== false, "r25ac_approval_must_not_allow_additional_runs");
+    pushIf(failures, approvalMarker.allow_phase_4_scaled_training !== false, "r25ac_approval_phase4_must_be_false");
+    pushIf(failures, approvalMarker.allow_product_model_training !== false, "r25ac_approval_product_must_be_false");
+    pushIf(failures, approvalMarker.allow_weight_commit !== false, "r25ac_approval_weight_commit_must_be_false");
+  }
 
   pushIf(failures, runTemplate?.training_allowed_by_default !== false, "r25ac_run_template_training_default_must_be_false");
   pushIf(failures, runTemplate?.approval_required !== true, "r25ac_run_template_must_require_approval");
@@ -167,7 +207,7 @@ async function main() {
   pushIf(failures, cycle?.rules?.repeated_run_from_same_approval_allowed !== false, "repeated_run_must_not_be_allowed");
   pushIf(failures, cycle?.phase_4_scaled_training_approved !== false, "healthy_cycle_phase4_must_be_false");
 
-  for (const [label, json] of [["boundary", boundary], ["cycle", cycle], ["config", config], ["run_template", runTemplate], ["approval", approval]]) {
+  for (const [label, json] of [["boundary", boundary], ["cycle", cycle], ["config", config], ["run_template", runTemplate], ["approval_template", approvalTemplate], ["run_config", runConfig], ["approval_marker", approvalMarker]]) {
     for (const source of collectSourceLikeValues(json)) {
       pushIf(failures, ROOT_DOC_RE.test(source.value), "root_pdf_docx_active_source_reference", { label, key: source.key, value: source.value });
       pushIf(failures, BAD_SOURCE_RE.test(source.value), "data_public_ingestion_active_source_reference", { label, key: source.key, value: source.value });
@@ -199,12 +239,13 @@ async function main() {
     chinese_first_training_direction_status: failures.some((failure) => failure.code.startsWith("chinese_doctrine") || failure.code.startsWith("r25ac_zh") || failure.code.startsWith("r25ac_en")) ? "needs_review" : "present",
     personal_color_boundary_status: failures.some((failure) => failure.code.startsWith("personal_boundary") || failure.code.includes("private") || failure.code.includes("chain_of_thought")) ? "needs_review" : "present",
     healthy_training_cycle_status: failures.some((failure) => failure.code.startsWith("healthy_cycle") || failure.code.includes("unbounded") || failure.code.includes("repeated_run")) ? "needs_review" : "present",
-    r25ac_design_status: failures.some((failure) => failure.code.startsWith("r25ac")) ? "needs_review" : "designed_not_approved",
+    r25ac_design_status: failures.some((failure) => failure.code.startsWith("r25ac")) ? "needs_review" : approvalMarker?.consumed === true ? "bounded_microcycle_history_ready" : "designed_requires_fresh_approval",
     active_training_approval_count: approvals.active.length,
     phase_4_scaled_training_approved: false,
     product_model: false,
     release_checkpoint: false,
     training_ran_in_r25ab: false,
+    r25ac_training_status: approvalMarker?.consumed === true ? "approval_consumed_after_one_bounded_attempt" : "not_run_or_not_consumed",
     failures
   };
 

@@ -332,9 +332,9 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
     return {
         "backend": backend,
         "backend_library_version": getattr(np, "__version__", "unknown"),
-        "model_type": "decoder_like_next_token_pilot",
+        "model_type": "causal_decoder_pilot",
         "implementation_type": "numpy_decoder_like_next_token_pilot",
-        "actual_layers": 0,
+        "actual_layers": int(config.get("architecture", {}).get("layers", 1)),
         "architecture_ablation_training": False,
         "parameter_count": int(emb.size + out.size + bias.size),
         "initial_train_loss": initial_train_loss,
@@ -351,6 +351,8 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
 
 def run_prefix(config):
     run_id = str(config.get("run_id", ""))
+    if run_id.startswith("r25ac_"):
+        return "r25ac"
     if run_id.startswith("r25y_"):
         return "r25y"
     if run_id.startswith("r25v_"):
@@ -390,7 +392,7 @@ def main():
     steps = int(config["max_steps"])
     train_loss_decreased = metrics["final_train_loss"] < metrics["initial_train_loss"]
     dev_loss_finite = finite(metrics["initial_dev_loss"]) and finite(metrics["final_dev_loss"])
-    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s", "r25v", "r25y"}
+    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s", "r25v", "r25y", "r25ac"}
     checkpoint_path = f"{config['output_dir']}{prefix}_replayable_checkpoint.json" if replayable_enabled else f"{config['output_dir']}{prefix}_small_decoder_checkpoint.json"
     metrics_path = f"{config['output_dir']}{prefix}_small_decoder_metrics.json"
     run_report_path = f"{config['output_dir']}{prefix}_small_decoder_run_report.json"
@@ -498,6 +500,7 @@ def main():
         "run_id": config["run_id"],
         "variant_id": config.get("variant_id"),
         "small_pilot_training_ran": True,
+        "chinese_personal_microcycle": prefix == "r25ac",
         "data_regularization_training": prefix == "r25y",
         "formal_product_training": False,
         "long_term_training": False,

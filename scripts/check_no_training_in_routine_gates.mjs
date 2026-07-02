@@ -11,7 +11,8 @@ const ALLOWED_ONE_SHOT_SCRIPTS = new Set([
   "run:r25p-second-small-pilot-once",
   "run:r25s-data-first-pilot-once",
   "run:r25v-architecture-ablation-once",
-  "run:r25y-data-regularization-once"
+  "run:r25y-data-regularization-once",
+  "run:r25ac-chinese-personal-microcycle-once"
 ]);
 
 const RUNNER_SCRIPT_ALLOWLIST = new Set([

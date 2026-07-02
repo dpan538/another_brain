@@ -33,3 +33,9 @@ personal memory.
 R25AB does not add private raw data, does not add personal documents, and does
 not train. Future personal-color data must be reviewed as project-authored or
 user-approved material before use.
+
+R25AC personal-color coverage is allowed only as reviewed structural coverage:
+project continuity, repair after weak answer, local-first browser-static
+reasoning, style preference, tool-status honesty, and bounded judgment. The
+coverage report is not evidence of private memory and must not fabricate
+personal facts.

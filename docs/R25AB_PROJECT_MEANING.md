@@ -43,3 +43,9 @@ boundaries remain part of the project.
 R25AB does not train, does not write weights, does not approve R25AC, and does
 not approve phase_4 scaled training. Phase_4 remains blocked until a later
 readiness review and fresh explicit approval pass.
+
+R25AC is the later bounded Chinese-first personal micro-cycle that R25AB
+prepared for. If run, it must remain one fresh-approved phase 3 pilot attempt
+to ignored artifacts only, consume its approval, and preserve the same project
+meaning: Chinese-first, project-trained, personally colored, non-product, and
+not phase_4.

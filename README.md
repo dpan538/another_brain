@@ -56,6 +56,13 @@ datasets, pilots, and decisions remain part of the system. R25AB runs no
 training, commits no weights, keeps phase_4 unapproved, and designs R25AC only
 as a possible future bounded Chinese-personal micro-cycle.
 
+R25AC runs exactly one fresh-approved Chinese-first personal micro-cycle,
+`r25ac_chinese_personal_microcycle_256`, to ignored artifacts only. It upweights
+Chinese and mixed R25L rows while capping English, consumes its approval after
+the attempt, and remains non-product: no phase_4 scaled training, no release
+checkpoint, no static browser artifact, no committed weights, and product/formal
+training progress stays `0%`.
+
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
 and evaluates dev/heldout text for leakage and segmentation sanity. The tiny
@@ -196,6 +203,7 @@ npm run check:r25q-pilot-analysis
 npm run check:r25r-data-first-pilot-design
 npm run check:r25s-data-first-pilot-history
 npm run check:r25t-r25s-analysis
+npm run check:r25ac-chinese-personal-microcycle-history
 ```
 
 Build and validate the mixed context stress suite:

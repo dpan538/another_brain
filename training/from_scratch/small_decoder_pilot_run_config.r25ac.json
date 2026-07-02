@@ -1,0 +1,68 @@
+{
+  "run_id": "r25ac_chinese_personal_microcycle_256",
+  "variant_id": "r25ac_chinese_personal_microcycle_256",
+  "architecture_id": "r25ac_chinese_personal_microcycle_256",
+  "training_allowed_by_default": false,
+  "requires_fresh_approval": true,
+  "approval_required": true,
+  "approved_by_default": false,
+  "approval_marker": "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.json",
+  "approval_template": "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.template.json",
+  "output_dir": "artifacts/training_os/small_decoder_pilot/r25ac/",
+  "product_model": false,
+  "release_checkpoint": false,
+  "formal_product_training": false,
+  "long_term_training": false,
+  "phase_4_scaled_training": false,
+  "commit_weights_allowed": false,
+  "basis_pilot": "r25s_data_first_balanced_192",
+  "train_source": "training/llm_corpus/r25l_train.jsonl",
+  "dev_source": "training/llm_corpus/r25l_dev.jsonl",
+  "heldout_source": "training/llm_corpus/r25l_heldout.jsonl",
+  "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25l.json",
+  "sampling_strategy": "chinese_first_personal_color_from_r25l_labels",
+  "max_train_rows": 256,
+  "max_dev_rows": 64,
+  "max_heldout_rows": 64,
+  "max_context_tokens": 64,
+  "batch_size": 4,
+  "max_steps": 100,
+  "eval_every": 20,
+  "learning_rate": 0.004,
+  "seed": 29,
+  "language_mix_target": {
+    "zh_min": 0.7,
+    "mixed_target": 0.2,
+    "en_max": 0.1
+  },
+  "personal_color_targets": [
+    "project_continuation",
+    "repair_after_weak_answer",
+    "local_first_static_browser_reasoning",
+    "style_preference",
+    "tool_status_honesty",
+    "bounded_judgment"
+  ],
+  "architecture": {
+    "type": "causal_decoder_pilot",
+    "basis": "r25s_baseline_data_first",
+    "layers": 1,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128
+  },
+  "replayable_checkpoint": {
+    "enabled": true,
+    "format": "json",
+    "schema": "training/from_scratch/small_decoder_checkpoint.schema.json"
+  },
+  "notes": [
+    "bounded R25AC Chinese-first personal micro-cycle only",
+    "not product-scale training",
+    "not long-term training",
+    "not phase_4 scaled training",
+    "not release admission",
+    "ignored artifacts only",
+    "approval is consumed after one attempt"
+  ]
+}

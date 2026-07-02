@@ -30,3 +30,8 @@ does not create or commit weights.
 R25AC may later become one bounded Chinese-first personal micro-cycle only
 after fresh reviewer approval. That future cycle should upsample Chinese and
 mixed rows from reviewed sources while keeping held-out text out of training.
+
+R25AC follows this doctrine when approved: it targets `zh >= 70%`, mixed
+Chinese/English near `20%`, and `en <= 10%`; English remains secondary and
+technical. Its held-out reports must keep `zh`, `mixed`, and `en` buckets
+separate so Chinese quality cannot be hidden by aggregate loss.
