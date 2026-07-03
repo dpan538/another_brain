@@ -12,6 +12,8 @@ __pycache__/
 # public repository.
 artifacts/**
 !artifacts/.gitkeep
+artifacts/training_os/personal_writing_intake/
+artifacts/training_os/corpus_expansion/
 
 # Raw identity interviews and unredacted personal/background cards are local-only
 # inputs. Public Identity Pack files live in identity_pack/ and must be redacted
@@ -19,6 +21,7 @@ artifacts/**
 private/
 datasets/private/
 identity_pack/private/
+private_sources/
 
 # Local model weights and converted artifacts are intentionally not tracked.
 models/*

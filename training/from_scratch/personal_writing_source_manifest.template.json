@@ -1,0 +1,27 @@
+{
+  "source_id": "r25af_source_placeholder_001",
+  "source_type": "poem",
+  "title": "redacted_or_review_safe_title",
+  "language": "zh",
+  "file_path": "private_sources/r25af_user_writing_inbox/poetry/redacted-or-safe-name.txt",
+  "file_sha256": "",
+  "byte_size": 0,
+  "user_owned": true,
+  "permission": "private_local_only",
+  "contains_private_data": false,
+  "contains_third_party_text": false,
+  "contains_sensitive_personal_data": false,
+  "parse_approved": false,
+  "commit_raw_source_allowed": false,
+  "allowed_transformations": [
+    "style_card",
+    "dialogue_rewrite",
+    "preference_pair",
+    "repair_pair",
+    "project_continuation",
+    "summary_only"
+  ],
+  "reviewer": "",
+  "review_date": "",
+  "notes": "Template only. Do not include raw writing or sensitive file names in a tracked manifest."
+}

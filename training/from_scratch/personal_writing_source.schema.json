@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "training/from_scratch/personal_writing_source.schema.json",
+  "title": "R25AF Personal Writing Source Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source_id",
+    "source_type",
+    "title",
+    "language",
+    "file_path",
+    "file_sha256",
+    "byte_size",
+    "user_owned",
+    "permission",
+    "contains_private_data",
+    "contains_third_party_text",
+    "contains_sensitive_personal_data",
+    "parse_approved",
+    "commit_raw_source_allowed",
+    "allowed_transformations",
+    "reviewer",
+    "review_date",
+    "notes"
+  ],
+  "properties": {
+    "source_id": { "type": "string", "minLength": 1 },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "poem",
+        "essay",
+        "fragment",
+        "preferred_answer",
+        "rejected_and_repaired_answer",
+        "project_note",
+        "other"
+      ]
+    },
+    "title": { "type": "string" },
+    "language": { "type": "string", "enum": ["zh", "mixed", "en"] },
+    "file_path": { "type": "string" },
+    "file_sha256": { "type": "string" },
+    "byte_size": { "type": "integer", "minimum": 0 },
+    "user_owned": { "type": "boolean" },
+    "permission": {
+      "type": "string",
+      "enum": [
+        "private_local_only",
+        "approved_for_derived_training_rows",
+        "approved_for_short_excerpts",
+        "approved_for_public_repo"
+      ]
+    },
+    "contains_private_data": { "type": "boolean" },
+    "contains_third_party_text": { "type": "boolean" },
+    "contains_sensitive_personal_data": { "type": "boolean" },
+    "parse_approved": { "type": "boolean", "default": false },
+    "commit_raw_source_allowed": { "type": "boolean", "default": false },
+    "allowed_transformations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "style_card",
+          "dialogue_rewrite",
+          "preference_pair",
+          "repair_pair",
+          "project_continuation",
+          "summary_only"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "reviewer": { "type": "string" },
+    "review_date": { "type": "string" },
+    "notes": { "type": "string" }
+  }
+}

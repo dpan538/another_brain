@@ -1,0 +1,138 @@
+{
+  "plan_id": "r25ag_derived_chinese_personal_corpus_expansion",
+  "status": "future_design_only_not_approved",
+  "scope": "derived_chinese_personal_corpus_expansion_design_only",
+  "r25af_training_allowed": false,
+  "r25af_corpus_generation_allowed": false,
+  "requires_fresh_approval_for_r25ag": true,
+  "source_parsing_allowed_by_default": false,
+  "raw_private_source_commit_allowed": false,
+  "training_allowed": false,
+  "phase_4_scaled_training_approved": false,
+  "external_llm_generation_allowed": false,
+  "chain_of_thought_allowed": false,
+  "target_total_rows": {
+    "minimum": 1000,
+    "preferred_floor": 3000,
+    "meaning": "Convert reviewed writing and project-style material into derived rows before any later micro-cycle."
+  },
+  "target_language_mix": {
+    "zh_min": 0.7,
+    "mixed_target": 0.2,
+    "en_max": 0.1
+  },
+  "raw_source_policy": {
+    "default_permission": "private_local_only",
+    "raw_sources_remain_private_by_default": true,
+    "tracked_outputs_must_be_derived_or_aggregate_only": true,
+    "short_excerpts_require_explicit_approval": true
+  },
+  "derived_categories": [
+    {
+      "category": "project_continuation",
+      "target_rows": 250,
+      "source_types": ["project_note", "preferred_answer", "fragment"],
+      "review_requirements": ["reviewed_source_manifest", "derived_row_review", "split_assignment_before_use"],
+      "allowed_transformations": ["project_continuation", "dialogue_rewrite"],
+      "forbidden_content": ["raw_private_memory", "local_private_paths", "eval_prompt_copy"],
+      "split_policy": "assign train/dev/heldout before any future training; heldout never reused for training",
+      "eval_contamination_guard": "compare prompts and target text against evals before admission"
+    },
+    {
+      "category": "repair_after_weak_answer",
+      "target_rows": 250,
+      "source_types": ["rejected_and_repaired_answer", "preferred_answer"],
+      "review_requirements": ["weak_answer_generic_or_project_authored", "preferred_answer_reviewed"],
+      "allowed_transformations": ["repair_pair", "preference_pair"],
+      "forbidden_content": ["chain_of_thought", "hidden_prompt", "private_claim_without_review"],
+      "split_policy": "keep source families split-safe",
+      "eval_contamination_guard": "do not train on eval prompts or heldout answers"
+    },
+    {
+      "category": "local_first_static_browser_reasoning",
+      "target_rows": 250,
+      "source_types": ["project_note", "preferred_answer"],
+      "review_requirements": ["must preserve no backend, no external API, same-origin static artifact boundaries"],
+      "allowed_transformations": ["dialogue_rewrite", "bounded_judgment", "project_continuation"],
+      "forbidden_content": ["backend_or_storage_product_path", "external_model_api", "phase4_approval_claim"],
+      "split_policy": "balance across zh and mixed buckets",
+      "eval_contamination_guard": "derive from project decisions, not heldout eval text"
+    },
+    {
+      "category": "style_preference",
+      "target_rows": 300,
+      "source_types": ["poem", "essay", "fragment", "preferred_answer"],
+      "review_requirements": ["style trait reviewed without copying long source text"],
+      "allowed_transformations": ["style_card", "dialogue_rewrite", "compression_or_rewrite"],
+      "forbidden_content": ["wholesale_poem_copy", "third_party_copyrighted_text"],
+      "split_policy": "prefer zh rows; keep en technical-only",
+      "eval_contamination_guard": "style cards cannot include eval prompt text"
+    },
+    {
+      "category": "tool_status_honesty",
+      "target_rows": 200,
+      "source_types": ["project_note", "preferred_answer", "rejected_and_repaired_answer"],
+      "review_requirements": ["must distinguish done, not done, blocked, and unavailable runtime states"],
+      "allowed_transformations": ["preference_pair", "repair_pair", "project_continuation"],
+      "forbidden_content": ["claimed_command_execution_without_evidence", "external_api_claim"],
+      "split_policy": "hold out representative repair cases",
+      "eval_contamination_guard": "do not copy tool-status eval prompts"
+    },
+    {
+      "category": "bounded_judgment",
+      "target_rows": 250,
+      "source_types": ["essay", "fragment", "preferred_answer"],
+      "review_requirements": ["judgment must state bounds, uncertainty, and source limits"],
+      "allowed_transformations": ["bounded_judgment", "Chinese_explanation"],
+      "forbidden_content": ["medical_legal_financial_private_claim_without_review", "invented_personal_memory"],
+      "split_policy": "separate similar subjective prompts across splits",
+      "eval_contamination_guard": "deduplicate against eval fixtures"
+    },
+    {
+      "category": "Chinese_rewrite_compression",
+      "target_rows": 300,
+      "source_types": ["poem", "essay", "fragment", "preferred_answer"],
+      "review_requirements": ["source permission reviewed", "output must be dialogue-shaped"],
+      "allowed_transformations": ["compression_or_rewrite", "dialogue_rewrite"],
+      "forbidden_content": ["long_raw_quote", "private_raw_data"],
+      "split_policy": "zh >= 70 percent within category",
+      "eval_contamination_guard": "check near-duplicate prompts and targets"
+    },
+    {
+      "category": "Chinese_explanation",
+      "target_rows": 250,
+      "source_types": ["poem", "essay", "fragment"],
+      "review_requirements": ["explain a thought or line without copying source wholesale"],
+      "allowed_transformations": ["Chinese_explanation", "style_card"],
+      "forbidden_content": ["wholesale_source_copy", "chain_of_thought"],
+      "split_policy": "heldout explanations must stay isolated",
+      "eval_contamination_guard": "no heldout text in training"
+    },
+    {
+      "category": "poetry_to_dialogue_style_transfer",
+      "target_rows": 250,
+      "source_types": ["poem", "fragment"],
+      "review_requirements": ["poetry used for style traits, not memorization"],
+      "allowed_transformations": ["style_card", "dialogue_rewrite", "compression_or_rewrite"],
+      "forbidden_content": ["full_poem_copy", "unreviewed_sensitive_personal_data"],
+      "split_policy": "source_id families cannot cross train and heldout",
+      "eval_contamination_guard": "style transfer prompt must be newly authored"
+    },
+    {
+      "category": "preference_pairs",
+      "target_rows": 250,
+      "source_types": ["preferred_answer", "rejected_and_repaired_answer"],
+      "review_requirements": ["weak and preferred answer both reviewed as safe"],
+      "allowed_transformations": ["preference_pair", "repair_pair"],
+      "forbidden_content": ["private_raw_memory", "secret_like_string"],
+      "split_policy": "paired rows stay in one split",
+      "eval_contamination_guard": "reject if weak or preferred text matches eval fixtures"
+    }
+  ],
+  "r25ag_not_approved_in_r25af": true,
+  "notes": [
+    "R25AF designs intake and transformation only.",
+    "R25AG may later parse approved private_sources and generate derived rows only with fresh explicit approval.",
+    "Any later training requires another separate approval after corpus expansion review."
+  ]
+}

@@ -76,9 +76,20 @@ does not parse root PDFs/DOCX, and does not parse `data/public_ingestion/`
 content. The audit separates tracked corpus, long-horizon rows, eval-only
 fixtures, knowledge sources, identity/style scaffold, docs, untracked root
 documents, public-ingestion metadata, ignored artifacts, and legacy scan
-footprints. Future R25AF work may be a reviewed Chinese-personal corpus
-expansion pass only; it would still require fresh approval and would not be
-training.
+footprints. R25AF follows as a personal-writing intake and transformation
+design step only; it still requires fresh approval for any later derived corpus
+generation and would not be training.
+
+R25AF designs personal writing intake and transformation only. User writing and
+poetry are valuable style/source material, but raw writing is not direct
+dialogue data and remains private/local by default under ignored
+`private_sources/`. Poetry and prose must be transformed into reviewed
+dialogue rows, preference pairs, repair pairs, style cards, or
+project-continuation rows before any future corpus use. R25AF does not train,
+does not generate rows, does not parse root PDFs/DOCX, does not parse
+`data/public_ingestion/`, and does not commit private raw writing. R25AG may
+later generate a derived corpus only with fresh approval; future training after
+that needs another fresh approval.
 
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
@@ -515,4 +526,9 @@ training progress remains `0%`, and no weights or artifacts are committed.
 R25AE adds a repository-scoped personal-data inventory without training,
 corpus expansion, external APIs, or whole-disk scan. Root PDFs/DOCX and
 `data/public_ingestion/` remain metadata-only, detailed inventory reports stay
-ignored, and any future R25AF corpus expansion requires fresh approval.
+ignored, and any future derived corpus expansion requires fresh approval.
+
+R25AF adds a personal-writing intake and transformation design without
+training or row generation. Raw poems, essays, notes, and preferred/repaired
+answers stay private unless explicitly approved; R25AG may later derive
+Chinese-first dialogue rows only after fresh approval.

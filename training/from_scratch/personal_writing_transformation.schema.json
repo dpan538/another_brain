@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "training/from_scratch/personal_writing_transformation.schema.json",
+  "title": "R25AF Personal Writing Transformation Row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "row_id",
+    "source_id",
+    "transformation_type",
+    "language",
+    "messages",
+    "target_answer",
+    "provenance",
+    "review_status",
+    "contains_private_data"
+  ],
+  "properties": {
+    "row_id": { "type": "string", "minLength": 1 },
+    "source_id": { "type": "string", "minLength": 1 },
+    "transformation_type": {
+      "type": "string",
+      "enum": [
+        "style_card",
+        "dialogue_rewrite",
+        "preference_pair",
+        "repair_pair",
+        "project_continuation",
+        "bounded_judgment",
+        "Chinese_explanation",
+        "compression_or_rewrite"
+      ]
+    },
+    "language": { "type": "string", "enum": ["zh", "mixed", "en"] },
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "content"],
+        "additionalProperties": false,
+        "properties": {
+          "role": { "type": "string", "enum": ["user", "assistant"] },
+          "content": { "type": "string" }
+        }
+      }
+    },
+    "target_answer": { "type": "string" },
+    "rejected_answers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "personal_color_targets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "project_continuation",
+          "repair_after_weak_answer",
+          "local_first_static_browser_reasoning",
+          "style_preference",
+          "tool_status_honesty",
+          "bounded_judgment",
+          "Chinese_rewrite_compression",
+          "Chinese_explanation",
+          "poetry_to_dialogue_style_transfer",
+          "preference_pair"
+        ]
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type",
+        "transformation_reviewed",
+        "raw_source_committed",
+        "external_llm_generation"
+      ],
+      "properties": {
+        "source_type": { "type": "string" },
+        "transformation_reviewed": { "type": "boolean" },
+        "raw_source_committed": { "type": "boolean", "const": false },
+        "external_llm_generation": { "type": "boolean", "const": false },
+        "notes": { "type": "string" }
+      }
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["draft_unreviewed", "reviewed_derived", "rejected"]
+    },
+    "contains_private_data": { "type": "boolean", "const": false }
+  }
+}

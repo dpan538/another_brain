@@ -48,6 +48,17 @@ or chain-of-thought data.
 R25AE keeps root PDFs/DOCX, `data/public_ingestion/`, and ignored artifacts as
 metadata-only inventory surfaces. It does not train, does not expand corpus,
 does not scan outside the repo, and does not commit generated inventory
-artifacts or private contents. Any later R25AF corpus expansion may use only
-reviewed project-authored Chinese-personal rows after fresh approval, and any
+artifacts or private contents. R25AF is only the intake and transformation
+design step. R25AG is the future derived-corpus expansion candidate, and may use
+only reviewed project-authored Chinese-personal rows after fresh approval. Any
 later training needs separate fresh approval.
+
+R25AF narrows the personal-writing path. User poems, essays, fragments,
+preferred answers, and repaired answers are useful as style/source material, but
+raw writing is not direct dialogue data and must remain private/local unless
+explicitly approved. Future corpus rows must be reviewed transformations:
+dialogue rows, preference pairs, repair pairs, style cards, or
+project-continuation rows. R25AF does not parse raw personal writing, does not
+generate rows, does not train, and does not commit private raw writing. R25AG
+may later generate derived rows only after fresh approval; later training still
+requires another approval.

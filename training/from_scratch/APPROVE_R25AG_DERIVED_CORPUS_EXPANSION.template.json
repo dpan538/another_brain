@@ -1,0 +1,15 @@
+{
+  "approved": false,
+  "scope": "derived_chinese_personal_corpus_expansion_only",
+  "reviewer": "",
+  "phase": "phase_3_corpus_expansion",
+  "run_id": "r25ag_derived_chinese_personal_corpus_expansion",
+  "allow_source_parsing": false,
+  "allow_corpus_generation": false,
+  "allow_training": false,
+  "allow_external_llm_generation": false,
+  "allow_private_raw_commit": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_weight_commit": false,
+  "notes": "Template only. R25AG requires explicit approval before parsing approved sources or generating derived rows. This does not authorize training."
+}

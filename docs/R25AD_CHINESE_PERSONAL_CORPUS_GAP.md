@@ -39,7 +39,7 @@ Retaining every current English row while meeting `en <= 10%` requires at least
 and `800 en`, so the gap is `4800` additional reviewed zh rows and `800`
 additional reviewed mixed rows.
 
-## R25AE / R25AF Direction
+## R25AE / R25AF / R25AG Direction
 
 R25AE is the repository-scoped personal-data and corpus inventory audit. It
 does not train, does not expand corpus, does not scan outside the repo root,
@@ -47,14 +47,22 @@ does not ingest root PDFs/DOCX, and does not parse `data/public_ingestion/`
 content. Current answer/corpus counts are aggregate-only, and generated
 inventory artifacts are ignored.
 
-If the R25AE audit supports it, R25AF may be a future corpus-expansion review
-pass, not training. It should add or select reviewed Chinese-first
-project/style rows that cover project continuity, repair after weak answers,
-local-first static-browser reasoning, style preference, tool-status honesty,
-and bounded judgment.
+R25AF is the next design-only personal writing intake and transformation step,
+not training and not corpus generation. User writing and poetry may be useful
+style/source material, but raw writing is not direct dialogue data. Poetry and
+prose must be transformed into reviewed dialogue rows, preference pairs, repair
+pairs, style cards, or project-continuation rows before any future corpus use.
+Raw files remain private/local unless explicitly approved.
+
+R25AG may later be a derived Chinese-personal corpus expansion pass after fresh
+approval. It should add or select reviewed Chinese-first project/style rows that
+cover project continuity, repair after weak answers, local-first static-browser
+reasoning, style preference, tool-status honesty, bounded judgment, Chinese
+rewrite/compression, Chinese explanation, and poetry-to-dialogue style
+transfer.
 
 Upsampling alone is risky because R25AC already achieved the sampled
 Chinese-first mix while regressing against R25S. The next step is better
-reviewed zh and mixed data, not automatic scale. Future corpus expansion needs
-fresh approval, future training needs separate fresh approval, phase_4 remains
-blocked, and no weights are committed.
+reviewed zh and mixed data, not automatic scale. Future R25AG corpus expansion
+needs fresh approval, future training needs separate fresh approval, phase_4
+remains blocked, and no weights are committed.

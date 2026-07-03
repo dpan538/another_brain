@@ -58,8 +58,18 @@ R25AE inventories current repo-local personal-data surfaces only. It does not
 train, does not expand corpus, does not scan outside the repo root, does not
 ingest root PDFs/DOCX, does not parse `data/public_ingestion/` content, and
 does not commit generated inventory artifacts. Its tracked summaries are
-aggregate-only. Future R25AF corpus expansion needs fresh approval and would
-still not be training; future training needs separate fresh approval.
+aggregate-only. Future personal-writing intake and derived corpus expansion
+need fresh approval and would still not be training; future training needs
+separate fresh approval.
+
+R25AF designs a local-only personal writing intake path. User writing and
+poetry may be useful style/source material, but raw writing is not direct
+dialogue data and is private by default. Poetry and prose must be transformed
+into reviewed dialogue rows, preference pairs, repair pairs, style cards, or
+project-continuation rows before any future corpus use. R25AF does not parse
+raw personal sources, does not generate corpus rows, does not train, and does
+not commit private writing. R25AG may later generate a derived corpus only with
+fresh approval; future training after that needs another approval.
 
 ## Public Data
 
@@ -233,6 +243,14 @@ Chinese-first personal micro-cycle. Held-out rows are evaluation-only, not
 training data. The micro-cycle must not read root PDFs/DOCX,
 `data/public_ingestion/`, private raw data, eval prompts, factual knowledge
 cards as an intelligence substitute, external model output, or chain-of-thought
+data.
+
+R25AF may inventory only the ignored local personal-writing inbox path and only
+as metadata. Raw poems, essays, fragments, notes, preferred answers, and
+repaired answers are source material, not direct training rows. They must be
+reviewed and transformed into derived Chinese-first dialogue rows or preference
+artifacts before any future corpus expansion. R25AF does not generate rows,
+does not train, and does not commit private raw writing.
 data.
 
 R25AE may inventory repository-local surfaces only. Root PDFs/DOCX and

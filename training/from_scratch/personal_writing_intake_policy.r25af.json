@@ -1,0 +1,71 @@
+{
+  "policy_id": "r25af_personal_writing_intake_policy",
+  "status": "design_only_no_training_no_corpus_generation",
+  "repo_root_only": true,
+  "scan_outside_repo_allowed": false,
+  "training_allowed": false,
+  "corpus_generation_allowed": false,
+  "source_parsing_allowed_by_default": false,
+  "raw_source_metadata_only_by_default": true,
+  "commit_raw_source_allowed": false,
+  "commit_private_raw_writing_allowed": false,
+  "phase_4_scaled_training_approved": false,
+  "product_model_training_allowed": false,
+  "external_llm_conversion_allowed": false,
+  "private_raw_data_allowed_in_training": false,
+  "chain_of_thought_allowed": false,
+  "approved_local_only_inbox_paths": [
+    "private_sources/r25af_user_writing_inbox/poetry/",
+    "private_sources/r25af_user_writing_inbox/essays/",
+    "private_sources/r25af_user_writing_inbox/fragments/",
+    "private_sources/r25af_user_writing_inbox/preferred_answers/",
+    "private_sources/r25af_user_writing_inbox/rejected_and_repaired_answers/"
+  ],
+  "git_ignore_required": [
+    "private_sources/",
+    "artifacts/training_os/personal_writing_intake/",
+    "artifacts/training_os/corpus_expansion/"
+  ],
+  "raw_source_rules": {
+    "metadata_only_until_future_parse_approval": true,
+    "must_not_be_committed": true,
+    "must_not_be_copied_into_tracked_docs": true,
+    "private_local_only_cannot_be_copied_to_tracked_files": true,
+    "source_ownership_required": "user_owned_or_explicitly_permitted"
+  },
+  "allowed_future_source_types": [
+    "poem",
+    "essay",
+    "fragment",
+    "preferred_answer",
+    "rejected_and_repaired_answer",
+    "project_note",
+    "other"
+  ],
+  "allowed_future_transformations": [
+    "style_card",
+    "dialogue_rewrite",
+    "preference_pair",
+    "repair_pair",
+    "project_continuation",
+    "summary_only"
+  ],
+  "forbidden": {
+    "whole_disk_scan": true,
+    "root_pdf_docx_parsing": true,
+    "data_public_ingestion_parsing": true,
+    "private_raw_data_ingestion": true,
+    "raw_private_writing_commit": true,
+    "hidden_prompts": true,
+    "chain_of_thought": true,
+    "local_private_paths_in_tracked_corpus": true,
+    "secret_like_strings": true,
+    "external_llm_generation": true,
+    "training_from_evals": true,
+    "copyrighted_third_party_material_without_permission": true
+  },
+  "r25af_outputs": {
+    "ignored_inbox_audit": "artifacts/training_os/personal_writing_intake/r25af/personal_writing_inbox_audit.json",
+    "ignored_readiness_report": "artifacts/training_os/personal_writing_intake/r25af/personal_writing_transformation_readiness.json"
+  }
+}

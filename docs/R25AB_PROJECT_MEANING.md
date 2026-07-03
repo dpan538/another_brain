@@ -68,7 +68,22 @@ content. Its tracked reports are aggregate-only, generated inventory artifacts
 remain ignored, product/formal training progress remains `0%`, phase_4 remains
 blocked, and no weights are committed.
 
-If the audit supports a next step, R25AF may later be a reviewed
-Chinese-personal corpus-expansion pass using only approved project-authored
-rows. R25AF would still not be training, and any later training would require a
-separate fresh approval.
+The audit supports a design step before any expansion. R25AF is personal
+writing intake and transformation design only; R25AG may later be a reviewed
+derived Chinese-personal corpus-expansion pass using only approved sources.
+R25AF is not training, and any later training requires a separate fresh
+approval.
+
+## R25AF Writing Intake Boundary
+
+R25AF designs how user writing and poetry can safely become future reviewed
+source material. Raw writing is not direct dialogue data. Poems, prose,
+fragments, preferred answers, and repaired answers must first be transformed
+into reviewed dialogue rows, preference pairs, repair pairs, style cards, or
+project-continuation rows. Raw files stay private/local by default under
+ignored `private_sources/`.
+
+R25AF does not train, does not generate rows, does not parse root PDFs/DOCX,
+does not parse `data/public_ingestion/`, and does not commit private raw
+writing. R25AG may later generate a derived Chinese-personal corpus only after
+fresh approval; future training after that needs another fresh approval.
