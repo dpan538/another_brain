@@ -178,6 +178,30 @@ const MARKERS = [
       "allow_release_checkpoint",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r25ai_promote_repo_derived_candidates_template",
+    path: "training/from_scratch/APPROVE_R25AI_PROMOTE_REPO_DERIVED_CANDIDATES.template.json",
+    expectedScope: "promote_reviewed_repo_derived_candidates_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r25ai_promote_reviewed_repo_derived_candidates",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_phase_4_scaled_training"
+    ]
+  },
+  {
+    id: "r25ak_promote_unique_repo_derived_candidates_template",
+    path: "training/from_scratch/APPROVE_R25AK_PROMOTE_UNIQUE_REPO_DERIVED_CANDIDATES.template.json",
+    expectedScope: "promote_reviewed_unique_repo_derived_candidates_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r25ak_promote_reviewed_unique_repo_derived_candidates",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_phase_4_scaled_training"
+    ]
   }
 ];
 

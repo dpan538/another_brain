@@ -390,3 +390,11 @@ The public Identity Pack is a scaffold and safe seed set, not a complete
 identity dataset. Raw interview answers and unredacted cards must remain local
 until each card is cleaned, assigned visibility, and checked for forbidden
 surface identity terms and private material.
+
+R25AJ candidate-repair data is ignored review material only. It may read the
+safe R25AH selected tracked-source catalog and old ignored candidate artifact
+for diagnostics, then regenerate repo-derived candidates under ignored
+artifacts. It must not train, promote rows, change `training/llm_corpus`, read
+`private_sources`, parse root PDF/DOC/DOCX files, parse `data/public_ingestion`,
+use evals as candidate sources, or commit generated rows. R25AK is required for
+any future bounded promotion, and later training requires a separate approval.

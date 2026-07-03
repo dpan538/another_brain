@@ -33,6 +33,14 @@ function shouldScan(file) {
 
 function isRepoPathOrGateToken(token = "") {
   return token === "PDFs/DOCX"
+    || token === "PDF/DOC"
+    || token === "hidden/system"
+    || token === "train/dev"
+    || token === "local-first/static-browser"
+    || token === "tool/status"
+    || token === "personal/project"
+    || token === "release/product"
+    || token === "ID/source"
     || /^(static_llm|web|docs|scripts|artifacts|training|evals|data)\//.test(token)
     || /\.(mjs|js|json|md|py|sh|html|css)$/.test(token)
     || /^R\d+[A-Z]?\/R\d+[A-Z]?/.test(token)

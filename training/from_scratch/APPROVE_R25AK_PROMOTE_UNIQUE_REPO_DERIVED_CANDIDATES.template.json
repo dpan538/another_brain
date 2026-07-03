@@ -1,0 +1,18 @@
+{
+  "approved": false,
+  "scope": "promote_reviewed_unique_repo_derived_candidates_only",
+  "reviewer": "",
+  "phase": "phase_3_corpus_review",
+  "run_id": "r25ak_promote_reviewed_unique_repo_derived_candidates",
+  "allow_promote_derived_rows": false,
+  "allow_training": false,
+  "allow_raw_source_commit": false,
+  "allow_candidate_artifact_commit": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_weight_commit": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "source_candidate_file": "artifacts/training_os/corpus_expansion/r25aj/r25aj_repo_derived_candidate_rows.jsonl",
+  "notes": "Template only. R25AK may promote reviewed R25AJ rows to tracked corpus only after explicit approval. This does not authorize training."
+}

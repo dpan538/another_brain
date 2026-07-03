@@ -1,0 +1,46 @@
+{
+  "status": "r25aj_candidate_review_rubric",
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "phase_4_scaled_training_approved": false,
+  "hard_fail_checks": [
+    "private_data_present",
+    "chain_of_thought_present",
+    "hidden_or_system_prompt_leakage",
+    "eval_prompt_copied",
+    "root_pdf_docx_source",
+    "data_public_ingestion_source",
+    "private_sources_source",
+    "artifact_checkpoint_source",
+    "external_llm_provenance",
+    "target_answer_empty",
+    "target_answer_duplicate",
+    "target_answer_only_differs_by_id_source_label_or_suffix",
+    "target_answer_copies_source_passage_too_long",
+    "public_commit_allowed_true_before_review",
+    "training_allowed_true_before_review",
+    "release_product_or_phase4_claim"
+  ],
+  "score_dimensions": {
+    "chinese_naturalness": "0-5",
+    "project_continuation_usefulness": "0-5",
+    "repair_after_weak_answer_usefulness": "0-5",
+    "local_first_static_browser_reasoning": "0-5",
+    "tool_status_honesty": "0-5",
+    "bounded_judgment": "0-5",
+    "personal_project_voice": "0-5",
+    "specificity_to_source_context": "0-5",
+    "non_template_uniqueness": "0-5",
+    "trainability_as_dialogue_row": "0-5"
+  },
+  "promotion_readiness_rule": {
+    "all_hard_fail_checks_pass": true,
+    "normalized_target_answer_unique": true,
+    "score_average_min": 4.0,
+    "dimensions_at_or_above_4_min": 6,
+    "zh_min": 0.7,
+    "en_max": 0.1,
+    "provenance_complete": true,
+    "review_status_until_promotion": "candidate_unreviewed"
+  }
+}

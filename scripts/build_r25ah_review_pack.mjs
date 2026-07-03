@@ -71,7 +71,7 @@ const reviewPack = {
   review_instructions: [
     "Inspect ignored candidate rows before any promotion.",
     "Promote only rows with safe provenance, Chinese-first value, and no eval contamination.",
-    "R25AI approval is required for promotion; future training requires a separate approval."
+    "R25AI blocked on uniqueness; use R25AJ repaired candidates and a future R25AK approval for any promotion."
   ],
   candidate_sample_ids: rows.map((row) => row.sample_id)
 };
@@ -113,7 +113,11 @@ for (const [target, count] of Object.entries(summary.personal_target_coverage)) 
   lines.push(`- ${target}: ${count}`);
 }
 lines.push("");
-lines.push("The candidate rows remain ignored artifacts and are still `candidate_unreviewed`, `training_allowed:false`, and `public_commit_allowed:false`. R25AI is required before any reviewed rows may be promoted, and later training needs another approval.");
+lines.push("The candidate rows remain ignored artifacts and are still `candidate_unreviewed`, `training_allowed:false`, and `public_commit_allowed:false`.");
+lines.push("");
+lines.push("## R25AJ Follow-Up");
+lines.push("");
+lines.push("R25AI blocked before promotion because this candidate pool did not provide enough unique `target_answer` values for a 256/32/32 split. R25AJ records the blocker and regenerates unique repo-derived candidates under ignored artifacts only. It does not train, does not promote rows, and does not modify `training/llm_corpus`. R25AK is required before any reviewed rows may be promoted, and later training needs another approval.");
 lines.push("");
 fs.writeFileSync(SUMMARY_PATH, `${lines.join("\n")}\n`);
 

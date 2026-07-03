@@ -552,3 +552,12 @@ R25AF adds a personal-writing intake and transformation design without
 training or row generation. Raw poems, essays, notes, and preferred/repaired
 answers stay private unless explicitly approved; R25AG may later derive
 Chinese-first dialogue rows only after fresh approval.
+
+R25AH generated ignored repo-derived candidate rows from selected tracked
+project text. R25AI then correctly blocked before promotion because candidate
+targets were not unique enough. R25AJ repairs that candidate-generation path by
+adding a review rubric, uniqueness checker, and regenerated ignored candidates.
+R25AJ still does not train, does not promote rows, does not modify
+`training/llm_corpus`, and commits no artifacts or weights. R25AK is required
+before any reviewed subset may be promoted; future training still needs another
+fresh approval and phase_4 remains blocked.
