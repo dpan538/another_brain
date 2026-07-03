@@ -1,0 +1,33 @@
+{
+  "approved": true,
+  "scope": "second_chinese_personal_repo_derived_corpus_expansion_only",
+  "reviewer": "user",
+  "phase": "phase_3_corpus_expansion",
+  "run_id": "r25am_second_chinese_personal_corpus_expansion",
+  "allow_candidate_generation": true,
+  "allow_promote_derived_rows": true,
+  "allow_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_decoder_training": false,
+  "allow_small_pilot_training": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_raw_source_commit": false,
+  "allow_candidate_artifact_commit": false,
+  "allow_weight_commit": false,
+  "artifact_output_root": "artifacts/training_os/corpus_expansion/r25am/",
+  "source_policy": "tracked_repo_sources_only",
+  "target_corpus_files": [
+    "training/llm_corpus/r25am_repo_derived_train.jsonl",
+    "training/llm_corpus/r25am_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25am_repo_derived_heldout.jsonl"
+  ],
+  "max_promoted_rows": 960,
+  "notes": "R25AM may generate and promote a bounded second repo-derived Chinese-personal corpus expansion. It does not authorize tokenizer dry-run or decoder training.",
+  "consumed": true,
+  "allow_additional_runs": false,
+  "consumed_by_phase": "R25AM",
+  "consumed_by_commit": "pending_r25am_commit",
+  "consumed_reason": "one-shot approval used for r25am_second_chinese_personal_corpus_expansion; future corpus generation/promotion requires a new approval marker; future runs require a new approval marker"
+}

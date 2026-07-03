@@ -259,6 +259,38 @@ const MARKERS = [
       "allow_long_term_training",
       "allow_product_model_training"
     ]
+  },
+  {
+    id: "r25am_second_chinese_corpus_expansion",
+    path: "training/from_scratch/APPROVE_R25AM_SECOND_CHINESE_CORPUS_EXPANSION.json",
+    expectedScope: "second_chinese_personal_repo_derived_corpus_expansion_only",
+    expectedPhase: "phase_3_corpus_expansion",
+    expectedRunId: "r25am_second_chinese_personal_corpus_expansion",
+    consumedByCommit: "pending_r25am_commit",
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_decoder_training",
+      "allow_small_pilot_training",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training"
+    ]
+  },
+  {
+    id: "r25an_post_r25am_tokenizer_review_template",
+    path: "training/from_scratch/APPROVE_R25AN_POST_R25AM_TOKENIZER_REVIEW.template.json",
+    expectedScope: "post_r25am_tokenizer_review_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r25an_post_r25am_tokenizer_review",
+    template: true,
+    trainingFlagKeys: [
+      "allow_tokenizer_dry_run",
+      "allow_training",
+      "allow_decoder_training",
+      "allow_small_pilot_training",
+      "allow_phase_4_scaled_training"
+    ]
   }
 ];
 
@@ -285,6 +317,7 @@ function markerSummary(spec, marker, failures) {
     template: spec.template === true,
     active_training_approval: markerAllowsTraining(marker, spec),
     active_tokenizer_dry_run_approval: marker?.consumed !== true && marker?.allow_tokenizer_dry_run === true,
+    active_corpus_generation_approval: marker?.consumed !== true && marker?.approved === true && marker?.allow_candidate_generation === true,
     active_product_training_approval: marker?.consumed !== true && marker?.allow_product_model_training === true,
     active_promotion_approval: marker?.consumed !== true && marker?.allow_promote_derived_rows === true,
     active_weight_commit_approval: marker?.consumed !== true && marker?.allow_weight_commit === true,
@@ -299,6 +332,7 @@ async function main() {
   const summaries = [];
   let activeTraining = 0;
   let activeTokenizerDryRun = 0;
+  let activeCorpusGeneration = 0;
   let activeProductTraining = 0;
   let activePromotion = 0;
   let activeWeightCommit = 0;
@@ -347,12 +381,14 @@ async function main() {
 
     const trainingActive = markerAllowsTraining(marker, spec);
     const tokenizerActive = marker.consumed !== true && marker.allow_tokenizer_dry_run === true;
+    const corpusGenerationActive = marker.consumed !== true && marker.approved === true && marker.allow_candidate_generation === true;
     const productActive = marker.consumed !== true && marker.allow_product_model_training === true;
     const promotionActive = marker.consumed !== true && marker.allow_promote_derived_rows === true;
     const weightActive = marker.consumed !== true && marker.allow_weight_commit === true;
     const phase4Active = marker.consumed !== true && marker.allow_phase_4_scaled_training === true;
     if (trainingActive) activeTraining += 1;
     if (tokenizerActive) activeTokenizerDryRun += 1;
+    if (corpusGenerationActive) activeCorpusGeneration += 1;
     if (productActive) activeProductTraining += 1;
     if (promotionActive) activePromotion += 1;
     if (weightActive) activeWeightCommit += 1;
@@ -362,6 +398,7 @@ async function main() {
 
   if (activeTraining !== 0) failures.push({ code: "active_training_approval_count_must_be_zero", activeTraining });
   if (activeTokenizerDryRun !== 0) failures.push({ code: "active_tokenizer_dry_run_approval_count_must_be_zero", activeTokenizerDryRun });
+  if (activeCorpusGeneration !== 0) failures.push({ code: "active_corpus_generation_approval_count_must_be_zero", activeCorpusGeneration });
   if (activeProductTraining !== 0) failures.push({ code: "active_product_training_approval_count_must_be_zero", activeProductTraining });
   if (activePromotion !== 0) failures.push({ code: "active_promotion_approval_count_must_be_zero", activePromotion });
   if (activeWeightCommit !== 0) failures.push({ code: "active_weight_commit_approval_count_must_be_zero", activeWeightCommit });
@@ -372,6 +409,7 @@ async function main() {
     markers: summaries,
     active_training_approval_count: activeTraining,
     active_tokenizer_dry_run_approval_count: activeTokenizerDryRun,
+    active_corpus_generation_approval_count: activeCorpusGeneration,
     active_product_training_approval_count: activeProductTraining,
     active_promotion_approval_count: activePromotion,
     active_weight_commit_approval_count: activeWeightCommit,

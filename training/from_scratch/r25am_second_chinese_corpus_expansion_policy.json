@@ -1,0 +1,91 @@
+{
+  "policy_id": "r25am_second_chinese_corpus_expansion_policy",
+  "phase": "phase_3_corpus_expansion",
+  "purpose": "Generate and promote a second bounded Chinese-personal repo-derived corpus split without tokenizer dry-run or decoder training.",
+  "candidate_generation": {
+    "minimum_rows": 1200,
+    "minimum_normalized_unique_target_answers": 1100,
+    "artifact_output": "artifacts/training_os/corpus_expansion/r25am/r25am_candidate_rows.jsonl",
+    "tracked_sources_only": true,
+    "external_llm_allowed": false
+  },
+  "promotion": {
+    "maximum_promoted_rows": 960,
+    "split_counts": {
+      "train": 768,
+      "dev": 96,
+      "heldout": 96
+    },
+    "language_target": {
+      "zh_min": 0.8,
+      "mixed_target": 0.15,
+      "en_max": 0.05
+    },
+    "target_corpus_files": [
+      "training/llm_corpus/r25am_repo_derived_train.jsonl",
+      "training/llm_corpus/r25am_repo_derived_dev.jsonl",
+      "training/llm_corpus/r25am_repo_derived_heldout.jsonl"
+    ]
+  },
+  "source_categories": [
+    "project_meaning_docs",
+    "r25_chinese_personal_cycle_docs",
+    "r24_r25_local_first_static_recovery_docs",
+    "identity_style_scaffold",
+    "long_horizon_human_seed",
+    "existing_training_scaffold",
+    "project_decision_ledgers"
+  ],
+  "forbidden_sources": [
+    "evals",
+    "root_pdf_docx_doc",
+    "data_public_ingestion",
+    "private_sources",
+    "artifacts_checkpoints_tokenizers",
+    "raw_private_or_unreviewed_files"
+  ],
+  "candidate_categories": [
+    "project_continuation",
+    "repair_after_weak_answer",
+    "local_first_static_browser_reasoning",
+    "tool_status_honesty",
+    "bounded_judgment",
+    "style_preference",
+    "Chinese_explanation",
+    "Chinese_rewrite_or_compression",
+    "preference_pair",
+    "repair_pair",
+    "Chinese_follow_up_binding",
+    "Chinese_project_decision"
+  ],
+  "promotion_reject_rules": [
+    "target_answer_duplicate_after_normalization",
+    "target_answer_only_differs_by_id_source_label_or_suffix",
+    "private_data_true_or_unknown",
+    "public_commit_allowed_true_before_promotion",
+    "training_allowed_true_before_promotion",
+    "eval_source",
+    "hidden_or_system_prompt",
+    "chain_of_thought",
+    "local_absolute_path",
+    "secret_like_string",
+    "source_passage_copied_too_long",
+    "release_product_or_phase4_claim"
+  ],
+  "promotion_transform": {
+    "review_status": "reviewed_for_training_corpus",
+    "training_allowed": true,
+    "public_commit_allowed": true,
+    "contains_private_data": false,
+    "provenance.promotion_phase": "R25AM",
+    "provenance.external_llm_used": false
+  },
+  "safety": {
+    "decoder_training_allowed": false,
+    "tokenizer_dry_run_allowed": false,
+    "small_pilot_training_allowed": false,
+    "phase_4_scaled_training_approved": false,
+    "candidate_artifact_commit_allowed": false,
+    "weight_commit_allowed": false
+  }
+}

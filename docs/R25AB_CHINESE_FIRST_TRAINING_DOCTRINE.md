@@ -52,3 +52,11 @@ The combined tracked corpus may remain below the future `zh >= 70%` target if
 used uniformly. R25AL tokenizer dry-run is not decoder training, does not
 approve phase_4, and does not make R25AM automatic; any R25AM run requires
 fresh approval and Chinese-first sampling or more reviewed Chinese rows.
+
+## R25AM Expansion Lesson
+
+R25AM may add a second reviewed Chinese-personal repo-derived split, but it is
+still corpus work only. It does not run tokenizer dry-run or decoder training.
+If the combined corpus remains below `zh >= 70%` or above `en <= 10%`, the next
+step should be more reviewed Chinese-personal rows or an approved sampler, not
+an automatic training run.

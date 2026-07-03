@@ -111,6 +111,30 @@ weights. R25AI is required before any reviewed R25AH row can be promoted, and
 future training after promotion needs another fresh approval. Phase_4 scaled
 training remains blocked.
 
+R25AJ diagnoses the blocked R25AI promotion attempt and repairs candidate
+uniqueness. It regenerates unique repo-derived candidates under ignored
+artifacts only, adds a review rubric, and does not train, promote rows, modify
+`training/llm_corpus/`, run tokenizer dry-run, or approve phase_4.
+
+R25AK promotes a bounded reviewed subset of R25AJ unique repo-derived rows into
+tracked `training/llm_corpus/r25ak_repo_derived_*` split files. It does not
+train, does not run tokenizer dry-run, commits no ignored artifacts or weights,
+and keeps product/formal training progress at `0%`.
+
+R25AL reviews the post-R25AK expanded corpus and runs exactly one approved
+tokenizer dry-run readiness pass. It finds tokenizer readiness acceptable but
+the combined corpus still needs more Chinese-personal rows. R25AL does not run
+decoder training, small-pilot training, phase_4 scaled training, or commit
+tokenizer artifacts.
+
+R25AM performs a second Chinese-personal repo-derived corpus expansion. It
+generates ignored candidates from tracked safe repo sources, promotes a bounded
+validated subset into new tracked `r25am_repo_derived_*` split files, and does
+not train, run tokenizer dry-run, read private sources, use evals as sources,
+commit artifacts, commit weights, or approve phase_4. R25AN is required before
+any tokenizer review over the R25AM-expanded corpus; decoder training still
+requires another later approval.
+
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
 and evaluates dev/heldout text for leakage and segmentation sanity. The tiny

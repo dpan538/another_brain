@@ -138,7 +138,8 @@ const staged = git(["diff", "--cached", "--name-only"]).split(/\r?\n/).filter(Bo
 const stagedArtifacts = staged.filter((file) => file.startsWith("artifacts/training_os/corpus_expansion/r25aj/"));
 const trackedCandidate = git(["ls-files", "--", rel(CANDIDATE_PATH)]).trim();
 const trainingCorpusStatus = git(["status", "--short", "--", "training/llm_corpus"]).split(/\r?\n/).filter(Boolean);
-const unexpectedTrainingCorpusStatus = trainingCorpusStatus.filter((line) => !/training\/llm_corpus\/r25ak_repo_derived_(train|dev|heldout)\.jsonl$/.test(line));
+const expectedPromotedCorpusStatus = /training\/llm_corpus\/r25a(?:k|m)_repo_derived_(train|dev|heldout)\.jsonl$/;
+const unexpectedTrainingCorpusStatus = trainingCorpusStatus.filter((line) => !expectedPromotedCorpusStatus.test(line));
 
 if (rows.length < 480) failures.push(`candidate row count below 480: ${rows.length}`);
 if (stagedArtifacts.length) failures.push(`R25AJ artifact files staged: ${stagedArtifacts.join(", ")}`);

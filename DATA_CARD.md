@@ -86,6 +86,28 @@ external APIs, commit artifacts, or commit weights. R25AI is required before
 any reviewed R25AH candidates can be promoted, and later training needs another
 fresh approval.
 
+R25AJ repairs the uniqueness failure from the blocked R25AI attempt and adds a
+candidate review rubric. It writes improved candidates under ignored artifacts
+only and does not train, promote rows, run tokenizer dry-run, or modify
+`training/llm_corpus`.
+
+R25AK promotes a bounded reviewed subset of unique repo-derived candidates into
+tracked `r25ak_repo_derived_*` corpus split files. It does not train, does not
+run tokenizer dry-run, commits no ignored artifacts, and commits no weights.
+
+R25AL reviews the post-R25AK expanded corpus and runs exactly one approved
+tokenizer dry-run readiness pass. It reports low tokenizer risk but still
+recommends more Chinese-personal rows. It does not run decoder training,
+small-pilot training, phase_4 scaled training, or commit tokenizer artifacts.
+
+R25AM performs a second Chinese-personal repo-derived corpus expansion and
+promotion from tracked safe repo sources. It adds reviewed
+`r25am_repo_derived_*` corpus split files only; it does not train, does not run
+tokenizer dry-run, does not read private sources, does not use evals as
+sources, does not commit artifacts, and does not commit weights. Future
+tokenizer review needs fresh R25AN approval, and future decoder training needs
+another separate approval.
+
 ## Public Data
 
 Public generated files may include:

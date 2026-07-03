@@ -7,7 +7,7 @@ import { ROOT } from "./r18_utils.mjs";
 const DIR = resolve(ROOT, "training/long_horizon");
 const OUT = resolve(ROOT, "artifacts/training_os/training_provenance_report.json");
 const LLM_CORPUS_DIR = resolve(ROOT, "training/llm_corpus");
-const PROMOTED_REPO_DERIVED_FILE = /^r25ak_repo_derived_(train|dev|heldout)\.jsonl$/;
+const PROMOTED_REPO_DERIVED_FILE = /^r25a[km]_repo_derived_(train|dev|heldout)\.jsonl$/;
 const SOURCE_TYPES = new Set(["human_seed", "synthetic_llm", "repo_derived", "eval_fixture"]);
 const CHAIN_KEY = /chain.?of.?thought|cot|hidden_reasoning|private_reasoning/i;
 const LOCAL_PATH = /\/Users\/|\/private\/var\/|\/Volumes\//;
@@ -44,18 +44,21 @@ function validateSample(sample) {
   const failures = [];
   const provenance = sample.provenance || {};
   const r25ak = String(sample.sample_id || "").startsWith("r25ak_repo_derived_");
+  const r25am = String(sample.sample_id || "").startsWith("r25am_repo_derived_");
   if (!provenance || typeof provenance !== "object") failures.push("missing_provenance");
   if (!SOURCE_TYPES.has(provenance.source_type)) failures.push("invalid_source_type");
   if (provenance.source_type === "synthetic_llm" && !provenance.generator_model) failures.push("synthetic_llm_missing_generator_model");
   if (provenance.source_type !== "human_seed" && !provenance.license_or_permission) failures.push("non_human_missing_license_or_permission");
   if (provenance.contains_private_data !== false) failures.push("private_data_requires_explicit_review");
-  if (r25ak) {
-    if (sample.review_status !== "reviewed_for_training_corpus") failures.push("r25ak_review_status_not_promoted");
-    if (sample.training_allowed !== true) failures.push("r25ak_training_allowed_not_true");
-    if (sample.public_commit_allowed !== true) failures.push("r25ak_public_commit_allowed_not_true");
-    if (provenance.promoted_by !== "scripts/promote_r25ak_unique_candidates.mjs") failures.push("r25ak_missing_promoted_by");
-    if (provenance.promotion_phase !== "R25AK") failures.push("r25ak_missing_promotion_phase");
-    if (provenance.external_llm_used !== false) failures.push("r25ak_external_llm_used_not_false");
+  if (r25ak || r25am) {
+    const phase = r25am ? "R25AM" : "R25AK";
+    const promotedBy = r25am ? "scripts/promote_r25am_second_chinese_corpus.mjs" : "scripts/promote_r25ak_unique_candidates.mjs";
+    if (sample.review_status !== "reviewed_for_training_corpus") failures.push(`${phase.toLowerCase()}_review_status_not_promoted`);
+    if (sample.training_allowed !== true) failures.push(`${phase.toLowerCase()}_training_allowed_not_true`);
+    if (sample.public_commit_allowed !== true) failures.push(`${phase.toLowerCase()}_public_commit_allowed_not_true`);
+    if (provenance.promoted_by !== promotedBy) failures.push(`${phase.toLowerCase()}_missing_promoted_by`);
+    if (provenance.promotion_phase !== phase) failures.push(`${phase.toLowerCase()}_missing_promotion_phase`);
+    if (provenance.external_llm_used !== false) failures.push(`${phase.toLowerCase()}_external_llm_used_not_false`);
   }
   for (const item of walk(sample)) {
     if (CHAIN_KEY.test(item.key)) failures.push(`chain_of_thought_key:${item.path}`);

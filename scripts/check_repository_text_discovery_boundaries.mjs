@@ -72,7 +72,7 @@ function hasSecretLikeString(text) {
 }
 
 function isAllowedPromotedCorpusPath(lineOrPath) {
-  return /training\/llm_corpus\/r25ak_repo_derived_(train|dev|heldout)\.jsonl$/.test(String(lineOrPath).trim());
+  return /training\/llm_corpus\/r25a(?:k|m)_repo_derived_(train|dev|heldout)\.jsonl$/.test(String(lineOrPath).trim());
 }
 
 function checkTrackedSummaries(failures) {

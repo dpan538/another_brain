@@ -7,7 +7,7 @@ import { dirname } from "node:path";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CORPUS_DIR = resolve(ROOT, "training/llm_corpus");
 const BASE_FILES = ["train.jsonl", "dev.jsonl", "heldout.jsonl"];
-const PROMOTED_REPO_DERIVED_FILE_RE = /^r25ak_repo_derived_(train|dev|heldout)\.jsonl$/;
+const PROMOTED_REPO_DERIVED_FILE_RE = /^r25a[km]_repo_derived_(train|dev|heldout)\.jsonl$/;
 
 export const REQUIRED_FAMILIES = Object.freeze([
   "static_browser_llm_policy",
@@ -96,7 +96,9 @@ const REPO_DERIVED_TRANSFORMATION_TYPES = new Set([
   "Chinese_explanation",
   "Chinese_rewrite_or_compression",
   "preference_pair",
-  "repair_pair"
+  "repair_pair",
+  "Chinese_follow_up_binding",
+  "Chinese_project_decision"
 ]);
 const MODEL_WEIGHT_REF = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)\b/i;
 const LOCAL_PATH_REF = /\/Users\/|\/private\/var\/|\/Volumes\//;
@@ -133,13 +135,23 @@ function countBy(rows, key) {
 }
 
 function isPromotedRepoDerivedRow(row) {
-  return PROMOTED_REPO_DERIVED_FILE_RE.test(String(row.__file || "")) || String(row.sample_id || "").startsWith("r25ak_repo_derived_");
+  return PROMOTED_REPO_DERIVED_FILE_RE.test(String(row.__file || "")) || /^r25a[km]_repo_derived_/.test(String(row.sample_id || ""));
 }
 
 function expectedPromotedFile(row) {
   const match = String(row.__file || "").match(PROMOTED_REPO_DERIVED_FILE_RE);
-  const prefix = match ? row.__file.split(`_${match[1]}.jsonl`)[0] : "r25ak_repo_derived";
+  const prefix = match ? row.__file.split(`_${match[1]}.jsonl`)[0] : String(row.sample_id || "").startsWith("r25am_") ? "r25am_repo_derived" : "r25ak_repo_derived";
   return `${prefix}_${row.split}.jsonl`;
+}
+
+function expectedPromotedBy(row) {
+  return String(row.sample_id || "").startsWith("r25am_") || String(row.__file || "").startsWith("r25am_")
+    ? "scripts/promote_r25am_second_chinese_corpus.mjs"
+    : "scripts/promote_r25ak_unique_candidates.mjs";
+}
+
+function expectedPromotionPhase(row) {
+  return String(row.sample_id || "").startsWith("r25am_") || String(row.__file || "").startsWith("r25am_") ? "R25AM" : "R25AK";
 }
 
 function rowFamily(row) {
@@ -229,8 +241,8 @@ export function validateCorpusRows(rows) {
       else {
         if (!["repo_derived", "project_authored"].includes(row.provenance.source_type)) failures.push({ code: "invalid_provenance_source_type", ...loc });
         if (row.provenance.external_llm_used !== false) failures.push({ code: "external_llm_used_must_be_false", ...loc });
-        if (row.provenance.promoted_by !== "scripts/promote_r25ak_unique_candidates.mjs") failures.push({ code: "invalid_promoted_by", ...loc });
-        if (row.provenance.promotion_phase !== "R25AK") failures.push({ code: "invalid_promotion_phase", ...loc });
+        if (row.provenance.promoted_by !== expectedPromotedBy(row)) failures.push({ code: "invalid_promoted_by", ...loc });
+        if (row.provenance.promotion_phase !== expectedPromotionPhase(row)) failures.push({ code: "invalid_promotion_phase", ...loc });
         if (row.provenance.contains_private_data !== false) failures.push({ code: "provenance_private_data_must_be_false", ...loc });
         if (!String(row.provenance.license_or_permission || "").includes("repo-tracked")) failures.push({ code: "invalid_provenance_license", ...loc });
       }
