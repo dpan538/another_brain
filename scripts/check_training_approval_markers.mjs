@@ -357,6 +357,25 @@ const MARKERS = [
       "allow_tokenizer_dry_run",
       "allow_phase_4_scaled_training"
     ]
+  },
+  {
+    id: "r25aq_next_reviewed_step_template",
+    path: "training/from_scratch/APPROVE_R25AQ_NEXT_REVIEWED_STEP.template.json",
+    expectedScope: "future_reviewed_step_only",
+    expectedPhase: "phase_3_analysis_or_pilot_review",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_decoder_training",
+      "allow_small_pilot_training",
+      "allow_tokenizer_dry_run",
+      "allow_corpus_generation",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training",
+      "allow_release_checkpoint",
+      "allow_weight_commit"
+    ]
   }
 ];
 

@@ -36,3 +36,12 @@ The approval marker was consumed after the attempt. Future R25AO reruns,
 tokenizer dry-runs, corpus changes, promotion work, product training, release
 admission, or phase_4 work require a fresh explicit approval. No weights or
 R25AO artifacts are committed.
+
+## R25AP Analysis Note
+
+R25AP later analyzed this run without training or replaying the pilot. The
+analysis classifies R25AO as sampler-success but quality-regressed: the
+Chinese-first sampler target was met and train/dev loss decreased, but heldout
+loss was worse than R25S and R25AC. R25AP therefore recommends
+`pause_for_review`, not an immediate repeat, tokenizer dry-run, corpus
+expansion, or phase_4 review.

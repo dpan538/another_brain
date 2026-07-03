@@ -1,0 +1,19 @@
+{
+  "approved": false,
+  "scope": "future_reviewed_step_only",
+  "reviewer": "",
+  "phase": "phase_3_analysis_or_pilot_review",
+  "run_id": "",
+  "variant_id": "",
+  "allow_training": false,
+  "allow_decoder_training": false,
+  "allow_small_pilot_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_corpus_generation": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "notes": "Template only. R25AQ requires fresh explicit approval and does not authorize training, tokenizer dry-run, corpus expansion, or phase_4 by itself."
+}

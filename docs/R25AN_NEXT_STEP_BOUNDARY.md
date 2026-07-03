@@ -24,3 +24,10 @@ R25AN completed post-R25AM corpus, sampler, and tokenizer readiness review witho
 ## Boundary
 
 R25AO remains a future approval-only step. Any bounded Chinese-personal micro-cycle needs fresh explicit approval, must use the R25AM-expanded corpus with split integrity, and must not automatically follow from this tokenizer dry-run. Tokenizer artifacts and weights remain uncommitted.
+
+## R25AP Follow-Up
+
+R25AO later ran exactly once with approval and stopped. R25AP analyzes that
+result only: it does not train, run tokenizer dry-run, or expand corpus.
+R25AP keeps phase_4 blocked because R25AO met sampler targets but regressed on
+heldout quality.

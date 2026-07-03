@@ -34,3 +34,10 @@ training.
 
 The coverage fields come from task-family and policy tags in reviewed corpus
 rows; they are not fabricated. Detailed replay artifacts remain ignored.
+
+## R25AP Bucket Note
+
+R25AP identifies mixed and English as weak heldout buckets. Mixed loss is
+0.6603 above zh, and English loss is 1.4699 above zh. The zh bucket is the
+strongest of the three, so the next step should review mixed/en examples and
+task-family losses while keeping Chinese-first sampling intact.

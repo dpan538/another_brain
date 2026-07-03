@@ -25,3 +25,11 @@ Any later bounded micro-cycle, tokenizer review, corpus change, or promotion
 step needs a separate approval. Phase_4 scaled training is not approved.
 Product/formal training progress remains 0%, and the R25AO checkpoint remains
 an ignored pilot artifact.
+
+## R25AP Outcome
+
+R25AP confirms that R25AO does not justify automatic continuation. The run met
+the zh-first sampler target, but R25S remains best by heldout loss and mixed/en
+buckets need review. The next boundary is a pause for review or a fresh
+approval for non-training sampler/corpus analysis before any later bounded
+training proposal.

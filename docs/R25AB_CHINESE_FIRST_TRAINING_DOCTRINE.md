@@ -78,3 +78,12 @@ for review rather than automatic continuation. R25AP must analyze the result
 before any repeat run, tokenizer work, corpus change, product step, or any
 phase_4 scaled training discussion. Phase_4 scaled training is not approved,
 and product/formal training progress remains `0%`.
+
+## R25AP Analysis Lesson
+
+R25AP confirms that hitting the zh-first ratio is necessary but not sufficient.
+R25AO reduced train/dev loss and preserved Chinese-primary sampling, yet
+heldout loss regressed versus R25S and mixed/en buckets were weaker than zh.
+The doctrine therefore remains: review buckets and source/task coverage before
+any later bounded run, keep English secondary, and require fresh approval for
+training, tokenizer dry-run, corpus expansion, or phase_4 review.

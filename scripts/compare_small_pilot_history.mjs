@@ -10,10 +10,12 @@ const INCLUDE_R25V = process.argv.includes("--include-r25v");
 const INCLUDE_R25Y = process.argv.includes("--include-r25y");
 const INCLUDE_R25AC = process.argv.includes("--include-r25ac");
 const INCLUDE_R25AO = process.argv.includes("--include-r25ao");
+const R25AP_REVIEW = process.argv.includes("--r25ap-review");
 const DECISION_MODE = process.argv.includes("--decision-mode");
 const CHINESE_PERSONAL_REVIEW = process.argv.includes("--chinese-personal-review");
 
 function outputPath() {
+  if (R25AP_REVIEW) return "artifacts/training_os/small_decoder_pilot/r25ap/r25ap_history_comparison.json";
   if (INCLUDE_R25AO) return "artifacts/training_os/small_decoder_pilot/r25ao/r25ao_history_comparison.json";
   if (CHINESE_PERSONAL_REVIEW) return "artifacts/training_os/small_decoder_pilot/r25ad/r25ad_small_pilot_history_comparison.json";
   if (INCLUDE_R25AC) return "artifacts/training_os/small_decoder_pilot/r25ac/r25ac_history_comparison.json";
@@ -541,6 +543,7 @@ async function main() {
     status: runs.length > 1 ? "history_compared" : runs.length === 1 ? "single_run_baseline" : "no_local_ignored_artifacts",
     decision_mode: DECISION_MODE,
     chinese_personal_review: CHINESE_PERSONAL_REVIEW,
+    r25ap_review: R25AP_REVIEW,
     training_ran: false,
     product_model: false,
     release_checkpoint: false,

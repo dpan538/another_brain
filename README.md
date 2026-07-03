@@ -142,6 +142,14 @@ commit tokenizer artifacts or weights, and does not read private sources, root
 PDFs/DOCX, or `data/public_ingestion/`. R25AO remains an inert future
 micro-cycle template until fresh explicit approval exists.
 
+R25AO runs exactly one approved bounded expanded Chinese-personal micro-cycle
+with a zh-first sampler and then stops. R25AP analyzes that run only: R25AO met
+the zh/mixed/en target and reduced train/dev loss, but heldout loss regressed
+against R25S and mixed/en buckets need review. R25AP recommends
+`pause_for_review`; it does not train, rerun R25AO, run tokenizer dry-run,
+expand corpus, approve phase_4, commit artifacts, or commit weights. Product
+and formal decoder training progress remain `0%`.
+
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
 and evaluates dev/heldout text for leakage and segmentation sanity. The tiny

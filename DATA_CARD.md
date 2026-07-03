@@ -115,6 +115,14 @@ long-term training, or product-scale training. Tokenizer artifacts remain
 ignored and uncommitted. R25AO is an inert future bounded micro-cycle template
 until fresh explicit approval exists.
 
+R25AO later runs exactly one approved bounded expanded Chinese-personal
+micro-cycle to ignored artifacts. R25AP analyzes those results only. R25AO met
+the zh-first sampler target and reduced train/dev loss, but heldout loss
+regressed against R25S and mixed/en buckets were weaker than zh. R25AP does not
+train, rerun pilots, run tokenizer dry-run, expand corpus, approve phase_4, or
+commit artifacts/weights. Product and formal decoder training progress remain
+`0%`.
+
 ## Public Data
 
 Public generated files may include:

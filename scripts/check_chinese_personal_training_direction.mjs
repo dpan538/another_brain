@@ -42,6 +42,7 @@ const R25AB_SURFACE = [
   "training/from_scratch/APPROVE_R25AO_EXPANDED_CHINESE_PERSONAL_MICROCYCLE.template.json",
   "training/from_scratch/APPROVE_R25AO_EXPANDED_CHINESE_PERSONAL_MICROCYCLE.json",
   "training/from_scratch/APPROVE_R25AP_ANALYZE_R25AO.template.json",
+  "training/from_scratch/APPROVE_R25AQ_NEXT_REVIEWED_STEP.template.json",
   "training/from_scratch/small_decoder_pilot_run_config.r25ao.template.json",
   "training/from_scratch/small_decoder_pilot_run_config.r25ao.json",
   "scripts/eval_small_decoder_pilot_r25ao.mjs",
