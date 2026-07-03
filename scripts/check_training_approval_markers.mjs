@@ -314,13 +314,48 @@ const MARKERS = [
     expectedScope: "expanded_chinese_personal_microcycle_only",
     expectedPhase: "phase_3_small_decoder_pilot",
     expectedRunId: "r25ao_expanded_chinese_personal_microcycle",
+    expectedVariantId: "r25ao_sampler_zh70_mixed20_en10",
     template: true,
     trainingFlagKeys: [
       "allow_small_pilot_training",
       "allow_decoder_training",
+      "allow_bounded_decoder_pilot_training",
+      "allow_formal_decoder_training",
+      "allow_tokenizer_dry_run",
       "allow_phase_4_scaled_training",
       "allow_long_term_training",
       "allow_product_model_training"
+    ]
+  },
+  {
+    id: "r25ao_expanded_chinese_personal_microcycle",
+    path: "training/from_scratch/APPROVE_R25AO_EXPANDED_CHINESE_PERSONAL_MICROCYCLE.json",
+    expectedScope: "expanded_chinese_personal_microcycle_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    expectedRunId: "r25ao_expanded_chinese_personal_microcycle",
+    expectedVariantId: "r25ao_sampler_zh70_mixed20_en10",
+    consumedByCommit: "pending_r25ao_commit",
+    trainingFlagKeys: [
+      "allow_small_pilot_training",
+      "allow_bounded_decoder_pilot_training",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training"
+    ]
+  },
+  {
+    id: "r25ap_analyze_r25ao_template",
+    path: "training/from_scratch/APPROVE_R25AP_ANALYZE_R25AO.template.json",
+    expectedScope: "analyze_r25ao_only",
+    expectedPhase: "phase_3_small_decoder_pilot_analysis",
+    expectedRunId: "r25ap_analyze_r25ao",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_decoder_training",
+      "allow_small_pilot_training",
+      "allow_tokenizer_dry_run",
+      "allow_phase_4_scaled_training"
     ]
   }
 ];

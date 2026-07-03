@@ -9,10 +9,12 @@ const INCLUDE_R25S = process.argv.includes("--include-r25s");
 const INCLUDE_R25V = process.argv.includes("--include-r25v");
 const INCLUDE_R25Y = process.argv.includes("--include-r25y");
 const INCLUDE_R25AC = process.argv.includes("--include-r25ac");
+const INCLUDE_R25AO = process.argv.includes("--include-r25ao");
 const DECISION_MODE = process.argv.includes("--decision-mode");
 const CHINESE_PERSONAL_REVIEW = process.argv.includes("--chinese-personal-review");
 
 function outputPath() {
+  if (INCLUDE_R25AO) return "artifacts/training_os/small_decoder_pilot/r25ao/r25ao_history_comparison.json";
   if (CHINESE_PERSONAL_REVIEW) return "artifacts/training_os/small_decoder_pilot/r25ad/r25ad_small_pilot_history_comparison.json";
   if (INCLUDE_R25AC) return "artifacts/training_os/small_decoder_pilot/r25ac/r25ac_history_comparison.json";
   if (INCLUDE_R25Y) return "artifacts/training_os/small_decoder_pilot/r25y/r25y_history_comparison.json";
@@ -127,6 +129,25 @@ function chooseR25acRecommendation(r25acRun, r25acHeldout, r25sRun, r25sHeldout,
   return "chinese_personal_neutral";
 }
 
+function chooseR25aoRecommendation(r25aoRun, r25aoHeldout, r25acRun, r25acHeldout, r25sRun, r25sHeldout, r25aoDataset) {
+  if (!r25aoRun?.ok || !r25aoHeldout?.ok) return "stop_and_review";
+  const mix = r25aoRun.actual_language_mix || r25aoDataset?.actual_train_language_mix || {};
+  if (Number(mix.zh || 0) < 0.7 || Number(mix.en || 0) > 0.1) return "data_issue_review";
+  const completeCoverage = Object.values(r25aoRun.personal_target_coverage || r25aoDataset?.personal_target_coverage || {})
+    .every((entry) => Number(entry?.rows || 0) > 0);
+  if (!completeCoverage) return "expanded_chinese_personal_neutral";
+  const r25aoHeld = Number(r25aoHeldout.heldout_loss);
+  const r25acHeld = Number(r25acHeldout?.heldout_loss);
+  const r25sHeld = Number(r25sHeldout?.heldout_loss);
+  if (Number.isFinite(r25aoHeld) && Number.isFinite(r25acHeld) && r25aoHeld <= r25acHeld) {
+    return "expanded_chinese_personal_helped_review_next";
+  }
+  if (Number.isFinite(r25aoHeld) && Number.isFinite(r25sHeld) && r25aoHeld <= r25sHeld) {
+    return "expanded_chinese_personal_helped_review_next";
+  }
+  return "expanded_chinese_personal_neutral";
+}
+
 async function main() {
   const toy = await readJsonIfPresent("artifacts/training_os/tiny_decoder_toy/r25k_toy_run_report.json");
   const r25m = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25m/r25m_small_decoder_run_report.json");
@@ -153,6 +174,11 @@ async function main() {
   const r25acEval = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25ac/r25ac_small_decoder_eval_report.json");
   const r25acDataset = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25ac/r25ac_dataset_report.json");
   const r25acBreakdown = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25ac/r25ac_chinese_personal_breakdown.json");
+  const r25ao = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25ao/r25ao_small_decoder_run_report.json");
+  const r25aoHeldout = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25ao/r25ao_heldout_eval_report.json");
+  const r25aoEval = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25ao/r25ao_small_decoder_eval_report.json");
+  const r25aoDataset = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25ao/r25ao_dataset_report.json");
+  const r25aoBreakdown = await readJsonIfPresent("artifacts/training_os/small_decoder_pilot/r25ao/r25ao_chinese_personal_breakdown.json");
   const runs = [];
 
   if (toy?.ok) {
@@ -314,12 +340,44 @@ async function main() {
     });
   }
 
+  if (INCLUDE_R25AO && r25ao) {
+    runs.push({
+      id: "R25AO",
+      kind: "expanded_chinese_first_personal_microcycle",
+      train_loss_change: r25ao.small_pilot_training_ran ? lossDelta(r25ao.initial_train_loss, r25ao.final_train_loss) : null,
+      dev_loss_change: r25ao.small_pilot_training_ran ? lossDelta(r25ao.initial_dev_loss, r25ao.final_dev_loss) : null,
+      heldout_loss: r25aoHeldout?.heldout_loss ?? null,
+      heldout_loss_finite: r25aoHeldout?.heldout_loss_finite === true,
+      heldout_language_counts: r25aoHeldout?.heldout_language_counts || null,
+      parameter_count: r25ao.parameter_count || null,
+      sequence_count: r25ao.train_sequences || null,
+      dev_sequence_count: r25ao.dev_sequences || null,
+      heldout_sequence_count: r25aoHeldout?.heldout_sequences ?? r25ao.heldout_sequences_prepared ?? null,
+      steps: r25ao.steps || 0,
+      backend: r25ao.backend,
+      artifact_type: r25ao.small_pilot_training_ran ? "ignored_replayable_checkpoint_json" : "blocked_no_checkpoint",
+      replayable_checkpoint_available: r25ao.replayable_checkpoint_written === true && r25aoEval?.checkpoint_validates === true,
+      actual_layers: r25ao.actual_layers ?? null,
+      learning_rate: r25ao.learning_rate ?? null,
+      actual_language_mix: r25ao.actual_language_mix || r25aoDataset?.actual_train_language_mix || null,
+      target_language_mix: r25aoDataset?.target_language_mix || null,
+      personal_target_coverage: r25ao.personal_target_coverage || r25aoDataset?.personal_target_coverage || null,
+      chinese_personal_breakdown_status: r25aoBreakdown?.ok ? "ready" : "missing_or_not_ok",
+      tokenizer_dry_run_ran: false,
+      formal_decoder_training: false,
+      phase_4_scaled_training: false,
+      blocked: r25ao.skipped === true,
+      blocked_reason: r25ao.skipped ? r25ao.reason || null : null
+    });
+  }
+
   const r25mRun = runs.find((run) => run.id === "R25M");
   const r25pRun = runs.find((run) => run.id === "R25P");
   const r25sRun = runs.find((run) => run.id === "R25S");
   const r25vRun = runs.find((run) => run.id === "R25V");
   const r25yRun = runs.find((run) => run.id === "R25Y");
   const r25acRun = runs.find((run) => run.id === "R25AC");
+  const r25aoRun = runs.find((run) => run.id === "R25AO");
   const dataset_size_difference = r25mRun && r25pRun
     ? {
         train_sequences_delta: Number(r25pRun.sequence_count || 0) - Number(r25mRun.sequence_count || 0),
@@ -425,6 +483,28 @@ async function main() {
         heldout_loss_delta: Number(r25acHeldout?.heldout_loss) - Number(r25pHeldout?.heldout_loss)
       }
     : null;
+  const r25ao_vs_r25ac = r25aoRun && r25acRun
+    ? {
+        train_sequence_delta: Number(r25aoRun.sequence_count || 0) - Number(r25acRun.sequence_count || 0),
+        dev_sequence_delta: Number(r25aoRun.dev_sequence_count || 0) - Number(r25acRun.dev_sequence_count || 0),
+        heldout_sequence_delta: Number(r25aoRun.heldout_sequence_count || 0) - Number(r25acRun.heldout_sequence_count || 0),
+        parameter_count_delta: Number(r25aoRun.parameter_count || 0) - Number(r25acRun.parameter_count || 0),
+        final_train_loss_delta: Number(r25ao?.final_train_loss) - Number(r25ac?.final_train_loss),
+        final_dev_loss_delta: Number(r25ao?.final_dev_loss) - Number(r25ac?.final_dev_loss),
+        heldout_loss_delta: Number(r25aoHeldout?.heldout_loss) - Number(r25acHeldout?.heldout_loss)
+      }
+    : null;
+  const r25ao_vs_r25s = r25aoRun && r25sRun
+    ? {
+        train_sequence_delta: Number(r25aoRun.sequence_count || 0) - Number(r25sRun.sequence_count || 0),
+        dev_sequence_delta: Number(r25aoRun.dev_sequence_count || 0) - Number(r25sRun.dev_sequence_count || 0),
+        heldout_sequence_delta: Number(r25aoRun.heldout_sequence_count || 0) - Number(r25sRun.heldout_sequence_count || 0),
+        parameter_count_delta: Number(r25aoRun.parameter_count || 0) - Number(r25sRun.parameter_count || 0),
+        final_train_loss_delta: Number(r25ao?.final_train_loss) - Number(r25s?.final_train_loss),
+        final_dev_loss_delta: Number(r25ao?.final_dev_loss) - Number(r25s?.final_dev_loss),
+        heldout_loss_delta: Number(r25aoHeldout?.heldout_loss) - Number(r25sHeldout?.heldout_loss)
+      }
+    : null;
   const r25sRecommendation = INCLUDE_R25S
     ? chooseR25sRecommendation(r25s, r25sHeldout, r25p, r25pHeldout)
     : null;
@@ -437,8 +517,13 @@ async function main() {
   const r25acRecommendation = INCLUDE_R25AC
     ? chooseR25acRecommendation(r25ac, r25acHeldout, r25s, r25sHeldout, r25acDataset)
     : null;
+  const r25aoRecommendation = INCLUDE_R25AO
+    ? chooseR25aoRecommendation(r25ao, r25aoHeldout, r25ac, r25acHeldout, r25s, r25sHeldout, r25aoDataset)
+    : null;
   const recommendationCategory = DECISION_MODE
-    ? INCLUDE_R25AC
+    ? INCLUDE_R25AO
+      ? r25aoRecommendation
+      : INCLUDE_R25AC
       ? r25acRecommendation
       : INCLUDE_R25Y
       ? r25yRecommendation
@@ -471,6 +556,8 @@ async function main() {
     r25ac_vs_r25y,
     r25ac_vs_r25v,
     r25ac_vs_r25p,
+    r25ao_vs_r25ac,
+    r25ao_vs_r25s,
     balanced_data_improved_weak_buckets: INCLUDE_R25S
       ? (Number.isFinite(Number(r25sHeldout?.heldout_loss)) && Number.isFinite(Number(r25pHeldout?.heldout_loss))
           ? Number(r25sHeldout.heldout_loss) <= Number(r25pHeldout.heldout_loss)
@@ -488,6 +575,9 @@ async function main() {
       : null,
     chinese_first_personal_helped: INCLUDE_R25AC
       ? r25acRecommendation === "chinese_personal_helped_review_next"
+      : null,
+    expanded_chinese_first_personal_helped: INCLUDE_R25AO
+      ? r25aoRecommendation === "expanded_chinese_personal_helped_review_next"
       : null,
     r25ad_interpretation: CHINESE_PERSONAL_REVIEW ? {
       language_mix_mechanism_worked: Boolean(
@@ -509,14 +599,16 @@ async function main() {
     r25p_replayability: r25pRun?.replayable_checkpoint_available === true ? "replayable_checkpoint_available" : INCLUDE_R25P ? "not_available_or_not_validated" : "not_requested",
     recommendation_category: recommendationCategory,
     recommendation: DECISION_MODE
-      ? CHINESE_PERSONAL_REVIEW ? "expand_chinese_personal_corpus_before_any_repeat_or_phase_4_design_review" : INCLUDE_R25AC ? "stop_and_review_before_any_repeat_or_phase_4_design_review" : INCLUDE_R25Y ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25V ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25S ? "stop_and_review_before_any_further_training_or_scaling" : "review_required_before_any_r25r_or_scaling"
+      ? INCLUDE_R25AO ? "stop_and_review_r25ao_before_any_repeat_tokenizer_or_phase_4_design_review" : CHINESE_PERSONAL_REVIEW ? "expand_chinese_personal_corpus_before_any_repeat_or_phase_4_design_review" : INCLUDE_R25AC ? "stop_and_review_before_any_repeat_or_phase_4_design_review" : INCLUDE_R25Y ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25V ? "stop_and_review_before_any_further_training_or_phase_4_scaling" : INCLUDE_R25S ? "stop_and_review_before_any_further_training_or_scaling" : "review_required_before_any_r25r_or_scaling"
       : INCLUDE_R25P ? "stop_and_review" : "future_r25p_requires_fresh_approval",
     notes: [
       DECISION_MODE
-        ? INCLUDE_R25AC ? "R25AC history comparison does not train; it reads ignored reports only." : INCLUDE_R25Y ? "R25Y history comparison does not train; it reads ignored reports only." : INCLUDE_R25V ? "R25V history comparison does not train; it reads ignored reports only." : INCLUDE_R25S ? "R25S history comparison does not train; it reads ignored reports only." : "R25Q decision comparison does not train; it reads ignored reports only."
+        ? INCLUDE_R25AO ? "R25AO history comparison does not train; it reads ignored reports only." : INCLUDE_R25AC ? "R25AC history comparison does not train; it reads ignored reports only." : INCLUDE_R25Y ? "R25Y history comparison does not train; it reads ignored reports only." : INCLUDE_R25V ? "R25V history comparison does not train; it reads ignored reports only." : INCLUDE_R25S ? "R25S history comparison does not train; it reads ignored reports only." : "R25Q decision comparison does not train; it reads ignored reports only."
         : INCLUDE_R25P ? "R25P comparison does not train; it reads ignored reports only." : "R25O comparison does not train.",
       "R25M is the first small-pilot baseline.",
-      INCLUDE_R25AC
+      INCLUDE_R25AO
+        ? "R25AO is a bounded expanded Chinese-first personal micro-cycle; another run, tokenizer dry-run, product step, or phase_4 scaling still requires review and fresh approval."
+        : INCLUDE_R25AC
         ? "R25AC is a bounded Chinese-first personal micro-cycle; another run or phase_4 scaling still requires review and fresh approval."
         : INCLUDE_R25Y
         ? "R25Y is a bounded data-regularization pilot; another run or phase_4 scaling still requires review and fresh approval."

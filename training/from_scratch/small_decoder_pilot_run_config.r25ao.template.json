@@ -3,11 +3,20 @@
   "variant_id": "r25ao_sampler_zh70_mixed20_en10",
   "training_allowed_by_default": false,
   "requires_fresh_approval": true,
+  "approval_required": true,
+  "approved_by_default": false,
   "product_model": false,
   "release_checkpoint": false,
   "formal_product_training": false,
+  "formal_decoder_training": false,
+  "long_term_training": false,
   "phase_4_scaled_training": false,
   "commit_weights_allowed": false,
+  "tokenizer_dry_run_allowed": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
   "basis": "r25am_expanded_corpus",
   "sampler_target": {
     "zh_min": 0.7,
@@ -27,5 +36,10 @@
     "hidden_size": 64,
     "attention_heads": 4,
     "intermediate_size": 128
+  },
+  "replayable_checkpoint": {
+    "enabled": true,
+    "format": "json",
+    "schema": "training/from_scratch/small_decoder_checkpoint.schema.json"
   }
 }

@@ -609,3 +609,11 @@ Chinese-first direction, but the combined corpus may still be below the future
 `zh >= 70%` target unless later approved R25AM/R25AN corpus work uses
 Chinese-first sampling or more reviewed Chinese rows are added. R25AO is the
 future bounded micro-cycle review path and still requires fresh approval.
+
+R25AO has now run exactly one fresh-approved bounded expanded Chinese-personal
+small decoder pilot using the R25AM-expanded corpus and R25AN sampler/tokenizer
+readiness. It stayed phase 3 only: no tokenizer dry-run, no product/formal
+training, no long-term training, no phase_4 scaled training, no release
+checkpoint, and no committed weights or artifacts. The result is paused for
+R25AP analysis before any repeat, tokenizer, corpus, product, release, or
+phase_4 step.

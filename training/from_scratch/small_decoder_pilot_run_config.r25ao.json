@@ -1,0 +1,95 @@
+{
+  "run_id": "r25ao_expanded_chinese_personal_microcycle",
+  "variant_id": "r25ao_sampler_zh70_mixed20_en10",
+  "architecture_id": "r25ao_sampler_zh70_mixed20_en10",
+  "training_allowed_by_default": false,
+  "requires_fresh_approval": true,
+  "approval_required": true,
+  "approved_by_default": false,
+  "approval_marker": "training/from_scratch/APPROVE_R25AO_EXPANDED_CHINESE_PERSONAL_MICROCYCLE.json",
+  "approval_template": "training/from_scratch/APPROVE_R25AO_EXPANDED_CHINESE_PERSONAL_MICROCYCLE.template.json",
+  "product_model": false,
+  "release_checkpoint": false,
+  "formal_product_training": false,
+  "formal_decoder_training": false,
+  "long_term_training": false,
+  "phase_4_scaled_training": false,
+  "commit_weights_allowed": false,
+  "tokenizer_dry_run_allowed": false,
+  "output_dir": "artifacts/training_os/small_decoder_pilot/r25ao/",
+  "train_sources": [
+    "training/llm_corpus/train.jsonl",
+    "training/llm_corpus/r25l_train.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_train.jsonl",
+    "training/llm_corpus/r25am_repo_derived_train.jsonl"
+  ],
+  "dev_sources": [
+    "training/llm_corpus/dev.jsonl",
+    "training/llm_corpus/r25l_dev.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25am_repo_derived_dev.jsonl"
+  ],
+  "heldout_sources": [
+    "training/llm_corpus/heldout.jsonl",
+    "training/llm_corpus/r25l_heldout.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_heldout.jsonl",
+    "training/llm_corpus/r25am_repo_derived_heldout.jsonl"
+  ],
+  "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25an.json",
+  "tokenizer_artifact_source": "artifacts/training_os/tokenizer_dryrun/r25an/",
+  "max_train_rows": 384,
+  "max_dev_rows": 96,
+  "max_heldout_rows": 96,
+  "max_context_tokens": 64,
+  "batch_size": 4,
+  "max_steps": 100,
+  "eval_every": 20,
+  "learning_rate": 0.004,
+  "seed": 30,
+  "sampler_target": {
+    "zh_min": 0.7,
+    "mixed_target": 0.2,
+    "en_max": 0.1
+  },
+  "sampler_policy": {
+    "without_replacement": true,
+    "preserve_split_boundaries": true,
+    "prefer_reviewed_for_training_corpus": true,
+    "prefer_repo_derived_personal_targets": true,
+    "ensure_personal_target_coverage": true
+  },
+  "personal_color_targets": [
+    "project_continuation",
+    "repair_after_weak_answer",
+    "local_first_static_browser_reasoning",
+    "style_preference",
+    "tool_status_honesty",
+    "bounded_judgment"
+  ],
+  "architecture": {
+    "type": "causal_decoder_pilot",
+    "basis": "r25s_baseline_data_first",
+    "layers": 1,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128,
+    "selected_backend": "auto_detect"
+  },
+  "replayable_checkpoint": {
+    "enabled": true,
+    "format": "json",
+    "schema": "training/from_scratch/small_decoder_checkpoint.schema.json"
+  },
+  "notes": [
+    "bounded R25AO expanded Chinese-personal micro-cycle only",
+    "uses tracked R25AM-expanded corpus split files and R25AN tokenizer artifacts",
+    "not tokenizer dry-run",
+    "not formal decoder training",
+    "not product-scale training",
+    "not long-term training",
+    "not phase_4 scaled training",
+    "not release admission",
+    "ignored artifacts only",
+    "approval is consumed after one attempt"
+  ]
+}

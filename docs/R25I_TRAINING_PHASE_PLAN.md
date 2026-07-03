@@ -184,6 +184,17 @@ does not run a small pilot, does not run phase_4, and does not commit tokenizer
 artifacts or weights. R25AO remains an inert future micro-cycle template until
 fresh explicit approval exists.
 
+R25AO may move the label to
+`phase_3_expanded_chinese_personal_microcycle_completed_review_pause` only
+after the approved `r25ao_expanded_chinese_personal_microcycle` run, replayable
+checkpoint validation, heldout replay, Chinese/personal breakdown, history
+comparison, approval consumption, artifact guard, and R24/R25 gates pass. This
+remains phase 3 bounded small-pilot work: not formal decoder training, not
+product-scale training, not long-term training, not tokenizer dry-run, not
+phase_4 scaled training, not release checkpoint admission, and not browser
+static deployment. Product and formal training progress remain `0%`; pilot
+progress may increase separately to `7%`.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
@@ -219,3 +230,6 @@ fresh explicit approval exists.
   corpus rows, train, approve phase_4, or commit weights.
 - Treating R25AN tokenizer/sampler readiness as approval to train R25AO, commit
   tokenizer artifacts, commit weights, or approve phase_4.
+- Treating R25AO's consumed one-shot pilot approval as permission to rerun,
+  promote a checkpoint, run tokenizer dry-run, start product/formal training,
+  or approve phase_4 scaled training.

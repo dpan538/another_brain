@@ -1,0 +1,17 @@
+{
+  "approved": false,
+  "scope": "analyze_r25ao_only",
+  "reviewer": "",
+  "phase": "phase_3_small_decoder_pilot_analysis",
+  "run_id": "r25ap_analyze_r25ao",
+  "allow_training": false,
+  "allow_decoder_training": false,
+  "allow_small_pilot_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_weight_commit": false,
+  "notes": "Template only. R25AP may analyze R25AO results only after explicit approval. This does not authorize training."
+}

@@ -12,7 +12,8 @@ const ALLOWED_ONE_SHOT_SCRIPTS = new Set([
   "run:r25s-data-first-pilot-once",
   "run:r25v-architecture-ablation-once",
   "run:r25y-data-regularization-once",
-  "run:r25ac-chinese-personal-microcycle-once"
+  "run:r25ac-chinese-personal-microcycle-once",
+  "run:r25ao-expanded-chinese-microcycle-once"
 ]);
 
 const RUNNER_SCRIPT_ALLOWLIST = new Set([
@@ -81,6 +82,10 @@ const TRAINING_RERUN_PATTERNS = [
   {
     code: "future_r25ae_training_or_generation_nested_in_routine_gate",
     pattern: /run:[^"\n]*r25ae[^"\n]*(?:--allow-corpus-generation|--allow-training|--allow-small-pilot-training|--allow-chinese-personal-microcycle|--allow-phase-4-scaled-training|--allow-product-model-training)/i
+  },
+  {
+    code: "future_r25ao_training_nested_in_routine_gate",
+    pattern: /run:[^"\n]*r25ao[^"\n]*(?:--allow-small-pilot-training|--allow-bounded-decoder-pilot-training|--allow-phase-4-scaled-training|--allow-product-model-training|--allow-training)/i
   }
 ];
 

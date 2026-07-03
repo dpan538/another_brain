@@ -13,6 +13,7 @@ const R25S_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25s/r25
 const R25V_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25v/r25v_replayable_checkpoint.json";
 const R25Y_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25y/r25y_replayable_checkpoint.json";
 const R25AC_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25ac/r25ac_replayable_checkpoint.json";
+const R25AO_REPLAYABLE_PATH = "artifacts/training_os/small_decoder_pilot/r25ao/r25ao_replayable_checkpoint.json";
 const R25O_OUTPUT_PATH = "artifacts/training_os/small_decoder_pilot/r25o/r25o_replay_heldout_eval_report.json";
 const MODEL_WEIGHT_RE = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i;
 
@@ -199,8 +200,13 @@ async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, de
   }
 
   if (config.run_id !== expectedRunId) failures.push({ code: `unexpected_${prefix}_run_id`, expected: expectedRunId, actual: config.run_id });
-  if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", actual: config.heldout_source });
-  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac") && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
+  if (Array.isArray(config.heldout_sources)) {
+    const invalidHeldoutSources = config.heldout_sources.filter((path) => !String(path).startsWith("training/llm_corpus/") || /evals\/|data\/public_ingestion\/|private_sources\/|\.(pdf|docx)$/i.test(String(path)));
+    if (invalidHeldoutSources.length) failures.push({ code: "unexpected_heldout_sources", invalidHeldoutSources });
+  } else if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") {
+    failures.push({ code: "unexpected_heldout_source", actual: config.heldout_source });
+  }
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac" || prefix === "r25ao") && config.phase_4_scaled_training !== false) failures.push({ code: "phase_4_scaled_training_must_be_false" });
   if (!(await exists(checkpointPath))) {
     const runReport = await readJson(runReportPath).catch(() => null);
     if (prefix === "r25v" && runReport?.small_pilot_training_ran === false && String(runReport?.reason || "").includes("unsupported_backend")) {
@@ -296,7 +302,9 @@ async function runPilotReplayMode({ prefix, expectedRunId, defaultConfigPath, de
     phase_4_scaled_training: false,
     notes: [
       `${prefix.toUpperCase()} held-out replay evaluates an already-written ignored JSON checkpoint and does not train.`,
-      "Held-out rows come from the R25L heldout split only and are not used for training.",
+      prefix === "r25ao"
+        ? "Held-out rows come from the configured R25AO heldout split sources and are not used for training."
+        : "Held-out rows come from the R25L heldout split only and are not used for training.",
       "Per-language replay loss is not available in this lightweight replay path; language bucket coverage is reported structurally.",
       "The replayable checkpoint remains ignored and is not a release checkpoint."
     ],
@@ -351,6 +359,15 @@ async function main() {
       expectedRunId: "r25ac_chinese_personal_microcycle_256",
       defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25ac.json",
       defaultCheckpointPath: R25AC_REPLAYABLE_PATH
+    });
+    return;
+  }
+  if (run === "r25ao") {
+    await runPilotReplayMode({
+      prefix: "r25ao",
+      expectedRunId: "r25ao_expanded_chinese_personal_microcycle",
+      defaultConfigPath: "training/from_scratch/small_decoder_pilot_run_config.r25ao.json",
+      defaultCheckpointPath: R25AO_REPLAYABLE_PATH
     });
     return;
   }

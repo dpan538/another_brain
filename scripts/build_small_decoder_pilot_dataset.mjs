@@ -48,6 +48,7 @@ function argValue(name, fallback = null) {
 
 function runPrefix(config) {
   const runId = String(config.run_id || "");
+  if (runId.startsWith("r25ao_")) return "r25ao";
   if (runId.startsWith("r25ac_")) return "r25ac";
   if (runId.startsWith("r25y_")) return "r25y";
   if (runId.startsWith("r25v_")) return "r25v";
@@ -132,10 +133,11 @@ function collectSafeText(row) {
 function rowPersonalTargets(row, targets = []) {
   const family = String(row.task_family || "");
   const tags = new Set(Array.isArray(row.policy_tags) ? row.policy_tags : []);
+  const explicitTargets = new Set(Array.isArray(row.personal_color_targets) ? row.personal_color_targets : []);
   const matched = [];
   for (const target of targets) {
     const families = PERSONAL_TARGET_FAMILIES[target] || [];
-    if (families.includes(family) || families.some((item) => tags.has(item))) matched.push(target);
+    if (explicitTargets.has(target) || families.includes(family) || families.some((item) => tags.has(item))) matched.push(target);
   }
   return matched;
 }
@@ -143,6 +145,27 @@ function rowPersonalTargets(row, targets = []) {
 function scanText(text, source, failures) {
   if (PRIVATE_PATH_RE.test(text)) failures.push({ code: "private_path_marker", source });
   if (FORBIDDEN_MARKER_RE.test(text)) failures.push({ code: "forbidden_training_marker", source });
+}
+
+function splitSources(config, split) {
+  const plural = config[`${split}_sources`];
+  const singular = config[`${split}_source`];
+  const sources = Array.isArray(plural) ? plural : singular ? [singular] : [];
+  return sources.map(String);
+}
+
+function sourceForbiddenForSplit(path, split) {
+  if (!path) return true;
+  if (!path.startsWith("training/llm_corpus/")) return true;
+  if (/^(evals\/|data\/public_ingestion\/|knowledge_sources\/)|\.(pdf|docx)$/i.test(path)) return true;
+  if (split !== "heldout" && /(?:^|\/).*heldout.*\.jsonl$/i.test(path)) return true;
+  return false;
+}
+
+async function readRowsFromSources(sources) {
+  const rows = [];
+  for (const path of sources) rows.push(...(await readRows(path)));
+  return rows;
 }
 
 function fixedLength(ids, maxContextTokens, padTokenId) {
@@ -158,17 +181,18 @@ function buildSequences(rows, split, limit, sourcePath, tokenizer, tokenizerConf
   const padTokenId = tokenizer.vocab?.["<pad>"] ?? 0;
   for (const row of rows) {
     if (sequences.length >= limit) break;
+    const rowSource = row.__source || sourcePath;
     if (row.split !== split) {
-      failures.push({ code: "unexpected_row_split", source: `${sourcePath}:${row.__line}`, expected: split, actual: row.split });
+      failures.push({ code: "unexpected_row_split", source: `${rowSource}:${row.__line}`, expected: split, actual: row.split });
       continue;
     }
     if (row.contains_private_data !== false || row.provenance?.contains_private_data !== false) {
-      failures.push({ code: "row_private_data_flag_not_false", source: `${sourcePath}:${row.__line}` });
+      failures.push({ code: "row_private_data_flag_not_false", source: `${rowSource}:${row.__line}` });
       continue;
     }
     const texts = collectSafeText(row);
     const joined = texts.join("\n");
-    scanText(joined, `${sourcePath}:${row.__line}`, failures);
+    scanText(joined, `${rowSource}:${row.__line}`, failures);
     const ids = encodeDryrun(`<bos> ${joined} <eos>`, tokenizer, tokenizerConfig);
     if (ids.length < 3) {
       failures.push({ code: "pilot_sequence_too_short", source: `${sourcePath}:${row.__line}` });
@@ -177,12 +201,12 @@ function buildSequences(rows, split, limit, sourcePath, tokenizer, tokenizerConf
     const fixed = fixedLength(ids, maxContextTokens, padTokenId);
     sequences.push({
       sample_id: row.sample_id || `r25m_${split}_${sequences.length + 1}`,
-      source: sourcePath,
+      source: rowSource,
       source_line: row.__line,
       split,
       language: row.language || "unknown",
-      task_family: row.task_family || "unknown",
-      task_type: row.task_type || "unknown",
+      task_family: row.task_family || row.transformation_type || "unknown",
+      task_type: row.task_type || row.transformation_type || "unknown",
       policy_tags: Array.isArray(row.policy_tags) ? row.policy_tags : [],
       personal_targets: rowPersonalTargets(row, config.personal_color_targets || []),
       safe_fields: ["messages", "constraints", "retrieved_evidence", "target_answer"],
@@ -243,7 +267,11 @@ function stableScore(row, seed) {
 function personalScore(row, targets) {
   const matched = rowPersonalTargets(row, targets);
   const tagScore = Array.isArray(row.policy_tags) && row.policy_tags.includes("reviewer_note") ? 0.1 : 0;
-  return matched.length + tagScore;
+  const reviewScore = row.review_status === "reviewed_for_training_corpus" ? 1 : 0;
+  const provenanceSource = String(row.provenance?.source_type || row.provenance?.source || row.source_type || "");
+  const repoScore = /repo_derived|project_authored/i.test(provenanceSource) ? 0.75 : 0;
+  const repairScore = Array.isArray(row.rejected_answers) && row.rejected_answers.length ? 0.25 : 0;
+  return matched.length + reviewScore + repoScore + repairScore + tagScore;
 }
 
 function rankRows(rows, targets, seed) {
@@ -255,9 +283,11 @@ function rankRows(rows, targets, seed) {
 }
 
 function selectRowsByChinesePersonalMix(rows, split, limit, config, failures) {
-  if (!config.run_id?.startsWith("r25ac_")) return rows;
+  const isChinesePersonalPilot = config.run_id?.startsWith("r25ac_") || config.run_id?.startsWith("r25ao_");
+  if (!isChinesePersonalPilot) return rows;
   const targets = config.personal_color_targets || [];
-  const desired = targetLanguageCounts(limit, config.language_mix_target || {});
+  const mixTarget = config.sampler_target || config.language_mix_target || {};
+  const desired = targetLanguageCounts(limit, mixTarget);
   const byLanguage = {
     zh: rows.filter((row) => row.language === "zh"),
     mixed: rows.filter((row) => row.language === "mixed"),
@@ -291,8 +321,10 @@ function selectRowsByChinesePersonalMix(rows, split, limit, config, failures) {
   const counts = languageCounts(selected);
   const share = shareFromCounts(counts);
   if (enoughRows) {
-    if (share.zh < Number(config.language_mix_target?.zh_min ?? 0.7)) failures.push({ code: "r25ac_zh_primary_target_not_met", split, counts, share });
-    if (share.en > Number(config.language_mix_target?.en_max ?? 0.1)) failures.push({ code: "r25ac_en_cap_not_met", split, counts, share });
+    if (share.zh < Number(mixTarget?.zh_min ?? 0.7)) failures.push({ code: `${runPrefix(config)}_zh_primary_target_not_met`, split, counts, share });
+    if (share.en > Number(mixTarget?.en_max ?? 0.1)) failures.push({ code: `${runPrefix(config)}_en_cap_not_met`, split, counts, share });
+  } else {
+    failures.push({ code: `${runPrefix(config)}_language_pool_insufficient`, split, desired, available: Object.fromEntries(Object.entries(byLanguage).map(([language, list]) => [language, list.length])) });
   }
   return selected;
 }
@@ -449,21 +481,30 @@ async function main() {
 
   if (!(await exists(tokenizerPath))) failures.push({ code: "r25l_tokenizer_artifact_missing", path: tokenizerPath });
   if (!(await exists(tokenizerReportPath))) failures.push({ code: "r25l_tokenizer_report_missing", path: tokenizerReportPath });
-  for (const path of [config.train_source, config.dev_source]) {
-    if (FORBIDDEN_SOURCE_RE.test(path)) forbidden_sources_touched.push(path);
+  const trainSources = splitSources(config, "train");
+  const devSources = splitSources(config, "dev");
+  const heldoutSources = splitSources(config, "heldout");
+  const allSourceEntries = [
+    ...trainSources.map((path) => ({ path, split: "train" })),
+    ...devSources.map((path) => ({ path, split: "dev" })),
+    ...heldoutSources.map((path) => ({ path, split: "heldout" }))
+  ];
+  for (const { path, split } of allSourceEntries) {
+    if (sourceForbiddenForSplit(path, split)) forbidden_sources_touched.push(path);
   }
-  if (config.heldout_source && FORBIDDEN_SOURCE_RE.test(config.heldout_source)) {
-    if (config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") forbidden_sources_touched.push(config.heldout_source);
+  if (!config.run_id?.startsWith("r25ao_")) {
+    if (config.train_source !== "training/llm_corpus/r25l_train.jsonl") failures.push({ code: "unexpected_train_source", path: config.train_source });
+    if (config.dev_source !== "training/llm_corpus/r25l_dev.jsonl") failures.push({ code: "unexpected_dev_source", path: config.dev_source });
+    if (config.heldout_source && config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", path: config.heldout_source });
+  } else {
+    if (trainSources.length < 2 || devSources.length < 2 || heldoutSources.length < 2) failures.push({ code: "r25ao_requires_expanded_split_source_arrays" });
   }
-  if (config.train_source !== "training/llm_corpus/r25l_train.jsonl") failures.push({ code: "unexpected_train_source", path: config.train_source });
-  if (config.dev_source !== "training/llm_corpus/r25l_dev.jsonl") failures.push({ code: "unexpected_dev_source", path: config.dev_source });
-  if (config.heldout_source && config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", path: config.heldout_source });
 
   const tokenizer = failures.length ? null : await readJson(tokenizerPath);
   const tokenizerReport = failures.length ? null : await readJson(tokenizerReportPath);
-  const trainRows = await readRows(config.train_source);
-  const devRows = await readRows(config.dev_source);
-  const heldoutRows = config.heldout_source ? await readRows(config.heldout_source) : [];
+  const trainRows = await readRowsFromSources(trainSources);
+  const devRows = await readRowsFromSources(devSources);
+  const heldoutRows = heldoutSources.length ? await readRowsFromSources(heldoutSources) : [];
   const selectedTrainRows = rowsFromPlan(trainRows, "train", samplingPlan, failures);
   const selectedDevRows = rowsFromPlan(devRows, "dev", samplingPlan, failures);
   const selectedHeldoutRows = rowsFromPlan(heldoutRows, "heldout", samplingPlan, failures);
@@ -474,14 +515,14 @@ async function main() {
   const trainRowsForSelection = selectRowsByChinesePersonalMix(trainRegularization.rows, "train", trainLimit, config, failures);
   const devRowsForSelection = selectRowsByChinesePersonalMix(selectedDevRows, "dev", devLimit, config, failures);
   const heldoutRowsForSelection = selectRowsByChinesePersonalMix(selectedHeldoutRows, "heldout", heldoutLimit, config, failures);
-  const trainSequences = tokenizer ? buildSequences(trainRowsForSelection, "train", trainLimit, config.train_source, tokenizer, tokenizerConfig, config, failures) : [];
-  const devSequences = tokenizer ? buildSequences(devRowsForSelection, "dev", devLimit, config.dev_source, tokenizer, tokenizerConfig, config, failures) : [];
-  const heldoutSequences = tokenizer && config.heldout_source
-    ? buildSequences(heldoutRowsForSelection, "heldout", heldoutLimit, config.heldout_source, tokenizer, tokenizerConfig, config, failures)
+  const trainSequences = tokenizer ? buildSequences(trainRowsForSelection, "train", trainLimit, trainSources.join(","), tokenizer, tokenizerConfig, config, failures) : [];
+  const devSequences = tokenizer ? buildSequences(devRowsForSelection, "dev", devLimit, devSources.join(","), tokenizer, tokenizerConfig, config, failures) : [];
+  const heldoutSequences = tokenizer && heldoutSources.length
+    ? buildSequences(heldoutRowsForSelection, "heldout", heldoutLimit, heldoutSources.join(","), tokenizer, tokenizerConfig, config, failures)
     : [];
   if (trainSequences.length < Number(config.max_train_rows || 64)) failures.push({ code: "too_few_train_sequences", count: trainSequences.length });
   if (devSequences.length < Number(config.max_dev_rows || 32)) failures.push({ code: "too_few_dev_sequences", count: devSequences.length });
-  if (config.heldout_source && heldoutSequences.length < Number(config.max_heldout_rows || 0)) failures.push({ code: "too_few_heldout_sequences", count: heldoutSequences.length });
+  if (heldoutSources.length && heldoutSequences.length < Number(config.max_heldout_rows || 0)) failures.push({ code: "too_few_heldout_sequences", count: heldoutSequences.length });
   const overlap = splitOverlap(trainRowsForSelection, devRowsForSelection, heldoutRowsForSelection);
   if (overlap.any_overlap) failures.push({ code: "split_overlap_detected", overlap });
   const trainLanguageCounts = languageCounts(trainRowsForSelection);
@@ -511,21 +552,24 @@ async function main() {
     ...datasetBase,
     ok: failures.length === 0 && forbidden_sources_touched.length === 0,
     split: "train",
-    source_files: [config.train_source],
+    source_files: trainSources,
+    source_file_counts: countBy(trainRowsForSelection, "__source"),
     sequences: trainSequences
   };
   const devDataset = {
     ...datasetBase,
     ok: failures.length === 0 && forbidden_sources_touched.length === 0,
     split: "dev",
-    source_files: [config.dev_source],
+    source_files: devSources,
+    source_file_counts: countBy(devRowsForSelection, "__source"),
     sequences: devSequences
   };
   const heldoutDataset = {
     ...datasetBase,
     ok: failures.length === 0 && forbidden_sources_touched.length === 0,
     split: "heldout",
-    source_files: config.heldout_source ? [config.heldout_source] : [],
+    source_files: heldoutSources,
+    source_file_counts: countBy(heldoutRowsForSelection, "__source"),
     evaluation_only: true,
     not_used_for_training: true,
     sequences: heldoutSequences
@@ -537,7 +581,8 @@ async function main() {
     config_path: configPath,
     sampling_plan_path: samplingPlanPath,
     balanced_sampling_used: Boolean(samplingPlan),
-    chinese_personal_sampling_used: prefix === "r25ac",
+    chinese_personal_sampling_used: prefix === "r25ac" || prefix === "r25ao",
+    expanded_corpus_sampling_used: prefix === "r25ao",
     data_regularization_used: prefix === "r25y",
     regularization_stats: trainRegularization.stats,
     train_rows: trainSequences.length,
@@ -552,7 +597,7 @@ async function main() {
     actual_train_language_mix: shareFromCounts(trainLanguageCounts),
     actual_dev_language_mix: shareFromCounts(devLanguageCounts),
     actual_heldout_language_mix: shareFromCounts(heldoutLanguageCounts),
-    target_language_mix: config.language_mix_target || null,
+    target_language_mix: config.sampler_target || config.language_mix_target || null,
     personal_target_coverage: personalCoverage(trainRowsForSelection, config.personal_color_targets || []),
     split_overlap: overlap,
     task_family_counts: {
@@ -567,8 +612,12 @@ async function main() {
     tokenizer_id: datasetBase.tokenizer_id,
     forbidden_sources_touched,
     notes: [
-      `${config.run_id || "R25M"} pilot dataset reads only approved R25L JSONL files.`,
-      "Training uses R25L train rows only; dev rows are used for bounded sanity evaluation only.",
+      prefix === "r25ao"
+        ? "R25AO pilot dataset reads only configured tracked training/llm_corpus JSONL split files."
+        : `${config.run_id || "R25M"} pilot dataset reads only approved R25L JSONL files.`,
+      prefix === "r25ao"
+        ? "Training uses configured train split sources only; dev rows are used for bounded sanity evaluation only."
+        : "Training uses R25L train rows only; dev rows are used for bounded sanity evaluation only.",
       "Heldout rows, when present, are prepared only for replay evaluation and are not used for training.",
       "No evals, heldout training, root documents, public ingestion data, knowledge cards, or private data are read."
     ],
@@ -577,7 +626,7 @@ async function main() {
 
   await writeJson(`${config.output_dir}${prefix}_train_sequences.json`, trainDataset);
   await writeJson(`${config.output_dir}${prefix}_dev_sequences.json`, devDataset);
-  if (config.heldout_source) await writeJson(`${config.output_dir}${prefix}_heldout_sequences.json`, heldoutDataset);
+  if (heldoutSources.length) await writeJson(`${config.output_dir}${prefix}_heldout_sequences.json`, heldoutDataset);
   await writeJson(`${config.output_dir}${prefix}_dataset_report.json`, report);
   console.log(JSON.stringify(report, null, 2));
   if (!report.ok) process.exit(2);

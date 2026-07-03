@@ -67,4 +67,14 @@ R25AN may review the R25AM-expanded corpus and run one tokenizer dry-run, but
 it still does not train a decoder. If sampler feasibility passes, it means a
 future R25AO design may be reviewed with `zh >= 70%`, mixed near `20%`, and
 `en <= 10%`; it does not mean training is approved. R25AO still needs a fresh
-explicit approval and phase_4 remains blocked.
+explicit approval, and phase_4 scaled training is not approved.
+
+## R25AO Pilot Lesson
+
+R25AO later ran exactly one approved bounded phase 3 small decoder pilot using
+the R25AM-expanded corpus and a zh-first sampler. The run met the language
+target and produced finite dev/heldout metrics, but history comparison calls
+for review rather than automatic continuation. R25AP must analyze the result
+before any repeat run, tokenizer work, corpus change, product step, or any
+phase_4 scaled training discussion. Phase_4 scaled training is not approved,
+and product/formal training progress remains `0%`.

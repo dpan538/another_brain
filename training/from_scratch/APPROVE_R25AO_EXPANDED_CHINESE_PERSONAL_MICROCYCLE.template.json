@@ -4,12 +4,16 @@
   "reviewer": "",
   "phase": "phase_3_small_decoder_pilot",
   "run_id": "r25ao_expanded_chinese_personal_microcycle",
+  "variant_id": "r25ao_sampler_zh70_mixed20_en10",
   "allow_small_pilot_training": false,
   "allow_decoder_training": false,
+  "allow_bounded_decoder_pilot_training": false,
+  "allow_formal_decoder_training": false,
   "allow_phase_4_scaled_training": false,
   "allow_long_term_training": false,
   "allow_product_model_training": false,
   "allow_release_checkpoint": false,
   "allow_weight_commit": false,
+  "allow_tokenizer_dry_run": false,
   "notes": "Template only. R25AO may run a bounded micro-cycle on the R25AM-expanded corpus only after explicit approval. This does not authorize training by itself."
 }

@@ -442,3 +442,11 @@ tokenizer dry-run artifacts remain ignored and uncommitted. Later R25AM/R25AN
 corpus and tokenizer review still does not approve training. Future R25AO
 micro-cycle training requires fresh explicit approval, and phase_4 remains
 blocked.
+
+R25AO later ran exactly one fresh-approved bounded expanded Chinese-personal
+small decoder pilot from tracked `training/llm_corpus/` split files only. It
+did not read `private_sources`, root PDF/DOC/DOCX content, or
+`data/public_ingestion/`; it did not use eval prompts as training rows. The
+R25AO run met the zh-first sampled split target, wrote ignored artifacts only,
+consumed its approval, and did not approve product/formal training, tokenizer
+dry-run, release admission, or phase_4 scaled training.
