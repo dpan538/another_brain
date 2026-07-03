@@ -405,3 +405,9 @@ their source material is already safe repo-tracked project text. R25AK does not
 train, does not run tokenizer dry-run, does not read `private_sources`, does
 not parse root PDF/DOC/DOCX or `data/public_ingestion`, does not use evals as
 source material, and does not commit ignored artifacts or weights.
+
+R25AL reviews the expanded tracked corpus and may run one tokenizer dry-run
+readiness pass only. It does not run decoder training, small-pilot training,
+phase_4 scaled training, long-term training, or product-scale training. The
+tokenizer dry-run artifacts remain ignored and uncommitted. Future R25AM
+training requires fresh explicit approval, and phase_4 remains blocked.

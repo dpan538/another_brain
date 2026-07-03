@@ -54,7 +54,7 @@ async function writeText(path, text) {
 async function main() {
   const configPath = configPathFromArgs();
   const config = await readJson(configPath);
-  const artifactDir = config.artifact_dir || "artifacts/training_os/tokenizer_dryrun";
+  const artifactDir = config.artifact_dir || config.output_dir || "artifacts/training_os/tokenizer_dryrun";
   const forbidden_sources_touched = [];
   const private_data_markers = [];
   const chain_of_thought_markers = [];

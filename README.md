@@ -568,3 +568,12 @@ tokenizer dry-run, does not commit ignored artifacts, does not use raw private
 sources or evals, and does not approve phase_4. R25AL is required for
 post-promotion corpus review before any later tokenizer-readiness approval or
 bounded Chinese-personal training approval.
+
+R25AL reviews the expanded tracked corpus and may run exactly one tokenizer
+dry-run readiness pass under a fresh one-shot approval. It still does not train
+a decoder, does not run a small pilot, does not run phase_4, does not commit
+tokenizer artifacts or weights, and does not read private sources, root
+PDFs/DOCX, or `data/public_ingestion/`. The R25AK rows improve the
+Chinese-first direction, but the combined corpus may still be below the future
+`zh >= 70%` target unless a later approved R25AM micro-cycle uses
+Chinese-first sampling or more reviewed Chinese rows are added.

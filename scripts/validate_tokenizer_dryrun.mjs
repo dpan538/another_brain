@@ -36,13 +36,14 @@ async function main() {
   const failures = [];
   const configPath = configPathFromArgs();
   const config = await readJson(configPath);
-  const artifactDir = config.artifact_dir || "artifacts/training_os/tokenizer_dryrun";
+  const artifactDir = config.artifact_dir || config.output_dir || "artifacts/training_os/tokenizer_dryrun";
   const tokenizer = await readJson(`${artifactDir}/r25j_tokenizer.json`).catch(() => null);
   const trainText = await readFile(resolve(ROOT, `${artifactDir}/r25j_tokenizer_train.txt`), "utf8").catch(() => "");
   if (!tokenizer) failures.push({ code: "tokenizer_artifact_missing" });
   else {
     if (tokenizer.tokenizer_id !== config.tokenizer_id) failures.push({ code: "tokenizer_id_mismatch" });
-    if (tokenizer.vocab_size > config.selected_dryrun_vocab_size + config.special_tokens.length) failures.push({ code: "vocab_size_exceeds_target" });
+    const configuredVocabSize = Number(config.selected_dryrun_vocab_size || config.vocab_size || 4096);
+    if (tokenizer.vocab_size > configuredVocabSize + config.special_tokens.length) failures.push({ code: "vocab_size_exceeds_target" });
     for (const token of config.special_tokens) {
       if (!(token in tokenizer.vocab)) failures.push({ code: "missing_special_token", token });
     }

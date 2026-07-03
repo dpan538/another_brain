@@ -1,0 +1,15 @@
+{
+  "approved": false,
+  "scope": "expanded_chinese_personal_microcycle_only",
+  "reviewer": "",
+  "phase": "phase_3_small_decoder_pilot",
+  "run_id": "r25am_expanded_chinese_personal_microcycle",
+  "allow_small_pilot_training": false,
+  "allow_decoder_training": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "notes": "Template only. R25AM may run a bounded micro-cycle on the expanded corpus only after explicit approval. This does not authorize training by itself."
+}

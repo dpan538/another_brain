@@ -14,3 +14,5 @@ R25AK changes `training/llm_corpus` by adding reviewed repo-derived split files.
 ## R25AL Boundary
 
 R25AL may review the promoted corpus and request a later tokenizer/corpus-readiness approval. It must not automatically train. A later bounded Chinese-personal micro-cycle would need a separate fresh approval after corpus review.
+
+R25AL may run tokenizer dry-run readiness only. It must not run decoder training, small-pilot training, phase_4 scaled training, long-term training, or product-scale training. Tokenizer artifacts stay ignored and uncommitted. R25AM remains a future inert approval path, not automatic training.

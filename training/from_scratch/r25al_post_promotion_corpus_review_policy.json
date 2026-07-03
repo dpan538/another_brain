@@ -1,0 +1,36 @@
+{
+  "policy_id": "r25al_post_promotion_corpus_review_policy",
+  "phase": "phase_3_corpus_review",
+  "scope": "expanded_tracked_corpus_and_tokenizer_readiness_only",
+  "review_all_tracked_llm_corpus_jsonl": true,
+  "include_r25ak_split_files": true,
+  "preserve_existing_corpus_files_unchanged": true,
+  "r25ak_rows_status": "reviewed_repo_derived_training_corpus_rows",
+  "allowed_sources": [
+    "training/llm_corpus/*.jsonl"
+  ],
+  "forbidden_sources": [
+    "evals/** as training data",
+    "private_sources/**",
+    "root PDF/DOC/DOCX content",
+    "data/public_ingestion/** content",
+    "artifacts/** as corpus source"
+  ],
+  "tokenizer_dry_run": {
+    "allowed_once_with_r25al_approval": true,
+    "config": "training/from_scratch/tokenizer_dry_run_config.r25al.json",
+    "artifact_output_root": "artifacts/training_os/tokenizer_dryrun/r25al/",
+    "commit_artifacts_allowed": false,
+    "production_tokenizer": false
+  },
+  "decoder_training_allowed": false,
+  "small_pilot_training_allowed": false,
+  "phase_4_scaled_training_approved": false,
+  "product_model_training_allowed": false,
+  "weight_commit_allowed": false,
+  "notes": [
+    "R25AL reviews the expanded corpus after R25AK promotion.",
+    "Promoted R25AK rows are public/tracked only because they derive from repo-tracked safe sources.",
+    "Future R25AM training, if any, requires a fresh explicit approval."
+  ]
+}

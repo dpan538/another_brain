@@ -33,7 +33,7 @@ function scoreText(text, tokenizer, config) {
 async function main() {
   const configPath = configPathFromArgs();
   const config = await readJson(configPath);
-  const artifactDir = config.artifact_dir || "artifacts/training_os/tokenizer_dryrun";
+  const artifactDir = config.artifact_dir || config.output_dir || "artifacts/training_os/tokenizer_dryrun";
   const tokenizer = await readJson(`${artifactDir}/r25j_tokenizer.json`);
   const dev = await readFile(resolve(ROOT, `${artifactDir}/r25j_tokenizer_eval_dev.txt`), "utf8");
   const heldout = await readFile(resolve(ROOT, `${artifactDir}/r25j_tokenizer_eval_heldout.txt`), "utf8");

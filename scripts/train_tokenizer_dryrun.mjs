@@ -47,7 +47,7 @@ function mergeSequence(sequence, left, right, merged) {
 
 export function trainDryrunTokenizer(text, config) {
   const specialTokens = config.special_tokens || [];
-  const maxVocab = Number(config.selected_dryrun_vocab_size || 4096);
+  const maxVocab = Number(config.selected_dryrun_vocab_size || config.vocab_size || 4096);
   const normalized = normalizeTokenizerText(text, config);
   let sequences = normalized.split(/\n+/).map((line) => splitUnits(line)).filter((seq) => seq.length);
   const charCounts = countMap(sequences.flat());
@@ -148,7 +148,7 @@ function configPathFromArgs() {
 async function main() {
   const configPath = configPathFromArgs();
   const config = await readJson(configPath);
-  const artifactDir = config.artifact_dir || "artifacts/training_os/tokenizer_dryrun";
+  const artifactDir = config.artifact_dir || config.output_dir || "artifacts/training_os/tokenizer_dryrun";
   const trainPath = `${artifactDir}/r25j_tokenizer_train.txt`;
   const trainText = await readFile(resolve(ROOT, trainPath), "utf8");
   const tokenizer = trainDryrunTokenizer(trainText, config);

@@ -162,6 +162,12 @@ R25AE may later be approved only as a Chinese-personal corpus-expansion review
 pass. It is not training approval, not phase_4 approval, not product training,
 and not release admission.
 
+R25AL is a phase 3 post-promotion corpus and tokenizer readiness review. It
+may run one tokenizer dry-run over the expanded tracked corpus, but it does not
+train a decoder, does not run a small pilot, does not run phase_4, and does
+not commit tokenizer artifacts or weights. R25AM remains only an inert future
+bounded micro-cycle template until fresh explicit approval exists.
+
 ## Failure Modes To Watch
 
 - Treating external model admission as product model selection.
