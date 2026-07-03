@@ -24,3 +24,9 @@ A future R25AK task may promote a bounded reviewed subset only if it has a fresh
 - still not train
 
 The R25AK template at `training/from_scratch/APPROVE_R25AK_PROMOTE_UNIQUE_REPO_DERIVED_CANDIDATES.template.json` has `approved:false` and does not authorize promotion or training.
+
+## R25AK Outcome Boundary
+
+R25AK adds reviewed repo-derived corpus split files, not a trained model. The
+next boundary is R25AL post-promotion corpus review; tokenizer readiness and
+model training remain separate future approvals.

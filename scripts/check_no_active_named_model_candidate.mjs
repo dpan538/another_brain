@@ -34,7 +34,9 @@ function shouldScan(file) {
 function isRepoPathOrGateToken(token = "") {
   return token === "PDFs/DOCX"
     || token === "PDF/DOC"
+    || /^R\d+\/R\d+$/.test(token)
     || token === "hidden/system"
+    || token === "public/tracked"
     || token === "train/dev"
     || token === "local-first/static-browser"
     || token === "tool/status"
@@ -43,7 +45,7 @@ function isRepoPathOrGateToken(token = "") {
     || token === "ID/source"
     || /^(static_llm|web|docs|scripts|artifacts|training|evals|data)\//.test(token)
     || /\.(mjs|js|json|md|py|sh|html|css)$/.test(token)
-    || /^R\d+[A-Z]?\/R\d+[A-Z]?/.test(token)
+    || /^R\d+[A-Z]+\/R\d+[A-Z]+/.test(token)
     || /^(license|manifest|config|tokenizer|WebGPU|Vercel|inbox|preview|route|worker|example|fallback|memory|browser|cache|storage|token)\/[A-Za-z0-9_.-]+/.test(token)
     || /^(baseline|compatibility|candidate|release|training|self-trained)\/[A-Za-z0-9_.-]+/.test(token)
     || /^json-schema\.org\//.test(token)

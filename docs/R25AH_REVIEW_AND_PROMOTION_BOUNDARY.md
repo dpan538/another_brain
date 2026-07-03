@@ -18,3 +18,9 @@ Promotion is still not training. Future training requires another explicit appro
 ## R25AJ Boundary Update
 
 R25AI blocked before promotion because the R25AH target-answer pool was too repetitive. R25AJ is a repair step only: it diagnoses the blocker, adds a rubric, and regenerates ignored unique candidates. It does not promote rows. Any future promotion must use the inert R25AK template and a fresh explicit approval.
+
+## R25AK Boundary Update
+
+R25AK promotes a bounded reviewed subset from R25AJ, not from the collapsed
+R25AH artifact. It still does not train, does not run tokenizer dry-run, and
+does not approve phase_4.

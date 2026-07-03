@@ -10,6 +10,11 @@ const VALIDATION_REPORT_PATH = path.join(OUT_DIR, "r25aj_validation_report.json"
 const UNIQUENESS_REPORT_PATH = path.join(OUT_DIR, "r25aj_target_uniqueness_report.json");
 const REVIEW_PACK_PATH = path.join(OUT_DIR, "r25aj_review_pack.json");
 const SUMMARY_PATH = path.join(ROOT, "docs/R25AJ_UNIQUE_CANDIDATE_SUMMARY.md");
+const R25AK_PROMOTED_FILES = [
+  path.join(ROOT, "training/llm_corpus/r25ak_repo_derived_train.jsonl"),
+  path.join(ROOT, "training/llm_corpus/r25ak_repo_derived_dev.jsonl"),
+  path.join(ROOT, "training/llm_corpus/r25ak_repo_derived_heldout.jsonl")
+];
 
 function rel(filePath) {
   return path.relative(ROOT, filePath).split(path.sep).join("/");
@@ -61,6 +66,7 @@ const rowsBySourceCategory = countBy(rows, (row) => row.source_category);
 const personalTargetCoverage = countBy(rows.flatMap((row) => row.personal_color_targets || []), (target) => target);
 const rowsBySplit = countBy(rows, (row) => row.split_suggestion);
 const rubricStateCounts = countBy(rows, (row) => row.review_rubric?.promotion_ready_by_default === false ? "inert_rubric" : "needs_attention");
+const r25akPromoted = R25AK_PROMOTED_FILES.every((file) => fs.existsSync(file));
 
 const reviewPack = {
   report_id: "r25aj_review_pack",
@@ -93,7 +99,9 @@ const reviewPack = {
     artifacts_committed: false,
     phase_4_scaled_training_approved: false
   },
-  reviewer_note: "Ignored review pack only. R25AK would need fresh explicit approval before any selected row can be promoted to tracked corpus."
+  reviewer_note: r25akPromoted
+    ? "Ignored review pack only. R25AK has promoted a bounded reviewed subset to tracked corpus; future tokenizer review or training still needs fresh approval."
+    : "Ignored review pack only. R25AK would need fresh explicit approval before any selected row can be promoted to tracked corpus."
 };
 
 fs.writeFileSync(REVIEW_PACK_PATH, `${JSON.stringify(reviewPack, null, 2)}\n`);
@@ -134,7 +142,13 @@ const lines = [
   "",
   markdownCounts(rowsBySourceCategory),
   "",
-  "R25AJ rows remain ignored artifacts with `review_status:candidate_unreviewed`, `training_allowed:false`, and `public_commit_allowed:false`. R25AK is required before any reviewed subset may be promoted, and later training still needs a separate approval."
+  "R25AJ rows remain ignored artifacts with `review_status:candidate_unreviewed`, `training_allowed:false`, and `public_commit_allowed:false`.",
+  "",
+  "## R25AK Follow-Up",
+  "",
+  r25akPromoted
+    ? "R25AK promotes a bounded reviewed subset from this unique candidate pool into tracked split files. The ignored R25AJ candidate artifact remains uncommitted, and future training still requires a separate approval after corpus review."
+    : "R25AK is required before any reviewed subset may be promoted, and later training still needs a separate approval."
 ];
 
 fs.writeFileSync(SUMMARY_PATH, `${lines.join("\n")}\n`);

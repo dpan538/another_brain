@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CORPUS_DIR = resolve(ROOT, "training/llm_corpus");
-const FILES = ["train.jsonl", "dev.jsonl", "heldout.jsonl"];
+const BASE_FILES = ["train.jsonl", "dev.jsonl", "heldout.jsonl"];
+const PROMOTED_REPO_DERIVED_FILE_RE = /^r25ak_repo_derived_(train|dev|heldout)\.jsonl$/;
 
 export const REQUIRED_FAMILIES = Object.freeze([
   "static_browser_llm_policy",
@@ -51,6 +52,27 @@ const REQUIRED_FIELDS = [
   "contains_private_data"
 ];
 
+const PROMOTED_REPO_DERIVED_REQUIRED_FIELDS = [
+  "sample_id",
+  "split",
+  "language",
+  "transformation_type",
+  "source_category",
+  "source_ids",
+  "source_file_refs",
+  "source_hashes",
+  "messages",
+  "target_answer",
+  "rejected_answers",
+  "constraints",
+  "personal_color_targets",
+  "provenance",
+  "review_status",
+  "contains_private_data",
+  "public_commit_allowed",
+  "training_allowed"
+];
+
 const FORBIDDEN_KEYS = new Set([
   "chain_of_thought",
   "hidden_prompt",
@@ -64,9 +86,22 @@ const FORBIDDEN_KEYS = new Set([
 const SPLITS = new Set(["train", "dev", "heldout"]);
 const LANGUAGES = new Set(["zh", "en", "mixed"]);
 const TASK_TYPES = new Set(["draft_answer", "verify_draft", "repair_draft", "route_plan", "retrieval_grounded_answer"]);
+const REPO_DERIVED_TRANSFORMATION_TYPES = new Set([
+  "project_continuation",
+  "repair_after_weak_answer",
+  "local_first_static_browser_reasoning",
+  "tool_status_honesty",
+  "bounded_judgment",
+  "style_preference",
+  "Chinese_explanation",
+  "Chinese_rewrite_or_compression",
+  "preference_pair",
+  "repair_pair"
+]);
 const MODEL_WEIGHT_REF = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)\b/i;
 const LOCAL_PATH_REF = /\/Users\/|\/private\/var\/|\/Volumes\//;
 const SECRET_REF = /\b(sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|AKIA[A-Z0-9]{16}|BEGIN PRIVATE KEY)\b/;
+const ROOT_DOC_REF = /^[^/]+\.(pdf|PDF|docx|DOCX|doc|DOC)$/;
 
 function normalize(text) {
   return String(text || "").trim().replace(/\s+/g, " ");
@@ -97,9 +132,27 @@ function countBy(rows, key) {
   return out;
 }
 
+function isPromotedRepoDerivedRow(row) {
+  return PROMOTED_REPO_DERIVED_FILE_RE.test(String(row.__file || "")) || String(row.sample_id || "").startsWith("r25ak_repo_derived_");
+}
+
+function expectedPromotedFile(row) {
+  const match = String(row.__file || "").match(PROMOTED_REPO_DERIVED_FILE_RE);
+  const prefix = match ? row.__file.split(`_${match[1]}.jsonl`)[0] : "r25ak_repo_derived";
+  return `${prefix}_${row.split}.jsonl`;
+}
+
+function rowFamily(row) {
+  return row.task_family || row.transformation_type || "unknown";
+}
+
 export async function loadCorpusRows(root = ROOT) {
   const rows = [];
-  for (const file of FILES) {
+  const corpusFiles = [
+    ...BASE_FILES,
+    ...(await readdir(resolve(root, "training/llm_corpus"))).filter((file) => PROMOTED_REPO_DERIVED_FILE_RE.test(file)).sort()
+  ];
+  for (const file of corpusFiles) {
     const text = await readFile(resolve(root, "training/llm_corpus", file), "utf8");
     for (const [index, line] of text.split(/\r?\n/).entries()) {
       if (!line.trim()) continue;
@@ -126,21 +179,22 @@ export function validateCorpusRows(rows) {
       failures.push({ code: "jsonl_parse_error", ...loc, error: row.__parse_error });
       continue;
     }
-    for (const field of REQUIRED_FIELDS) {
+    const promotedRepoDerived = isPromotedRepoDerivedRow(row);
+    const requiredFields = promotedRepoDerived ? PROMOTED_REPO_DERIVED_REQUIRED_FIELDS : REQUIRED_FIELDS;
+    for (const field of requiredFields) {
       if (!(field in row)) failures.push({ code: "missing_required_field", field, ...loc });
     }
-    const extraFields = Object.keys(row).filter((key) => !REQUIRED_FIELDS.includes(key) && !key.startsWith("__"));
+    const extraFields = Object.keys(row).filter((key) => !requiredFields.includes(key) && !key.startsWith("__"));
     if (extraFields.length) failures.push({ code: "unexpected_fields", fields: extraFields, ...loc });
 
     if (sampleIds.has(row.sample_id)) failures.push({ code: "duplicate_sample_id", ...loc });
     sampleIds.add(row.sample_id);
     if (!SPLITS.has(row.split)) failures.push({ code: "invalid_split", split: row.split, ...loc });
-    if (row.__file && row.split && row.__file !== `${row.split}.jsonl`) {
+    const expectedFile = promotedRepoDerived ? expectedPromotedFile(row) : `${row.split}.jsonl`;
+    if (row.__file && row.split && row.__file !== expectedFile) {
       failures.push({ code: "split_file_mismatch", split: row.split, ...loc });
     }
     if (!LANGUAGES.has(row.language)) failures.push({ code: "invalid_language", language: row.language, ...loc });
-    if (!TASK_TYPES.has(row.task_type)) failures.push({ code: "invalid_task_type", task_type: row.task_type, ...loc });
-    if (!REQUIRED_FAMILIES.includes(row.task_family)) failures.push({ code: "invalid_or_missing_task_family", task_family: row.task_family, ...loc });
     if (row.contains_private_data !== false) failures.push({ code: "contains_private_data_must_be_false", ...loc });
 
     const forbiddenKeys = collectForbiddenKeys(row);
@@ -157,16 +211,44 @@ export function validateCorpusRows(rows) {
       if (!evidence?.source_id || !evidence?.text) failures.push({ code: "invalid_evidence_entry", evidence_index: index, ...loc });
     }
     for (const arrayField of ["constraints", "rejected_answers", "policy_tags", "expected_behavior", "forbidden_behavior"]) {
-      if (!Array.isArray(row[arrayField])) failures.push({ code: "array_field_required", field: arrayField, ...loc });
+      if (!promotedRepoDerived && !Array.isArray(row[arrayField])) failures.push({ code: "array_field_required", field: arrayField, ...loc });
     }
-    if (!row.provenance || typeof row.provenance !== "object") failures.push({ code: "missing_provenance", ...loc });
+    if (promotedRepoDerived) {
+      if (!REPO_DERIVED_TRANSFORMATION_TYPES.has(row.transformation_type)) failures.push({ code: "invalid_repo_derived_transformation_type", transformation_type: row.transformation_type, ...loc });
+      for (const arrayField of ["constraints", "rejected_answers", "source_ids", "source_file_refs", "source_hashes", "personal_color_targets"]) {
+        if (!Array.isArray(row[arrayField])) failures.push({ code: "array_field_required", field: arrayField, ...loc });
+      }
+      for (const ref of row.source_file_refs || []) {
+        if (ref.startsWith("evals/")) failures.push({ code: "eval_source_reference", ref, ...loc });
+        if (ref.startsWith("data/public_ingestion/")) failures.push({ code: "data_public_ingestion_source_reference", ref, ...loc });
+        if (ref.startsWith("private_sources/")) failures.push({ code: "private_sources_reference", ref, ...loc });
+        if (ref.startsWith("artifacts/")) failures.push({ code: "artifact_source_reference", ref, ...loc });
+        if (ROOT_DOC_REF.test(ref)) failures.push({ code: "root_document_source_reference", ref, ...loc });
+      }
+      if (!row.provenance || typeof row.provenance !== "object") failures.push({ code: "missing_provenance", ...loc });
+      else {
+        if (!["repo_derived", "project_authored"].includes(row.provenance.source_type)) failures.push({ code: "invalid_provenance_source_type", ...loc });
+        if (row.provenance.external_llm_used !== false) failures.push({ code: "external_llm_used_must_be_false", ...loc });
+        if (row.provenance.promoted_by !== "scripts/promote_r25ak_unique_candidates.mjs") failures.push({ code: "invalid_promoted_by", ...loc });
+        if (row.provenance.promotion_phase !== "R25AK") failures.push({ code: "invalid_promotion_phase", ...loc });
+        if (row.provenance.contains_private_data !== false) failures.push({ code: "provenance_private_data_must_be_false", ...loc });
+        if (!String(row.provenance.license_or_permission || "").includes("repo-tracked")) failures.push({ code: "invalid_provenance_license", ...loc });
+      }
+      if (row.review_status !== "reviewed_for_training_corpus") failures.push({ code: "invalid_review_status", ...loc });
+      if (row.training_allowed !== true) failures.push({ code: "repo_derived_training_allowed_must_be_true", ...loc });
+      if (row.public_commit_allowed !== true) failures.push({ code: "repo_derived_public_commit_allowed_must_be_true", ...loc });
+      if (row.release_checkpoint === true) failures.push({ code: "release_checkpoint_claim_true", ...loc });
+      if (row.product_model === true) failures.push({ code: "product_model_claim_true", ...loc });
+    } else if (!row.provenance || typeof row.provenance !== "object") failures.push({ code: "missing_provenance", ...loc });
     else {
+      if (!TASK_TYPES.has(row.task_type)) failures.push({ code: "invalid_task_type", task_type: row.task_type, ...loc });
+      if (!REQUIRED_FAMILIES.includes(row.task_family)) failures.push({ code: "invalid_or_missing_task_family", task_family: row.task_family, ...loc });
       if (!["repo_derived", "template_generated"].includes(row.provenance.source_type)) failures.push({ code: "invalid_provenance_source_type", ...loc });
       if (row.provenance.generator !== "scripts/generate_r25b_llm_corpus.mjs") failures.push({ code: "invalid_provenance_generator", ...loc });
       if (row.provenance.license_or_permission !== "project-authored") failures.push({ code: "invalid_provenance_license", ...loc });
       if (row.provenance.contains_private_data !== false) failures.push({ code: "provenance_private_data_must_be_false", ...loc });
+      if (row.review_status !== "reviewed_template") failures.push({ code: "invalid_review_status", ...loc });
     }
-    if (row.review_status !== "reviewed_template") failures.push({ code: "invalid_review_status", ...loc });
 
     const strings = collectStrings(row);
     for (const text of strings) {
@@ -175,7 +257,7 @@ export function validateCorpusRows(rows) {
       if (MODEL_WEIGHT_REF.test(text)) failures.push({ code: "model_weight_file_reference", text: text.slice(0, 120), ...loc });
     }
 
-    const fingerprint = normalize(`${row.user_goal} ${row.target_answer}`);
+    const fingerprint = normalize(`${row.user_goal || row.transformation_type || ""} ${row.target_answer}`);
     if (sampleFingerprints.has(fingerprint)) failures.push({ code: "duplicate_sample_fingerprint", ...loc });
     sampleFingerprints.add(fingerprint);
 
@@ -183,7 +265,7 @@ export function validateCorpusRows(rows) {
     if (!targetMap.has(target)) targetMap.set(target, { count: 0, families: new Set(), samples: [] });
     const item = targetMap.get(target);
     item.count += 1;
-    item.families.add(row.task_family);
+    item.families.add(rowFamily(row));
     item.samples.push(row.sample_id);
   }
 
@@ -200,7 +282,11 @@ export function validateCorpusRows(rows) {
   }
 
   const splitCounts = countBy(rows.filter((row) => !row.__parse_error), "split");
-  const familyCounts = countBy(rows.filter((row) => !row.__parse_error), "task_family");
+  const familyCounts = {};
+  for (const row of rows.filter((item) => !item.__parse_error)) {
+    const family = rowFamily(row);
+    familyCounts[family] = (familyCounts[family] || 0) + 1;
+  }
   if (rows.length < 480) failures.push({ code: "row_count_below_minimum", rows: rows.length, minimum: 480 });
   if ((splitCounts.train || 0) < 320) failures.push({ code: "train_count_below_minimum", count: splitCounts.train || 0, minimum: 320 });
   if ((splitCounts.dev || 0) < 80) failures.push({ code: "dev_count_below_minimum", count: splitCounts.dev || 0, minimum: 80 });

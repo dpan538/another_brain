@@ -51,9 +51,9 @@ async function main() {
   const rows = await loadCorpusRows(ROOT);
   for (const row of rows) {
     const loc = { sample_id: row.sample_id, split: row.split };
-    const corpusStrings = [
-      row.user_goal,
-      row.target_answer,
+  const corpusStrings = [
+    row.user_goal,
+    row.target_answer,
       ...(Array.isArray(row.messages) ? row.messages.map((message) => message.content) : [])
     ].map(normalize).filter((value) => value.length >= 8);
     for (const text of corpusStrings) {
@@ -66,10 +66,10 @@ async function main() {
   const heldoutFingerprints = new Set(
     rows
       .filter((row) => row.split === "heldout")
-      .map((row) => normalize(`${row.task_family} ${row.user_goal} ${row.target_answer}`))
+      .map((row) => normalize(`${row.task_family || row.transformation_type || ""} ${row.user_goal || ""} ${row.target_answer}`))
   );
   for (const row of rows.filter((item) => item.split === "train" || item.split === "dev")) {
-    const fingerprint = normalize(`${row.task_family} ${row.user_goal} ${row.target_answer}`);
+    const fingerprint = normalize(`${row.task_family || row.transformation_type || ""} ${row.user_goal || ""} ${row.target_answer}`);
     if (heldoutFingerprints.has(fingerprint)) {
       failures.push({ code: "heldout_leakage_into_train_or_dev", sample_id: row.sample_id, split: row.split });
     }

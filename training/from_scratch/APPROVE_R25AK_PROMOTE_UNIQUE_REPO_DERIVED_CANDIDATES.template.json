@@ -6,6 +6,7 @@
   "run_id": "r25ak_promote_reviewed_unique_repo_derived_candidates",
   "allow_promote_derived_rows": false,
   "allow_training": false,
+  "allow_tokenizer_dry_run": false,
   "allow_raw_source_commit": false,
   "allow_candidate_artifact_commit": false,
   "allow_phase_4_scaled_training": false,

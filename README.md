@@ -561,3 +561,10 @@ R25AJ still does not train, does not promote rows, does not modify
 `training/llm_corpus`, and commits no artifacts or weights. R25AK is required
 before any reviewed subset may be promoted; future training still needs another
 fresh approval and phase_4 remains blocked.
+
+R25AK promotes a bounded reviewed subset of R25AJ unique repo-derived
+candidates into new tracked corpus split files. It does not train, does not run
+tokenizer dry-run, does not commit ignored artifacts, does not use raw private
+sources or evals, and does not approve phase_4. R25AL is required for
+post-promotion corpus review before any later tokenizer-readiness approval or
+bounded Chinese-personal training approval.

@@ -1,0 +1,30 @@
+{
+  "approved": true,
+  "scope": "promote_reviewed_unique_repo_derived_candidates_only",
+  "reviewer": "user",
+  "phase": "phase_3_corpus_review",
+  "run_id": "r25ak_promote_reviewed_unique_repo_derived_candidates",
+  "allow_promote_derived_rows": true,
+  "allow_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_raw_source_commit": false,
+  "allow_candidate_artifact_commit": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_weight_commit": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "source_candidate_file": "artifacts/training_os/corpus_expansion/r25aj/r25aj_repo_derived_candidate_rows.jsonl",
+  "target_corpus_files": [
+    "training/llm_corpus/r25ak_repo_derived_train.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_heldout.jsonl"
+  ],
+  "max_promoted_rows": 320,
+  "notes": "R25AK may promote a bounded reviewed subset of validated R25AJ unique repo-derived candidates into tracked split corpus files. It does not authorize training or tokenizer dry-run.",
+  "consumed": true,
+  "allow_additional_runs": false,
+  "consumed_by_phase": "R25AK",
+  "consumed_by_commit": "pending_r25ak_commit",
+  "consumed_reason": "one-shot approval used for r25ak_promote_reviewed_unique_repo_derived_candidates; future runs require a new approval marker for promotion"
+}

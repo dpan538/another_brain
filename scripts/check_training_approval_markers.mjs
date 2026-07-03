@@ -202,10 +202,37 @@ const MARKERS = [
       "allow_training",
       "allow_phase_4_scaled_training"
     ]
+  },
+  {
+    id: "r25ak_promote_unique_repo_derived_candidates",
+    path: "training/from_scratch/APPROVE_R25AK_PROMOTE_UNIQUE_REPO_DERIVED_CANDIDATES.json",
+    expectedScope: "promote_reviewed_unique_repo_derived_candidates_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r25ak_promote_reviewed_unique_repo_derived_candidates",
+    consumedByCommit: "pending_r25ak_commit",
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_phase_4_scaled_training"
+    ]
+  },
+  {
+    id: "r25al_post_promotion_corpus_review_template",
+    path: "training/from_scratch/APPROVE_R25AL_POST_PROMOTION_CORPUS_REVIEW.template.json",
+    expectedScope: "post_promotion_corpus_review_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r25al_post_promotion_corpus_review",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_small_pilot_training",
+      "allow_phase_4_scaled_training"
+    ]
   }
 ];
 
-const SECRET_RE = /(?:BEGIN PRIVATE KEY|api[_-]?key|secret|token|password|\/Users\/[^/\s]+|[A-Za-z]:\\Users\\)/i;
+const SECRET_RE = /(?:BEGIN PRIVATE KEY|api[_-]?key|secret[_-]?(?:key)?|password|access[_-]?token|auth[_-]?token|bearer\s+[A-Za-z0-9._-]{12,}|\/Users\/[^/\s]+|[A-Za-z]:\\Users\\)/i;
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
@@ -228,6 +255,7 @@ function markerSummary(spec, marker, failures) {
     template: spec.template === true,
     active_training_approval: markerAllowsTraining(marker, spec),
     active_product_training_approval: marker?.consumed !== true && marker?.allow_product_model_training === true,
+    active_promotion_approval: marker?.consumed !== true && marker?.allow_promote_derived_rows === true,
     active_weight_commit_approval: marker?.consumed !== true && marker?.allow_weight_commit === true,
     active_phase4_training_approval: marker?.consumed !== true && marker?.allow_phase_4_scaled_training === true,
     consumed_by_commit: marker?.consumed_by_commit || null,
@@ -240,6 +268,7 @@ async function main() {
   const summaries = [];
   let activeTraining = 0;
   let activeProductTraining = 0;
+  let activePromotion = 0;
   let activeWeightCommit = 0;
   let activePhase4Training = 0;
 
@@ -280,15 +309,18 @@ async function main() {
     if (marker.allow_data_refinement_training === true) failures.push({ marker: spec.id, code: "allow_data_refinement_training_must_not_be_true" });
     if (marker.allow_data_regularization_training === true && marker.consumed !== true) failures.push({ marker: spec.id, code: "allow_data_regularization_training_must_not_be_true" });
     if (marker.allow_phase_4_scaled_training === true) failures.push({ marker: spec.id, code: "allow_phase_4_scaled_training_must_not_be_true" });
+    if (marker.allow_tokenizer_dry_run === true) failures.push({ marker: spec.id, code: "allow_tokenizer_dry_run_must_not_be_true" });
     if (marker.allow_release_checkpoint === true) failures.push({ marker: spec.id, code: "allow_release_checkpoint_must_not_be_true" });
     if (SECRET_RE.test(JSON.stringify(marker))) failures.push({ marker: spec.id, code: "private_path_or_secret_marker_present" });
 
     const trainingActive = markerAllowsTraining(marker, spec);
     const productActive = marker.consumed !== true && marker.allow_product_model_training === true;
+    const promotionActive = marker.consumed !== true && marker.allow_promote_derived_rows === true;
     const weightActive = marker.consumed !== true && marker.allow_weight_commit === true;
     const phase4Active = marker.consumed !== true && marker.allow_phase_4_scaled_training === true;
     if (trainingActive) activeTraining += 1;
     if (productActive) activeProductTraining += 1;
+    if (promotionActive) activePromotion += 1;
     if (weightActive) activeWeightCommit += 1;
     if (phase4Active) activePhase4Training += 1;
     summaries.push(markerSummary(spec, marker, failures));
@@ -296,6 +328,7 @@ async function main() {
 
   if (activeTraining !== 0) failures.push({ code: "active_training_approval_count_must_be_zero", activeTraining });
   if (activeProductTraining !== 0) failures.push({ code: "active_product_training_approval_count_must_be_zero", activeProductTraining });
+  if (activePromotion !== 0) failures.push({ code: "active_promotion_approval_count_must_be_zero", activePromotion });
   if (activeWeightCommit !== 0) failures.push({ code: "active_weight_commit_approval_count_must_be_zero", activeWeightCommit });
   if (activePhase4Training !== 0) failures.push({ code: "active_phase4_training_approval_count_must_be_zero", activePhase4Training });
 
@@ -304,6 +337,7 @@ async function main() {
     markers: summaries,
     active_training_approval_count: activeTraining,
     active_product_training_approval_count: activeProductTraining,
+    active_promotion_approval_count: activePromotion,
     active_weight_commit_approval_count: activeWeightCommit,
     active_phase4_training_approval_count: activePhase4Training,
     failures

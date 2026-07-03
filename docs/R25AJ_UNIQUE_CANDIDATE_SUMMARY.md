@@ -54,4 +54,8 @@ R25AJ regenerated repo-derived Chinese-personal candidate rows under ignored art
 - project_meaning_docs: 40
 - repo_docs_for_local_first_static_reasoning: 100
 
-R25AJ rows remain ignored artifacts with `review_status:candidate_unreviewed`, `training_allowed:false`, and `public_commit_allowed:false`. R25AK is required before any reviewed subset may be promoted, and later training still needs a separate approval.
+R25AJ rows remain ignored artifacts with `review_status:candidate_unreviewed`, `training_allowed:false`, and `public_commit_allowed:false`.
+
+## R25AK Follow-Up
+
+R25AK promotes a bounded reviewed subset from this unique candidate pool into tracked split files. The ignored R25AJ candidate artifact remains uncommitted, and future training still requires a separate approval after corpus review.

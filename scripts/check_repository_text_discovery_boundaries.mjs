@@ -71,6 +71,10 @@ function hasSecretLikeString(text) {
   return /(sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----)/.test(text);
 }
 
+function isAllowedPromotedCorpusPath(lineOrPath) {
+  return /training\/llm_corpus\/r25ak_repo_derived_(train|dev|heldout)\.jsonl$/.test(String(lineOrPath).trim());
+}
+
 function checkTrackedSummaries(failures) {
   for (const relativePath of TRACKED_SUMMARIES) {
     const full = repoPath(relativePath);
@@ -121,17 +125,18 @@ if (REQUIRED_REPORTS.every((filePath) => fs.existsSync(filePath))) {
 }
 
 const staged = git(["diff", "--cached", "--name-only"]).split(/\r?\n/).filter(Boolean);
-const unstagedTraining = git(["status", "--short", "--", "training/llm_corpus"]).trim();
+const unstagedTrainingLines = git(["status", "--short", "--", "training/llm_corpus"]).split(/\r?\n/).filter(Boolean);
+const unexpectedTrainingLines = unstagedTrainingLines.filter((line) => !isAllowedPromotedCorpusPath(line));
 const stagedArtifacts = staged.filter((file) => file.startsWith("artifacts/"));
 const stagedRootDocs = staged.filter((file) => !file.includes("/") && /\.(pdf|PDF|docx|DOCX|doc|DOC)$/.test(file));
 const stagedPublicIngestion = staged.filter((file) => file.startsWith("data/public_ingestion/"));
-const stagedTrainingCorpus = staged.filter((file) => file.startsWith("training/llm_corpus/"));
+const stagedTrainingCorpus = staged.filter((file) => file.startsWith("training/llm_corpus/") && !isAllowedPromotedCorpusPath(file));
 
 if (stagedArtifacts.length) failures.push(`generated reports/artifacts staged: ${stagedArtifacts.join(", ")}`);
 if (stagedRootDocs.length) failures.push(`root PDF/DOCX files staged: ${stagedRootDocs.join(", ")}`);
 if (stagedPublicIngestion.length) failures.push(`data/public_ingestion staged: ${stagedPublicIngestion.join(", ")}`);
 if (stagedTrainingCorpus.length) failures.push(`training/llm_corpus staged: ${stagedTrainingCorpus.join(", ")}`);
-if (unstagedTraining) failures.push(`training/llm_corpus has worktree changes: ${unstagedTraining}`);
+if (unexpectedTrainingLines.length) failures.push(`training/llm_corpus has unexpected worktree changes: ${unexpectedTrainingLines.join("; ")}`);
 
 const generatedCandidateRows = fs.existsSync(repoPath("artifacts/training_os/corpus_expansion/r25ag/r25ag_candidate_rows.jsonl"));
 if (generatedCandidateRows) failures.push("derived corpus candidate rows exist for R25AG discovery task");
@@ -150,7 +155,7 @@ const result = {
     no_generated_reports_staged: stagedArtifacts.length === 0,
     no_root_pdf_docx_staged: stagedRootDocs.length === 0,
     no_data_public_ingestion_staged: stagedPublicIngestion.length === 0,
-    no_training_llm_corpus_modifications: !unstagedTraining && stagedTrainingCorpus.length === 0,
+    no_training_llm_corpus_modifications: unexpectedTrainingLines.length === 0 && stagedTrainingCorpus.length === 0,
     no_derived_corpus_rows_generated: !generatedCandidateRows,
     root_pdf_docx_metadata_only: discovery?.safety?.root_pdf_docx_content_parsed === false,
     data_public_ingestion_metadata_only: discovery?.safety?.data_public_ingestion_content_parsed === false,

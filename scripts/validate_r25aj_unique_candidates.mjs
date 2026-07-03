@@ -138,11 +138,12 @@ const staged = git(["diff", "--cached", "--name-only"]).split(/\r?\n/).filter(Bo
 const stagedArtifacts = staged.filter((file) => file.startsWith("artifacts/training_os/corpus_expansion/r25aj/"));
 const trackedCandidate = git(["ls-files", "--", rel(CANDIDATE_PATH)]).trim();
 const trainingCorpusStatus = git(["status", "--short", "--", "training/llm_corpus"]).split(/\r?\n/).filter(Boolean);
+const unexpectedTrainingCorpusStatus = trainingCorpusStatus.filter((line) => !/training\/llm_corpus\/r25ak_repo_derived_(train|dev|heldout)\.jsonl$/.test(line));
 
 if (rows.length < 480) failures.push(`candidate row count below 480: ${rows.length}`);
 if (stagedArtifacts.length) failures.push(`R25AJ artifact files staged: ${stagedArtifacts.join(", ")}`);
 if (trackedCandidate) failures.push("R25AJ candidate artifact is tracked");
-if (trainingCorpusStatus.length) failures.push(`training/llm_corpus has worktree changes: ${trainingCorpusStatus.join("; ")}`);
+if (unexpectedTrainingCorpusStatus.length) failures.push(`training/llm_corpus has unexpected worktree changes: ${unexpectedTrainingCorpusStatus.join("; ")}`);
 
 const seenIds = new Set();
 const normalizedTargets = new Map();
@@ -235,7 +236,7 @@ const report = {
     prior_pilot_reran: false,
     promotion_ran: false,
     corpus_rows_promoted: false,
-    training_llm_corpus_modified: trainingCorpusStatus.length > 0,
+    training_llm_corpus_modified: unexpectedTrainingCorpusStatus.length > 0,
     root_pdf_docx_content_parsed: false,
     data_public_ingestion_content_parsed: false,
     private_sources_read: false,
@@ -252,7 +253,7 @@ const report = {
     normalized_unique_target_gte_400: normalizedUniqueTargetCount >= 400,
     promotion_capable_unique_gte_360: promotionCapableUniqueCandidateCount >= 360,
     all_transformations_represented: TRANSFORMATIONS.every((transformation) => (transformationCounts[transformation] || 0) >= 32),
-    training_llm_corpus_unchanged: trainingCorpusStatus.length === 0,
+    training_llm_corpus_unchanged: unexpectedTrainingCorpusStatus.length === 0,
     no_candidate_rows_staged_or_tracked: stagedArtifacts.length === 0 && !trackedCandidate,
     zh_share_meets_target: zhShare >= 0.7,
     en_share_meets_cap: enShare <= 0.1

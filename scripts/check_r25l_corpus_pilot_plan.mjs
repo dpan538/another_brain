@@ -7,8 +7,7 @@ const steps = [
   ["check:r25l-expanded-corpus"],
   ["check:r25l-corpus-contamination"],
   ["report:r25l-corpus-coverage"],
-  ["check:tokenizer-dryrun:r25l"],
-  ["eval:tokenizer-dryrun:r25l"],
+  ["check:tokenizer-dryrun-history:r25l"],
   ["check:small-decoder-pilot-plan"],
   ["check:from-scratch-training-doctrine"],
   ["report:from-scratch-training-progress"],
@@ -64,8 +63,8 @@ console.log(JSON.stringify({
   formal_decoder_training: false,
   small_decoder_pilot_training: false,
   notes: [
-    "R25L routine gate validates existing corpus, tokenizer dry-run, and pilot-plan evidence only.",
-    "It does not regenerate R25L corpus rows, retrain tokenizer dry-run artifacts, or run a small decoder pilot."
+    "R25L routine gate validates existing corpus, tokenizer history artifacts, and pilot-plan evidence only.",
+    "It does not regenerate R25L corpus rows, rerun tokenizer dry-run validation/eval, retrain tokenizer artifacts, or run a small decoder pilot."
   ],
   scripts_run: results.length,
   results

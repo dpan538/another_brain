@@ -70,7 +70,8 @@ does not read `private_sources`, and does not train. R25AI is required before
 any selected R25AH row can become tracked corpus material.
 
 Upsampling alone is risky because R25AC already achieved the sampled
-Chinese-first mix while regressing against R25S. The next step is better
-reviewed zh and mixed data, not automatic scale. Future derived-row generation
-needs fresh approval, future training needs separate fresh approval, phase_4
-remains blocked, and no weights are committed.
+Chinese-first mix while regressing against R25S. R25AH/R25AJ prepared
+repo-derived candidates, and R25AK promotes a bounded reviewed subset into
+tracked corpus split files without training or tokenizer dry-run. The next step
+is R25AL corpus review, not automatic scale. Future training needs separate
+fresh approval, phase_4 remains blocked, and no weights are committed.

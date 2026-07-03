@@ -21,15 +21,18 @@ async function main() {
     ok: true,
     total_rows: rows.length,
     split_counts: countBy(rows, "split"),
-    family_counts: countBy(rows, "task_family"),
+    family_counts: countBy(rows.map((row) => ({ family: row.task_family || row.transformation_type || "unknown" })), "family"),
     language_counts: countBy(rows, "language"),
-    task_type_counts: countBy(rows, "task_type"),
+    task_type_counts: countBy(rows.map((row) => ({ task_type: row.task_type || row.transformation_type || "unknown" })), "task_type"),
+    source_category_counts: countBy(rows.map((row) => ({ source_category: row.source_category || "legacy_or_unspecified" })), "source_category"),
+    review_status_counts: countBy(rows, "review_status"),
     policy_tag_counts: countBy(rows.flatMap((row) => row.policy_tags || []).map((tag) => ({ tag })), "tag"),
+    personal_color_target_counts: countBy(rows.flatMap((row) => row.personal_color_targets || []).map((target) => ({ target })), "target"),
     avg_target_chars: rows.length ? Math.round((totalChars / rows.length) * 10) / 10 : 0,
     notes: [
       "Corpus is deterministic and project-authored.",
       "Rows train future LLM behavior, not facts.",
-      "R25B does not run training or add real weights."
+      "R25B/R25AK corpus checks do not run training, tokenizer dry-run, or add real weights."
     ]
   };
   console.log(JSON.stringify(report, null, 2));

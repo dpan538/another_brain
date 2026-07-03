@@ -5,8 +5,7 @@ const scripts = [
   'check:training-approval-markers',
   'check:no-training-in-routine-gates',
   'check:tokenizer-data-boundaries',
-  'check:tokenizer-dryrun',
-  'eval:tokenizer-dryrun',
+  'check:tokenizer-dryrun-history',
   'check:tiny-decoder-toy-pipeline',
   'check:from-scratch-training-doctrine',
   'report:from-scratch-training-progress',
@@ -51,8 +50,8 @@ console.log(JSON.stringify({
   toy_training_rerun: false,
   formal_decoder_training: false,
   notes: [
-    'R25J routine gate validates existing tokenizer dry-run and toy-pipeline evidence only.',
-    'It does not rebuild tokenizer corpus, retrain tokenizer dry-run artifacts, or run toy overfit.'
+    'R25J routine gate validates existing tokenizer history and toy-pipeline evidence only.',
+    'It does not rebuild tokenizer corpus, rerun tokenizer dry-run validation/eval, retrain tokenizer artifacts, or run toy overfit.'
   ],
   scripts_run: results.length,
   results

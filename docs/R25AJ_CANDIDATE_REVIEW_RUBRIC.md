@@ -4,7 +4,7 @@ R25AJ candidates are still ignored, unreviewed rows. The rubric defines what a f
 
 ## Hard Fail Checks
 
-A candidate fails immediately if it contains private data, chain-of-thought, hidden/system prompt leakage, eval prompt copies, root PDF/DOCX sources, `data/public_ingestion` sources, `private_sources` sources, artifact checkpoint sources, external LLM provenance, empty target answers, duplicate normalized target answers, target answers that only differ by ID/source label/suffix, copied source passages that are too long, pre-review `public_commit_allowed:true`, pre-review `training_allowed:true`, or release/product/phase_4 claims.
+A candidate fails immediately if it contains private data, chain-of-thought, hidden prompt leakage, system prompt leakage, eval prompt copies, root PDF or DOCX sources, `data/public_ingestion` sources, `private_sources` sources, artifact checkpoint sources, external LLM provenance, empty target answers, duplicate normalized target answers, target answers that only differ by ID, source label, or suffix, copied source passages that are too long, pre-review `public_commit_allowed:true`, pre-review `training_allowed:true`, or claims that a release artifact, product model, or scaled-training approval exists.
 
 ## 0-5 Scores
 

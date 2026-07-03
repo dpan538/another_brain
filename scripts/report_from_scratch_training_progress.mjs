@@ -233,6 +233,16 @@ async function main() {
   const r25ajUniquenessReport = await readJsonIfPresent("artifacts/training_os/corpus_expansion/r25aj/r25aj_target_uniqueness_report.json");
   const r25ajValidationReport = await readJsonIfPresent("artifacts/training_os/corpus_expansion/r25aj/r25aj_validation_report.json");
   const r25ajReviewPack = await readJsonIfPresent("artifacts/training_os/corpus_expansion/r25aj/r25aj_review_pack.json");
+  const r25akPromotionDocPresent = await exists("docs/R25AK_PROMOTE_UNIQUE_REPO_DERIVED_CANDIDATES.md");
+  const r25akPolicyDocPresent = await exists("docs/R25AK_PROMOTION_POLICY.md");
+  const r25akSummaryDocPresent = await exists("docs/R25AK_PROMOTED_CORPUS_SUMMARY.md");
+  const r25akReviewBoundaryDocPresent = await exists("docs/R25AK_REVIEW_AND_NEXT_BOUNDARY.md");
+  const r25akPromotionPolicy = await readJsonIfPresent("training/from_scratch/r25ak_promotion_policy.json");
+  const r25akPromotionMarker = await readJsonIfPresent("training/from_scratch/APPROVE_R25AK_PROMOTE_UNIQUE_REPO_DERIVED_CANDIDATES.json");
+  const r25alReviewTemplate = await readJsonIfPresent("training/from_scratch/APPROVE_R25AL_POST_PROMOTION_CORPUS_REVIEW.template.json");
+  const r25akPromotionReport = await readJsonIfPresent("artifacts/training_os/corpus_expansion/r25ak/r25ak_promotion_report.json");
+  const r25akValidationReport = await readJsonIfPresent("artifacts/training_os/corpus_expansion/r25ak/r25ak_validation_report.json");
+  const r25akCoverageReport = await readJsonIfPresent("artifacts/training_os/corpus_expansion/r25ak/r25ak_promoted_corpus_coverage.json");
   const tokenizerDryrunOk = Boolean(tokenizerCorpusReport?.ok && tokenizerReport?.ok && tokenizerEvalReport?.ok);
   const r25lCorpusOk = r25lTrainRows >= 1600 && r25lDevRows >= 400 && r25lHeldoutRows >= 400;
   const r25lTokenizerDryrunOk = Boolean(r25lTokenizerCorpusReport?.ok && r25lTokenizerReport?.ok && r25lTokenizerEvalReport?.ok);
@@ -305,7 +315,10 @@ async function main() {
     r25acApprovalTemplate?.approved && (r25acApprovalTemplate?.allow_small_pilot_training === true || r25acApprovalTemplate?.allow_chinese_personal_microcycle === true || r25acApprovalTemplate?.allow_phase_4_scaled_training === true),
     r25aeApprovalTemplate?.approved && (r25aeApprovalTemplate?.allow_training === true || r25aeApprovalTemplate?.allow_small_pilot_training === true || r25aeApprovalTemplate?.allow_phase_4_scaled_training === true || r25aeApprovalTemplate?.allow_product_model_training === true || r25aeApprovalTemplate?.allow_long_term_training === true),
     r25agApprovalTemplate?.approved && (r25agApprovalTemplate?.allow_training === true || r25agApprovalTemplate?.allow_corpus_generation === true || r25agApprovalTemplate?.allow_source_parsing === true || r25agApprovalTemplate?.allow_phase_4_scaled_training === true),
-    r25aiPromotionTemplate?.approved && (r25aiPromotionTemplate?.allow_training === true || r25aiPromotionTemplate?.allow_phase_4_scaled_training === true)
+    r25aiPromotionTemplate?.approved && (r25aiPromotionTemplate?.allow_training === true || r25aiPromotionTemplate?.allow_phase_4_scaled_training === true),
+    r25akPromotionTemplate?.approved && (r25akPromotionTemplate?.allow_training === true || r25akPromotionTemplate?.allow_tokenizer_dry_run === true || r25akPromotionTemplate?.allow_phase_4_scaled_training === true),
+    r25akPromotionMarker?.approved && r25akPromotionMarker?.consumed !== true && (r25akPromotionMarker?.allow_training === true || r25akPromotionMarker?.allow_tokenizer_dry_run === true || r25akPromotionMarker?.allow_phase_4_scaled_training === true),
+    r25alReviewTemplate?.approved && (r25alReviewTemplate?.allow_training === true || r25alReviewTemplate?.allow_tokenizer_dry_run === true || r25alReviewTemplate?.allow_small_pilot_training === true || r25alReviewTemplate?.allow_phase_4_scaled_training === true)
   ].filter(Boolean).length;
   const activeProductTrainingApprovalCount = [
     r25kApproval?.consumed !== true && r25kApproval?.allow_product_model_training === true,
@@ -326,7 +339,10 @@ async function main() {
     r25acApprovalTemplate?.allow_product_model_training === true,
     r25aeApprovalTemplate?.allow_product_model_training === true,
     r25agApprovalTemplate?.allow_product_model_training === true,
-    r25aiPromotionTemplate?.allow_product_model_training === true
+    r25aiPromotionTemplate?.allow_product_model_training === true,
+    r25akPromotionTemplate?.allow_product_model_training === true,
+    r25akPromotionMarker?.consumed !== true && r25akPromotionMarker?.allow_product_model_training === true,
+    r25alReviewTemplate?.allow_product_model_training === true
   ].filter(Boolean).length;
   const activeWeightCommitApprovalCount = [
     r25kApproval?.consumed !== true && r25kApproval?.allow_weight_commit === true,
@@ -347,7 +363,10 @@ async function main() {
     r25acApprovalTemplate?.allow_weight_commit === true,
     r25aeApprovalTemplate?.allow_weight_commit === true,
     r25agApprovalTemplate?.allow_weight_commit === true,
-    r25aiPromotionTemplate?.allow_weight_commit === true
+    r25aiPromotionTemplate?.allow_weight_commit === true,
+    r25akPromotionTemplate?.allow_weight_commit === true,
+    r25akPromotionMarker?.consumed !== true && r25akPromotionMarker?.allow_weight_commit === true,
+    r25alReviewTemplate?.allow_weight_commit === true
   ].filter(Boolean).length;
   const activePhase4TrainingApprovalCount = [
     r25vApproval?.consumed !== true && r25vApproval?.allow_phase_4_scaled_training === true,
@@ -362,11 +381,15 @@ async function main() {
     r25acApprovalTemplate?.allow_phase_4_scaled_training === true,
     r25aeApprovalTemplate?.allow_phase_4_scaled_training === true,
     r25agApprovalTemplate?.allow_phase_4_scaled_training === true,
-    r25aiPromotionTemplate?.allow_phase_4_scaled_training === true
+    r25aiPromotionTemplate?.allow_phase_4_scaled_training === true,
+    r25akPromotionTemplate?.allow_phase_4_scaled_training === true,
+    r25akPromotionMarker?.consumed !== true && r25akPromotionMarker?.allow_phase_4_scaled_training === true,
+    r25alReviewTemplate?.allow_phase_4_scaled_training === true
   ].filter(Boolean).length;
   const activePromotionApprovalCount = [
     r25aiPromotionTemplate?.approved && r25aiPromotionTemplate?.allow_promote_derived_rows === true,
-    r25akPromotionTemplate?.approved && r25akPromotionTemplate?.allow_promote_derived_rows === true
+    r25akPromotionTemplate?.approved && r25akPromotionTemplate?.allow_promote_derived_rows === true,
+    r25akPromotionMarker?.consumed !== true && r25akPromotionMarker?.approved === true && r25akPromotionMarker?.allow_promote_derived_rows === true
   ].filter(Boolean).length;
   const smallPilotEvaluationOk = Boolean(
     smallPilotAnalysisReport?.ok &&
@@ -1097,6 +1120,7 @@ async function main() {
     r25akPromotionTemplate?.approved === false &&
     r25akPromotionTemplate?.allow_promote_derived_rows === false &&
     r25akPromotionTemplate?.allow_training === false &&
+    r25akPromotionTemplate?.allow_tokenizer_dry_run === false &&
     r25akPromotionTemplate?.allow_raw_source_commit === false &&
     r25akPromotionTemplate?.allow_candidate_artifact_commit === false &&
     r25akPromotionTemplate?.allow_phase_4_scaled_training === false &&
@@ -1164,6 +1188,48 @@ async function main() {
     activePromotionApprovalCount === 0 &&
     activePhase4TrainingApprovalCount === 0
   );
+  const r25alReviewTemplateSafe = Boolean(
+    r25alReviewTemplate?.approved === false &&
+    r25alReviewTemplate?.allow_training === false &&
+    r25alReviewTemplate?.allow_tokenizer_dry_run === false &&
+    r25alReviewTemplate?.allow_small_pilot_training === false &&
+    r25alReviewTemplate?.allow_phase_4_scaled_training === false &&
+    r25alReviewTemplate?.allow_weight_commit === false
+  );
+  const r25akPromotionOk = Boolean(
+    r25ajUniqueCandidateRepairOk &&
+    r25akPromotionDocPresent &&
+    r25akPolicyDocPresent &&
+    r25akSummaryDocPresent &&
+    r25akReviewBoundaryDocPresent &&
+    r25akPromotionPolicy?.policy_id === "r25ak_promotion_policy" &&
+    r25akPromotionMarker?.approved === true &&
+    r25akPromotionMarker?.consumed === true &&
+    r25akPromotionMarker?.allow_additional_runs === false &&
+    r25akPromotionMarker?.allow_training === false &&
+    r25akPromotionMarker?.allow_tokenizer_dry_run === false &&
+    r25akPromotionMarker?.allow_phase_4_scaled_training === false &&
+    r25akPromotionReport?.ok === true &&
+    r25akPromotionReport?.promoted_total === 320 &&
+    r25akPromotionReport?.promoted_train === 256 &&
+    r25akPromotionReport?.promoted_dev === 32 &&
+    r25akPromotionReport?.promoted_heldout === 32 &&
+    r25akPromotionReport?.training_ran === false &&
+    r25akPromotionReport?.tokenizer_dry_run_ran === false &&
+    r25akPromotionReport?.phase4_approved === false &&
+    r25akValidationReport?.ok === true &&
+    r25akValidationReport?.promoted_total === 320 &&
+    r25akValidationReport?.split_counts?.train === 256 &&
+    r25akValidationReport?.split_counts?.dev === 32 &&
+    r25akValidationReport?.split_counts?.heldout === 32 &&
+    Number(r25akValidationReport?.language_shares?.zh || 0) >= 0.7 &&
+    Number(r25akValidationReport?.language_shares?.en || 0) <= 0.1 &&
+    r25akCoverageReport?.ok === true &&
+    r25alReviewTemplateSafe &&
+    activeTrainingApprovalCount === 0 &&
+    activePromotionApprovalCount === 0 &&
+    activePhase4TrainingApprovalCount === 0
+  );
   const r25abDirectionDesignOk = Boolean(
     r25abProjectMeaningOk &&
     r25abChineseFirstOk &&
@@ -1217,10 +1283,10 @@ async function main() {
     formal_training_progress_percent: 0,
     product_training_progress_percent: 0,
     pilot_training_progress_percent: r25acCompleteOk ? 6 : r25yCompleteOk ? 5 : r25vCompleteOk ? 4 : r25sCompleteOk ? 3 : r25pCompleteOk ? 2 : smallPilotRanOk ? 1 : 0,
-    from_scratch_program_progress_percent: r25ajUniqueCandidateRepairOk ? 16 : r25ahRepoDerivedOkAll ? 15 : r25agRepoTextDiscoveryOkAll ? 14 : r25afIntakeDesignOk ? 13 : r25aeInventoryAuditOk ? 12 : r25adReviewOk ? 11 : r25acCompleteOk ? 10 : r25abDirectionOk ? 9 : r25aaReviewOk ? 8 : r25zAnalysisOk ? 8 : r25yCompleteOk ? 7 : r25vCompleteOk ? 6 : r25sCompleteOk ? 5 : r25pCompleteOk ? 4 : smallPilotRanOk ? 3 : r25lReadyForReview ? 2 : toyOverfitOk ? 1 : 0,
-    training_readiness_percent_estimate: r25ajUniqueCandidateRepairOk ? 82 : r25ahRepoDerivedOkAll ? 81 : r25agRepoTextDiscoveryOkAll ? 80 : r25afIntakeDesignOk ? 79 : r25aeInventoryAuditOk ? 78 : r25adReviewOk ? 77 : r25acCompleteOk ? 76 : r25abDirectionOk ? 75 : r25aaReviewOk ? 74 : r25zAnalysisOk ? 73 : r25yCompleteOk && r25yDataRegularizationHelped ? 74 : r25xReviewOk ? 73 : r25wAnalysisOk ? 72 : r25vCompleteOk ? 72 : r25vBlockedOk ? 70 : r25uPlanningOk ? 70 : r25tAnalysisOk ? 69 : r25sCompleteOk ? 68 : r25sDesignOk ? 67 : r25qAnalysisOk ? 66 : r25pCompleteOk ? 65 : r25oDesignOk ? 63 : smallPilotEvaluationOk ? 62 : smallPilotRanOk ? 60 : r25lReadyForReview ? 55 : toyOverfitOk ? 50 : tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
-    browser_product_completion_estimate: r25ajUniqueCandidateRepairOk ? 33 : r25ahRepoDerivedOkAll ? 33 : r25agRepoTextDiscoveryOkAll ? 33 : r25afIntakeDesignOk ? 33 : r25aeInventoryAuditOk ? 33 : r25acCompleteOk ? 33 : r25aaReviewOk ? 32 : r25zAnalysisOk ? 32 : r25yCompleteOk && r25yDataRegularizationHelped ? 33 : r25vCompleteOk ? 32 : r25vBlockedOk ? 31 : r25uPlanningOk ? 31 : r25tAnalysisOk ? 31 : r25sCompleteOk ? 31 : r25pCompleteOk ? 30 : smallPilotRanOk ? 29 : r25lReadyForReview ? 28 : toyOverfitOk ? 27 : tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
-    current_phase: r25ajUniqueCandidateRepairOk ? "phase_3_unique_candidate_repair_review_pause" : r25ahRepoDerivedOkAll ? "phase_3_repo_derived_candidate_generation_review_pause" : r25agRepoTextDiscoveryOkAll ? "phase_3_repo_text_discovery_audited_pause" : r25afIntakeDesignOk ? "phase_3_personal_writing_intake_design_pause" : r25aeInventoryAuditOk ? "phase_3_personal_data_inventory_audited_pause" : r25adReviewOk ? "phase_3_chinese_personal_microcycle_analyzed_corpus_expansion_design_pause" : r25acCompleteOk ? "phase_3_chinese_personal_microcycle_completed_review_pause" : r25abDirectionOk ? "phase_3_chinese_personal_cycle_aligned_review_only" : r25aaReviewOk ? "phase_3_paused_phase4_readiness_review_only" : r25zAnalysisOk ? "phase_3_data_regularization_pilot_analyzed" : r25yCompleteOk ? "phase_3_data_regularization_pilot_completed" : r25xReviewOk ? "phase_3_review_and_data_regularization_designed" : r25wAnalysisOk ? "phase_3_architecture_ablation_analyzed" : r25vCompleteOk ? "phase_3_architecture_ablation_pilot_completed" : r25vBlockedOk ? "phase_3_architecture_ablation_pilot_blocked" : r25uPlanningOk ? "phase_3_exit_criteria_and_ablation_planned" : r25tAnalysisOk ? "phase_3_data_first_pilot_analyzed" : r25sCompleteOk ? "phase_3_data_first_third_pilot_completed" : r25sDesignOk ? "phase_3_data_first_third_pilot_designed" : r25qAnalysisOk ? "phase_3_second_small_pilot_analyzed" : r25pCompleteOk ? "phase_3_second_small_pilot_completed" : r25oDesignOk ? "phase_3_second_small_pilot_designed" : smallPilotEvaluationOk ? "phase_3_small_decoder_pilot_evaluated" : smallPilotRanOk ? "phase_3_small_decoder_pilot" : r25lReadyForReview ? "phase_3_small_decoder_pilot_planned" : toyOverfitOk ? "phase_2_tiny_overfit_sanity" : tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
+    from_scratch_program_progress_percent: r25akPromotionOk ? 17 : r25ajUniqueCandidateRepairOk ? 16 : r25ahRepoDerivedOkAll ? 15 : r25agRepoTextDiscoveryOkAll ? 14 : r25afIntakeDesignOk ? 13 : r25aeInventoryAuditOk ? 12 : r25adReviewOk ? 11 : r25acCompleteOk ? 10 : r25abDirectionOk ? 9 : r25aaReviewOk ? 8 : r25zAnalysisOk ? 8 : r25yCompleteOk ? 7 : r25vCompleteOk ? 6 : r25sCompleteOk ? 5 : r25pCompleteOk ? 4 : smallPilotRanOk ? 3 : r25lReadyForReview ? 2 : toyOverfitOk ? 1 : 0,
+    training_readiness_percent_estimate: r25akPromotionOk ? 83 : r25ajUniqueCandidateRepairOk ? 82 : r25ahRepoDerivedOkAll ? 81 : r25agRepoTextDiscoveryOkAll ? 80 : r25afIntakeDesignOk ? 79 : r25aeInventoryAuditOk ? 78 : r25adReviewOk ? 77 : r25acCompleteOk ? 76 : r25abDirectionOk ? 75 : r25aaReviewOk ? 74 : r25zAnalysisOk ? 73 : r25yCompleteOk && r25yDataRegularizationHelped ? 74 : r25xReviewOk ? 73 : r25wAnalysisOk ? 72 : r25vCompleteOk ? 72 : r25vBlockedOk ? 70 : r25uPlanningOk ? 70 : r25tAnalysisOk ? 69 : r25sCompleteOk ? 68 : r25sDesignOk ? 67 : r25qAnalysisOk ? 66 : r25pCompleteOk ? 65 : r25oDesignOk ? 63 : smallPilotEvaluationOk ? 62 : smallPilotRanOk ? 60 : r25lReadyForReview ? 55 : toyOverfitOk ? 50 : tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
+    browser_product_completion_estimate: r25akPromotionOk ? 33 : r25ajUniqueCandidateRepairOk ? 33 : r25ahRepoDerivedOkAll ? 33 : r25agRepoTextDiscoveryOkAll ? 33 : r25afIntakeDesignOk ? 33 : r25aeInventoryAuditOk ? 33 : r25acCompleteOk ? 33 : r25aaReviewOk ? 32 : r25zAnalysisOk ? 32 : r25yCompleteOk && r25yDataRegularizationHelped ? 33 : r25vCompleteOk ? 32 : r25vBlockedOk ? 31 : r25uPlanningOk ? 31 : r25tAnalysisOk ? 31 : r25sCompleteOk ? 31 : r25pCompleteOk ? 30 : smallPilotRanOk ? 29 : r25lReadyForReview ? 28 : toyOverfitOk ? 27 : tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
+    current_phase: r25akPromotionOk ? "phase_3_repo_derived_corpus_promoted_review_pause" : r25ajUniqueCandidateRepairOk ? "phase_3_unique_candidate_repair_review_pause" : r25ahRepoDerivedOkAll ? "phase_3_repo_derived_candidate_generation_review_pause" : r25agRepoTextDiscoveryOkAll ? "phase_3_repo_text_discovery_audited_pause" : r25afIntakeDesignOk ? "phase_3_personal_writing_intake_design_pause" : r25aeInventoryAuditOk ? "phase_3_personal_data_inventory_audited_pause" : r25adReviewOk ? "phase_3_chinese_personal_microcycle_analyzed_corpus_expansion_design_pause" : r25acCompleteOk ? "phase_3_chinese_personal_microcycle_completed_review_pause" : r25abDirectionOk ? "phase_3_chinese_personal_cycle_aligned_review_only" : r25aaReviewOk ? "phase_3_paused_phase4_readiness_review_only" : r25zAnalysisOk ? "phase_3_data_regularization_pilot_analyzed" : r25yCompleteOk ? "phase_3_data_regularization_pilot_completed" : r25xReviewOk ? "phase_3_review_and_data_regularization_designed" : r25wAnalysisOk ? "phase_3_architecture_ablation_analyzed" : r25vCompleteOk ? "phase_3_architecture_ablation_pilot_completed" : r25vBlockedOk ? "phase_3_architecture_ablation_pilot_blocked" : r25uPlanningOk ? "phase_3_exit_criteria_and_ablation_planned" : r25tAnalysisOk ? "phase_3_data_first_pilot_analyzed" : r25sCompleteOk ? "phase_3_data_first_third_pilot_completed" : r25sDesignOk ? "phase_3_data_first_third_pilot_designed" : r25qAnalysisOk ? "phase_3_second_small_pilot_analyzed" : r25pCompleteOk ? "phase_3_second_small_pilot_completed" : r25oDesignOk ? "phase_3_second_small_pilot_designed" : smallPilotEvaluationOk ? "phase_3_small_decoder_pilot_evaluated" : smallPilotRanOk ? "phase_3_small_decoder_pilot" : r25lReadyForReview ? "phase_3_small_decoder_pilot_planned" : toyOverfitOk ? "phase_2_tiny_overfit_sanity" : tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
     approval_markers_consumed_status: approvalMarkersConsumedOk ? "consumed_one_shot_markers_inert" : "needs_review",
     active_training_approval_count: activeTrainingApprovalCount,
     active_promotion_approval_count: activePromotionApprovalCount,
@@ -1553,6 +1619,19 @@ async function main() {
       warning_count: r25ajValidationReport.summary?.warning_count ?? null
     } : null,
     r25aj_review_pack_status: r25ajReviewPack?.ok ? "ignored_review_pack_ready" : "not_run",
+    r25ak_promotion_status: r25akPromotionOk ? "passed_reviewed_unique_candidates_promoted_to_tracked_corpus" : r25akPromotionReport?.ok ? "needs_review" : "not_run",
+    r25ak_promoted_rows_total: r25akPromotionReport?.promoted_total ?? 0,
+    r25ak_language_mix: r25akValidationReport?.language_counts || r25akPromotionReport?.language_counts || null,
+    r25ak_personal_target_coverage: r25akValidationReport?.personal_target_counts || r25akPromotionReport?.personal_target_counts || null,
+    r25ak_source_category_counts: r25akValidationReport?.source_category_counts || r25akPromotionReport?.source_category_counts || null,
+    r25ak_combined_corpus_status: r25akCoverageReport?.ok ? {
+      previous_rows: r25akCoverageReport.previous?.rows ?? null,
+      r25ak_promoted_rows: r25akCoverageReport.r25ak_promoted?.rows ?? null,
+      combined_rows: r25akCoverageReport.combined?.rows ?? null,
+      combined_language_counts: r25akCoverageReport.combined?.language_counts || null
+    } : null,
+    r25al_template_status: r25alReviewTemplateSafe ? "inert_template_approved_false" : "not_present_or_needs_review",
+    r25ak_training_status: "corpus_promotion_only_no_training_no_tokenizer_dry_run",
     r25af_inbox_audit: r25afInboxAudit?.ok ? {
       private_sources_exists: r25afInboxAudit.private_sources_exists === true,
       status: r25afInboxAudit.status || null,
@@ -1811,7 +1890,7 @@ async function main() {
       ...(r25lTokenizerDryrunOk ? [] : ["expanded-corpus tokenizer dry-run and eval"]),
       ...(smallPilotPlanOk ? [] : ["small decoder pilot architecture, budget, and capacity plan"]),
       ...(r25pCompleteOk
-        ? [r25ajUniqueCandidateRepairOk ? "review ignored R25AJ unique candidates and optionally approve R25AK promotion of a bounded reviewed subset; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25ahRepoDerivedOkAll ? "review ignored R25AH repo-derived candidates and optionally approve R25AI promotion of selected reviewed rows; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25agRepoTextDiscoveryOkAll ? "review R25AG discovery and optionally approve R25AH source-specific derived-row generation from selected existing repo text; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25afIntakeDesignOk ? "review R25AF and optionally approve R25AG repository text discovery or derived Chinese-personal corpus expansion only; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25aeInventoryAuditOk ? "review R25AE and optionally approve R25AF intake design only; any later corpus expansion or bounded micro-cycle still needs separate fresh approval and phase_4 scaled training remains blocked" : r25adReviewOk ? "review and optionally approve R25AE repository-scoped inventory only; any later corpus expansion or bounded micro-cycle still needs separate fresh approval and phase_4 scaled training remains blocked" : r25acCompleteOk ? "review R25AC before any follow-up; a future bounded Chinese-first personal micro-cycle needs fresh approval and phase_4 scaled training remains blocked" : r25abDirectionOk ? "review and optionally approve exactly one future R25AC Chinese-first personal micro-cycle; phase_4 scaled training remains blocked" : r25aaReviewOk ? "pause phase_3 for human review or begin R25AB phase_4 design review without training; phase_4 scaled training remains blocked" : r25zAnalysisOk ? "pause phase_3 for review or begin a phase_4 readiness review without training; phase_4 scaled training remains blocked" : r25yCompleteOk ? "review R25Y against R25S/R25V/R25P before any R25Z decision, repeat data regularization, or phase_4 readiness review; phase_4 remains blocked" : r25xReviewOk ? "review R25X and obtain fresh reviewer approval before any R25Y data-regularization pilot; phase_4 remains blocked" : r25wAnalysisOk ? "pause phase_3 for review or design data/regularization only after fresh approval; phase_4 remains blocked" : r25vCompleteOk || r25vBlockedOk ? "review R25V against R25S before any additional phase_3 pilot; phase_4 remains blocked" : r25uPlanningOk ? "fresh reviewer approval before any R25V phase_3 ablation or data follow-up; phase_4 remains blocked" : r25sCompleteOk ? "review R25S against R25P before any additional pilot, architecture ablation, or scaling" : r25sDesignOk ? "fresh reviewer approval before any R25S data-first bounded pilot" : r25qAnalysisOk ? "review R25Q before any R25R approval or architecture scaling" : "review R25P against R25M before any additional pilot or architecture scaling"]
+        ? [r25akPromotionOk ? "review promoted R25AK corpus in R25AL before any tokenizer readiness or later bounded Chinese-personal training approval; phase_4 scaled training remains blocked" : r25ajUniqueCandidateRepairOk ? "review ignored R25AJ unique candidates and optionally approve R25AK promotion of a bounded reviewed subset; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25ahRepoDerivedOkAll ? "review ignored R25AH repo-derived candidates and optionally approve R25AI promotion of selected reviewed rows; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25agRepoTextDiscoveryOkAll ? "review R25AG discovery and optionally approve R25AH source-specific derived-row generation from selected existing repo text; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25afIntakeDesignOk ? "review R25AF and optionally approve R25AG repository text discovery or derived Chinese-personal corpus expansion only; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25aeInventoryAuditOk ? "review R25AE and optionally approve R25AF intake design only; any later corpus expansion or bounded micro-cycle still needs separate fresh approval and phase_4 scaled training remains blocked" : r25adReviewOk ? "review and optionally approve R25AE repository-scoped inventory only; any later corpus expansion or bounded micro-cycle still needs separate fresh approval and phase_4 scaled training remains blocked" : r25acCompleteOk ? "review R25AC before any follow-up; a future bounded Chinese-first personal micro-cycle needs fresh approval and phase_4 scaled training remains blocked" : r25abDirectionOk ? "review and optionally approve exactly one future R25AC Chinese-first personal micro-cycle; phase_4 scaled training remains blocked" : r25aaReviewOk ? "pause phase_3 for human review or begin R25AB phase_4 design review without training; phase_4 scaled training remains blocked" : r25zAnalysisOk ? "pause phase_3 for review or begin a phase_4 readiness review without training; phase_4 scaled training remains blocked" : r25yCompleteOk ? "review R25Y against R25S/R25V/R25P before any R25Z decision, repeat data regularization, or phase_4 readiness review; phase_4 remains blocked" : r25xReviewOk ? "review R25X and obtain fresh reviewer approval before any R25Y data-regularization pilot; phase_4 remains blocked" : r25wAnalysisOk ? "pause phase_3 for review or design data/regularization only after fresh approval; phase_4 remains blocked" : r25vCompleteOk || r25vBlockedOk ? "review R25V against R25S before any additional phase_3 pilot; phase_4 remains blocked" : r25uPlanningOk ? "fresh reviewer approval before any R25V phase_3 ablation or data follow-up; phase_4 remains blocked" : r25sCompleteOk ? "review R25S against R25P before any additional pilot, architecture ablation, or scaling" : r25sDesignOk ? "fresh reviewer approval before any R25S data-first bounded pilot" : r25qAnalysisOk ? "review R25Q before any R25R approval or architecture scaling" : "review R25P against R25M before any additional pilot or architecture scaling"]
         : smallPilotRanOk
           ? ["review R25M/R25N outputs before any second or larger run"]
           : ["future explicit phase_3 approval before any small decoder pilot training"]),
@@ -1986,6 +2065,12 @@ async function main() {
       "R25AJ does not modify training/llm_corpus and keeps regenerated candidates ignored",
       "R25AJ excludes evals, private_sources, root PDFs/DOCX, data/public_ingestion, and artifact checkpoints as sources",
       "future R25AK promotion and any later training each require fresh approval; phase_4 remains blocked"
+    ],
+    r25ak_boundaries: [
+      "R25AK promotes reviewed unique repo-derived rows into tracked corpus split files and does not train",
+      "R25AK does not run tokenizer dry-run and does not approve phase_4 scaled training",
+      "R25AK keeps ignored candidate and report artifacts uncommitted",
+      "future R25AL corpus review, tokenizer readiness, and any later training each require separate fresh approval"
     ]
   };
   console.log(JSON.stringify(report, null, 2));

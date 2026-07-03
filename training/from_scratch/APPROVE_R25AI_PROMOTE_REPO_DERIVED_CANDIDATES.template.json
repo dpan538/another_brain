@@ -9,5 +9,8 @@
   "allow_raw_source_commit": false,
   "allow_phase_4_scaled_training": false,
   "allow_weight_commit": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
   "notes": "Template only. R25AI may promote reviewed R25AH rows to a tracked corpus file only after explicit approval. This does not authorize training."
 }

@@ -18,6 +18,10 @@ function git(args) {
   return execFileSync("git", args, { cwd: ROOT, encoding: "utf8" });
 }
 
+function isAllowedPromotedCorpusStatus(lineOrPath) {
+  return /training\/llm_corpus\/r25ak_repo_derived_(train|dev|heldout)\.jsonl$/.test(String(lineOrPath).trim());
+}
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
@@ -90,11 +94,12 @@ if (!failures.length) {
 const staged = git(["diff", "--cached", "--name-only"]).split(/\r?\n/).filter(Boolean);
 const tracked = git(["ls-files", "--", rel(CANDIDATE_PATH)]).trim();
 const stagedArtifacts = staged.filter((file) => file.startsWith("artifacts/training_os/corpus_expansion/r25ah/"));
-const trainingCorpusStatus = git(["status", "--short", "--", "training/llm_corpus"]).trim();
+const trainingCorpusStatusLines = git(["status", "--short", "--", "training/llm_corpus"]).split(/\r?\n/).filter(Boolean);
+const unexpectedTrainingCorpusStatus = trainingCorpusStatusLines.filter((line) => !isAllowedPromotedCorpusStatus(line));
 
 if (tracked) failures.push("candidate rows are tracked");
 if (stagedArtifacts.length) failures.push(`R25AH artifact files staged: ${stagedArtifacts.join(", ")}`);
-if (trainingCorpusStatus) failures.push(`training/llm_corpus has worktree changes: ${trainingCorpusStatus}`);
+if (unexpectedTrainingCorpusStatus.length) failures.push(`training/llm_corpus has unexpected worktree changes: ${unexpectedTrainingCorpusStatus.join("; ")}`);
 if (rows.length === 0) failures.push("candidate rows are empty");
 if (rows.length > MAX_ROWS) failures.push(`candidate rows exceed max ${MAX_ROWS}`);
 
@@ -155,7 +160,7 @@ const report = {
     training_ran: false,
     prior_pilot_reran: false,
     corpus_rows_promoted: false,
-    training_llm_corpus_modified: false,
+    training_llm_corpus_modified: unexpectedTrainingCorpusStatus.length > 0,
     root_pdf_docx_content_parsed: false,
     data_public_ingestion_content_parsed: false,
     private_sources_read: false,
@@ -169,7 +174,7 @@ const report = {
     candidate_file_exists: fs.existsSync(CANDIDATE_PATH),
     rows_parse_as_jsonl: rows.length > 0,
     row_count_lte_1000: rows.length <= MAX_ROWS,
-    training_llm_corpus_unchanged: !trainingCorpusStatus,
+    training_llm_corpus_unchanged: unexpectedTrainingCorpusStatus.length === 0,
     all_rows_training_allowed_false: rows.every((row) => row.training_allowed === false),
     all_rows_public_commit_allowed_false: rows.every((row) => row.public_commit_allowed === false),
     all_rows_candidate_unreviewed: rows.every((row) => row.review_status === "candidate_unreviewed"),

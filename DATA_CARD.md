@@ -398,3 +398,10 @@ artifacts. It must not train, promote rows, change `training/llm_corpus`, read
 `private_sources`, parse root PDF/DOC/DOCX files, parse `data/public_ingestion`,
 use evals as candidate sources, or commit generated rows. R25AK is required for
 any future bounded promotion, and later training requires a separate approval.
+
+R25AK promoted reviewed unique repo-derived rows into tracked split corpus
+files under `training/llm_corpus`. These rows are public/tracked only because
+their source material is already safe repo-tracked project text. R25AK does not
+train, does not run tokenizer dry-run, does not read `private_sources`, does
+not parse root PDF/DOC/DOCX or `data/public_ingestion`, does not use evals as
+source material, and does not commit ignored artifacts or weights.

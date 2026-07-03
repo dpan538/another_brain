@@ -35,3 +35,10 @@ The repaired generator uses selected tracked repo sources from R25AH and binds e
 - No weights or artifacts are committed.
 
 R25AK is required before any reviewed subset of R25AJ candidates can be promoted. Future training after promotion still requires another approval.
+
+## R25AK Follow-Up
+
+R25AK promotes a bounded reviewed subset of these unique candidates into
+tracked corpus split files. That promotion is corpus preparation only: no
+training, no tokenizer dry-run, no phase_4 approval, and no ignored candidate
+artifacts are committed.
