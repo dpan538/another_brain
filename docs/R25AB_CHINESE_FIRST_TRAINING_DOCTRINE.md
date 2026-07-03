@@ -60,3 +60,11 @@ still corpus work only. It does not run tokenizer dry-run or decoder training.
 If the combined corpus remains below `zh >= 70%` or above `en <= 10%`, the next
 step should be more reviewed Chinese-personal rows or an approved sampler, not
 an automatic training run.
+
+## R25AN Sampler Lesson
+
+R25AN may review the R25AM-expanded corpus and run one tokenizer dry-run, but
+it still does not train a decoder. If sampler feasibility passes, it means a
+future R25AO design may be reviewed with `zh >= 70%`, mixed near `20%`, and
+`en <= 10%`; it does not mean training is approved. R25AO still needs a fresh
+explicit approval and phase_4 remains blocked.

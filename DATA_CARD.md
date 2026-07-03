@@ -108,6 +108,13 @@ sources, does not commit artifacts, and does not commit weights. Future
 tokenizer review needs fresh R25AN approval, and future decoder training needs
 another separate approval.
 
+R25AN reviews the R25AM-expanded tracked corpus, evaluates Chinese-first
+sampler feasibility, and may run one tokenizer dry-run readiness pass. It does
+not run decoder training, small-pilot training, phase_4 scaled training,
+long-term training, or product-scale training. Tokenizer artifacts remain
+ignored and uncommitted. R25AO is an inert future bounded micro-cycle template
+until fresh explicit approval exists.
+
 ## Public Data
 
 Public generated files may include:
@@ -431,5 +438,7 @@ source material, and does not commit ignored artifacts or weights.
 R25AL reviews the expanded tracked corpus and may run one tokenizer dry-run
 readiness pass only. It does not run decoder training, small-pilot training,
 phase_4 scaled training, long-term training, or product-scale training. The
-tokenizer dry-run artifacts remain ignored and uncommitted. Future R25AM
-training requires fresh explicit approval, and phase_4 remains blocked.
+tokenizer dry-run artifacts remain ignored and uncommitted. Later R25AM/R25AN
+corpus and tokenizer review still does not approve training. Future R25AO
+micro-cycle training requires fresh explicit approval, and phase_4 remains
+blocked.

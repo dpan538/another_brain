@@ -135,6 +135,13 @@ commit artifacts, commit weights, or approve phase_4. R25AN is required before
 any tokenizer review over the R25AM-expanded corpus; decoder training still
 requires another later approval.
 
+R25AN reviews the R25AM-expanded corpus, evaluates zh-first sampler
+feasibility, and may run exactly one tokenizer dry-run readiness pass. It does
+not train a decoder, does not run a small pilot, does not run phase_4, does not
+commit tokenizer artifacts or weights, and does not read private sources, root
+PDFs/DOCX, or `data/public_ingestion/`. R25AO remains an inert future
+micro-cycle template until fresh explicit approval exists.
+
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
 and evaluates dev/heldout text for leakage and segmentation sanity. The tiny
@@ -599,5 +606,6 @@ a decoder, does not run a small pilot, does not run phase_4, does not commit
 tokenizer artifacts or weights, and does not read private sources, root
 PDFs/DOCX, or `data/public_ingestion/`. The R25AK rows improve the
 Chinese-first direction, but the combined corpus may still be below the future
-`zh >= 70%` target unless a later approved R25AM micro-cycle uses
-Chinese-first sampling or more reviewed Chinese rows are added.
+`zh >= 70%` target unless later approved R25AM/R25AN corpus work uses
+Chinese-first sampling or more reviewed Chinese rows are added. R25AO is the
+future bounded micro-cycle review path and still requires fresh approval.

@@ -1,0 +1,77 @@
+{
+  "run_id": "r25an_r25am_expanded_corpus_tokenizer_dryrun",
+  "tokenizer_id": "r25an_r25am_expanded_corpus_tokenizer_dryrun",
+  "tokenizer_type": "deterministic_project_bpe_dryrun",
+  "output_dir": "artifacts/training_os/tokenizer_dryrun/r25an/",
+  "artifact_dir": "artifacts/training_os/tokenizer_dryrun/r25an/",
+  "vocab_size": 4096,
+  "selected_dryrun_vocab_size": 4096,
+  "vocab_size_target_options": [
+    4096
+  ],
+  "normalization": {
+    "unicode_nfc": true,
+    "lowercase_ascii": false,
+    "preserve_chinese": true,
+    "collapse_whitespace": true
+  },
+  "special_tokens": [
+    "<pad>",
+    "<bos>",
+    "<eos>",
+    "<unk>",
+    "<sep>",
+    "<user>",
+    "<assistant>",
+    "<evidence>",
+    "<constraint>",
+    "<draft>",
+    "<reject>"
+  ],
+  "train_sources": [
+    "training/llm_corpus/train.jsonl",
+    "training/llm_corpus/r25l_train.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_train.jsonl",
+    "training/llm_corpus/r25am_repo_derived_train.jsonl"
+  ],
+  "dev_sources": [
+    "training/llm_corpus/dev.jsonl",
+    "training/llm_corpus/r25l_dev.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25am_repo_derived_dev.jsonl"
+  ],
+  "heldout_sources": [
+    "training/llm_corpus/heldout.jsonl",
+    "training/llm_corpus/r25l_heldout.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_heldout.jsonl",
+    "training/llm_corpus/r25am_repo_derived_heldout.jsonl"
+  ],
+  "eval_sources": [
+    "training/llm_corpus/dev.jsonl",
+    "training/llm_corpus/heldout.jsonl",
+    "training/llm_corpus/r25l_dev.jsonl",
+    "training/llm_corpus/r25l_heldout.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_heldout.jsonl",
+    "training/llm_corpus/r25am_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25am_repo_derived_heldout.jsonl"
+  ],
+  "forbidden_sources": [
+    "evals/**",
+    "root PDFs/DOCX",
+    "data/public_ingestion/",
+    "private_sources/",
+    "private data",
+    "hidden prompts",
+    "chain-of-thought"
+  ],
+  "chinese_first_review": true,
+  "product_tokenizer": false,
+  "production_tokenizer": false,
+  "formal_training": false,
+  "formal_decoder_training": false,
+  "decoder_training": false,
+  "small_pilot_training": false,
+  "phase_4_scaled_training": false,
+  "commit_artifacts_allowed": false
+}

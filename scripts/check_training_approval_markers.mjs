@@ -291,6 +291,37 @@ const MARKERS = [
       "allow_small_pilot_training",
       "allow_phase_4_scaled_training"
     ]
+  },
+  {
+    id: "r25an_post_r25am_tokenizer_review",
+    path: "training/from_scratch/APPROVE_R25AN_POST_R25AM_TOKENIZER_REVIEW.json",
+    expectedScope: "post_r25am_tokenizer_and_sampler_review_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r25an_post_r25am_tokenizer_review",
+    consumedByCommit: "pending_r25an_commit",
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_decoder_training",
+      "allow_small_pilot_training",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training"
+    ]
+  },
+  {
+    id: "r25ao_expanded_chinese_personal_microcycle_template",
+    path: "training/from_scratch/APPROVE_R25AO_EXPANDED_CHINESE_PERSONAL_MICROCYCLE.template.json",
+    expectedScope: "expanded_chinese_personal_microcycle_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    expectedRunId: "r25ao_expanded_chinese_personal_microcycle",
+    template: true,
+    trainingFlagKeys: [
+      "allow_small_pilot_training",
+      "allow_decoder_training",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training"
+    ]
   }
 ];
 

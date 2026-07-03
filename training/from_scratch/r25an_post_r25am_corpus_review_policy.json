@@ -1,0 +1,47 @@
+{
+  "policy_id": "r25an_post_r25am_corpus_review_policy",
+  "phase": "phase_3_corpus_review",
+  "purpose": "Review the R25AM-expanded tracked corpus, tokenizer dry-run behavior, and zh-first sampler feasibility without decoder training.",
+  "corpus_scope": {
+    "tracked_corpus_root": "training/llm_corpus/",
+    "include_r25ak_rows": true,
+    "include_r25am_rows": true,
+    "preserve_existing_corpus_files": true,
+    "evals_as_training_data": false
+  },
+  "sampler_target": {
+    "zh_min": 0.7,
+    "mixed_target": 0.2,
+    "en_max": 0.1
+  },
+  "allowed_actions": [
+    "corpus_quality_audit",
+    "sampler_feasibility_review",
+    "one_tokenizer_dry_run",
+    "tokenizer_readiness_report",
+    "next_step_decision_report"
+  ],
+  "forbidden_sources": [
+    "evals_as_training_data",
+    "private_sources",
+    "root_pdf_docx_doc",
+    "data_public_ingestion",
+    "unreviewed_private_files"
+  ],
+  "safety": {
+    "decoder_training_allowed": false,
+    "small_pilot_training_allowed": false,
+    "phase_4_scaled_training_approved": false,
+    "long_term_training_allowed": false,
+    "product_training_allowed": false,
+    "tokenizer_artifact_commit_allowed": false,
+    "weight_commit_allowed": false,
+    "external_api_allowed": false,
+    "remote_download_allowed": false
+  },
+  "future_boundary": {
+    "r25ao_requires_fresh_approval": true,
+    "future_microcycle_training_automatic": false,
+    "phase_4_remains_blocked": true
+  }
+}

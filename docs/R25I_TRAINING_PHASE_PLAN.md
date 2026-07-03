@@ -165,8 +165,24 @@ and not release admission.
 R25AL is a phase 3 post-promotion corpus and tokenizer readiness review. It
 may run one tokenizer dry-run over the expanded tracked corpus, but it does not
 train a decoder, does not run a small pilot, does not run phase_4, and does
-not commit tokenizer artifacts or weights. R25AM remains only an inert future
-bounded micro-cycle template until fresh explicit approval exists.
+not commit tokenizer artifacts or weights. R25AM is a later corpus expansion
+approval path, not automatic training.
+
+R25AM may move the label to
+`phase_3_second_chinese_personal_corpus_expanded_review_pause` after a
+reviewed second Chinese-personal corpus expansion is promoted into tracked
+split files. It does not train, does not run tokenizer dry-run, does not commit
+artifacts or weights, and does not approve phase_4. Product and formal
+training progress remain `0%`.
+
+R25AN may move the label to
+`phase_3_post_r25am_tokenizer_sampler_readiness_review_pause` after the
+R25AM-expanded corpus audit, zh-first sampler feasibility evaluation, one
+approved tokenizer dry-run, tokenizer readiness report, next-step decision,
+approval consumption, and R24/R25 gates pass. R25AN does not train a decoder,
+does not run a small pilot, does not run phase_4, and does not commit tokenizer
+artifacts or weights. R25AO remains an inert future micro-cycle template until
+fresh explicit approval exists.
 
 ## Failure Modes To Watch
 
@@ -201,3 +217,5 @@ bounded micro-cycle template until fresh explicit approval exists.
   commit weights, or select a product model.
 - Treating R25AD analysis or the inert R25AE template as approval to generate
   corpus rows, train, approve phase_4, or commit weights.
+- Treating R25AN tokenizer/sampler readiness as approval to train R25AO, commit
+  tokenizer artifacts, commit weights, or approve phase_4.
