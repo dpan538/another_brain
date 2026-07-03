@@ -4,13 +4,13 @@ R25AG reconciled earlier hard-drive/source-scan signs inside the repository only
 
 ## Findings
 
-- Possible scan-output files: 3165
+- Possible scan-output files: 3175
 - Path-inventory-only candidates: 2944
 - Imported-text signal files: 118
-- Referenced by package scripts: 45
+- Referenced by package scripts: 49
 - Feed `training/llm_corpus`: 0
-- Feed `identity_pack`: 12
-- Feed `knowledge_sources`: 48
+- Feed `identity_pack`: 13
+- Feed `knowledge_sources`: 52
 
 ## Conclusion
 

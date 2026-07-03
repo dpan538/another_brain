@@ -17,4 +17,4 @@ The discovery pass is intentionally conservative:
 
 The useful output of R25AG is a candidate source catalog: which tracked docs, corpus scaffolds, long-horizon rows, identity and style scaffolds, and project decision histories may be worth reviewing for later Chinese-first personal corpus expansion. The tracked summaries stay aggregate-only and avoid raw private text.
 
-R25AH may later approve deriving candidate rows from selected existing repo text sources. That would still not be training, and any later training would require another fresh approval.
+R25AH later approved deriving candidate rows from selected existing tracked repo text sources only. R25AH still does not train, does not promote rows, does not modify `training/llm_corpus`, and keeps generated candidates under ignored artifacts. R25AI is required before any reviewed R25AH row can be promoted, and any later training would require another fresh approval.

@@ -13,4 +13,6 @@ Phase_4 remains blocked. Product and formal training progress remain 0%. No weig
 
 R25AF builds on this inventory by designing a local-only intake path for user writing and poetry. It still does not train, does not expand the corpus, does not parse root PDFs/DOCX, does not parse `data/public_ingestion/`, and does not commit raw personal writing. Raw files remain private/local unless separately approved.
 
-R25AG then catalogs existing repository text surfaces before requesting more uploads. It still does not train, does not generate corpus rows, does not modify `training/llm_corpus`, uses root PDFs/DOCX and `data/public_ingestion/` as metadata-only surfaces, and commits no artifacts or private raw text. Any future R25AH derived-row generation from selected repo text would need fresh approval and would still not be training.
+R25AG then catalogs existing repository text surfaces before requesting more uploads. It still does not train, does not generate corpus rows, does not modify `training/llm_corpus`, uses root PDFs/DOCX and `data/public_ingestion/` as metadata-only surfaces, and commits no artifacts or private raw text.
+
+R25AH may generate ignored, unreviewed candidate rows from selected tracked repository text only. It still does not train, does not promote rows, does not modify `training/llm_corpus`, does not read `private_sources/`, root PDFs/DOCX, or `data/public_ingestion/` content, and requires R25AI review before any tracked corpus promotion.

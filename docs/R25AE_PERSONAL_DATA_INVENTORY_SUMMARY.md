@@ -11,10 +11,10 @@ Current product and formal training progress remain 0%. Phase_4 scaled training 
 - Eval-only tracked files: 148; total bytes: 3220215.
 - Knowledge-source tracked files: 41; total bytes: 40818625.
 - Identity/style scaffold tracked files: 20; total bytes: 87728.
-- Tracked docs: 168; total bytes: 1447303.
+- Tracked docs: 174; total bytes: 1456752.
 - Untracked root PDF/DOC/DOCX files: 13; total bytes: 1070687.
 - data/public_ingestion files: 2920; total bytes: 800690026.
-- Ignored artifact files: 756; total bytes: 972072569.
+- Ignored artifact files: 761; total bytes: 972776151.
 - Possible legacy scan footprint paths inside repo: 2928.
 
 ## Boundary Result

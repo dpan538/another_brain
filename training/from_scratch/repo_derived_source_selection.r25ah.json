@@ -1,0 +1,82 @@
+{
+  "status": "r25ah_repo_derived_candidate_generation_only",
+  "repo_root_only": true,
+  "training_allowed": false,
+  "corpus_promotion_allowed": false,
+  "training_llm_corpus_modification_allowed": false,
+  "phase_4_scaled_training_approved": false,
+  "external_api_allowed": false,
+  "private_sources_allowed": false,
+  "data_public_ingestion_allowed": false,
+  "root_pdf_docx_parsing_allowed": false,
+  "candidate_output_root": "artifacts/training_os/corpus_expansion/r25ah/",
+  "candidate_rows_commit_allowed": false,
+  "language_mix_target": {
+    "zh_min": 0.7,
+    "mixed_target": 0.2,
+    "en_max": 0.1
+  },
+  "allowed_source_categories": {
+    "project_meaning_docs": [
+      "docs/R25AB_PROJECT_MEANING.md",
+      "docs/R25AB_CHINESE_FIRST_TRAINING_DOCTRINE.md",
+      "docs/R25AB_PERSONAL_COLOR_BOUNDARY.md",
+      "docs/R25AB_HEALTHY_TRAINING_CYCLE.md"
+    ],
+    "phase3_decision_docs": [
+      "docs/R25AD_CHINESE_PERSONAL_CORPUS_GAP.md",
+      "docs/R25AA_PHASE3_PAUSE_AND_REVIEW.md",
+      "docs/R25AA_PHASE4_READINESS_REVIEW.md",
+      "docs/R25Z_PHASE3_DECISION_REVIEW.md",
+      "docs/R25W_DATA_FIRST_VS_ARCHITECTURE_ABLATION.md",
+      "docs/R25W_R25V_ANALYSIS_AND_DECISION.md"
+    ],
+    "existing_training_scaffold": [
+      "training/llm_corpus/*.jsonl"
+    ],
+    "long_horizon_human_seed": [
+      "training/long_horizon/*.jsonl"
+    ],
+    "identity_style_scaffold": [
+      "identity_pack/**"
+    ],
+    "knowledge_source_metadata": [
+      "knowledge_sources/README.md",
+      "knowledge_sources/schema.json",
+      "knowledge_sources/registry.json",
+      "knowledge_sources/cards/domains_manifest.json"
+    ],
+    "repo_docs_for_local_first_static_reasoning": [
+      "README.md",
+      "DATA_CARD.md",
+      "DEPLOYMENT.md",
+      "docs/R24E_RECOVERY_CANDIDATE.md",
+      "docs/R24G_KNOWLEDGE_SOURCE_DERIVATION.md",
+      "docs/R25I_FROM_SCRATCH_LLM_TRAINING_DOCTRINE.md",
+      "docs/R25I_TRAINING_PHASE_PLAN.md",
+      "docs/R25AF_WRITING_TO_DIALOGUE_TRANSFORMATION.md",
+      "docs/R25AG_REPOSITORY_TEXT_DISCOVERY.md",
+      "docs/R25AG_PERSONAL_CORPUS_SOURCE_RANKING.md"
+    ]
+  },
+  "forbidden_sources": [
+    "evals/**",
+    "root PDF, DOC, or DOCX",
+    "data/public_ingestion/**",
+    "private_sources/**",
+    "artifacts/** checkpoints/tokenizers/model reports",
+    "raw personal or unreviewed documents",
+    "previous candidate rows unless separately reviewed",
+    "long copyrighted excerpts",
+    "chain-of-thought",
+    "hidden prompts"
+  ],
+  "generation_rules": [
+    "Prefer zh and mixed Chinese-first rows.",
+    "Derive project-continuity, repair, preference, bounded-judgment, local-first static-browser, and tool-honesty examples.",
+    "Do not copy long source passages.",
+    "Do not generate factual knowledge-bank substitutes.",
+    "Do not train on eval fixtures or held-out text.",
+    "All candidate rows stay unreviewed, training_allowed:false, and public_commit_allowed:false."
+  ]
+}

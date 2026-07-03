@@ -4,9 +4,9 @@ R25AE searched only inside the repository root for legacy scan/import footprints
 
 ## Aggregate Findings
 
-- Possible scan/import footprint files inside repo: 3046.
-- Status distribution: ??=2943, tracked=102, !!=1.
-- Feed-reference counts: training_corpus=11, knowledge_sources=17, identity_pack=51, package_scripts=37.
+- Possible scan/import footprint files inside repo: 3056.
+- Status distribution: ??=2943, tracked=112, !!=1.
+- Feed-reference counts: training_corpus=14, knowledge_sources=19, identity_pack=60, package_scripts=41.
 - Imported-text signal count: 4.
 - File-name/metadata-only signal count: 2987.
 - Safe tracked examples: `DATA_CARD.md`, `README.md`, `data/culture_cards/r24_stage0_concept_closure.jsonl`, `data/culture_cards/r28_cleanup_alias_boundary_cards.jsonl`, `data/external_cards/culture_cards.external.jsonl`, `data/external_cards/relation_cards.external.jsonl`.

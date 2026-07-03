@@ -12,9 +12,9 @@ R25AG searched only inside the repository root and produced aggregate source-dis
 
 ## File Counts
 
-- Tracked text/source files: 1069
-- Untracked text/source files: 1497
-- Ignored artifact/report files: 765
+- Tracked text/source files: 1081
+- Untracked text/source files: 1496
+- Ignored artifact/report files: 770
 - Root PDF/DOC/DOCX metadata files: 13
 - data/public_ingestion metadata files: 2920
 - data/public_ingestion metadata bytes: 800690026
@@ -22,24 +22,24 @@ R25AG searched only inside the repository root and produced aggregate source-dis
 ## Categories
 
 - data_public_ingestion: 2920
-- ignored_artifact_reports: 762
-- other_repo_file: 643
-- possible_legacy_scan_outputs: 58
+- ignored_artifact_reports: 767
+- other_repo_file: 647
+- possible_legacy_scan_outputs: 60
 - tracked_eval_only: 149
 - tracked_identity_pack: 21
 - tracked_knowledge_sources: 41
 - tracked_long_horizon: 4
-- tracked_project_docs: 175
+- tracked_project_docs: 180
 - tracked_training_corpus: 9
 - untracked_root_documents: 13
 - untracked_text_files: 6
 
 ## Candidate Signals
 
-- Candidate source files: 250
+- Candidate source files: 255
 - Eval-only files: 149
-- Metadata-only files: 3710
-- Forbidden-for-training surfaces: 3838
+- Metadata-only files: 3714
+- Forbidden-for-training surfaces: 3843
 
 This summary intentionally excludes raw private text and long excerpts. Detailed metadata is written only to ignored artifacts.
 

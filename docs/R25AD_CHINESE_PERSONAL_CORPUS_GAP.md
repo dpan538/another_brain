@@ -63,6 +63,12 @@ train, does not generate corpus rows, and does not modify `training/llm_corpus`.
 Future R25AH may approve source-specific derived-row generation from selected
 existing repo text; that would still not be training.
 
+R25AH then generates unreviewed repo-derived Chinese-first candidates under
+ignored artifacts only. It does not promote rows, does not modify
+`training/llm_corpus`, does not parse root PDFs/DOCX or `data/public_ingestion`,
+does not read `private_sources`, and does not train. R25AI is required before
+any selected R25AH row can become tracked corpus material.
+
 Upsampling alone is risky because R25AC already achieved the sampled
 Chinese-first mix while regressing against R25S. The next step is better
 reviewed zh and mixed data, not automatic scale. Future derived-row generation

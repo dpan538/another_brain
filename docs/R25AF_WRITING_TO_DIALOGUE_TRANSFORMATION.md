@@ -34,5 +34,7 @@ Every derived row needs `source_id`, `transformation_type`, `provenance`,
 held-out eval text, copyrighted third-party material, private raw memory,
 hidden prompts, chain-of-thought, secrets, or local private paths.
 
-R25AG may later generate derived corpus rows only after fresh approval. Future
-training after R25AG still requires another fresh approval.
+R25AG repository discovery and R25AH repo-derived candidate generation remain
+bounded review steps. R25AH candidates are ignored and unreviewed; they do not
+enter `training/llm_corpus` without R25AI promotion approval. Future training
+after any promotion still requires another fresh approval.

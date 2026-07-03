@@ -33,6 +33,25 @@ async function readJsonIfPresent(path) {
   return (await exists(path)) ? readJson(path) : null;
 }
 
+function cachedReportIsValid(report, config, approval) {
+  return report
+    && report.ok === true
+    && report.skipped === false
+    && report.run_id === "r25ac_chinese_personal_microcycle_256"
+    && report.training_ran === false
+    && report.heldout_loss_finite === true
+    && Number.isFinite(Number(report.heldout_loss))
+    && Number(report.heldout_sequences || 0) > 0
+    && report.product_model === false
+    && report.release_checkpoint === false
+    && report.phase_4_scaled_training === false
+    && Array.isArray(report.failures)
+    && report.failures.length === 0
+    && config.run_id === "r25ac_chinese_personal_microcycle_256"
+    && approval.consumed === true
+    && approval.allow_additional_runs === false;
+}
+
 async function writeJson(path, value) {
   const abs = resolve(ROOT, path);
   await mkdir(dirname(abs), { recursive: true });
@@ -153,6 +172,20 @@ async function main() {
   const datasetReport = await readJson(DATASET_REPORT_PATH);
   const runReport = await readJson(RUN_REPORT_PATH);
   const heldoutDataset = await readJson(HELDOUT_SEQUENCES_PATH);
+  const cachedReport = await readJsonIfPresent(OUTPUT_PATH);
+  if (cachedReportIsValid(cachedReport, config, approval)) {
+    const report = {
+      ...cachedReport,
+      cached_history_report_used: true,
+      notes: [
+        ...(cachedReport.notes || []),
+        "This R25AC history check reused the existing ignored breakdown report instead of recomputing sequence losses."
+      ]
+    };
+    console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+
   const tokenizer = heldoutDataset.tokenizer_path && (await exists(heldoutDataset.tokenizer_path))
     ? await readJson(heldoutDataset.tokenizer_path)
     : null;

@@ -102,6 +102,15 @@ outputs. R25AG does not train, does not generate corpus rows, does not modify
 scaled training blocked. R25AH may later propose source-specific derived-row
 generation from selected existing repo text only after fresh review.
 
+R25AH uses that discovery to select tracked repo sources and generate
+unreviewed Chinese-first repo-derived candidate rows under ignored artifacts
+only. It does not train, rerun pilots, promote rows, modify
+`training/llm_corpus/`, read `private_sources/`, parse root PDFs/DOCX, parse
+`data/public_ingestion/`, call external APIs, commit candidate rows, or commit
+weights. R25AI is required before any reviewed R25AH row can be promoted, and
+future training after promotion needs another fresh approval. Phase_4 scaled
+training remains blocked.
+
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
 and evaluates dev/heldout text for leakage and segmentation sanity. The tiny

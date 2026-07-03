@@ -5,9 +5,9 @@ R25AG ranked existing repository text surfaces for future Chinese-personal corpu
 ## Value Counts
 
 - high_value: 157
-- medium_value: 93
+- medium_value: 98
 - low_value: 0
-- not_for_training: 4551
+- not_for_training: 4562
 
 ## High-Value Categories
 

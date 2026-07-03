@@ -78,6 +78,14 @@ does not bulk-parse `data/public_ingestion`, and does not commit artifacts or
 private raw text. The output is an aggregate candidate source catalog for later
 review; phase_4 remains blocked.
 
+R25AH selects tracked repo-local sources from that catalog and generates
+unreviewed Chinese-first repo-derived candidate rows under ignored artifacts
+only. It does not train, promote rows, modify `training/llm_corpus`, read
+`private_sources`, parse root PDFs/DOCX, parse `data/public_ingestion`, call
+external APIs, commit artifacts, or commit weights. R25AI is required before
+any reviewed R25AH candidates can be promoted, and later training needs another
+fresh approval.
+
 ## Public Data
 
 Public generated files may include:
@@ -198,6 +206,10 @@ Private data is not distributed:
 - R25AG repo text discovery status: aggregate discovery and ranking only; no
   corpus rows are generated, `training/llm_corpus/` is unchanged, and no
   artifacts are committed.
+- R25AH repo-derived candidate status: 440 ignored unreviewed candidate rows
+  generated from 52 selected tracked repo sources; `training/llm_corpus/` is
+  unchanged, rows remain `training_allowed:false`, and no artifacts or weights
+  are committed.
 - Training enabled by default: false.
 
 ## Evaluation
