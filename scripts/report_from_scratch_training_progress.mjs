@@ -198,6 +198,18 @@ async function main() {
   const r25agApprovalTemplate = await readJsonIfPresent("training/from_scratch/APPROVE_R25AG_DERIVED_CORPUS_EXPANSION.template.json");
   const r25afInboxAudit = await readJsonIfPresent("artifacts/training_os/personal_writing_intake/r25af/personal_writing_inbox_audit.json");
   const r25afReadinessReport = await readJsonIfPresent("artifacts/training_os/personal_writing_intake/r25af/personal_writing_transformation_readiness.json");
+  const r25agRepoDiscoveryPolicyDocPresent = await exists("docs/R25AG_REPOSITORY_TEXT_DISCOVERY_POLICY.md");
+  const r25agRepoDiscoveryDocPresent = await exists("docs/R25AG_REPOSITORY_TEXT_DISCOVERY.md");
+  const r25agRepoTextSummaryDocPresent = await exists("docs/R25AG_REPOSITORY_TEXT_SOURCE_SUMMARY.md");
+  const r25agSourceRankingDocPresent = await exists("docs/R25AG_PERSONAL_CORPUS_SOURCE_RANKING.md");
+  const r25agExistingAnswerDocPresent = await exists("docs/R25AG_EXISTING_ANSWER_LIKE_TEXT_SUMMARY.md");
+  const r25agLegacyScanDocPresent = await exists("docs/R25AG_LEGACY_SCAN_RECONCILIATION.md");
+  const r25agRepoDiscoveryPolicy = await readJsonIfPresent("training/from_scratch/repository_text_discovery_policy.r25ag.json");
+  const r25agRepoTextDiscoveryReport = await readJsonIfPresent("artifacts/training_os/repo_text_discovery/r25ag/repository_text_sources.json");
+  const r25agPersonalSourceRankingReport = await readJsonIfPresent("artifacts/training_os/repo_text_discovery/r25ag/personal_corpus_source_ranking.json");
+  const r25agExistingAnswerAuditReport = await readJsonIfPresent("artifacts/training_os/repo_text_discovery/r25ag/existing_answer_like_text_audit.json");
+  const r25agLegacyScanReconciliationReport = await readJsonIfPresent("artifacts/training_os/repo_text_discovery/r25ag/legacy_scan_reconciliation.json");
+  const r25agRepoDiscoveryBoundaryReport = await readJsonIfPresent("artifacts/training_os/repo_text_discovery/r25ag/repo_text_discovery_boundary_check.json");
   const tokenizerDryrunOk = Boolean(tokenizerCorpusReport?.ok && tokenizerReport?.ok && tokenizerEvalReport?.ok);
   const r25lCorpusOk = r25lTrainRows >= 1600 && r25lDevRows >= 400 && r25lHeldoutRows >= 400;
   const r25lTokenizerDryrunOk = Boolean(r25lTokenizerCorpusReport?.ok && r25lTokenizerReport?.ok && r25lTokenizerEvalReport?.ok);
@@ -909,6 +921,82 @@ async function main() {
     activeTrainingApprovalCount === 0 &&
     activePhase4TrainingApprovalCount === 0
   );
+  const r25agRepoDiscoveryPolicyOk = Boolean(
+    r25agRepoDiscoveryPolicyDocPresent &&
+    r25agRepoDiscoveryPolicy?.scope?.repo_root_only === true &&
+    r25agRepoDiscoveryPolicy?.scope?.training === false &&
+    r25agRepoDiscoveryPolicy?.scope?.corpus_row_generation === false &&
+    r25agRepoDiscoveryPolicy?.scope?.training_corpus_modification === false &&
+    r25agRepoDiscoveryPolicy?.forbidden?.root_pdf_docx_parsing === true &&
+    r25agRepoDiscoveryPolicy?.forbidden?.data_public_ingestion_bulk_parsing === true &&
+    r25agRepoDiscoveryPolicy?.status?.phase_4_scaled_training_approved === false
+  );
+  const r25agRepoTextDiscoveryOk = Boolean(
+    r25agRepoDiscoveryDocPresent &&
+    r25agRepoTextSummaryDocPresent &&
+    r25agRepoTextDiscoveryReport?.ok === true &&
+    r25agRepoTextDiscoveryReport?.safety?.repo_root_only === true &&
+    r25agRepoTextDiscoveryReport?.safety?.scan_outside_repo === false &&
+    r25agRepoTextDiscoveryReport?.safety?.training_ran === false &&
+    r25agRepoTextDiscoveryReport?.safety?.corpus_rows_generated === false &&
+    r25agRepoTextDiscoveryReport?.safety?.training_llm_corpus_modified === false &&
+    r25agRepoTextDiscoveryReport?.safety?.root_pdf_docx_content_parsed === false &&
+    r25agRepoTextDiscoveryReport?.safety?.data_public_ingestion_content_parsed === false &&
+    r25agRepoTextDiscoveryReport?.safety?.external_api_used === false
+  );
+  const r25agPersonalSourceRankingOk = Boolean(
+    r25agSourceRankingDocPresent &&
+    r25agPersonalSourceRankingReport?.ok === true &&
+    r25agPersonalSourceRankingReport?.safety?.training_ran === false &&
+    r25agPersonalSourceRankingReport?.safety?.corpus_rows_generated === false &&
+    r25agPersonalSourceRankingReport?.safety?.training_llm_corpus_modified === false &&
+    r25agPersonalSourceRankingReport?.safety?.root_pdf_docx_content_parsed === false &&
+    r25agPersonalSourceRankingReport?.safety?.data_public_ingestion_content_parsed === false &&
+    r25agPersonalSourceRankingReport?.safety?.external_api_used === false
+  );
+  const r25agExistingAnswerAuditOk = Boolean(
+    r25agExistingAnswerDocPresent &&
+    r25agExistingAnswerAuditReport?.ok === true &&
+    r25agExistingAnswerAuditReport?.safety?.training_ran === false &&
+    r25agExistingAnswerAuditReport?.safety?.corpus_rows_generated === false &&
+    r25agExistingAnswerAuditReport?.safety?.training_llm_corpus_modified === false &&
+    r25agExistingAnswerAuditReport?.safety?.raw_private_text_copied === false
+  );
+  const r25agLegacyScanReconciliationOk = Boolean(
+    r25agLegacyScanDocPresent &&
+    r25agLegacyScanReconciliationReport?.ok === true &&
+    r25agLegacyScanReconciliationReport?.safety?.repo_root_only === true &&
+    r25agLegacyScanReconciliationReport?.safety?.scan_outside_repo === false &&
+    r25agLegacyScanReconciliationReport?.safety?.root_pdf_docx_content_parsed === false &&
+    r25agLegacyScanReconciliationReport?.safety?.data_public_ingestion_content_parsed === false &&
+    r25agLegacyScanReconciliationReport?.safety?.training_ran === false &&
+    r25agLegacyScanReconciliationReport?.safety?.corpus_rows_generated === false
+  );
+  const r25agRepoDiscoveryBoundaryOk = Boolean(
+    r25agRepoDiscoveryBoundaryReport?.ok === true &&
+    r25agRepoDiscoveryBoundaryReport?.checks?.no_generated_reports_staged === true &&
+    r25agRepoDiscoveryBoundaryReport?.checks?.no_root_pdf_docx_staged === true &&
+    r25agRepoDiscoveryBoundaryReport?.checks?.no_data_public_ingestion_staged === true &&
+    r25agRepoDiscoveryBoundaryReport?.checks?.no_training_llm_corpus_modifications === true &&
+    r25agRepoDiscoveryBoundaryReport?.checks?.no_derived_corpus_rows_generated === true &&
+    r25agRepoDiscoveryBoundaryReport?.checks?.root_pdf_docx_metadata_only === true &&
+    r25agRepoDiscoveryBoundaryReport?.checks?.data_public_ingestion_metadata_only === true &&
+    r25agRepoDiscoveryBoundaryReport?.active_training_approval_count === 0 &&
+    r25agRepoDiscoveryBoundaryReport?.active_phase4_training_approval_count === 0
+  );
+  const r25agRepoTextDiscoveryOkAll = Boolean(
+    r25afIntakeDesignOk &&
+    r25agRepoDiscoveryPolicyOk &&
+    r25agRepoTextDiscoveryOk &&
+    r25agPersonalSourceRankingOk &&
+    r25agExistingAnswerAuditOk &&
+    r25agLegacyScanReconciliationOk &&
+    r25agRepoDiscoveryBoundaryOk &&
+    activeTrainingApprovalCount === 0 &&
+    activePhase4TrainingApprovalCount === 0
+  );
+  const r25agEstimatedExistingPersonalSignalLevel =
+    r25agPersonalSourceRankingReport?.summary?.estimated_existing_personal_signal_level || "unknown";
   const r25abDirectionDesignOk = Boolean(
     r25abProjectMeaningOk &&
     r25abChineseFirstOk &&
@@ -962,10 +1050,10 @@ async function main() {
     formal_training_progress_percent: 0,
     product_training_progress_percent: 0,
     pilot_training_progress_percent: r25acCompleteOk ? 6 : r25yCompleteOk ? 5 : r25vCompleteOk ? 4 : r25sCompleteOk ? 3 : r25pCompleteOk ? 2 : smallPilotRanOk ? 1 : 0,
-    from_scratch_program_progress_percent: r25afIntakeDesignOk ? 13 : r25aeInventoryAuditOk ? 12 : r25adReviewOk ? 11 : r25acCompleteOk ? 10 : r25abDirectionOk ? 9 : r25aaReviewOk ? 8 : r25zAnalysisOk ? 8 : r25yCompleteOk ? 7 : r25vCompleteOk ? 6 : r25sCompleteOk ? 5 : r25pCompleteOk ? 4 : smallPilotRanOk ? 3 : r25lReadyForReview ? 2 : toyOverfitOk ? 1 : 0,
-    training_readiness_percent_estimate: r25afIntakeDesignOk ? 79 : r25aeInventoryAuditOk ? 78 : r25adReviewOk ? 77 : r25acCompleteOk ? 76 : r25abDirectionOk ? 75 : r25aaReviewOk ? 74 : r25zAnalysisOk ? 73 : r25yCompleteOk && r25yDataRegularizationHelped ? 74 : r25xReviewOk ? 73 : r25wAnalysisOk ? 72 : r25vCompleteOk ? 72 : r25vBlockedOk ? 70 : r25uPlanningOk ? 70 : r25tAnalysisOk ? 69 : r25sCompleteOk ? 68 : r25sDesignOk ? 67 : r25qAnalysisOk ? 66 : r25pCompleteOk ? 65 : r25oDesignOk ? 63 : smallPilotEvaluationOk ? 62 : smallPilotRanOk ? 60 : r25lReadyForReview ? 55 : toyOverfitOk ? 50 : tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
-    browser_product_completion_estimate: r25afIntakeDesignOk ? 33 : r25aeInventoryAuditOk ? 33 : r25acCompleteOk ? 33 : r25aaReviewOk ? 32 : r25zAnalysisOk ? 32 : r25yCompleteOk && r25yDataRegularizationHelped ? 33 : r25vCompleteOk ? 32 : r25vBlockedOk ? 31 : r25uPlanningOk ? 31 : r25tAnalysisOk ? 31 : r25sCompleteOk ? 31 : r25pCompleteOk ? 30 : smallPilotRanOk ? 29 : r25lReadyForReview ? 28 : toyOverfitOk ? 27 : tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
-    current_phase: r25afIntakeDesignOk ? "phase_3_personal_writing_intake_design_pause" : r25aeInventoryAuditOk ? "phase_3_personal_data_inventory_audited_pause" : r25adReviewOk ? "phase_3_chinese_personal_microcycle_analyzed_corpus_expansion_design_pause" : r25acCompleteOk ? "phase_3_chinese_personal_microcycle_completed_review_pause" : r25abDirectionOk ? "phase_3_chinese_personal_cycle_aligned_review_only" : r25aaReviewOk ? "phase_3_paused_phase4_readiness_review_only" : r25zAnalysisOk ? "phase_3_data_regularization_pilot_analyzed" : r25yCompleteOk ? "phase_3_data_regularization_pilot_completed" : r25xReviewOk ? "phase_3_review_and_data_regularization_designed" : r25wAnalysisOk ? "phase_3_architecture_ablation_analyzed" : r25vCompleteOk ? "phase_3_architecture_ablation_pilot_completed" : r25vBlockedOk ? "phase_3_architecture_ablation_pilot_blocked" : r25uPlanningOk ? "phase_3_exit_criteria_and_ablation_planned" : r25tAnalysisOk ? "phase_3_data_first_pilot_analyzed" : r25sCompleteOk ? "phase_3_data_first_third_pilot_completed" : r25sDesignOk ? "phase_3_data_first_third_pilot_designed" : r25qAnalysisOk ? "phase_3_second_small_pilot_analyzed" : r25pCompleteOk ? "phase_3_second_small_pilot_completed" : r25oDesignOk ? "phase_3_second_small_pilot_designed" : smallPilotEvaluationOk ? "phase_3_small_decoder_pilot_evaluated" : smallPilotRanOk ? "phase_3_small_decoder_pilot" : r25lReadyForReview ? "phase_3_small_decoder_pilot_planned" : toyOverfitOk ? "phase_2_tiny_overfit_sanity" : tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
+    from_scratch_program_progress_percent: r25agRepoTextDiscoveryOkAll ? 14 : r25afIntakeDesignOk ? 13 : r25aeInventoryAuditOk ? 12 : r25adReviewOk ? 11 : r25acCompleteOk ? 10 : r25abDirectionOk ? 9 : r25aaReviewOk ? 8 : r25zAnalysisOk ? 8 : r25yCompleteOk ? 7 : r25vCompleteOk ? 6 : r25sCompleteOk ? 5 : r25pCompleteOk ? 4 : smallPilotRanOk ? 3 : r25lReadyForReview ? 2 : toyOverfitOk ? 1 : 0,
+    training_readiness_percent_estimate: r25agRepoTextDiscoveryOkAll ? 80 : r25afIntakeDesignOk ? 79 : r25aeInventoryAuditOk ? 78 : r25adReviewOk ? 77 : r25acCompleteOk ? 76 : r25abDirectionOk ? 75 : r25aaReviewOk ? 74 : r25zAnalysisOk ? 73 : r25yCompleteOk && r25yDataRegularizationHelped ? 74 : r25xReviewOk ? 73 : r25wAnalysisOk ? 72 : r25vCompleteOk ? 72 : r25vBlockedOk ? 70 : r25uPlanningOk ? 70 : r25tAnalysisOk ? 69 : r25sCompleteOk ? 68 : r25sDesignOk ? 67 : r25qAnalysisOk ? 66 : r25pCompleteOk ? 65 : r25oDesignOk ? 63 : smallPilotEvaluationOk ? 62 : smallPilotRanOk ? 60 : r25lReadyForReview ? 55 : toyOverfitOk ? 50 : tokenizerDryrunOk && toyPipelineOk ? 45 : 40,
+    browser_product_completion_estimate: r25agRepoTextDiscoveryOkAll ? 33 : r25afIntakeDesignOk ? 33 : r25aeInventoryAuditOk ? 33 : r25acCompleteOk ? 33 : r25aaReviewOk ? 32 : r25zAnalysisOk ? 32 : r25yCompleteOk && r25yDataRegularizationHelped ? 33 : r25vCompleteOk ? 32 : r25vBlockedOk ? 31 : r25uPlanningOk ? 31 : r25tAnalysisOk ? 31 : r25sCompleteOk ? 31 : r25pCompleteOk ? 30 : smallPilotRanOk ? 29 : r25lReadyForReview ? 28 : toyOverfitOk ? 27 : tokenizerDryrunOk && toyPipelineOk ? 26 : 25,
+    current_phase: r25agRepoTextDiscoveryOkAll ? "phase_3_repo_text_discovery_audited_pause" : r25afIntakeDesignOk ? "phase_3_personal_writing_intake_design_pause" : r25aeInventoryAuditOk ? "phase_3_personal_data_inventory_audited_pause" : r25adReviewOk ? "phase_3_chinese_personal_microcycle_analyzed_corpus_expansion_design_pause" : r25acCompleteOk ? "phase_3_chinese_personal_microcycle_completed_review_pause" : r25abDirectionOk ? "phase_3_chinese_personal_cycle_aligned_review_only" : r25aaReviewOk ? "phase_3_paused_phase4_readiness_review_only" : r25zAnalysisOk ? "phase_3_data_regularization_pilot_analyzed" : r25yCompleteOk ? "phase_3_data_regularization_pilot_completed" : r25xReviewOk ? "phase_3_review_and_data_regularization_designed" : r25wAnalysisOk ? "phase_3_architecture_ablation_analyzed" : r25vCompleteOk ? "phase_3_architecture_ablation_pilot_completed" : r25vBlockedOk ? "phase_3_architecture_ablation_pilot_blocked" : r25uPlanningOk ? "phase_3_exit_criteria_and_ablation_planned" : r25tAnalysisOk ? "phase_3_data_first_pilot_analyzed" : r25sCompleteOk ? "phase_3_data_first_third_pilot_completed" : r25sDesignOk ? "phase_3_data_first_third_pilot_designed" : r25qAnalysisOk ? "phase_3_second_small_pilot_analyzed" : r25pCompleteOk ? "phase_3_second_small_pilot_completed" : r25oDesignOk ? "phase_3_second_small_pilot_designed" : smallPilotEvaluationOk ? "phase_3_small_decoder_pilot_evaluated" : smallPilotRanOk ? "phase_3_small_decoder_pilot" : r25lReadyForReview ? "phase_3_small_decoder_pilot_planned" : toyOverfitOk ? "phase_2_tiny_overfit_sanity" : tokenizerDryrunOk ? "phase_1_tokenizer_dry_run" : "phase_0_no_training_current",
     approval_markers_consumed_status: approvalMarkersConsumedOk ? "consumed_one_shot_markers_inert" : "needs_review",
     active_training_approval_count: activeTrainingApprovalCount,
     active_product_training_approval_count: activeProductTrainingApprovalCount,
@@ -1208,6 +1296,48 @@ async function main() {
     r25af_transformation_taxonomy_status: r25afTransformationDocPresent && r25afTransformationSchema ? "present_dialogue_shaped_chinese_first" : "not_present",
     r25ag_design_status: r25agDesignOk ? "future_design_only_not_approved" : r25agCorpusExpansionPlan ? "needs_review" : "not_present",
     r25ag_approval_template_status: r25agApprovalTemplateSafe ? "inert_template_approved_false" : "not_present_or_needs_review",
+    r25ag_repo_text_discovery_status: r25agRepoTextDiscoveryOk ? "passed_repo_root_metadata_safe_discovery" : r25agRepoTextDiscoveryReport?.ok ? "needs_review" : "not_run",
+    r25ag_existing_answer_audit_status: r25agExistingAnswerAuditOk ? "passed_aggregate_answer_like_audit" : r25agExistingAnswerAuditReport?.ok ? "needs_review" : "not_run",
+    r25ag_personal_source_ranking_status: r25agPersonalSourceRankingOk ? "passed_candidate_source_ranking" : r25agPersonalSourceRankingReport?.ok ? "needs_review" : "not_run",
+    r25ag_legacy_scan_reconciliation_status: r25agLegacyScanReconciliationOk ? "passed_legacy_scan_reconciliation" : r25agLegacyScanReconciliationReport?.ok ? "needs_review" : "not_run",
+    r25ag_repo_text_boundary_status: r25agRepoDiscoveryBoundaryOk ? "passed_no_training_no_generation_no_artifact_stage" : r25agRepoDiscoveryBoundaryReport?.ok === false ? "failed" : "not_run",
+    estimated_existing_personal_signal_level: r25agEstimatedExistingPersonalSignalLevel,
+    r25ag_repo_text_discovery_counts: r25agRepoTextDiscoveryReport?.ok ? {
+      tracked_text_source_count: r25agRepoTextDiscoveryReport.summary?.tracked_text_source_count ?? null,
+      untracked_text_source_count: r25agRepoTextDiscoveryReport.summary?.untracked_text_source_count ?? null,
+      ignored_report_artifact_count: r25agRepoTextDiscoveryReport.summary?.ignored_report_artifact_count ?? null,
+      root_pdf_docx_metadata_count: r25agRepoTextDiscoveryReport.summary?.root_pdf_docx_metadata_count ?? null,
+      data_public_ingestion_metadata_count: r25agRepoTextDiscoveryReport.summary?.data_public_ingestion_metadata_count ?? null,
+      data_public_ingestion_total_bytes: r25agRepoTextDiscoveryReport.summary?.data_public_ingestion_total_bytes ?? null,
+      category_counts: r25agRepoTextDiscoveryReport.summary?.category_counts || null
+    } : null,
+    r25ag_source_ranking_summary: r25agPersonalSourceRankingReport?.ok ? {
+      value_rank_counts: r25agPersonalSourceRankingReport.summary?.value_rank_counts || null,
+      high_value_categories: r25agPersonalSourceRankingReport.summary?.high_value_categories || null,
+      recommended_next_action: r25agPersonalSourceRankingReport.summary?.recommended_next_action || null
+    } : null,
+    r25ag_existing_answer_like_counts: r25agExistingAnswerAuditReport?.ok ? {
+      rows_by_source: r25agExistingAnswerAuditReport.summary?.rows_by_source || null,
+      total_answer_like_fields: r25agExistingAnswerAuditReport.summary?.total_answer_like_fields ?? null,
+      target_answer_rows: r25agExistingAnswerAuditReport.summary?.target_answer_rows ?? null,
+      rejected_answers_rows: r25agExistingAnswerAuditReport.summary?.rejected_answers_rows ?? null,
+      rejected_answers_total_items: r25agExistingAnswerAuditReport.summary?.rejected_answers_total_items ?? null,
+      long_horizon_row_count: r25agExistingAnswerAuditReport.summary?.long_horizon_row_count ?? null,
+      identity_pack_row_count: r25agExistingAnswerAuditReport.summary?.identity_pack_row_count ?? null,
+      knowledge_sources_row_count: r25agExistingAnswerAuditReport.summary?.knowledge_sources_row_count ?? null,
+      eval_only_row_count: r25agExistingAnswerAuditReport.summary?.eval_only_row_count ?? null,
+      language_counts_training_corpus: r25agExistingAnswerAuditReport.summary?.language_counts_training_corpus || null,
+      personal_color_signal_counts: r25agExistingAnswerAuditReport.summary?.personal_color_signal_counts || null,
+      provenance_counts: r25agExistingAnswerAuditReport.summary?.provenance_counts || null,
+      duplicate_template_findings: r25agExistingAnswerAuditReport.summary?.duplicate_template_findings || null
+    } : null,
+    r25ag_legacy_scan_reconciliation_findings: r25agLegacyScanReconciliationReport?.ok ? {
+      possible_scan_output_count: r25agLegacyScanReconciliationReport.summary?.possible_scan_output_count ?? null,
+      feed_counts: r25agLegacyScanReconciliationReport.summary?.feed_counts || null,
+      early_hard_drive_scan_imported_useful_training_material: r25agLegacyScanReconciliationReport.summary?.early_hard_drive_scan_imported_useful_training_material === true,
+      root_personal_files_ingested_into_training_corpus: r25agLegacyScanReconciliationReport.summary?.root_personal_files_ingested_into_training_corpus === true,
+      data_public_ingestion_ingested_into_training_corpus: r25agLegacyScanReconciliationReport.summary?.data_public_ingestion_ingested_into_training_corpus === true
+    } : null,
     r25af_inbox_audit: r25afInboxAudit?.ok ? {
       private_sources_exists: r25afInboxAudit.private_sources_exists === true,
       status: r25afInboxAudit.status || null,
@@ -1218,7 +1348,7 @@ async function main() {
       raw_file_content_parsed: r25afInboxAudit.raw_file_content_parsed === true
     } : null,
     r25af_training_status: "design_only_no_training_no_corpus_generation",
-    r25ag_training_status: "not_approved_not_run",
+    r25ag_training_status: "repo_text_discovery_only_no_training_no_corpus_generation",
     r25ad_recommendation: r25adNextStepReport?.recommendation || "not_run",
     r25ad_training_status: "no_training_ran",
     r25ae_training_status: "audit_only_no_training",
@@ -1415,6 +1545,20 @@ async function main() {
         "training/from_scratch/APPROVE_R25AG_DERIVED_CORPUS_EXPANSION.template.json",
         "artifacts/training_os/personal_writing_intake/r25af/personal_writing_inbox_audit.json",
         "artifacts/training_os/personal_writing_intake/r25af/personal_writing_transformation_readiness.json"
+      ] : []),
+      ...(r25agRepoTextDiscoveryOkAll ? [
+        "docs/R25AG_REPOSITORY_TEXT_DISCOVERY_POLICY.md",
+        "docs/R25AG_REPOSITORY_TEXT_DISCOVERY.md",
+        "docs/R25AG_REPOSITORY_TEXT_SOURCE_SUMMARY.md",
+        "docs/R25AG_PERSONAL_CORPUS_SOURCE_RANKING.md",
+        "docs/R25AG_EXISTING_ANSWER_LIKE_TEXT_SUMMARY.md",
+        "docs/R25AG_LEGACY_SCAN_RECONCILIATION.md",
+        "training/from_scratch/repository_text_discovery_policy.r25ag.json",
+        "artifacts/training_os/repo_text_discovery/r25ag/repository_text_sources.json",
+        "artifacts/training_os/repo_text_discovery/r25ag/personal_corpus_source_ranking.json",
+        "artifacts/training_os/repo_text_discovery/r25ag/existing_answer_like_text_audit.json",
+        "artifacts/training_os/repo_text_discovery/r25ag/legacy_scan_reconciliation.json",
+        "artifacts/training_os/repo_text_discovery/r25ag/repo_text_discovery_boundary_check.json"
       ] : [])
     ],
     missing_before_training: [
@@ -1424,7 +1568,7 @@ async function main() {
       ...(r25lTokenizerDryrunOk ? [] : ["expanded-corpus tokenizer dry-run and eval"]),
       ...(smallPilotPlanOk ? [] : ["small decoder pilot architecture, budget, and capacity plan"]),
       ...(r25pCompleteOk
-        ? [r25afIntakeDesignOk ? "review R25AF and optionally approve R25AG derived Chinese-personal corpus expansion only; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25aeInventoryAuditOk ? "review R25AE and optionally approve R25AF intake design only; any later corpus expansion or bounded micro-cycle still needs separate fresh approval and phase_4 scaled training remains blocked" : r25adReviewOk ? "review and optionally approve R25AE repository-scoped inventory only; any later corpus expansion or bounded micro-cycle still needs separate fresh approval and phase_4 scaled training remains blocked" : r25acCompleteOk ? "review R25AC before any follow-up; a future bounded Chinese-first personal micro-cycle needs fresh approval and phase_4 scaled training remains blocked" : r25abDirectionOk ? "review and optionally approve exactly one future R25AC Chinese-first personal micro-cycle; phase_4 scaled training remains blocked" : r25aaReviewOk ? "pause phase_3 for human review or begin R25AB phase_4 design review without training; phase_4 scaled training remains blocked" : r25zAnalysisOk ? "pause phase_3 for review or begin a phase_4 readiness review without training; phase_4 scaled training remains blocked" : r25yCompleteOk ? "review R25Y against R25S/R25V/R25P before any R25Z decision, repeat data regularization, or phase_4 readiness review; phase_4 remains blocked" : r25xReviewOk ? "review R25X and obtain fresh reviewer approval before any R25Y data-regularization pilot; phase_4 remains blocked" : r25wAnalysisOk ? "pause phase_3 for review or design data/regularization only after fresh approval; phase_4 remains blocked" : r25vCompleteOk || r25vBlockedOk ? "review R25V against R25S before any additional phase_3 pilot; phase_4 remains blocked" : r25uPlanningOk ? "fresh reviewer approval before any R25V phase_3 ablation or data follow-up; phase_4 remains blocked" : r25sCompleteOk ? "review R25S against R25P before any additional pilot, architecture ablation, or scaling" : r25sDesignOk ? "fresh reviewer approval before any R25S data-first bounded pilot" : r25qAnalysisOk ? "review R25Q before any R25R approval or architecture scaling" : "review R25P against R25M before any additional pilot or architecture scaling"]
+        ? [r25agRepoTextDiscoveryOkAll ? "review R25AG discovery and optionally approve R25AH source-specific derived-row generation from selected existing repo text; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25afIntakeDesignOk ? "review R25AF and optionally approve R25AG repository text discovery or derived Chinese-personal corpus expansion only; future training still needs separate fresh approval and phase_4 scaled training remains blocked" : r25aeInventoryAuditOk ? "review R25AE and optionally approve R25AF intake design only; any later corpus expansion or bounded micro-cycle still needs separate fresh approval and phase_4 scaled training remains blocked" : r25adReviewOk ? "review and optionally approve R25AE repository-scoped inventory only; any later corpus expansion or bounded micro-cycle still needs separate fresh approval and phase_4 scaled training remains blocked" : r25acCompleteOk ? "review R25AC before any follow-up; a future bounded Chinese-first personal micro-cycle needs fresh approval and phase_4 scaled training remains blocked" : r25abDirectionOk ? "review and optionally approve exactly one future R25AC Chinese-first personal micro-cycle; phase_4 scaled training remains blocked" : r25aaReviewOk ? "pause phase_3 for human review or begin R25AB phase_4 design review without training; phase_4 scaled training remains blocked" : r25zAnalysisOk ? "pause phase_3 for review or begin a phase_4 readiness review without training; phase_4 scaled training remains blocked" : r25yCompleteOk ? "review R25Y against R25S/R25V/R25P before any R25Z decision, repeat data regularization, or phase_4 readiness review; phase_4 remains blocked" : r25xReviewOk ? "review R25X and obtain fresh reviewer approval before any R25Y data-regularization pilot; phase_4 remains blocked" : r25wAnalysisOk ? "pause phase_3 for review or design data/regularization only after fresh approval; phase_4 remains blocked" : r25vCompleteOk || r25vBlockedOk ? "review R25V against R25S before any additional phase_3 pilot; phase_4 remains blocked" : r25uPlanningOk ? "fresh reviewer approval before any R25V phase_3 ablation or data follow-up; phase_4 remains blocked" : r25sCompleteOk ? "review R25S against R25P before any additional pilot, architecture ablation, or scaling" : r25sDesignOk ? "fresh reviewer approval before any R25S data-first bounded pilot" : r25qAnalysisOk ? "review R25Q before any R25R approval or architecture scaling" : "review R25P against R25M before any additional pilot or architecture scaling"]
         : smallPilotRanOk
           ? ["review R25M/R25N outputs before any second or larger run"]
           : ["future explicit phase_3 approval before any small decoder pilot training"]),
@@ -1581,6 +1725,12 @@ async function main() {
       "raw writing, poetry, essays, fragments, and notes remain private/local by default under ignored private_sources",
       "R25AG may later generate derived Chinese-personal rows only after fresh approval; future training needs another approval",
       "phase_4 scaled training remains not approved and product training progress remains 0%"
+    ],
+    r25ag_boundaries: [
+      "R25AG repository text discovery catalogs existing repo-local text surfaces only",
+      "R25AG does not train, generate corpus rows, promote derived rows, or modify training/llm_corpus",
+      "root PDFs/DOCX and data/public_ingestion stay metadata-only",
+      "future R25AH derived-row generation from selected repo text requires fresh approval; phase_4 remains blocked"
     ]
   };
   console.log(JSON.stringify(report, null, 2));

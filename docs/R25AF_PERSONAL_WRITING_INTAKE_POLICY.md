@@ -34,3 +34,11 @@ must be user-owned or explicitly permitted before any derived row is considered.
 
 Reviewed derived rows may be tracked only after separate approval. Future
 training after any corpus expansion requires another fresh approval.
+
+R25AG repository text discovery may catalog existing repo-local tracked docs and
+structured corpus scaffolds before requesting new private uploads. That
+discovery is not parsing private inbox files, not generating corpus rows, not
+training, not modifying `training/llm_corpus/`, not parsing root PDFs/DOCX, and
+not bulk-parsing `data/public_ingestion/`. Future R25AH work may propose
+source-specific derived rows from selected existing repo text only after fresh
+review.

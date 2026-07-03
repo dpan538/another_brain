@@ -71,6 +71,13 @@ raw personal sources, does not generate corpus rows, does not train, and does
 not commit private writing. R25AG may later generate a derived corpus only with
 fresh approval; future training after that needs another approval.
 
+R25AG repository text discovery catalogs existing text surfaces inside the repo
+before asking for more uploads. It does not train, does not generate corpus
+rows, does not modify `training/llm_corpus`, does not parse root PDFs/DOCX,
+does not bulk-parse `data/public_ingestion`, and does not commit artifacts or
+private raw text. The output is an aggregate candidate source catalog for later
+review; phase_4 remains blocked.
+
 ## Public Data
 
 Public generated files may include:
@@ -184,6 +191,13 @@ Private data is not distributed:
 - R25AC Chinese-first micro-cycle status: one bounded approved run may write
   ignored artifacts only; approval is consumed after the attempt, active
   training approvals return to `0`, and no artifacts or weights are committed.
+- R25AE personal inventory status: repo-scoped aggregate inventory only; root
+  PDFs/DOCX and `data/public_ingestion/` are metadata-only.
+- R25AF writing intake status: design only; no raw writing is parsed, no corpus
+  rows are generated, and no training runs.
+- R25AG repo text discovery status: aggregate discovery and ranking only; no
+  corpus rows are generated, `training/llm_corpus/` is unchanged, and no
+  artifacts are committed.
 - Training enabled by default: false.
 
 ## Evaluation
@@ -251,7 +265,12 @@ repaired answers are source material, not direct training rows. They must be
 reviewed and transformed into derived Chinese-first dialogue rows or preference
 artifacts before any future corpus expansion. R25AF does not generate rows,
 does not train, and does not commit private raw writing.
-data.
+
+R25AG searches existing repository text before requesting new uploads. It can
+read tracked project docs and structured corpus scaffolds for aggregate
+classification, but root PDFs/DOCX and `data/public_ingestion/` stay
+metadata-only. R25AG does not generate rows, does not train, does not promote
+derived candidates, and does not commit artifacts or private raw text.
 
 R25AE may inventory repository-local surfaces only. Root PDFs/DOCX and
 `data/public_ingestion/` are metadata-only, not parsed, not ingested, and not

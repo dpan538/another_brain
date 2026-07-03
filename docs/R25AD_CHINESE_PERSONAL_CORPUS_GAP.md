@@ -54,15 +54,17 @@ prose must be transformed into reviewed dialogue rows, preference pairs, repair
 pairs, style cards, or project-continuation rows before any future corpus use.
 Raw files remain private/local unless explicitly approved.
 
-R25AG may later be a derived Chinese-personal corpus expansion pass after fresh
-approval. It should add or select reviewed Chinese-first project/style rows that
-cover project continuity, repair after weak answers, local-first static-browser
-reasoning, style preference, tool-status honesty, bounded judgment, Chinese
-rewrite/compression, Chinese explanation, and poetry-to-dialogue style
-transfer.
+R25AG first performs repository-scoped existing text discovery before asking for
+new uploads. It identifies useful tracked project docs, corpus scaffolds,
+long-horizon rows, identity and style scaffolds, knowledge sources, eval-only
+surfaces, metadata-only root documents, metadata-only `data/public_ingestion/`,
+ignored artifact reports, and possible legacy scan outputs. R25AG does not
+train, does not generate corpus rows, and does not modify `training/llm_corpus`.
+Future R25AH may approve source-specific derived-row generation from selected
+existing repo text; that would still not be training.
 
 Upsampling alone is risky because R25AC already achieved the sampled
 Chinese-first mix while regressing against R25S. The next step is better
-reviewed zh and mixed data, not automatic scale. Future R25AG corpus expansion
+reviewed zh and mixed data, not automatic scale. Future derived-row generation
 needs fresh approval, future training needs separate fresh approval, phase_4
 remains blocked, and no weights are committed.

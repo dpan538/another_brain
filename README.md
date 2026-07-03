@@ -74,7 +74,7 @@ R25AE audits current personal-data and corpus surfaces inside the repo only. It
 does not train, does not expand corpus, does not scan outside the repo root,
 does not parse root PDFs/DOCX, and does not parse `data/public_ingestion/`
 content. The audit separates tracked corpus, long-horizon rows, eval-only
-fixtures, knowledge sources, identity/style scaffold, docs, untracked root
+fixtures, knowledge sources, identity and style scaffold, docs, untracked root
 documents, public-ingestion metadata, ignored artifacts, and legacy scan
 footprints. R25AF follows as a personal-writing intake and transformation
 design step only; it still requires fresh approval for any later derived corpus
@@ -90,6 +90,17 @@ does not generate rows, does not parse root PDFs/DOCX, does not parse
 `data/public_ingestion/`, and does not commit private raw writing. R25AG may
 later generate a derived corpus only with fresh approval; future training after
 that needs another fresh approval.
+
+R25AG repository text discovery first searches existing repo-local text
+surfaces before requesting new uploads. It identifies candidate project docs,
+training scaffolds, long-horizon rows, identity and style scaffolds, knowledge
+sources, eval-only files, metadata-only root documents, metadata-only
+`data/public_ingestion/`, ignored artifact reports, and possible legacy scan
+outputs. R25AG does not train, does not generate corpus rows, does not modify
+`training/llm_corpus/`, does not parse root PDFs/DOCX, does not bulk-parse
+`data/public_ingestion/`, commits no artifacts or weights, and keeps phase_4
+scaled training blocked. R25AH may later propose source-specific derived-row
+generation from selected existing repo text only after fresh review.
 
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts

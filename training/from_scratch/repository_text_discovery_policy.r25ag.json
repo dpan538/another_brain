@@ -1,0 +1,151 @@
+{
+  "policy_id": "r25ag_repository_text_discovery_policy",
+  "phase": "phase_3_repository_text_discovery",
+  "purpose": "Discover existing repository text surfaces for possible future Chinese-first personal corpus review without training, corpus generation, or private raw-text commit.",
+  "scope": {
+    "repo_root_only": true,
+    "allowed_root": "/Users/jarlgiovanni/Desktop/another_brain",
+    "scan_parent_directories": false,
+    "whole_disk_scan": false,
+    "external_apis": false,
+    "model_downloads": false,
+    "training": false,
+    "corpus_row_generation": false,
+    "training_corpus_modification": false,
+    "phase_4_scaled_training": false
+  },
+  "categories": {
+    "tracked_project_docs": {
+      "paths": [
+        "README.md",
+        "DATA_CARD.md",
+        "DEPLOYMENT.md",
+        "docs/**/*.md"
+      ],
+      "use": "Candidate source for project meaning, style boundaries, and decision history after review.",
+      "content_mode": "aggregate_safe_text_scan"
+    },
+    "tracked_training_corpus": {
+      "paths": [
+        "training/llm_corpus/*.jsonl"
+      ],
+      "use": "Existing training scaffold; not modified by R25AG.",
+      "content_mode": "aggregate_row_audit"
+    },
+    "tracked_long_horizon": {
+      "paths": [
+        "training/long_horizon/*.jsonl"
+      ],
+      "use": "Behavior and continuity rows for later review.",
+      "content_mode": "aggregate_row_audit"
+    },
+    "tracked_identity_pack": {
+      "paths": [
+        "identity_pack/**"
+      ],
+      "use": "Public identity and style scaffold if present; not raw private data by default.",
+      "content_mode": "aggregate_metadata_and_row_counts"
+    },
+    "tracked_knowledge_sources": {
+      "paths": [
+        "knowledge_sources/**"
+      ],
+      "use": "Retrieval facts and evidence; not personal style by default.",
+      "content_mode": "aggregate_answer_counts"
+    },
+    "tracked_eval_only": {
+      "paths": [
+        "evals/**"
+      ],
+      "use": "Eval-only material; not training.",
+      "content_mode": "aggregate_counts_only"
+    },
+    "untracked_root_documents": {
+      "paths": [
+        "*.pdf",
+        "*.PDF",
+        "*.doc",
+        "*.DOC",
+        "*.docx",
+        "*.DOCX"
+      ],
+      "use": "Metadata only; not parsed or used for training.",
+      "content_mode": "metadata_only"
+    },
+    "untracked_text_files": {
+      "paths": [
+        "**/*.txt",
+        "**/*.md",
+        "**/*.json",
+        "**/*.jsonl"
+      ],
+      "use": "Metadata plus safe classification only unless under an approved non-private path.",
+      "content_mode": "metadata_by_default"
+    },
+    "data_public_ingestion": {
+      "paths": [
+        "data/public_ingestion/**"
+      ],
+      "use": "Metadata only by default; not bulk-parsed and not training.",
+      "content_mode": "metadata_only"
+    },
+    "ignored_artifact_reports": {
+      "paths": [
+        "artifacts/**"
+      ],
+      "use": "Generated reports, checkpoints, and tokenizers; not training source and not committed.",
+      "content_mode": "metadata_only"
+    },
+    "possible_legacy_scan_outputs": {
+      "paths": [
+        "**/*inventory*",
+        "**/*manifest*",
+        "**/*scan*",
+        "**/*source_material*"
+      ],
+      "use": "Classify before any use; may be path lists or legacy scan attempts.",
+      "content_mode": "classification_only"
+    }
+  },
+  "forbidden": {
+    "training": true,
+    "previous_pilot_rerun": true,
+    "phase_4_scaled_training": true,
+    "corpus_row_generation": true,
+    "training_llm_corpus_modification": true,
+    "root_pdf_docx_parsing": true,
+    "data_public_ingestion_bulk_parsing": true,
+    "private_raw_text_commit": true,
+    "artifacts_commit": true,
+    "chain_of_thought": true,
+    "hidden_prompts": true,
+    "local_private_absolute_paths_in_tracked_docs": true,
+    "external_llm_or_api_generation": true,
+    "named_pretrained_model_selection": true,
+    "lora_adapter_finetune_final_strategy": true,
+    "backend_storage_api_path": true
+  },
+  "outputs": {
+    "ignored_reports": [
+      "artifacts/training_os/repo_text_discovery/r25ag/repository_text_sources.json",
+      "artifacts/training_os/repo_text_discovery/r25ag/personal_corpus_source_ranking.json",
+      "artifacts/training_os/repo_text_discovery/r25ag/existing_answer_like_text_audit.json",
+      "artifacts/training_os/repo_text_discovery/r25ag/legacy_scan_reconciliation.json",
+      "artifacts/training_os/repo_text_discovery/r25ag/repo_text_discovery_boundary_check.json"
+    ],
+    "tracked_safe_summaries": [
+      "docs/R25AG_REPOSITORY_TEXT_SOURCE_SUMMARY.md",
+      "docs/R25AG_PERSONAL_CORPUS_SOURCE_RANKING.md",
+      "docs/R25AG_EXISTING_ANSWER_LIKE_TEXT_SUMMARY.md",
+      "docs/R25AG_LEGACY_SCAN_RECONCILIATION.md"
+    ]
+  },
+  "status": {
+    "r25ag_generates_training_rows": false,
+    "r25ag_trains": false,
+    "r25ag_commits_private_raw_text": false,
+    "r25ag_commits_artifacts": false,
+    "phase_4_scaled_training_approved": false,
+    "product_training_progress_percent": 0
+  }
+}
