@@ -66,9 +66,19 @@ training progress stays `0%`.
 R25AD analyzes R25AC without training or rerunning any pilot. R25AC met the
 Chinese-first sampling target but regressed against R25S on held-out loss, so
 R25S remains the best phase 3 loss reference. R25AD recommends R25AE as a
-future Chinese-personal corpus-expansion review pass only; R25AE is not
-approved, phase_4 remains blocked, no artifacts or weights are committed, and
+repository-scoped personal-data and corpus inventory before any expansion or
+training. Phase_4 remains blocked, no artifacts or weights are committed, and
 product/formal training progress stays `0%`.
+
+R25AE audits current personal-data and corpus surfaces inside the repo only. It
+does not train, does not expand corpus, does not scan outside the repo root,
+does not parse root PDFs/DOCX, and does not parse `data/public_ingestion/`
+content. The audit separates tracked corpus, long-horizon rows, eval-only
+fixtures, knowledge sources, identity/style scaffold, docs, untracked root
+documents, public-ingestion metadata, ignored artifacts, and legacy scan
+footprints. Future R25AF work may be a reviewed Chinese-personal corpus
+expansion pass only; it would still require fresh approval and would not be
+training.
 
 R25J adds the phase-1 tokenizer dry-run pipeline and phase-2 toy decoder
 pipeline scaffold. The tokenizer dry-run writes only ignored local artifacts
@@ -501,3 +511,8 @@ R25AB adds Chinese-first personal cycle alignment without running training.
 Future R25AC work may be approved only as one bounded Chinese-personal
 micro-cycle using reviewed sources; phase_4 remains blocked, product/formal
 training progress remains `0%`, and no weights or artifacts are committed.
+
+R25AE adds a repository-scoped personal-data inventory without training,
+corpus expansion, external APIs, or whole-disk scan. Root PDFs/DOCX and
+`data/public_ingestion/` remain metadata-only, detailed inventory reports stay
+ignored, and any future R25AF corpus expansion requires fresh approval.

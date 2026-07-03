@@ -43,5 +43,11 @@ personal facts.
 R25AD keeps the same boundary. Its personal-target audit may count reviewed
 R25L labels and project-authored style rows, but it must not introduce private
 raw memory, root PDFs/DOCX, `data/public_ingestion/`, exact eval prompt copies,
-or chain-of-thought data. R25AE may later expand only reviewed Chinese-personal
-corpus material after fresh approval.
+or chain-of-thought data.
+
+R25AE keeps root PDFs/DOCX, `data/public_ingestion/`, and ignored artifacts as
+metadata-only inventory surfaces. It does not train, does not expand corpus,
+does not scan outside the repo, and does not commit generated inventory
+artifacts or private contents. Any later R25AF corpus expansion may use only
+reviewed project-authored Chinese-personal rows after fresh approval, and any
+later training needs separate fresh approval.

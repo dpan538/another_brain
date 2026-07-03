@@ -50,9 +50,16 @@ approval marker, keeps product/formal training progress at `0%`, does not
 approve phase_4 scaled training, and commits no weights or artifacts.
 R25AD analyzes that micro-cycle without training or corpus mutation. R25AC hit
 the `zh >= 70%` and `en <= 10%` sampling target but did not beat R25S held-out
-loss, so R25AD recommends a future R25AE Chinese-personal corpus-expansion
-review pass only. R25AE is not approved in R25AD, no external LLM generation or
+loss, so R25AD recommends R25AE as a repository-scoped personal-data and corpus
+inventory before any expansion or training. No external LLM generation or
 private sources are allowed, and no weights or artifacts are committed.
+
+R25AE inventories current repo-local personal-data surfaces only. It does not
+train, does not expand corpus, does not scan outside the repo root, does not
+ingest root PDFs/DOCX, does not parse `data/public_ingestion/` content, and
+does not commit generated inventory artifacts. Its tracked summaries are
+aggregate-only. Future R25AF corpus expansion needs fresh approval and would
+still not be training; future training needs separate fresh approval.
 
 ## Public Data
 
@@ -227,6 +234,13 @@ training data. The micro-cycle must not read root PDFs/DOCX,
 `data/public_ingestion/`, private raw data, eval prompts, factual knowledge
 cards as an intelligence substitute, external model output, or chain-of-thought
 data.
+
+R25AE may inventory repository-local surfaces only. Root PDFs/DOCX and
+`data/public_ingestion/` are metadata-only, not parsed, not ingested, and not
+training corpus. Current answer and corpus counts are aggregate-only in tracked
+docs. Future corpus expansion requires fresh approval, future training requires
+separate fresh approval, phase_4 remains blocked, and no weights or artifacts
+are committed.
 
 R25J adds tokenizer dry-run scripts that extract text only from approved
 `training/llm_corpus/train.jsonl` fields and evaluate on dev/heldout corpus

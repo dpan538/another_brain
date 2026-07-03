@@ -1,0 +1,99 @@
+{
+  "policy_id": "r25ae_personal_data_inventory_policy",
+  "status": "audit_only_no_training_no_ingestion",
+  "repo_root_only": true,
+  "scan_outside_repo_allowed": false,
+  "training_allowed": false,
+  "corpus_expansion_allowed": false,
+  "phase_4_scaled_training_approved": false,
+  "product_model_training_allowed": false,
+  "commit_weights_allowed": false,
+  "commit_inventory_artifacts_allowed": false,
+  "metadata_only_surfaces": [
+    "root_pdf_docx_documents",
+    "data/public_ingestion",
+    "artifacts"
+  ],
+  "categories": {
+    "tracked_training_corpus": {
+      "paths": [
+        "training/llm_corpus/*.jsonl"
+      ],
+      "meaning": "Rows potentially used for future training only after fresh review and approval."
+    },
+    "tracked_long_horizon": {
+      "paths": [
+        "training/long_horizon/*.jsonl"
+      ],
+      "meaning": "Behavioral task rows; train/eval use depends on split and later review."
+    },
+    "tracked_eval_only": {
+      "paths": [
+        "evals/**"
+      ],
+      "meaning": "Evaluation fixtures only; not training unless separately reviewed in a future approved phase."
+    },
+    "tracked_knowledge_sources": {
+      "paths": [
+        "knowledge_sources/**"
+      ],
+      "meaning": "Retrieval evidence and source cards; not personal training corpus by default."
+    },
+    "tracked_identity_or_style_scaffold": {
+      "paths": [
+        "identity_pack/**"
+      ],
+      "meaning": "Public scaffold or examples unless explicitly reviewed as private-safe training material."
+    },
+    "tracked_docs": {
+      "paths": [
+        "README.md",
+        "DATA_CARD.md",
+        "DEPLOYMENT.md",
+        "docs/**"
+      ],
+      "meaning": "Project history and doctrine; not automatically training corpus."
+    },
+    "untracked_root_documents": {
+      "paths": [
+        "root-level PDF/DOC/DOCX files"
+      ],
+      "meaning": "Metadata only; not training, not parsed, and not committed by R25AE."
+    },
+    "untracked_public_ingestion": {
+      "paths": [
+        "data/public_ingestion/**"
+      ],
+      "meaning": "Metadata only; not training, not parsed, and not committed by R25AE."
+    },
+    "ignored_artifacts": {
+      "paths": [
+        "artifacts/**"
+      ],
+      "meaning": "Local generated reports, checkpoints, tokenizers, and other ignored material; not committed."
+    },
+    "unknown_or_legacy_scan_outputs": {
+      "paths": [
+        "repo-local inventory, source-list, drive-scan, and ingestion-manifest surfaces"
+      ],
+      "meaning": "Must be classified before any use; file names and aggregate status only in tracked docs."
+    }
+  },
+  "forbidden": {
+    "whole_disk_scan": true,
+    "private_raw_data_ingestion": true,
+    "root_pdf_docx_parsing": true,
+    "data_public_ingestion_parsing": true,
+    "hidden_prompts": true,
+    "chain_of_thought": true,
+    "local_private_paths_in_public_or_tracked_corpora": true,
+    "secret_like_strings": true,
+    "external_llm_generation": true,
+    "training_from_evals": true,
+    "committing_generated_inventory_with_private_file_names": true
+  },
+  "r25ae_outputs": {
+    "ignored_detailed_inventory": "artifacts/training_os/personal_inventory/r25ae/personal_data_inventory.json",
+    "tracked_safe_summary": "docs/R25AE_PERSONAL_DATA_INVENTORY_SUMMARY.md"
+  }
+}

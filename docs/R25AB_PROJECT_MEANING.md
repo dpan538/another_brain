@@ -55,5 +55,20 @@ not phase_4.
 R25AD confirms the project meaning after the first Chinese-personal
 micro-cycle. R25AC met the intended language mix and structural personal-target
 coverage, but R25S still has the better held-out loss. The next appropriate
-work is reviewed Chinese-personal corpus expansion, not project reset, not a
-repeat run from the consumed approval, and not phase_4 scaled training.
+work is repository-scoped personal-data inventory before any reviewed
+Chinese-personal corpus expansion, not project reset, not a repeat run from the
+consumed approval, and not phase_4 scaled training.
+
+## R25AE Inventory Boundary
+
+R25AE inventories current repo-local personal-data and corpus surfaces only. It
+does not train, does not expand corpus, does not scan outside the repo root,
+does not ingest root PDFs/DOCX, and does not parse `data/public_ingestion/`
+content. Its tracked reports are aggregate-only, generated inventory artifacts
+remain ignored, product/formal training progress remains `0%`, phase_4 remains
+blocked, and no weights are committed.
+
+If the audit supports a next step, R25AF may later be a reviewed
+Chinese-personal corpus-expansion pass using only approved project-authored
+rows. R25AF would still not be training, and any later training would require a
+separate fresh approval.
