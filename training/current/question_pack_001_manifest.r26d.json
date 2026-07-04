@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "phase": "R26D",
+  "pack_id": "another_brain_question_pack_001",
+  "raw_source_path": "private_sources/question_packs/another_brain_question_pack_001_answered.csv",
+  "raw_source_committed": false,
+  "raw_source_should_not_be_committed": true,
+  "total_rows_expected": 100,
+  "candidate_review_only_range": "1-50",
+  "excluded_from_training_range": "51-100",
+  "candidate_rows_count": 50,
+  "excluded_rows_count": 50,
+  "answered_first50_count": 50,
+  "blank_first50_count": 0,
+  "exclusion_reason": "Rows 51-100 are project-meta/training-meta/status/engineering prompts and were explicitly rejected by the user for corpus expansion.",
+  "allowed_uses_for_1_to_50": [
+    "candidate_review",
+    "answer_as_user_schema_fit",
+    "future_reviewed_corpus_promotion"
+  ],
+  "forbidden_uses_for_1_to_50_in_r26d": [
+    "active_training",
+    "tokenizer_training",
+    "release_claim"
+  ],
+  "forbidden_uses_for_51_to_100": [
+    "training",
+    "tokenizer_training",
+    "teacher_probe",
+    "corpus_generation",
+    "corpus_promotion",
+    "eval_derived_training",
+    "long_horizon_training",
+    "prompt_generation_source"
+  ],
+  "candidate_artifacts_ignored": true,
+  "training_ran": false,
+  "tokenizer_dry_run_ran": false,
+  "corpus_promotion_ran": false,
+  "phase_4_scaled_training_approved": false
+}

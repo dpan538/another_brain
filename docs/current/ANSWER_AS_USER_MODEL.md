@@ -22,3 +22,9 @@ Forbidden content: chain-of-thought fields, hidden prompts, raw private data, lo
 R26C adds a hard boundary for the first 100-question answer pack. Question IDs 1-50 are `candidate_review_only`; they can be reviewed later but are not automatically training rows. Question IDs 51-100 are `excluded_from_training` because they ask about project progress, training direction, tool status, or internal structure instead of real answer-as-user behavior.
 
 Rows 51-100 must not become positive examples, negative examples, preference pairs, repair pairs, teacher probes, tokenizer text, eval-derived training seeds, long-horizon rows, corpus-generation prompts, or promoted corpus rows. They may be referenced only as excluded-policy evidence or cleanup notes.
+
+## R26D User-Answer Candidates
+
+R26D parses only rows 1-50 from `another_brain_question_pack_001`. The target answer must come from the user's answer column, lightly normalized only. `回答目标` is a note about intent, not the training target.
+
+R26D candidates are `candidate_unreviewed`, `training_allowed: false`, and `public_commit_allowed: false`. Codex must not synthesize missing answers, fabricate bad assistant answers, or rewrite the user answer into a generic helpful-assistant style. Review and promotion require a later explicit R26E approval.

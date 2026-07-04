@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "phase": "R26D",
+  "policy_status": "active_intake_policy",
+  "raw_source_root": "private_sources/",
+  "raw_source_committed": false,
+  "approved_question_pack_path": "private_sources/question_packs/another_brain_question_pack_001_answered.csv",
+  "canonical_private_source_folders": {
+    "question_packs": "private_sources/question_packs/",
+    "poetry_examples": "private_sources/writing_examples/poetry/",
+    "essay_examples": "private_sources/writing_examples/essays/",
+    "fragment_examples": "private_sources/writing_examples/fragments/",
+    "review_needed_documents": "private_sources/source_documents/review_needed/"
+  },
+  "pack_id": "another_brain_question_pack_001",
+  "candidate_review_only_range": "1-50",
+  "excluded_from_training_range": "51-100",
+  "rows_1_to_50_status": "candidate_review_only",
+  "rows_51_to_100_status": "excluded_from_training",
+  "candidate_artifact_root": "artifacts/training_os/user_answer_intake/r26d/",
+  "candidate_rows_training_allowed": false,
+  "candidate_rows_public_commit_allowed": false,
+  "user_wording_primary": true,
+  "codex_must_not_assistantify": true,
+  "teacher_or_doubao_used": false,
+  "forbidden_content": [
+    "chain_of_thought",
+    "hidden_prompt",
+    "raw_private_data",
+    "local_private_path",
+    "secret_like_string",
+    "eval_prompt_copy"
+  ],
+  "r26d_does_not_authorize": [
+    "training",
+    "tokenizer_dry_run",
+    "corpus_promotion",
+    "training_llm_corpus_modification",
+    "phase_4_scaled_training",
+    "external_api",
+    "teacher_probe",
+    "weight_commit",
+    "artifact_commit"
+  ]
+}

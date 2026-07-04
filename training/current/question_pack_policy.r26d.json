@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "phase": "R26D",
+  "extends_policy": "training/current/question_pack_policy.r26c.json",
+  "pack_id": "another_brain_question_pack_001",
+  "rows_1_to_50": {
+    "eligibility": "candidate_review_only",
+    "allowed_uses": [
+      "candidate_review",
+      "answer_as_user_schema_fit",
+      "future_reviewed_corpus_promotion"
+    ],
+    "forbidden_uses_in_r26d": [
+      "active_training",
+      "tokenizer_training",
+      "corpus_promotion",
+      "release_claim"
+    ]
+  },
+  "rows_51_to_100": {
+    "eligibility": "excluded_from_training",
+    "exclusion_reason": "Rows 51-100 are project-meta/training-meta/status/engineering prompts and were explicitly rejected by the user for corpus expansion.",
+    "forbidden_uses": [
+      "positive_sample",
+      "negative_sample",
+      "preference_pair",
+      "repair_pair",
+      "teacher_probe",
+      "tokenizer_training_text",
+      "eval_derived_training_seed",
+      "long_horizon_row",
+      "future_prompt_generation_source",
+      "corpus_generation",
+      "corpus_promotion",
+      "training"
+    ],
+    "allowed_uses": [
+      "excluded_policy_evidence",
+      "audit_metadata"
+    ]
+  },
+  "raw_csv_committed": false,
+  "candidate_artifacts_committed": false,
+  "training_ran": false,
+  "phase_4_scaled_training_approved": false
+}

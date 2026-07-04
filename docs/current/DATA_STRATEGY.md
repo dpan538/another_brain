@@ -25,3 +25,9 @@ The first 100-question pack is only partially useful. Question IDs 1-50 are revi
 Project progress and training-process questions must not become normal dialogue corpus. another_brain should answer friends' or known-context questions as the user, not learn to discuss its own training pipeline as ordinary product behavior. The model should not train on "what phase are we in" or "what should the project do next" questions as user-facing corpus. Those meta questions may remain in docs, cleanup notes, or project-management context only.
 
 Future question packs should focus on external-facing questions, unsupported challenges, weird questions, friend context, non-answer boundaries, and answer-as-user behavior. Replacement rows 51-100 should be generated only after schema review and must avoid project-status or training-pipeline prompts unless they are genuinely framed as external relationship questions.
+
+## R26D First-50 Intake
+
+R26D ingests the answered first question pack from the ignored local path `private_sources/question_packs/another_brain_question_pack_001_answered.csv`. Only rows 1-50 are parsed into answer-as-user candidates, and those candidates remain review-only ignored artifacts. Rows 51-100 stay excluded because they are project-meta, training-meta, status, or engineering prompts rather than friend-facing answer material.
+
+Source materials should live in selectable ignored folders under `private_sources/`. Question packs belong in `private_sources/question_packs/`; user writing examples such as `Church.pdf` and `Poetry_Collection.pdf` belong in `private_sources/writing_examples/poetry/` until a later source-specific parsing approval exists.

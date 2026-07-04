@@ -123,6 +123,15 @@ train, rerun pilots, run tokenizer dry-run, expand corpus, approve phase_4, or
 commit artifacts/weights. Product and formal decoder training progress remain
 `0%`.
 
+R26D parses the first answered 100-question pack only from the ignored local
+path `private_sources/question_packs/another_brain_question_pack_001_answered.csv`.
+Only rows 1-50 become ignored answer-as-user candidates for review. Rows 51-100
+remain excluded from all training, tokenizer, teacher-probe, corpus-generation,
+corpus-promotion, eval-derived, long-horizon, and prompt-generation paths. The
+raw CSV and generated candidates are not committed. User writing examples are
+kept under selectable ignored `private_sources/writing_examples/` folders and
+are not parsed in R26D.
+
 ## Public Data
 
 Public generated files may include:

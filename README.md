@@ -192,6 +192,8 @@ The fallback policy path is deliberately small. It chooses a response strategy w
 
 The voice is intentionally unified. Another Brain does not split public persona from private tone; personal calibration is part of the subject, while privacy rules protect raw files, sensitive facts, and local artifacts.
 
+R26D adds the first user-answer intake pass for the first 100-question pack. The raw CSV stays private under ignored `private_sources/question_packs/`; only rows 1-50 are parsed into ignored answer-as-user candidates, while rows 51-100 remain excluded from all training, tokenizer, teacher, corpus-generation, corpus-promotion, eval-derived, and long-horizon paths. User writing examples such as `Church.pdf` and `Poetry_Collection.pdf` belong under ignored selectable material folders like `private_sources/writing_examples/poetry/`, not as active corpus or root-level project files.
+
 ## Privacy Rules
 
 - No cloud inference APIs.
