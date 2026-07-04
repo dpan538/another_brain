@@ -10,7 +10,7 @@ R26A is non-destructive. It recommends future cleanup actions but does not perfo
 
 ## Action Counts
 
-- needs_user_review: 25
+- needs_user_review: 30
 - archive_later: 124
 - do_not_touch: 14
 - delete_later_after_review: 8

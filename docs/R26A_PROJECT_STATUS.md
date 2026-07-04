@@ -20,6 +20,6 @@ R26A pauses training and standardizes the project structure.
 
 - Root DOC/PDF metadata count: 13
 - data/public_ingestion metadata count: 2920
-- Ignored artifact metadata count: 846
+- Ignored artifact metadata count: 851
 
 R26A did not train, run tokenizer dry-run, expand corpus, move files, delete files, parse root documents, parse `data/public_ingestion/`, read `private_sources/`, commit artifacts, or commit weights.

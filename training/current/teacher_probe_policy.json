@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "phase": "R26B",
+  "teacher_probe_status": "optional_side_track_only",
+  "r26b_calls_teacher": false,
+  "desktop_automation_allowed_in_r26b": false,
+  "private_data_to_teacher_allowed": false,
+  "automatic_training_ingestion_allowed": false,
+  "required_label": "external_teacher_probe",
+  "chain_of_thought_allowed": false,
+  "runtime_dependency_allowed": false,
+  "future_phase_requires_fresh_approval": "R26T"
+}

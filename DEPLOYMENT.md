@@ -322,3 +322,17 @@ still active.
 Root DOC/PDF files and `data/public_ingestion/` remain local/unreviewed
 metadata-only surfaces and must not be deployed or treated as runtime/training
 assets.
+
+## R26B Product Runtime Boundary
+
+R26B clarifies product semantics only. another_brain remains a same-origin
+static browser target: a memory-backed personal answer surface that drafts
+answers as the user might answer selected questions. It is not a generic AI
+assistant and does not gain backend/storage/API routes, hosted model calls,
+Doubao calls, external APIs, teacher runtime dependencies, release checkpoint
+admission, tokenizer artifacts, or phase_4 approval.
+
+The runtime should preserve R24 verifier/finalizer/fallback boundaries so an
+LLM draft can decline, redirect, reframe, or resist unsupported challenge
+without becoming lazy, maliciously falling back, or auto-conceding. R26B commits
+no artifacts or weights.

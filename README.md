@@ -663,3 +663,24 @@ recovery/shard gates and R25 static release constraints remain active. Root
 DOC/PDF files and `data/public_ingestion/` remain local/unreviewed metadata-only
 surfaces, not training input. Future user-answer corpus collection should wait
 until the R26 structure is reviewed and accepted.
+
+## R26B Product Narrative Status
+
+R26B defines another_brain as a memory-backed personal answer surface, not a generic AI assistant.
+The product drafts answers as the user might answer selected questions, with
+memory, intelligence, and answer-as-user layers.
+
+The answer surface can decline, redirect, ask a counterquestion, abstractly
+reframe, preserve uncertainty, or resist unsupported challenge instead of
+maliciously falling back or auto-conceding. The `assistant` role in serialized
+training/eval messages is only a message role, not the product persona.
+
+Future training data should come from reviewed user-answered question packs:
+natural questions, user answers, bad assistant answers with corrections,
+non-answer boundaries, weird abstract questions, and unsupported challenge
+examples. Doubao or any teacher probe is optional review material only, not a
+runtime dependency and not automatic training data.
+
+R26B does not train, run tokenizer dry-run, expand corpus, promote corpus rows,
+approve phase_4, call external APIs, call Doubao, commit artifacts, or commit
+weights.

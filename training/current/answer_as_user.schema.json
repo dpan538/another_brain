@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "R26B answer-as-user training row",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "sample_id",
+    "language",
+    "speaker_context",
+    "question",
+    "question_intent",
+    "should_answer",
+    "answer_mode",
+    "stance",
+    "evidence_policy",
+    "answer_as",
+    "bad_assistant_answer",
+    "why_bad",
+    "target_answer",
+    "rejected_answers",
+    "context_turns",
+    "provenance",
+    "review_status",
+    "contains_private_data",
+    "training_allowed",
+    "public_commit_allowed"
+  ],
+  "properties": {
+    "sample_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "enum": [
+        "zh",
+        "mixed",
+        "en"
+      ]
+    },
+    "speaker_context": {
+      "enum": [
+        "friend",
+        "stranger",
+        "collaborator",
+        "project_agent",
+        "public_comment",
+        "unknown"
+      ]
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1
+    },
+    "question_intent": {
+      "enum": [
+        "ask_opinion",
+        "challenge",
+        "correction",
+        "weird_question",
+        "project_question",
+        "emotional_pressure",
+        "factual_memory_check",
+        "style_request",
+        "boundary_test"
+      ]
+    },
+    "should_answer": {
+      "type": "boolean"
+    },
+    "answer_mode": {
+      "enum": [
+        "direct_answer",
+        "partial_answer",
+        "refuse",
+        "redirect",
+        "counterquestion",
+        "abstract_reframe",
+        "pressure_resistance",
+        "evidence_based_correction",
+        "memory_uncertain_but_not_wrong",
+        "compressed_judgment"
+      ]
+    },
+    "stance": {
+      "enum": [
+        "assert",
+        "soften",
+        "refuse",
+        "reconsider",
+        "uncertain",
+        "correct_self",
+        "reject_premise"
+      ]
+    },
+    "evidence_policy": {
+      "enum": [
+        "unsupported_challenge",
+        "evidence_present",
+        "memory_uncertain",
+        "value_disagreement",
+        "no_evidence_needed",
+        "private_boundary"
+      ]
+    },
+    "answer_as": {
+      "const": "user_self"
+    },
+    "bad_assistant_answer": {
+      "type": "string"
+    },
+    "why_bad": {
+      "type": "string"
+    },
+    "target_answer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rejected_answers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "context_turns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "content"
+        ],
+        "properties": {
+          "role": {
+            "enum": [
+              "user",
+              "assistant",
+              "system_note",
+              "evidence"
+            ]
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "source_type",
+        "external_teacher_used"
+      ],
+      "properties": {
+        "source_type": {
+          "enum": [
+            "user_answered_question",
+            "project_authored",
+            "repo_derived_reviewed",
+            "external_teacher_probe",
+            "human_seed"
+          ]
+        },
+        "external_teacher_used": {
+          "type": "boolean"
+        }
+      }
+    },
+    "review_status": {
+      "enum": [
+        "draft",
+        "candidate_unreviewed",
+        "reviewed_for_training_corpus",
+        "rejected",
+        "eval_only"
+      ]
+    },
+    "contains_private_data": {
+      "type": "boolean"
+    },
+    "training_allowed": {
+      "type": "boolean"
+    },
+    "public_commit_allowed": {
+      "type": "boolean"
+    }
+  },
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "chain_of_thought"
+        ]
+      },
+      {
+        "required": [
+          "hidden_prompt"
+        ]
+      },
+      {
+        "required": [
+          "raw_private_data"
+        ]
+      },
+      {
+        "required": [
+          "local_private_path"
+        ]
+      }
+    ]
+  },
+  "r26b_forbidden_content": [
+    "copied long copyrighted text",
+    "eval prompt copy",
+    "raw private data",
+    "hidden/system prompt leakage"
+  ]
+}

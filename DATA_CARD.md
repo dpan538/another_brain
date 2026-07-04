@@ -493,3 +493,20 @@ Root DOC/PDF files, `data/public_ingestion/`, `private_sources/`, ignored
 artifacts, and unrelated local residue remain unreviewed/local and are not
 training input. Future user-answer corpus collection should happen only after
 the R26 structure is accepted and separately approved.
+
+## R26B Data Note
+
+R26B completes the product narrative and answer-as-user schema without changing
+`training/llm_corpus` row content. another_brain is a memory-backed personal
+answer surface, not a generic AI assistant. Future data should prioritize
+reviewed user-answered question packs: friend/collaborator questions, user
+answers, bad assistant answer plus user correction, refusal/redirection
+examples, weird abstract questions, unsupported challenge examples, and
+relationship-sensitive context turns.
+
+Poems, essays, docs, and public-ingestion material remain source/style or
+metadata surfaces unless separately reviewed and transformed. Teacher/Doubao
+probing is optional and external; it is not a runtime dependency and must not
+enter training corpus automatically. R26B does not train, expand corpus, run
+tokenizer dry-run, promote rows, approve phase_4, call external APIs, call
+Doubao, commit artifacts, or commit weights.

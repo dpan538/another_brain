@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "phase": "R26B",
+  "answer_as": "user_self",
+  "speaker_contexts": [
+    "friend",
+    "stranger",
+    "collaborator",
+    "project_agent",
+    "public_comment",
+    "unknown"
+  ],
+  "question_intents": [
+    "ask_opinion",
+    "challenge",
+    "correction",
+    "weird_question",
+    "project_question",
+    "emotional_pressure",
+    "factual_memory_check",
+    "style_request",
+    "boundary_test"
+  ],
+  "answer_modes": [
+    "direct_answer",
+    "partial_answer",
+    "refuse",
+    "redirect",
+    "counterquestion",
+    "abstract_reframe",
+    "pressure_resistance",
+    "evidence_based_correction",
+    "memory_uncertain_but_not_wrong",
+    "compressed_judgment"
+  ],
+  "stances": [
+    "assert",
+    "soften",
+    "refuse",
+    "reconsider",
+    "uncertain",
+    "correct_self",
+    "reject_premise"
+  ],
+  "evidence_policies": [
+    "unsupported_challenge",
+    "evidence_present",
+    "memory_uncertain",
+    "value_disagreement",
+    "no_evidence_needed",
+    "private_boundary"
+  ],
+  "forbidden_fields": [
+    "chain_of_thought",
+    "hidden_prompt",
+    "raw_private_data",
+    "local_private_path"
+  ],
+  "forbidden_content": [
+    "copied long copyrighted text",
+    "eval prompt copy",
+    "raw private data",
+    "hidden/system prompt leakage"
+  ]
+}
