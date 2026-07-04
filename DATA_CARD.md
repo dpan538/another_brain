@@ -467,3 +467,6 @@ relative to zh, and high-loss task families need review. The future R25AR
 template is `approved:false`; no phase_4, product/formal training, release
 checkpoint, backend/storage path, external API/download, chain-of-thought, raw
 private data, committed artifact, or committed weight is introduced.
+## R25AR Data Note
+
+R25AR sampled only tracked `training/llm_corpus` split files and did not modify the corpus. The train mix was zh 250, mixed 96, en 38. Root PDFs/DOCX, `private_sources`, `data/public_ingestion`, evals, and knowledge-source cards were not used as training sources.

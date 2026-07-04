@@ -351,6 +351,8 @@ def run_numpy(config, train_sequences, dev_sequences, tokenizer, backend):
 
 def run_prefix(config):
     run_id = str(config.get("run_id", ""))
+    if run_id.startswith("r25ar_"):
+        return "r25ar"
     if run_id.startswith("r25ao_"):
         return "r25ao"
     if run_id.startswith("r25ac_"):
@@ -394,7 +396,7 @@ def main():
     steps = int(config["max_steps"])
     train_loss_decreased = metrics["final_train_loss"] < metrics["initial_train_loss"]
     dev_loss_finite = finite(metrics["initial_dev_loss"]) and finite(metrics["final_dev_loss"])
-    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s", "r25v", "r25y", "r25ac", "r25ao"}
+    replayable_enabled = bool(config.get("replayable_checkpoint", {}).get("enabled")) and prefix in {"r25p", "r25s", "r25v", "r25y", "r25ac", "r25ao", "r25ar"}
     checkpoint_path = f"{config['output_dir']}{prefix}_replayable_checkpoint.json" if replayable_enabled else f"{config['output_dir']}{prefix}_small_decoder_checkpoint.json"
     metrics_path = f"{config['output_dir']}{prefix}_small_decoder_metrics.json"
     run_report_path = f"{config['output_dir']}{prefix}_small_decoder_run_report.json"
@@ -504,13 +506,15 @@ def main():
         "small_pilot_training_ran": True,
         "chinese_personal_microcycle": prefix == "r25ac",
         "expanded_chinese_personal_microcycle": prefix == "r25ao",
-        "bounded_decoder_pilot_training": prefix == "r25ao",
+        "repaired_sampler_microcycle": prefix == "r25ar",
+        "bounded_decoder_pilot_training": prefix in {"r25ao", "r25ar"},
         "data_regularization_training": prefix == "r25y",
         "formal_decoder_training": False,
         "formal_product_training": False,
         "tokenizer_dry_run_ran": False,
         "long_term_training": False,
         "phase_4_scaled_training": False,
+        "corpus_expansion_ran": False,
         "product_model": False,
         "release_checkpoint": False,
         "backend": metrics["backend"],
@@ -522,6 +526,8 @@ def main():
         "parameter_count": metrics["parameter_count"],
         "learning_rate": float(config["learning_rate"]),
         "regularization_knobs": regularization_knobs if prefix == "r25y" else {},
+        "early_stop_triggered": False,
+        "early_stop_support": "reported_not_enforced_by_current_bounded_runner" if config.get("early_stop_if_dev_worsens") else "not_requested",
         "steps": steps,
         "train_sequences": len(train_sequences),
         "dev_sequences": len(dev_sequences),

@@ -18,3 +18,6 @@ R25AR is an inert future design for one bounded phase_3 pilot. It exists because
 The R25AR approval template is `approved:false` and all training, product, phase_4, release, and weight flags are false. A future run requires fresh explicit approval and must consume that approval after one attempt.
 
 Product training progress remains 0%. Formal decoder training progress remains 0%. Phase_4 remains blocked. No weights, artifacts, external APIs/downloads, backend/storage path, chain-of-thought, or private raw data are added.
+## R25AR Result Note
+
+R25AR executed the repaired-sampler design once with zh 65.10%, mixed 25.00%, and en 9.90% in train. The run proved the sampler can execute, but heldout loss regressed to 6.8565 and mixed/en gaps remained weak. The design therefore needs analysis before any future approved pilot.

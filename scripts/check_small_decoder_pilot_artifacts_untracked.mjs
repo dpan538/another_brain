@@ -17,10 +17,11 @@ const ARTIFACT_DIRS = [
   "artifacts/training_os/small_decoder_pilot/r25v",
   "artifacts/training_os/small_decoder_pilot/r25y",
   "artifacts/training_os/small_decoder_pilot/r25ac",
-  "artifacts/training_os/small_decoder_pilot/r25ao"
+  "artifacts/training_os/small_decoder_pilot/r25ao",
+  "artifacts/training_os/small_decoder_pilot/r25ar"
 ];
 const MODEL_WEIGHT_RE = /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i;
-const PILOT_ARTIFACT_RE = /r25m_|r25n_|r25o_|r25p_|r25s_|r25v_|r25y_|r25ac_|r25ao_|small_decoder_checkpoint|small_decoder_metrics|small_decoder_run_report|small_decoder_pilot/i;
+const PILOT_ARTIFACT_RE = /r25m_|r25n_|r25o_|r25p_|r25s_|r25v_|r25y_|r25ac_|r25ao_|r25ar_|small_decoder_checkpoint|small_decoder_metrics|small_decoder_run_report|small_decoder_pilot/i;
 
 async function exists(path) {
   try {
@@ -92,7 +93,7 @@ async function main() {
   const misplaced = [];
   for (const root of forbiddenRoots) {
     for (const path of await walk(root)) {
-      if (PILOT_ARTIFACT_RE.test(path) && /r25m|r25n|r25o|r25p|r25s|r25v|r25y|r25ac|r25ao|checkpoint|metrics|run_report|train_sequences|dev_sequences|heldout_sequences/.test(path)) {
+      if (PILOT_ARTIFACT_RE.test(path) && /r25m|r25n|r25o|r25p|r25s|r25v|r25y|r25ac|r25ao|r25ar|checkpoint|metrics|run_report|train_sequences|dev_sequences|heldout_sequences/.test(path)) {
         misplaced.push(path);
       }
     }

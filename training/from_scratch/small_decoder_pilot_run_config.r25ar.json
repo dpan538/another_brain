@@ -1,0 +1,86 @@
+{
+  "run_id": "r25ar_repaired_sampler_microcycle",
+  "variant_id": "r25ar_mixed_repair_lower_intensity",
+  "training_allowed_by_default": false,
+  "approval_required": true,
+  "requires_fresh_approval": true,
+  "product_model": false,
+  "release_checkpoint": false,
+  "formal_decoder_training": false,
+  "formal_product_training": false,
+  "long_term_training": false,
+  "phase_4_scaled_training": false,
+  "commit_weights_allowed": false,
+  "tokenizer_dry_run_allowed": false,
+  "corpus_expansion_allowed": false,
+  "basis_pilot": "r25ao_expanded_chinese_personal_microcycle",
+  "output_dir": "artifacts/training_os/small_decoder_pilot/r25ar/",
+  "train_sources": [
+    "training/llm_corpus/train.jsonl",
+    "training/llm_corpus/r25l_train.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_train.jsonl",
+    "training/llm_corpus/r25am_repo_derived_train.jsonl"
+  ],
+  "dev_sources": [
+    "training/llm_corpus/dev.jsonl",
+    "training/llm_corpus/r25l_dev.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25am_repo_derived_dev.jsonl"
+  ],
+  "heldout_sources": [
+    "training/llm_corpus/heldout.jsonl",
+    "training/llm_corpus/r25l_heldout.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_heldout.jsonl",
+    "training/llm_corpus/r25am_repo_derived_heldout.jsonl"
+  ],
+  "tokenizer_config": "training/from_scratch/tokenizer_dry_run_config.r25an.json",
+  "tokenizer_artifact_source": "artifacts/training_os/tokenizer_dryrun/r25an/",
+  "max_train_rows": 384,
+  "max_dev_rows": 96,
+  "max_heldout_rows": 96,
+  "max_context_tokens": 64,
+  "batch_size": 4,
+  "max_steps": 60,
+  "eval_every": 20,
+  "learning_rate": 0.003,
+  "seed": 31,
+  "sampler_target": {
+    "zh_min": 0.65,
+    "mixed_target": 0.25,
+    "en_max": 0.1
+  },
+  "risk_focus_targets": [
+    "mixed",
+    "repair_after_weak_answer",
+    "tool_status_honesty",
+    "bounded_judgment",
+    "local_first_static_browser_reasoning"
+  ],
+  "personal_color_targets": [
+    "project_continuation",
+    "repair_after_weak_answer",
+    "local_first_static_browser_reasoning",
+    "style_preference",
+    "tool_status_honesty",
+    "bounded_judgment"
+  ],
+  "architecture": {
+    "type": "causal_decoder_pilot",
+    "basis": "r25s_baseline_data_first",
+    "layers": 1,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128
+  },
+  "replayable_checkpoint": {
+    "enabled": true,
+    "format": "json",
+    "schema": "training/from_scratch/small_decoder_checkpoint.schema.json"
+  },
+  "early_stop_if_dev_worsens": true,
+  "notes": [
+    "R25AR runs exactly one bounded repaired-sampler phase_3 micro-cycle after fresh approval.",
+    "It uses tracked corpus split files only and does not modify training/llm_corpus.",
+    "It does not run tokenizer dry-run, corpus expansion, product/formal training, long-term training, or phase_4."
+  ]
+}

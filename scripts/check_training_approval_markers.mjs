@@ -394,6 +394,45 @@ const MARKERS = [
       "allow_release_checkpoint",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r25ar_repaired_sampler_microcycle",
+    path: "training/from_scratch/APPROVE_R25AR_REPAIRED_SAMPLER_MICROCYCLE.json",
+    expectedScope: "repaired_sampler_microcycle_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    expectedRunId: "r25ar_repaired_sampler_microcycle",
+    expectedVariantId: "r25ar_mixed_repair_lower_intensity",
+    consumedByCommit: "pending_r25ar_commit",
+    trainingFlagKeys: [
+      "allow_small_pilot_training",
+      "allow_bounded_decoder_pilot_training",
+      "allow_decoder_training",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training",
+      "allow_release_checkpoint",
+      "allow_weight_commit"
+    ]
+  },
+  {
+    id: "r25as_analyze_r25ar_template",
+    path: "training/from_scratch/APPROVE_R25AS_ANALYZE_R25AR.template.json",
+    expectedScope: "analyze_r25ar_results_only",
+    expectedPhase: "phase_3_analysis_or_pilot_review",
+    expectedRunId: "r25as_analyze_r25ar_repaired_sampler",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_decoder_training",
+      "allow_small_pilot_training",
+      "allow_tokenizer_dry_run",
+      "allow_corpus_generation",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training",
+      "allow_release_checkpoint",
+      "allow_weight_commit"
+    ]
   }
 ];
 

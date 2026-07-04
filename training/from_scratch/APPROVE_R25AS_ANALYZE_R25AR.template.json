@@ -1,0 +1,18 @@
+{
+  "approved": false,
+  "scope": "analyze_r25ar_results_only",
+  "reviewer": "",
+  "phase": "phase_3_analysis_or_pilot_review",
+  "run_id": "r25as_analyze_r25ar_repaired_sampler",
+  "allow_training": false,
+  "allow_decoder_training": false,
+  "allow_small_pilot_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_corpus_generation": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "notes": "Template only. R25AS may analyze R25AR results after explicit approval. This does not authorize training, tokenizer dry-run, corpus expansion, phase_4, or weight commit."
+}

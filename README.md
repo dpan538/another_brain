@@ -634,3 +634,6 @@ mixed higher priority than English because the project is Chinese-first but
 technical work is often mixed. R25AR is an inert repaired-sampler design only;
 future training requires fresh approval, product/formal training remains `0%`,
 phase_4 remains blocked, and no weights or artifacts are committed.
+## R25AR Status
+
+R25AR ran one approved bounded repaired-sampler Chinese-personal micro-cycle. It met the intended language mix but regressed on heldout quality, so the project remains in review mode: no product/formal training, no tokenizer dry-run follow-up, no phase_4 approval, and no committed weights or artifacts.

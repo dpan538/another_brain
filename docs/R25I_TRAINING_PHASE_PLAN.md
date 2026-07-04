@@ -233,3 +233,6 @@ progress may increase separately to `7%`.
 - Treating R25AO's consumed one-shot pilot approval as permission to rerun,
   promote a checkpoint, run tokenizer dry-run, start product/formal training,
   or approve phase_4 scaled training.
+## R25AR Phase-3 Note
+
+R25AR remains phase_3 small-pilot work. It is not formal decoder training, product training, phase_4 scaled training, or release admission. Its approval was one-shot and must be consumed after the attempt; any future run needs a fresh approval and a concrete analysis-backed change.

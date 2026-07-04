@@ -43,3 +43,6 @@ weak; mixed is the higher priority because the target remains Chinese-first
 with technical mixed-language robustness. R25AR is only an inert repaired
 sampler design and is not approved. Product/formal training progress remains
 `0%`, phase_4 remains blocked, and no weights or artifacts are committed.
+## R25AR Boundary Update
+
+R25AR was the approved repaired-sampler follow-up to R25AO. It ran once, consumed its approval, and did not improve heldout generalization. R25AO and R25AR together support a pause-for-review boundary before any further training, tokenizer dry-run, corpus expansion, or phase_4 discussion.

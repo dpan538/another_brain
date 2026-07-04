@@ -16,6 +16,7 @@ const R25V_APPROVAL_PATH = "training/from_scratch/APPROVE_R25V_ARCHITECTURE_ABLA
 const R25Y_APPROVAL_PATH = "training/from_scratch/APPROVE_R25Y_DATA_REGULARIZATION_PILOT.json";
 const R25AC_APPROVAL_PATH = "training/from_scratch/APPROVE_R25AC_CHINESE_PERSONAL_MICROCYCLE.json";
 const R25AO_APPROVAL_PATH = "training/from_scratch/APPROVE_R25AO_EXPANDED_CHINESE_PERSONAL_MICROCYCLE.json";
+const R25AR_APPROVAL_PATH = "training/from_scratch/APPROVE_R25AR_REPAIRED_SAMPLER_MICROCYCLE.json";
 
 async function readJson(path) {
   return JSON.parse(await readFile(resolve(ROOT, path), "utf8"));
@@ -52,6 +53,7 @@ function normalizedDir(path) {
 
 function runPrefix(runConfig) {
   const runId = String(runConfig?.run_id || "");
+  if (runId.startsWith("r25ar_")) return "r25ar";
   if (runId.startsWith("r25ao_")) return "r25ao";
   if (runId.startsWith("r25ac_")) return "r25ac";
   if (runId.startsWith("r25y_")) return "r25y";
@@ -63,6 +65,7 @@ function runPrefix(runConfig) {
 
 function expectedScope(runConfig) {
   const prefix = runPrefix(runConfig);
+  if (prefix === "r25ar") return "repaired_sampler_microcycle_only";
   if (prefix === "r25ao") return "expanded_chinese_personal_microcycle_only";
   if (prefix === "r25ac") return "chinese_personal_microcycle_only";
   if (prefix === "r25y") return "data_regularization_small_decoder_pilot_only";
@@ -74,6 +77,7 @@ function expectedScope(runConfig) {
 
 function defaultApproval(runConfig) {
   const prefix = runPrefix(runConfig);
+  if (prefix === "r25ar") return R25AR_APPROVAL_PATH;
   if (prefix === "r25ao") return R25AO_APPROVAL_PATH;
   if (prefix === "r25ac") return R25AC_APPROVAL_PATH;
   if (prefix === "r25y") return R25Y_APPROVAL_PATH;
@@ -112,11 +116,14 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (approval?.scope !== scope) failures.push({ code: "approval_scope_invalid", expected: scope, actual: approval?.scope });
   if (approval?.phase !== "phase_3_small_decoder_pilot") failures.push({ code: "approval_phase_invalid", phase: approval?.phase });
   if (approval?.run_id !== requestedRunId) failures.push({ code: "approval_run_id_mismatch", expected: requestedRunId, actual: approval?.run_id });
-  if ((prefix === "r25p" || prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac" || prefix === "r25ao") && approval?.variant_id !== requestedVariantId) {
+  if ((prefix === "r25p" || prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac" || prefix === "r25ao" || prefix === "r25ar") && approval?.variant_id !== requestedVariantId) {
     failures.push({ code: "approval_variant_id_mismatch", expected: requestedVariantId, actual: approval?.variant_id });
   }
   if (prefix === "r25ao" && requestedVariantId !== "r25ao_sampler_zh70_mixed20_en10") {
     failures.push({ code: "r25ao_only_sampler_zh70_mixed20_en10_is_approved", actual: requestedVariantId });
+  }
+  if (prefix === "r25ar" && requestedVariantId !== "r25ar_mixed_repair_lower_intensity") {
+    failures.push({ code: "r25ar_only_mixed_repair_lower_intensity_is_approved", actual: requestedVariantId });
   }
   if (prefix === "r25ac" && requestedVariantId !== "r25ac_chinese_personal_microcycle_256") {
     failures.push({ code: "r25ac_only_chinese_personal_microcycle_256_is_approved", actual: requestedVariantId });
@@ -134,11 +141,14 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
     failures.push({ code: "r25y_only_data_regularized_192_is_approved", actual: requestedVariantId });
   }
   if (approval?.allow_small_pilot_training !== true) failures.push({ code: "approval_must_allow_small_pilot_training" });
-  if (prefix === "r25ao" && approval?.allow_bounded_decoder_pilot_training !== true) {
+  if ((prefix === "r25ao" || prefix === "r25ar") && approval?.allow_bounded_decoder_pilot_training !== true) {
     failures.push({ code: "approval_must_allow_bounded_decoder_pilot_training" });
   }
-  if (prefix === "r25ao" && approval?.allow_tokenizer_dry_run !== false) {
+  if ((prefix === "r25ao" || prefix === "r25ar") && approval?.allow_tokenizer_dry_run !== false) {
     failures.push({ code: "approval_must_not_allow_tokenizer_dry_run" });
+  }
+  if (prefix === "r25ar" && approval?.allow_corpus_expansion !== false) {
+    failures.push({ code: "approval_must_not_allow_corpus_expansion" });
   }
   if (prefix === "r25ac" && approval?.allow_chinese_personal_microcycle !== true) {
     failures.push({ code: "approval_must_allow_chinese_personal_microcycle" });
@@ -151,7 +161,7 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   }
   if (approval?.allow_long_term_training !== false) failures.push({ code: "approval_must_not_allow_long_term_training" });
   if (approval?.allow_product_model_training !== false) failures.push({ code: "approval_must_not_allow_product_model_training" });
-  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac" || prefix === "r25ao") && approval?.allow_phase_4_scaled_training !== false) failures.push({ code: "approval_must_not_allow_phase_4_scaled_training" });
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac" || prefix === "r25ao" || prefix === "r25ar") && approval?.allow_phase_4_scaled_training !== false) failures.push({ code: "approval_must_not_allow_phase_4_scaled_training" });
   if (approval?.allow_release_checkpoint !== false) failures.push({ code: "approval_must_not_allow_release_checkpoint" });
   if (approval?.allow_weight_commit !== false) failures.push({ code: "approval_must_not_allow_weight_commit" });
   if (approval?.allow_artifacts_write !== true) failures.push({ code: "approval_must_allow_ignored_artifact_write" });
@@ -167,7 +177,29 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (runConfig.formal_product_training === true) failures.push({ code: "run_config_must_not_enable_formal_product_training" });
   if (runConfig.formal_decoder_training === true) failures.push({ code: "run_config_must_not_enable_formal_decoder_training" });
   if (runConfig.long_term_training === true) failures.push({ code: "run_config_must_not_enable_long_term_training" });
-  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac" || prefix === "r25ao") && runConfig.phase_4_scaled_training !== false) failures.push({ code: "run_config_must_not_enable_phase_4_scaled_training" });
+  if ((prefix === "r25s" || prefix === "r25v" || prefix === "r25y" || prefix === "r25ac" || prefix === "r25ao" || prefix === "r25ar") && runConfig.phase_4_scaled_training !== false) failures.push({ code: "run_config_must_not_enable_phase_4_scaled_training" });
+  if (prefix === "r25ar") {
+    if (runConfig.formal_decoder_training !== false) failures.push({ code: "r25ar_must_not_enable_formal_decoder_training" });
+    if (runConfig.formal_product_training !== false) failures.push({ code: "r25ar_must_not_enable_formal_product_training" });
+    if (runConfig.long_term_training !== false) failures.push({ code: "r25ar_must_not_enable_long_term_training" });
+    if (runConfig.tokenizer_dry_run_allowed === true || runConfig.allow_tokenizer_dry_run === true) failures.push({ code: "r25ar_must_not_allow_tokenizer_dry_run" });
+    if (runConfig.corpus_expansion_allowed === true || runConfig.allow_corpus_expansion === true) failures.push({ code: "r25ar_must_not_allow_corpus_expansion" });
+    if (runConfig.architecture?.basis !== "r25s_baseline_data_first") {
+      failures.push({ code: "r25ar_must_use_r25s_data_first_basis", actual: runConfig.architecture?.basis });
+    }
+    if (Number(runConfig.architecture?.layers || 0) !== 1) {
+      failures.push({ code: "r25ar_must_keep_one_layer_baseline", actual: runConfig.architecture?.layers });
+    }
+    const mixTarget = runConfig.sampler_target || runConfig.language_mix_target || {};
+    if (Number(mixTarget?.zh_min || 0) < 0.65) failures.push({ code: "r25ar_zh_min_below_required" });
+    if (Number(mixTarget?.mixed_target || 0) < 0.24) failures.push({ code: "r25ar_mixed_target_below_repair_floor" });
+    if (Number(mixTarget?.en_max || 1) > 0.1) failures.push({ code: "r25ar_en_max_above_required" });
+    if (!Array.isArray(runConfig.train_sources) || !Array.isArray(runConfig.dev_sources) || !Array.isArray(runConfig.heldout_sources)) {
+      failures.push({ code: "r25ar_must_use_expanded_source_arrays" });
+    }
+    if (Number(runConfig.max_steps || 0) > 60) failures.push({ code: "r25ar_max_steps_must_not_exceed_60", actual: runConfig.max_steps });
+    if (Number(runConfig.learning_rate || 0) > 0.003) failures.push({ code: "r25ar_learning_rate_must_not_exceed_repaired_design", actual: runConfig.learning_rate });
+  }
   if (prefix === "r25ao") {
     if (runConfig.formal_decoder_training !== false) failures.push({ code: "r25ao_must_not_enable_formal_decoder_training" });
     if (runConfig.formal_product_training !== false) failures.push({ code: "r25ao_must_not_enable_formal_product_training" });
@@ -231,18 +263,21 @@ function validateFreshApproval({ approval, approvalPath, runConfig, configPath }
   if (prefix === "r25ao" && configPath !== "training/from_scratch/small_decoder_pilot_run_config.r25ao.json") {
     failures.push({ code: "r25ao_must_use_r25ao_run_config", configPath });
   }
+  if (prefix === "r25ar" && configPath !== "training/from_scratch/small_decoder_pilot_run_config.r25ar.json") {
+    failures.push({ code: "r25ar_must_use_r25ar_run_config", configPath });
+  }
   return failures;
 }
 
 async function consumePilotApproval(approvalPath, approval, runConfig) {
   const prefix = runPrefix(runConfig);
-  if (approvalPath !== R25P_APPROVAL_PATH && approvalPath !== R25S_APPROVAL_PATH && approvalPath !== R25V_APPROVAL_PATH && approvalPath !== R25Y_APPROVAL_PATH && approvalPath !== R25AC_APPROVAL_PATH && approvalPath !== R25AO_APPROVAL_PATH) return;
+  if (approvalPath !== R25P_APPROVAL_PATH && approvalPath !== R25S_APPROVAL_PATH && approvalPath !== R25V_APPROVAL_PATH && approvalPath !== R25Y_APPROVAL_PATH && approvalPath !== R25AC_APPROVAL_PATH && approvalPath !== R25AO_APPROVAL_PATH && approvalPath !== R25AR_APPROVAL_PATH) return;
   const consumedByPhase = prefix.toUpperCase();
   const consumed = {
     ...approval,
     consumed: true,
     allow_additional_runs: false,
-    consumed_by_commit: prefix === "r25ao" ? "pending_r25ao_commit" : prefix === "r25ac" ? "pending_r25ac_commit" : prefix === "r25y" ? "pending_r25y_commit" : prefix === "r25v" ? "pending_r25v_commit" : prefix === "r25s" ? "pending_r25s_commit" : "pending_r25p_commit",
+    consumed_by_commit: prefix === "r25ar" ? "pending_r25ar_commit" : prefix === "r25ao" ? "pending_r25ao_commit" : prefix === "r25ac" ? "pending_r25ac_commit" : prefix === "r25y" ? "pending_r25y_commit" : prefix === "r25v" ? "pending_r25v_commit" : prefix === "r25s" ? "pending_r25s_commit" : "pending_r25p_commit",
     consumed_by_phase: consumedByPhase,
     consumed_reason: prefix === "r25v"
       ? "one-shot approval used or attempted for r25v_two_layer_same_width; future runs require a new approval marker"
@@ -252,6 +287,8 @@ async function consumePilotApproval(approvalPath, approval, runConfig) {
       ? "one-shot approval used or attempted for r25ac_chinese_personal_microcycle_256; future runs require a new approval marker"
       : prefix === "r25ao"
       ? "one-shot approval used or attempted for r25ao_expanded_chinese_personal_microcycle; future runs require a new approval marker"
+      : prefix === "r25ar"
+      ? "one-shot approval used or attempted for r25ar_repaired_sampler_microcycle; future runs require a new approval marker"
       : `one-shot approval used for ${runConfig.run_id}; future runs require a new approval marker`
   };
   await writeJson(approvalPath, consumed);
@@ -513,6 +550,45 @@ async function main() {
       ...(report.notes || []),
       "R25AO is exactly one bounded expanded Chinese-personal small decoder pilot.",
       "R25AO uses the R25AM-expanded tracked corpus and R25AN tokenizer artifact; it does not run tokenizer dry-run, formal decoder training, product training, long-term training, or phase_4 scaled training."
+    ];
+    await writeJson(paths.run, report);
+  }
+  if (runPrefix(runConfig) === "r25ar") {
+    report.repaired_sampler_microcycle = true;
+    report.expanded_chinese_personal_microcycle = false;
+    report.bounded_decoder_pilot_training = report.small_pilot_training_ran === true;
+    report.formal_decoder_training = false;
+    report.formal_product_training = false;
+    report.long_term_training = false;
+    report.phase_4_scaled_training = false;
+    report.tokenizer_dry_run_ran = false;
+    report.corpus_expansion_ran = false;
+    report.product_model = false;
+    report.release_checkpoint = false;
+    report.actual_language_mix = datasetReport.actual_train_language_mix || null;
+    report.actual_dev_language_mix = datasetReport.actual_dev_language_mix || null;
+    report.actual_heldout_language_mix = datasetReport.actual_heldout_language_mix || null;
+    report.personal_target_coverage = datasetReport.personal_target_coverage || {};
+    report.risk_focus_target_coverage = datasetReport.risk_focus_target_coverage || {};
+    report.personal_target_undercovered = Object.fromEntries(
+      Object.entries(datasetReport.personal_target_coverage || {}).map(([target, coverage]) => [target, Number(coverage?.rows || 0) === 0])
+    );
+    report.risk_focus_undercovered = Object.fromEntries(
+      Object.entries(datasetReport.risk_focus_target_coverage || {}).map(([target, coverage]) => [target, Number(coverage?.rows || 0) === 0])
+    );
+    report.dataset_report_path = paths.dataset;
+    report.early_stop_triggered = false;
+    report.early_stop_support = runConfig.early_stop_if_dev_worsens ? "reported_not_enforced_by_current_bounded_runner" : "not_requested";
+    report.source_files = {
+      train: datasetReport.train_source_files || datasetReport.source_files?.train || datasetReport.train_sources || (await readJson(`${paths.outputDir}${paths.prefix}_train_sequences.json`).catch(() => ({}))).source_files || [],
+      dev: (await readJson(`${paths.outputDir}${paths.prefix}_dev_sequences.json`).catch(() => ({}))).source_files || [],
+      heldout: (await readJson(`${paths.outputDir}${paths.prefix}_heldout_sequences.json`).catch(() => ({}))).source_files || []
+    };
+    report.notes = [
+      ...(report.notes || []),
+      "R25AR is exactly one bounded repaired-sampler Chinese-personal small decoder pilot.",
+      "R25AR uses tracked corpus split files and R25AN tokenizer artifacts; it does not run tokenizer dry-run, corpus expansion, formal decoder training, product training, long-term training, or phase_4 scaled training.",
+      "The early-stop guard is recorded as a design constraint; the current bounded runner reports dev behavior at eval checkpoints and does not stop early."
     ];
     await writeJson(paths.run, report);
   }

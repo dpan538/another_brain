@@ -48,6 +48,7 @@ function argValue(name, fallback = null) {
 
 function runPrefix(config) {
   const runId = String(config.run_id || "");
+  if (runId.startsWith("r25ar_")) return "r25ar";
   if (runId.startsWith("r25ao_")) return "r25ao";
   if (runId.startsWith("r25ac_")) return "r25ac";
   if (runId.startsWith("r25y_")) return "r25y";
@@ -55,6 +56,16 @@ function runPrefix(config) {
   if (runId.startsWith("r25s_")) return "r25s";
   if (runId.startsWith("r25p_")) return "r25p";
   return "r25m";
+}
+
+function usesChinesePersonalSampling(config) {
+  const prefix = runPrefix(config);
+  return prefix === "r25ac" || prefix === "r25ao" || prefix === "r25ar";
+}
+
+function usesExpandedCorpusSources(config) {
+  const prefix = runPrefix(config);
+  return prefix === "r25ao" || prefix === "r25ar";
 }
 
 const PERSONAL_TARGET_FAMILIES = {
@@ -283,8 +294,7 @@ function rankRows(rows, targets, seed) {
 }
 
 function selectRowsByChinesePersonalMix(rows, split, limit, config, failures) {
-  const isChinesePersonalPilot = config.run_id?.startsWith("r25ac_") || config.run_id?.startsWith("r25ao_");
-  if (!isChinesePersonalPilot) return rows;
+  if (!usesChinesePersonalSampling(config)) return rows;
   const targets = config.personal_color_targets || [];
   const mixTarget = config.sampler_target || config.language_mix_target || {};
   const desired = targetLanguageCounts(limit, mixTarget);
@@ -352,6 +362,27 @@ function personalCoverage(rows, targets = []) {
       rows: matchedRows.length,
       sample_ids: matchedRows.slice(0, 12).map((row) => row.sample_id),
       source: "task_family_or_policy_tags",
+      fabricated: false
+    };
+  }
+  return coverage;
+}
+
+function riskFocusCoverage(rows, riskTargets = []) {
+  const coverage = {};
+  for (const target of riskTargets) {
+    const normalized = String(target || "");
+    const matchedRows = rows.filter((row) => {
+      if (row.language === normalized) return true;
+      if (row.task_family === normalized || row.task_type === normalized || row.transformation_type === normalized) return true;
+      if ((row.personal_color_targets || []).includes(normalized)) return true;
+      if ((row.policy_tags || []).includes(normalized)) return true;
+      return rowPersonalTargets(row, [normalized]).length > 0;
+    });
+    coverage[normalized] = {
+      rows: matchedRows.length,
+      sample_ids: matchedRows.slice(0, 12).map((row) => row.sample_id),
+      source: "language_task_family_policy_tags_or_personal_targets",
       fabricated: false
     };
   }
@@ -492,12 +523,12 @@ async function main() {
   for (const { path, split } of allSourceEntries) {
     if (sourceForbiddenForSplit(path, split)) forbidden_sources_touched.push(path);
   }
-  if (!config.run_id?.startsWith("r25ao_")) {
+  if (!usesExpandedCorpusSources(config)) {
     if (config.train_source !== "training/llm_corpus/r25l_train.jsonl") failures.push({ code: "unexpected_train_source", path: config.train_source });
     if (config.dev_source !== "training/llm_corpus/r25l_dev.jsonl") failures.push({ code: "unexpected_dev_source", path: config.dev_source });
     if (config.heldout_source && config.heldout_source !== "training/llm_corpus/r25l_heldout.jsonl") failures.push({ code: "unexpected_heldout_source", path: config.heldout_source });
   } else {
-    if (trainSources.length < 2 || devSources.length < 2 || heldoutSources.length < 2) failures.push({ code: "r25ao_requires_expanded_split_source_arrays" });
+    if (trainSources.length < 2 || devSources.length < 2 || heldoutSources.length < 2) failures.push({ code: `${prefix}_requires_expanded_split_source_arrays` });
   }
 
   const tokenizer = failures.length ? null : await readJson(tokenizerPath);
@@ -581,8 +612,9 @@ async function main() {
     config_path: configPath,
     sampling_plan_path: samplingPlanPath,
     balanced_sampling_used: Boolean(samplingPlan),
-    chinese_personal_sampling_used: prefix === "r25ac" || prefix === "r25ao",
-    expanded_corpus_sampling_used: prefix === "r25ao",
+    chinese_personal_sampling_used: usesChinesePersonalSampling(config),
+    expanded_corpus_sampling_used: usesExpandedCorpusSources(config),
+    repaired_sampler_sampling_used: prefix === "r25ar",
     data_regularization_used: prefix === "r25y",
     regularization_stats: trainRegularization.stats,
     train_rows: trainSequences.length,
@@ -599,6 +631,12 @@ async function main() {
     actual_heldout_language_mix: shareFromCounts(heldoutLanguageCounts),
     target_language_mix: config.sampler_target || config.language_mix_target || null,
     personal_target_coverage: personalCoverage(trainRowsForSelection, config.personal_color_targets || []),
+    risk_focus_target_coverage: riskFocusCoverage(trainRowsForSelection, config.risk_focus_targets || []),
+    source_file_counts: {
+      train: countBy(trainRowsForSelection, "__source"),
+      dev: countBy(devRowsForSelection, "__source"),
+      heldout: countBy(heldoutRowsForSelection, "__source")
+    },
     split_overlap: overlap,
     task_family_counts: {
       train: countBy(trainRowsForSelection, "task_family"),
@@ -612,10 +650,10 @@ async function main() {
     tokenizer_id: datasetBase.tokenizer_id,
     forbidden_sources_touched,
     notes: [
-      prefix === "r25ao"
-        ? "R25AO pilot dataset reads only configured tracked training/llm_corpus JSONL split files."
+      usesExpandedCorpusSources(config)
+        ? `${prefix.toUpperCase()} pilot dataset reads only configured tracked training/llm_corpus JSONL split files.`
         : `${config.run_id || "R25M"} pilot dataset reads only approved R25L JSONL files.`,
-      prefix === "r25ao"
+      usesExpandedCorpusSources(config)
         ? "Training uses configured train split sources only; dev rows are used for bounded sanity evaluation only."
         : "Training uses R25L train rows only; dev rows are used for bounded sanity evaluation only.",
       "Heldout rows, when present, are prepared only for replay evaluation and are not used for training.",

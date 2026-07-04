@@ -96,3 +96,6 @@ while keeping English at or below 10%. This is still Chinese-first because the
 repair target is mixed Chinese/technical robustness, not English benchmark
 fluency. R25AQ itself does not train, generate datasets, modify corpus files,
 or approve phase_4; R25AR remains an inert future design until fresh approval.
+## R25AR Sampler Lesson
+
+R25AR shows that meeting a Chinese-first sampler ratio is necessary but not sufficient. A run can hit zh/mixed/en targets and still regress on heldout loss, so future approvals must judge both corpus mix and replayed heldout behavior.

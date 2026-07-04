@@ -37,3 +37,12 @@ because repo work is Chinese-first with technical mixed terms, while English
 remains secondary and capped. The repaired sampler design should address mixed
 coverage first, not generic English fluency. R25AQ does not train, generate
 datasets, run tokenizer dry-run, or approve phase_4.
+## R25AR Bucket Follow-Up
+
+R25AR increased mixed sampling to 25% and lowered training intensity, but heldout buckets still favored zh:
+
+- zh: 6.0836
+- mixed: 8.0400
+- en: 8.1583
+
+Mixed-minus-zh was 1.9564 and en-minus-zh was 2.0747, so R25AR did not repair the mixed/en weakness.
