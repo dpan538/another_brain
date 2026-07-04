@@ -535,3 +535,14 @@ long-horizon training, eval-derived training, or prompt-generation sources.
 They may be referenced only as policy evidence, cleanup notes, or
 project-management context. No raw CSV/XLSX answer-pack file is committed in
 R26C.
+
+## R26D/R26E User-Answered Data Note
+
+R26D reads the answered CSV only from the ignored private intake path and
+creates ignored candidates from rows 1-50. It does not promote rows or train.
+
+R26E may promote only reviewed first-50 answer-as-user candidates. The promoted
+rows preserve the user's answer wording as the target and record
+`provenance.source_type` as `user_answered`. Rows 51-100 remain excluded from
+all training/corpus/tokenizer/teacher/eval-generation paths. The raw CSV and
+ignored candidate artifacts are not committed.

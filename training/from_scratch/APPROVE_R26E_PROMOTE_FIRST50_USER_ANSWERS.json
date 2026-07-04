@@ -1,0 +1,32 @@
+{
+  "approved": true,
+  "scope": "promote_reviewed_first50_user_answer_candidates_only",
+  "reviewer": "user",
+  "phase": "phase_3_corpus_review",
+  "run_id": "r26e_promote_first50_user_answers",
+  "allow_promote_derived_rows": false,
+  "allow_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_corpus_generation": false,
+  "allow_raw_source_commit": false,
+  "allow_candidate_artifact_commit": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_weight_commit": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_release_checkpoint": false,
+  "source_candidate_file": "artifacts/training_os/user_answer_intake/r26d/r26d_first50_answer_as_user_candidates.jsonl",
+  "target_corpus_files": [
+    "training/llm_corpus/r26e_user_answered_train.jsonl",
+    "training/llm_corpus/r26e_user_answered_dev.jsonl",
+    "training/llm_corpus/r26e_user_answered_heldout.jsonl"
+  ],
+  "max_promoted_rows": 80,
+  "notes": "R26E may promote a bounded reviewed subset of first-50 user-answer candidates into tracked corpus files. It does not authorize training.",
+  "consumed": true,
+  "allow_additional_runs": false,
+  "consumed_by_phase": "R26E",
+  "consumed_by_commit": "pending_r26e_commit",
+  "consumed_reason": "one-shot approval used or attempted for r26e_promote_first50_user_answers; future promotion requires a new approval marker; future runs require a new approval marker",
+  "promotion_outcome": "promoted_reviewed_first50_subset"
+}

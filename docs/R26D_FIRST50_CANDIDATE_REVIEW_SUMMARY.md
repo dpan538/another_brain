@@ -14,3 +14,5 @@ R26D converted only rows 1-50 from `another_brain_question_pack_001` into ignore
 - risk flags: {"project_meta_leakage":10}
 
 Full user answers stay in ignored artifacts for review. This tracked summary intentionally does not include raw answers or row 51-100 text.
+
+R26E may promote only reviewed rows from this first-50 candidate set. Rows flagged for project-meta leakage, duplicated target answers, or weak answer-as-user fit should be rejected rather than used to fill a row quota.

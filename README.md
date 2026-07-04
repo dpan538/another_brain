@@ -706,3 +706,16 @@ boundaries, and answer-as-user behavior.
 R26C does not train, run tokenizer dry-run, expand corpus, promote corpus rows,
 commit raw CSV/XLSX question-pack files, approve phase_4, call external APIs,
 call Doubao, commit artifacts, or commit weights.
+
+## R26D/R26E User Answer Corpus Status
+
+R26D intakes only rows 1-50 of the first answered question pack as ignored
+answer-as-user candidates. Rows 51-100 remain excluded because they are
+project-meta/training-meta/status prompts, not normal friend-facing answer
+behavior.
+
+R26E may promote a bounded reviewed subset of those first-50 candidates into
+tracked `training/llm_corpus` split files. It does not train, run tokenizer
+dry-run, use rows 51-100, call external APIs or Doubao, commit the raw CSV,
+commit artifacts, or approve phase_4. Replacement rows 51-100 still require a
+fresh R26F intake approval.

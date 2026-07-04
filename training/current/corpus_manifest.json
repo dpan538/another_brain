@@ -412,33 +412,118 @@
       },
       "source_type": "reviewed_repo_derived",
       "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r26e_user_answered_train.jsonl",
+      "exists": true,
+      "split": "train",
+      "row_count": 35,
+      "language_counts": {
+        "mixed": 13,
+        "zh": 22
+      },
+      "provenance_counts": {
+        "user_answered": 35
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 35
+      },
+      "contains_private_data_counts": {
+        "false": 35
+      },
+      "training_allowed_counts": {
+        "true": 35
+      },
+      "public_commit_allowed_counts": {
+        "true": 35
+      },
+      "transformation_counts": {},
+      "source_type": "base_training_corpus",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r26e_user_answered_dev.jsonl",
+      "exists": true,
+      "split": "dev",
+      "row_count": 5,
+      "language_counts": {
+        "zh": 4,
+        "mixed": 1
+      },
+      "provenance_counts": {
+        "user_answered": 5
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 5
+      },
+      "contains_private_data_counts": {
+        "false": 5
+      },
+      "training_allowed_counts": {
+        "true": 5
+      },
+      "public_commit_allowed_counts": {
+        "true": 5
+      },
+      "transformation_counts": {},
+      "source_type": "base_training_corpus",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r26e_user_answered_heldout.jsonl",
+      "exists": true,
+      "split": "heldout",
+      "row_count": 5,
+      "language_counts": {
+        "mixed": 1,
+        "zh": 4
+      },
+      "provenance_counts": {
+        "user_answered": 5
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 5
+      },
+      "contains_private_data_counts": {
+        "false": 5
+      },
+      "training_allowed_counts": {
+        "true": 5
+      },
+      "public_commit_allowed_counts": {
+        "true": 5
+      },
+      "transformation_counts": {},
+      "source_type": "base_training_corpus",
+      "active_status": "active_current"
     }
   ],
   "totals": {
-    "rows": 4160,
+    "rows": 4205,
     "language_counts": {
       "en": 1032,
-      "zh": 1956,
-      "mixed": 1172
+      "zh": 1986,
+      "mixed": 1187
     },
     "provenance_counts": {
       "repo_derived": 1448,
-      "template_generated": 2712
+      "template_generated": 2712,
+      "user_answered": 45
     },
     "review_status_counts": {
       "reviewed_template": 2880,
-      "reviewed_for_training_corpus": 1280
+      "reviewed_for_training_corpus": 1325
     },
     "contains_private_data_counts": {
-      "false": 4160
+      "false": 4205
     },
     "training_allowed_counts": {
       "undefined": 2880,
-      "true": 1280
+      "true": 1325
     },
     "public_commit_allowed_counts": {
       "undefined": 2880,
-      "true": 1280
+      "true": 1325
     }
   }
 }

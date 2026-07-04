@@ -454,6 +454,52 @@ const MARKERS = [
       "allow_release_checkpoint",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r26e_promote_first50_user_answers_template",
+    path: "training/from_scratch/APPROVE_R26E_PROMOTE_FIRST50_USER_ANSWERS.template.json",
+    expectedScope: "promote_reviewed_first50_user_answer_candidates_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r26e_promote_first50_user_answers",
+    template: true,
+    trainingFlagKeys: [
+      "allow_promote_derived_rows",
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_corpus_generation",
+      "allow_phase_4_scaled_training",
+      "allow_weight_commit"
+    ]
+  },
+  {
+    id: "r26e_promote_first50_user_answers",
+    path: "training/from_scratch/APPROVE_R26E_PROMOTE_FIRST50_USER_ANSWERS.json",
+    expectedScope: "promote_reviewed_first50_user_answer_candidates_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r26e_promote_first50_user_answers",
+    consumedByCommit: "pending_r26e_commit",
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_phase_4_scaled_training",
+      "allow_weight_commit"
+    ]
+  },
+  {
+    id: "r26f_replacement_51_100_intake_template",
+    path: "training/from_scratch/APPROVE_R26F_REPLACEMENT_51_100_INTAKE.template.json",
+    expectedScope: "replacement_51_100_user_answer_intake_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r26f_replacement_51_100_intake",
+    template: true,
+    trainingFlagKeys: [
+      "allow_candidate_generation",
+      "allow_promote_derived_rows",
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_phase_4_scaled_training",
+      "allow_weight_commit"
+    ]
   }
 ];
 

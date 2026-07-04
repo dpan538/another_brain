@@ -7,8 +7,8 @@ import { ROOT } from "./r18_utils.mjs";
 const DIR = resolve(ROOT, "training/long_horizon");
 const OUT = resolve(ROOT, "artifacts/training_os/training_provenance_report.json");
 const LLM_CORPUS_DIR = resolve(ROOT, "training/llm_corpus");
-const PROMOTED_REPO_DERIVED_FILE = /^r25a[km]_repo_derived_(train|dev|heldout)\.jsonl$/;
-const SOURCE_TYPES = new Set(["human_seed", "synthetic_llm", "repo_derived", "eval_fixture"]);
+const PROMOTED_CORPUS_FILE = /^(r25a[km]_repo_derived|r26e_user_answered)_(train|dev|heldout)\.jsonl$/;
+const SOURCE_TYPES = new Set(["human_seed", "synthetic_llm", "repo_derived", "eval_fixture", "user_answered"]);
 const CHAIN_KEY = /chain.?of.?thought|cot|hidden_reasoning|private_reasoning/i;
 const LOCAL_PATH = /\/Users\/|\/private\/var\/|\/Volumes\//;
 const SECRET = /BEGIN (RSA|OPENSSH|PRIVATE) KEY|sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|api[_-]?key|secret[_-]?key/i;
@@ -45,6 +45,7 @@ function validateSample(sample) {
   const provenance = sample.provenance || {};
   const r25ak = String(sample.sample_id || "").startsWith("r25ak_repo_derived_");
   const r25am = String(sample.sample_id || "").startsWith("r25am_repo_derived_");
+  const r26e = String(sample.sample_id || "").startsWith("r26e_user_answered_");
   if (!provenance || typeof provenance !== "object") failures.push("missing_provenance");
   if (!SOURCE_TYPES.has(provenance.source_type)) failures.push("invalid_source_type");
   if (provenance.source_type === "synthetic_llm" && !provenance.generator_model) failures.push("synthetic_llm_missing_generator_model");
@@ -59,6 +60,17 @@ function validateSample(sample) {
     if (provenance.promoted_by !== promotedBy) failures.push(`${phase.toLowerCase()}_missing_promoted_by`);
     if (provenance.promotion_phase !== phase) failures.push(`${phase.toLowerCase()}_missing_promotion_phase`);
     if (provenance.external_llm_used !== false) failures.push(`${phase.toLowerCase()}_external_llm_used_not_false`);
+  }
+  if (r26e) {
+    if (sample.review_status !== "reviewed_for_training_corpus") failures.push("r26e_review_status_not_promoted");
+    if (sample.training_allowed !== true) failures.push("r26e_training_allowed_not_true");
+    if (sample.public_commit_allowed !== true) failures.push("r26e_public_commit_allowed_not_true");
+    if (provenance.source_type !== "user_answered") failures.push("r26e_source_type_not_user_answered");
+    if (provenance.pack_id !== "another_brain_question_pack_001") failures.push("r26e_pack_id_mismatch");
+    if (provenance.promoted_by !== "scripts/promote_r26e_first50_user_answers.mjs") failures.push("r26e_missing_promoted_by");
+    if (provenance.promotion_phase !== "R26E") failures.push("r26e_missing_promotion_phase");
+    if (provenance.external_llm_used !== false) failures.push("r26e_external_llm_used_not_false");
+    if (Number(sample.source_row_id) < 1 || Number(sample.source_row_id) > 50) failures.push("r26e_source_row_not_1_50");
   }
   for (const item of walk(sample)) {
     if (CHAIN_KEY.test(item.key)) failures.push(`chain_of_thought_key:${item.path}`);
@@ -83,7 +95,7 @@ async function main() {
       }
     }
   }
-  const promotedFiles = (await readdir(LLM_CORPUS_DIR)).filter((file) => PROMOTED_REPO_DERIVED_FILE.test(file)).sort();
+  const promotedFiles = (await readdir(LLM_CORPUS_DIR)).filter((file) => PROMOTED_CORPUS_FILE.test(file)).sort();
   for (const promotedFile of promotedFiles) {
     const fullPath = join(LLM_CORPUS_DIR, promotedFile);
     const file = fullPath.replace(`${ROOT}/`, "");

@@ -1,13 +1,13 @@
 {
   "approved": false,
-  "scope": "promote_reviewed_first50_user_answer_candidates_only",
+  "scope": "replacement_51_100_user_answer_intake_only",
   "reviewer": "",
   "phase": "phase_3_corpus_review",
-  "run_id": "r26e_promote_first50_user_answers",
+  "run_id": "r26f_replacement_51_100_intake",
+  "allow_candidate_generation": false,
   "allow_promote_derived_rows": false,
   "allow_training": false,
   "allow_tokenizer_dry_run": false,
-  "allow_corpus_generation": false,
   "allow_raw_source_commit": false,
   "allow_candidate_artifact_commit": false,
   "allow_phase_4_scaled_training": false,
@@ -15,5 +15,5 @@
   "allow_long_term_training": false,
   "allow_product_model_training": false,
   "allow_release_checkpoint": false,
-  "notes": "Template only. R26E may promote reviewed R26D first-50 user-answer candidates only after explicit approval. This does not authorize training."
+  "notes": "Template only. R26F may intake replacement 51-100 answers only after explicit approval. This does not authorize training."
 }

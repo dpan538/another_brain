@@ -1,0 +1,69 @@
+{
+  "phase": "R26E",
+  "scope": "promote_reviewed_first50_user_answer_candidates_only",
+  "pack_id": "another_brain_question_pack_001",
+  "source_candidate_file": "artifacts/training_os/user_answer_intake/r26d/r26d_first50_answer_as_user_candidates.jsonl",
+  "target_corpus_files": {
+    "train": "training/llm_corpus/r26e_user_answered_train.jsonl",
+    "dev": "training/llm_corpus/r26e_user_answered_dev.jsonl",
+    "heldout": "training/llm_corpus/r26e_user_answered_heldout.jsonl"
+  },
+  "max_promoted_rows": 80,
+  "suggested_split_caps": {
+    "train": 64,
+    "dev": 8,
+    "heldout": 8
+  },
+  "source_row_id_policy": {
+    "allowed_min": 1,
+    "allowed_max": 50,
+    "forbidden_min": 51,
+    "forbidden_max": 100,
+    "forbidden_reason": "Rows 51-100 are project-meta/training-meta/status/engineering prompts and remain excluded from all corpus, training, tokenizer, teacher, and eval-derived training paths."
+  },
+  "prefer": [
+    "clear answer-as-user voice",
+    "non-assistant tone",
+    "useful answer_mode",
+    "relationship context",
+    "refusal boundary",
+    "unsupported challenge resistance",
+    "weird question abstraction",
+    "compressed judgment"
+  ],
+  "hard_reject": [
+    "source_row_id >= 51",
+    "blank target_answer",
+    "too meta or project-management oriented",
+    "too private",
+    "generic assistant style",
+    "only restates the question",
+    "overly fragmented and not meaningful alone",
+    "chain-of-thought marker",
+    "hidden prompt marker",
+    "local absolute path",
+    "secret-like string",
+    "training_allowed already true before promotion",
+    "public_commit_allowed already true before promotion",
+    "review_status not candidate_unreviewed"
+  ],
+  "promotion_transform": {
+    "review_status": "reviewed_for_training_corpus",
+    "training_allowed": true,
+    "public_commit_allowed": true,
+    "contains_private_data": false,
+    "provenance.promotion_phase": "R26E",
+    "provenance.external_llm_used": false,
+    "provenance.source_type": "user_answered",
+    "provenance.pack_id": "another_brain_question_pack_001"
+  },
+  "does_not_authorize": [
+    "training",
+    "tokenizer_dry_run",
+    "phase_4_scaled_training",
+    "rows_51_100_use",
+    "raw_csv_commit",
+    "artifact_commit",
+    "weight_commit"
+  ]
+}

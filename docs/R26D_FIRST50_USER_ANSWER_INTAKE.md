@@ -18,4 +18,4 @@ Rows 51-100 remain hard-excluded because they are project-meta, training-meta, s
 - tokenizer dry-run ran: false
 - corpus promotion ran: false
 
-The candidate JSONL and review pack are ignored artifacts. R26E would require fresh approval before any selected reviewed candidates can be promoted into tracked corpus files.
+The candidate JSONL and review pack are ignored artifacts. R26E is the reviewed promotion step for a bounded subset of these first-50 candidates only. It must not use rows 51-100 and must not train.
