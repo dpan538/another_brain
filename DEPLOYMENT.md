@@ -309,3 +309,16 @@ is used by `npm run build:knowledge` to regenerate `web/knowledge_shards/`, but
 it must not be copied into deployable public runtime JavaScript. The public
 knowledge runtime should use `web/knowledge_runtime.js`, `manifest.json`,
 `routing.json`, and lazily selected shard JSON files.
+
+## R26A Deployment Boundary
+
+R26A standardizes project structure only. It does not add backend/storage/API
+paths, does not admit release checkpoints, does not commit weights, does not
+copy ignored artifacts into deployable runtime paths, and does not approve
+phase_4 scaled training. The target remains a same-origin static browser
+decoder LLM, with R24 recovery/shard gates and R25 static release constraints
+still active.
+
+Root DOC/PDF files and `data/public_ingestion/` remain local/unreviewed
+metadata-only surfaces and must not be deployed or treated as runtime/training
+assets.

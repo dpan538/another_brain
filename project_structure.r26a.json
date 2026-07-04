@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "phase": "R26A",
+  "r26a_non_destructive": true,
+  "training_allowed": false,
+  "tokenizer_dry_run_allowed": false,
+  "corpus_expansion_allowed": false,
+  "corpus_promotion_allowed": false,
+  "phase_4_scaled_training_approved": false,
+  "file_deletion_allowed": false,
+  "file_move_allowed": false,
+  "categories": {
+    "active_runtime": [
+      "web/",
+      "knowledge_sources/",
+      "build_sources/",
+      "static_llm/"
+    ],
+    "active_training_current": [
+      "training/llm_corpus/",
+      "training/long_horizon/",
+      "training/from_scratch/",
+      "training/current/"
+    ],
+    "active_eval_current": [
+      "evals/"
+    ],
+    "active_scripts": [
+      "scripts/"
+    ],
+    "active_docs_current": [
+      "README.md",
+      "DATA_CARD.md",
+      "DEPLOYMENT.md",
+      "docs/current/",
+      "docs/R26A_*.md",
+      "docs/R25I_FROM_SCRATCH_LLM_TRAINING_DOCTRINE.md",
+      "docs/R25I_TRAINING_PHASE_PLAN.md",
+      "docs/R25AB_PROJECT_MEANING.md",
+      "docs/R25AB_CHINESE_FIRST_TRAINING_DOCTRINE.md"
+    ],
+    "historical_docs": [
+      "docs/R24*.md",
+      "docs/R25*.md"
+    ],
+    "historical_training_pilots": [
+      "R25M",
+      "R25P",
+      "R25S",
+      "R25V",
+      "R25Y",
+      "R25AC",
+      "R25AO",
+      "R25AR"
+    ],
+    "generated_ignored_artifacts": [
+      "artifacts/**"
+    ],
+    "private_or_local_sources": [
+      "private_sources/**",
+      "root DOC/PDF files",
+      "data/public_ingestion/**"
+    ],
+    "deletion_candidates": [
+      "duplicate generated summaries",
+      "stale failed draft files",
+      "obsolete temporary docs/scripts"
+    ],
+    "keep_do_not_touch": [
+      "user-local untracked files",
+      "root DOC/PDF files",
+      "data/public_ingestion/",
+      "private_sources/",
+      "unrelated web edits",
+      "ignored artifacts"
+    ]
+  },
+  "future_cleanup_requires": "R26B explicit approval"
+}

@@ -1,0 +1,444 @@
+{
+  "schema_version": 1,
+  "phase": "R26A",
+  "purpose": "canonical current training corpus manifest without moving corpus files",
+  "non_destructive": true,
+  "row_content_modified": false,
+  "files": [
+    {
+      "path": "training/llm_corpus/train.jsonl",
+      "exists": true,
+      "split": "train",
+      "row_count": 320,
+      "language_counts": {
+        "en": 107,
+        "zh": 107,
+        "mixed": 106
+      },
+      "provenance_counts": {
+        "repo_derived": 112,
+        "template_generated": 208
+      },
+      "review_status_counts": {
+        "reviewed_template": 320
+      },
+      "contains_private_data_counts": {
+        "false": 320
+      },
+      "training_allowed_counts": {
+        "undefined": 320
+      },
+      "public_commit_allowed_counts": {
+        "undefined": 320
+      },
+      "transformation_counts": {},
+      "source_type": "base_training_corpus",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/dev.jsonl",
+      "exists": true,
+      "split": "dev",
+      "row_count": 80,
+      "language_counts": {
+        "zh": 27,
+        "mixed": 27,
+        "en": 26
+      },
+      "provenance_counts": {
+        "repo_derived": 28,
+        "template_generated": 52
+      },
+      "review_status_counts": {
+        "reviewed_template": 80
+      },
+      "contains_private_data_counts": {
+        "false": 80
+      },
+      "training_allowed_counts": {
+        "undefined": 80
+      },
+      "public_commit_allowed_counts": {
+        "undefined": 80
+      },
+      "transformation_counts": {},
+      "source_type": "base_training_corpus",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/heldout.jsonl",
+      "exists": true,
+      "split": "heldout",
+      "row_count": 80,
+      "language_counts": {
+        "mixed": 27,
+        "en": 27,
+        "zh": 26
+      },
+      "provenance_counts": {
+        "repo_derived": 28,
+        "template_generated": 52
+      },
+      "review_status_counts": {
+        "reviewed_template": 80
+      },
+      "contains_private_data_counts": {
+        "false": 80
+      },
+      "training_allowed_counts": {
+        "undefined": 80
+      },
+      "public_commit_allowed_counts": {
+        "undefined": 80
+      },
+      "transformation_counts": {},
+      "source_type": "base_training_corpus",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25l_train.jsonl",
+      "exists": true,
+      "split": "train",
+      "row_count": 1600,
+      "language_counts": {
+        "en": 534,
+        "zh": 533,
+        "mixed": 533
+      },
+      "provenance_counts": {
+        "template_generated": 1600
+      },
+      "review_status_counts": {
+        "reviewed_template": 1600
+      },
+      "contains_private_data_counts": {
+        "false": 1600
+      },
+      "training_allowed_counts": {
+        "undefined": 1600
+      },
+      "public_commit_allowed_counts": {
+        "undefined": 1600
+      },
+      "transformation_counts": {},
+      "source_type": "r25l_balanced_scaffold",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25l_dev.jsonl",
+      "exists": true,
+      "split": "dev",
+      "row_count": 400,
+      "language_counts": {
+        "zh": 134,
+        "mixed": 133,
+        "en": 133
+      },
+      "provenance_counts": {
+        "template_generated": 400
+      },
+      "review_status_counts": {
+        "reviewed_template": 400
+      },
+      "contains_private_data_counts": {
+        "false": 400
+      },
+      "training_allowed_counts": {
+        "undefined": 400
+      },
+      "public_commit_allowed_counts": {
+        "undefined": 400
+      },
+      "transformation_counts": {},
+      "source_type": "r25l_balanced_scaffold",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25l_heldout.jsonl",
+      "exists": true,
+      "split": "heldout",
+      "row_count": 400,
+      "language_counts": {
+        "mixed": 134,
+        "en": 133,
+        "zh": 133
+      },
+      "provenance_counts": {
+        "template_generated": 400
+      },
+      "review_status_counts": {
+        "reviewed_template": 400
+      },
+      "contains_private_data_counts": {
+        "false": 400
+      },
+      "training_allowed_counts": {
+        "undefined": 400
+      },
+      "public_commit_allowed_counts": {
+        "undefined": 400
+      },
+      "transformation_counts": {},
+      "source_type": "r25l_balanced_scaffold",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25ak_repo_derived_train.jsonl",
+      "exists": true,
+      "split": "train",
+      "row_count": 256,
+      "language_counts": {
+        "zh": 180,
+        "mixed": 54,
+        "en": 22
+      },
+      "provenance_counts": {
+        "repo_derived": 256
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 256
+      },
+      "contains_private_data_counts": {
+        "false": 256
+      },
+      "training_allowed_counts": {
+        "true": 256
+      },
+      "public_commit_allowed_counts": {
+        "true": 256
+      },
+      "transformation_counts": {
+        "project_continuation": 26,
+        "repair_after_weak_answer": 26,
+        "local_first_static_browser_reasoning": 26,
+        "tool_status_honesty": 26,
+        "bounded_judgment": 26,
+        "style_preference": 25,
+        "Chinese_explanation": 25,
+        "Chinese_rewrite_or_compression": 27,
+        "preference_pair": 27,
+        "repair_pair": 22
+      },
+      "source_type": "reviewed_repo_derived",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25ak_repo_derived_dev.jsonl",
+      "exists": true,
+      "split": "dev",
+      "row_count": 32,
+      "language_counts": {
+        "zh": 22,
+        "mixed": 7,
+        "en": 3
+      },
+      "provenance_counts": {
+        "repo_derived": 32
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 32
+      },
+      "contains_private_data_counts": {
+        "false": 32
+      },
+      "training_allowed_counts": {
+        "true": 32
+      },
+      "public_commit_allowed_counts": {
+        "true": 32
+      },
+      "transformation_counts": {
+        "project_continuation": 4,
+        "repair_after_weak_answer": 3,
+        "local_first_static_browser_reasoning": 3,
+        "tool_status_honesty": 3,
+        "bounded_judgment": 3,
+        "style_preference": 3,
+        "Chinese_explanation": 3,
+        "Chinese_rewrite_or_compression": 4,
+        "preference_pair": 3,
+        "repair_pair": 3
+      },
+      "source_type": "reviewed_repo_derived",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25ak_repo_derived_heldout.jsonl",
+      "exists": true,
+      "split": "heldout",
+      "row_count": 32,
+      "language_counts": {
+        "zh": 22,
+        "mixed": 7,
+        "en": 3
+      },
+      "provenance_counts": {
+        "repo_derived": 32
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 32
+      },
+      "contains_private_data_counts": {
+        "false": 32
+      },
+      "training_allowed_counts": {
+        "true": 32
+      },
+      "public_commit_allowed_counts": {
+        "true": 32
+      },
+      "transformation_counts": {
+        "project_continuation": 4,
+        "repair_after_weak_answer": 3,
+        "local_first_static_browser_reasoning": 3,
+        "tool_status_honesty": 3,
+        "bounded_judgment": 3,
+        "style_preference": 3,
+        "Chinese_explanation": 3,
+        "Chinese_rewrite_or_compression": 4,
+        "preference_pair": 3,
+        "repair_pair": 3
+      },
+      "source_type": "reviewed_repo_derived",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25am_repo_derived_train.jsonl",
+      "exists": true,
+      "split": "train",
+      "row_count": 768,
+      "language_counts": {
+        "zh": 672,
+        "mixed": 96
+      },
+      "provenance_counts": {
+        "repo_derived": 768
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 768
+      },
+      "contains_private_data_counts": {
+        "false": 768
+      },
+      "training_allowed_counts": {
+        "true": 768
+      },
+      "public_commit_allowed_counts": {
+        "true": 768
+      },
+      "transformation_counts": {
+        "project_continuation": 72,
+        "repair_after_weak_answer": 72,
+        "local_first_static_browser_reasoning": 56,
+        "tool_status_honesty": 56,
+        "bounded_judgment": 72,
+        "style_preference": 72,
+        "Chinese_explanation": 56,
+        "Chinese_rewrite_or_compression": 56,
+        "preference_pair": 72,
+        "repair_pair": 72,
+        "Chinese_follow_up_binding": 56,
+        "Chinese_project_decision": 56
+      },
+      "source_type": "reviewed_repo_derived",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25am_repo_derived_dev.jsonl",
+      "exists": true,
+      "split": "dev",
+      "row_count": 96,
+      "language_counts": {
+        "zh": 48,
+        "mixed": 48
+      },
+      "provenance_counts": {
+        "repo_derived": 96
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 96
+      },
+      "contains_private_data_counts": {
+        "false": 96
+      },
+      "training_allowed_counts": {
+        "true": 96
+      },
+      "public_commit_allowed_counts": {
+        "true": 96
+      },
+      "transformation_counts": {
+        "project_continuation": 16,
+        "bounded_judgment": 16,
+        "preference_pair": 16,
+        "local_first_static_browser_reasoning": 16,
+        "Chinese_explanation": 16,
+        "Chinese_follow_up_binding": 16
+      },
+      "source_type": "reviewed_repo_derived",
+      "active_status": "active_current"
+    },
+    {
+      "path": "training/llm_corpus/r25am_repo_derived_heldout.jsonl",
+      "exists": true,
+      "split": "heldout",
+      "row_count": 96,
+      "language_counts": {
+        "zh": 52,
+        "en": 44
+      },
+      "provenance_counts": {
+        "repo_derived": 96
+      },
+      "review_status_counts": {
+        "reviewed_for_training_corpus": 96
+      },
+      "contains_private_data_counts": {
+        "false": 96
+      },
+      "training_allowed_counts": {
+        "true": 96
+      },
+      "public_commit_allowed_counts": {
+        "true": 96
+      },
+      "transformation_counts": {
+        "repair_after_weak_answer": 18,
+        "style_preference": 17,
+        "repair_pair": 17,
+        "tool_status_honesty": 15,
+        "Chinese_rewrite_or_compression": 15,
+        "Chinese_project_decision": 14
+      },
+      "source_type": "reviewed_repo_derived",
+      "active_status": "active_current"
+    }
+  ],
+  "totals": {
+    "rows": 4160,
+    "language_counts": {
+      "en": 1032,
+      "zh": 1956,
+      "mixed": 1172
+    },
+    "provenance_counts": {
+      "repo_derived": 1448,
+      "template_generated": 2712
+    },
+    "review_status_counts": {
+      "reviewed_template": 2880,
+      "reviewed_for_training_corpus": 1280
+    },
+    "contains_private_data_counts": {
+      "false": 4160
+    },
+    "training_allowed_counts": {
+      "undefined": 2880,
+      "true": 1280
+    },
+    "public_commit_allowed_counts": {
+      "undefined": 2880,
+      "true": 1280
+    }
+  }
+}

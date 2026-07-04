@@ -481,3 +481,15 @@ commit artifacts/weights. R25AS records that R25AR met the repaired sampler
 mix but worsened heldout loss and did not repair mixed/en bucket weakness.
 Future R25AT work is inert until fresh approval and remains review-only unless
 a later approval explicitly says otherwise.
+
+## R26A Data Note
+
+R26A is project cleanup and canonical structure only. It does not train, run
+tokenizer dry-run, expand corpus, promote corpus rows, or modify
+`training/llm_corpus` row content. Current corpus files are referenced in
+`training/current/corpus_manifest.json` without moving or rewriting them.
+
+Root DOC/PDF files, `data/public_ingestion/`, `private_sources/`, ignored
+artifacts, and unrelated local residue remain unreviewed/local and are not
+training input. Future user-answer corpus collection should happen only after
+the R26 structure is accepted and separately approved.

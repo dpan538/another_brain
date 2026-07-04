@@ -649,3 +649,17 @@ reduced train/dev loss, but heldout loss regressed further versus R25AO and the
 mixed/en buckets were not repaired. R25AT is an inert future review template
 only; any later training needs fresh approval and new evidence. Product and
 formal decoder training progress remain `0%`.
+
+## R26A Project Structure Status
+
+R26A pauses training and standardizes project structure after R25AO/R25AR
+showed sampler mechanics but heldout regression. It creates canonical current
+training manifests, documentation indexes, cleanup policy, and cleanup plans
+without running training, tokenizer dry-run, corpus expansion, corpus
+promotion, phase_4 scaled training, external APIs, or remote downloads.
+
+The project target remains a same-origin static browser decoder LLM. R24
+recovery/shard gates and R25 static release constraints remain active. Root
+DOC/PDF files and `data/public_ingestion/` remain local/unreviewed metadata-only
+surfaces, not training input. Future user-answer corpus collection should wait
+until the R26 structure is reviewed and accepted.

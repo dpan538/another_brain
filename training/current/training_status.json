@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "phase": "R26A",
+  "product_training_progress_percent": 0,
+  "formal_decoder_training_progress_percent": 0,
+  "pilot_training_progress_percent": 8,
+  "training_readiness_percent_estimate": 87,
+  "browser_product_completion_estimate": 35,
+  "phase_4_scaled_training_approved": false,
+  "model_weights_committed": false,
+  "release_checkpoint_exists": false,
+  "current_recommendation": "pause_phase3_training_for_structure_cleanup",
+  "latest_completed_training_phase": "R25AR",
+  "latest_required_analysis_phase": "R25AS/R26A",
+  "next_training_requires_fresh_approval": true,
+  "r26a_training_ran": false,
+  "r26a_tokenizer_dry_run_ran": false,
+  "r26a_corpus_expansion_ran": false
+}

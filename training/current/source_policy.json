@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "phase": "R26A",
+  "allowed_current_sources": [
+    "training/llm_corpus/train.jsonl",
+    "training/llm_corpus/dev.jsonl",
+    "training/llm_corpus/heldout.jsonl",
+    "training/llm_corpus/r25l_train.jsonl",
+    "training/llm_corpus/r25l_dev.jsonl",
+    "training/llm_corpus/r25l_heldout.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_train.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25ak_repo_derived_heldout.jsonl",
+    "training/llm_corpus/r25am_repo_derived_train.jsonl",
+    "training/llm_corpus/r25am_repo_derived_dev.jsonl",
+    "training/llm_corpus/r25am_repo_derived_heldout.jsonl"
+  ],
+  "forbidden_without_future_review": [
+    "root DOC/PDF parsing",
+    "data/public_ingestion parsing",
+    "private_sources reading",
+    "eval prompt training",
+    "ignored artifact training",
+    "external LLM generation"
+  ],
+  "notes": "R26A only references current tracked corpus files in place. It does not move, rewrite, expand, or promote corpus rows."
+}
