@@ -433,6 +433,27 @@ const MARKERS = [
       "allow_release_checkpoint",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r25at_phase3_review_next_step_template",
+    path: "training/from_scratch/APPROVE_R25AT_PHASE3_REVIEW_NEXT_STEP.template.json",
+    expectedScope: "phase3_review_next_step_only",
+    expectedPhase: "phase_3_review",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_decoder_training",
+      "allow_small_pilot_training",
+      "allow_tokenizer_dry_run",
+      "allow_corpus_generation",
+      "allow_corpus_promotion",
+      "allow_architecture_ablation",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training",
+      "allow_release_checkpoint",
+      "allow_weight_commit"
+    ]
   }
 ];
 

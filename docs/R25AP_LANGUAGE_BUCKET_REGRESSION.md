@@ -46,3 +46,7 @@ R25AR increased mixed sampling to 25% and lowered training intensity, but heldou
 - en: 8.1583
 
 Mixed-minus-zh was 1.9564 and en-minus-zh was 2.0747, so R25AR did not repair the mixed/en weakness.
+
+## R25AS Regression Decision
+
+R25AS analyzes R25AR without training or replay. It confirms that the repaired sampler changed coverage but did not repair mixed/en generalization: R25AR heldout was 6.8565, worse than R25AO's 5.7820, with mixed and English still above zh. R25AS recommends pausing phase 3 training and reviewing corpus/eval distribution or objective mismatch before any fresh pilot approval.

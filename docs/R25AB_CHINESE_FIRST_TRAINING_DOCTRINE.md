@@ -99,3 +99,13 @@ or approve phase_4; R25AR remains an inert future design until fresh approval.
 ## R25AR Sampler Lesson
 
 R25AR shows that meeting a Chinese-first sampler ratio is necessary but not sufficient. A run can hit zh/mixed/en targets and still regress on heldout loss, so future approvals must judge both corpus mix and replayed heldout behavior.
+
+## R25AS Regression Lesson
+
+R25AS confirms the sharper lesson: lowering intensity and increasing mixed
+coverage did not repair heldout quality in the one-layer pilot. Chinese-first
+remains the project direction, but sampler ratios alone are not enough.
+Future work should review corpus quality, eval distribution, task-family
+coverage, and capacity limits before any fresh training approval. R25AS does
+not train, approve phase_4, add weights, use chain-of-thought, call external
+APIs, download models, or add backend/storage paths.

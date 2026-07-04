@@ -470,3 +470,14 @@ private data, committed artifact, or committed weight is introduced.
 ## R25AR Data Note
 
 R25AR sampled only tracked `training/llm_corpus` split files and did not modify the corpus. The train mix was zh 250, mixed 96, en 38. Root PDFs/DOCX, `private_sources`, `data/public_ingestion`, evals, and knowledge-source cards were not used as training sources.
+
+## R25AS Data Note
+
+R25AS is analysis-only. It reads completed R25AR/R25AO ignored reports and
+writes review summaries; it does not train, rerun pilots, run tokenizer
+dry-run, expand corpus, generate datasets, modify `training/llm_corpus`, parse
+root PDFs/DOCX, parse `data/public_ingestion`, read `private_sources`, or
+commit artifacts/weights. R25AS records that R25AR met the repaired sampler
+mix but worsened heldout loss and did not repair mixed/en bucket weakness.
+Future R25AT work is inert until fresh approval and remains review-only unless
+a later approval explicitly says otherwise.

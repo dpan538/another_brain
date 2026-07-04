@@ -637,3 +637,15 @@ phase_4 remains blocked, and no weights or artifacts are committed.
 ## R25AR Status
 
 R25AR ran one approved bounded repaired-sampler Chinese-personal micro-cycle. It met the intended language mix but regressed on heldout quality, so the project remains in review mode: no product/formal training, no tokenizer dry-run follow-up, no phase_4 approval, and no committed weights or artifacts.
+
+## R25AS Status
+
+R25AS analyzes R25AR only. It does not train, rerun R25AR or any prior pilot,
+run tokenizer dry-run, expand corpus, modify `training/llm_corpus`, approve
+phase_4, call external APIs, download models, add backend/storage paths, or
+commit artifacts/weights. The analysis classifies R25AR as
+`repaired_sampler_quality_regressed`: R25AR hit the repaired sampler mix and
+reduced train/dev loss, but heldout loss regressed further versus R25AO and the
+mixed/en buckets were not repaired. R25AT is an inert future review template
+only; any later training needs fresh approval and new evidence. Product and
+formal decoder training progress remain `0%`.

@@ -30,3 +30,5 @@ Risk-focus coverage was present in train:
 - local_first_static_browser_reasoning: 91 rows
 
 R25AR therefore points to a quality/content or optimization issue, not simply a missing mixed-row sampling issue.
+
+R25AS confirms that interpretation as analysis-only. It does not replay R25AR, train, run tokenizer dry-run, expand corpus, or modify `training/llm_corpus`. R25AS records that R25AR total heldout was worse than R25AO by about 1.0746 and that mixed/en gaps were not repaired, so an immediate repeat or phase_4 review is not justified.

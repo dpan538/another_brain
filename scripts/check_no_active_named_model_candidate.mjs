@@ -42,6 +42,10 @@ function isRepoPathOrGateToken(token = "") {
     || token === "tool/status"
     || token === "personal/project"
     || token === "release/product"
+    || token === "product/formal"
+    || token === "formal/product"
+    || token === "APIs/downloads"
+    || token === "backend/storage"
     || token === "ID/source"
     || /^(static_llm|web|docs|scripts|artifacts|training|evals|data)\//.test(token)
     || /\.(mjs|js|json|md|py|sh|html|css)$/.test(token)

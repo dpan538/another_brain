@@ -26,6 +26,8 @@ Loss behavior:
 
 R25AR shows that the repaired sampler and lower-intensity run can execute, but it does not show improved heldout quality. R25AR is still a bounded pilot only, not product/formal training and not a release artifact.
 
+R25AS later analyzes this result without training, rerunning R25AR, running tokenizer dry-run, expanding corpus, or modifying `training/llm_corpus`. R25AS classifies the result as `repaired_sampler_quality_regressed`: the sampler mix worked structurally, but heldout quality regressed further and mixed/en buckets stayed weak.
+
 Boundaries:
 
 - No tokenizer dry-run ran in R25AR.
@@ -34,3 +36,4 @@ Boundaries:
 - No product or formal decoder training ran.
 - No artifacts or weights are commit candidates.
 - Future work requires fresh approval.
+- R25AS does not approve immediate repeat, phase_4, product/formal training, release checkpoint admission, external APIs/downloads, backend/storage, or chain-of-thought data.

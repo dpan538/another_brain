@@ -18,6 +18,8 @@ Why:
 
 R25AS may analyze R25AR only after fresh approval. Any later training run requires another explicit approval and a concrete bounded change.
 
+R25AS has now formalized the review boundary: it analyzes existing ignored reports only, classifies R25AR as `repaired_sampler_quality_regressed`, and recommends pausing phase 3 training for corpus/eval/objective review. R25AS does not rerun R25AR, run tokenizer dry-run, expand corpus, modify `training/llm_corpus`, approve phase_4, or commit artifacts/weights. R25AT is inert and requires fresh approval for any future reviewed step.
+
 Still true after R25AR:
 
 - Product training progress remains 0%.
