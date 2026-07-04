@@ -31,3 +31,11 @@ R25AO later ran exactly once with approval and stopped. R25AP analyzes that
 result only: it does not train, run tokenizer dry-run, or expand corpus.
 R25AP keeps phase_4 blocked because R25AO met sampler targets but regressed on
 heldout quality.
+
+## R25AQ Follow-Up
+
+R25AQ reviews that regression without training or tokenizer work. It recommends
+only an inert repaired-sampler design for possible later approval, with mixed
+coverage increased, English capped, and intensity lowered. R25AQ does not
+modify corpus files, does not generate datasets, and does not approve R25AR or
+phase_4.

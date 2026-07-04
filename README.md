@@ -625,3 +625,12 @@ training, no long-term training, no phase_4 scaled training, no release
 checkpoint, and no committed weights or artifacts. The result is paused for
 R25AP analysis before any repeat, tokenizer, corpus, product, release, or
 phase_4 step.
+
+R25AQ analyzes R25AO root cause without training, tokenizer dry-run, corpus
+expansion, dataset generation, or `training/llm_corpus` changes. R25AO met the
+zh-first sampler target and reduced train/dev loss, but heldout regressed
+against the best prior references. Mixed and English buckets are weak, with
+mixed higher priority than English because the project is Chinese-first but
+technical work is often mixed. R25AR is an inert repaired-sampler design only;
+future training requires fresh approval, product/formal training remains `0%`,
+phase_4 remains blocked, and no weights or artifacts are committed.

@@ -376,6 +376,24 @@ const MARKERS = [
       "allow_release_checkpoint",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r25ar_repaired_sampler_template",
+    path: "training/from_scratch/APPROVE_R25AR_REPAIRED_SAMPLER_MICROCYCLE.template.json",
+    expectedScope: "repaired_sampler_microcycle_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    expectedRunId: "r25ar_repaired_sampler_microcycle",
+    expectedVariantId: "r25ar_mixed_repair_lower_intensity",
+    template: true,
+    trainingFlagKeys: [
+      "allow_small_pilot_training",
+      "allow_decoder_training",
+      "allow_phase_4_scaled_training",
+      "allow_long_term_training",
+      "allow_product_model_training",
+      "allow_release_checkpoint",
+      "allow_weight_commit"
+    ]
   }
 ];
 

@@ -33,3 +33,13 @@ the zh-first sampler target, but R25S remains best by heldout loss and mixed/en
 buckets need review. The next boundary is a pause for review or a fresh
 approval for non-training sampler/corpus analysis before any later bounded
 training proposal.
+
+## R25AQ Follow-Up
+
+R25AQ performs that non-training sampler/root-cause analysis. It confirms that
+R25AO met the zh-first sampler target and reduced train/dev loss, but heldout
+regressed against the best prior references. Mixed and English buckets are
+weak; mixed is the higher priority because the target remains Chinese-first
+with technical mixed-language robustness. R25AR is only an inert repaired
+sampler design and is not approved. Product/formal training progress remains
+`0%`, phase_4 remains blocked, and no weights or artifacts are committed.

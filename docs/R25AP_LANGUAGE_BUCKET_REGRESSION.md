@@ -29,3 +29,11 @@ inspect mixed/en rows, high-loss task families, and sampler pressure without
 starting training.
 
 Phase_4 scaled training remains unapproved.
+
+## R25AQ Follow-Up
+
+R25AQ confirms the same bucket weakness: mixed remains product-important
+because repo work is Chinese-first with technical mixed terms, while English
+remains secondary and capped. The repaired sampler design should address mixed
+coverage first, not generic English fluency. R25AQ does not train, generate
+datasets, run tokenizer dry-run, or approve phase_4.

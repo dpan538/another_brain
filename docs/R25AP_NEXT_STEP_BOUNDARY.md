@@ -35,3 +35,10 @@ Future work may be proposed only with fresh approval:
 The inert R25AQ template exists only as a placeholder for a future reviewed
 step. It does not approve training, tokenizer dry-run, corpus expansion, or
 phase_4.
+
+## R25AQ Follow-Up
+
+R25AQ uses that analysis boundary to diagnose R25AO and design an inert R25AR
+candidate. It does not justify an immediate repeat. R25AR remains
+`approved:false`, and any future bounded pilot requires a fresh explicit
+approval that must be consumed after one attempt.

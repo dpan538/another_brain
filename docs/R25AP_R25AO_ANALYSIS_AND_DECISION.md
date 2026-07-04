@@ -53,3 +53,15 @@ Required before any future training:
 Product training progress remains `0%`. Formal decoder training progress
 remains `0%`. Pilot training progress remains `7%`. No release checkpoint or
 browser artifact exists.
+
+## R25AQ Follow-Up
+
+R25AQ keeps the R25AP boundary intact and adds root-cause analysis only. It
+does not train, rerun R25AO, run tokenizer dry-run, expand corpus, generate a
+dataset, modify `training/llm_corpus`, approve phase_4, commit artifacts, or
+commit weights.
+
+R25AQ classifies R25AO as sampler success with quality regression. It
+recommends an inert R25AR repaired-sampler design only if a future reviewer
+approves it: increase mixed coverage, keep English capped, lower training
+intensity, and keep the one-layer phase 3 pilot architecture.

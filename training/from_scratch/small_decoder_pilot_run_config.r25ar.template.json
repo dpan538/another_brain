@@ -1,0 +1,33 @@
+{
+  "run_id": "r25ar_repaired_sampler_microcycle",
+  "variant_id": "r25ar_mixed_repair_lower_intensity",
+  "design_only": true,
+  "training_allowed_by_default": false,
+  "requires_fresh_approval": true,
+  "product_model": false,
+  "release_checkpoint": false,
+  "formal_decoder_training": false,
+  "phase_4_scaled_training": false,
+  "commit_weights_allowed": false,
+  "basis": "r25ao_analysis",
+  "sampler_target": {
+    "zh_min": 0.65,
+    "mixed_target": 0.25,
+    "en_max": 0.1
+  },
+  "max_train_rows": 384,
+  "max_dev_rows": 96,
+  "max_heldout_rows": 96,
+  "max_context_tokens": 64,
+  "max_steps": 60,
+  "learning_rate": 0.003,
+  "early_stop_if_dev_worsens": true,
+  "architecture": {
+    "type": "causal_decoder_pilot",
+    "basis": "r25s_baseline_data_first",
+    "layers": 1,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128
+  }
+}

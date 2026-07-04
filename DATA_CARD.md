@@ -458,3 +458,12 @@ did not read `private_sources`, root PDF/DOC/DOCX content, or
 R25AO run met the zh-first sampled split target, wrote ignored artifacts only,
 consumed its approval, and did not approve product/formal training, tokenizer
 dry-run, release admission, or phase_4 scaled training.
+
+R25AQ is analysis and sampler/curriculum repair design only. It does not train,
+rerun R25AO, run tokenizer dry-run, expand corpus, generate train/dev/heldout
+datasets, or modify `training/llm_corpus`. It records that R25AO sampler
+success was not quality success: heldout regressed, mixed/en buckets weakened
+relative to zh, and high-loss task families need review. The future R25AR
+template is `approved:false`; no phase_4, product/formal training, release
+checkpoint, backend/storage path, external API/download, chain-of-thought, raw
+private data, committed artifact, or committed weight is introduced.

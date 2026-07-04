@@ -87,3 +87,12 @@ heldout loss regressed versus R25S and mixed/en buckets were weaker than zh.
 The doctrine therefore remains: review buckets and source/task coverage before
 any later bounded run, keep English secondary, and require fresh approval for
 training, tokenizer dry-run, corpus expansion, or phase_4 review.
+
+## R25AQ Repair Lesson
+
+R25AQ separates sampler success from quality success. A future repaired sampler
+may reduce zh share to about 65% only to raise mixed coverage to about 25%,
+while keeping English at or below 10%. This is still Chinese-first because the
+repair target is mixed Chinese/technical robustness, not English benchmark
+fluency. R25AQ itself does not train, generate datasets, modify corpus files,
+or approve phase_4; R25AR remains an inert future design until fresh approval.
