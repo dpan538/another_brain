@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "phase": "R26C",
+  "pack_id": "another_brain_question_pack_001",
+  "source_file": "external_user_provided_question_pack_csv_not_committed",
+  "source_file_committed": false,
+  "raw_source_private": true,
+  "raw_source_committed": false,
+  "raw_source_should_not_be_committed": true,
+  "total_rows": 100,
+  "candidate_review_only_range": {
+    "start_id": 1,
+    "end_id": 50
+  },
+  "excluded_from_training_range": {
+    "start_id": 51,
+    "end_id": 100
+  },
+  "candidate_rows_count": 50,
+  "excluded_rows_count": 50,
+  "rows_1_to_50_status": "candidate_review_only_not_training",
+  "rows_51_to_100_status": "excluded_from_training",
+  "exclusion_reason": "Rows 51-100 are project-meta/training-meta/status prompts, not friend-facing answer-as-user training material. User explicitly rejected them for corpus expansion.",
+  "row_52_policy_note": "Row 52 is treated as policy evidence that later project-meta questions are unsuitable for corpus expansion, not as a training sample.",
+  "allowed_uses_for_excluded_rows": [
+    "policy evidence",
+    "cleanup notes",
+    "project-management context",
+    "excluded-example audit material"
+  ],
+  "forbidden_uses_for_excluded_rows": [
+    "positive training examples",
+    "negative training examples",
+    "preference pairs",
+    "repair pairs",
+    "teacher probes",
+    "tokenizer training text",
+    "eval-derived training seeds",
+    "long-horizon training rows",
+    "prompt-generation sources",
+    "corpus generation",
+    "corpus promotion"
+  ],
+  "future_action": "Generate a replacement second half with real friend-facing questions after schema review.",
+  "training_ran": false,
+  "tokenizer_dry_run_ran": false,
+  "corpus_expansion_ran": false,
+  "corpus_promotion_ran": false,
+  "phase_4_scaled_training_approved": false
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "phase": "R26C",
+  "pack_id": "another_brain_question_pack_001",
+  "policy_status": "active_training_exclusion_guard",
+  "raw_source_committed": false,
+  "raw_source_should_not_be_committed": true,
+  "ranges": [
+    {
+      "start_id": 1,
+      "end_id": 50,
+      "eligibility": "candidate_review_only",
+      "notes": "Review-only answer-as-user candidates. They are not automatically training rows."
+    },
+    {
+      "start_id": 51,
+      "end_id": 100,
+      "eligibility": "excluded_from_training",
+      "notes": "Hard-excluded project-meta, training-meta, progress-check, tool-status, and structure-discussion prompts."
+    }
+  ],
+  "hard_excluded_question_ids": {
+    "start_id": 51,
+    "end_id": 100
+  },
+  "hard_excluded_modules_for_first_pack": [
+    "项目连续性",
+    "训练与数据",
+    "工具与状态诚实",
+    "审美与风格",
+    "多轮上下文"
+  ],
+  "module_scope_note": "These module names are not globally banned forever. They are banned for this first pack because the rows are meta/project/training-oriented rather than friend-facing answer-as-user samples.",
+  "hard_excluded_intents_for_first_pack_when_id_gt_50": [
+    "project_question",
+    "training_meta",
+    "project_status",
+    "tool_status",
+    "internal_understanding",
+    "progress_review",
+    "corpus_strategy",
+    "phase_review"
+  ],
+  "forbidden_uses_for_ids_51_to_100": [
+    "training/llm_corpus",
+    "training/current active corpus",
+    "tokenizer training text",
+    "corpus generation",
+    "corpus promotion",
+    "teacher probing",
+    "synthetic sample generation",
+    "preference pair generation",
+    "repair pair generation",
+    "long-horizon training",
+    "eval-derived training",
+    "prompt-generation source"
+  ],
+  "allowed_uses_for_ids_51_to_100": [
+    "policy evidence",
+    "cleanup notes",
+    "project-management context",
+    "excluded-example audit material"
+  ],
+  "row_52_policy_interpretation": "Row 52 is user feedback rejecting this later-question category for corpus expansion. Treat it as policy instruction, not as a training sample.",
+  "future_pack_default": "Rows with project-meta, training-meta, status, tool-state, phase-review, or corpus-strategy intent must be excluded_from_training by default unless separately reviewed and reframed as real external-facing answer-as-user material.",
+  "training_ran": false,
+  "tokenizer_dry_run_ran": false,
+  "corpus_expansion_ran": false,
+  "corpus_promotion_ran": false,
+  "phase_4_scaled_training_approved": false
+}

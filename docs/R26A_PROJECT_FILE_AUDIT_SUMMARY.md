@@ -6,23 +6,23 @@ R26A is non-destructive. It audits and classifies the repository structure witho
 
 | Metric | Count |
 | --- | ---: |
-| Tracked files | 1259 |
-| Status entries, modified/untracked | 64 |
+| Tracked files | 1279 |
+| Status entries, modified/untracked | 56 |
 | Ignored status entries | 27 |
-| Tracked docs | 230 |
-| Tracked training files | 122 |
-| Tracked eval files | 148 |
-| Tracked scripts | 453 |
+| Tracked docs | 240 |
+| Tracked training files | 125 |
+| Tracked eval files | 150 |
+| Tracked scripts | 458 |
 | Tracked runtime files | 229 |
 | Root DOC/PDF files, metadata-only | 13 |
 | data/public_ingestion files, metadata-only | 2920 |
-| Ignored artifact files, metadata-only | 851 |
+| Ignored artifact files, metadata-only | 854 |
 | Tracked model-like files | 0 |
 
 ## Tracked Classification
 
-- review_needed: 161
-- tracked_active: 929
+- review_needed: 167
+- tracked_active: 943
 - tracked_historical: 169
 
 ## Local Residue

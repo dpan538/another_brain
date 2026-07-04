@@ -6,7 +6,7 @@ R26A indexes documentation without moving files.
 
 - current_project_target: 2
 - current_deployment_strategy: 1
-- cleanup_needed: 93
+- cleanup_needed: 103
 - current_safety_gates: 7
 - r25_history: 98
 - current_runtime_strategy: 5

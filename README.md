@@ -684,3 +684,23 @@ runtime dependency and not automatic training data.
 R26B does not train, run tokenizer dry-run, expand corpus, promote corpus rows,
 approve phase_4, call external APIs, call Doubao, commit artifacts, or commit
 weights.
+
+## R26C Question Pack Quarantine
+
+R26C adds a hard exclusion guard for the first 100-question answer pack. Rows
+1-50 are review-only answer-as-user candidates and are not automatically
+training rows. Rows 51-100 are excluded from training because they ask about
+project progress, training direction, tool status, or internal structure rather
+than real friend-facing answer behavior.
+
+Rows 51-100 must not enter `training/llm_corpus`, tokenizer training text,
+corpus generation, corpus promotion, teacher probes, preference pairs, repair
+pairs, long-horizon rows, eval-derived training seeds, or prompt-generation
+sources. They may remain only as policy evidence, cleanup notes, or
+project-management context. Future question packs should focus on external
+questions, unsupported challenges, weird questions, friend context, non-answer
+boundaries, and answer-as-user behavior.
+
+R26C does not train, run tokenizer dry-run, expand corpus, promote corpus rows,
+commit raw CSV/XLSX question-pack files, approve phase_4, call external APIs,
+call Doubao, commit artifacts, or commit weights.

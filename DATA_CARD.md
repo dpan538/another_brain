@@ -510,3 +510,19 @@ probing is optional and external; it is not a runtime dependency and must not
 enter training corpus automatically. R26B does not train, expand corpus, run
 tokenizer dry-run, promote rows, approve phase_4, call external APIs, call
 Doubao, commit artifacts, or commit weights.
+
+## R26C Question Pack Quarantine Note
+
+R26C records that the first 100-question pack is partially useful but not a
+single corpus source. Rows 1-50 are answer-as-user candidate-review material
+only. Rows 51-100 are excluded from training because they are
+project-meta/training-meta/status prompts rather than friend-facing
+answer-as-user examples.
+
+Rows 51-100 must not be used for `training/llm_corpus`, active current corpus
+manifests, tokenizer training text, corpus generation, corpus promotion,
+teacher probing, synthetic sample generation, preference pairs, repair pairs,
+long-horizon training, eval-derived training, or prompt-generation sources.
+They may be referenced only as policy evidence, cleanup notes, or
+project-management context. No raw CSV/XLSX answer-pack file is committed in
+R26C.
