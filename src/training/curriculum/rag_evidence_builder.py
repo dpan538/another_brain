@@ -17,7 +17,7 @@ def build_rag_rows(cards, target_rows=3000):
         task, instruction = tasks[idx % len(tasks)]
         evidence = [{"source_id": card.get("source_id", ""), "text": answer, "trust_level": "reviewed_repo_derived", "retrieval_score": 0.8}]
         rows.append({
-            "record_id": f"r27a4_rag_{len(rows):05d}",
+            "record_id": f"r27a5_rag_{len(rows):05d}",
             "curriculum": "rag_evidence_grounded",
             "text": f"任务：{instruction}\n问题：{label}是什么？\n证据：{answer}\n回答：{answer if task == 'answer' else '证据不足以支持更多推断。'}",
             "retrieval_packet": {"user_input": f"{label}是什么？", "retrieved_evidence": evidence, "task": task, "target": answer if task == "answer" else "证据不足以支持更多推断。"},

@@ -15,7 +15,7 @@ def build_reasoning_rows(target_rows=5000):
         family, make = families[i % len(families)]
         prompt, answer = make(i)
         rows.append({
-            "record_id": f"r27a4_reasoning_{i:05d}",
+            "record_id": f"r27a5_reasoning_{i:05d}",
             "curriculum": "reasoning_symbolic",
             "reasoning_family": family,
             "text": f"问题：{prompt}\n回答：{answer}",

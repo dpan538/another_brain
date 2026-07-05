@@ -157,6 +157,17 @@ SOURCE_SPECS = {
         "hf_dataset": "BAAI/COIG",
         "hf_config": None,
     },
+    "baai_coig_pc": {
+        "upstream_name": "BAAI/COIG-PC",
+        "upstream_url": "https://huggingface.co/datasets/BAAI/COIG-PC",
+        "metadata_source_url": "https://huggingface.co/api/datasets/BAAI/COIG-PC",
+        "license_url": "",
+        "terms_url": "https://huggingface.co/datasets/BAAI/COIG-PC",
+        "primary_language": "zh",
+        "sample_method": "metadata_only_subset_review_required",
+        "hf_dataset": "BAAI/COIG-PC",
+        "hf_config": None,
+    },
     "coig_cqia": {
         "upstream_name": "m-a-p/COIG-CQIA",
         "upstream_url": "https://huggingface.co/datasets/m-a-p/COIG-CQIA",
@@ -230,10 +241,10 @@ def decide_source(dataset_id, metadata=None, raw_metadata=b"", retrieved_at=None
         allowed, status = True, "approved_for_engineering"
         obligations = ["attribution", "subset_specific_terms", "citation_required"]
         reason = "COIG-CQIA has current public metadata with a declared license; R27A4 admits bounded instruction candidates only."
-    elif dataset_id == "baai_coig":
+    elif dataset_id in {"baai_coig", "baai_coig_pc"}:
         status = "conditional_for_engineering"
         obligations = ["attribution", "subset_specific_terms", "citation_required"]
-        reason = "BAAI/COIG requires subset-level license review; R27A4 records metadata but does not globally admit all subsets."
+        reason = "BAAI COIG-family sources require subset-level license review; metadata is recorded but global training admission is blocked."
     elif dataset_id == "tulu_3_sft_mixture":
         status = "blocked"
         obligations = ["subset_specific_terms", "recipe_reference_only"]

@@ -19,7 +19,7 @@ def build_value_rows(anchors, target_rows=1000):
         q = anchor.get("question") or anchor.get("messages", [{}])[0].get("content", "")
         a = anchor.get("target_answer") or anchor.get("messages", [{}, {}])[-1].get("content", "")
         rows.append({
-            "record_id": f"r27a4_value_{len(rows):05d}",
+            "record_id": f"r27a5_value_{len(rows):05d}",
             "curriculum": "value_aesthetic",
             "text": f"用户：{prompt_t.format(q=q)}\n回答：{answer_t.format(a=a)}",
             "language": anchor.get("language", "mixed"),

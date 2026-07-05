@@ -37,7 +37,7 @@ def encode_rows(path, tokenizer, token_cap):
     return tokens, dict(by_curr), rows
 
 
-def run_campaign(campaign_id, model_size, tokenizer_path, train_stream, dev_stream, heldout_stream, max_total_steps, max_total_train_tokens, context_length, run_label):
+def run_campaign(campaign_id, model_size, tokenizer_path, train_stream, dev_stream, heldout_stream, max_total_steps, max_total_train_tokens, context_length, run_label, artifact_root="artifacts/r27a4", resume_checkpoint=None, lineage_decision="new_lineage", learning_rate=0.0006):
     tokenizer = BPETokenizerRuntime.from_file(tokenizer_path)
     vocab_size = tokenizer.tokenizer.get_vocab_size()
     tokenizer_report_path = Path(tokenizer_path).with_name("tokenizer_report.json")
@@ -45,6 +45,11 @@ def run_campaign(campaign_id, model_size, tokenizer_path, train_stream, dev_stre
     if tokenizer_report_path.exists():
         tokenizer_report = json.loads(tokenizer_report_path.read_text(encoding="utf-8"))
     device = detect_device()
+    cpu_downgrade_reason = ""
+    if device == "cpu" and (max_total_steps > 6000 or max_total_train_tokens > 10000000):
+        max_total_steps = min(max_total_steps, 6000)
+        max_total_train_tokens = min(max_total_train_tokens, 10000000)
+        cpu_downgrade_reason = "cpu_only_fallback_caps_6000_steps_10000000_tokens"
     chosen = choose_model(model_size, device, vocab_size, context_length)
     downgrade_reason = ""
     if device == "cpu" and model_size == "auto":
@@ -52,22 +57,24 @@ def run_campaign(campaign_id, model_size, tokenizer_path, train_stream, dev_stre
         max_total_train_tokens = min(max_total_train_tokens, 4000000)
         chosen = choose_model("mini_8m", device, vocab_size, min(context_length, 256))
         downgrade_reason = "cpu_only_auto_downgrade_to_mini_8m"
+    if cpu_downgrade_reason:
+        downgrade_reason = cpu_downgrade_reason if not downgrade_reason else f"{downgrade_reason};{cpu_downgrade_reason}"
     train_tokens, train_mix, train_rows = encode_rows(train_stream, tokenizer, max_total_train_tokens)
     dev_tokens, _, dev_rows = encode_rows(dev_stream, tokenizer, min(200000, max_total_train_tokens))
     heldout_tokens, _, heldout_rows = encode_rows(heldout_stream, tokenizer, min(200000, max_total_train_tokens))
     config = {
         **chosen,
         "batch_size": 8 if device != "cpu" else 4,
-        "learning_rate": 0.0006,
+        "learning_rate": learning_rate,
         "max_steps": int(max_total_steps),
         "max_train_tokens": int(max_total_train_tokens),
         "phase_4": False,
         "product_model": False,
         "release_checkpoint": False,
     }
-    model, metrics = train_tiny_gpt(train_tokens, dev_tokens, heldout_tokens, vocab_size, config, device)
+    model, metrics = train_tiny_gpt(train_tokens, dev_tokens, heldout_tokens, vocab_size, config, device, resume_checkpoint=resume_checkpoint)
     import torch
-    art = Path("artifacts/r27a4/model_lab")
+    art = Path(artifact_root) / "model_lab"
     ckpt_dir = art / "checkpoints"
     run_dir = art / "runs" / run_label
     ckpt_dir.mkdir(parents=True, exist_ok=True)
@@ -92,6 +99,9 @@ def run_campaign(campaign_id, model_size, tokenizer_path, train_stream, dev_stre
         "dev_records": len(dev_rows),
         "heldout_records": len(heldout_rows),
         "actual_curriculum_token_mix": train_mix,
+        "lineage_decision": lineage_decision,
+        "resumed_from_checkpoint": bool(resume_checkpoint),
+        "checkpoint_input_path": str(resume_checkpoint or ""),
         "checkpoint_path": str(ckpt),
         "weights_committed": False,
         "product_model": False,

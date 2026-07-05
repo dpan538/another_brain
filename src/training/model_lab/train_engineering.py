@@ -16,7 +16,7 @@ def train_bigram_decoder(tokenized_sequences, vocab_size, max_steps=100):
     return model, {"steps": steps, "train_loss_start": start_loss, "train_loss_end": end_loss}
 
 
-def train_tiny_gpt(token_stream, dev_stream, heldout_stream, vocab_size, config, device):
+def train_tiny_gpt(token_stream, dev_stream, heldout_stream, vocab_size, config, device, resume_checkpoint=None):
     import math
     import random
     import torch
@@ -28,14 +28,22 @@ def train_tiny_gpt(token_stream, dev_stream, heldout_stream, vocab_size, config,
     max_steps = int(config["max_steps"])
     if len(token_stream) <= context_length + 2:
         raise ValueError("not_enough_train_tokens")
-    model = build_tiny_gpt(
-        vocab_size,
-        context_length=context_length,
-        n_layer=int(config["n_layer"]),
-        n_head=int(config["n_head"]),
-        n_embd=int(config["n_embd"]),
-        dropout=float(config.get("dropout", 0.05)),
-    ).to(device)
+    if resume_checkpoint:
+        from src.training.model_lab.resume import load_resumable_tiny_gpt
+
+        model, resume_config = load_resumable_tiny_gpt(resume_checkpoint, vocab_size, device)
+        for key in ["context_length", "n_layer", "n_head", "n_embd"]:
+            if int(resume_config[key]) != int(config[key]):
+                raise ValueError(f"resume_config_mismatch_{key}")
+    else:
+        model = build_tiny_gpt(
+            vocab_size,
+            context_length=context_length,
+            n_layer=int(config["n_layer"]),
+            n_head=int(config["n_head"]),
+            n_embd=int(config["n_embd"]),
+            dropout=float(config.get("dropout", 0.05)),
+        ).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=float(config.get("learning_rate", 0.0008)))
     train_tensor = torch.tensor(token_stream, dtype=torch.long, device=device)
 

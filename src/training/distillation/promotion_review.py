@@ -1,4 +1,5 @@
 import re
+from src.training.distillation.style_filter import style_rejection_reason
 
 
 FORBIDDEN_RE = re.compile(
@@ -6,7 +7,6 @@ FORBIDDEN_RE = re.compile(
     re.I,
 )
 OLD_ROW_RE = re.compile(r"another_brain_question_pack_001.*(?:5[1-9]|[6-9][0-9]|100)", re.I | re.S)
-GENERIC_RE = re.compile(r"as an ai language model|how can i assist|customer support|i'm here to help", re.I)
 
 
 def review_candidate(candidate):
@@ -18,8 +18,9 @@ def review_candidate(candidate):
         reasons.append("forbidden_cot_hidden_private_eval_or_secret")
     if OLD_ROW_RE.search(text):
         reasons.append("old_excluded_question_pack_row")
-    if GENERIC_RE.search(candidate.get("final_answer", "")):
-        reasons.append("generic_assistant_style")
+    style_reason = style_rejection_reason(candidate.get("final_answer", ""))
+    if style_reason:
+        reasons.append(style_reason)
     if not candidate.get("license_names"):
         reasons.append("missing_license")
     if reasons:
@@ -31,5 +32,5 @@ def review_candidate(candidate):
     out = dict(candidate)
     out["review_status"] = "promoted_for_engineering"
     out["training_allowed"] = True
-    out["promotion_reason"] = "passed_r27a4_filters_engineering_only"
+    out["promotion_reason"] = "passed_r27a_filters_engineering_only"
     return out

@@ -17,6 +17,7 @@ artifacts/training_os/corpus_expansion/
 artifacts/r27a2/
 artifacts/r27a3/
 artifacts/r27a4/
+artifacts/r27a5/
 **/model_lab/checkpoints/
 **/raw_public_samples/
 **/clean_public_samples/

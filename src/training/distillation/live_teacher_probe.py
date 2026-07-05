@@ -2,7 +2,7 @@ import os
 
 
 def live_teacher_enabled(args_execute=False):
-    return bool(args_execute and os.environ.get("R27A4_ALLOW_LIVE_TEACHER") == "1")
+    return bool(args_execute and (os.environ.get("R27A5_ALLOW_LIVE_TEACHER") == "1" or os.environ.get("R27A4_ALLOW_LIVE_TEACHER") == "1"))
 
 
 def prepare_probe(prompt):

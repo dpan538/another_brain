@@ -22,7 +22,7 @@ def candidate_from_public_row(row, index=0):
             prompt, answer = parts[0], "\n".join(parts[1:3])
     cid_base = f"{row.get('dataset_id','public_instruction')}:{index}:{prompt}:{answer}"
     return make_candidate(
-        "r27a4_instruction_" + hashlib.sha256(cid_base.encode("utf-8")).hexdigest()[:16],
+        "r27a5_instruction_" + hashlib.sha256(cid_base.encode("utf-8")).hexdigest()[:16],
         "public_instruction_sample",
         prompt,
         answer,
