@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>鳄鱼的另一个大脑 | Static Chat Shell</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="chat-shell" aria-label="鳄鱼的另一个大脑 static chat shell">
+      <section class="chat-window" aria-labelledby="chat-title">
+        <header class="chat-header">
+          <div>
+            <p class="eyebrow">another_brain</p>
+            <h1 id="chat-title">鳄鱼的另一个大脑</h1>
+          </div>
+          <div class="header-badges" aria-label="runtime status">
+            <span class="badge badge-local" id="local-indicator">Local only</span>
+            <span class="badge badge-backend" id="backend-badge">No backend inference</span>
+          </div>
+        </header>
+
+        <section class="status-strip" aria-label="runtime pipeline status">
+          <div>
+            <span class="status-label">Model</span>
+            <strong id="model-status">Placeholder loaded</strong>
+          </div>
+          <div>
+            <span class="status-label">Retrieval</span>
+            <strong id="retrieval-status">Mock local packet</strong>
+          </div>
+          <div>
+            <span class="status-label">Verifier</span>
+            <strong id="verifier-status">Ready</strong>
+          </div>
+          <div>
+            <span class="status-label">Fallback</span>
+            <strong id="fallback-status">Unused</strong>
+          </div>
+        </section>
+
+        <section class="message-list" id="message-list" aria-live="polite" aria-label="messages">
+          <article class="message message-assistant">
+            <div class="message-role">another_brain</div>
+            <p>
+              我现在只是一个静态 browser shell：会展示 input/state packet -> local retrieval ->
+              browser decoder draft -> verifier/finalizer/fallback 的产品骨架，但不会加载真实模型。
+            </p>
+          </article>
+        </section>
+
+        <section class="debug-panel" aria-label="retrieval packet debug panel">
+          <label class="debug-toggle">
+            <input type="checkbox" id="debug-toggle" />
+            <span>Retrieval packet debug</span>
+          </label>
+          <pre id="debug-output" hidden>{}</pre>
+        </section>
+
+        <form class="composer" id="chat-form">
+          <label class="sr-only" for="chat-input">Message</label>
+          <textarea id="chat-input" name="message" rows="2" placeholder="Ask the local mock shell..." required></textarea>
+          <button type="submit" id="send-button">Send</button>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

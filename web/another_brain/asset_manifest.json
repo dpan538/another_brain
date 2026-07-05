@@ -1,0 +1,12 @@
+{
+  "runtime_version": "r27b0-static-chat-shell-v1",
+  "model_assets": [],
+  "tokenizer_assets": [],
+  "rag_assets": [],
+  "gate_assets": [],
+  "total_declared_bytes": 0,
+  "max_total_static_bytes": 100000000,
+  "same_origin_only": true,
+  "external_runtime_dependency": false,
+  "backend_inference": false
+}
