@@ -460,6 +460,8 @@
     "check:r27b0-static-budget": "python3 scripts/r27b0_static_asset_budget.py",
     "check:r27b0-static-only": "python3 scripts/r27b0_check_static_only.py",
     "check:r27b0-static-chat-shell": "npm run test:r27b0 && npm run check:r27b0-static-budget && npm run check:r27b0-static-only",
+    "test:r27b1a": "python3 -m unittest discover -s tests/r27b1a",
+    "check:r27b1a-model-export": "npm run test:r27b1a && python3 scripts/r27b1a_static_model_budget.py",
     "analyze:r25y-pilot": "node scripts/analyze_r25y_pilot_results.mjs",
     "eval:r25y-heldout-breakdown": "node scripts/eval_r25y_heldout_breakdown.mjs",
     "compare:r25y-data-regularization": "node scripts/compare_r25y_data_regularization.mjs",

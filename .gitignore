@@ -19,6 +19,7 @@ artifacts/r27a3/
 artifacts/r27a4/
 artifacts/r27a5/
 artifacts/r27a6/
+artifacts/r27b1a/
 **/model_lab/checkpoints/
 **/raw_public_samples/
 **/clean_public_samples/
@@ -26,6 +27,8 @@ artifacts/r27a6/
 **/*.pth
 **/*.safetensors
 **/*.ckpt
+**/*.onnx
+**/*.gguf
 **/tokenizer.model
 artifacts/**/tokenizer.json
 artifacts/**/*.parquet
