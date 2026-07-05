@@ -1,0 +1,15 @@
+DEFAULT_CONFIG = {
+    "model_type": "from_scratch_engineering_char_decoder",
+    "product_model": False,
+    "phase_4": False,
+    "release_checkpoint": False,
+    "context_length": 256,
+    "n_layer": 2,
+    "n_head": 4,
+    "n_embd": 128,
+    "dropout": 0.0,
+    "max_steps": 100,
+    "batch_size": 4,
+    "max_train_tokens": 250000,
+    "learning_rate": 0.05,
+}

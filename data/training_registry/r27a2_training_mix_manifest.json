@@ -1,0 +1,823 @@
+{
+  "artifact_paths": {
+    "dev": "artifacts/r27a2/training_mix/dev.jsonl",
+    "heldout": "artifacts/r27a2/training_mix/heldout.jsonl",
+    "train": "artifacts/r27a2/training_mix/train.jsonl"
+  },
+  "contains_cot": false,
+  "contains_eval_prompts": false,
+  "curriculum_counts": {
+    "rag_evidence_grounded": 240,
+    "reasoning_symbolic": 300,
+    "user_answered_anchor": 98,
+    "value_aesthetic": 4
+  },
+  "missing_curricula_in_this_run": [
+    "public_chinese_pretraining",
+    "secondary_english_mixed",
+    "instruction_distillation"
+  ],
+  "ok": true,
+  "old_question_pack_001_rows_51_100_used": 0,
+  "public_corpus_available": false,
+  "records_generated_before_dedup": 798,
+  "records_total": 642,
+  "rejected": [
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0004"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0005"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0006"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0007"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0008"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0009"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0010"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0011"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0012"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0013"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0014"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0015"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0016"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0017"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0018"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0019"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0020"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0021"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0022"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0023"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0024"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0025"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0026"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0027"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0028"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0029"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0030"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0031"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0032"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0033"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0034"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0035"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0036"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0037"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0038"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0039"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0040"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0041"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0042"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0043"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0044"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0045"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0046"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0047"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0048"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0049"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0050"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0051"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0052"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0053"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0054"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0055"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0056"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0057"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0058"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0059"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0060"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0061"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0062"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0063"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0064"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0065"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0066"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0067"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0068"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0069"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0070"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0071"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0072"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0073"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0074"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0075"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0076"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0077"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0078"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0079"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0080"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0081"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0082"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0083"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0084"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0085"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0086"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0087"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0088"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0089"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0090"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0091"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0092"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0093"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0094"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0095"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0096"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0097"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0098"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0099"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0100"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0101"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0102"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0103"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0104"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0105"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0106"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0107"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0108"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0109"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0110"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0111"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0112"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0113"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0114"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0115"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0116"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0117"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0118"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0119"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0120"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0121"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0122"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0123"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0124"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0125"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0126"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0127"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0128"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0129"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0130"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0131"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0132"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0133"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0134"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0135"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0136"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0137"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0138"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0139"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0140"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0141"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0142"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0143"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0144"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0145"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0146"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0147"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0148"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0149"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0150"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0151"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0152"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0153"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0154"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0155"
+    },
+    {
+      "duplicate_of": "r27a2_value_0000",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0156"
+    },
+    {
+      "duplicate_of": "r27a2_value_0001",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0157"
+    },
+    {
+      "duplicate_of": "r27a2_value_0002",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0158"
+    },
+    {
+      "duplicate_of": "r27a2_value_0003",
+      "reason": "dedup",
+      "record_id": "r27a2_value_0159"
+    }
+  ],
+  "required_curricula": [
+    "public_chinese_pretraining",
+    "secondary_english_mixed",
+    "instruction_distillation",
+    "rag_evidence_grounded",
+    "reasoning_symbolic",
+    "value_aesthetic",
+    "user_answered_anchor"
+  ],
+  "row_16_used": 0,
+  "row_9_used": 0,
+  "split_counts": {
+    "dev": 74,
+    "heldout": 70,
+    "train": 498
+  }
+}

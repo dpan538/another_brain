@@ -14,6 +14,18 @@ artifacts/**
 !artifacts/.gitkeep
 artifacts/training_os/personal_writing_intake/
 artifacts/training_os/corpus_expansion/
+artifacts/r27a2/
+**/model_lab/checkpoints/
+**/raw_public_samples/
+**/clean_public_samples/
+**/*.pt
+**/*.pth
+**/*.safetensors
+**/*.ckpt
+**/tokenizer.model
+artifacts/**/tokenizer.json
+artifacts/**/*.parquet
+artifacts/**/*.jsonl
 
 # Raw identity interviews and unredacted personal/background cards are local-only
 # inputs. Public Identity Pack files live in identity_pack/ and must be redacted

@@ -590,6 +590,27 @@ const MARKERS = [
       "allow_release_checkpoint",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r27a2_public_corpus_engineering_training",
+    path: "training/from_scratch/APPROVE_R27A2_PUBLIC_CORPUS_ENGINEERING_TRAINING.json",
+    expectedScope: "public_corpus_distillation_and_single_engineering_training_only",
+    expectedPhase: "phase_3_engineering_model_lab",
+    expectedRunId: "r27a2_public_corpus_engineering_training",
+    consumedByCommit: "pending_r27a2_commit",
+    trainingFlagKeys: [
+      "allow_public_corpus_metadata_fetch",
+      "allow_public_corpus_bounded_download",
+      "allow_public_corpus_cleaning",
+      "allow_tokenizer_training",
+      "allow_engineering_training",
+      "allow_decoder_training",
+      "allow_lora_lab",
+      "allow_phase_4_scaled_training",
+      "allow_product_model_training",
+      "allow_long_term_training",
+      "allow_weight_commit"
+    ]
   }
 ];
 
