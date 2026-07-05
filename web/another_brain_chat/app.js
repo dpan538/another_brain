@@ -1,6 +1,6 @@
-import { R27B0MockRuntime } from "./mock_runtime.js";
+import { BrowserChatRuntime } from "./browser_runtime.js";
 
-const runtime = new R27B0MockRuntime();
+const runtime = new BrowserChatRuntime({ mode: "synthetic_tiny" });
 
 const form = document.querySelector("#chat-form");
 const input = document.querySelector("#chat-input");
@@ -41,9 +41,25 @@ function updateStatus(packet) {
   fallbackStatus.textContent = packet.fallback_used ? "Used" : "Unused";
 }
 
+function setPipelineStatus(status) {
+  const labels = {
+    loading_model: ["Loading", "Pending", "Pending", "Unused"],
+    retrieving_local_memory: ["Loaded", "Retrieving", "Pending", "Unused"],
+    drafting: ["Loaded", "Ready", "Drafting", "Unused"],
+    verifying: ["Loaded", "Ready", "Verifying", "Unused"],
+    final: ["Loaded", "Ready", "Passed", "Unused"],
+    fallback: ["Loaded", "Ready", "Blocked", "Used"]
+  };
+  const [model, retrieval, verifier, fallback] = labels[status] || labels.final;
+  modelStatus.textContent = model;
+  retrievalStatus.textContent = retrieval;
+  verifierStatus.textContent = verifier;
+  fallbackStatus.textContent = fallback;
+}
+
 async function boot() {
-  const loadResult = await runtime.model.load();
-  modelStatus.textContent = loadResult.status.replaceAll("_", " ");
+  const loadResult = await runtime.load();
+  modelStatus.textContent = `${loadResult.mode} loaded`;
 }
 
 form.addEventListener("submit", async (event) => {
@@ -55,7 +71,7 @@ form.addEventListener("submit", async (event) => {
   input.value = "";
   input.focus();
 
-  const packet = await runtime.run(text);
+  const packet = await runtime.run(text, { onStatus: setPipelineStatus });
   lastPacket = packet;
   appendMessage("assistant", packet.final_answer);
   updateStatus(packet);
