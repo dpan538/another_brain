@@ -7,38 +7,29 @@
         "attribution",
         "non_endorsement"
       ],
-      "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
-      "sample_bytes": 12814944,
-      "sample_rows": 2000,
-      "upstream_name": "BAAI/IndustryCorpus",
+      "sample_bytes": 62542093,
+      "sample_rows": 10000,
       "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryCorpus"
     },
     {
-      "dataset_id": "wikipedia_zh",
-      "license_name": "cc-by-sa-3.0,gfdl",
-      "license_obligations": [
-        "attribution",
-        "share_alike",
-        "citation_required"
-      ],
-      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
-      "sample_bytes": 24997591,
-      "sample_rows": 1450,
-      "upstream_name": "wikimedia/wikipedia zh via official MediaWiki API",
-      "upstream_url": "https://huggingface.co/datasets/wikimedia/wikipedia"
-    },
-    {
-      "dataset_id": "skypile_150b",
-      "license_name": "unknown",
-      "license_obligations": [
-        "subset_specific_terms",
-        "citation_required"
-      ],
-      "license_url": "",
+      "dataset_id": "baai_industry_corpus2",
+      "license_name": "apache-2.0",
+      "license_obligations": [],
       "sample_bytes": 0,
       "sample_rows": 0,
-      "upstream_name": "Skywork/SkyPile-150B",
-      "upstream_url": "https://huggingface.co/datasets/Skywork/SkyPile-150B"
+      "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryCorpus2"
+    },
+    {
+      "dataset_id": "fineweb_2",
+      "license_name": "odc-by",
+      "license_obligations": [
+        "attribution",
+        "common_crawl_terms",
+        "citation_required"
+      ],
+      "sample_bytes": 44573810,
+      "sample_rows": 10000,
+      "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2"
     },
     {
       "dataset_id": "fineweb",
@@ -48,25 +39,52 @@
         "common_crawl_terms",
         "citation_required"
       ],
-      "license_url": "https://opendatacommons.org/licenses/by/1-0/",
-      "sample_bytes": 6352969,
-      "sample_rows": 2000,
-      "upstream_name": "HuggingFaceFW/fineweb",
+      "sample_bytes": 30702704,
+      "sample_rows": 10000,
       "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
     },
     {
-      "dataset_id": "fineweb_edu",
-      "license_name": "odc-by",
+      "dataset_id": "wikipedia_zh",
+      "license_name": "cc-by-sa-3.0,gfdl",
       "license_obligations": [
         "attribution",
-        "common_crawl_terms",
+        "share_alike",
         "citation_required"
       ],
-      "license_url": "https://opendatacommons.org/licenses/by/1-0/",
+      "sample_bytes": 74999790,
+      "sample_rows": 7475,
+      "upstream_url": "https://huggingface.co/datasets/wikimedia/wikipedia"
+    },
+    {
+      "dataset_id": "oasst1",
+      "license_name": "apache-2.0",
+      "license_obligations": [
+        "attribution",
+        "non_endorsement"
+      ],
+      "sample_bytes": 5613841,
+      "sample_rows": 10000,
+      "upstream_url": "https://huggingface.co/datasets/OpenAssistant/oasst1"
+    },
+    {
+      "dataset_id": "baai_coig",
+      "license_name": "apache-2.0",
+      "license_obligations": [
+        "attribution",
+        "subset_specific_terms",
+        "citation_required"
+      ],
       "sample_bytes": 0,
       "sample_rows": 0,
-      "upstream_name": "HuggingFaceFW/fineweb-edu",
-      "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu"
+      "upstream_url": "https://huggingface.co/datasets/BAAI/COIG"
+    },
+    {
+      "dataset_id": "coig_cqia",
+      "license_name": "unknown",
+      "license_obligations": [],
+      "sample_bytes": 0,
+      "sample_rows": 0,
+      "upstream_url": "https://huggingface.co/datasets/m-a-p/COIG-CQIA"
     },
     {
       "dataset_id": "infinity_instruct",
@@ -76,25 +94,10 @@
         "share_alike",
         "subset_specific_terms"
       ],
-      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
       "sample_bytes": 0,
       "sample_rows": 0,
-      "upstream_name": "BAAI/Infinity-Instruct",
       "upstream_url": "https://huggingface.co/datasets/BAAI/Infinity-Instruct"
-    },
-    {
-      "dataset_id": "wanjuan_cc",
-      "license_name": "unknown",
-      "license_obligations": [
-        "subset_specific_terms",
-        "citation_required"
-      ],
-      "license_url": "",
-      "sample_bytes": 0,
-      "sample_rows": 0,
-      "upstream_name": "WanJuan-CC subset candidate",
-      "upstream_url": "https://github.com/opendatalab/WanJuan2.0-WanJuan-CC"
     }
   ],
-  "generated_at_utc": "2026-07-05T11:13:28Z"
+  "generated_at_utc": "2026-07-05T11:56:57Z"
 }

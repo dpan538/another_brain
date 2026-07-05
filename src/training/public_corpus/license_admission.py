@@ -113,6 +113,70 @@ SOURCE_SPECS = {
         "primary_language": "mixed",
         "sample_method": "blocked_until_subset_terms_clear",
     },
+    "baai_industry_corpus2": {
+        "upstream_name": "BAAI/IndustryCorpus2",
+        "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryCorpus2",
+        "metadata_source_url": "https://huggingface.co/api/datasets/BAAI/IndustryCorpus2",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "terms_url": "",
+        "primary_language": "mixed",
+        "sample_method": "hf_streaming",
+        "hf_dataset": "BAAI/IndustryCorpus2",
+        "hf_config": None,
+    },
+    "fineweb_2": {
+        "upstream_name": "HuggingFaceFW/fineweb-2",
+        "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2",
+        "metadata_source_url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-2",
+        "license_url": "https://opendatacommons.org/licenses/by/1-0/",
+        "terms_url": "https://commoncrawl.org/terms-of-use",
+        "primary_language": "mixed",
+        "sample_method": "hf_streaming",
+        "hf_dataset": "HuggingFaceFW/fineweb-2",
+        "hf_config": "cmn_Hani",
+    },
+    "oasst1": {
+        "upstream_name": "OpenAssistant/oasst1",
+        "upstream_url": "https://huggingface.co/datasets/OpenAssistant/oasst1",
+        "metadata_source_url": "https://huggingface.co/api/datasets/OpenAssistant/oasst1",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "terms_url": "",
+        "primary_language": "mixed",
+        "sample_method": "hf_streaming_instruction",
+        "hf_dataset": "OpenAssistant/oasst1",
+        "hf_config": None,
+    },
+    "baai_coig": {
+        "upstream_name": "BAAI/COIG",
+        "upstream_url": "https://huggingface.co/datasets/BAAI/COIG",
+        "metadata_source_url": "https://huggingface.co/api/datasets/BAAI/COIG",
+        "license_url": "",
+        "terms_url": "https://huggingface.co/datasets/BAAI/COIG",
+        "primary_language": "zh",
+        "sample_method": "metadata_only_subset_review_required",
+        "hf_dataset": "BAAI/COIG",
+        "hf_config": None,
+    },
+    "coig_cqia": {
+        "upstream_name": "m-a-p/COIG-CQIA",
+        "upstream_url": "https://huggingface.co/datasets/m-a-p/COIG-CQIA",
+        "metadata_source_url": "https://huggingface.co/api/datasets/m-a-p/COIG-CQIA",
+        "license_url": "",
+        "terms_url": "https://huggingface.co/datasets/m-a-p/COIG-CQIA",
+        "primary_language": "zh",
+        "sample_method": "hf_streaming_instruction",
+        "hf_dataset": "m-a-p/COIG-CQIA",
+        "hf_config": None,
+    },
+    "tulu_3_sft_mixture": {
+        "upstream_name": "allenai/tulu-3-sft-mixture",
+        "upstream_url": "https://huggingface.co/datasets/allenai/tulu-3-sft-mixture",
+        "metadata_source_url": "https://huggingface.co/api/datasets/allenai/tulu-3-sft-mixture",
+        "license_url": "",
+        "terms_url": "https://huggingface.co/datasets/allenai/tulu-3-sft-mixture",
+        "primary_language": "mixed",
+        "sample_method": "metadata_only_recipe_reference",
+    },
 }
 
 
@@ -144,24 +208,40 @@ def decide_source(dataset_id, metadata=None, raw_metadata=b"", retrieved_at=None
     obligations = []
     reason = ""
     license_name = lic or "unknown"
-    if dataset_id == "baai_industry_corpus" and "apache-2.0" in lic and access_status == "public":
+    if dataset_id in {"baai_industry_corpus", "baai_industry_corpus2"} and "apache-2.0" in lic and access_status == "public":
         allowed, status = True, "approved_for_engineering"
         obligations = ["attribution", "non_endorsement"]
-        reason = "Current Hugging Face metadata reports apache-2.0 and public access; R27A3 admits bounded engineering samples only."
+        reason = "Current Hugging Face metadata reports apache-2.0 and public access; bounded engineering samples only."
     elif dataset_id == "wikipedia_zh":
         allowed, status = True, "approved_for_engineering"
         access_status = "public"
         license_name = "cc-by-sa-3.0,gfdl"
         obligations = ["attribution", "share_alike", "citation_required"]
-        reason = "Wikipedia text is public but carries attribution/share-alike obligations; R27A3 uses bounded engineering samples only."
-    elif dataset_id in {"fineweb", "fineweb_edu"} and "odc-by" in lic and access_status == "public":
+        reason = "Wikipedia text is public but carries attribution/share-alike obligations; bounded engineering samples only."
+    elif dataset_id in {"fineweb", "fineweb_edu", "fineweb_2"} and ("odc-by" in lic or "odc" in lic) and access_status == "public":
         allowed, status = True, "approved_for_engineering"
         obligations = ["attribution", "common_crawl_terms", "citation_required"]
-        reason = "Current metadata reports ODC-By and public access; R27A3 admits bounded streaming samples only."
+        reason = "Current metadata reports ODC-By/CommonCrawl-derived public access; bounded streaming samples only."
+    elif dataset_id == "oasst1" and ("apache-2.0" in lic or "apache" in lic) and access_status == "public":
+        allowed, status = True, "approved_for_engineering"
+        obligations = ["attribution", "non_endorsement"]
+        reason = "OASST1 metadata reports Apache-compatible public access; R27A4 admits final-answer-only instruction candidates for engineering review."
+    elif dataset_id == "coig_cqia" and access_status == "public" and lic not in {"unknown", ""}:
+        allowed, status = True, "approved_for_engineering"
+        obligations = ["attribution", "subset_specific_terms", "citation_required"]
+        reason = "COIG-CQIA has current public metadata with a declared license; R27A4 admits bounded instruction candidates only."
+    elif dataset_id == "baai_coig":
+        status = "conditional_for_engineering"
+        obligations = ["attribution", "subset_specific_terms", "citation_required"]
+        reason = "BAAI/COIG requires subset-level license review; R27A4 records metadata but does not globally admit all subsets."
+    elif dataset_id == "tulu_3_sft_mixture":
+        status = "blocked"
+        obligations = ["subset_specific_terms", "recipe_reference_only"]
+        reason = "Tulu mixture is recipe/reference only until every subset license is separately admitted."
     elif dataset_id == "infinity_instruct":
         status = "blocked" if access_status == "gated" else "conditional_for_engineering"
         obligations = ["attribution", "share_alike", "subset_specific_terms"]
-        reason = "Instruction source is gated or requires explicit access terms; no token bypass or personal auth is used in R27A3."
+        reason = "Instruction source is gated or requires explicit access terms; no token bypass or personal auth is used in R27A4."
     elif dataset_id == "skypile_150b":
         status = "conditional_for_engineering"
         obligations = ["subset_specific_terms", "citation_required"]
@@ -192,7 +272,7 @@ def decide_source(dataset_id, metadata=None, raw_metadata=b"", retrieved_at=None
         allowed_to_commit_raw=False,
         allowed_to_store_raw_in_artifacts=bool(allowed),
         license_obligations=obligations,
-        decision_scope="R27A3 engineering only, not product training, not phase_4, not release",
+        decision_scope="R27A4 engineering campaign only, not product training, not phase_4, not release",
         decision_reason=reason,
         retrieved_at_utc=retrieved_at,
         source_card_sha256_or_etag=metadata.get("sha") or metadata_digest(raw_metadata),

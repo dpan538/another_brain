@@ -631,6 +631,29 @@ const MARKERS = [
       "allow_long_term_training",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r27a4_long_run_training_campaign_v1",
+    path: "training/from_scratch/APPROVE_R27A4_LONG_RUN_TRAINING_CAMPAIGN_V1.json",
+    expectedScope: "long_run_engineering_campaign_only",
+    expectedPhase: "phase_3_engineering_model_lab",
+    expectedRunId: "r27a4_long_run_training_campaign_v1",
+    consumedByCommit: "pending_r27a4_commit",
+    optionalUntilCreated: true,
+    trainingFlagKeys: [
+      "allow_public_corpus_metadata_fetch",
+      "allow_public_corpus_bounded_download",
+      "allow_public_corpus_cleaning",
+      "allow_tokenizer_training",
+      "allow_engineering_training",
+      "allow_decoder_training",
+      "allow_campaign_resume",
+      "allow_hyperparameter_sweep",
+      "allow_phase_4_scaled_training",
+      "allow_product_model_training",
+      "allow_long_term_training",
+      "allow_weight_commit"
+    ]
   }
 ];
 
@@ -680,6 +703,7 @@ async function main() {
 
   for (const spec of MARKERS) {
     const marker = await readJson(spec.path).catch((error) => {
+      if (spec.optionalUntilCreated && error?.code === "ENOENT") return null;
       failures.push({ marker: spec.id, code: "approval_marker_missing_or_invalid_json", path: spec.path, detail: error.message });
       return null;
     });
