@@ -1,6 +1,15 @@
 import { BrowserChatRuntime } from "./browser_runtime.js";
 
-const runtime = new BrowserChatRuntime({ mode: "synthetic_tiny" });
+const DEFAULT_DELIVERY_CONFIG = Object.freeze({
+  delivery_mode: "demo_static",
+  model_mode: "synthetic_tiny",
+  rag_mode: "static_demo",
+  backend_inference: false,
+  external_llm_api: false,
+  product_model: false,
+  budget_status: "under_100mb",
+  non_product_warning: "Demo static mode uses mock/synthetic generation and demo memory only."
+});
 
 const form = document.querySelector("#chat-form");
 const input = document.querySelector("#chat-input");
@@ -9,10 +18,16 @@ const modelStatus = document.querySelector("#model-status");
 const retrievalStatus = document.querySelector("#retrieval-status");
 const verifierStatus = document.querySelector("#verifier-status");
 const fallbackStatus = document.querySelector("#fallback-status");
+const deliveryMode = document.querySelector("#delivery-mode");
+const configuredModelMode = document.querySelector("#configured-model-mode");
+const configuredRagMode = document.querySelector("#configured-rag-mode");
+const budgetStatus = document.querySelector("#budget-status");
+const nonProductWarning = document.querySelector("#non-product-warning");
 const debugToggle = document.querySelector("#debug-toggle");
 const debugOutput = document.querySelector("#debug-output");
 
 let lastPacket = null;
+let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 function appendMessage(role, text) {
   const article = document.createElement("article");
@@ -42,6 +57,27 @@ function updateStatus(packet) {
   fallbackStatus.textContent = packet.fallback_used ? "Used" : "Unused";
 }
 
+async function loadDeliveryConfig() {
+  if (!globalThis.location?.href) return DEFAULT_DELIVERY_CONFIG;
+  const base = new URL(globalThis.location.href);
+  const url = new URL("../another_brain/runtime_mode.json", base);
+  if (url.origin !== base.origin) throw new Error("non_same_origin_runtime_mode_rejected");
+  const response = await fetch(url.href);
+  if (!response.ok) throw new Error(`runtime_mode_fetch_failed:${response.status}`);
+  const config = await response.json();
+  return { ...DEFAULT_DELIVERY_CONFIG, ...config };
+}
+
+function renderDeliveryConfig(config) {
+  deliveryMode.textContent = config.delivery_mode;
+  configuredModelMode.textContent = config.model_mode;
+  configuredRagMode.textContent = config.rag_mode;
+  budgetStatus.textContent = config.budget_status;
+  nonProductWarning.textContent = config.product_model
+    ? ""
+    : config.non_product_warning || DEFAULT_DELIVERY_CONFIG.non_product_warning;
+}
+
 function setPipelineStatus(status) {
   const labels = {
     loading_model: ["Loading", "Pending", "Pending", "Unused"],
@@ -59,8 +95,12 @@ function setPipelineStatus(status) {
 }
 
 async function boot() {
+  const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
+  renderDeliveryConfig(deliveryConfig);
+  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig });
   const loadResult = await runtime.load();
   modelStatus.textContent = `${loadResult.mode} loaded`;
+  retrievalStatus.textContent = deliveryConfig.rag_mode;
 }
 
 form.addEventListener("submit", async (event) => {

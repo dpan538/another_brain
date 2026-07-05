@@ -1,5 +1,5 @@
 {
-  "runtime_version": "r27b3-static-rag-memory-v1",
+  "runtime_version": "r27b4-end-to-end-static-delivery-v1",
   "model_assets": [],
   "tokenizer_assets": [],
   "rag_assets": [
@@ -10,8 +10,15 @@
       "answer_bank": false
     }
   ],
-  "gate_assets": [],
-  "total_declared_bytes": 2065,
+  "gate_assets": [
+    {
+      "path": "another_brain/runtime_mode.json",
+      "bytes": 410,
+      "delivery_config": true,
+      "product_model": false
+    }
+  ],
+  "total_declared_bytes": 2475,
   "max_total_static_bytes": 100000000,
   "same_origin_only": true,
   "external_runtime_dependency": false,

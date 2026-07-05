@@ -10,12 +10,16 @@ ROOT = Path(__file__).resolve().parents[2]
 class R27B0StaticAssetBudgetTests(unittest.TestCase):
     def test_asset_manifest_static_budget_contract(self):
         manifest = json.loads((ROOT / "web/another_brain/asset_manifest.json").read_text(encoding="utf-8"))
-        self.assertEqual(manifest["runtime_version"], "r27b0-static-chat-shell-v1")
+        self.assertRegex(manifest["runtime_version"], r"^r27b[0-9]")
         self.assertEqual(manifest["model_assets"], [])
         self.assertEqual(manifest["tokenizer_assets"], [])
-        self.assertEqual(manifest["rag_assets"], [])
-        self.assertEqual(manifest["gate_assets"], [])
-        self.assertEqual(manifest["total_declared_bytes"], 0)
+        declared_total = 0
+        for item in manifest["rag_assets"] + manifest["gate_assets"]:
+            self.assertFalse(item["path"].startswith(("http://", "https://", "//")))
+            actual = (ROOT / "web" / item["path"]).stat().st_size
+            self.assertEqual(item["bytes"], actual)
+            declared_total += actual
+        self.assertEqual(manifest["total_declared_bytes"], declared_total)
         self.assertEqual(manifest["max_total_static_bytes"], 100_000_000)
         self.assertTrue(manifest["same_origin_only"])
         self.assertFalse(manifest["external_runtime_dependency"])

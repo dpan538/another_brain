@@ -170,8 +170,11 @@ def check_chat_shell_static_only(failures: list[str]) -> None:
         if "xmlhttprequest" in lowered or "websocket" in lowered:
             failures.append(f"chat_shell_network_call:{rel}")
         if "fetch(" in lowered:
-            static_rag_fetch = "static_rag" in lowered and not re.search(r"fetch\(\s*['\"]https?://", text, re.I)
-            if not static_rag_fetch:
+            same_origin_static_fetch = (
+                ("static_rag" in lowered or "runtime_mode" in lowered)
+                and not re.search(r"fetch\(\s*['\"]https?://", text, re.I)
+            )
+            if not same_origin_static_fetch:
                 failures.append(f"chat_shell_network_call:{rel}")
         if re.search(r"(src|href)=['\"]https?://", text, re.I):
             failures.append(f"chat_shell_external_asset_reference:{rel}")

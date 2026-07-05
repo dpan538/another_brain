@@ -15,7 +15,7 @@ export function probeBrowserCapabilities() {
 
 export function buildStatePacket(input, turnIndex, mode = "synthetic_tiny") {
   return {
-    runtime_version: "r27b3-static-rag-memory-v1",
+    runtime_version: "r27b4-end-to-end-static-delivery-v1",
     input,
     turn_index: turnIndex,
     local_only: true,
@@ -84,6 +84,7 @@ function buildDecoderPrompt(input, evidencePacket) {
 export class BrowserChatRuntime {
   constructor(options = {}) {
     this.mode = options.mode || "synthetic_tiny";
+    this.deliveryConfig = options.deliveryConfig || {};
     this.turnIndex = 0;
     this.worker = null;
     this.capabilities = probeBrowserCapabilities();
@@ -98,6 +99,8 @@ export class BrowserChatRuntime {
     return {
       status: "loaded",
       mode: this.mode,
+      delivery_mode: this.deliveryConfig.delivery_mode || "demo_static",
+      rag_mode: this.deliveryConfig.rag_mode || "static_demo",
       product_model: false,
       capabilities: this.capabilities
     };
@@ -141,6 +144,9 @@ export class BrowserChatRuntime {
     this.turnIndex += 1;
     const setStatus = typeof hooks.onStatus === "function" ? hooks.onStatus : () => {};
     const statePacket = buildStatePacket(input, this.turnIndex, this.mode);
+    statePacket.delivery_mode = this.deliveryConfig.delivery_mode || "demo_static";
+    statePacket.rag_mode = this.deliveryConfig.rag_mode || "static_demo";
+    statePacket.product_model = false;
     setStatus("loading_model");
     if (!this.worker && this.capabilities.worker_available) await this.load();
     setStatus("retrieving_local_memory");
@@ -181,6 +187,7 @@ export class BrowserChatRuntime {
       verifier_result: verifierResult,
       final_answer: finalAnswer,
       fallback_used: fallbackUsed,
+      delivery_config: this.deliveryConfig,
       capabilities: this.capabilities
     };
   }

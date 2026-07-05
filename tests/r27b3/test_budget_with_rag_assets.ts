@@ -12,6 +12,10 @@ test("asset manifest declares demo RAG asset within 100MB budget", async () => {
   const asset = manifest.rag_assets[0];
   const actual = (await stat(resolve(root, "web", asset.path))).size;
   assert.equal(asset.bytes, actual);
-  assert.equal(manifest.total_declared_bytes, actual);
+  const gateTotal = await manifest.gate_assets.reduce(async (sumPromise, gateAsset) => {
+    const sum = await sumPromise;
+    return sum + (await stat(resolve(root, "web", gateAsset.path))).size;
+  }, Promise.resolve(0));
+  assert.equal(manifest.total_declared_bytes, actual + gateTotal);
   assert.ok(manifest.total_declared_bytes < manifest.max_total_static_bytes);
 });

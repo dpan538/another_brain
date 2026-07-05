@@ -77,7 +77,9 @@ function classifyEvidence(query, evidence) {
 }
 
 export async function loadStaticMemoryRecords(options = {}) {
-  const base = new URL(options.baseUrl || globalThis.location?.href || "http://localhost/another_brain_chat/");
+  const baseHref = options.baseUrl || globalThis.location?.href;
+  if (!baseHref) return FALLBACK_DEMO_RECORDS;
+  const base = new URL(baseHref);
   const url = new URL(options.assetUrl || DEMO_MEMORY_ASSET, base);
   if (url.origin !== base.origin || !url.pathname.includes("/another_brain/static_rag/")) {
     throw new Error("non_same_origin_rag_asset_rejected");

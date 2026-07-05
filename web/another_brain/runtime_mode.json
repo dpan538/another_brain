@@ -1,0 +1,13 @@
+{
+  "delivery_mode": "demo_static",
+  "model_mode": "synthetic_tiny",
+  "rag_mode": "static_demo",
+  "backend_inference": false,
+  "external_llm_api": false,
+  "hosted_vector_store": false,
+  "product_model": false,
+  "browser_admission": false,
+  "release_checkpoint": false,
+  "budget_status": "under_100mb",
+  "non_product_warning": "Demo static mode uses mock/synthetic generation and demo memory only."
+}

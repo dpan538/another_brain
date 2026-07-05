@@ -50,7 +50,10 @@ class R27B0StaticOnlyTests(unittest.TestCase):
             "web/another_brain_chat/runtime_interfaces.js",
         ):
             text = (ROOT / rel).read_text(encoding="utf-8")
-            self.assertNotIn("fetch(", text)
+            if rel.endswith("app.js"):
+                self.assertIn("runtime_mode.json", text)
+            else:
+                self.assertNotIn("fetch(", text)
             self.assertNotIn("XMLHttpRequest", text)
             self.assertNotIn("WebSocket", text)
             self.assertNotRegex(text, r"https?://")
@@ -68,7 +71,9 @@ class R27B0StaticOnlyTests(unittest.TestCase):
     def test_manifest_has_empty_runtime_assets(self):
         manifest = json.loads((ROOT / "web/another_brain/asset_manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["model_assets"] + manifest["tokenizer_assets"], [])
-        self.assertEqual(manifest["rag_assets"] + manifest["gate_assets"], [])
+        for item in manifest["rag_assets"] + manifest["gate_assets"]:
+            self.assertFalse(item["path"].startswith(("http://", "https://", "//")))
+            self.assertTrue((ROOT / "web" / item["path"]).exists())
 
 
 if __name__ == "__main__":
