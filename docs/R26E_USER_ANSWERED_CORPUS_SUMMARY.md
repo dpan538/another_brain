@@ -37,3 +37,15 @@ User-answered provenance rows after R26E: 45 (1.07%).
 Rows 51-100 from the first question pack remain excluded. Replacement 51-100 answers are still needed before any serious training decision.
 
 R26E did not run training, tokenizer dry-run, teacher calls, phase_4 training, or artifact/weight commit.
+
+## R26F Audit Note
+
+R26F is audit-only. It does not train, run tokenizer dry-run, alter corpus files, change `target_answer`, or change R26E metadata.
+
+R26F explains the 45 promoted rows as candidate-level filtering, not as proof that only 45 first-50 source answers were usable:
+- R26D generated 97 candidates from 50 answered source rows.
+- R26E promoted 45 candidates from 45 unique source rows.
+- 42 rejected candidates were same-source `source_slice` duplicates of an already selected primary candidate.
+- 10 rejected candidates came from rows 2, 9, 16, 29, and 47 because the R26E risk rule flagged project-meta leakage.
+
+Rows 51-100 remain excluded. Any metadata fix or re-promotion review requires later R26G approval.

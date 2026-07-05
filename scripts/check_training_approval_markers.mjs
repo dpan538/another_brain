@@ -500,6 +500,25 @@ const MARKERS = [
       "allow_phase_4_scaled_training",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r26g_fix_r26e_metadata_or_repromote_template",
+    path: "training/from_scratch/APPROVE_R26G_FIX_R26E_METADATA_OR_REPROMOTE.template.json",
+    expectedScope: "fix_r26e_metadata_or_repromote_first50_after_audit_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r26g_fix_r26e_metadata_or_repromote",
+    template: true,
+    trainingFlagKeys: [
+      "allow_metadata_fix",
+      "allow_repromotion",
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_corpus_generation",
+      "allow_raw_source_commit",
+      "allow_candidate_artifact_commit",
+      "allow_phase_4_scaled_training",
+      "allow_weight_commit"
+    ]
   }
 ];
 

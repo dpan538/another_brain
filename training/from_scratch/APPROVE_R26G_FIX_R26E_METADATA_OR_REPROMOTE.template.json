@@ -1,0 +1,19 @@
+{
+  "approved": false,
+  "scope": "fix_r26e_metadata_or_repromote_first50_after_audit_only",
+  "reviewer": "",
+  "phase": "phase_3_corpus_review",
+  "run_id": "r26g_fix_r26e_metadata_or_repromote",
+  "allow_metadata_fix": false,
+  "allow_repromotion": false,
+  "allow_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_corpus_generation": false,
+  "allow_raw_source_commit": false,
+  "allow_candidate_artifact_commit": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_weight_commit": false,
+  "notes": "Template only. R26G may correct R26E metadata or re-promote omitted first-50 rows only after explicit approval. This does not authorize training."
+}

@@ -194,6 +194,14 @@ The voice is intentionally unified. Another Brain does not split public persona 
 
 R26D adds the first user-answer intake pass for the first 100-question pack. The raw CSV stays private under ignored `private_sources/question_packs/`; only rows 1-50 are parsed into ignored answer-as-user candidates, while rows 51-100 remain excluded from all training, tokenizer, teacher, corpus-generation, corpus-promotion, eval-derived, and long-horizon paths. User writing examples such as `Church.pdf` and `Poetry_Collection.pdf` belong under ignored selectable material folders like `private_sources/writing_examples/poetry/`, not as active corpus or root-level project files.
 
+R26E promotes a reviewed subset of first-50 user-answer candidates into tracked
+`training/llm_corpus/r26e_user_answered_*` split files without training,
+tokenizer dry-run, teacher calls, artifact commit, weight commit, or rows
+51-100. R26F audits that promotion trace only: it explains the 45 promoted
+rows as 45 unique source rows after candidate-level filtering, not proof that
+only 45 first-50 answers were usable. Any `should_answer` metadata fix or
+manual re-promotion review requires later R26G approval.
+
 ## Privacy Rules
 
 - No cloud inference APIs.
@@ -707,7 +715,7 @@ R26C does not train, run tokenizer dry-run, expand corpus, promote corpus rows,
 commit raw CSV/XLSX question-pack files, approve phase_4, call external APIs,
 call Doubao, commit artifacts, or commit weights.
 
-## R26D/R26E User Answer Corpus Status
+## R26D/R26E/R26F User Answer Corpus Status
 
 R26D intakes only rows 1-50 of the first answered question pack as ignored
 answer-as-user candidates. Rows 51-100 remain excluded because they are
@@ -717,5 +725,14 @@ behavior.
 R26E may promote a bounded reviewed subset of those first-50 candidates into
 tracked `training/llm_corpus` split files. It does not train, run tokenizer
 dry-run, use rows 51-100, call external APIs or Doubao, commit the raw CSV,
-commit artifacts, or approve phase_4. Replacement rows 51-100 still require a
-fresh R26F intake approval.
+commit artifacts, or approve phase_4.
+
+R26F audits R26E only. It reports that R26D generated 97 candidates from 50
+answered rows, R26E promoted 45 candidates from 45 unique source rows, 42
+rejections were redundant same-source `source_slice` duplicates, and 10
+rejections came from project-meta flags on rows 2, 9, 16, 29, and 47. Row 16
+looks like a justified training-control exclusion; rows 2, 9, 29, and 47 need
+manual R26G review before any possible re-promotion. R26F also diagnoses the
+blank raw `是否回答` values as likely mapped to `should_answer=false`. R26F does
+not mutate corpus files or metadata. Replacement rows 51-100 still require a
+separate fresh approval.

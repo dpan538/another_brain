@@ -132,6 +132,13 @@ raw CSV and generated candidates are not committed. User writing examples are
 kept under selectable ignored `private_sources/writing_examples/` folders and
 are not parsed in R26D.
 
+R26E promotes reviewed first-50 user-answer rows into tracked
+`training/llm_corpus/r26e_user_answered_*` split files without training,
+tokenizer dry-run, external teacher calls, artifact commit, or weight commit.
+R26F audits that promotion only. It explains the 45 promoted rows as 45 unique
+source rows after candidate-level filtering, keeps rows 51-100 excluded, and
+requires later R26G approval before any metadata fix or re-promotion review.
+
 ## Public Data
 
 Public generated files may include:
@@ -536,7 +543,7 @@ They may be referenced only as policy evidence, cleanup notes, or
 project-management context. No raw CSV/XLSX answer-pack file is committed in
 R26C.
 
-## R26D/R26E User-Answered Data Note
+## R26D/R26E/R26F User-Answered Data Note
 
 R26D reads the answered CSV only from the ignored private intake path and
 creates ignored candidates from rows 1-50. It does not promote rows or train.
@@ -546,3 +553,11 @@ rows preserve the user's answer wording as the target and record
 `provenance.source_type` as `user_answered`. Rows 51-100 remain excluded from
 all training/corpus/tokenizer/teacher/eval-generation paths. The raw CSV and
 ignored candidate artifacts are not committed.
+
+R26F traces R26E without corpus mutation. R26D produced 97 candidates from all
+50 answered source rows; R26E promoted 45 candidates from 45 unique source
+rows. The rejected candidates were 42 redundant same-source `source_slice`
+duplicates and 10 project-meta-flagged candidates from rows 2, 9, 16, 29, and
+47. R26F also finds that blank raw `是否回答` values likely became
+`should_answer=false` for promoted rows. Any correction requires later R26G
+approval and does not authorize training.

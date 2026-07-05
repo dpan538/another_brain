@@ -16,3 +16,9 @@ R26D converted only rows 1-50 from `another_brain_question_pack_001` into ignore
 Full user answers stay in ignored artifacts for review. This tracked summary intentionally does not include raw answers or row 51-100 text.
 
 R26E may promote only reviewed rows from this first-50 candidate set. Rows flagged for project-meta leakage, duplicated target answers, or weak answer-as-user fit should be rejected rather than used to fill a row quota.
+
+## R26F Trace Note
+
+R26F audited the R26E promotion without training or corpus mutation. All 50 source rows produced candidates. R26E promoted 45 unique source rows, rejected 42 redundant same-source `source_slice` duplicates, and rejected 10 project-meta-flagged candidates from rows 2, 9, 16, 29, and 47.
+
+The 45 promoted rows do not mean only 45 first-50 source answers were usable. Rows 51-100 remain excluded, and any correction requires later R26G approval.
