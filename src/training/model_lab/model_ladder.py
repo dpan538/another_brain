@@ -11,6 +11,10 @@ MODEL_LADDER = {
     "mini_8m": {"context_length": 256, "n_layer": 3, "n_head": 4, "n_embd": 192, "dropout": 0.05, "cpu_fallback": True},
     "mini_12m": {"context_length": 512, "n_layer": 6, "n_head": 6, "n_embd": 384, "dropout": 0.05},
     "mini_30m": {"context_length": 512, "n_layer": 8, "n_head": 8, "n_embd": 512, "dropout": 0.05, "requires_accelerator": True},
+    "mps_30m": {"context_length": 512, "n_layer": 8, "n_head": 8, "n_embd": 512, "dropout": 0.05, "requires_accelerator": True},
+    "mps_60m": {"context_length": 384, "n_layer": 10, "n_head": 8, "n_embd": 704, "dropout": 0.05, "requires_accelerator": True},
+    "mps_100m": {"context_length": 256, "n_layer": 12, "n_head": 12, "n_embd": 896, "dropout": 0.05, "requires_accelerator": True, "stretch": True},
+    "mps_120m": {"context_length": 256, "n_layer": 12, "n_head": 16, "n_embd": 1024, "dropout": 0.05, "requires_accelerator": True, "stretch": True},
 }
 
 
