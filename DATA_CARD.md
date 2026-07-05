@@ -582,3 +582,16 @@ entry plan/template. R26H does not alter `training/llm_corpus`, does not
 change `target_answer`, does not train, does not approve phase_4, and does not
 commit tokenizer artifacts or weights. R26I remains approval-gated and would
 be a bounded answer-as-user microcycle, not product/formal training.
+
+## R27A Data Note
+
+R27A records P0 architecture scaffolds only: reasoning-plan traces, static
+local RAG evidence packets, value/aesthetic profile extraction,
+teacher-probe/distillation schemas, and P0 eval gates. It does not alter
+`training/llm_corpus`, does not change `target_answer`, does not train, does
+not run tokenizer dry-run, does not expand or promote corpus rows, and does
+not approve phase_4.
+
+Teacher outputs are not committed and are not accepted as truth or direct
+training data. Any future correction, distilled-answer intake, or bounded
+microcycle requires a separate R27B approval.

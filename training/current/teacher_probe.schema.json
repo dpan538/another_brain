@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://another-brain.local/schemas/teacher_probe.r27a.json",
+  "title": "R27A Teacher Probe",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "probe_id",
+    "teacher_id",
+    "teacher_type",
+    "teacher_access_mode",
+    "prompt",
+    "prompt_family",
+    "allowed_to_send_private_data",
+    "contains_private_data",
+    "chain_of_thought_requested",
+    "expected_output_type",
+    "review_status"
+  ],
+  "properties": {
+    "probe_id": { "type": "string", "minLength": 1 },
+    "teacher_id": { "type": "string" },
+    "teacher_type": {
+      "type": "string",
+      "enum": ["external_service_manual_probe", "local_open_model_probe", "reviewed_baseline_model", "unknown"]
+    },
+    "teacher_access_mode": { "type": "string", "enum": ["manual_user_supplied", "local_file_import", "disabled"] },
+    "prompt": { "type": "string", "minLength": 1 },
+    "prompt_family": {
+      "type": "string",
+      "enum": [
+        "weird_question",
+        "abstract_reasoning",
+        "value_judgment",
+        "aesthetic_judgment",
+        "unsupported_challenge",
+        "evidence_correction",
+        "non_assistant_voice",
+        "relation_reasoning"
+      ]
+    },
+    "allowed_to_send_private_data": { "const": false },
+    "contains_private_data": { "const": false },
+    "chain_of_thought_requested": { "const": false },
+    "expected_output_type": { "type": "string", "enum": ["final_answer_only", "classification_only", "contrastive_answer"] },
+    "review_status": { "type": "string" }
+  }
+}

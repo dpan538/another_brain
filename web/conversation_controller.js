@@ -15,6 +15,8 @@ import { handleR23CandidateTurn } from "./r23_candidate_controller.js";
 import { sanitizeSurfaceIdentity } from "./surface_identity.js";
 import { classifyAnswerability } from "./answerability_classifier.js";
 import { compactTaskState, extractTaskStatePatch, mergeTaskState } from "./task_state_runtime.js";
+import { buildReasoningPlan } from "./reasoning_plan_runtime.js";
+import { buildEvidencePacket } from "./rag_evidence_runtime.js";
 
 function clean(text) {
   return String(text || "").trim();
@@ -51,6 +53,39 @@ function responseTypeFromMode(controllerMode = "") {
   return "answer";
 }
 
+function valueProfileTracePacket(reasoningPlan = {}) {
+  return {
+    packet_id: `${reasoningPlan.plan_id || "reasoning_plan"}_value_profile_trace`,
+    source: "user_answered_corpus",
+    stance_dimensions: {
+      unsupported_challenge: "resist unsupported concession; correct only when evidence is present",
+      refusal_boundary: "refuse or partially answer when privacy, trust, or impossible certainty is requested",
+      abstract_reframe: "answer the shape of the question instead of service-style compliance",
+      aesthetic_judgment: "treat taste and style as judgment axes, not universal facts",
+      language_meaning: "prefer compressed meaning over procedural explanation",
+      value_judgment: "state a bounded stance without pretending neutrality",
+      non_assistant_voice: "avoid customer-service apology and generic helpfulness"
+    },
+    allowed_answer_modes: ["direct_answer", "partial_answer", "compressed_judgment", "abstract_reframe", "pressure_resistance", "refuse"],
+    forbidden_answer_modes: ["generic_assistant_service", "unsupported_concession", "chain_of_thought"],
+    style_anchors: ["compressed", "bounded", "non_service_voice"],
+    value_anchors: ["evidence_before_correction", "boundary_before_helpfulness", "answer_as_user_not_assistant"],
+    evidence_policy: reasoningPlan.answer_obligation?.evidence_policy || "no_evidence_needed",
+    contains_private_data: false
+  };
+}
+
+function teacherDistillationTracePacket(reasoningPlan = {}) {
+  return {
+    enabled: false,
+    status: "r27a_scaffold_only",
+    tags: reasoningPlan.teacher_distillation_tags || [],
+    teacher_output_used_directly: false,
+    training_allowed: false,
+    chain_of_thought_allowed: false
+  };
+}
+
 function boundTargetsFrom({ binding = {}, draft = {}, session = {} } = {}) {
   const ids = [];
   if (Array.isArray(binding.target_ids)) ids.push(...binding.target_ids);
@@ -75,6 +110,13 @@ export function handleConversationTurn({
   const binding = resolveContextualQuestion({ query: text, session });
   const answerability = classifyAnswerability({ query: text, session });
   const turnFunction = classifyTurnFunction({ query: text, session, userTurn, binding });
+  const reasoningPlan = buildReasoningPlan(text, session, {
+    speaker_context: session.speaker_context || "",
+    teacher_distillation_tags: []
+  });
+  const evidencePacket = buildEvidencePacket(text, reasoningPlan);
+  const valueProfilePacket = valueProfileTracePacket(reasoningPlan);
+  const teacherDistillationPacket = teacherDistillationTracePacket(reasoningPlan);
   const modeDecision = selectResponseMode({ query: text, session, trace: { binding, userTurn } });
   const legacyMode = modeDecision?.mode || "direct_answer";
   const controllerMode = controllerModeFromLegacy(legacyMode, text);
@@ -120,6 +162,11 @@ export function handleConversationTurn({
       operation: draft.operation || "quiet_affordance",
       binding,
       answerability,
+      reasoning_plan: reasoningPlan,
+      evidence_packet: evidencePacket,
+      value_profile_packet: valueProfilePacket,
+      answer_obligation: reasoningPlan.answer_obligation,
+      teacher_distillation_packet: teacherDistillationPacket,
       active_topic: activeTopic(session) || null,
       task_state_before: compactTaskState(session.task_state || {}),
       task_state_after: compactTaskState(session.task_state || {}),
@@ -253,6 +300,11 @@ export function handleConversationTurn({
     response_act: draft?.response_act || "",
     binding,
     answerability,
+    reasoning_plan: reasoningPlan,
+    evidence_packet: evidencePacket,
+    value_profile_packet: valueProfilePacket,
+    answer_obligation: reasoningPlan.answer_obligation,
+    teacher_distillation_packet: teacherDistillationPacket,
     context_binding_target: binding?.binding_kind || "",
     active_topic: topicStack[0] || null,
     task_state_before: taskStateBefore,
@@ -297,6 +349,11 @@ export function handleConversationTurn({
       turnFunction,
       binding,
       answerability,
+      reasoningPlan,
+      evidencePacket,
+      valueProfilePacket,
+      answerObligation: reasoningPlan.answer_obligation,
+      teacherDistillationPacket,
       taskStateBefore,
       taskStateAfter,
       fallbackOveruseGuard,

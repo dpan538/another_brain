@@ -1,0 +1,27 @@
+{
+  "policy_id": "r27a_teacher_distillation_policy",
+  "phase": "R27A",
+  "does_not_call_teacher": true,
+  "does_not_call_doubao": true,
+  "does_not_automate_desktop_apps": true,
+  "teacher_output_source": "user_supplied_or_later_explicitly_approved_local_process_only",
+  "private_data_may_be_sent_to_teacher": false,
+  "chain_of_thought_may_be_requested_or_stored": false,
+  "teacher_output_review_required": true,
+  "teacher_output_runtime_dependency_allowed": false,
+  "teacher_output_replaces_user_answered_corpus": false,
+  "recommended_use": [
+    "answer planning comparison",
+    "contrastive behavior review",
+    "candidate preference shape review"
+  ],
+  "not_recommended_use": [
+    "personal voice source of truth",
+    "direct copied training target",
+    "runtime answer bank",
+    "unreviewed factual authority"
+  ],
+  "training_allowed": false,
+  "public_commit_allowed_for_teacher_outputs": false,
+  "contains_private_data": false
+}

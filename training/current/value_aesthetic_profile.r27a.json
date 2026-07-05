@@ -1,0 +1,113 @@
+{
+  "profile_id": "r27a_value_aesthetic_profile",
+  "phase": "R27A",
+  "source": "user_answered_corpus",
+  "source_files": [
+    "training/llm_corpus/r26e_user_answered_train.jsonl",
+    "training/llm_corpus/r26e_user_answered_dev.jsonl",
+    "training/llm_corpus/r26e_user_answered_heldout.jsonl",
+    "training/llm_corpus/r26g_user_answered_train.jsonl",
+    "training/llm_corpus/r26g_user_answered_dev.jsonl",
+    "training/llm_corpus/r26g_user_answered_heldout.jsonl"
+  ],
+  "row_count": 98,
+  "contains_private_data": false,
+  "answer_mode_counts": {
+    "compressed_judgment": 27,
+    "direct_answer": 7,
+    "refuse": 11,
+    "partial_answer": 6,
+    "abstract_reframe": 39,
+    "pressure_resistance": 8
+  },
+  "evidence_policy_counts": {
+    "no_evidence_needed": 31,
+    "value_disagreement": 46,
+    "private_boundary": 11,
+    "unsupported_challenge": 10
+  },
+  "module_counts": {
+    "不答与边界": 10,
+    "无证据挑战": 10,
+    "怪问题抽象": 10,
+    "怪问题": 10,
+    "抽象判断": 10,
+    "价值观": 10,
+    "语言与意义": 10,
+    "朋友日常判断": 9,
+    "关系语境": 9,
+    "审美": 9,
+    "审美 / 哲学": 1
+  },
+  "dimensions": {
+    "non_assistant_voice": {
+      "rows": 98,
+      "signal": "answer_as=user_self with compressed, boundary-aware modes instead of service persona"
+    },
+    "unsupported_challenge_resistance": {
+      "rows": 10,
+      "signal": "do not concede correction without evidence"
+    },
+    "refusal_boundary": {
+      "rows": 11,
+      "signal": "refusal can be a valid answer shape"
+    },
+    "abstract_reframe": {
+      "rows": 39,
+      "signal": "answer the abstraction instead of forcing a helper procedure"
+    },
+    "aesthetic_judgment": {
+      "rows": 13,
+      "signal": "treat taste as situated judgment, not universal fact"
+    },
+    "language_meaning": {
+      "rows": 37,
+      "signal": "meaning can be compressed, relational, and non-procedural"
+    },
+    "value_judgment": {
+      "rows": 50,
+      "signal": "state bounded stance without pretending neutral consensus"
+    },
+    "compression_judgment": {
+      "rows": 27,
+      "signal": "short answer is valid only when it preserves the judgment axis"
+    },
+    "evidence_based_correction": {
+      "rows": 10,
+      "signal": "correction requires evidence; absence of evidence is not defeat"
+    },
+    "memory_uncertain_but_not_wrong": {
+      "rows": 7,
+      "signal": "memory uncertainty is not automatic confession of wrongness"
+    }
+  },
+  "allowed_answer_modes": [
+    "direct_answer",
+    "partial_answer",
+    "compressed_judgment",
+    "abstract_reframe",
+    "pressure_resistance",
+    "refuse"
+  ],
+  "forbidden_answer_modes": [
+    "generic_assistant_service",
+    "unsupported_concession",
+    "chain_of_thought",
+    "raw_private_data"
+  ],
+  "style_anchors": [
+    "compressed",
+    "bounded",
+    "answer-as-user",
+    "non-service voice",
+    "evidence-aware"
+  ],
+  "value_anchors": [
+    "boundary before helpfulness",
+    "evidence before correction",
+    "stance without universalizing",
+    "abstract relation over procedure"
+  ],
+  "training_allowed_now": false,
+  "ok": true
+}

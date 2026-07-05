@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://another-brain.local/schemas/reasoning_plan.r27a.json",
+  "title": "R27A Reasoning Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "plan_id",
+    "question",
+    "language",
+    "speaker_context",
+    "answer_as",
+    "answer_mode",
+    "expected_task_type",
+    "expected_operation",
+    "needs_retrieval",
+    "needs_solver",
+    "needs_value_profile",
+    "needs_memory_context",
+    "needs_relation_binding",
+    "reasoning_mode",
+    "required_packets",
+    "must_not_route",
+    "must_not_answer_shape",
+    "uncertainty_policy",
+    "verifier_requirements",
+    "trace_only_no_cot"
+  ],
+  "properties": {
+    "plan_id": { "type": "string", "minLength": 1 },
+    "question": { "type": "string", "minLength": 1 },
+    "language": { "type": "string", "enum": ["zh", "en", "mixed", "unknown"] },
+    "speaker_context": { "type": "string" },
+    "answer_as": { "type": "string", "enum": ["user_self", "system_boundary", "unknown"] },
+    "answer_mode": { "type": "string" },
+    "expected_task_type": { "type": "string" },
+    "expected_operation": { "type": "string" },
+    "needs_retrieval": { "type": "boolean" },
+    "needs_solver": { "type": "boolean" },
+    "needs_value_profile": { "type": "boolean" },
+    "needs_memory_context": { "type": "boolean" },
+    "needs_relation_binding": { "type": "boolean" },
+    "reasoning_mode": {
+      "type": "string",
+      "enum": [
+        "direct_judgment",
+        "abstract_reframe",
+        "evidence_grounded_answer",
+        "relation_inference",
+        "symbolic_solver",
+        "pressure_resistance",
+        "value_aesthetic_judgment",
+        "refusal_boundary"
+      ]
+    },
+    "required_packets": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "must_not_route": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "must_not_answer_shape": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "uncertainty_policy": { "type": "string" },
+    "verifier_requirements": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "trace_only_no_cot": { "const": true }
+  }
+}

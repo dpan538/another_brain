@@ -760,3 +760,15 @@ phase_4, corpus expansion, or corpus promotion. R26I is not automatically
 approved; a fresh reviewer approval is required for exactly one bounded
 answer-as-user microcycle. Product/formal training progress remains `0%`,
 phase_4 remains blocked, and no tokenizer artifacts or weights are committed.
+
+## R27A P0 Reasoning/RAG/Value Scaffold Status
+
+R27A adds trace-only reasoning-plan, local RAG evidence-packet,
+value/aesthetic profile, teacher-probe/distillation schema, and P0 eval
+gates. It does not train, run tokenizer dry-run, expand or promote corpus
+rows, call external APIs or Doubao, commit teacher outputs, commit artifacts,
+or commit weights.
+
+Teacher output is optional reviewed acceleration evidence, not truth, not a
+runtime dependency, and not direct training data. R27B remains inert until a
+fresh reviewer approval explicitly allows a bounded next step.

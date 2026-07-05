@@ -570,6 +570,26 @@ const MARKERS = [
       "allow_long_term_training",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r27b_p0_distilled_answer_as_user_microcycle_template",
+    path: "training/from_scratch/APPROVE_R27B_P0_DISTILLED_ANSWER_AS_USER_MICROCYCLE.template.json",
+    expectedScope: "p0_distilled_answer_as_user_microcycle_only",
+    expectedPhase: "phase_3_small_decoder_pilot",
+    expectedRunId: "r27b_p0_distilled_answer_as_user_microcycle",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_decoder_training",
+      "allow_small_pilot_training",
+      "allow_teacher_output_intake",
+      "allow_tokenizer_dry_run",
+      "allow_phase_4_scaled_training",
+      "allow_product_model_training",
+      "allow_long_term_training",
+      "allow_release_checkpoint",
+      "allow_weight_commit"
+    ]
   }
 ];
 

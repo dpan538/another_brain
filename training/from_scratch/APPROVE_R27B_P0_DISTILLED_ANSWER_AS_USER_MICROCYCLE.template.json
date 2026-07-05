@@ -1,0 +1,18 @@
+{
+  "approved": false,
+  "scope": "p0_distilled_answer_as_user_microcycle_only",
+  "reviewer": "",
+  "phase": "phase_3_small_decoder_pilot",
+  "run_id": "r27b_p0_distilled_answer_as_user_microcycle",
+  "allow_training": false,
+  "allow_decoder_training": false,
+  "allow_small_pilot_training": false,
+  "allow_teacher_output_intake": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_product_model_training": false,
+  "allow_long_term_training": false,
+  "allow_release_checkpoint": false,
+  "allow_weight_commit": false,
+  "notes": "Template only. R27B may train only after R27A P0 architecture and teacher-probe gates pass and the user explicitly approves."
+}

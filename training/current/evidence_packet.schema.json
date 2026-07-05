@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://another-brain.local/schemas/evidence_packet.r27a.json",
+  "title": "R27A Evidence Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_id",
+    "query",
+    "retrieval_queries",
+    "source_refs",
+    "card_refs",
+    "relation_refs",
+    "evidence_snippets",
+    "confidence",
+    "evidence_sufficiency",
+    "must_not_claim",
+    "private_data_allowed",
+    "chain_of_thought_allowed"
+  ],
+  "properties": {
+    "packet_id": { "type": "string", "minLength": 1 },
+    "query": { "type": "string" },
+    "retrieval_queries": { "type": "array", "items": { "type": "string" } },
+    "source_refs": { "type": "array", "items": { "type": "string" } },
+    "card_refs": { "type": "array", "items": { "type": "string" } },
+    "relation_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["relation_type", "ref"],
+        "properties": {
+          "relation_type": { "type": "string", "enum": ["entity", "work", "theme", "value", "domain", "source_card"] },
+          "ref": { "type": "string" }
+        }
+      }
+    },
+    "evidence_snippets": { "type": "array", "items": { "type": "string", "maxLength": 180 } },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "evidence_sufficiency": { "type": "string", "enum": ["sufficient", "partial", "absent"] },
+    "must_not_claim": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "private_data_allowed": { "const": false },
+    "chain_of_thought_allowed": { "const": false }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://another-brain.local/schemas/distillation_candidate.r27a.json",
+  "title": "R27A Distillation Candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "candidate_id",
+    "source_probe_id",
+    "teacher_id",
+    "teacher_output_ref",
+    "user_review_status",
+    "use_type",
+    "transformed_target",
+    "teacher_output_used_directly",
+    "chain_of_thought_present",
+    "contains_private_data",
+    "provenance",
+    "license_or_terms_review",
+    "training_allowed",
+    "public_commit_allowed"
+  ],
+  "properties": {
+    "candidate_id": { "type": "string", "minLength": 1 },
+    "source_probe_id": { "type": "string" },
+    "teacher_id": { "type": "string" },
+    "teacher_output_ref": { "type": "string" },
+    "user_review_status": { "type": "string" },
+    "use_type": {
+      "type": "string",
+      "enum": [
+        "comparison_only",
+        "candidate_answer",
+        "candidate_reasoning_plan",
+        "candidate_preference_pair",
+        "rejected_teacher_output"
+      ]
+    },
+    "transformed_target": { "type": "string" },
+    "teacher_output_used_directly": { "const": false },
+    "chain_of_thought_present": { "const": false },
+    "contains_private_data": { "const": false },
+    "provenance": { "type": "object" },
+    "license_or_terms_review": { "type": "string" },
+    "training_allowed": { "const": false },
+    "public_commit_allowed": { "const": false }
+  }
+}

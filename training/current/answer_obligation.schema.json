@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://another-brain.local/schemas/answer_obligation.r27a.json",
+  "title": "R27A Answer Obligation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "should_answer",
+    "response_obligation",
+    "direct_compliance",
+    "valid_nonanswer",
+    "answer_mode",
+    "answer_as",
+    "evidence_policy",
+    "allowed_nonanswer_reason",
+    "pressure_resistance_policy",
+    "correction_policy"
+  ],
+  "properties": {
+    "should_answer": { "type": "boolean" },
+    "response_obligation": { "type": "string" },
+    "direct_compliance": { "type": ["boolean", "string"] },
+    "valid_nonanswer": { "type": "boolean" },
+    "answer_mode": { "type": "string" },
+    "answer_as": { "type": "string" },
+    "evidence_policy": { "type": "string" },
+    "allowed_nonanswer_reason": { "type": "string" },
+    "pressure_resistance_policy": { "type": "string" },
+    "correction_policy": { "type": "string" }
+  }
+}

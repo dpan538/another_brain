@@ -1,0 +1,1950 @@
+{
+  "index_id": "r27a_relation_evidence_index",
+  "phase": "R27A",
+  "created_from": {
+    "knowledge_registry": "knowledge_sources/registry.json",
+    "knowledge_card_files": 37,
+    "corpus_manifest": "training/current/corpus_manifest.json",
+    "user_answered_corpus_files": [
+      "training/llm_corpus/r26e_user_answered_train.jsonl",
+      "training/llm_corpus/r26e_user_answered_dev.jsonl",
+      "training/llm_corpus/r26e_user_answered_heldout.jsonl",
+      "training/llm_corpus/r26g_user_answered_train.jsonl",
+      "training/llm_corpus/r26g_user_answered_dev.jsonl",
+      "training/llm_corpus/r26g_user_answered_heldout.jsonl"
+    ]
+  },
+  "policy": {
+    "refs_only_or_short_snippets": true,
+    "private_sources_used": false,
+    "root_docs_parsed": false,
+    "data_public_ingestion_parsed": false,
+    "chain_of_thought_included": false,
+    "answer_text_rewritten": false
+  },
+  "counts": {
+    "knowledge_cards": 55151,
+    "user_answered_rows": 98,
+    "domains": 72,
+    "source_types": 1
+  },
+  "domain_hints": [
+    {
+      "domain": "dialog_context",
+      "count": 4778
+    },
+    {
+      "domain": "tech_life",
+      "count": 3597
+    },
+    {
+      "domain": "everyday_reasoning",
+      "count": 3290
+    },
+    {
+      "domain": "creative_reasoning",
+      "count": 3135
+    },
+    {
+      "domain": "city_life",
+      "count": 2451
+    },
+    {
+      "domain": "art_history",
+      "count": 2254
+    },
+    {
+      "domain": "photo_movement",
+      "count": 2234
+    },
+    {
+      "domain": "life_philosophy",
+      "count": 2043
+    },
+    {
+      "domain": "philosopher",
+      "count": 1931
+    },
+    {
+      "domain": "relation_reasoning",
+      "count": 1916
+    },
+    {
+      "domain": "art_theory",
+      "count": 1790
+    },
+    {
+      "domain": "memory_identity",
+      "count": 1732
+    },
+    {
+      "domain": "postwar_philosophy",
+      "count": 1665
+    },
+    {
+      "domain": "computer_science",
+      "count": 1572
+    },
+    {
+      "domain": "humanities_art",
+      "count": 1571
+    },
+    {
+      "domain": "deconstruction",
+      "count": 1471
+    },
+    {
+      "domain": "literary_history",
+      "count": 1410
+    },
+    {
+      "domain": "lacanian_psychoanalysis",
+      "count": 1378
+    },
+    {
+      "domain": "epistemic",
+      "count": 1220
+    },
+    {
+      "domain": "existentialism",
+      "count": 1187
+    },
+    {
+      "domain": "structuralism_language",
+      "count": 1159
+    },
+    {
+      "domain": "history_event",
+      "count": 1098
+    },
+    {
+      "domain": "design_system",
+      "count": 795
+    },
+    {
+      "domain": "photography_theory",
+      "count": 794
+    },
+    {
+      "domain": "philosophy",
+      "count": 768
+    },
+    {
+      "domain": "engineering",
+      "count": 734
+    },
+    {
+      "domain": "electronics",
+      "count": 616
+    },
+    {
+      "domain": "photo",
+      "count": 585
+    },
+    {
+      "domain": "materials",
+      "count": 542
+    },
+    {
+      "domain": "photography_history",
+      "count": 484
+    },
+    {
+      "domain": "world_place",
+      "count": 467
+    },
+    {
+      "domain": "culture_literature",
+      "count": 458
+    },
+    {
+      "domain": "painting",
+      "count": 411
+    },
+    {
+      "domain": "biology_medicine",
+      "count": 402
+    },
+    {
+      "domain": "printmaking",
+      "count": 383
+    },
+    {
+      "domain": "linguistics",
+      "count": 364
+    },
+    {
+      "domain": "cooking",
+      "count": 336
+    },
+    {
+      "domain": "math_logic",
+      "count": 296
+    },
+    {
+      "domain": "regional_development",
+      "count": 184
+    },
+    {
+      "domain": "daily_object",
+      "count": 148
+    },
+    {
+      "domain": "daily_action",
+      "count": 126
+    },
+    {
+      "domain": "food",
+      "count": 100
+    },
+    {
+      "domain": "social_life",
+      "count": 92
+    },
+    {
+      "domain": "chemistry_earth",
+      "count": 73
+    },
+    {
+      "domain": "architecture_space",
+      "count": 71
+    },
+    {
+      "domain": "animal",
+      "count": 70
+    },
+    {
+      "domain": "cinema_media",
+      "count": 62
+    },
+    {
+      "domain": "science",
+      "count": 60
+    },
+    {
+      "domain": "city",
+      "count": 56
+    },
+    {
+      "domain": "tool",
+      "count": 50
+    },
+    {
+      "domain": "body",
+      "count": 44
+    },
+    {
+      "domain": "nature",
+      "count": 43
+    },
+    {
+      "domain": "software",
+      "count": 43
+    },
+    {
+      "domain": "profession",
+      "count": 41
+    },
+    {
+      "domain": "plant",
+      "count": 40
+    },
+    {
+      "domain": "web",
+      "count": 40
+    },
+    {
+      "domain": "art",
+      "count": 39
+    },
+    {
+      "domain": "country",
+      "count": 39
+    },
+    {
+      "domain": "place",
+      "count": 39
+    },
+    {
+      "domain": "folk_symbolic",
+      "count": 37
+    },
+    {
+      "domain": "transport",
+      "count": 37
+    },
+    {
+      "domain": "abstract",
+      "count": 32
+    },
+    {
+      "domain": "education",
+      "count": 32
+    },
+    {
+      "domain": "drink",
+      "count": 31
+    },
+    {
+      "domain": "translation_studies",
+      "count": 29
+    },
+    {
+      "domain": "finance",
+      "count": 28
+    },
+    {
+      "domain": "media",
+      "count": 27
+    },
+    {
+      "domain": "emotion",
+      "count": 26
+    },
+    {
+      "domain": "music",
+      "count": 26
+    },
+    {
+      "domain": "crocodile_subject",
+      "count": 24
+    },
+    {
+      "domain": "sports",
+      "count": 24
+    },
+    {
+      "domain": "poetry_notebook",
+      "count": 21
+    }
+  ],
+  "source_type_counts": {
+    "repo_derived": 55151
+  },
+  "user_answered_metadata": {
+    "answer_mode_counts": {
+      "compressed_judgment": 27,
+      "direct_answer": 7,
+      "refuse": 11,
+      "partial_answer": 6,
+      "abstract_reframe": 39,
+      "pressure_resistance": 8
+    },
+    "evidence_policy_counts": {
+      "no_evidence_needed": 31,
+      "value_disagreement": 46,
+      "private_boundary": 11,
+      "unsupported_challenge": 10
+    },
+    "module_counts_top": [
+      {
+        "key": "不答与边界",
+        "count": 10
+      },
+      {
+        "key": "价值观",
+        "count": 10
+      },
+      {
+        "key": "怪问题",
+        "count": 10
+      },
+      {
+        "key": "怪问题抽象",
+        "count": 10
+      },
+      {
+        "key": "抽象判断",
+        "count": 10
+      },
+      {
+        "key": "无证据挑战",
+        "count": 10
+      },
+      {
+        "key": "语言与意义",
+        "count": 10
+      },
+      {
+        "key": "关系语境",
+        "count": 9
+      },
+      {
+        "key": "审美",
+        "count": 9
+      },
+      {
+        "key": "朋友日常判断",
+        "count": 9
+      },
+      {
+        "key": "审美 / 哲学",
+        "count": 1
+      }
+    ]
+  },
+  "relation_hints": [
+    {
+      "ref": "r24g_card_000000",
+      "label": "毛巾",
+      "domain": "daily_object",
+      "aliases": [
+        "毛巾"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000001",
+      "label": "牙刷",
+      "domain": "daily_object",
+      "aliases": [
+        "牙刷"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000002",
+      "label": "牙膏",
+      "domain": "daily_object",
+      "aliases": [
+        "牙膏"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000003",
+      "label": "肥皂",
+      "domain": "daily_object",
+      "aliases": [
+        "肥皂"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000004",
+      "label": "洗发水",
+      "domain": "daily_object",
+      "aliases": [
+        "洗发水"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000005",
+      "label": "梳子",
+      "domain": "daily_object",
+      "aliases": [
+        "梳子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000006",
+      "label": "镜子",
+      "domain": "daily_object",
+      "aliases": [
+        "镜子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000007",
+      "label": "枕头",
+      "domain": "daily_object",
+      "aliases": [
+        "枕头"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000008",
+      "label": "被子",
+      "domain": "daily_object",
+      "aliases": [
+        "被子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000009",
+      "label": "毯子",
+      "domain": "daily_object",
+      "aliases": [
+        "毯子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000010",
+      "label": "窗帘",
+      "domain": "daily_object",
+      "aliases": [
+        "窗帘"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000011",
+      "label": "沙发",
+      "domain": "daily_object",
+      "aliases": [
+        "沙发"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000012",
+      "label": "柜子",
+      "domain": "daily_object",
+      "aliases": [
+        "柜子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000013",
+      "label": "抽屉",
+      "domain": "daily_object",
+      "aliases": [
+        "抽屉"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000014",
+      "label": "书架",
+      "domain": "daily_object",
+      "aliases": [
+        "书架"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000015",
+      "label": "衣架",
+      "domain": "daily_object",
+      "aliases": [
+        "衣架"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000016",
+      "label": "雨伞",
+      "domain": "daily_object",
+      "aliases": [
+        "雨伞"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000017",
+      "label": "剪刀",
+      "domain": "daily_object",
+      "aliases": [
+        "剪刀"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000018",
+      "label": "胶带",
+      "domain": "daily_object",
+      "aliases": [
+        "胶带"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000019",
+      "label": "胶水",
+      "domain": "daily_object",
+      "aliases": [
+        "胶水"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000020",
+      "label": "订书机",
+      "domain": "daily_object",
+      "aliases": [
+        "订书机"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000021",
+      "label": "回形针",
+      "domain": "daily_object",
+      "aliases": [
+        "回形针"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000022",
+      "label": "橡皮",
+      "domain": "daily_object",
+      "aliases": [
+        "橡皮"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000023",
+      "label": "尺子",
+      "domain": "daily_object",
+      "aliases": [
+        "尺子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000024",
+      "label": "便签",
+      "domain": "daily_object",
+      "aliases": [
+        "便签"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000025",
+      "label": "信封",
+      "domain": "daily_object",
+      "aliases": [
+        "信封"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000026",
+      "label": "文件夹",
+      "domain": "daily_object",
+      "aliases": [
+        "文件夹"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000027",
+      "label": "垃圾桶",
+      "domain": "daily_object",
+      "aliases": [
+        "垃圾桶"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000028",
+      "label": "扫把",
+      "domain": "daily_object",
+      "aliases": [
+        "扫把"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000029",
+      "label": "拖把",
+      "domain": "daily_object",
+      "aliases": [
+        "拖把"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000030",
+      "label": "抹布",
+      "domain": "daily_object",
+      "aliases": [
+        "抹布"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000031",
+      "label": "水壶",
+      "domain": "daily_object",
+      "aliases": [
+        "水壶"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000032",
+      "label": "锅",
+      "domain": "daily_object",
+      "aliases": [
+        "锅"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000033",
+      "label": "碗",
+      "domain": "daily_object",
+      "aliases": [
+        "碗"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000034",
+      "label": "盘子",
+      "domain": "daily_object",
+      "aliases": [
+        "盘子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000035",
+      "label": "筷子",
+      "domain": "daily_object",
+      "aliases": [
+        "筷子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000036",
+      "label": "勺子",
+      "domain": "daily_object",
+      "aliases": [
+        "勺子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000037",
+      "label": "叉子",
+      "domain": "daily_object",
+      "aliases": [
+        "叉子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000038",
+      "label": "刀",
+      "domain": "daily_object",
+      "aliases": [
+        "刀"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000039",
+      "label": "砧板",
+      "domain": "daily_object",
+      "aliases": [
+        "砧板"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000040",
+      "label": "微波炉",
+      "domain": "daily_object",
+      "aliases": [
+        "微波炉"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000041",
+      "label": "电饭煲",
+      "domain": "daily_object",
+      "aliases": [
+        "电饭煲"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000042",
+      "label": "烤箱",
+      "domain": "daily_object",
+      "aliases": [
+        "烤箱"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000043",
+      "label": "电磁炉",
+      "domain": "daily_object",
+      "aliases": [
+        "电磁炉"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000044",
+      "label": "燃气灶",
+      "domain": "daily_object",
+      "aliases": [
+        "燃气灶"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000045",
+      "label": "洗碗机",
+      "domain": "daily_object",
+      "aliases": [
+        "洗碗机"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000046",
+      "label": "毛衣",
+      "domain": "daily_object",
+      "aliases": [
+        "毛衣"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000047",
+      "label": "外套",
+      "domain": "daily_object",
+      "aliases": [
+        "外套"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000048",
+      "label": "衬衫",
+      "domain": "daily_object",
+      "aliases": [
+        "衬衫"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000049",
+      "label": "裤子",
+      "domain": "daily_object",
+      "aliases": [
+        "裤子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000050",
+      "label": "袜子",
+      "domain": "daily_object",
+      "aliases": [
+        "袜子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000051",
+      "label": "帽子",
+      "domain": "daily_object",
+      "aliases": [
+        "帽子"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000052",
+      "label": "围巾",
+      "domain": "daily_object",
+      "aliases": [
+        "围巾"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000053",
+      "label": "手套",
+      "domain": "daily_object",
+      "aliases": [
+        "手套"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000054",
+      "label": "口罩",
+      "domain": "daily_object",
+      "aliases": [
+        "口罩"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000055",
+      "label": "雨衣",
+      "domain": "daily_object",
+      "aliases": [
+        "雨衣"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000056",
+      "label": "行李箱",
+      "domain": "daily_object",
+      "aliases": [
+        "行李箱"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000057",
+      "label": "纸巾",
+      "domain": "daily_object",
+      "aliases": [
+        "纸巾"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000058",
+      "label": "湿巾",
+      "domain": "daily_object",
+      "aliases": [
+        "湿巾"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000059",
+      "label": "药盒",
+      "domain": "daily_object",
+      "aliases": [
+        "药盒"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000060",
+      "label": "体温计",
+      "domain": "daily_object",
+      "aliases": [
+        "体温计"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000061",
+      "label": "遥控器",
+      "domain": "daily_object",
+      "aliases": [
+        "遥控器"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000062",
+      "label": "电池",
+      "domain": "daily_object",
+      "aliases": [
+        "电池"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000063",
+      "label": "插座",
+      "domain": "daily_object",
+      "aliases": [
+        "插座"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000064",
+      "label": "插线板",
+      "domain": "daily_object",
+      "aliases": [
+        "插线板"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000065",
+      "label": "路由器",
+      "domain": "daily_object",
+      "aliases": [
+        "路由器"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000066",
+      "label": "闹钟",
+      "domain": "daily_object",
+      "aliases": [
+        "闹钟"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000067",
+      "label": "日历",
+      "domain": "daily_object",
+      "aliases": [
+        "日历"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000068",
+      "label": "相框",
+      "domain": "daily_object",
+      "aliases": [
+        "相框"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000069",
+      "label": "花瓶",
+      "domain": "daily_object",
+      "aliases": [
+        "花瓶"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000070",
+      "label": "地毯",
+      "domain": "daily_object",
+      "aliases": [
+        "地毯"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000071",
+      "label": "门铃",
+      "domain": "daily_object",
+      "aliases": [
+        "门铃"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000072",
+      "label": "锁",
+      "domain": "daily_object",
+      "aliases": [
+        "锁"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000073",
+      "label": "床头柜",
+      "domain": "daily_object",
+      "aliases": [
+        "床头柜"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000074",
+      "label": "餐桌",
+      "domain": "daily_object",
+      "aliases": [
+        "餐桌"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000075",
+      "label": "书桌",
+      "domain": "daily_object",
+      "aliases": [
+        "书桌"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000076",
+      "label": "扶手椅",
+      "domain": "daily_object",
+      "aliases": [
+        "扶手椅"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000077",
+      "label": "长椅",
+      "domain": "daily_object",
+      "aliases": [
+        "长椅"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000078",
+      "label": "晾衣架",
+      "domain": "daily_object",
+      "aliases": [
+        "晾衣架"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000079",
+      "label": "风扇",
+      "domain": "daily_object",
+      "aliases": [
+        "风扇"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000080",
+      "label": "加湿器",
+      "domain": "daily_object",
+      "aliases": [
+        "加湿器"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000081",
+      "label": "空气净化器",
+      "domain": "daily_object",
+      "aliases": [
+        "空气净化器"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000082",
+      "label": "吸尘器",
+      "domain": "daily_object",
+      "aliases": [
+        "吸尘器"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000083",
+      "label": "电吹风",
+      "domain": "daily_object",
+      "aliases": [
+        "电吹风"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000084",
+      "label": "剃须刀",
+      "domain": "daily_object",
+      "aliases": [
+        "剃须刀"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000085",
+      "label": "指甲刀",
+      "domain": "daily_object",
+      "aliases": [
+        "指甲刀"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000086",
+      "label": "针线",
+      "domain": "daily_object",
+      "aliases": [
+        "针线"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000087",
+      "label": "纽扣",
+      "domain": "daily_object",
+      "aliases": [
+        "纽扣"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000088",
+      "label": "保温杯",
+      "domain": "daily_object",
+      "aliases": [
+        "保温杯"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000089",
+      "label": "马克杯",
+      "domain": "daily_object",
+      "aliases": [
+        "马克杯"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000090",
+      "label": "玻璃杯",
+      "domain": "daily_object",
+      "aliases": [
+        "玻璃杯"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000091",
+      "label": "塑料袋",
+      "domain": "daily_object",
+      "aliases": [
+        "塑料袋"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000092",
+      "label": "纸箱",
+      "domain": "daily_object",
+      "aliases": [
+        "纸箱"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000093",
+      "label": "收纳盒",
+      "domain": "daily_object",
+      "aliases": [
+        "收纳盒"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000094",
+      "label": "购物袋",
+      "domain": "daily_object",
+      "aliases": [
+        "购物袋"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000095",
+      "label": "毛毯",
+      "domain": "daily_object",
+      "aliases": [
+        "毛毯"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000096",
+      "label": "坐垫",
+      "domain": "daily_object",
+      "aliases": [
+        "坐垫"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000097",
+      "label": "靠垫",
+      "domain": "daily_object",
+      "aliases": [
+        "靠垫"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000098",
+      "label": "台灯",
+      "domain": "daily_object",
+      "aliases": [
+        "台灯"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000099",
+      "label": "手电筒",
+      "domain": "daily_object",
+      "aliases": [
+        "手电筒"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000100",
+      "label": "蜡烛",
+      "domain": "daily_object",
+      "aliases": [
+        "蜡烛"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000101",
+      "label": "充电宝",
+      "domain": "daily_object",
+      "aliases": [
+        "充电宝"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000102",
+      "label": "洗手液",
+      "domain": "daily_object",
+      "aliases": [
+        "洗手液"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000103",
+      "label": "沐浴露",
+      "domain": "daily_object",
+      "aliases": [
+        "沐浴露"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000104",
+      "label": "洗衣液",
+      "domain": "daily_object",
+      "aliases": [
+        "洗衣液"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000105",
+      "label": "洗洁精",
+      "domain": "daily_object",
+      "aliases": [
+        "洗洁精"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000106",
+      "label": "保鲜膜",
+      "domain": "daily_object",
+      "aliases": [
+        "保鲜膜"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000107",
+      "label": "铝箔纸",
+      "domain": "daily_object",
+      "aliases": [
+        "铝箔纸"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000108",
+      "label": "垃圾袋",
+      "domain": "daily_object",
+      "aliases": [
+        "垃圾袋"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000109",
+      "label": "创可贴",
+      "domain": "daily_object",
+      "aliases": [
+        "创可贴"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000110",
+      "label": "牙线",
+      "domain": "daily_object",
+      "aliases": [
+        "牙线"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000111",
+      "label": "漱口水",
+      "domain": "daily_object",
+      "aliases": [
+        "漱口水"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000112",
+      "label": "棉签",
+      "domain": "daily_object",
+      "aliases": [
+        "棉签"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000113",
+      "label": "棉签盒",
+      "domain": "daily_object",
+      "aliases": [
+        "棉签盒"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000114",
+      "label": "晾衣绳",
+      "domain": "daily_object",
+      "aliases": [
+        "晾衣绳"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000115",
+      "label": "衣柜",
+      "domain": "daily_object",
+      "aliases": [
+        "衣柜"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000116",
+      "label": "鞋柜",
+      "domain": "daily_object",
+      "aliases": [
+        "鞋柜"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000117",
+      "label": "鞋带",
+      "domain": "daily_object",
+      "aliases": [
+        "鞋带"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000118",
+      "label": "鞋垫",
+      "domain": "daily_object",
+      "aliases": [
+        "鞋垫"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    },
+    {
+      "ref": "r24g_card_000119",
+      "label": "拖鞋",
+      "domain": "daily_object",
+      "aliases": [
+        "拖鞋"
+      ],
+      "relation_types": [
+        "entity",
+        "domain",
+        "source_card"
+      ]
+    }
+  ],
+  "runtime_use": "future evidence packets should cite refs and short snippets, not copied answer banks",
+  "ok": true
+}

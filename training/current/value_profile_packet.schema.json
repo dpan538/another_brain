@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://another-brain.local/schemas/value_profile_packet.r27a.json",
+  "title": "R27A Value Profile Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_id",
+    "source",
+    "stance_dimensions",
+    "allowed_answer_modes",
+    "forbidden_answer_modes",
+    "style_anchors",
+    "value_anchors",
+    "evidence_policy",
+    "contains_private_data"
+  ],
+  "properties": {
+    "packet_id": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "enum": ["user_answered_corpus", "reviewed_project_docs"] },
+    "stance_dimensions": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "required": [
+        "unsupported_challenge",
+        "refusal_boundary",
+        "abstract_reframe",
+        "aesthetic_judgment",
+        "language_meaning",
+        "value_judgment",
+        "non_assistant_voice"
+      ],
+      "properties": {
+        "unsupported_challenge": { "type": "string" },
+        "refusal_boundary": { "type": "string" },
+        "abstract_reframe": { "type": "string" },
+        "aesthetic_judgment": { "type": "string" },
+        "language_meaning": { "type": "string" },
+        "value_judgment": { "type": "string" },
+        "non_assistant_voice": { "type": "string" }
+      }
+    },
+    "allowed_answer_modes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "forbidden_answer_modes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "style_anchors": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "value_anchors": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "evidence_policy": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+    "contains_private_data": { "const": false }
+  }
+}
