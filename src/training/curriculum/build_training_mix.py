@@ -26,7 +26,9 @@ def make_record(record_id, curriculum, text, language, sources, licenses, **extr
         "evidence": extra.pop("evidence", []),
         "source_dataset_ids": sources,
         "license_names": licenses,
+        "license_obligations": extra.pop("license_obligations", []),
         "allowed_to_train": True,
+        "allowed_to_train_engineering": extra.pop("allowed_to_train_engineering", True),
         "allowed_to_commit_raw": False,
         "split": stable_split(record_id + text),
         "weight": extra.pop("weight", 1.0),
@@ -46,6 +48,9 @@ def write_splits(rows, out_dir):
     split_rows = {"train": [], "dev": [], "heldout": []}
     rejected = []
     for row in rows:
+        if row.get("allowed_to_train_engineering") is not True:
+            rejected.append({"record_id": row["training_record_id"], "reason": "not_engineering_admitted"})
+            continue
         h = hashlib.sha256(normalize_for_dedup(row["text"]).encode("utf-8")).hexdigest()
         if h in seen:
             rejected.append({"record_id": row["training_record_id"], "reason": "dedup", "duplicate_of": seen[h]})

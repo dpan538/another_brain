@@ -14,3 +14,32 @@ def train_char_tokenizer(texts, out_dir, vocab_limit=8192):
     path = out / "tokenizer.json"
     path.write_text(json.dumps({"type": "char_fallback", "vocab": vocab}, ensure_ascii=False, sort_keys=True), encoding="utf-8")
     return {"tokenizer_path": str(path), "vocab_size": len(vocab), "type": "char_fallback"}
+
+
+def train_bpe_tokenizer(texts, out_dir, vocab_size=8000, min_frequency=2):
+    from tokenizers import Tokenizer
+    from tokenizers.models import BPE
+    from tokenizers.pre_tokenizers import ByteLevel
+    from tokenizers.processors import TemplateProcessing
+    from tokenizers.trainers import BpeTrainer
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    special_tokens = ["<pad>", "<unk>", "<bos>", "<eos>"]
+    tokenizer = Tokenizer(BPE(unk_token="<unk>"))
+    tokenizer.pre_tokenizer = ByteLevel(add_prefix_space=False)
+    trainer = BpeTrainer(vocab_size=int(vocab_size), min_frequency=int(min_frequency), special_tokens=special_tokens)
+    tokenizer.train_from_iterator((str(text) for text in texts if str(text).strip()), trainer=trainer)
+    tokenizer.post_processor = TemplateProcessing(
+        single="<bos> $A <eos>",
+        special_tokens=[("<bos>", tokenizer.token_to_id("<bos>")), ("<eos>", tokenizer.token_to_id("<eos>"))],
+    )
+    path = out / "tokenizer.json"
+    tokenizer.save(str(path))
+    return {
+        "tokenizer_path": str(path),
+        "vocab_size": tokenizer.get_vocab_size(),
+        "type": "bytelevel_bpe",
+        "min_frequency": int(min_frequency),
+        "requested_vocab_size": int(vocab_size),
+    }

@@ -611,6 +611,26 @@ const MARKERS = [
       "allow_long_term_training",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r27a3_public_corpus_tokenizer_pilot",
+    path: "training/from_scratch/APPROVE_R27A3_PUBLIC_CORPUS_TOKENIZER_PILOT.json",
+    expectedScope: "public_corpus_activation_tokenizer_and_single_engineering_training_only",
+    expectedPhase: "phase_3_engineering_model_lab",
+    expectedRunId: "r27a3_public_corpus_tokenizer_pilot",
+    consumedByCommit: "pending_r27a3_commit",
+    trainingFlagKeys: [
+      "allow_public_corpus_metadata_fetch",
+      "allow_public_corpus_bounded_download",
+      "allow_public_corpus_cleaning",
+      "allow_tokenizer_training",
+      "allow_engineering_training",
+      "allow_decoder_training",
+      "allow_phase_4_scaled_training",
+      "allow_product_model_training",
+      "allow_long_term_training",
+      "allow_weight_commit"
+    ]
   }
 ];
 

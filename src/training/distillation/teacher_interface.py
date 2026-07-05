@@ -45,6 +45,7 @@ class TeacherCandidateRecord:
     source_probe_id: str
     candidate_answer: str
     use_type: str = "comparison_only"
+    sample_type: str = "teacher_candidate"
     teacher_output_used_directly: bool = False
     training_allowed: bool = False
     review_status: str = "pending"
@@ -54,6 +55,8 @@ class TeacherCandidateRecord:
         return asdict(self)
 
     def validate(self):
+        if self.sample_type == "teacher_truth":
+            raise ValueError("teacher_truth_label_forbidden")
         if self.teacher_output_used_directly:
             raise ValueError("teacher_output_must_not_be_used_directly")
         if self.training_allowed:
