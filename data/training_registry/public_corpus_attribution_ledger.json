@@ -7,8 +7,8 @@
         "attribution",
         "non_endorsement"
       ],
-      "sample_bytes": 199998151,
-      "sample_rows": 32163,
+      "sample_bytes": 399962882,
+      "sample_rows": 64253,
       "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryCorpus"
     },
     {
@@ -27,8 +27,8 @@
         "common_crawl_terms",
         "citation_required"
       ],
-      "sample_bytes": 178031003,
-      "sample_rows": 50000,
+      "sample_bytes": 347439926,
+      "sample_rows": 100000,
       "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2"
     },
     {
@@ -39,8 +39,8 @@
         "common_crawl_terms",
         "citation_required"
       ],
-      "sample_bytes": 155313658,
-      "sample_rows": 50000,
+      "sample_bytes": 309203678,
+      "sample_rows": 100000,
       "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
     },
     {
@@ -51,8 +51,8 @@
         "share_alike",
         "citation_required"
       ],
-      "sample_bytes": 199961215,
-      "sample_rows": 24904,
+      "sample_bytes": 399994813,
+      "sample_rows": 63804,
       "upstream_url": "https://huggingface.co/datasets/wikimedia/wikipedia"
     },
     {
@@ -62,8 +62,8 @@
         "attribution",
         "non_endorsement"
       ],
-      "sample_bytes": 27271541,
-      "sample_rows": 50000,
+      "sample_bytes": 45707781,
+      "sample_rows": 84437,
       "upstream_url": "https://huggingface.co/datasets/OpenAssistant/oasst1"
     },
     {
@@ -91,6 +91,14 @@
       "upstream_url": "https://huggingface.co/datasets/BAAI/COIG-PC"
     },
     {
+      "dataset_id": "baai_industry_instruction",
+      "license_name": "apache-2.0",
+      "license_obligations": [],
+      "sample_bytes": 0,
+      "sample_rows": 0,
+      "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryInstruction"
+    },
+    {
       "dataset_id": "coig_cqia",
       "license_name": "unknown",
       "license_obligations": [],
@@ -111,5 +119,5 @@
       "upstream_url": "https://huggingface.co/datasets/BAAI/Infinity-Instruct"
     }
   ],
-  "generated_at_utc": "2026-07-05T13:13:01Z"
+  "generated_at_utc": "2026-07-05T14:10:49Z"
 }

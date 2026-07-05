@@ -124,6 +124,17 @@ SOURCE_SPECS = {
         "hf_dataset": "BAAI/IndustryCorpus2",
         "hf_config": None,
     },
+    "baai_industry_instruction": {
+        "upstream_name": "BAAI/IndustryInstruction",
+        "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryInstruction",
+        "metadata_source_url": "https://huggingface.co/api/datasets/BAAI/IndustryInstruction",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "terms_url": "https://huggingface.co/datasets/BAAI/IndustryInstruction",
+        "primary_language": "mixed",
+        "sample_method": "hf_streaming_instruction",
+        "hf_dataset": "BAAI/IndustryInstruction",
+        "hf_config": None,
+    },
     "fineweb_2": {
         "upstream_name": "HuggingFaceFW/fineweb-2",
         "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2",
@@ -188,6 +199,33 @@ SOURCE_SPECS = {
         "primary_language": "mixed",
         "sample_method": "metadata_only_recipe_reference",
     },
+    "dolma": {
+        "upstream_name": "allenai/dolma",
+        "upstream_url": "https://huggingface.co/datasets/allenai/dolma",
+        "metadata_source_url": "https://huggingface.co/api/datasets/allenai/dolma",
+        "license_url": "",
+        "terms_url": "https://huggingface.co/datasets/allenai/dolma",
+        "primary_language": "en",
+        "sample_method": "metadata_only_recipe_reference",
+    },
+    "dclm_baseline": {
+        "upstream_name": "mlfoundations/dclm-baseline-1.0",
+        "upstream_url": "https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0",
+        "metadata_source_url": "https://huggingface.co/api/datasets/mlfoundations/dclm-baseline-1.0",
+        "license_url": "",
+        "terms_url": "https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0",
+        "primary_language": "en",
+        "sample_method": "metadata_only_recipe_reference",
+    },
+    "openthoughts": {
+        "upstream_name": "OpenThoughts/OpenThoughts",
+        "upstream_url": "https://huggingface.co/datasets/OpenThoughts/OpenThoughts",
+        "metadata_source_url": "https://huggingface.co/api/datasets/OpenThoughts/OpenThoughts",
+        "license_url": "",
+        "terms_url": "https://huggingface.co/datasets/OpenThoughts/OpenThoughts",
+        "primary_language": "mixed",
+        "sample_method": "metadata_only_recipe_reference_no_cot",
+    },
 }
 
 
@@ -233,10 +271,10 @@ def decide_source(dataset_id, metadata=None, raw_metadata=b"", retrieved_at=None
         allowed, status = True, "approved_for_engineering"
         obligations = ["attribution", "common_crawl_terms", "citation_required"]
         reason = "Current metadata reports ODC-By/CommonCrawl-derived public access; bounded streaming samples only."
-    elif dataset_id == "oasst1" and ("apache-2.0" in lic or "apache" in lic) and access_status == "public":
+    elif dataset_id in {"oasst1", "baai_industry_instruction"} and ("apache-2.0" in lic or "apache" in lic) and access_status == "public":
         allowed, status = True, "approved_for_engineering"
         obligations = ["attribution", "non_endorsement"]
-        reason = "OASST1 metadata reports Apache-compatible public access; R27A4 admits final-answer-only instruction candidates for engineering review."
+        reason = "Instruction metadata reports Apache-compatible public access; R27A6 admits final-answer-only instruction candidates for engineering review."
     elif dataset_id == "coig_cqia" and access_status == "public" and lic not in {"unknown", ""}:
         allowed, status = True, "approved_for_engineering"
         obligations = ["attribution", "subset_specific_terms", "citation_required"]
@@ -249,6 +287,14 @@ def decide_source(dataset_id, metadata=None, raw_metadata=b"", retrieved_at=None
         status = "blocked"
         obligations = ["subset_specific_terms", "recipe_reference_only"]
         reason = "Tulu mixture is recipe/reference only until every subset license is separately admitted."
+    elif dataset_id in {"dolma", "dclm_baseline"}:
+        status = "blocked"
+        obligations = ["recipe_reference_only", "do_not_dilute_chinese_first_target"]
+        reason = "R27A6 records this source as recipe/reference only unless a later source-specific admission approves bounded use."
+    elif dataset_id == "openthoughts":
+        status = "blocked"
+        obligations = ["recipe_reference_only", "no_chain_of_thought_import"]
+        reason = "OpenThoughts-style reasoning traces are blocked by default; R27A6 must not import raw chain-of-thought."
     elif dataset_id == "infinity_instruct":
         status = "blocked" if access_status == "gated" else "conditional_for_engineering"
         obligations = ["attribution", "share_alike", "subset_specific_terms"]
