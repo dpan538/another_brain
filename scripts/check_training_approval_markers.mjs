@@ -519,6 +519,38 @@ const MARKERS = [
       "allow_phase_4_scaled_training",
       "allow_weight_commit"
     ]
+  },
+  {
+    id: "r26g_fix_and_intake_user_answers",
+    path: "training/from_scratch/APPROVE_R26G_FIX_AND_INTAKE_USER_ANSWERS.json",
+    expectedScope: "fix_r26e_metadata_and_intake_replacement_51_100_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r26g_fix_and_intake_user_answers",
+    consumedByCommit: "pending_r26g_commit",
+    trainingFlagKeys: [
+      "allow_candidate_generation",
+      "allow_promote_derived_rows",
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_small_pilot_training",
+      "allow_phase_4_scaled_training",
+      "allow_weight_commit"
+    ]
+  },
+  {
+    id: "r26h_user_answer_corpus_readiness_template",
+    path: "training/from_scratch/APPROVE_R26H_USER_ANSWER_CORPUS_READINESS.template.json",
+    expectedScope: "user_answer_corpus_readiness_review_only",
+    expectedPhase: "phase_3_corpus_review",
+    expectedRunId: "r26h_user_answer_corpus_readiness",
+    template: true,
+    trainingFlagKeys: [
+      "allow_training",
+      "allow_tokenizer_dry_run",
+      "allow_small_pilot_training",
+      "allow_phase_4_scaled_training",
+      "allow_weight_commit"
+    ]
   }
 ];
 

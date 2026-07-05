@@ -139,6 +139,13 @@ R26F audits that promotion only. It explains the 45 promoted rows as 45 unique
 source rows after candidate-level filtering, keeps rows 51-100 excluded, and
 requires later R26G approval before any metadata fix or re-promotion review.
 
+R26G fixes R26E `should_answer` semantics as output obligation, preserves all
+R26E target answers, recovers safe omitted first-50 rows 2, 29, and 47, and
+promotes the approved replacement 51-100 user-answer pack as a new pack. Old
+question_pack_001 rows 51-100 remain excluded. R26G promotes 53 rows total and
+does not train, run tokenizer dry-run, call external APIs, call Doubao, commit
+raw sources, commit artifacts, or commit weights.
+
 ## Public Data
 
 Public generated files may include:

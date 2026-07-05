@@ -8,7 +8,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CORPUS_DIR = resolve(ROOT, "training/llm_corpus");
 const BASE_FILES = ["train.jsonl", "dev.jsonl", "heldout.jsonl"];
 const PROMOTED_REPO_DERIVED_FILE_RE = /^r25a[km]_repo_derived_(train|dev|heldout)\.jsonl$/;
-const PROMOTED_USER_ANSWERED_FILE_RE = /^r26e_user_answered_(train|dev|heldout)\.jsonl$/;
+const PROMOTED_USER_ANSWERED_FILE_RE = /^r26[eg]_user_answered_(train|dev|heldout)\.jsonl$/;
 
 export const REQUIRED_FAMILIES = Object.freeze([
   "static_browser_llm_policy",
@@ -92,6 +92,10 @@ const PROMOTED_USER_ANSWERED_REQUIRED_FIELDS = [
   "user_answer_raw",
   "user_answer_clean",
   "should_answer",
+  "source_should_answer_raw",
+  "response_obligation",
+  "direct_compliance",
+  "valid_nonanswer",
   "answer_mode",
   "answer_as",
   "stance",
@@ -110,6 +114,16 @@ const PROMOTED_USER_ANSWERED_REQUIRED_FIELDS = [
   "training_allowed",
   "public_commit_allowed"
 ];
+
+const PROMOTED_USER_ANSWERED_OPTIONAL_FIELDS = new Set([
+  "display_id",
+  "replacement_for_pack_id",
+  "replacement_for_display_id",
+  "type",
+  "metadata_fix_phase",
+  "metadata_fix_reason",
+  "promotion_ordinal"
+]);
 
 const FORBIDDEN_KEYS = new Set([
   "chain_of_thought",
@@ -239,13 +253,18 @@ export function validateCorpusRows(rows) {
     for (const field of requiredFields) {
       if (!(field in row)) failures.push({ code: "missing_required_field", field, ...loc });
     }
-    const extraFields = Object.keys(row).filter((key) => !requiredFields.includes(key) && !key.startsWith("__"));
+    const extraFields = Object.keys(row).filter((key) => {
+      if (key.startsWith("__")) return false;
+      if (requiredFields.includes(key)) return false;
+      if (promotedUserAnswered && PROMOTED_USER_ANSWERED_OPTIONAL_FIELDS.has(key)) return false;
+      return true;
+    });
     if (extraFields.length) failures.push({ code: "unexpected_fields", fields: extraFields, ...loc });
 
     if (sampleIds.has(row.sample_id)) failures.push({ code: "duplicate_sample_id", ...loc });
     sampleIds.add(row.sample_id);
     if (!SPLITS.has(row.split)) failures.push({ code: "invalid_split", split: row.split, ...loc });
-    const expectedFile = promotedUserAnswered ? `r26e_user_answered_${row.split}.jsonl` : promotedRepoDerived ? expectedPromotedFile(row) : `${row.split}.jsonl`;
+    const expectedFile = promotedUserAnswered ? `${String(row.sample_id || "").startsWith("r26g_") ? "r26g" : "r26e"}_user_answered_${row.split}.jsonl` : promotedRepoDerived ? expectedPromotedFile(row) : `${row.split}.jsonl`;
     if (row.__file && row.split && row.__file !== expectedFile) {
       failures.push({ code: "split_file_mismatch", split: row.split, ...loc });
     }
@@ -269,11 +288,17 @@ export function validateCorpusRows(rows) {
       if (!promotedRepoDerived && !promotedUserAnswered && !Array.isArray(row[arrayField])) failures.push({ code: "array_field_required", field: arrayField, ...loc });
     }
     if (promotedUserAnswered) {
-      if (row.pack_id !== "another_brain_question_pack_001") failures.push({ code: "invalid_user_answer_pack_id", ...loc });
+      if (!["another_brain_question_pack_001", "another_brain_question_pack_002_abstract_values"].includes(row.pack_id)) failures.push({ code: "invalid_user_answer_pack_id", ...loc });
       if (Number(row.source_row_id) < 1 || Number(row.source_row_id) > 50) failures.push({ code: "user_answer_source_row_not_1_50", ...loc });
-      if (Number(row.source_row_id) >= 51) failures.push({ code: "excluded_question_pack_row_promoted", ...loc });
+      if (row.pack_id === "another_brain_question_pack_001" && Number(row.source_row_id) >= 51) failures.push({ code: "excluded_question_pack_row_promoted", ...loc });
+      if (row.pack_id === "another_brain_question_pack_002_abstract_values") {
+        if (Number(row.display_id) < 51 || Number(row.display_id) > 100) failures.push({ code: "replacement_display_id_not_51_100", ...loc });
+        if (row.replacement_for_pack_id !== "another_brain_question_pack_001") failures.push({ code: "replacement_for_pack_mismatch", ...loc });
+      }
       if (row.answer_as !== "user_self") failures.push({ code: "answer_as_must_be_user_self", ...loc });
       if (normalize(row.target_answer) !== normalize(row.user_answer_clean)) failures.push({ code: "target_answer_must_match_user_answer_clean", ...loc });
+      if (row.should_answer !== true) failures.push({ code: "should_answer_must_be_true", ...loc });
+      if (row.response_obligation !== "produce_response") failures.push({ code: "response_obligation_must_be_produce_response", ...loc });
       for (const arrayField of ["constraints", "policy_tags", "expected_behavior", "forbidden_behavior", "retrieved_evidence"]) {
         if (row[arrayField] !== undefined) failures.push({ code: "unexpected_legacy_field_on_user_answer", field: arrayField, ...loc });
       }
@@ -284,10 +309,12 @@ export function validateCorpusRows(rows) {
       if (!row.provenance || typeof row.provenance !== "object") failures.push({ code: "missing_provenance", ...loc });
       else {
         if (row.provenance.source_type !== "user_answered") failures.push({ code: "invalid_user_answer_source_type", ...loc });
-        if (row.provenance.pack_id !== "another_brain_question_pack_001") failures.push({ code: "invalid_user_answer_provenance_pack", ...loc });
+        if (row.provenance.pack_id !== row.pack_id) failures.push({ code: "invalid_user_answer_provenance_pack", ...loc });
         if (row.provenance.external_llm_used !== false) failures.push({ code: "external_llm_used_must_be_false", ...loc });
-        if (row.provenance.promoted_by !== "scripts/promote_r26e_first50_user_answers.mjs") failures.push({ code: "invalid_promoted_by", ...loc });
-        if (row.provenance.promotion_phase !== "R26E") failures.push({ code: "invalid_promotion_phase", ...loc });
+        const expectedPromoter = String(row.sample_id || "").startsWith("r26g_") ? "scripts/promote_r26g_user_answers.mjs" : "scripts/promote_r26e_first50_user_answers.mjs";
+        const expectedPhase = String(row.sample_id || "").startsWith("r26g_") ? "R26G" : "R26E";
+        if (row.provenance.promoted_by !== expectedPromoter) failures.push({ code: "invalid_promoted_by", ...loc });
+        if (row.provenance.promotion_phase !== expectedPhase) failures.push({ code: "invalid_promotion_phase", ...loc });
         if (row.provenance.contains_private_data !== false) failures.push({ code: "provenance_private_data_must_be_false", ...loc });
         if (row.provenance.license_or_permission !== "user-authored-reviewed-for-project-training") failures.push({ code: "invalid_provenance_license", ...loc });
       }

@@ -24,7 +24,10 @@ export const ACTIVE_CORPUS_FILES = [
   "training/llm_corpus/r25am_repo_derived_heldout.jsonl",
   "training/llm_corpus/r26e_user_answered_train.jsonl",
   "training/llm_corpus/r26e_user_answered_dev.jsonl",
-  "training/llm_corpus/r26e_user_answered_heldout.jsonl"
+  "training/llm_corpus/r26e_user_answered_heldout.jsonl",
+  "training/llm_corpus/r26g_user_answered_train.jsonl",
+  "training/llm_corpus/r26g_user_answered_dev.jsonl",
+  "training/llm_corpus/r26g_user_answered_heldout.jsonl"
 ];
 
 export function repoPath(path) {

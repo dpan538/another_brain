@@ -49,3 +49,13 @@ R26F explains the 45 promoted rows as candidate-level filtering, not as proof th
 - 10 rejected candidates came from rows 2, 9, 16, 29, and 47 because the R26E risk rule flagged project-meta leakage.
 
 Rows 51-100 remain excluded. Any metadata fix or re-promotion review requires later R26G approval.
+
+## R26G Metadata Fix Note
+
+R26G later fixed only R26E response-obligation metadata. It preserved R26E `target_answer`, question text, sample IDs, source row IDs, and row order exactly.
+
+- R26E `should_answer` before R26G: `false` = 45
+- R26E `should_answer` after R26G: `true` = 45
+- R26E `response_obligation` after R26G: `produce_response` = 45
+
+R26G did not train or run tokenizer dry-run. It also added separate `r26g_user_answered_*` split files for replacement 51-100 and safe omitted first-50 rows.

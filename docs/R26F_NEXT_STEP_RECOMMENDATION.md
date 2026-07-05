@@ -8,6 +8,7 @@ R26F is audit-only. It does not train, run tokenizer dry-run, expand corpus, pro
 - training approved now: false
 - corpus mutation approved now: false
 - safe next step: Request explicit R26G approval for metadata-only should_answer correction and manual re-promotion review of omitted first-50 rows; do not train.
+- R26G status: completed after explicit approval. R26G fixed R26E response-obligation metadata, recovered rows 2, 29, and 47, kept rows 9 and 16 out of automatic promotion, and intook replacement 51-100 as a new pack without training.
 
 ## Why R26E Promoted 45 Rows
 
@@ -39,3 +40,7 @@ R26F is audit-only. It does not train, run tokenizer dry-run, expand corpus, pro
 - do not use rows 51-100 as training material
 - do not call external APIs or Doubao
 - do not commit artifacts, raw CSV/XLSX, or weights
+
+## R26G Follow-Up
+
+R26G treated replacement 51-100 as `another_brain_question_pack_002_abstract_values`, not as a reopening of old excluded question_pack_001 rows 51-100. Future R26H readiness review is still required before any training discussion.

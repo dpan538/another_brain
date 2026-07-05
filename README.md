@@ -202,6 +202,14 @@ rows as 45 unique source rows after candidate-level filtering, not proof that
 only 45 first-50 answers were usable. Any `should_answer` metadata fix or
 manual re-promotion review requires later R26G approval.
 
+R26G fixes the R26E response-obligation metadata and intakes the user-authored
+replacement 51-100 pack as `another_brain_question_pack_002_abstract_values`.
+The replacement pack is a new pack with display IDs 51-100, not a reopening of
+old excluded question_pack_001 rows 51-100. R26G promotes 53 reviewed rows
+without training, tokenizer dry-run, external APIs, raw source commit, artifact
+commit, or weight commit. Future R26H readiness review is required before any
+training discussion.
+
 ## Privacy Rules
 
 - No cloud inference APIs.

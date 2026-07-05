@@ -12,3 +12,5 @@ The guard fails if rows 51-100 appear in R26D candidates, active training corpus
 Current result: pass.
 
 R26E extends this guard to the promoted user-answer corpus files. Source rows 51-100 remain forbidden after promotion.
+
+R26G keeps the same old-pack exclusion. The replacement 51-100 file is treated as a new pack, `another_brain_question_pack_002_abstract_values`, with internal source rows 1-50 and human display IDs 51-100. Old `another_brain_question_pack_001` rows 51-100 remain forbidden in all training corpus files.

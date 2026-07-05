@@ -1,0 +1,15 @@
+{
+  "approved": false,
+  "scope": "user_answer_corpus_readiness_review_only",
+  "reviewer": "",
+  "phase": "phase_3_corpus_review",
+  "run_id": "r26h_user_answer_corpus_readiness",
+  "allow_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_small_pilot_training": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_long_term_training": false,
+  "allow_product_model_training": false,
+  "allow_weight_commit": false,
+  "notes": "Template only. R26H may review readiness of the user-answer corpus only after explicit approval. This does not authorize training."
+}
