@@ -1,5 +1,8 @@
+import { buildEvidencePacket, loadStaticMemoryRecords } from "./static_retriever.js";
+
 const HIDDEN_MARKERS = ["system prompt", "hidden prompt", "<hidden", "chain-of-thought"];
 const GENERIC_MARKERS = ["as an ai language model", "i cannot answer that"];
+const EVIDENCE_INJECTION_MARKERS = ["ignore previous instructions", "reveal hidden prompt", "developer message"];
 
 export function probeBrowserCapabilities() {
   return {
@@ -12,7 +15,7 @@ export function probeBrowserCapabilities() {
 
 export function buildStatePacket(input, turnIndex, mode = "synthetic_tiny") {
   return {
-    runtime_version: "r27b1b-browser-runtime-smoke-v1",
+    runtime_version: "r27b3-static-rag-memory-v1",
     input,
     turn_index: turnIndex,
     local_only: true,
@@ -22,21 +25,24 @@ export function buildStatePacket(input, turnIndex, mode = "synthetic_tiny") {
   };
 }
 
-export function buildRetrievalPacket(input, statePacket) {
-  return [
-    {
-      id: "r27b1b-local-memory-smoke",
-      source: "same-origin mock retrieval",
-      score: 1,
-      text: `Local packet for: ${String(input).slice(0, 80)}`
-    }
-  ].map((item) => ({ ...item, turn_index: statePacket.turn_index }));
+export function buildRetrievalPacket(input, statePacket, records) {
+  return buildEvidencePacket(input, statePacket, records);
 }
 
-export function verifyDraft(draft, maxChars = 1200) {
+export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
   const text = String(draft || "");
   const lowered = text.toLowerCase();
   const failures = [];
+  const evidence = evidencePacket?.retrieved_evidence || [];
+  if (evidencePacket) {
+    if (evidence.length === 0) failures.push("empty_evidence");
+    if (evidencePacket.evidence_status === "insufficient") failures.push("insufficient_evidence");
+    if (evidencePacket.evidence_status === "conflicting") failures.push("conflicting_evidence");
+    if (evidencePacket.answer_policy_hint === "refuse") failures.push("evidence_policy_refuse");
+    if (evidence.some((item) => EVIDENCE_INJECTION_MARKERS.some((marker) => `${item.title}\n${item.text}`.toLowerCase().includes(marker)))) {
+      failures.push("evidence_instruction_injection");
+    }
+  }
   if (!text.trim()) failures.push("empty_output");
   if (text.length > maxChars) failures.push("overlong_output");
   if (HIDDEN_MARKERS.some((marker) => lowered.includes(marker))) failures.push("hidden_prompt_disclosure_marker");
@@ -61,18 +67,34 @@ function syntheticDraft(input, maxTokens = 32) {
   ].slice(0, Math.min(maxTokens, 8)).join(" ");
 }
 
+function buildDecoderPrompt(input, evidencePacket) {
+  const evidenceLines = (evidencePacket?.retrieved_evidence || [])
+    .slice(0, 3)
+    .map((item) => `- ${item.title}: ${item.text}`)
+    .join("\n");
+  return [
+    `Query: ${String(input || "").slice(0, 120)}`,
+    "Evidence packet:",
+    evidenceLines || "- no local evidence",
+    `Evidence status: ${evidencePacket?.evidence_status || "insufficient"}`,
+    `Policy hint: ${evidencePacket?.answer_policy_hint || "ask_clarifying"}`
+  ].join("\n");
+}
+
 export class BrowserChatRuntime {
   constructor(options = {}) {
     this.mode = options.mode || "synthetic_tiny";
     this.turnIndex = 0;
     this.worker = null;
     this.capabilities = probeBrowserCapabilities();
+    this.memoryRecords = null;
   }
 
   async load() {
     if (this.capabilities.worker_available) {
       this.worker = new Worker("./runtime_worker.js", { type: "module" });
     }
+    this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     return {
       status: "loaded",
       mode: this.mode,
@@ -122,7 +144,8 @@ export class BrowserChatRuntime {
     setStatus("loading_model");
     if (!this.worker && this.capabilities.worker_available) await this.load();
     setStatus("retrieving_local_memory");
-    const retrievedEvidence = buildRetrievalPacket(input, statePacket);
+    if (!this.memoryRecords) this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
+    const evidencePacket = buildRetrievalPacket(input, statePacket, this.memoryRecords || undefined);
     setStatus("drafting");
 
     let decoderDraft = "";
@@ -131,9 +154,9 @@ export class BrowserChatRuntime {
     let verifierResult = { passed: false, failures: ["not_run"], fallback_recommended: true };
 
     try {
-      decoderDraft = await this.draftWithWorker(input, { maxTokens: 32, timeoutMs: 3000 });
+      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket), { maxTokens: 32, timeoutMs: 3000 });
       setStatus("verifying");
-      verifierResult = verifyDraft(decoderDraft);
+      verifierResult = verifyDraft(decoderDraft, evidencePacket);
       if (verifierResult.passed) {
         finalAnswer = decoderDraft;
         setStatus("final");
@@ -152,7 +175,8 @@ export class BrowserChatRuntime {
     return {
       input,
       state_packet: statePacket,
-      retrieved_evidence: retrievedEvidence,
+      evidence_packet: evidencePacket,
+      retrieved_evidence: evidencePacket.retrieved_evidence,
       decoder_draft: decoderDraft,
       verifier_result: verifierResult,
       final_answer: finalAnswer,

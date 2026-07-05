@@ -5,7 +5,7 @@ import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
-const out = join(tmpdir(), `r27b1b-ts-tests-${process.pid}`);
+const out = join(tmpdir(), `r27b3-ts-tests-${process.pid}`);
 
 async function copyAsMjs(fromDir, toDir) {
   await mkdir(toDir, { recursive: true });
@@ -25,10 +25,11 @@ async function copyAsMjs(fromDir, toDir) {
 
 await rm(out, { recursive: true, force: true });
 await copyAsMjs(join(root, "src/browser_runtime"), join(out, "src/browser_runtime"));
-await copyAsMjs(join(root, "tests/r27b1b"), join(out, "tests/r27b1b"));
+await copyAsMjs(join(root, "tests/r27b3"), join(out, "tests/r27b3"));
+await cp(join(root, "web/another_brain/static_rag/demo_memory.json"), join(out, "demo_memory.json"));
 await cp(join(root, "package.json"), join(out, "package.json"));
 
-const result = spawnSync("node", ["--test", join(out, "tests/r27b1b/*.mjs")], {
+const result = spawnSync("node", ["--test", join(out, "tests/r27b3/*.mjs")], {
   cwd: root,
   shell: true,
   stdio: "inherit"

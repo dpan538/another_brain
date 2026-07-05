@@ -1,10 +1,17 @@
 {
-  "runtime_version": "r27b0-static-chat-shell-v1",
+  "runtime_version": "r27b3-static-rag-memory-v1",
   "model_assets": [],
   "tokenizer_assets": [],
-  "rag_assets": [],
+  "rag_assets": [
+    {
+      "path": "another_brain/static_rag/demo_memory.json",
+      "bytes": 2065,
+      "demo_only": true,
+      "answer_bank": false
+    }
+  ],
   "gate_assets": [],
-  "total_declared_bytes": 0,
+  "total_declared_bytes": 2065,
   "max_total_static_bytes": 100000000,
   "same_origin_only": true,
   "external_runtime_dependency": false,

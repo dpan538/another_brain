@@ -1,5 +1,5 @@
 import { buildFallbackAnswer } from "./fallback_adapter.ts";
-import { buildMockRetrievalPacket, buildStatePacket } from "./rag_packet.ts";
+import { buildRetrievalPacket, buildStatePacket } from "./rag_packet.ts";
 import { finalizeDraft, verifyDraft } from "./verifier_adapter.ts";
 
 export class SyntheticTinyRuntime {
@@ -73,18 +73,34 @@ export async function runGenerationLoop(runtime, prompt, options = {}) {
   };
 }
 
+function buildDecoderPrompt(input, evidencePacket) {
+  const evidenceLines = (evidencePacket?.retrieved_evidence || [])
+    .slice(0, 3)
+    .map((item) => `- ${item.title}: ${item.text}`)
+    .join("\n");
+  return [
+    `Query: ${String(input || "").trim()}`,
+    "Evidence packet:",
+    evidenceLines || "- no local evidence",
+    `Evidence status: ${evidencePacket?.evidence_status || "insufficient"}`,
+    `Policy hint: ${evidencePacket?.answer_policy_hint || "ask_clarifying"}`
+  ].join("\n");
+}
+
 export async function runChatPipeline(input, options = {}) {
   const statePacket = buildStatePacket(input, options);
-  const retrievalPacket = buildMockRetrievalPacket(input, statePacket);
   const runtime = options.runtime || new SyntheticTinyRuntime({ mode: statePacket.mode });
+  let evidencePacket = null;
   try {
-    const generation = await runGenerationLoop(runtime, input, options);
-    const verifierResult = verifyDraft(generation.draft, options);
+    evidencePacket = options.evidencePacket || await buildRetrievalPacket(input, statePacket, options);
+    const generation = await runGenerationLoop(runtime, buildDecoderPrompt(input, evidencePacket), options);
+    const verifierResult = verifyDraft(generation.draft, { ...options, evidencePacket });
     if (!verifierResult.passed) {
       return {
         input,
         state_packet: statePacket,
-        retrieved_evidence: retrievalPacket.retrieved_evidence,
+        evidence_packet: evidencePacket,
+        retrieved_evidence: evidencePacket.retrieved_evidence,
         decoder_draft: generation.draft,
         verifier_result: verifierResult,
         ...buildFallbackAnswer(input, verifierResult.failures[0] || "verification_failed")
@@ -93,7 +109,8 @@ export async function runChatPipeline(input, options = {}) {
     return {
       input,
       state_packet: statePacket,
-      retrieved_evidence: retrievalPacket.retrieved_evidence,
+      evidence_packet: evidencePacket,
+      retrieved_evidence: evidencePacket.retrieved_evidence,
       decoder_draft: generation.draft,
       verifier_result: verifierResult,
       final_answer: finalizeDraft(generation.draft, verifierResult),
@@ -103,7 +120,8 @@ export async function runChatPipeline(input, options = {}) {
     return {
       input,
       state_packet: statePacket,
-      retrieved_evidence: retrievalPacket.retrieved_evidence,
+      evidence_packet: evidencePacket,
+      retrieved_evidence: evidencePacket?.retrieved_evidence || [],
       decoder_draft: "",
       verifier_result: { passed: false, failures: [error.message], fallback_recommended: true },
       ...buildFallbackAnswer(input, error.message || "runtime_failed")

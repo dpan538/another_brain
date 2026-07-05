@@ -36,7 +36,8 @@ function renderDebug() {
 }
 
 function updateStatus(packet) {
-  retrievalStatus.textContent = `${packet.retrieved_evidence.length} mock items`;
+  const evidenceStatus = packet.evidence_packet?.evidence_status || "unknown";
+  retrievalStatus.textContent = `${packet.retrieved_evidence.length} evidence / ${evidenceStatus}`;
   verifierStatus.textContent = packet.verifier_result.passed ? "Passed" : "Blocked";
   fallbackStatus.textContent = packet.fallback_used ? "Used" : "Unused";
 }
