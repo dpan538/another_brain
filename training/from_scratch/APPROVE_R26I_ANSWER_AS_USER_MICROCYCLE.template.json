@@ -1,0 +1,19 @@
+{
+  "approved": false,
+  "scope": "answer_as_user_microcycle_only",
+  "reviewer": "",
+  "phase": "phase_3_small_decoder_pilot",
+  "run_id": "r26i_answer_as_user_microcycle",
+  "variant_id": "r26i_user_answered_weighted_192",
+  "allow_small_pilot_training": false,
+  "allow_decoder_training": false,
+  "allow_training": false,
+  "allow_tokenizer_dry_run": false,
+  "allow_phase_4_scaled_training": false,
+  "allow_product_model_training": false,
+  "allow_long_term_training": false,
+  "allow_weight_commit": false,
+  "allow_corpus_generation": false,
+  "allow_promote_derived_rows": false,
+  "notes": "Template only. R26I requires fresh explicit approval for exactly one bounded answer-as-user microcycle. This template does not authorize training."
+}

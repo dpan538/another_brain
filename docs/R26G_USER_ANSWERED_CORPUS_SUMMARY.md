@@ -36,4 +36,7 @@ R26G fixes R26E response-obligation metadata and intakes replacement 51-100 as a
 }
 ```
 
-Future R26H readiness review is required before any training discussion. No automatic training is authorized.
+R26H performs the next readiness review. It may run one tokenizer dry-run over
+the tracked reviewed corpus, but it does not train, promote more rows, mutate
+`training/llm_corpus`, approve phase_4, or commit tokenizer artifacts/weights.
+R26I is not automatic and requires fresh approval.

@@ -1,0 +1,36 @@
+{
+  "run_id": "r26i_answer_as_user_microcycle",
+  "variant_id": "r26i_user_answered_weighted_192",
+  "training_allowed_by_default": false,
+  "requires_fresh_approval": true,
+  "product_model": false,
+  "release_checkpoint": false,
+  "formal_decoder_training": false,
+  "phase_4_scaled_training": false,
+  "commit_weights_allowed": false,
+  "basis": "r26g_user_answered_corpus",
+  "max_train_rows": 192,
+  "max_dev_rows": 48,
+  "max_heldout_rows": 48,
+  "max_context_tokens": 64,
+  "batch_size": 4,
+  "max_steps": 50,
+  "learning_rate": 0.0025,
+  "early_stop_if_dev_worsens": true,
+  "architecture": {
+    "type": "causal_decoder_pilot",
+    "basis": "r25s_baseline_data_first",
+    "layers": 1,
+    "hidden_size": 64,
+    "attention_heads": 4,
+    "intermediate_size": 128
+  },
+  "focus": [
+    "answer_as_user",
+    "weird_question_abstraction",
+    "pressure_resistance",
+    "refusal_boundary",
+    "abstract_judgment",
+    "values_aesthetics_language_meaning"
+  ]
+}

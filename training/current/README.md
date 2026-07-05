@@ -7,3 +7,8 @@ R26A creates this canonical current-training directory as an index, not as a mov
 - `source_policy.json` keeps root DOC/PDF files, `data/public_ingestion/`, `private_sources/`, ignored artifacts, and eval prompts out of training by default.
 
 No corpus rows were generated, promoted, rewritten, or moved in R26A.
+
+R26H adds a readiness gate over the post-R26G user-answer corpus. It does not
+modify `training/llm_corpus`, does not train, and does not approve phase_4.
+The R26I entry files are inert templates until a fresh reviewer approval is
+provided.

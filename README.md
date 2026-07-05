@@ -744,3 +744,19 @@ manual R26G review before any possible re-promotion. R26F also diagnoses the
 blank raw `是否回答` values as likely mapped to `should_answer=false`. R26F does
 not mutate corpus files or metadata. Replacement rows 51-100 still require a
 separate fresh approval.
+
+## R26G/R26H User-Answer Readiness Status
+
+R26G fixed R26E response-obligation metadata, preserved all R26E
+`target_answer` text, and promoted the approved replacement 51-100 pack as a
+new pack. The old `another_brain_question_pack_001` rows 51-100 remain
+excluded.
+
+R26H is the final readiness gate before possible R26I. It validates the
+post-R26G user-answer corpus, runs one tokenizer dry-run/readiness pass, and
+freezes an R26I training-entry plan plus inert approval/template. R26H does
+not run decoder training, small-pilot training, product/formal training,
+phase_4, corpus expansion, or corpus promotion. R26I is not automatically
+approved; a fresh reviewer approval is required for exactly one bounded
+answer-as-user microcycle. Product/formal training progress remains `0%`,
+phase_4 remains blocked, and no tokenizer artifacts or weights are committed.

@@ -568,3 +568,17 @@ duplicates and 10 project-meta-flagged candidates from rows 2, 9, 16, 29, and
 47. R26F also finds that blank raw `是否回答` values likely became
 `should_answer=false` for promoted rows. Any correction requires later R26G
 approval and does not authorize training.
+
+## R26G/R26H User-Answered Data Note
+
+R26G corrected R26E response-obligation metadata and added reviewed
+replacement answer rows as `another_brain_question_pack_002_abstract_values`.
+The old excluded question_pack_001 rows 51-100 remain absent from the tracked
+training corpus.
+
+R26H reviews readiness only. It validates user-answer coverage, runs one
+tokenizer dry-run over tracked reviewed corpus sources, and freezes an R26I
+entry plan/template. R26H does not alter `training/llm_corpus`, does not
+change `target_answer`, does not train, does not approve phase_4, and does not
+commit tokenizer artifacts or weights. R26I remains approval-gated and would
+be a bounded answer-as-user microcycle, not product/formal training.
