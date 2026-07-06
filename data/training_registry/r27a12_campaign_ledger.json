@@ -1,0 +1,999 @@
+{
+  "active_approval_after_completion": 0,
+  "artifacts_committed": false,
+  "best_checkpoints": {
+    "best_dev_loss": 0.7341347895562649,
+    "best_product_probe_checkpoint": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg10_chinese_general.pt",
+    "final_checkpoint": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg10_chinese_general.pt"
+  },
+  "browser_admission": false,
+  "campaign_id": "r27a12_budgetfit_product_path_training_v1",
+  "clean_corpus_committed": false,
+  "completed_at_utc": "2026-07-06T17:52:13Z",
+  "context_length": 256,
+  "created_at_utc": "2026-07-06T07:53:54Z",
+  "doubao_called": false,
+  "engineering_repair_only": true,
+  "external_llm_api_called": false,
+  "formal_decoder_training": false,
+  "ok": true,
+  "optimizer_steps": 40000,
+  "optimizer_tokens": 10240000,
+  "parameter_count": 96363008,
+  "phase_4": false,
+  "primary_token_metric": "optimizer_tokens",
+  "processed_corpus_committed": false,
+  "product_model": false,
+  "product_model_admission": false,
+  "product_training": false,
+  "raw_corpus_committed": false,
+  "release_checkpoint": false,
+  "segment_count": 10,
+  "segments": [
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg01_chinese_general.pt",
+      "checkpoint_pruned": true,
+      "dev_loss": 4.54278364777565,
+      "dev_loss_report": {
+        "average_loss": 4.54278364777565,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 4.54278364777565,
+            "perplexity": 93.95196563458705,
+            "total_loss_sum": 13955.431365966797,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 93.95196563458705,
+        "split": "dev",
+        "total_loss_sum": 13955.431365966797,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 4.544998327891032,
+      "eval_train_loss_report": {
+        "average_loss": 4.544998327891032,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 4.544998327891032,
+            "perplexity": 94.1602697630437,
+            "total_loss_sum": 13962.23486328125,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 94.1602697630437,
+        "split": "eval_train",
+        "total_loss_sum": 13962.23486328125,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 3.4689884185791016,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 3.4689884185791016,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 5.290253718018532,
+        "running_train_loss_report": {
+          "average_loss": 5.290253718018532,
+          "curriculum_breakdown": {
+            "chinese_general": {
+              "average_loss": 5.290253718018532,
+              "perplexity": 198.39375509476886,
+              "total_loss_sum": 5417219.807250977,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 198.39375509476886,
+          "split": "train_running",
+          "total_loss_sum": 5417219.807250977,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 252431
+      },
+      "segment_index": 1,
+      "stage_id": "chinese_general",
+      "stage_mix": {
+        "public_chinese_pretraining": 45,
+        "rag_evidence_grounded": 10,
+        "reasoning_symbolic": 15,
+        "secondary_english_mixed": 10,
+        "sft_public_instruction": 10,
+        "user_answered_anchor": 5,
+        "value_aesthetic": 5
+      },
+      "stratified_heldout_loss": 4.282257745663325,
+      "stratified_heldout_loss_report": {
+        "average_loss": 4.282257745663325,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 4.282257745663325,
+            "perplexity": 72.40372480588066,
+            "total_loss_sum": 13155.095794677734,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 72.40372480588066,
+        "split": "stratified_heldout",
+        "total_loss_sum": 13155.095794677734,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg02_dialogue_rag.pt",
+      "checkpoint_pruned": true,
+      "dev_loss": 6.081985076268514,
+      "dev_loss_report": {
+        "average_loss": 6.081985076268514,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 6.081985076268514,
+            "perplexity": 437.89759263435974,
+            "total_loss_sum": 18683.858154296875,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 437.89759263435974,
+        "split": "dev",
+        "total_loss_sum": 18683.858154296875,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 0.22249981636802355,
+      "eval_train_loss_report": {
+        "average_loss": 0.22249981636802355,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 0.22249981636802355,
+            "perplexity": 1.2491955902583767,
+            "total_loss_sum": 683.5194358825684,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 1.2491955902583767,
+        "split": "eval_train",
+        "total_loss_sum": 683.5194358825684,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 0.1551601141691208,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 0.1551601141691208,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 0.4495845343582332,
+        "running_train_loss_report": {
+          "average_loss": 0.4495845343582332,
+          "curriculum_breakdown": {
+            "dialogue_rag": {
+              "average_loss": 0.4495845343582332,
+              "perplexity": 1.5676607409973062,
+              "total_loss_sum": 460374.5631828308,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 1.5676607409973062,
+          "split": "train_running",
+          "total_loss_sum": 460374.5631828308,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 112238
+      },
+      "segment_index": 2,
+      "stage_id": "dialogue_rag",
+      "stage_mix": {
+        "reasoning_symbolic": 10,
+        "sft_answer_as_user": 20,
+        "sft_public_instruction": 10,
+        "sft_rag_evidence": 25,
+        "sft_refusal_boundary": 15,
+        "sft_value_aesthetic": 20
+      },
+      "stratified_heldout_loss": 5.891534219185512,
+      "stratified_heldout_loss_report": {
+        "average_loss": 5.891534219185512,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 5.891534219185512,
+            "perplexity": 361.96018485395274,
+            "total_loss_sum": 18098.79312133789,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 361.96018485395274,
+        "split": "stratified_heldout",
+        "total_loss_sum": 18098.79312133789,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg03_consolidation.pt",
+      "checkpoint_pruned": true,
+      "dev_loss": 5.671730826298396,
+      "dev_loss_report": {
+        "average_loss": 5.671730826298396,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 5.671730826298396,
+            "perplexity": 290.5369684789377,
+            "total_loss_sum": 17423.557098388672,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 290.5369684789377,
+        "split": "dev",
+        "total_loss_sum": 17423.557098388672,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 2.0533748995512724,
+      "eval_train_loss_report": {
+        "average_loss": 2.0533748995512724,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 2.0533748995512724,
+            "perplexity": 7.794161280063928,
+            "total_loss_sum": 6307.967691421509,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 7.794161280063928,
+        "split": "eval_train",
+        "total_loss_sum": 6307.967691421509,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 0.7835734486579895,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 0.7835734486579895,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 2.3035792385041716,
+        "running_train_loss_report": {
+          "average_loss": 2.3035792385041716,
+          "curriculum_breakdown": {
+            "consolidation": {
+              "average_loss": 2.3035792385041716,
+              "perplexity": 10.009946398365708,
+              "total_loss_sum": 2358865.1402282715,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 10.009946398365708,
+          "split": "train_running",
+          "total_loss_sum": 2358865.1402282715,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 184469
+      },
+      "segment_index": 3,
+      "stage_id": "consolidation",
+      "stage_mix": {
+        "public_chinese_pretraining": 25,
+        "reasoning_symbolic": 10,
+        "sft_answer_as_user": 10,
+        "sft_public_instruction": 20,
+        "sft_rag_evidence": 20,
+        "sft_value_aesthetic": 15
+      },
+      "stratified_heldout_loss": 5.255004584789276,
+      "stratified_heldout_loss_report": {
+        "average_loss": 5.255004584789276,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 5.255004584789276,
+            "perplexity": 191.5223639420445,
+            "total_loss_sum": 16143.374084472656,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 191.5223639420445,
+        "split": "stratified_heldout",
+        "total_loss_sum": 16143.374084472656,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg04_chinese_general.pt",
+      "dev_loss": 2.2157245725393295,
+      "dev_loss_report": {
+        "average_loss": 2.2157245725393295,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 2.2157245725393295,
+            "perplexity": 9.168049622548052,
+            "total_loss_sum": 6806.70588684082,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 9.168049622548052,
+        "split": "dev",
+        "total_loss_sum": 6806.70588684082,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 2.5165977204839387,
+      "eval_train_loss_report": {
+        "average_loss": 2.5165977204839387,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 2.5165977204839387,
+            "perplexity": 12.386382955872588,
+            "total_loss_sum": 7730.98819732666,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 12.386382955872588,
+        "split": "eval_train",
+        "total_loss_sum": 7730.98819732666,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 4.890759468078613,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 4.890759468078613,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 3.129259468346834,
+        "running_train_loss_report": {
+          "average_loss": 3.129259468346834,
+          "curriculum_breakdown": {
+            "chinese_general": {
+              "average_loss": 3.129259468346834,
+              "perplexity": 22.857046906905857,
+              "total_loss_sum": 3204361.695587158,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 22.857046906905857,
+          "split": "train_running",
+          "total_loss_sum": 3204361.695587158,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 252431
+      },
+      "segment_index": 4,
+      "stage_id": "chinese_general",
+      "stage_mix": {
+        "public_chinese_pretraining": 45,
+        "rag_evidence_grounded": 10,
+        "reasoning_symbolic": 15,
+        "secondary_english_mixed": 10,
+        "sft_public_instruction": 10,
+        "user_answered_anchor": 5,
+        "value_aesthetic": 5
+      },
+      "stratified_heldout_loss": 1.9037929723660152,
+      "stratified_heldout_loss_report": {
+        "average_loss": 1.9037929723660152,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 1.9037929723660152,
+            "perplexity": 6.711302009780854,
+            "total_loss_sum": 5848.452011108398,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 6.711302009780854,
+        "split": "stratified_heldout",
+        "total_loss_sum": 5848.452011108398,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg05_dialogue_rag.pt",
+      "dev_loss": 3.881913791100184,
+      "dev_loss_report": {
+        "average_loss": 3.881913791100184,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 3.881913791100184,
+            "perplexity": 48.51697763895762,
+            "total_loss_sum": 11925.239166259766,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 48.51697763895762,
+        "split": "dev",
+        "total_loss_sum": 11925.239166259766,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 0.10858104238286614,
+      "eval_train_loss_report": {
+        "average_loss": 0.10858104238286614,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 0.10858104238286614,
+            "perplexity": 1.1146952424364711,
+            "total_loss_sum": 333.5609622001648,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 1.1146952424364711,
+        "split": "eval_train",
+        "total_loss_sum": 333.5609622001648,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 0.095680832862854,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 0.095680832862854,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 0.17116526780463756,
+        "running_train_loss_report": {
+          "average_loss": 0.17116526780463756,
+          "curriculum_breakdown": {
+            "dialogue_rag": {
+              "average_loss": 0.17116526780463756,
+              "perplexity": 1.1866868539474942,
+              "total_loss_sum": 175273.23423194885,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 1.1866868539474942,
+          "split": "train_running",
+          "total_loss_sum": 175273.23423194885,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 112238
+      },
+      "segment_index": 5,
+      "stage_id": "dialogue_rag",
+      "stage_mix": {
+        "reasoning_symbolic": 10,
+        "sft_answer_as_user": 20,
+        "sft_public_instruction": 10,
+        "sft_rag_evidence": 25,
+        "sft_refusal_boundary": 15,
+        "sft_value_aesthetic": 20
+      },
+      "stratified_heldout_loss": 3.7031583388646445,
+      "stratified_heldout_loss_report": {
+        "average_loss": 3.7031583388646445,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 3.7031583388646445,
+            "perplexity": 40.57525259898765,
+            "total_loss_sum": 11376.102416992188,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 40.57525259898765,
+        "split": "stratified_heldout",
+        "total_loss_sum": 11376.102416992188,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg06_consolidation.pt",
+      "dev_loss": 4.254213253657023,
+      "dev_loss_report": {
+        "average_loss": 4.254213253657023,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 4.254213253657023,
+            "perplexity": 70.40140734477579,
+            "total_loss_sum": 13068.943115234375,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 70.40140734477579,
+        "split": "dev",
+        "total_loss_sum": 13068.943115234375,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 1.1482630968093872,
+      "eval_train_loss_report": {
+        "average_loss": 1.1482630968093872,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 1.1482630968093872,
+            "perplexity": 3.1527121954612385,
+            "total_loss_sum": 3527.4642333984375,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 3.1527121954612385,
+        "split": "eval_train",
+        "total_loss_sum": 3527.4642333984375,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 0.12056279182434082,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 0.12056279182434082,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 1.0989896675748752,
+        "running_train_loss_report": {
+          "average_loss": 1.0989896675748752,
+          "curriculum_breakdown": {
+            "consolidation": {
+              "average_loss": 1.0989896675748752,
+              "perplexity": 3.00113235036943,
+              "total_loss_sum": 1125365.419596672,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 3.00113235036943,
+          "split": "train_running",
+          "total_loss_sum": 1125365.419596672,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 184469
+      },
+      "segment_index": 6,
+      "stage_id": "consolidation",
+      "stage_mix": {
+        "public_chinese_pretraining": 25,
+        "reasoning_symbolic": 10,
+        "sft_answer_as_user": 10,
+        "sft_public_instruction": 20,
+        "sft_rag_evidence": 20,
+        "sft_value_aesthetic": 15
+      },
+      "stratified_heldout_loss": 3.907332797845205,
+      "stratified_heldout_loss_report": {
+        "average_loss": 3.907332797845205,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 3.907332797845205,
+            "perplexity": 49.76603871324436,
+            "total_loss_sum": 12003.326354980469,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 49.76603871324436,
+        "split": "stratified_heldout",
+        "total_loss_sum": 12003.326354980469,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg07_chinese_general.pt",
+      "dev_loss": 1.0686814598739147,
+      "dev_loss_report": {
+        "average_loss": 1.0686814598739147,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 1.0686814598739147,
+            "perplexity": 2.911537988273728,
+            "total_loss_sum": 3282.989444732666,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 2.911537988273728,
+        "split": "dev",
+        "total_loss_sum": 3282.989444732666,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 2.0398115863402686,
+      "eval_train_loss_report": {
+        "average_loss": 2.0398115863402686,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 2.0398115863402686,
+            "perplexity": 7.6891603195528875,
+            "total_loss_sum": 6266.301193237305,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 7.6891603195528875,
+        "split": "eval_train",
+        "total_loss_sum": 6266.301193237305,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 0.7575967311859131,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 0.7575967311859131,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 1.9209790006708354,
+        "running_train_loss_report": {
+          "average_loss": 1.9209790006708354,
+          "curriculum_breakdown": {
+            "chinese_general": {
+              "average_loss": 1.9209790006708354,
+              "perplexity": 6.827639462022496,
+              "total_loss_sum": 1967082.4966869354,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 6.827639462022496,
+          "split": "train_running",
+          "total_loss_sum": 1967082.4966869354,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 252431
+      },
+      "segment_index": 7,
+      "stage_id": "chinese_general",
+      "stage_mix": {
+        "public_chinese_pretraining": 45,
+        "rag_evidence_grounded": 10,
+        "reasoning_symbolic": 15,
+        "secondary_english_mixed": 10,
+        "sft_public_instruction": 10,
+        "user_answered_anchor": 5,
+        "value_aesthetic": 5
+      },
+      "stratified_heldout_loss": 1.131775143245856,
+      "stratified_heldout_loss_report": {
+        "average_loss": 1.131775143245856,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 1.131775143245856,
+            "perplexity": 3.101156614153233,
+            "total_loss_sum": 3476.8132400512695,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 3.101156614153233,
+        "split": "stratified_heldout",
+        "total_loss_sum": 3476.8132400512695,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg08_dialogue_rag.pt",
+      "dev_loss": 2.5135243783394494,
+      "dev_loss_report": {
+        "average_loss": 2.5135243783394494,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 2.5135243783394494,
+            "perplexity": 12.348373800603639,
+            "total_loss_sum": 7721.546890258789,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 12.348373800603639,
+        "split": "dev",
+        "total_loss_sum": 7721.546890258789,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 0.07974617710957925,
+      "eval_train_loss_report": {
+        "average_loss": 0.07974617710957925,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 0.07974617710957925,
+            "perplexity": 1.0830121395132923,
+            "total_loss_sum": 244.98025608062744,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 1.0830121395132923,
+        "split": "eval_train",
+        "total_loss_sum": 244.98025608062744,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 0.12096907198429108,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 0.12096907198429108,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 0.10616412818292156,
+        "running_train_loss_report": {
+          "average_loss": 0.10616412818292156,
+          "curriculum_breakdown": {
+            "dialogue_rag": {
+              "average_loss": 0.10616412818292156,
+              "perplexity": 1.112004372786836,
+              "total_loss_sum": 108712.06725931168,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 1.112004372786836,
+          "split": "train_running",
+          "total_loss_sum": 108712.06725931168,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 112238
+      },
+      "segment_index": 8,
+      "stage_id": "dialogue_rag",
+      "stage_mix": {
+        "reasoning_symbolic": 10,
+        "sft_answer_as_user": 20,
+        "sft_public_instruction": 10,
+        "sft_rag_evidence": 25,
+        "sft_refusal_boundary": 15,
+        "sft_value_aesthetic": 20
+      },
+      "stratified_heldout_loss": 2.6869193812211356,
+      "stratified_heldout_loss_report": {
+        "average_loss": 2.6869193812211356,
+        "curriculum_breakdown": {
+          "dialogue_rag": {
+            "average_loss": 2.6869193812211356,
+            "perplexity": 14.686363074595535,
+            "total_loss_sum": 8254.216339111328,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 14.686363074595535,
+        "split": "stratified_heldout",
+        "total_loss_sum": 8254.216339111328,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg09_consolidation.pt",
+      "dev_loss": 3.1480888624986014,
+      "dev_loss_report": {
+        "average_loss": 3.1480888624986014,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 3.1480888624986014,
+            "perplexity": 23.29150874251536,
+            "total_loss_sum": 9670.928985595703,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 23.29150874251536,
+        "split": "dev",
+        "total_loss_sum": 9670.928985595703,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 0.5830592618634304,
+      "eval_train_loss_report": {
+        "average_loss": 0.5830592618634304,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 0.5830592618634304,
+            "perplexity": 1.7915107563784425,
+            "total_loss_sum": 1791.158052444458,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 1.7915107563784425,
+        "split": "eval_train",
+        "total_loss_sum": 1791.158052444458,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 0.6558258533477783,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 0.6558258533477783,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 0.569623241665773,
+        "running_train_loss_report": {
+          "average_loss": 0.569623241665773,
+          "curriculum_breakdown": {
+            "consolidation": {
+              "average_loss": 0.569623241665773,
+              "perplexity": 1.7676009675691713,
+              "total_loss_sum": 583294.1994657516,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 1.7676009675691713,
+          "split": "train_running",
+          "total_loss_sum": 583294.1994657516,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 184469
+      },
+      "segment_index": 9,
+      "stage_id": "consolidation",
+      "stage_mix": {
+        "public_chinese_pretraining": 25,
+        "reasoning_symbolic": 10,
+        "sft_answer_as_user": 10,
+        "sft_public_instruction": 20,
+        "sft_rag_evidence": 20,
+        "sft_value_aesthetic": 15
+      },
+      "stratified_heldout_loss": 3.1177679896354675,
+      "stratified_heldout_loss_report": {
+        "average_loss": 3.1177679896354675,
+        "curriculum_breakdown": {
+          "consolidation": {
+            "average_loss": 3.1177679896354675,
+            "perplexity": 22.595889057809075,
+            "total_loss_sum": 9577.783264160156,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 22.595889057809075,
+        "split": "stratified_heldout",
+        "total_loss_sum": 9577.783264160156,
+        "total_loss_tokens": 3072
+      }
+    },
+    {
+      "checkpoint_path": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg10_chinese_general.pt",
+      "dev_loss": 0.7341347895562649,
+      "dev_loss_report": {
+        "average_loss": 0.7341347895562649,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 0.7341347895562649,
+            "perplexity": 2.083678392064373,
+            "total_loss_sum": 2255.2620735168457,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 2.083678392064373,
+        "split": "dev",
+        "total_loss_sum": 2255.2620735168457,
+        "total_loss_tokens": 3072
+      },
+      "eval_train_loss": 1.0426396375211577,
+      "eval_train_loss_report": {
+        "average_loss": 1.0426396375211577,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 1.0426396375211577,
+            "perplexity": 2.8366949869646723,
+            "total_loss_sum": 3202.9889664649963,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 2.8366949869646723,
+        "split": "eval_train",
+        "total_loss_sum": 3202.9889664649963,
+        "total_loss_tokens": 3072
+      },
+      "last_batch_loss": 0.45880231261253357,
+      "last_batch_loss_debug_only": true,
+      "mask_policy": "full_next_token",
+      "metrics": {
+        "effective_tokens": 1024000,
+        "headline_train_loss_source": "token_weighted_running_or_eval_loss",
+        "last_batch_loss": 0.45880231261253357,
+        "last_batch_loss_debug_only": true,
+        "optimizer_steps": 4000,
+        "optimizer_tokens": 1024000,
+        "planned_tokens": 1024000,
+        "primary_token_metric": "optimizer_tokens",
+        "running_train_loss": 1.1133943004503382,
+        "running_train_loss_report": {
+          "average_loss": 1.1133943004503382,
+          "curriculum_breakdown": {
+            "chinese_general": {
+              "average_loss": 1.1133943004503382,
+              "perplexity": 3.044675418134051,
+              "total_loss_sum": 1140115.7636611462,
+              "total_loss_tokens": 1024000
+            }
+          },
+          "mask_policy": "full_next_token",
+          "perplexity": 3.044675418134051,
+          "split": "train_running",
+          "total_loss_sum": 1140115.7636611462,
+          "total_loss_tokens": 1024000
+        },
+        "streamed_tokens": 252431
+      },
+      "segment_index": 10,
+      "stage_id": "chinese_general",
+      "stage_mix": {
+        "public_chinese_pretraining": 45,
+        "rag_evidence_grounded": 10,
+        "reasoning_symbolic": 15,
+        "secondary_english_mixed": 10,
+        "sft_public_instruction": 10,
+        "user_answered_anchor": 5,
+        "value_aesthetic": 5
+      },
+      "stratified_heldout_loss": 0.8993318205078443,
+      "stratified_heldout_loss_report": {
+        "average_loss": 0.8993318205078443,
+        "curriculum_breakdown": {
+          "chinese_general": {
+            "average_loss": 0.8993318205078443,
+            "perplexity": 2.4579602037388795,
+            "total_loss_sum": 2762.7473526000977,
+            "total_loss_tokens": 3072
+          }
+        },
+        "mask_policy": "full_next_token",
+        "perplexity": 2.4579602037388795,
+        "split": "stratified_heldout",
+        "total_loss_sum": 2762.7473526000977,
+        "total_loss_tokens": 3072
+      }
+    }
+  ],
+  "selected_device": "mps",
+  "selected_model": "new_96m",
+  "stop_reason": "completed_schedule_or_cap",
+  "tokenizer_artifacts_committed": false,
+  "train_started": true,
+  "training_ran": true,
+  "wall_clock_seconds": 35900.461,
+  "weights_committed": false
+}
