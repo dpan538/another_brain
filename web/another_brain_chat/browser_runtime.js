@@ -1,4 +1,11 @@
 import { buildEvidencePacket, loadStaticMemoryRecords } from "./static_retriever.js";
+import {
+  applyImportedStatePackets,
+  buildAdapterContextSummary,
+  buildAnswerSurfaceRequest,
+  buildAnswerSurfaceResponse,
+  mergeAdapterEvidenceRecords
+} from "./context_bridge.js";
 
 const HIDDEN_MARKERS = ["system prompt", "hidden prompt", "<hidden", "chain-of-thought"];
 const GENERIC_MARKERS = ["as an ai language model", "i cannot answer that"];
@@ -89,6 +96,7 @@ export class BrowserChatRuntime {
     this.worker = null;
     this.capabilities = probeBrowserCapabilities();
     this.memoryRecords = null;
+    this.contextPackets = [];
   }
 
   async load() {
@@ -111,6 +119,10 @@ export class BrowserChatRuntime {
       this.worker.terminate();
       this.worker = null;
     }
+  }
+
+  setContextPackets(packets = []) {
+    this.contextPackets = Array.isArray(packets) ? [...packets] : [];
   }
 
   async draftWithWorker(input, options = {}) {
@@ -143,7 +155,7 @@ export class BrowserChatRuntime {
   async run(input, hooks = {}) {
     this.turnIndex += 1;
     const setStatus = typeof hooks.onStatus === "function" ? hooks.onStatus : () => {};
-    const statePacket = buildStatePacket(input, this.turnIndex, this.mode);
+    const statePacket = applyImportedStatePackets(buildStatePacket(input, this.turnIndex, this.mode), this.contextPackets);
     statePacket.delivery_mode = this.deliveryConfig.delivery_mode || "demo_static";
     statePacket.rag_mode = this.deliveryConfig.rag_mode || "static_demo";
     statePacket.product_model = false;
@@ -151,7 +163,16 @@ export class BrowserChatRuntime {
     if (!this.worker && this.capabilities.worker_available) await this.load();
     setStatus("retrieving_local_memory");
     if (!this.memoryRecords) this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
-    const evidencePacket = buildRetrievalPacket(input, statePacket, this.memoryRecords || undefined);
+    const memoryRecords = this.contextPackets.length > 0
+      ? mergeAdapterEvidenceRecords(this.memoryRecords || [], this.contextPackets)
+      : this.memoryRecords || undefined;
+    const evidencePacket = buildRetrievalPacket(input, statePacket, memoryRecords);
+    const answerSurfaceRequest = buildAnswerSurfaceRequest({
+      input,
+      statePacket,
+      evidencePacket,
+      contextPackets: this.contextPackets
+    });
     setStatus("drafting");
 
     let decoderDraft = "";
@@ -187,6 +208,13 @@ export class BrowserChatRuntime {
       verifier_result: verifierResult,
       final_answer: finalAnswer,
       fallback_used: fallbackUsed,
+      adapter_context_summary: buildAdapterContextSummary(this.contextPackets),
+      answer_surface_request: answerSurfaceRequest,
+      answer_surface_response: buildAnswerSurfaceResponse({
+        finalAnswer,
+        requestPacket: answerSurfaceRequest,
+        evidencePacket
+      }),
       delivery_config: this.deliveryConfig,
       capabilities: this.capabilities
     };

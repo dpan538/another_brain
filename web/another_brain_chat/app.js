@@ -1,4 +1,5 @@
 import { BrowserChatRuntime } from "./browser_runtime.js";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js";
 
 const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
@@ -28,8 +29,15 @@ const budgetStatus = document.querySelector("#budget-status");
 const nonProductWarning = document.querySelector("#non-product-warning");
 const debugToggle = document.querySelector("#debug-toggle");
 const debugOutput = document.querySelector("#debug-output");
+const contextImport = document.querySelector("#context-import");
+const contextImportButton = document.querySelector("#context-import-button");
+const contextClearButton = document.querySelector("#context-clear-button");
+const stateExportButton = document.querySelector("#state-export-button");
+const contextBridgeStatus = document.querySelector("#context-bridge-status");
+const contextValidation = document.querySelector("#context-validation");
 
 let lastPacket = null;
+const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 function appendMessage(role, text) {
@@ -58,6 +66,18 @@ function updateStatus(packet) {
   retrievalStatus.textContent = `${packet.retrieved_evidence.length} evidence / ${evidenceStatus}`;
   verifierStatus.textContent = packet.verifier_result.passed ? "Passed" : "Blocked";
   fallbackStatus.textContent = packet.fallback_used ? "Used" : "Unused";
+}
+
+function renderContextBridge(result = null) {
+  const summary = contextBridge.summary();
+  contextBridgeStatus.textContent = `${summary.packet_count} packets / ${summary.evidence_record_count} evidence`;
+  if (result?.ok) {
+    contextValidation.textContent = `${result.packet.packet_type} imported for this session`;
+  } else if (result?.failures?.length) {
+    contextValidation.textContent = `Rejected: ${result.failures.join(", ")}`;
+  } else {
+    contextValidation.textContent = "Local session only";
+  }
 }
 
 async function loadDeliveryConfig() {
@@ -102,10 +122,38 @@ async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
   runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig });
+  runtime.setContextPackets(contextBridge.getPackets());
   const loadResult = await runtime.load();
   modelStatus.textContent = `${loadResult.mode} loaded`;
   retrievalStatus.textContent = deliveryConfig.rag_mode;
+  renderContextBridge();
 }
+
+contextImportButton.addEventListener("click", () => {
+  const result = contextBridge.importText(contextImport.value, { sourceLabel: "Manual local import" });
+  if (result.ok) {
+    runtime.setContextPackets(contextBridge.getPackets());
+    contextImport.value = "";
+  }
+  renderContextBridge(result);
+});
+
+contextClearButton.addEventListener("click", () => {
+  contextBridge.clear();
+  runtime.setContextPackets([]);
+  contextImport.value = "";
+  renderContextBridge();
+});
+
+stateExportButton.addEventListener("click", () => {
+  if (!lastPacket?.state_packet) {
+    contextValidation.textContent = "No state packet yet";
+    return;
+  }
+  const packet = createStateAdapterPacket(lastPacket.state_packet);
+  contextImport.value = JSON.stringify(packet, null, 2);
+  contextValidation.textContent = "StatePacket ready";
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -118,6 +166,7 @@ form.addEventListener("submit", async (event) => {
 
   const packet = await runtime.run(text, { onStatus: setPipelineStatus });
   lastPacket = packet;
+  stateExportButton.disabled = false;
   appendMessage("assistant", packet.final_answer);
   updateStatus(packet);
   renderDebug();

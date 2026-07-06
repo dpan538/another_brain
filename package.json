@@ -403,6 +403,7 @@
     "test:r27b3": "node scripts/r27b3_run_ts_tests.mjs",
     "test:r27b4": "python3 -m unittest discover -s tests/r27b4",
     "test:r27b5": "python3 -m unittest discover -s tests/r27b5",
+    "test:r27c0": "node scripts/r27c0_run_ts_tests.mjs && python3 -m unittest discover -s tests/r27c0",
     "test:r27d0": "python3 -m unittest discover -s tests/r27d0",
     "check:r27d0-vercel-deploy-triage": "npm run test:r27d0 && python3 scripts/r27d0_vercel_config_audit.py",
     "test:r27d1": "python3 -m unittest discover -s tests/r27d1",

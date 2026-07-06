@@ -95,3 +95,11 @@ web/vendor/
 # Private generated memory payload. The public app ships without personal
 # memory cards; local builds can regenerate this file when needed.
 web/brain_pack.js
+
+# R27C0 manual adapter bridge payloads are local-session scratch data only.
+adapter_payloads/
+context_payloads/
+*.adapter-packet.json
+*.context-packet.json
+*.evidence-packet.json
+*.state-packet.json

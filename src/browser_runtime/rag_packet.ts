@@ -1,4 +1,5 @@
 import { buildStaticEvidencePacket, DEFAULT_DEMO_MEMORY } from "./rag/static_retriever.ts";
+import { mergeAdapterEvidenceRecords } from "./context_adapter.ts";
 
 export function buildStatePacket(input, options = {}) {
   return {
@@ -14,7 +15,11 @@ export function buildStatePacket(input, options = {}) {
 }
 
 export async function buildRetrievalPacket(input, statePacket = buildStatePacket(input), options = {}) {
-  return buildStaticEvidencePacket(input, statePacket, options);
+  const contextPackets = options.contextPackets || options.adapterPackets || [];
+  const memoryRecords = contextPackets.length > 0
+    ? mergeAdapterEvidenceRecords(options.memoryRecords || DEFAULT_DEMO_MEMORY, contextPackets)
+    : options.memoryRecords;
+  return buildStaticEvidencePacket(input, statePacket, { ...options, memoryRecords });
 }
 
 export async function buildMockRetrievalPacket(input, statePacket = buildStatePacket(input), options = {}) {

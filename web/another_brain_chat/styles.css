@@ -42,7 +42,7 @@ textarea {
   height: min(760px, calc(100vh - 56px));
   min-height: 560px;
   display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
+  grid-template-rows: auto auto auto auto minmax(0, 1fr) auto auto;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -142,6 +142,76 @@ h1 {
   font-size: 0.82rem;
   font-weight: 700;
   line-height: 1.35;
+}
+
+.context-bridge {
+  display: grid;
+  gap: 9px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.context-bridge-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.context-bridge-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.context-bridge textarea {
+  min-height: 68px;
+  max-height: 130px;
+}
+
+.context-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  width: 132px;
+}
+
+.context-actions button {
+  min-width: 0;
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 0.82rem;
+}
+
+.button-secondary {
+  color: var(--accent-strong);
+  background: #e9f5f3;
+  border: 1px solid #9dc9c5;
+}
+
+.button-secondary:hover,
+.button-secondary:focus-visible {
+  color: #ffffff;
+}
+
+button:disabled {
+  color: #7b878b;
+  background: #e3e8ea;
+  cursor: not-allowed;
+}
+
+#context-validation {
+  min-height: 18px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .status-label {
@@ -313,6 +383,10 @@ button:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .delivery-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .status-strip > div:nth-child(2) {
     border-right: 0;
   }
@@ -320,6 +394,28 @@ button:focus-visible {
   .status-strip > div:nth-child(1),
   .status-strip > div:nth-child(2) {
     border-bottom: 1px solid var(--line);
+  }
+
+  .delivery-strip > div:nth-child(2),
+  .delivery-strip > div:nth-child(4) {
+    border-right: 0;
+  }
+
+  .delivery-strip > div {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .delivery-strip p {
+    grid-column: 1 / -1;
+  }
+
+  .context-bridge-body {
+    grid-template-columns: 1fr;
+  }
+
+  .context-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
   }
 
   .message {

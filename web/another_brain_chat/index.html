@@ -59,6 +59,22 @@
           <p id="non-product-warning">Demo static mode uses mock/synthetic generation and demo memory only.</p>
         </section>
 
+        <section class="context-bridge" aria-label="local context bridge">
+          <div class="context-bridge-head">
+            <label for="context-import">Local context</label>
+            <span id="context-bridge-status">0 packets / 0 evidence</span>
+          </div>
+          <div class="context-bridge-body">
+            <textarea id="context-import" rows="3" placeholder="Context packet or text"></textarea>
+            <div class="context-actions">
+              <button type="button" id="context-import-button">Import</button>
+              <button type="button" id="state-export-button" disabled>Export state</button>
+              <button type="button" class="button-secondary" id="context-clear-button">Clear</button>
+            </div>
+          </div>
+          <p id="context-validation" role="status" aria-live="polite">Local session only</p>
+        </section>
+
         <section class="message-list" id="message-list" aria-live="polite" aria-label="messages">
           <article class="message message-assistant">
             <div class="message-role">another_brain</div>
