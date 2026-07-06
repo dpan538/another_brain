@@ -11,6 +11,10 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   candidate_route: "synthetic_only",
   candidate_static_bundle: false,
   candidate_warning: "No product-path candidate is admitted into the static bundle; engineering smoke remains separate.",
+  asset_cache_mode: "memory_fallback",
+  asset_cache_policy: "same_origin_shards_only",
+  asset_loader_resilience: "checksum_retry_abort_partial_fallback",
+  offline_static_readiness: "shell_reload_only_no_model_assets",
   non_product_warning: "Demo static mode uses mock/synthetic generation and demo memory only."
 });
 
@@ -26,6 +30,10 @@ const configuredModelMode = document.querySelector("#configured-model-mode");
 const configuredRagMode = document.querySelector("#configured-rag-mode");
 const budgetStatus = document.querySelector("#budget-status");
 const nonProductWarning = document.querySelector("#non-product-warning");
+const assetCacheStatus = document.querySelector("#asset-cache-status");
+const assetProgressStatus = document.querySelector("#asset-progress-status");
+const assetVerificationStatus = document.querySelector("#asset-verification-status");
+const offlineStatus = document.querySelector("#offline-status");
 const debugToggle = document.querySelector("#debug-toggle");
 const debugOutput = document.querySelector("#debug-output");
 
@@ -82,6 +90,16 @@ function renderDeliveryConfig(config) {
     : candidateWarning || config.non_product_warning || DEFAULT_DELIVERY_CONFIG.non_product_warning;
 }
 
+function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
+  const assetStatus = status || {};
+  assetCacheStatus.textContent = `${assetStatus.cache_mode || config.asset_cache_mode} / ${assetStatus.cache_result || "not_checked"}`;
+  assetProgressStatus.textContent = assetStatus.progress || "0/0";
+  assetVerificationStatus.textContent = assetStatus.verification || "no_model_assets";
+  offlineStatus.textContent = assetStatus.offline_ready
+    ? "Cache-capable shell"
+    : `Fallback: ${assetStatus.fallback_reason || "offline_cache_unavailable"}`;
+}
+
 function setPipelineStatus(status) {
   const labels = {
     loading_model: ["Loading", "Pending", "Pending", "Unused"],
@@ -101,10 +119,12 @@ function setPipelineStatus(status) {
 async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
+  renderAssetStatus(null, deliveryConfig);
   runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig });
   const loadResult = await runtime.load();
   modelStatus.textContent = `${loadResult.mode} loaded`;
   retrievalStatus.textContent = deliveryConfig.rag_mode;
+  renderAssetStatus(loadResult.asset_status, deliveryConfig);
 }
 
 form.addEventListener("submit", async (event) => {
@@ -120,6 +140,7 @@ form.addEventListener("submit", async (event) => {
   lastPacket = packet;
   appendMessage("assistant", packet.final_answer);
   updateStatus(packet);
+  renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
   renderDebug();
 });
 

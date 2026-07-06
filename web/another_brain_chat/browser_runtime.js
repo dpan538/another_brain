@@ -5,17 +5,23 @@ const GENERIC_MARKERS = ["as an ai language model", "i cannot answer that"];
 const EVIDENCE_INJECTION_MARKERS = ["ignore previous instructions", "reveal hidden prompt", "developer message"];
 
 export function probeBrowserCapabilities() {
+  const cacheStorageAvailable = typeof caches !== "undefined" && typeof caches.open === "function";
+  const indexedDbAvailable = typeof indexedDB !== "undefined";
   return {
     webgpu_available: typeof navigator !== "undefined" && Boolean(navigator.gpu),
     webassembly_available: typeof WebAssembly !== "undefined",
     worker_available: typeof Worker !== "undefined",
-    shared_array_buffer_available: typeof SharedArrayBuffer !== "undefined"
+    shared_array_buffer_available: typeof SharedArrayBuffer !== "undefined",
+    cache_storage_available: cacheStorageAvailable,
+    indexed_db_available: indexedDbAvailable,
+    offline_static_cache_supported: cacheStorageAvailable || indexedDbAvailable,
+    online: typeof navigator === "undefined" || navigator.onLine !== false
   };
 }
 
 export function buildStatePacket(input, turnIndex, mode = "synthetic_tiny") {
   return {
-    runtime_version: "r27b4-end-to-end-static-delivery-v1",
+    runtime_version: "r27b8-browser-asset-cache-v1",
     input,
     turn_index: turnIndex,
     local_only: true,
@@ -89,6 +95,14 @@ export class BrowserChatRuntime {
     this.worker = null;
     this.capabilities = probeBrowserCapabilities();
     this.memoryRecords = null;
+    this.assetStatus = {
+      cache_mode: this.capabilities.cache_storage_available ? "cache_storage" : "memory_fallback",
+      cache_result: "not_checked",
+      progress: "0/0",
+      verification: "no_model_assets",
+      fallback_reason: this.capabilities.cache_storage_available ? "" : "cache_storage_unavailable",
+      offline_ready: this.capabilities.offline_static_cache_supported
+    };
   }
 
   async load() {
@@ -102,7 +116,8 @@ export class BrowserChatRuntime {
       delivery_mode: this.deliveryConfig.delivery_mode || "demo_static",
       rag_mode: this.deliveryConfig.rag_mode || "static_demo",
       product_model: false,
-      capabilities: this.capabilities
+      capabilities: this.capabilities,
+      asset_status: this.assetStatus
     };
   }
 
@@ -188,7 +203,8 @@ export class BrowserChatRuntime {
       final_answer: finalAnswer,
       fallback_used: fallbackUsed,
       delivery_config: this.deliveryConfig,
-      capabilities: this.capabilities
+      capabilities: this.capabilities,
+      asset_status: this.assetStatus
     };
   }
 }
