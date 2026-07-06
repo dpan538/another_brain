@@ -5,11 +5,17 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "synthetic_tiny",
   rag_mode: "static_demo",
+  prelaunch_stage: "r28p0b",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
+  browser_admission: false,
+  release_checkpoint: false,
   budget_status: "under_100mb",
   candidate_route: "synthetic_only",
+  handoff_source: "none",
+  adapter_status: "local_session_import_export_ready",
+  release_blockers: ["product_admission_pending", "browser_admission_pending", "release_checkpoint_pending"],
   candidate_static_bundle: false,
   candidate_warning: "No product-path candidate is admitted into the static bundle; engineering smoke remains separate.",
   asset_cache_mode: "memory_fallback",
@@ -35,6 +41,10 @@ const assetCacheStatus = document.querySelector("#asset-cache-status");
 const assetProgressStatus = document.querySelector("#asset-progress-status");
 const assetVerificationStatus = document.querySelector("#asset-verification-status");
 const offlineStatus = document.querySelector("#offline-status");
+const candidateRouteStatus = document.querySelector("#candidate-route-status");
+const handoffSourceStatus = document.querySelector("#handoff-source-status");
+const adapterStatus = document.querySelector("#adapter-status");
+const releaseBlockerStatus = document.querySelector("#release-blocker-status");
 const debugToggle = document.querySelector("#debug-toggle");
 const debugOutput = document.querySelector("#debug-output");
 const contextImport = document.querySelector("#context-import");
@@ -104,6 +114,11 @@ function renderDeliveryConfig(config) {
   configuredModelMode.textContent = config.model_mode;
   configuredRagMode.textContent = config.rag_mode;
   budgetStatus.textContent = config.budget_status;
+  const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
+  candidateRouteStatus.textContent = config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route;
+  handoffSourceStatus.textContent = config.handoff_source || DEFAULT_DELIVERY_CONFIG.handoff_source;
+  adapterStatus.textContent = config.adapter_status || DEFAULT_DELIVERY_CONFIG.adapter_status;
+  releaseBlockerStatus.textContent = releaseBlockers.join(" / ");
   const candidateWarning = config.candidate_route === "product_path" ? "" : config.candidate_warning;
   nonProductWarning.textContent = config.product_model
     ? ""
@@ -114,7 +129,7 @@ function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
   const assetStatus = status || {};
   assetCacheStatus.textContent = `${assetStatus.cache_mode || config.asset_cache_mode} / ${assetStatus.cache_result || "not_checked"}`;
   assetProgressStatus.textContent = assetStatus.progress || "0/0";
-  assetVerificationStatus.textContent = assetStatus.verification || "no_model_assets";
+  assetVerificationStatus.textContent = assetStatus.verification || config.asset_cache_status || "no_model_assets";
   offlineStatus.textContent = assetStatus.offline_ready
     ? "Cache-capable shell"
     : `Fallback: ${assetStatus.fallback_reason || "offline_cache_unavailable"}`;

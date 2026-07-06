@@ -13,12 +13,12 @@
   "gate_assets": [
     {
       "path": "another_brain/runtime_mode.json",
-      "bytes": 838,
+      "bytes": 1639,
       "delivery_config": true,
       "product_model": false
     }
   ],
-  "total_declared_bytes": 2903,
+  "total_declared_bytes": 3704,
   "max_total_static_bytes": 100000000,
   "same_origin_only": true,
   "external_runtime_dependency": false,
