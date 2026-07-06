@@ -9,6 +9,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 CHECKPOINT_SUFFIXES = {".pt", ".pth", ".ckpt", ".safetensors"}
 HANDOFF_PATHS = (
+    ROOT / "artifacts/r27a10/handoff/R27_BROWSER_CANDIDATE_HANDOFF.json",
+    ROOT / "artifacts/r27a9b/handoff/R27_BROWSER_CANDIDATE_HANDOFF.json",
+    ROOT / "artifacts/r27a8b/handoff/R27_BROWSER_CANDIDATE_HANDOFF.json",
     ROOT / "artifacts/r27a9/handoff/R27_BROWSER_CANDIDATE_HANDOFF.json",
     ROOT / "artifacts/r27a8/handoff/R27_BROWSER_CANDIDATE_HANDOFF.json",
 )

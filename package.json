@@ -471,6 +471,7 @@
     "check:r27b2-candidate-model-injection": "npm run test:r27b2 && python3 scripts/r27b2_discover_a_candidate.py --prefer-handoff && python3 scripts/r27b2_export_candidate_assets.py --prefer-handoff --synthetic-if-missing && python3 scripts/r27b2_quantize_candidate_assets.py --quant q4 --synthetic-if-missing && python3 scripts/r27b2_write_candidate_static_manifest.py --synthetic-if-missing && python3 scripts/r27b2_browser_loader_smoke.py --synthetic-if-missing && python3 scripts/r27b2_candidate_budget.py --synthetic-if-missing",
     "test:r27b3": "node scripts/r27b3_run_ts_tests.mjs",
     "test:r27b4": "python3 -m unittest discover -s tests/r27b4",
+    "test:r27b5": "python3 -m unittest discover -s tests/r27b5",
     "analyze:r25y-pilot": "node scripts/analyze_r25y_pilot_results.mjs",
     "eval:r25y-heldout-breakdown": "node scripts/eval_r25y_heldout_breakdown.mjs",
     "compare:r25y-data-regularization": "node scripts/compare_r25y_data_regularization.mjs",

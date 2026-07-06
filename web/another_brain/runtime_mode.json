@@ -9,5 +9,8 @@
   "browser_admission": false,
   "release_checkpoint": false,
   "budget_status": "under_100mb",
+  "candidate_route": "synthetic_only",
+  "candidate_static_bundle": false,
+  "candidate_warning": "No product-path candidate is admitted into the static bundle; engineering smoke remains separate.",
   "non_product_warning": "Demo static mode uses mock/synthetic generation and demo memory only."
 }

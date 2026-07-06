@@ -8,6 +8,9 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   external_llm_api: false,
   product_model: false,
   budget_status: "under_100mb",
+  candidate_route: "synthetic_only",
+  candidate_static_bundle: false,
+  candidate_warning: "No product-path candidate is admitted into the static bundle; engineering smoke remains separate.",
   non_product_warning: "Demo static mode uses mock/synthetic generation and demo memory only."
 });
 
@@ -73,9 +76,10 @@ function renderDeliveryConfig(config) {
   configuredModelMode.textContent = config.model_mode;
   configuredRagMode.textContent = config.rag_mode;
   budgetStatus.textContent = config.budget_status;
+  const candidateWarning = config.candidate_route === "product_path" ? "" : config.candidate_warning;
   nonProductWarning.textContent = config.product_model
     ? ""
-    : config.non_product_warning || DEFAULT_DELIVERY_CONFIG.non_product_warning;
+    : candidateWarning || config.non_product_warning || DEFAULT_DELIVERY_CONFIG.non_product_warning;
 }
 
 function setPipelineStatus(status) {
