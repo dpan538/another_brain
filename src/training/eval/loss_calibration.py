@@ -178,6 +178,26 @@ def write_loss_calibration_report(root: Path = ROOT) -> dict[str, Any]:
     return report
 
 
+def audit_r27a11_loss_accounting_clearance(root: Path = ROOT) -> dict[str, Any]:
+    validation = read_json(root / "artifacts/r27a11/reports/loss_accounting_validation.json", {})
+    fixed = bool(validation.get("ok") and validation.get("loss_accounting_fixed"))
+    return {
+        "ok": fixed,
+        "created_at_utc": now_utc(),
+        "loss_gap_status": "fixed" if fixed else "BLOCK_LOSS_ACCOUNTING_CONTINUES",
+        "block_training": not fixed,
+        "train_loss_trusted": fixed,
+        "dev_loss_trusted": fixed,
+        "heldout_loss_trusted": fixed,
+        "corrected_method": "token_weighted_average_negative_log_likelihood",
+        "headline_train_loss_source": "running_train_loss_or_eval_train_loss" if fixed else "unknown",
+        "last_batch_loss_debug_only": fixed,
+        "validation_report": "artifacts/r27a11/reports/loss_accounting_validation.json",
+        "recommended_fix": [] if fixed else ["Run scripts/r27a11_validate_loss_accounting.py and do not train until it passes."],
+        **NON_CLAIMS,
+    }
+
+
 def render_loss_doc(report: dict[str, Any]) -> str:
     return f"""# R27A10 Loss Calibration Audit
 
