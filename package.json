@@ -472,6 +472,7 @@
     "test:r27b3": "node scripts/r27b3_run_ts_tests.mjs",
     "test:r27b4": "python3 -m unittest discover -s tests/r27b4",
     "test:r27b5": "python3 -m unittest discover -s tests/r27b5",
+    "test:r27e0": "python3 -m unittest discover -s tests/r27e0",
     "analyze:r25y-pilot": "node scripts/analyze_r25y_pilot_results.mjs",
     "eval:r25y-heldout-breakdown": "node scripts/eval_r25y_heldout_breakdown.mjs",
     "compare:r25y-data-regularization": "node scripts/compare_r25y_data_regularization.mjs",

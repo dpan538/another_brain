@@ -313,8 +313,21 @@ button:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .delivery-strip {
+    grid-template-columns: 1fr;
+  }
+
   .status-strip > div:nth-child(2) {
     border-right: 0;
+  }
+
+  .delivery-strip > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .delivery-strip p {
+    min-height: 48px;
   }
 
   .status-strip > div:nth-child(1),
