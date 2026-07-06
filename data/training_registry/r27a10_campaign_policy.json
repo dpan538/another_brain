@@ -1,0 +1,20 @@
+{
+  "active_approval_after_completion": 0,
+  "allow_best_checkpoint_selection": true,
+  "allow_hyperparameter_sweep": false,
+  "allow_resume": true,
+  "browser_admission": false,
+  "campaign_id": "r27a10_budget_aware_candidate_repair_v1",
+  "campaign_type": "budget_aware_candidate_repair",
+  "formal_decoder_training": false,
+  "max_checkpoint_count": 8,
+  "max_optimizer_tokens": 50000000,
+  "max_segments": 8,
+  "minimum_optimizer_tokens_before_metric_stop": 10000000,
+  "minimum_wall_clock_before_metric_stop_hours": 3,
+  "phase_4": false,
+  "product_model_admission": false,
+  "product_training": false,
+  "release_checkpoint": false,
+  "wall_clock_cap_hours": 8
+}
