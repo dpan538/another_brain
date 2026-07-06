@@ -1,4 +1,10 @@
 import { buildFallbackAnswer } from "./fallback_adapter.ts";
+import {
+  applyImportedStatePackets,
+  buildAdapterContextSummary,
+  buildAnswerSurfaceRequest,
+  buildAnswerSurfaceResponse
+} from "./context_adapter.ts";
 import { buildRetrievalPacket, buildStatePacket } from "./rag_packet.ts";
 import { finalizeDraft, verifyDraft } from "./verifier_adapter.ts";
 
@@ -88,14 +94,18 @@ function buildDecoderPrompt(input, evidencePacket) {
 }
 
 export async function runChatPipeline(input, options = {}) {
-  const statePacket = buildStatePacket(input, options);
+  const contextPackets = options.contextPackets || options.adapterPackets || [];
+  const statePacket = applyImportedStatePackets(buildStatePacket(input, options), contextPackets);
   const runtime = options.runtime || new SyntheticTinyRuntime({ mode: statePacket.mode });
   let evidencePacket = null;
+  let answerSurfaceRequest = null;
   try {
-    evidencePacket = options.evidencePacket || await buildRetrievalPacket(input, statePacket, options);
+    evidencePacket = options.evidencePacket || await buildRetrievalPacket(input, statePacket, { ...options, contextPackets });
+    answerSurfaceRequest = buildAnswerSurfaceRequest({ input, statePacket, evidencePacket, contextPackets });
     const generation = await runGenerationLoop(runtime, buildDecoderPrompt(input, evidencePacket), options);
     const verifierResult = verifyDraft(generation.draft, { ...options, evidencePacket });
     if (!verifierResult.passed) {
+      const fallback = buildFallbackAnswer(input, verifierResult.failures[0] || "verification_failed");
       return {
         input,
         state_packet: statePacket,
@@ -103,9 +113,17 @@ export async function runChatPipeline(input, options = {}) {
         retrieved_evidence: evidencePacket.retrieved_evidence,
         decoder_draft: generation.draft,
         verifier_result: verifierResult,
-        ...buildFallbackAnswer(input, verifierResult.failures[0] || "verification_failed")
+        ...fallback,
+        adapter_context_summary: buildAdapterContextSummary(contextPackets),
+        answer_surface_request: answerSurfaceRequest,
+        answer_surface_response: buildAnswerSurfaceResponse({
+          finalAnswer: fallback.final_answer,
+          requestPacket: answerSurfaceRequest,
+          evidencePacket
+        })
       };
     }
+    const finalAnswer = finalizeDraft(generation.draft, verifierResult);
     return {
       input,
       state_packet: statePacket,
@@ -113,10 +131,18 @@ export async function runChatPipeline(input, options = {}) {
       retrieved_evidence: evidencePacket.retrieved_evidence,
       decoder_draft: generation.draft,
       verifier_result: verifierResult,
-      final_answer: finalizeDraft(generation.draft, verifierResult),
-      fallback_used: false
+      final_answer: finalAnswer,
+      fallback_used: false,
+      adapter_context_summary: buildAdapterContextSummary(contextPackets),
+      answer_surface_request: answerSurfaceRequest,
+      answer_surface_response: buildAnswerSurfaceResponse({
+        finalAnswer,
+        requestPacket: answerSurfaceRequest,
+        evidencePacket
+      })
     };
   } catch (error) {
+    const fallback = buildFallbackAnswer(input, error.message || "runtime_failed");
     return {
       input,
       state_packet: statePacket,
@@ -124,7 +150,14 @@ export async function runChatPipeline(input, options = {}) {
       retrieved_evidence: evidencePacket?.retrieved_evidence || [],
       decoder_draft: "",
       verifier_result: { passed: false, failures: [error.message], fallback_recommended: true },
-      ...buildFallbackAnswer(input, error.message || "runtime_failed")
+      ...fallback,
+      adapter_context_summary: buildAdapterContextSummary(contextPackets),
+      answer_surface_request: answerSurfaceRequest,
+      answer_surface_response: buildAnswerSurfaceResponse({
+        finalAnswer: fallback.final_answer,
+        requestPacket: answerSurfaceRequest,
+        evidencePacket
+      })
     };
   }
 }

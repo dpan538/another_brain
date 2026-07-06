@@ -1,4 +1,10 @@
 import { SyntheticTinyRuntime } from "./generation_loop.ts";
+import {
+  assertSameOriginAssetUrl,
+  isSameOriginUrl,
+  loadShardedAssetManifest
+} from "./assets/shard_loader.ts";
+import { verifySha256 as verifySha256Detailed } from "./assets/checksum.ts";
 
 export const RUNTIME_MODES = Object.freeze([
   "mock",
@@ -12,69 +18,20 @@ export function normalizeRuntimeMode(mode) {
   return RUNTIME_MODES.includes(mode) ? mode : "synthetic_tiny";
 }
 
-export function isSameOriginUrl(value, base = "http://localhost") {
-  const url = new URL(value, base);
-  const baseUrl = new URL(base);
-  return url.origin === baseUrl.origin;
-}
-
 export function assertSameOriginPath(path, base = "http://localhost") {
-  if (!path || typeof path !== "string") throw new Error("missing_asset_path");
-  if (path.startsWith("//")) throw new Error("external_asset_url_rejected");
-  const url = new URL(path, base);
-  if (!isSameOriginUrl(url.href, base)) throw new Error("non_same_origin_asset_rejected");
-  if (url.pathname.includes("/artifacts/") || url.pathname.includes("/private")) {
-    throw new Error("private_or_artifact_path_rejected");
-  }
-  return url;
-}
-
-async function sha256Hex(bytes) {
-  if (globalThis.crypto?.subtle) {
-    const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
-    return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
-  }
-  const crypto = await import("node:crypto");
-  return crypto.createHash("sha256").update(Buffer.from(bytes)).digest("hex");
+  return assertSameOriginAssetUrl(path, base);
 }
 
 export async function verifySha256(bytes, expected) {
   if (!expected) return true;
-  return (await sha256Hex(bytes)) === expected;
+  return (await verifySha256Detailed(bytes, expected)).ok;
 }
 
-function requireBudgetMetadata(manifest) {
-  const budget = manifest.budget || manifest.budget_metadata;
-  if (!budget || typeof budget.max_total_static_bytes !== "number" || typeof budget.model_weight_budget_bytes !== "number") {
-    throw new Error("missing_budget_metadata");
-  }
-  return budget;
-}
+export { isSameOriginUrl };
 
-export async function loadStaticShardManifest({ manifestUrl, baseUrl, fetcher }) {
-  const fetchImpl = fetcher || globalThis.fetch;
-  if (typeof fetchImpl !== "function") throw new Error("fetch_unavailable");
-  const manifestResolved = assertSameOriginPath(manifestUrl, baseUrl);
-  const response = await fetchImpl(manifestResolved.href);
-  if (!response.ok) throw new Error(`manifest_fetch_failed:${response.status}`);
-  const manifest = await response.json();
-  requireBudgetMetadata(manifest);
-  if (manifest.backend_inference !== false || manifest.external_runtime_dependency !== false) {
-    throw new Error("runtime_dependency_flags_rejected");
-  }
-  const shards = manifest.tensor_shards || manifest.shards || [];
-  if (!Array.isArray(shards) || shards.length === 0) throw new Error("missing_declared_shards");
-
-  const loadedShards = [];
-  for (const shard of shards) {
-    const shardUrl = assertSameOriginPath(shard.path, manifestResolved.href);
-    const shardResponse = await fetchImpl(shardUrl.href);
-    if (!shardResponse.ok) throw new Error(`shard_fetch_failed:${shard.path}`);
-    const bytes = new Uint8Array(await shardResponse.arrayBuffer());
-    if (!(await verifySha256(bytes, shard.sha256))) throw new Error(`sha256_mismatch:${shard.path}`);
-    loadedShards.push({ path: shard.path, bytes, declared: shard });
-  }
-  return { manifest, loadedShards };
+export async function loadStaticShardManifest(options) {
+  const state = await loadShardedAssetManifest({ ...options, allowPartialFailure: false });
+  return { manifest: state.manifest, loadedShards: state.loadedShards, asset_state: state };
 }
 
 export async function loadRuntimeModel(options = {}) {

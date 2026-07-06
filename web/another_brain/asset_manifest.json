@@ -1,5 +1,5 @@
 {
-  "runtime_version": "r27b5-bind-handoff-budget-gate-v1",
+  "runtime_version": "r27b8-browser-asset-cache-v1",
   "model_assets": [],
   "tokenizer_assets": [],
   "rag_assets": [
@@ -13,12 +13,12 @@
   "gate_assets": [
     {
       "path": "another_brain/runtime_mode.json",
-      "bytes": 609,
+      "bytes": 838,
       "delivery_config": true,
       "product_model": false
     }
   ],
-  "total_declared_bytes": 2674,
+  "total_declared_bytes": 2903,
   "max_total_static_bytes": 100000000,
   "same_origin_only": true,
   "external_runtime_dependency": false,

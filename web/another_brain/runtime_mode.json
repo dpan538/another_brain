@@ -12,5 +12,9 @@
   "candidate_route": "synthetic_only",
   "candidate_static_bundle": false,
   "candidate_warning": "No product-path candidate is admitted into the static bundle; engineering smoke remains separate.",
+  "asset_cache_mode": "memory_fallback",
+  "asset_cache_policy": "same_origin_shards_only",
+  "asset_loader_resilience": "checksum_retry_abort_partial_fallback",
+  "offline_static_readiness": "shell_reload_only_no_model_assets",
   "non_product_warning": "Demo static mode uses mock/synthetic generation and demo memory only."
 }

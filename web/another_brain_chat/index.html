@@ -59,6 +59,41 @@
           <p id="non-product-warning">Demo static mode uses mock/synthetic generation and demo memory only.</p>
         </section>
 
+        <section class="asset-strip" aria-label="asset loading status">
+          <div>
+            <span class="status-label">Asset Cache</span>
+            <strong id="asset-cache-status">Memory fallback</strong>
+          </div>
+          <div>
+            <span class="status-label">Asset Progress</span>
+            <strong id="asset-progress-status">0/0</strong>
+          </div>
+          <div>
+            <span class="status-label">Verification</span>
+            <strong id="asset-verification-status">No model assets</strong>
+          </div>
+          <div>
+            <span class="status-label">Offline</span>
+            <strong id="offline-status">Static shell only</strong>
+          </div>
+        </section>
+
+        <section class="context-bridge" aria-label="local context bridge">
+          <div class="context-bridge-head">
+            <label for="context-import">Local context</label>
+            <span id="context-bridge-status">0 packets / 0 evidence</span>
+          </div>
+          <div class="context-bridge-body">
+            <textarea id="context-import" rows="3" placeholder="Context packet or text"></textarea>
+            <div class="context-actions">
+              <button type="button" id="context-import-button">Import</button>
+              <button type="button" id="state-export-button" disabled>Export state</button>
+              <button type="button" class="button-secondary" id="context-clear-button">Clear</button>
+            </div>
+          </div>
+          <p id="context-validation" role="status" aria-live="polite">Local session only / not saved / not training data</p>
+        </section>
+
         <section class="message-list" id="message-list" aria-live="polite" aria-label="messages">
           <article class="message message-assistant">
             <div class="message-role">another_brain</div>
@@ -69,10 +104,10 @@
           </article>
         </section>
 
-        <section class="debug-panel" aria-label="retrieval packet debug panel">
+        <section class="debug-panel" aria-label="evidence drawer and retrieval packet debug panel">
           <label class="debug-toggle">
             <input type="checkbox" id="debug-toggle" />
-            <span>Retrieval packet debug</span>
+            <span>Evidence drawer / retrieval packet debug</span>
           </label>
           <pre id="debug-output" hidden>{}</pre>
         </section>
