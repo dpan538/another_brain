@@ -405,6 +405,8 @@
     "test:r27b5": "python3 -m unittest discover -s tests/r27b5",
     "test:r27d0": "python3 -m unittest discover -s tests/r27d0",
     "check:r27d0-vercel-deploy-triage": "npm run test:r27d0 && python3 scripts/r27d0_vercel_config_audit.py",
+    "test:r27d1": "python3 -m unittest discover -s tests/r27d1",
+    "check:r27d1-preview-readiness": "npm run test:r27d1 && python3 scripts/r27d1_preview_readiness.py",
     "analyze:r25y-pilot": "node scripts/analyze_r25y_pilot_results.mjs",
     "eval:r25y-heldout-breakdown": "node scripts/eval_r25y_heldout_breakdown.mjs",
     "compare:r25y-data-regularization": "node scripts/compare_r25y_data_regularization.mjs",

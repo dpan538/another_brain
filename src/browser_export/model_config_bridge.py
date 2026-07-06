@@ -2,10 +2,19 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.training.model_lab.model_ladder import estimate_params
-
-
 REQUIRED_CONFIG_KEYS = ("vocab_size", "context_length", "n_layer", "n_head", "n_embd")
+
+
+def estimate_params(vocab_size: int, context_length: int, n_layer: int, n_embd: int) -> int:
+    vocab_size = int(vocab_size)
+    context_length = int(context_length)
+    n_layer = int(n_layer)
+    n_embd = int(n_embd)
+    token_embedding = vocab_size * n_embd
+    position_embedding = context_length * n_embd
+    per_block = (12 * n_embd * n_embd) + (8 * n_embd)
+    lm_head = vocab_size * n_embd
+    return int(token_embedding + position_embedding + (n_layer * per_block) + lm_head)
 
 
 def infer_config_from_training_state(state_dict: dict[str, Any], metadata: dict[str, Any] | None = None) -> dict[str, Any]:

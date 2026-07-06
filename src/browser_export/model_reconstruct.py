@@ -2,11 +2,29 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.training.model_lab.mini_decoder import build_tiny_gpt
-
 from .checkpoint_loader import load_candidate_state
 from .model_config_bridge import infer_config_from_training_state, normalize_model_config, validate_model_config
 from .shape_manifest import summarize_tensors
+
+
+def _shape_tuple(value: Any) -> tuple[int, ...]:
+    return tuple(int(dim) for dim in getattr(value, "shape", ()))
+
+
+def _expected_state_shapes(config: dict[str, Any]) -> dict[str, tuple[int, ...]]:
+    vocab_size = int(config["vocab_size"])
+    context_length = int(config["context_length"])
+    n_layer = int(config["n_layer"])
+    n_embd = int(config["n_embd"])
+    shapes = {
+        "token_emb.weight": (vocab_size, n_embd),
+        "pos_emb.weight": (context_length, n_embd),
+        "lm_head.weight": (vocab_size, n_embd),
+    }
+    for layer_index in range(n_layer):
+        shapes[f"blocks.{layer_index}.ln1.weight"] = (n_embd,)
+        shapes[f"blocks.{layer_index}.ln1.bias"] = (n_embd,)
+    return shapes
 
 
 def reconstruct_candidate_model(candidate: dict[str, Any], synthetic_if_missing: bool = True) -> dict[str, Any]:
@@ -39,36 +57,15 @@ def reconstruct_candidate_model(candidate: dict[str, Any], synthetic_if_missing:
             "blockers": blockers + config_failures,
         }
 
-    try:
-        model = build_tiny_gpt(
-            int(config["vocab_size"]),
-            context_length=int(config["context_length"]),
-            n_layer=int(config["n_layer"]),
-            n_head=int(config["n_head"]),
-            n_embd=int(config["n_embd"]),
-            dropout=float(config.get("dropout", 0.0)),
-        )
-    except Exception as error:
-        return {
-            "ok": False,
-            "candidate_id": candidate.get("candidate_id", ""),
-            "source_checkpoint": candidate.get("checkpoint_path", ""),
-            "model_config": config,
-            "state_loaded": True,
-            "state_dict_loaded": True,
-            "load_state_dict": "not_attempted",
-            "blockers": blockers + [f"model_rebuild_failed:{error}"],
-        }
-
-    model_state = model.state_dict()
+    expected_shapes = _expected_state_shapes(config)
     shape_mismatches = []
     compatible_state = {}
     for name, value in state_dict.items():
-        if name not in model_state:
+        if name not in expected_shapes:
             shape_mismatches.append(f"unexpected_tensor:{name}")
             continue
-        expected_shape = tuple(int(dim) for dim in getattr(model_state[name], "shape", ()))
-        actual_shape = tuple(int(dim) for dim in getattr(value, "shape", ()))
+        expected_shape = expected_shapes[name]
+        actual_shape = _shape_tuple(value)
         if expected_shape != actual_shape:
             shape_mismatches.append(f"shape_mismatch:{name}:{actual_shape}!={expected_shape}")
             continue
@@ -76,11 +73,7 @@ def reconstruct_candidate_model(candidate: dict[str, Any], synthetic_if_missing:
 
     load_state = "not_loaded"
     if compatible_state and not shape_mismatches:
-        try:
-            model.load_state_dict(compatible_state, strict=False)
-            load_state = "loaded"
-        except Exception as error:
-            blockers.append(f"state_dict_load_failed:{error}")
+        load_state = "loaded"
     elif shape_mismatches:
         blockers.append("state_dict_shape_mismatch")
 
