@@ -38,3 +38,7 @@ web/**/*.map
 *.mlmodel
 *.mlpackage
 *.ckpt
+
+# R28D8: R28M1 static q4 assets are explicitly admitted and must be present in
+# Vercel's source upload. Keep this after the global model-weight excludes.
+!web/another_brain/model_assets/r28m1/**

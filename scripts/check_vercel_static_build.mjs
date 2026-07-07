@@ -68,15 +68,57 @@ function loadIgnoreEntries(text) {
   return text
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#") && !line.startsWith("!"));
+    .filter((line) => line && !line.startsWith("#"));
+}
+
+function globToRegExp(pattern) {
+  let out = "";
+  for (let index = 0; index < pattern.length; index += 1) {
+    const char = pattern[index];
+    const next = pattern[index + 1];
+    if (char === "*" && next === "*") {
+      out += ".*";
+      index += 1;
+    } else if (char === "*") {
+      out += "[^/]*";
+    } else if (char === "?") {
+      out += "[^/]";
+    } else if ("\\^$+?.()|{}[]".includes(char)) {
+      out += `\\${char}`;
+    } else {
+      out += char;
+    }
+  }
+  return new RegExp(`^${out}$`);
+}
+
+function ignorePatternMatches(rel, rawPattern) {
+  const pattern = rawPattern.replace(/^!/, "").replace(/^\/+/, "");
+  if (!pattern) return false;
+  if (pattern.endsWith("/**")) {
+    const prefix = pattern.slice(0, -3).replace(/\/+$/, "");
+    return rel === prefix || rel.startsWith(`${prefix}/`);
+  }
+  if (pattern.endsWith("/")) {
+    const prefix = pattern.replace(/\/+$/, "");
+    return rel === prefix || rel.startsWith(`${prefix}/`);
+  }
+  if (!pattern.includes("/")) {
+    return rel.split("/").some((part) => globToRegExp(pattern).test(part));
+  }
+  if (!/[*?]/.test(pattern)) {
+    return rel === pattern || rel.startsWith(`${pattern}/`);
+  }
+  return globToRegExp(pattern).test(rel);
 }
 
 function isIgnoredByVercel(rel, ignoreEntries) {
-  return ignoreEntries.some((entry) => {
-    const normalized = entry.replace(/\/+$/, "");
-    if (entry.endsWith("/**")) return rel === normalized.slice(0, -3) || rel.startsWith(`${normalized.slice(0, -3)}/`);
-    return rel === normalized || rel.startsWith(`${normalized}/`);
-  });
+  let ignored = false;
+  for (const entry of ignoreEntries) {
+    if (!ignorePatternMatches(rel, entry)) continue;
+    ignored = !entry.startsWith("!");
+  }
+  return ignored;
 }
 
 async function exists(path) {
@@ -232,6 +274,11 @@ async function main() {
   }
 
   const webFiles = await walk(resolve(ROOT, "web"));
+  for (const admittedAssetPath of staticLlm.admittedAssetPaths) {
+    if (isIgnoredByVercel(admittedAssetPath, vercelIgnoreEntries)) {
+      failures.push(`admitted_static_llm_asset_ignored_by_vercel:${admittedAssetPath}`);
+    }
+  }
   const actualShardFiles = new Set(
     webFiles
       .map((file) => relative(ROOT, file))
