@@ -4,7 +4,7 @@ R26G fixes R26E response-obligation metadata and intakes replacement 51-100 as a
 
 ## Result
 
-- R26E metadata fix: passed
+- R26E metadata fix: passed_from_committed_corpus
 - R26E target preservation: validated_by_check_r26g_r26e_target_preserved
 - omitted first-50 promoted source rows: 2, 29, 47
 - replacement 51-100 parsed rows: 50
@@ -12,6 +12,7 @@ R26G fixes R26E response-obligation metadata and intakes replacement 51-100 as a
 - combined user_answered rows after R26G: 98
 - combined training corpus rows after R26G: 1858
 - old excluded question_pack_001 rows 51-100: excluded
+- fresh-clone artifact fallback used: true
 
 ## R26G Split Counts
 

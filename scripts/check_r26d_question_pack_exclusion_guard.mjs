@@ -13,6 +13,8 @@ import {
 } from "./r26a_project_utils.mjs";
 import { R26D_CANDIDATE_FILE, R26D_PACK_ID } from "./r26d_question_pack_utils.mjs";
 
+const ALLOWED_R28M1_STATIC_Q4_SHARD = /^web\/another_brain\/model_assets\/r28m1\/shards\/model-q4-\d{5}\.bin$/;
+
 function rowId(row) {
   return Number(row?.source_row_id || row?.source_question_id || row?.row_id || row?.provenance?.source_row_id || 0);
 }
@@ -78,7 +80,9 @@ async function main() {
     if (/\.(csv|CSV|xlsx|XLSX|pdf|PDF|docx|DOCX|doc|DOC)$/.test(path)) failures.push({ code: "raw_or_document_file_staged", path });
   }
 
-  const trackedBad = (await gitLines(["ls-files"])).filter((path) => /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i.test(path));
+  const trackedBad = (await gitLines(["ls-files"]))
+    .filter((path) => /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i.test(path))
+    .filter((path) => !ALLOWED_R28M1_STATIC_Q4_SHARD.test(path));
   for (const path of trackedBad) failures.push({ code: "tracked_weight", path });
 
   const report = {

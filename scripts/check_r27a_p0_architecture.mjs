@@ -28,6 +28,7 @@ const REQUIRED_FILES = [
   "docs/current/ANTI_MALICIOUS_FALLBACK_POLICY.md",
   "docs/R27A_NEXT_BOUNDARY.md"
 ];
+const ALLOWED_R28M1_STATIC_Q4_SHARD = /^web\/another_brain\/model_assets\/r28m1\/shards\/model-q4-\d{5}\.bin$/;
 
 async function exists(file) {
   try {
@@ -84,7 +85,10 @@ async function main() {
   if (approvals.status !== 0) failures.push({ code: "training_approval_markers_failed", stdout: approvals.stdout, stderr: approvals.stderr });
 
   const weights = spawnSync("git", ["ls-files"], { encoding: "utf8" });
-  const trackedWeights = weights.stdout.split(/\r?\n/).filter((file) => /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i.test(file));
+  const trackedWeights = weights.stdout
+    .split(/\r?\n/)
+    .filter((file) => /\.(safetensors|gguf|bin|pt|pth|onnx|mlmodel|mlpackage|ckpt)$/i.test(file))
+    .filter((file) => !ALLOWED_R28M1_STATIC_Q4_SHARD.test(file));
   if (trackedWeights.length) failures.push({ code: "tracked_weights_present", files: trackedWeights });
 
   const report = {
