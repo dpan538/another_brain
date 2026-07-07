@@ -32,7 +32,7 @@ const ROUTER_NON_CLAIMS = [
   "no broad answer bank",
   "hard router is product-surface guard only"
 ];
-const R28HOTFIX3_UI_VERSION = "r28rag3-lightweight-affective-rag";
+const R28HOTFIX3_UI_VERSION = "r28ux5-chat-dashboard-split";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -1124,7 +1124,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28rag3-lightweight-affective-rag", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28ux5-chat-dashboard-split", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -1247,7 +1247,7 @@ export class BrowserChatRuntime {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
     const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28rag3-lightweight-affective-rag", import.meta.url), { type: "module" });
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28ux5-chat-dashboard-split", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
@@ -1288,7 +1288,7 @@ export class BrowserChatRuntime {
       };
       worker.postMessage({
         type: "q4_smoke",
-        prompt: "R28RAG3 q4 path smoke",
+        prompt: "R28UX5 q4 path smoke",
         maxTokens: 1,
         contextLength: 32,
         timeoutMs

@@ -5,14 +5,14 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 70133331,
+  "full_bundle_estimate_bytes": 70152623,
   "gate_assets": [
     {
-      "bytes": 2868,
+      "bytes": 2854,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "433510a6b0de24b4fe7631765d9b80ecd6b03be2ab7867be5f6bec3c7b323bda"
+      "sha256": "1054ff4dca82f47dd1e922406286e714afa4eb47682c564a811f1728554f10ee"
     }
   ],
   "hosted_vector_store": false,
@@ -99,7 +99,7 @@
     "release_checkpoint_admission": false,
     "training_corpus_committed": false
   },
-  "prelaunch_stage": "r28rag3",
+  "prelaunch_stage": "r28ux5",
   "product_model_admission": false,
   "quantization": "q4",
   "rag_assets": [
@@ -144,7 +144,7 @@
     }
   ],
   "release_checkpoint_admission": false,
-  "remaining_bytes_under_100mb": 29866669,
+  "remaining_bytes_under_100mb": 29847377,
   "runtime_tokenizer_blocker": "",
   "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
   "same_origin_only": true,
@@ -166,10 +166,10 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49316894,
-  "ui_build_marker": "R28RAG3",
+  "total_declared_bytes": 49316880,
+  "ui_build_marker": "R28UX5",
   "ui_build_timestamp": "2026-07-08T00:00:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28rag3-lightweight-affective-rag",
+  "ui_version": "r28ux5-chat-dashboard-split",
   "total_model_asset_bytes": 48267968
 }

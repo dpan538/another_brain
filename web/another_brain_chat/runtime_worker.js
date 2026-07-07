@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28rag3-lightweight-affective-rag";
+import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28ux5-chat-dashboard-split";
 
 function tokensFor(prompt, maxTokens) {
   const parts = [

@@ -3,32 +3,39 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>R28RAG3 another_brain preview | Process Transparent Chat</title>
-    <meta name="another-brain-ui-version" content="r28rag3-lightweight-affective-rag" />
+    <title>R28UX5 another_brain preview | Chat and Dashboard</title>
+    <meta name="another-brain-ui-version" content="r28ux5-chat-dashboard-split" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2528'/%3E%3Cpath d='M8 18h16M8 12h10M8 24h7' stroke='%23f4f6f5' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28rag3-lightweight-affective-rag" />
+    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28ux5-chat-dashboard-split" />
   </head>
   <body>
-    <main class="app-shell" aria-label="another_brain process transparent preview">
+    <main class="app-shell" id="app-shell" data-ui-mode="chat" aria-label="another_brain chat preview">
       <header class="app-header">
-        <div>
+        <div class="header-copy">
           <p class="eyebrow">another_brain preview</p>
-          <h1 id="chat-title">过程透明的本地回答界面</h1>
+          <h1 id="chat-title">轻量本地聊天</h1>
+          <p class="chat-subtitle">日常问答优先走轻量路由和本地 profile pack；需要过程细节时再打开 Dashboard。</p>
           <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
         </div>
-        <div class="header-badges" aria-label="runtime status">
-          <span class="badge badge-version" id="ui-version-badge">R28RAG3 · r28rag3-lightweight-affective-rag</span>
-          <span class="badge badge-local" id="local-indicator">local/static</span>
-          <span class="badge badge-backend" id="backend-badge">No backend inference</span>
-          <span class="badge" id="model-source-badge">static_q4_experimental</span>
-          <span class="badge" id="tokenizer-status-badge">exact_runtime_tokenizer: checking</span>
-          <span class="badge" id="router-status-badge">router: enabled</span>
-          <span class="badge badge-warn" id="q4-status-badge">q4 forward: not checked</span>
-          <span class="badge badge-warn" id="non-product-badge">not product model</span>
+        <div class="header-side">
+          <nav class="mode-toggle" aria-label="view mode">
+            <button type="button" class="mode-button active" id="chat-mode-button" aria-pressed="true">Chat</button>
+            <button type="button" class="mode-button" id="dashboard-mode-button" aria-pressed="false">Dashboard</button>
+          </nav>
+          <div class="header-badges" aria-label="runtime status">
+            <span class="badge badge-version" id="ui-version-badge">R28UX5 · r28ux5-chat-dashboard-split</span>
+            <span class="badge badge-local" id="local-indicator">local/static</span>
+            <span class="badge badge-backend" id="backend-badge">No backend inference</span>
+            <span class="badge" id="model-source-badge">static_q4_experimental</span>
+            <span class="badge dashboard-only" id="tokenizer-status-badge">exact_runtime_tokenizer: checking</span>
+            <span class="badge dashboard-only" id="router-status-badge">router: enabled</span>
+            <span class="badge badge-warn" id="q4-status-badge">q4 forward: not checked</span>
+            <span class="badge badge-warn" id="non-product-badge">not product model</span>
+          </div>
         </div>
       </header>
 
-      <section class="status-grid" aria-label="delivery and runtime summary">
+      <section class="status-grid dashboard-only" aria-label="delivery and runtime summary">
         <div>
           <span class="status-label">Delivery</span>
           <strong id="delivery-mode">demo_static</strong>
@@ -63,13 +70,48 @@
         </div>
         <div>
           <span class="status-label">UI Build</span>
-          <strong id="ui-build-status">R28RAG3 / r28rag3-lightweight-affective-rag</strong>
+          <strong id="ui-build-status">R28UX5 / r28ux5-chat-dashboard-split</strong>
         </div>
       </section>
 
       <section class="workspace-grid">
         <section class="conversation-pane" aria-labelledby="chat-title">
-          <section class="compact-status" aria-label="answer pipeline status">
+          <section class="chat-intro" aria-label="chat mode summary">
+            <p>直接提问就好。短问候、身份、来源和边界类问题会快速返回；开放问题会使用本地 static RAG、q4 experimental path 和可用 fallback。</p>
+            <div class="chat-badges" aria-label="chat badges">
+              <span class="badge badge-local">local/static</span>
+              <span class="badge">q4 experimental</span>
+              <span class="badge badge-warn">not product</span>
+            </div>
+          </section>
+
+          <section class="model-loading-panel" id="model-loading-panel" aria-label="模型加载状态" aria-live="polite">
+            <div class="loading-head">
+              <div>
+                <span class="status-label">模型加载</span>
+                <strong id="model-loading-title">模型资产检查中</strong>
+                <p id="model-loading-detail">读取 manifest，fallback 已可用。</p>
+              </div>
+              <button type="button" class="button-secondary small-button" id="loading-cancel-button">取消加载</button>
+            </div>
+            <div class="loading-progress" aria-label="loading progress">
+              <span id="model-loading-progress-bar" style="width: 8%"></span>
+            </div>
+            <ol class="loading-stages" id="model-loading-stages" aria-label="model loading stages">
+              <li data-loading-stage="manifest" class="active"><span></span>读取 manifest</li>
+              <li data-loading-stage="shards"><span></span>校验 shards</li>
+              <li data-loading-stage="tokenizer"><span></span>加载 tokenizer</li>
+              <li data-loading-stage="q4-warmup"><span></span>q4 warmup</li>
+              <li data-loading-stage="fallback"><span></span>fallback available</li>
+            </ol>
+            <div class="loading-skeleton" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </section>
+
+          <section class="compact-status dashboard-only" aria-label="answer pipeline status">
             <div>
               <span class="status-label">Model</span>
               <strong id="model-status">q4 checking</strong>
@@ -97,7 +139,7 @@
             </article>
           </section>
 
-          <section class="answer-status-card" aria-label="answer status">
+          <section class="answer-status-card dashboard-only" aria-label="answer status">
             <div>
               <span class="status-label">Route</span>
               <strong id="route-status">not_run</strong>
@@ -127,7 +169,7 @@
           </form>
         </section>
 
-        <aside class="process-panel" id="process-panel" aria-label="过程摘要">
+        <aside class="process-panel dashboard-only" id="process-panel" aria-label="Dashboard process summary">
           <div class="panel-head">
             <div>
               <p class="eyebrow">公开过程</p>
@@ -262,6 +304,6 @@
       </section>
     </main>
 
-    <script type="module" src="/another_brain_chat/app.js?v=r28rag3-lightweight-affective-rag"></script>
+    <script type="module" src="/another_brain_chat/app.js?v=r28ux5-chat-dashboard-split"></script>
   </body>
 </html>

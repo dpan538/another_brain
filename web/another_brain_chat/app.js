@@ -1,8 +1,8 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28rag3-lightweight-affective-rag";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28rag3-lightweight-affective-rag";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28ux5-chat-dashboard-split";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28ux5-chat-dashboard-split";
 
-const R28HOTFIX3_UI_VERSION = "r28rag3-lightweight-affective-rag";
-const R28HOTFIX3_BUILD_MARKER = "R28RAG3";
+const R28HOTFIX3_UI_VERSION = "r28ux5-chat-dashboard-split";
+const R28HOTFIX3_BUILD_MARKER = "R28UX5";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -12,7 +12,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28rag3",
+  prelaunch_stage: "r28ux5",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -36,7 +36,25 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
 });
 
 const initWarnings = [];
+const MODEL_LOADING_STAGES = ["manifest", "shards", "tokenizer", "q4-warmup", "fallback"];
+const MODEL_LOADING_LABELS = {
+  manifest: "读取 manifest",
+  shards: "校验 shards",
+  tokenizer: "加载 tokenizer",
+  "q4-warmup": "q4 warmup",
+  fallback: "fallback available"
+};
+const MODEL_LOADING_PROGRESS = {
+  manifest: 14,
+  shards: 44,
+  tokenizer: 68,
+  "q4-warmup": 86,
+  fallback: 100
+};
 
+const appShell = document.querySelector("#app-shell");
+const chatModeButton = document.querySelector("#chat-mode-button");
+const dashboardModeButton = document.querySelector("#dashboard-mode-button");
 const form = document.querySelector("#chat-form");
 const input = document.querySelector("#chat-input");
 const messageList = document.querySelector("#message-list");
@@ -101,16 +119,23 @@ const abortButton = document.querySelector("#abort-button");
 const clearChatButton = document.querySelector("#clear-chat-button");
 const contextBridgeStatus = document.querySelector("#context-bridge-status");
 const contextValidation = document.querySelector("#context-validation");
+const modelLoadingPanel = document.querySelector("#model-loading-panel");
+const modelLoadingTitle = document.querySelector("#model-loading-title");
+const modelLoadingDetail = document.querySelector("#model-loading-detail");
+const modelLoadingProgressBar = document.querySelector("#model-loading-progress-bar");
+const modelLoadingStages = document.querySelector("#model-loading-stages");
+const loadingCancelButton = document.querySelector("#loading-cancel-button");
 
 let lastPacket = null;
 let running = false;
 let activeSelfCheckController = null;
+let activeLoadingController = null;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 const INITIAL_ASSISTANT_MESSAGE = [
-  "我会显示公开过程摘要：输入包、本地上下文、检索证据、模型草稿、路由判断和最终回答。",
-  "若 q4 没有真正参与，会明确标出；这里不展示隐藏推理、内部提示或私人原文。"
+  "你好，我在本地静态页面里运行。你可以直接问日常问题；需要看 RAG、q4 状态或 self-check 时，点右上角 Dashboard。",
+  "这里不展示隐藏推理、内部提示或私人原文，也不声称这是产品模型。"
 ].join(" ");
 
 function setText(node, value) {
@@ -134,6 +159,10 @@ function setDisabled(node, value) {
   if (node) node.disabled = Boolean(value);
 }
 
+function setHidden(node, value) {
+  if (node) node.hidden = Boolean(value);
+}
+
 function focusNode(node) {
   if (node && typeof node.focus === "function") node.focus();
 }
@@ -148,6 +177,67 @@ function setValue(node, value) {
 
 function boolText(value) {
   return value === true ? "true" : "false";
+}
+
+function setUiMode(mode) {
+  const nextMode = mode === "dashboard" ? "dashboard" : "chat";
+  if (appShell) appShell.dataset.uiMode = nextMode;
+  chatModeButton?.classList.toggle("active", nextMode === "chat");
+  dashboardModeButton?.classList.toggle("active", nextMode === "dashboard");
+  chatModeButton?.setAttribute("aria-pressed", boolText(nextMode === "chat"));
+  dashboardModeButton?.setAttribute("aria-pressed", boolText(nextMode === "dashboard"));
+  if (nextMode === "dashboard") renderDebug();
+}
+
+function inferInitialMode() {
+  const params = new URLSearchParams(globalThis.location?.search || "");
+  if (params.get("mode") === "dashboard" || params.get("dashboard") === "1") return "dashboard";
+  return "chat";
+}
+
+function loadingStageFromReport(report = {}) {
+  const stage = String(report.stage || "");
+  if (stage.includes("q4") || stage.includes("warmup") || stage.includes("forward")) return "q4-warmup";
+  if (stage.includes("shard")) return "shards";
+  if (stage.includes("tokenizer")) return "tokenizer";
+  if (stage.includes("manifest")) return "manifest";
+  if (report.status === "passed" || report.status === "failed" || report.status === "timeout" || report.status === "cancelled") return "fallback";
+  return "manifest";
+}
+
+function renderModelLoading(input = {}) {
+  if (!modelLoadingPanel) return;
+  const report = input.report || input;
+  const stage = input.stage || loadingStageFromReport(report);
+  const status = String(input.status || report.status || "checking");
+  const fallbackReason = report.fallback?.reason || report.q4_forward?.blocker || (report.blockers || [])[0] || "";
+  const done = status === "passed";
+  const cancelled = status === "cancelled";
+  const failed = status === "failed" || status === "timeout";
+  const progress = Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 8);
+  setHidden(modelLoadingPanel, input.hidden === true);
+  setText(modelLoadingTitle, done ? "模型资产检查完成" : cancelled ? "模型资产检查已取消" : failed ? "模型资产检查未完成" : "模型资产检查中");
+  setText(modelLoadingDetail, `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback available${fallbackReason ? ` / ${fallbackReason}` : ""}`);
+  if (modelLoadingProgressBar) modelLoadingProgressBar.style.width = `${Math.max(8, Math.min(100, progress))}%`;
+  const stageNodes = modelLoadingStages?.querySelectorAll?.("[data-loading-stage]") || [];
+  const activeIndex = MODEL_LOADING_STAGES.indexOf(stage);
+  stageNodes.forEach((node) => {
+    const nodeStage = node.getAttribute("data-loading-stage");
+    const nodeIndex = MODEL_LOADING_STAGES.indexOf(nodeStage);
+    node.classList.toggle("active", nodeStage === stage && !done && !cancelled && !failed);
+    node.classList.toggle("done", done || (activeIndex >= 0 && nodeIndex >= 0 && nodeIndex < activeIndex));
+    node.classList.toggle("warn", (cancelled || failed) && nodeStage === "fallback");
+  });
+  setDisabled(loadingCancelButton, done || cancelled || failed || !activeLoadingController);
+}
+
+function completeModelLoading(report = {}) {
+  renderModelLoading({
+    report,
+    stage: "fallback",
+    status: report.status || (report.ok ? "passed" : "failed"),
+    progress: 100
+  });
 }
 
 function sourceLabel(trace = {}) {
@@ -382,6 +472,7 @@ function renderSelfCheck(report = null) {
   setText(selfCheckOutput, `输出：tokens=${report.q4_forward?.tokens_generated || 0} / ${report.output?.text_preview || "no q4 text"}`);
   setText(selfCheckBlockers, `blocker：${(report.blockers || []).join(" / ") || "none"}`);
   setText(q4StatusBadge, `q4 forward: ${report.q4_forward?.q4_forward_ran ? "true" : report.q4_forward?.status || "false"}`);
+  renderModelLoading({ report });
 }
 
 function setPipelineStatus(status) {
@@ -406,6 +497,7 @@ async function boot() {
   renderAssetStatus(null, deliveryConfig);
   runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: deliveryConfig.ui_version || R28HOTFIX1_UI_VERSION });
   runtime.setContextPackets(contextBridge.getPackets());
+  renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   const loadResult = await runtime.load();
   setText(modelStatus, `${loadResult.mode} loaded`);
   setText(retrievalStatus, deliveryConfig.rag_mode);
@@ -424,8 +516,26 @@ async function boot() {
     output: { text_preview: "" },
     blockers: []
   });
-  const report = await runtime.quickSelfCheckModelPath({ jsonTimeoutMs: 1500, shardTimeoutMs: 8000 });
+  const bootController = new AbortController();
+  activeLoadingController = bootController;
+  setDisabled(loadingCancelButton, false);
+  let report = null;
+  try {
+    report = await runtime.quickSelfCheckModelPath({
+      jsonTimeoutMs: 1500,
+      shardTimeoutMs: 8000,
+      signal: bootController.signal,
+      onProgress: (progressReport) => {
+        renderSelfCheck(progressReport);
+        renderModelLoading({ report: progressReport });
+      }
+    });
+  } finally {
+    if (activeLoadingController === bootController) activeLoadingController = null;
+    setDisabled(loadingCancelButton, true);
+  }
   renderSelfCheck(report);
+  completeModelLoading(report);
   renderAssetStatus(runtime.assetStatus, runtime.deliveryConfig);
   if (report.ok) {
     setText(modelStatus, "q4_metadata_ready");
@@ -441,6 +551,40 @@ async function boot() {
 }
 
 function bindEvents() {
+on(chatModeButton, "click", () => setUiMode("chat"));
+on(dashboardModeButton, "click", () => setUiMode("dashboard"));
+on(loadingCancelButton, "click", () => {
+  if (activeLoadingController) activeLoadingController.abort();
+  if (activeSelfCheckController) activeSelfCheckController.abort();
+  runtime.cancelSelfCheck("model_loading_cancelled");
+  activeLoadingController = null;
+  activeSelfCheckController = null;
+  renderModelLoading({
+    status: "cancelled",
+    stage: "fallback",
+    progress: 100,
+    report: {
+      status: "cancelled",
+      fallback: { status: "可用", reason: "model_loading_cancelled" },
+      q4_forward: { status: "skipped", q4_forward_ran: false, blocker: "model_loading_cancelled" },
+      blockers: ["model_loading_cancelled"]
+    }
+  });
+  renderSelfCheck({
+    status: "cancelled",
+    check_level: "quick",
+    stage: "user_cancelled",
+    elapsed_ms: 0,
+    assets: { status: "取消", q4_shard_count: 0, expected_shard_count: Number(runtime.deliveryConfig?.shard_count || 0) },
+    tokenizer: { status: "skipped" },
+    q4_forward: { status: "skipped", q4_forward_ran: false, tokens_generated: 0 },
+    fallback: { status: "可用", reason: "model_loading_cancelled" },
+    output: { text_preview: "" },
+    blockers: ["model_loading_cancelled"]
+  });
+  setText(fallbackReasonStatus, "model_loading_cancelled");
+});
+
 on(contextImportButton, "click", () => {
   const result = contextBridge.importText(getValue(contextImport), { sourceLabel: "Manual local import" });
   if (result.ok) {
@@ -509,21 +653,28 @@ on(modelSelfCheckButton, "click", async () => {
   }
   const controller = new AbortController();
   activeSelfCheckController = controller;
+  activeLoadingController = controller;
   setDisabled(modelSelfCheckButton, true);
   setDisabled(modelSelfCheckStopButton, false);
+  setDisabled(loadingCancelButton, false);
   setText(selfCheckAssets, "检查中");
   setText(selfCheckTokenizer, "检查中");
   setText(selfCheckQ4, "quick check");
+  renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   try {
     const report = await runtime.deepSelfCheckModelPath({
       timeoutMs: 15000,
       shardTimeoutMs: 10000,
       signal: controller.signal,
-      onProgress: renderSelfCheck
+      onProgress: (progressReport) => {
+        renderSelfCheck(progressReport);
+        renderModelLoading({ report: progressReport });
+      }
     });
     renderSelfCheck(report);
+    completeModelLoading(report);
   } catch (error) {
-    renderSelfCheck({
+    const failureReport = {
       status: controller.signal.aborted ? "cancelled" : "failed",
       check_level: "deep",
       stage: controller.signal.aborted ? "cancelled" : "failed",
@@ -534,11 +685,15 @@ on(modelSelfCheckButton, "click", async () => {
       fallback: { status: "可用" },
       output: { text_preview: "" },
       blockers: [error.message || "model_path_self_check_failed"]
-    });
+    };
+    renderSelfCheck(failureReport);
+    completeModelLoading(failureReport);
   } finally {
     if (activeSelfCheckController === controller) activeSelfCheckController = null;
+    if (activeLoadingController === controller) activeLoadingController = null;
     setDisabled(modelSelfCheckButton, false);
     setDisabled(modelSelfCheckStopButton, true);
+    setDisabled(loadingCancelButton, true);
   }
 });
 
@@ -548,9 +703,10 @@ on(modelSelfCheckStopButton, "click", () => {
     runtime.cancelSelfCheck("self_check_cancelled");
   }
   activeSelfCheckController = null;
+  activeLoadingController = null;
   setDisabled(modelSelfCheckStopButton, true);
   setDisabled(modelSelfCheckButton, false);
-  renderSelfCheck({
+  const cancelledReport = {
     status: "cancelled",
     check_level: "deep",
     stage: "user_cancelled",
@@ -561,11 +717,14 @@ on(modelSelfCheckStopButton, "click", () => {
     fallback: { status: "可用", reason: "self_check_cancelled" },
     output: { text_preview: "" },
     blockers: ["self_check_cancelled"]
-  });
+  };
+  renderSelfCheck(cancelledReport);
+  completeModelLoading(cancelledReport);
 });
 }
 
 function start() {
+  setUiMode(inferInitialMode());
   bindEvents();
   boot().catch((error) => {
     console.warn("[another_brain] boot_warning", error);
