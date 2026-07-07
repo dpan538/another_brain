@@ -229,7 +229,7 @@ async function main() {
   const dialogRules = await readFile(resolve(ROOT, "web/dialog_rules.js"), "utf8");
   const rootHasVersionedAppModule = /type="module" src="\.\/app\.js\?v=/.test(index);
   const rootHasR28ux4ChatRedirect =
-    /R28UX4/.test(index) &&
+    /(R28UX4|R28HOTFIX0)/.test(index) &&
     /过程摘要/.test(index) &&
     /static_q4_experimental/.test(index) &&
     /exact_runtime_tokenizer/.test(index) &&

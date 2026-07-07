@@ -8,11 +8,11 @@
   "full_bundle_estimate_bytes": 69982911,
   "gate_assets": [
     {
-      "bytes": 2843,
+      "bytes": 2861,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "1405e15c9b972eae1f783d47b31c5b91e091e14a2e5d861e9ac5f59bb252a6b6"
+      "sha256": "9a054ea43e8cf1ed8ec5319947823f8f0c2ba43636adfcf6066125240fd1b021"
     }
   ],
   "hosted_vector_store": false,
@@ -134,10 +134,10 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49309889,
-  "ui_build_marker": "R28UX4",
-  "ui_build_timestamp": "2026-07-07T18:10:00+08:00",
+  "total_declared_bytes": 49309907,
+  "ui_build_marker": "R28HOTFIX0",
+  "ui_build_timestamp": "2026-07-07T20:55:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28ux4-visible-preview-ui",
+  "ui_version": "r28hotfix0-runtime-ui-activation",
   "total_model_asset_bytes": 48267968
 }

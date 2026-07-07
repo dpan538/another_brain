@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>R28HOTFIX0 chat route redirect</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="refresh" content="0; url=/another_brain_chat/?v=r28hotfix0-runtime-ui-activation" />
+    <script>
+      (() => {
+        const target = new URL("/another_brain_chat/", window.location.href);
+        target.searchParams.set("v", "r28hotfix0-runtime-ui-activation");
+        for (const [key, value] of new URLSearchParams(window.location.search)) {
+          if (key !== "v") target.searchParams.set(key, value);
+        }
+        target.hash = window.location.hash;
+        window.location.replace(target.href);
+      })();
+    </script>
+  </head>
+  <body>
+    <main aria-label="R28HOTFIX0 /another_brain_chat canonical redirect">
+      <p>R28HOTFIX0 / 过程摘要 / static_q4_experimental / exact_runtime_tokenizer</p>
+      <p><a href="/another_brain_chat/?v=r28hotfix0-runtime-ui-activation">打开 /another_brain_chat/</a></p>
+    </main>
+  </body>
+</html>

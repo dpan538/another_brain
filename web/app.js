@@ -473,20 +473,29 @@ async function submitPrompt(event) {
   } finally {
     isResponding = false;
     setThinking(false);
-    els.prompt.focus();
+    if (els.prompt && typeof els.prompt.focus === "function") els.prompt.focus();
   }
 }
 
-els.form.addEventListener("submit", submitPrompt);
-els.contextToggle.addEventListener("click", () => {
-  setContextOpen(els.contextPanel.hidden);
+function bindRootHandler(node, eventName, handler) {
+  if (!node || typeof node.addEventListener !== "function") {
+    console.warn(`[another_brain] root_handler_missing:${eventName}`);
+    return false;
+  }
+  node.addEventListener(eventName, handler);
+  return true;
+}
+
+bindRootHandler(els.form, "submit", submitPrompt);
+bindRootHandler(els.contextToggle, "click", () => {
+  setContextOpen(Boolean(els.contextPanel?.hidden));
 });
-els.prompt.addEventListener("input", autosize);
-els.prompt.addEventListener("input", hideAffordance);
-els.prompt.addEventListener("keydown", (event) => {
+bindRootHandler(els.prompt, "input", autosize);
+bindRootHandler(els.prompt, "input", hideAffordance);
+bindRootHandler(els.prompt, "keydown", (event) => {
   if (event.key === "Enter" && !event.shiftKey) {
     event.preventDefault();
-    els.form.requestSubmit();
+    if (els.form && typeof els.form.requestSubmit === "function") els.form.requestSubmit();
   }
 });
 

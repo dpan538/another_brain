@@ -31,8 +31,9 @@ const ROUTER_NON_CLAIMS = [
   "no Doubao",
   "hard router is product-surface guard only"
 ];
-const R28UX4_UI_VERSION = "r28ux4-visible-preview-ui";
-const R28UX4_ASSET_CACHE_KEY = "another_brain_r28ux4_asset_cache_version";
+const R28HOTFIX0_UI_VERSION = "r28hotfix0-runtime-ui-activation";
+const R28UX4_UI_VERSION = R28HOTFIX0_UI_VERSION;
+const R28UX4_ASSET_CACHE_KEY = "another_brain_r28hotfix0_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
   insufficient_evidence: "目前证据不足，我不能把这个判断说成确定结论。",
@@ -399,8 +400,15 @@ async function probeSameOriginAsset(path) {
   const base = baseUrlForAssets();
   const url = new URL(`../${path}`, base);
   if (url.origin !== base.origin) throw new Error(`non_same_origin_asset_rejected:${path}`);
-  const response = await fetch(url.href, { method: "HEAD" });
-  if (!response.ok) throw new Error(`asset_probe_failed:${path}:${response.status}`);
+  let response = await fetch(url.href, { method: "HEAD", cache: "force-cache" }).catch(() => null);
+  if (!response?.ok) {
+    response = await fetch(url.href, {
+      method: "GET",
+      headers: { Range: "bytes=0-0" },
+      cache: "force-cache"
+    }).catch(() => null);
+  }
+  if (!response?.ok) throw new Error(`asset_probe_failed:${path}:${response?.status || 0}`);
   return true;
 }
 
@@ -572,7 +580,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker("./runtime_worker.js", { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28hotfix0-runtime-ui-activation", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -676,7 +684,7 @@ export class BrowserChatRuntime {
 
     try {
       if (!this.worker && this.capabilities.worker_available) await this.load();
-      smokePreview = await this.draftWithWorker("R28UX3 q4 path smoke", { maxTokens: 1, timeoutMs: 2500 });
+      smokePreview = await this.draftWithWorker("R28HOTFIX0 q4 path smoke", { maxTokens: 1, timeoutMs: 120000, contextLength: 32 });
       smokeStats = this.lastRuntimeStats || null;
     } catch (error) {
       blockers.push(error.message || this.lastFallbackReason || "q4_forward_smoke_failed");
@@ -695,7 +703,7 @@ export class BrowserChatRuntime {
     const shardsVerified = shardResults.length > 0 && shardResults.every((item) => item.ok);
     if (!q4ForwardPassed) blockers.push("q4_forward_not_confirmed");
 
-    return {
+    const report = {
       ok: Boolean(assetManifest) && shardsVerified && exactTokenizer && q4ForwardPassed,
       assets: {
         status: Boolean(assetManifest) && shardsVerified ? "通过" : "失败",
@@ -713,6 +721,7 @@ export class BrowserChatRuntime {
       q4_forward: {
         status: q4ForwardPassed ? "通过" : "失败",
         q4_forward_ran: q4ForwardPassed,
+        runtime_mode: smokeStats?.runtime_mode || this.mode,
         tokens_generated: Number(smokeStats?.tokens_generated || 0),
         decode_status: smokeStats?.decode_status || "failed",
         blocker: q4ForwardPassed ? "" : (blockers.find((item) => String(item).includes("web_static_q4_worker_bundle_not_embedded")) || "q4_forward_not_confirmed")
@@ -734,6 +743,14 @@ export class BrowserChatRuntime {
         external_llm_api: false
       }
     };
+    this.assetStatus = {
+      ...this.assetStatus,
+      cache_result: report.ok ? "q4_forward_smoke_passed" : "q4_forward_smoke_blocked",
+      progress: `${shardResults.filter((item) => item.ok).length}/${q4Assets.length}`,
+      verification: report.ok ? "q4_manifest_shards_tokenizer_forward_verified" : "q4_path_blocked",
+      fallback_reason: report.ok ? "" : report.blockers[0] || "q4_self_check_failed"
+    };
+    return report;
   }
 
   async draftWithWorker(input, options = {}) {
@@ -828,7 +845,7 @@ export class BrowserChatRuntime {
     try {
       if (this.abortRequested) throw new Error("generation_aborted");
       const promptPacket = buildPromptPacket(input, evidencePacket, statePacket);
-      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), { maxTokens: 16, timeoutMs: 3000 });
+      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), { maxTokens: 8, timeoutMs: 120000, contextLength: 64 });
       setStatus("verifying");
       verifierResult = verifyDraft(decoderDraft, evidencePacket);
       const finalized = finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult, {
