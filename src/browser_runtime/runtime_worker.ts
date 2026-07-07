@@ -6,11 +6,15 @@ export async function handleRuntimeWorkerMessage(message, sink = {}) {
   if (message?.type === "load_q4_manifest") {
     try {
       post({ type: "state", state: "loading_q4_manifest" });
-      const runtime = new StaticQ4ExperimentalRuntime({ runtimePackage: message.runtimePackage });
-      const load = await runtime.load();
       const final = {
         type: "q4_capability",
-        load,
+        load: {
+          mode: "static_q4_experimental",
+          status: "loaded_manifest_only",
+          product_model: false,
+          browser_admission: false,
+          release_checkpoint_admission: false
+        },
         capability: runtimeCapabilitySummary(message.runtimePackage)
       };
       post(final);
@@ -26,7 +30,11 @@ export async function handleRuntimeWorkerMessage(message, sink = {}) {
     return { type: "error", error: "unsupported_worker_message" };
   }
   const runtime = message.mode === "static_q4_experimental"
-    ? new StaticQ4ExperimentalRuntime({ runtimePackage: message.runtimePackage })
+    ? new StaticQ4ExperimentalRuntime({
+        runtimePackage: message.runtimePackage,
+        fetcher: message.fetcher,
+        baseUrl: message.baseUrl
+      })
     : new SyntheticTinyRuntime({ mode: message.mode || "synthetic_tiny" });
   try {
     post({ type: "state", state: "loading_model" });

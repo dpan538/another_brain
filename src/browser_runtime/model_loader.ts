@@ -1,4 +1,5 @@
 import { SyntheticTinyRuntime } from "./generation_loop.ts";
+import { StaticQ4ExperimentalRuntime, loadR28M1Q4RuntimePackage } from "./q4_runtime/index.ts";
 import {
   assertSameOriginAssetUrl,
   isSameOriginUrl,
@@ -9,6 +10,7 @@ import { verifySha256 as verifySha256Detailed } from "./assets/checksum.ts";
 export const RUNTIME_MODES = Object.freeze([
   "mock",
   "synthetic_tiny",
+  "static_q4_experimental",
   "static_shard_manifest_experimental",
   "onnx_webgpu_experimental",
   "wasm_fallback_experimental"
@@ -46,6 +48,16 @@ export async function loadRuntimeModel(options = {}) {
     const runtime = new SyntheticTinyRuntime({ mode });
     await runtime.load();
     return { mode, runtime, shardState, status: "loaded_manifest_only", product_model: false };
+  }
+  if (mode === "static_q4_experimental") {
+    const runtimePackage = options.runtimePackage || await loadR28M1Q4RuntimePackage(options);
+    const runtime = new StaticQ4ExperimentalRuntime({
+      runtimePackage,
+      fetcher: options.fetcher,
+      baseUrl: options.baseUrl
+    });
+    const load = await runtime.load();
+    return { mode, runtime, status: load.status, product_model: false, browser_admission: false };
   }
   if (mode === "onnx_webgpu_experimental") {
     return {

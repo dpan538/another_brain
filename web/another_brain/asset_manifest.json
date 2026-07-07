@@ -5,14 +5,14 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 68977868,
+  "full_bundle_estimate_bytes": 68977993,
   "gate_assets": [
     {
-      "bytes": 2336,
+      "bytes": 2461,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "c1c62d948e9a3f104ccb40fc9062a03e166cef27885bc0bce817f3d771e35c89"
+      "sha256": "5cca2415af50ce763dbaeca9f8b1cd8ad2cac7b72d44252c09eb733dc06c51bb"
     }
   ],
   "hosted_vector_store": false,
@@ -121,6 +121,6 @@
       "sha256": "a6aaf5af5d649e5bc8895fff46a4d1ee9719c4808a420c197d3a8d3d8722024f"
     }
   ],
-  "total_declared_bytes": 48311728,
+  "total_declared_bytes": 48311853,
   "total_model_asset_bytes": 48267968
 }

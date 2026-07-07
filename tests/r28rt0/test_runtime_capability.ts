@@ -89,13 +89,11 @@ test("runtime package loader verifies same-origin manifest and checksums", async
   assert.equal(checksum.checked_shards, 1);
 });
 
-test("runtime exposes explicit forward blocker instead of fake inference", async () => {
+test("runtime fails closed when q4 forward fixture lacks tensor metadata", async () => {
   const { fetcher } = await fixturePackage();
   const runtimePackage = await loadR28M1Q4RuntimePackage({ fetcher, baseUrl: "https://example.test/" });
   const runtime = new StaticQ4ExperimentalRuntime({ runtimePackage });
-  const load = await runtime.load();
-  assert.equal(load.status, "loaded_manifest_only");
-  await assert.rejects(() => runtime.forward([1, 2, 3]), new RegExp(R28RT0_FORWARD_BLOCKER));
+  await assert.rejects(() => runtime.load(), /model_config_insufficient_for_forward/);
 });
 
 test("runtime worker can load q4 manifest package and return blocker metadata", async () => {
