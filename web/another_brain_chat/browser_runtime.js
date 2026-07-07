@@ -31,11 +31,15 @@ const ROUTER_NON_CLAIMS = [
   "no Doubao",
   "hard router is product-surface guard only"
 ];
-const R28HOTFIX1_UI_VERSION = "r28hotfix1-route-loop-free-runtime";
-const R28UX4_UI_VERSION = R28HOTFIX1_UI_VERSION;
-const R28UX4_ASSET_CACHE_KEY = "another_brain_r28hotfix1_asset_cache_version";
+const R28HOTFIX2_UI_VERSION = "r28hotfix2-nonblocking-selfcheck";
+const R28HOTFIX1_UI_VERSION = R28HOTFIX2_UI_VERSION;
+const R28UX4_UI_VERSION = R28HOTFIX2_UI_VERSION;
+const R28UX4_ASSET_CACHE_KEY = "another_brain_r28hotfix2_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
+const IDENTITY_ROUTE = "identity_boundary";
+const IDENTITY_ANSWER = "我是鳄鱼。更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。";
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
+  identity_boundary: IDENTITY_ANSWER,
   insufficient_evidence: "目前证据不足，我不能把这个判断说成确定结论。",
   malicious_evidence: "检索到的材料里有试图改变规则的内容，我会把它当作不可信指令处理。",
   conflicting_evidence: "现有证据之间有冲突，我不能直接合并成一个确定答案。",
@@ -43,6 +47,7 @@ const ANSWER_SURFACE_TEMPLATES = Object.freeze({
   not_product_status: "当前是预览工程候选，不是已 admission 的产品模型。"
 });
 const ROUTE_SURFACE_KEYS = Object.freeze({
+  identity_boundary: "identity_boundary",
   insufficient_evidence_boundary: "insufficient_evidence",
   adapter_context_boundary: "insufficient_evidence",
   malicious_evidence_boundary: "malicious_evidence",
@@ -229,6 +234,25 @@ function asksProductStatus(input) {
   ].some((marker) => lowered.includes(marker));
 }
 
+function normalizeIdentityInput(input = "") {
+  return String(input)
+    .trim()
+    .toLowerCase()
+    .replace(/[\s?？!！。.,，、:：;；"'“”‘’（）()]/g, "");
+}
+
+function isIdentityQuestion(input = "") {
+  const raw = String(input || "").trim().toLowerCase();
+  const normalized = normalizeIdentityInput(raw);
+  if (!normalized) return false;
+  const chineseMarkers = ["你是谁", "你是什么", "介绍一下你自己", "自我介绍", "你叫什么"];
+  if (normalized.length <= 24 && chineseMarkers.some((marker) => normalized.includes(normalizeIdentityInput(marker)))) {
+    return true;
+  }
+  const englishMarkers = ["who are you", "what are you", "what is your name", "introduce yourself"];
+  return raw.length <= 56 && englishMarkers.some((marker) => raw.includes(marker));
+}
+
 function uniqueFlags(flags) {
   return Array.from(new Set((flags || []).filter(Boolean).map(String)));
 }
@@ -387,35 +411,59 @@ function baseUrlForAssets() {
   return new URL(globalThis.location.href);
 }
 
-async function fetchJsonSameOrigin(path) {
+function timeoutSignal(timeoutMs = 1000, signal = null) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new Error("self_check_timeout")), Math.max(1, Number(timeoutMs || 1000)));
+  if (signal) {
+    if (signal.aborted) controller.abort(signal.reason || new Error("self_check_cancelled"));
+    signal.addEventListener("abort", () => controller.abort(signal.reason || new Error("self_check_cancelled")), { once: true });
+  }
+  return { signal: controller.signal, clear: () => clearTimeout(timer) };
+}
+
+async function fetchJsonSameOrigin(path, options = {}) {
   const base = baseUrlForAssets();
   const url = new URL(path, base);
   if (url.origin !== base.origin) throw new Error("non_same_origin_asset_rejected");
-  const response = await fetch(url.href);
-  if (!response.ok) throw new Error(`fetch_failed:${path}:${response.status}`);
-  return response.json();
+  const timed = timeoutSignal(options.timeoutMs || 1000, options.signal);
+  try {
+    const response = await fetch(url.href, { signal: timed.signal, cache: options.cache || "force-cache" });
+    if (!response.ok) throw new Error(`fetch_failed:${path}:${response.status}`);
+    return response.json();
+  } finally {
+    timed.clear();
+  }
 }
 
-async function probeSameOriginAsset(path) {
+async function probeSameOriginAsset(path, options = {}) {
   const base = baseUrlForAssets();
   const url = new URL(`../${path}`, base);
   if (url.origin !== base.origin) throw new Error(`non_same_origin_asset_rejected:${path}`);
-  let response = await fetch(url.href, { method: "HEAD", cache: "force-cache" }).catch(() => null);
-  if (!response?.ok) {
-    response = await fetch(url.href, {
-      method: "GET",
-      headers: { Range: "bytes=0-0" },
-      cache: "force-cache"
-    }).catch(() => null);
+  const timed = timeoutSignal(options.timeoutMs || 1000, options.signal);
+  try {
+    let response = await fetch(url.href, { method: "HEAD", cache: "force-cache", signal: timed.signal }).catch(() => null);
+    if (!response?.ok) {
+      response = await fetch(url.href, {
+        method: "GET",
+        headers: { Range: "bytes=0-0" },
+        cache: "force-cache",
+        signal: timed.signal
+      }).catch(() => null);
+    }
+    if (!response?.ok) throw new Error(`asset_probe_failed:${path}:${response?.status || 0}`);
+    return true;
+  } finally {
+    timed.clear();
   }
-  if (!response?.ok) throw new Error(`asset_probe_failed:${path}:${response?.status || 0}`);
-  return true;
 }
 
 function classifyAnswerRoute(routeInput = {}) {
   const evidencePacket = routeInput.evidence_packet || null;
   const evidenceStatus = classifyEvidenceForRouter(evidencePacket, routeInput.evidence_status || (evidencePacket ? evidencePacket.evidence_status : "none"));
   const flags = uniqueFlags([...(routeInput.generation_flags || []), outputQualityFailure(routeInput.model_output)]);
+  if (isIdentityQuestion(routeInput.user_input)) {
+    return { route: IDENTITY_ROUTE, use_model_draft: false, fallback_reason: "identity_boundary", quality_flags: uniqueFlags([...flags, "identity_boundary"]) };
+  }
   if (evidenceStatus === "malicious") {
     return { route: "malicious_evidence_boundary", use_model_draft: false, fallback_reason: "malicious_evidence_ignored", quality_flags: uniqueFlags([...flags, "malicious_evidence"]) };
   }
@@ -473,9 +521,9 @@ function applyAnswerSurfacePolicy(routeInput = {}) {
     route: classified.route,
     use_model_draft: false,
     final_answer: answerSurfaceForRoute(classified.route),
-    fallback_used: true,
+    fallback_used: classified.route !== IDENTITY_ROUTE,
     fallback_reason: classified.fallback_reason || classified.route,
-    answer_status: "fallback",
+    answer_status: classified.route === IDENTITY_ROUTE ? "final" : "fallback",
     quality_flags: classified.quality_flags,
     non_claims: ROUTER_NON_CLAIMS,
     answer_bank: false
@@ -521,7 +569,7 @@ function finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult, rou
     answer_status: "final",
     route: routed.route,
     answer_route: routed.route,
-    use_model_draft: true,
+    use_model_draft: routed.use_model_draft === true,
     quality_flags: routed.quality_flags,
     non_claims: routed.non_claims,
     route_policy: routed,
@@ -543,6 +591,8 @@ export class BrowserChatRuntime {
     this.lastFallbackReason = "";
     this.activeReject = null;
     this.abortRequested = false;
+    this.activeSelfCheckController = null;
+    this.activeSelfCheckStartedAt = 0;
     this.assetStatus = {
       cache_mode: this.capabilities.cache_storage_available ? "cache_storage" : "memory_fallback",
       cache_result: "not_checked",
@@ -580,7 +630,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28hotfix1-route-loop-free-runtime", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28hotfix2-nonblocking-selfcheck", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -628,9 +678,124 @@ export class BrowserChatRuntime {
     this.contextPackets = Array.isArray(packets) ? [...packets] : [];
   }
 
-  async selfCheckModelPath() {
-    const previousStats = this.lastRuntimeStats;
-    const previousFallbackReason = this.lastFallbackReason;
+  buildSelfCheckProgress(status, stage, startedAt, partial = {}) {
+    return {
+      status,
+      stage,
+      ok: false,
+      elapsed_ms: Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt)),
+      assets: {
+        status: partial.assets?.status || "检查中",
+        manifest_loaded: partial.assets?.manifest_loaded === true,
+        q4_shard_count: Number(partial.assets?.q4_shard_count || 0),
+        expected_shard_count: Number(partial.assets?.expected_shard_count || 0),
+        shards_verified: partial.assets?.shards_verified === true
+      },
+      tokenizer: {
+        status: partial.tokenizer?.status || "skipped",
+        exact_runtime_tokenizer: partial.tokenizer?.exact_runtime_tokenizer === true
+      },
+      q4_forward: {
+        status: partial.q4_forward?.status || (status === "checking_deep" ? "检查中" : "skipped"),
+        q4_forward_ran: partial.q4_forward?.q4_forward_ran === true,
+        runtime_mode: partial.q4_forward?.runtime_mode || this.mode,
+        tokens_generated: Number(partial.q4_forward?.tokens_generated || 0),
+        decode_status: partial.q4_forward?.decode_status || "not_run",
+        blocker: partial.q4_forward?.blocker || ""
+      },
+      fallback: { status: "可用", reason: partial.fallback?.reason || "" },
+      output: { text_preview: partial.output?.text_preview || "" },
+      blockers: uniqueFlags(partial.blockers || []),
+      non_claims: {
+        product_admission: false,
+        browser_admission: false,
+        release_checkpoint: false,
+        backend_inference: false,
+        external_llm_api: false
+      }
+    };
+  }
+
+  async quickSelfCheckModelPath(options = {}) {
+    return this.selfCheckModelPath({ ...options, runDeep: false, timeoutMs: options.timeoutMs || 1000 });
+  }
+
+  async deepSelfCheckModelPath(options = {}) {
+    return this.selfCheckModelPath({ ...options, runDeep: true, timeoutMs: options.timeoutMs || 8000 });
+  }
+
+  cancelSelfCheck(reason = "self_check_cancelled") {
+    if (this.activeSelfCheckController) {
+      this.activeSelfCheckController.abort(new Error(reason));
+      this.activeSelfCheckController = null;
+      return true;
+    }
+    return false;
+  }
+
+  async runQ4SelfCheckSmoke(options = {}) {
+    if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
+    const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
+    return new Promise((resolve, reject) => {
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28hotfix2-nonblocking-selfcheck", import.meta.url), { type: "module" });
+      let settled = false;
+      const finish = (callback) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        try {
+          worker.terminate();
+        } catch {
+        }
+        callback();
+      };
+      const timeout = setTimeout(() => {
+        finish(() => reject(new Error("self_check_timeout")));
+      }, timeoutMs);
+      if (options.signal) {
+        if (options.signal.aborted) {
+          finish(() => reject(new Error("self_check_cancelled")));
+          return;
+        }
+        options.signal.addEventListener("abort", () => {
+          finish(() => reject(new Error("self_check_cancelled")));
+        }, { once: true });
+      }
+      worker.onmessage = (event) => {
+        const message = event.data || {};
+        if (message.type === "progress" && typeof options.onProgress === "function") {
+          options.onProgress(message);
+        }
+        if (message.type === "error") {
+          finish(() => reject(new Error(message.error || "self_check_worker_failed")));
+        }
+        if (message.type === "final") {
+          finish(() => resolve(message));
+        }
+      };
+      worker.onerror = (error) => {
+        finish(() => reject(new Error(error.message || "self_check_worker_error")));
+      };
+      worker.postMessage({
+        type: "q4_smoke",
+        prompt: "R28HOTFIX2 q4 path smoke",
+        maxTokens: 1,
+        contextLength: 32,
+        timeoutMs
+      });
+    });
+  }
+
+  async selfCheckModelPath(options = {}) {
+    this.cancelSelfCheck("self_check_replaced");
+    const controller = new AbortController();
+    this.activeSelfCheckController = controller;
+    const signal = options.signal || controller.signal;
+    const startedAt = typeof performance !== "undefined" ? performance.now() : Date.now();
+    this.activeSelfCheckStartedAt = startedAt;
+    const runDeep = options.runDeep === true;
+    const quickTimeoutMs = Math.min(Number(options.quickTimeoutMs || options.timeoutMs || 1000), 1500);
+    const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
     const blockers = [];
     let assetManifest = null;
     let quantizationManifest = null;
@@ -638,34 +803,50 @@ export class BrowserChatRuntime {
     let shardResults = [];
     let smokeStats = null;
     let smokePreview = "";
+    const emit = (status, stage, partial = {}) => {
+      const report = this.buildSelfCheckProgress(status, stage, startedAt, partial);
+      if (typeof options.onProgress === "function") options.onProgress(report);
+      return report;
+    };
 
+    emit("checking_quick", "manifest");
     try {
-      assetManifest = await fetchJsonSameOrigin("../another_brain/asset_manifest.json");
+      assetManifest = await fetchJsonSameOrigin("../another_brain/asset_manifest.json", { timeoutMs: quickTimeoutMs, signal });
     } catch (error) {
-      blockers.push(error.message || "asset_manifest_fetch_failed");
+      blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "asset_manifest_fetch_failed");
     }
 
     const q4Assets = (assetManifest?.model_assets || []).filter((item) => item.role === "q4_shard");
     const quantizationPath = assetManifest?.model_asset_manifest?.quantization_manifest || "another_brain/model_assets/r28m1/quantization.manifest.json";
     const tokenizerPath = assetManifest?.model_asset_manifest?.tokenizer_manifest || "another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json";
 
-    if (assetManifest) {
+    if (assetManifest && !signal.aborted) {
+      emit("checking_quick", "tokenizer_and_manifests", {
+        assets: { manifest_loaded: true, q4_shard_count: q4Assets.length, expected_shard_count: Number(assetManifest?.shard_count || 0) }
+      });
       try {
-        quantizationManifest = await fetchJsonSameOrigin(`../${quantizationPath}`);
+        quantizationManifest = await fetchJsonSameOrigin(`../${quantizationPath}`, { timeoutMs: quickTimeoutMs, signal });
       } catch (error) {
-        blockers.push(error.message || "quantization_manifest_fetch_failed");
+        blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "quantization_manifest_fetch_failed");
       }
       try {
-        tokenizer = await fetchJsonSameOrigin(`../${tokenizerPath}`);
+        tokenizer = await fetchJsonSameOrigin(`../${tokenizerPath}`, { timeoutMs: quickTimeoutMs, signal });
       } catch (error) {
-        blockers.push(error.message || "runtime_tokenizer_fetch_failed");
+        blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "runtime_tokenizer_fetch_failed");
       }
+      emit("checking_quick", "shard_probe", {
+        assets: {
+          manifest_loaded: true,
+          q4_shard_count: q4Assets.length,
+          expected_shard_count: Number(quantizationManifest?.shard_count || assetManifest?.shard_count || 0)
+        }
+      });
       shardResults = await Promise.all(q4Assets.map(async (item) => {
         try {
-          await probeSameOriginAsset(item.path);
+          await probeSameOriginAsset(item.path, { timeoutMs: quickTimeoutMs, signal });
           return { path: item.path, ok: true, bytes: Number(item.bytes || 0) };
         } catch (error) {
-          return { path: item.path, ok: false, blocker: error.message || "asset_probe_failed", bytes: Number(item.bytes || 0) };
+          return { path: item.path, ok: false, blocker: signal.aborted ? "self_check_cancelled" : error.message || "asset_probe_failed", bytes: Number(item.bytes || 0) };
         }
       }));
       for (const result of shardResults.filter((item) => !item.ok).slice(0, 3)) {
@@ -682,29 +863,66 @@ export class BrowserChatRuntime {
       blockers.push(`q4_shard_count_mismatch:${q4Assets.length}/${quantizationManifest.shard_count}`);
     }
 
-    try {
-      if (!this.worker && this.capabilities.worker_available) await this.load();
-      smokePreview = await this.draftWithWorker("R28HOTFIX1 q4 path smoke", { maxTokens: 1, timeoutMs: 120000, contextLength: 32 });
-      smokeStats = this.lastRuntimeStats || null;
-    } catch (error) {
-      blockers.push(error.message || this.lastFallbackReason || "q4_forward_smoke_failed");
-      smokeStats = {
-        tokens_generated: 0,
-        runtime_mode: this.mode,
-        decode_status: "failed",
-        fallback_used: true
-      };
-    } finally {
-      this.lastRuntimeStats = previousStats;
-      this.lastFallbackReason = previousFallbackReason;
+    const shardsVerified = shardResults.length > 0 && shardResults.every((item) => item.ok);
+    const quickPassed = Boolean(assetManifest) && shardsVerified && exactTokenizer && !signal.aborted;
+    if (signal.aborted) blockers.push("self_check_cancelled");
+
+    if (runDeep && quickPassed) {
+      emit("checking_deep", "q4_forward_worker", {
+        assets: {
+          status: "通过",
+          manifest_loaded: true,
+          q4_shard_count: q4Assets.length,
+          expected_shard_count: Number(quantizationManifest?.shard_count || assetManifest?.shard_count || 0),
+          shards_verified: true
+        },
+        tokenizer: { status: "exact", exact_runtime_tokenizer: true },
+        q4_forward: { status: "检查中", runtime_mode: this.mode, q4_forward_ran: false }
+      });
+      try {
+        const smoke = await this.runQ4SelfCheckSmoke({
+          timeoutMs: deepTimeoutMs,
+          signal,
+          onProgress: (message) => emit("checking_deep", message.stage || "q4_forward_worker", {
+            assets: {
+              status: "通过",
+              manifest_loaded: true,
+              q4_shard_count: q4Assets.length,
+              expected_shard_count: Number(quantizationManifest?.shard_count || assetManifest?.shard_count || 0),
+              shards_verified: true
+            },
+            tokenizer: { status: "exact", exact_runtime_tokenizer: true },
+            q4_forward: { status: message.stage || "检查中", runtime_mode: this.mode, q4_forward_ran: false }
+          })
+        });
+        smokeStats = smoke.stats || null;
+        smokePreview = String(smoke.draft || "").slice(0, 80);
+      } catch (error) {
+        blockers.push(error.message || "q4_forward_smoke_failed");
+        smokeStats = {
+          tokens_generated: 0,
+          runtime_mode: this.mode,
+          decode_status: error.message === "self_check_timeout" ? "timeout" : "failed",
+          fallback_used: true
+        };
+      }
+    } else if (!runDeep) {
+      blockers.push("q4_forward_skipped_quick_check");
+    } else if (!quickPassed) {
+      blockers.push("quick_check_failed_before_q4_forward");
     }
 
-    const q4ForwardPassed = q4ForwardRan(smokeStats || {});
-    const shardsVerified = shardResults.length > 0 && shardResults.every((item) => item.ok);
-    if (!q4ForwardPassed) blockers.push("q4_forward_not_confirmed");
-
+    const q4ForwardPassed = runDeep && q4ForwardRan(smokeStats || {});
+    if (runDeep && !q4ForwardPassed && !blockers.includes("self_check_timeout")) blockers.push("q4_forward_not_confirmed");
+    const elapsedMs = Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt));
+    const timedOut = blockers.includes("self_check_timeout");
+    const cancelled = signal.aborted || blockers.includes("self_check_cancelled");
+    const quickOrDeepOk = runDeep ? quickPassed && q4ForwardPassed : quickPassed;
     const report = {
-      ok: Boolean(assetManifest) && shardsVerified && exactTokenizer && q4ForwardPassed,
+      status: cancelled ? "cancelled" : timedOut ? "timeout" : quickOrDeepOk ? "passed" : "failed",
+      check_level: runDeep ? "deep" : "quick",
+      ok: quickOrDeepOk,
+      elapsed_ms: elapsedMs,
       assets: {
         status: Boolean(assetManifest) && shardsVerified ? "通过" : "失败",
         manifest_loaded: Boolean(assetManifest),
@@ -719,20 +937,20 @@ export class BrowserChatRuntime {
         path: tokenizerPath
       },
       q4_forward: {
-        status: q4ForwardPassed ? "通过" : "失败",
+        status: runDeep ? (timedOut ? "timeout" : q4ForwardPassed ? "通过" : "失败") : "skipped",
         q4_forward_ran: q4ForwardPassed,
-        runtime_mode: smokeStats?.runtime_mode || this.mode,
+        runtime_mode: q4ForwardPassed || quickPassed ? "static_q4_experimental" : "synthetic_fallback",
         tokens_generated: Number(smokeStats?.tokens_generated || 0),
-        decode_status: smokeStats?.decode_status || "failed",
-        blocker: q4ForwardPassed ? "" : (blockers.find((item) => String(item).includes("web_static_q4_worker_bundle_not_embedded")) || "q4_forward_not_confirmed")
+        decode_status: smokeStats?.decode_status || (exactTokenizer ? "exact_runtime_tokenizer" : "not_run"),
+        blocker: q4ForwardPassed ? "" : (timedOut ? "self_check_timeout" : runDeep ? "q4_forward_not_confirmed" : "q4_forward_skipped_quick_check")
       },
       fallback: {
         status: "可用",
-        reason: q4ForwardPassed ? "" : "no_model_fallback_available"
+        reason: q4ForwardPassed ? "" : runDeep ? "no_model_fallback_available" : "q4_forward_skipped_quick_check"
       },
       output: {
         token_preview: smokeStats?.generated_token_ids?.slice?.(0, 4) || [],
-        text_preview: String(smokePreview || "").slice(0, 80)
+        text_preview: smokePreview || (runDeep ? "no q4 text" : "quick check only")
       },
       blockers: uniqueFlags(blockers),
       non_claims: {
@@ -745,11 +963,12 @@ export class BrowserChatRuntime {
     };
     this.assetStatus = {
       ...this.assetStatus,
-      cache_result: report.ok ? "q4_forward_smoke_passed" : "q4_forward_smoke_blocked",
+      cache_result: q4ForwardPassed ? "q4_forward_smoke_passed" : quickPassed ? "quick_self_check_passed_q4_forward_skipped" : "q4_path_blocked",
       progress: `${shardResults.filter((item) => item.ok).length}/${q4Assets.length}`,
-      verification: report.ok ? "q4_manifest_shards_tokenizer_forward_verified" : "q4_path_blocked",
+      verification: q4ForwardPassed ? "q4_manifest_shards_tokenizer_forward_verified" : quickPassed ? "q4_manifest_shards_tokenizer_verified_forward_skipped" : "q4_path_blocked",
       fallback_reason: report.ok ? "" : report.blockers[0] || "q4_self_check_failed"
     };
+    if (this.activeSelfCheckController === controller) this.activeSelfCheckController = null;
     return report;
   }
 
@@ -778,6 +997,10 @@ export class BrowserChatRuntime {
       const timeout = setTimeout(() => {
         this.lastFallbackReason = "generation_timeout";
         this.activeReject = null;
+        if (this.worker) {
+          this.worker.terminate();
+          this.worker = null;
+        }
         reject(new Error("generation_timeout"));
       }, options.timeoutMs || 3000);
       this.worker.onmessage = (event) => {
@@ -804,7 +1027,8 @@ export class BrowserChatRuntime {
         prompt: input,
         mode: this.mode,
         maxTokens: Math.min(options.maxTokens || 16, 32),
-        contextLength: Math.min(options.contextLength || 256, 1024)
+        contextLength: Math.min(options.contextLength || 256, 1024),
+        timeoutMs: Math.min(options.timeoutMs || 3000, 15000)
       });
     });
   }
@@ -819,8 +1043,6 @@ export class BrowserChatRuntime {
     statePacket.delivery_mode = this.deliveryConfig.delivery_mode || "demo_static";
     statePacket.rag_mode = this.deliveryConfig.rag_mode || "static_demo";
     statePacket.product_model = false;
-    setStatus("loading_model");
-    if (!this.worker && this.capabilities.worker_available) await this.load();
     setStatus("retrieving_local_memory");
     if (!this.memoryRecords) this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     const memoryRecords = this.contextPackets.length > 0
@@ -833,6 +1055,83 @@ export class BrowserChatRuntime {
       evidencePacket,
       contextPackets: this.contextPackets
     });
+
+    if (isIdentityQuestion(input)) {
+      setStatus("verifying");
+      const routePolicy = applyAnswerSurfacePolicy({
+        user_input: input,
+        evidence_status: "sufficient",
+        runtime_mode: this.mode,
+        model_output: "",
+        decode_status: "not_run",
+        generation_flags: ["identity_boundary"],
+        adapter_context_present: this.contextPackets.length > 0,
+        product_admission: false,
+        evidence_packet: evidencePacket
+      });
+      const runtimeStats = {
+        tokens_generated: 0,
+        elapsed_ms: 0,
+        runtime_mode: this.mode,
+        decoded_text_available: false,
+        decode_status: "identity_route_no_model",
+        fallback_used: false
+      };
+      const adapterContextSummary = buildAdapterContextSummary(this.contextPackets);
+      const packet = {
+        input,
+        state_packet: statePacket,
+        evidence_packet: evidencePacket,
+        retrieved_evidence: evidencePacket.retrieved_evidence,
+        decoder_draft: "",
+        verifier_result: { passed: true, failures: [], fallback_recommended: false },
+        final_answer: routePolicy.final_answer,
+        fallback_used: false,
+        fallback_reason: "identity_boundary",
+        answer_status: "final",
+        route: routePolicy.route,
+        answer_route: routePolicy.route,
+        use_model_draft: false,
+        quality_flags: routePolicy.quality_flags || ["identity_boundary"],
+        non_claims: routePolicy.non_claims || ROUTER_NON_CLAIMS,
+        route_policy: routePolicy,
+        runtime_stats: runtimeStats,
+        decode_status: runtimeStats.decode_status,
+        prompt_packet: buildPromptPacket(input, evidencePacket, statePacket),
+        no_answer_bank: true,
+        adapter_context_summary: adapterContextSummary,
+        answer_surface_request: answerSurfaceRequest,
+        answer_surface_response: buildAnswerSurfaceResponse({
+          finalAnswer: routePolicy.final_answer,
+          requestPacket: answerSurfaceRequest,
+          evidencePacket
+        }),
+        delivery_config: this.deliveryConfig,
+        capabilities: this.capabilities,
+        asset_status: this.assetStatus
+      };
+      packet.process_trace = buildProcessTrace({
+        input,
+        statePacket,
+        evidencePacket,
+        runtimeStats,
+        decoderDraft: "",
+        routePolicy,
+        fallbackUsed: false,
+        fallbackReason: "identity_boundary",
+        qualityFlags: packet.quality_flags,
+        adapterContextSummary,
+        assetStatus: this.assetStatus,
+        deliveryConfig: this.deliveryConfig,
+        turnIndex: this.turnIndex
+      });
+      packet.answer_source_label = packet.process_trace.answer_source_label;
+      setStatus("final");
+      return packet;
+    }
+
+    setStatus("loading_model");
+    if (!this.worker && this.capabilities.worker_available) await this.load();
     setStatus("drafting");
 
     let decoderDraft = "";
@@ -845,7 +1144,7 @@ export class BrowserChatRuntime {
     try {
       if (this.abortRequested) throw new Error("generation_aborted");
       const promptPacket = buildPromptPacket(input, evidencePacket, statePacket);
-      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), { maxTokens: 8, timeoutMs: 120000, contextLength: 64 });
+      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), { maxTokens: 8, timeoutMs: 8000, contextLength: 64 });
       setStatus("verifying");
       verifierResult = verifyDraft(decoderDraft, evidencePacket);
       const finalized = finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult, {

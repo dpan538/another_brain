@@ -9,7 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28hotfix1" / "reports" / "static_route_smoke.json"
-VERSION = "r28hotfix1-route-loop-free-runtime"
+VERSION = "r28hotfix2-nonblocking-selfcheck"
+ACCEPTED_MARKERS = ("R28HOTFIX1", "R28HOTFIX2")
 
 ROUTE_TO_FILE = {
     "/": WEB / "index.html",
@@ -42,7 +43,7 @@ def build_static_route_smoke(write: bool = True) -> dict:
             "status": status,
             "redirect_count": redirect_count,
             "entry": entry.relative_to(ROOT).as_posix() if entry else "",
-            "contains_hotfix1": "R28HOTFIX1" in body,
+            "contains_hotfix1": any(marker in body for marker in ACCEPTED_MARKERS),
             "contains_process": "过程摘要" in body,
             "contains_q4": "static_q4_experimental" in body,
             "contains_tokenizer": "exact_runtime_tokenizer" in body,

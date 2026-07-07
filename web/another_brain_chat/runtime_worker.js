@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28hotfix1-route-loop-free-runtime";
+import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28hotfix2-nonblocking-selfcheck";
 
 function tokensFor(prompt, maxTokens) {
   const parts = [

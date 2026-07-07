@@ -8,7 +8,7 @@ test("model self-check is visible and updates runtime status fields", async () =
   for (const marker of ["检查本地模型路径", "self-check-tokens", "self-check-runtime-mode", "self-check-answer-source", "self-check-fallback-reason"]) {
     assert.ok(html.includes(marker));
   }
-  assert.ok(app.includes("runtime.selfCheckModelPath()"));
-  assert.ok(app.includes("q4_ready"));
+  assert.ok(app.includes("runtime.deepSelfCheckModelPath") || app.includes("runtime.selfCheckModelPath()"));
+  assert.ok(app.includes("q4_metadata_ready") || app.includes("q4_ready"));
   assert.ok(app.includes("q4_blocked"));
 });

@@ -35,6 +35,7 @@ export function applyAnswerSurfacePolicy(routeInput = {}, options = {}) {
   }
 
   const finalAnswer = answerSurfaceForRoute(classified.route);
+  const isBoundaryFinal = classified.route === "identity_boundary";
   return {
     ...buildAnswerRouteOutput({
       route: classified.route,
@@ -44,8 +45,8 @@ export function applyAnswerSurfacePolicy(routeInput = {}, options = {}) {
       qualityFlags: classified.quality_flags,
       nonClaims: ROUTER_NON_CLAIMS
     }),
-    answer_status: "fallback",
-    fallback_used: true,
+    answer_status: isBoundaryFinal ? "final" : "fallback",
+    fallback_used: !isBoundaryFinal,
     answer_surface_policy_version: R28ROUT0_POLICY_VERSION
   };
 }

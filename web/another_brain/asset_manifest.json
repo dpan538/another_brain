@@ -8,11 +8,11 @@
   "full_bundle_estimate_bytes": 69982911,
   "gate_assets": [
     {
-      "bytes": 2865,
+      "bytes": 2864,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "099a81f9fb23f5e1d99bde6d6d9fef79fd088903ab73f178dcbd0722155675cb"
+      "sha256": "50cc5c62315051703e2d37ea7c4a6ac1d28990db17cdaa05a97ae23ab065c475"
     }
   ],
   "hosted_vector_store": false,
@@ -134,10 +134,10 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49309911,
-  "ui_build_marker": "R28HOTFIX1",
-  "ui_build_timestamp": "2026-07-07T20:55:00+08:00",
+  "total_declared_bytes": 49309910,
+  "ui_build_marker": "R28HOTFIX2",
+  "ui_build_timestamp": "2026-07-07T22:20:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28hotfix1-route-loop-free-runtime",
+  "ui_version": "r28hotfix2-nonblocking-selfcheck",
   "total_model_asset_bytes": 48267968
 }

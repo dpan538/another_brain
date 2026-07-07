@@ -1,14 +1,16 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix1-route-loop-free-runtime";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix1-route-loop-free-runtime";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix2-nonblocking-selfcheck";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix2-nonblocking-selfcheck";
 
-const R28HOTFIX1_UI_VERSION = "r28hotfix1-route-loop-free-runtime";
-const R28HOTFIX1_BUILD_MARKER = "R28HOTFIX1";
+const R28HOTFIX2_UI_VERSION = "r28hotfix2-nonblocking-selfcheck";
+const R28HOTFIX2_BUILD_MARKER = "R28HOTFIX2";
+const R28HOTFIX1_UI_VERSION = R28HOTFIX2_UI_VERSION;
+const R28HOTFIX1_BUILD_MARKER = R28HOTFIX2_BUILD_MARKER;
 
 const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_demo",
-  prelaunch_stage: "r28hotfix1",
+  prelaunch_stage: "r28hotfix2",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -74,6 +76,9 @@ const traceDraftSummary = document.querySelector("#trace-draft-summary");
 const traceRouterSummary = document.querySelector("#trace-router-summary");
 const traceFinalSummary = document.querySelector("#trace-final-summary");
 const modelSelfCheckButton = document.querySelector("#model-self-check-button");
+const modelSelfCheckStopButton = document.querySelector("#model-self-check-stop-button");
+const selfCheckStage = document.querySelector("#self-check-stage");
+const selfCheckElapsed = document.querySelector("#self-check-elapsed");
 const selfCheckAssets = document.querySelector("#self-check-assets");
 const selfCheckTokenizer = document.querySelector("#self-check-tokenizer");
 const selfCheckQ4 = document.querySelector("#self-check-q4");
@@ -97,6 +102,7 @@ const contextValidation = document.querySelector("#context-validation");
 
 let lastPacket = null;
 let running = false;
+let activeSelfCheckController = null;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
@@ -331,6 +337,8 @@ function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
 
 function renderSelfCheck(report = null) {
   if (!report) {
+    setText(selfCheckStage, "idle");
+    setText(selfCheckElapsed, "0 ms");
     setText(selfCheckAssets, "未检查");
     setText(selfCheckTokenizer, "未检查");
     setText(selfCheckQ4, "未检查");
@@ -343,8 +351,14 @@ function renderSelfCheck(report = null) {
     setText(selfCheckBlockers, "blocker：none");
     return;
   }
-  setText(selfCheckAssets, `manifest=${report.assets?.manifest_loaded ? "pass" : "fail"} / q4 shards=${report.assets?.shards_verified ? "pass" : "fail"} ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}`);
-  setText(selfCheckTokenizer, `exact tokenizer=${report.tokenizer?.exact_runtime_tokenizer ? "pass" : "fail"}`);
+  setText(selfCheckStage, `${report.status || "idle"}${report.check_level ? ` / ${report.check_level}` : ""}${report.stage ? ` / ${report.stage}` : ""}`);
+  setText(selfCheckElapsed, `${Number(report.elapsed_ms || 0)} ms`);
+  const isChecking = String(report.status || "").startsWith("checking");
+  const manifestStatus = report.assets?.manifest_loaded ? "pass" : isChecking ? "checking" : "fail";
+  const shardStatus = report.assets?.shards_verified ? "pass" : isChecking ? "checking" : "fail";
+  const tokenizerStatus = report.tokenizer?.exact_runtime_tokenizer ? "pass" : isChecking ? "checking" : "fail";
+  setText(selfCheckAssets, `manifest=${manifestStatus} / q4 shards=${shardStatus} ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}`);
+  setText(selfCheckTokenizer, `exact tokenizer=${tokenizerStatus}`);
   setText(selfCheckQ4, `${report.q4_forward?.status || "失败"} / q4_forward_ran=${boolText(report.q4_forward?.q4_forward_ran)}`);
   setText(selfCheckTokens, String(report.q4_forward?.tokens_generated || 0));
   setText(selfCheckRuntimeMode, report.q4_forward?.runtime_mode || (report.q4_forward?.q4_forward_ran ? "static_q4_experimental" : "synthetic_fallback"));
@@ -353,7 +367,7 @@ function renderSelfCheck(report = null) {
   setText(selfCheckFallbackReason, report.fallback?.reason || report.q4_forward?.blocker || "none");
   setText(selfCheckOutput, `输出：tokens=${report.q4_forward?.tokens_generated || 0} / ${report.output?.text_preview || "no q4 text"}`);
   setText(selfCheckBlockers, `blocker：${(report.blockers || []).join(" / ") || "none"}`);
-  setText(q4StatusBadge, `q4 forward: ${report.q4_forward?.q4_forward_ran ? "true" : "false"}`);
+  setText(q4StatusBadge, `q4 forward: ${report.q4_forward?.q4_forward_ran ? "true" : report.q4_forward?.status || "false"}`);
 }
 
 function setPipelineStatus(status) {
@@ -385,22 +399,26 @@ async function boot() {
   renderContextBridge();
   renderTrace(null);
   renderSelfCheck({
+    status: "checking_quick",
+    check_level: "quick",
+    stage: "boot_quick_check",
+    elapsed_ms: 0,
     assets: { manifest_loaded: false, shards_verified: false, q4_shard_count: 0, expected_shard_count: Number(deliveryConfig.shard_count || 0) },
     tokenizer: { exact_runtime_tokenizer: false },
-    q4_forward: { status: "检查中", q4_forward_ran: false, tokens_generated: 0 },
+    q4_forward: { status: "skipped", q4_forward_ran: false, tokens_generated: 0 },
     fallback: { status: "可用" },
     output: { text_preview: "" },
     blockers: []
   });
-  const report = await runtime.selfCheckModelPath();
+  const report = await runtime.quickSelfCheckModelPath({ timeoutMs: 1000 });
   renderSelfCheck(report);
   renderAssetStatus(runtime.assetStatus, runtime.deliveryConfig);
   if (report.ok) {
-    setText(modelStatus, "q4_ready");
+    setText(modelStatus, "q4_metadata_ready");
     setText(runtimeModeStatus, "static_q4_experimental");
     setText(decodeStatus, report.q4_forward?.decode_status || "exact_runtime_tokenizer");
     setText(tokenCountStatus, `${report.q4_forward?.tokens_generated || 0} generated`);
-    setText(answerSourceStatus, "self_check_static_q4_experimental");
+    setText(answerSourceStatus, report.q4_forward?.q4_forward_ran ? "self_check_static_q4_experimental" : "no_model_fallback");
   } else {
     setText(modelStatus, "q4_blocked");
     setText(runtimeModeStatus, "synthetic_fallback");
@@ -471,15 +489,30 @@ on(abortButton, "click", () => {
 on(clearChatButton, "click", clearConversation);
 
 on(modelSelfCheckButton, "click", async () => {
+  if (activeSelfCheckController) {
+    activeSelfCheckController.abort();
+    activeSelfCheckController = null;
+  }
+  const controller = new AbortController();
+  activeSelfCheckController = controller;
   setDisabled(modelSelfCheckButton, true);
+  setDisabled(modelSelfCheckStopButton, false);
   setText(selfCheckAssets, "检查中");
   setText(selfCheckTokenizer, "检查中");
-  setText(selfCheckQ4, "检查中");
+  setText(selfCheckQ4, "quick check");
   try {
-    const report = await runtime.selfCheckModelPath();
+    const report = await runtime.deepSelfCheckModelPath({
+      timeoutMs: 8000,
+      signal: controller.signal,
+      onProgress: renderSelfCheck
+    });
     renderSelfCheck(report);
   } catch (error) {
     renderSelfCheck({
+      status: controller.signal.aborted ? "cancelled" : "failed",
+      check_level: "deep",
+      stage: controller.signal.aborted ? "cancelled" : "failed",
+      elapsed_ms: 0,
       assets: { status: "失败", q4_shard_count: 0, expected_shard_count: 0 },
       tokenizer: { status: "fallback" },
       q4_forward: { status: "失败", q4_forward_ran: false, tokens_generated: 0 },
@@ -488,8 +521,32 @@ on(modelSelfCheckButton, "click", async () => {
       blockers: [error.message || "model_path_self_check_failed"]
     });
   } finally {
+    if (activeSelfCheckController === controller) activeSelfCheckController = null;
     setDisabled(modelSelfCheckButton, false);
+    setDisabled(modelSelfCheckStopButton, true);
   }
+});
+
+on(modelSelfCheckStopButton, "click", () => {
+  if (activeSelfCheckController) {
+    activeSelfCheckController.abort();
+    runtime.cancelSelfCheck("self_check_cancelled");
+  }
+  activeSelfCheckController = null;
+  setDisabled(modelSelfCheckStopButton, true);
+  setDisabled(modelSelfCheckButton, false);
+  renderSelfCheck({
+    status: "cancelled",
+    check_level: "deep",
+    stage: "user_cancelled",
+    elapsed_ms: 0,
+    assets: { status: "取消", q4_shard_count: 0, expected_shard_count: Number(runtime.deliveryConfig?.shard_count || 0) },
+    tokenizer: { status: "skipped" },
+    q4_forward: { status: "skipped", q4_forward_ran: false, tokens_generated: 0 },
+    fallback: { status: "可用", reason: "self_check_cancelled" },
+    output: { text_preview: "" },
+    blockers: ["self_check_cancelled"]
+  });
 });
 }
 

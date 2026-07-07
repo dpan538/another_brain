@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>R28HOTFIX1 another_brain preview | Process Transparent Chat</title>
-    <meta name="another-brain-ui-version" content="r28hotfix1-route-loop-free-runtime" />
+    <title>R28HOTFIX2 another_brain preview | Process Transparent Chat</title>
+    <meta name="another-brain-ui-version" content="r28hotfix2-nonblocking-selfcheck" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2528'/%3E%3Cpath d='M8 18h16M8 12h10M8 24h7' stroke='%23f4f6f5' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28hotfix1-route-loop-free-runtime" />
+    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28hotfix2-nonblocking-selfcheck" />
   </head>
   <body>
     <main class="app-shell" aria-label="another_brain process transparent preview">
@@ -17,7 +17,7 @@
           <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
         </div>
         <div class="header-badges" aria-label="runtime status">
-          <span class="badge badge-version" id="ui-version-badge">R28HOTFIX1 · r28hotfix1-route-loop-free-runtime</span>
+          <span class="badge badge-version" id="ui-version-badge">R28HOTFIX2 · r28hotfix2-nonblocking-selfcheck</span>
           <span class="badge badge-local" id="local-indicator">local/static</span>
           <span class="badge badge-backend" id="backend-badge">No backend inference</span>
           <span class="badge" id="model-source-badge">static_q4_experimental</span>
@@ -63,7 +63,7 @@
         </div>
         <div>
           <span class="status-label">UI Build</span>
-          <strong id="ui-build-status">R28HOTFIX1 / r28hotfix1-route-loop-free-runtime</strong>
+          <strong id="ui-build-status">R28HOTFIX2 / r28hotfix2-nonblocking-selfcheck</strong>
         </div>
       </section>
 
@@ -133,10 +133,15 @@
               <p class="eyebrow">公开过程</p>
               <h2>过程摘要</h2>
             </div>
-            <button type="button" class="button-secondary small-button" id="model-self-check-button">检查本地模型路径</button>
+            <div class="self-check-actions">
+              <button type="button" class="button-secondary small-button" id="model-self-check-button">检查本地模型路径</button>
+              <button type="button" class="button-secondary small-button" id="model-self-check-stop-button" disabled>停止检查</button>
+            </div>
           </div>
 
           <section class="self-check" aria-label="model path self check">
+            <div><span>检查阶段</span><strong id="self-check-stage">idle</strong></div>
+            <div><span>elapsed</span><strong id="self-check-elapsed">0 ms</strong></div>
             <div><span>模型资产</span><strong id="self-check-assets">未检查</strong></div>
             <div><span>Tokenizer</span><strong id="self-check-tokenizer">未检查</strong></div>
             <div><span>q4 forward</span><strong id="self-check-q4">未检查</strong></div>
@@ -257,6 +262,6 @@
       </section>
     </main>
 
-    <script type="module" src="/another_brain_chat/app.js?v=r28hotfix1-route-loop-free-runtime"></script>
+    <script type="module" src="/another_brain_chat/app.js?v=r28hotfix2-nonblocking-selfcheck"></script>
   </body>
 </html>

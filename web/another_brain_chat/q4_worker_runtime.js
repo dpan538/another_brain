@@ -1,4 +1,5 @@
-const R28HOTFIX1_Q4_RUNTIME_VERSION = "r28hotfix1-route-loop-free-runtime";
+const R28HOTFIX2_Q4_RUNTIME_VERSION = "r28hotfix2-nonblocking-selfcheck";
+const R28HOTFIX1_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
 const PAIR_SEPARATOR = "\u0001";
 const BYTE_ENCODER = new Map();
 const BYTE_DECODER = new Map();
