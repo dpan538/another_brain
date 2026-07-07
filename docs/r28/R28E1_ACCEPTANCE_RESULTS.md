@@ -6,8 +6,8 @@ It contains synthetic/static smoke evidence only and no private adapter payloads
 - Suite: R28E1 automated prelaunch smoke and acceptance matrix
 - Passed: 30 / 30
 - Failed: 0
-- Build output bytes: 22251715
-- Budget margin bytes: 77748285
+- Build output bytes: 19638653
+- Budget margin bytes: 80361347
 
 | # | Scenario | Status |
 | --- | --- | --- |
@@ -45,8 +45,8 @@ It contains synthetic/static smoke evidence only and no private adapter payloads
 ```json
 {
   "budget": {
-    "build_output_bytes": 22251715,
-    "margin_bytes": 77748285,
+    "build_output_bytes": 19638653,
+    "margin_bytes": 80361347,
     "max_total_static_bytes": 100000000,
     "model_declared_bytes": 0,
     "tokenizer_declared_bytes": 0
@@ -432,7 +432,7 @@ It contains synthetic/static smoke evidence only and no private adapter payloads
           "ok": true,
           "returncode": 0,
           "stderr_tail": "",
-          "stdout_tail": "from older manifest versions\n  ---\n  duration_ms: 0.690417\n  type: 'test'\n  ...\n# Subtest: sha256 verification reports matching and mismatching bytes\nok 4 - sha256 verification reports matching and mismatching bytes\n  ---\n  duration_ms: 6.884709\n  type: 'test'\n  ...\n# Subtest: loader reports checksum failure without admitting partial shard set\nok 5 - loader reports checksum failure without admitting partial shard set\n  ---\n  duration_ms: 21.920834\n  type: 'test'\n  ...\n# Subtest: R27B8 does not track model weights, tokenizer artifacts, shards, or ONNX assets\nok 6 - R27B8 does not track model weights, tokenizer artifacts, shards, or ONNX assets\n  ---\n  duration_ms: 28.711\n  type: 'test'\n  ...\n# Subtest: same-origin validator rejects external model asset URLs\nok 7 - same-origin validator rejects external model asset URLs\n  ---\n  duration_ms: 1.521458\n  type: 'test'\n  ...\n# Subtest: loader rejects external shard declared by same-origin manifest\nok 8 - loader rejects external shard declared by same-origin manifest\n  ---\n  duration_ms: 29.703958\n  type: 'test'\n  ...\n# Subtest: same-origin shard loader fetches, verifies, caches, and reports progress\nok 9 - same-origin shard loader fetches, verifies, caches, and reports progress\n  ---\n  duration_ms: 27.427958\n  type: 'test'\n  ...\n# Subtest: same-origin shard loader honors abort signals before shard fetch\nok 10 - same-origin shard loader honors abort signals before shard fetch\n  ---\n  duration_ms: 0.879083\n  type: 'test'\n  ...\n1..10\n# tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 137.973583\n"
+          "stdout_tail": "om older manifest versions\n  ---\n  duration_ms: 0.663416\n  type: 'test'\n  ...\n# Subtest: sha256 verification reports matching and mismatching bytes\nok 4 - sha256 verification reports matching and mismatching bytes\n  ---\n  duration_ms: 4.584833\n  type: 'test'\n  ...\n# Subtest: loader reports checksum failure without admitting partial shard set\nok 5 - loader reports checksum failure without admitting partial shard set\n  ---\n  duration_ms: 13.096792\n  type: 'test'\n  ...\n# Subtest: R27B8 does not track model weights, tokenizer artifacts, shards, or ONNX assets\nok 6 - R27B8 does not track model weights, tokenizer artifacts, shards, or ONNX assets\n  ---\n  duration_ms: 21.576208\n  type: 'test'\n  ...\n# Subtest: same-origin validator rejects external model asset URLs\nok 7 - same-origin validator rejects external model asset URLs\n  ---\n  duration_ms: 1.483458\n  type: 'test'\n  ...\n# Subtest: loader rejects external shard declared by same-origin manifest\nok 8 - loader rejects external shard declared by same-origin manifest\n  ---\n  duration_ms: 21.183666\n  type: 'test'\n  ...\n# Subtest: same-origin shard loader fetches, verifies, caches, and reports progress\nok 9 - same-origin shard loader fetches, verifies, caches, and reports progress\n  ---\n  duration_ms: 17.562125\n  type: 'test'\n  ...\n# Subtest: same-origin shard loader honors abort signals before shard fetch\nok 10 - same-origin shard loader honors abort signals before shard fetch\n  ---\n  duration_ms: 0.984583\n  type: 'test'\n  ...\n1..10\n# tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 92.429667\n"
         },
         "markers": {
           "loader_external_rejects": true,
@@ -454,7 +454,7 @@ It contains synthetic/static smoke evidence only and no private adapter payloads
           "ok": true,
           "returncode": 0,
           "stderr_tail": "",
-          "stdout_tail": "from older manifest versions\n  ---\n  duration_ms: 0.690417\n  type: 'test'\n  ...\n# Subtest: sha256 verification reports matching and mismatching bytes\nok 4 - sha256 verification reports matching and mismatching bytes\n  ---\n  duration_ms: 6.884709\n  type: 'test'\n  ...\n# Subtest: loader reports checksum failure without admitting partial shard set\nok 5 - loader reports checksum failure without admitting partial shard set\n  ---\n  duration_ms: 21.920834\n  type: 'test'\n  ...\n# Subtest: R27B8 does not track model weights, tokenizer artifacts, shards, or ONNX assets\nok 6 - R27B8 does not track model weights, tokenizer artifacts, shards, or ONNX assets\n  ---\n  duration_ms: 28.711\n  type: 'test'\n  ...\n# Subtest: same-origin validator rejects external model asset URLs\nok 7 - same-origin validator rejects external model asset URLs\n  ---\n  duration_ms: 1.521458\n  type: 'test'\n  ...\n# Subtest: loader rejects external shard declared by same-origin manifest\nok 8 - loader rejects external shard declared by same-origin manifest\n  ---\n  duration_ms: 29.703958\n  type: 'test'\n  ...\n# Subtest: same-origin shard loader fetches, verifies, caches, and reports progress\nok 9 - same-origin shard loader fetches, verifies, caches, and reports progress\n  ---\n  duration_ms: 27.427958\n  type: 'test'\n  ...\n# Subtest: same-origin shard loader honors abort signals before shard fetch\nok 10 - same-origin shard loader honors abort signals before shard fetch\n  ---\n  duration_ms: 0.879083\n  type: 'test'\n  ...\n1..10\n# tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 137.973583\n"
+          "stdout_tail": "om older manifest versions\n  ---\n  duration_ms: 0.663416\n  type: 'test'\n  ...\n# Subtest: sha256 verification reports matching and mismatching bytes\nok 4 - sha256 verification reports matching and mismatching bytes\n  ---\n  duration_ms: 4.584833\n  type: 'test'\n  ...\n# Subtest: loader reports checksum failure without admitting partial shard set\nok 5 - loader reports checksum failure without admitting partial shard set\n  ---\n  duration_ms: 13.096792\n  type: 'test'\n  ...\n# Subtest: R27B8 does not track model weights, tokenizer artifacts, shards, or ONNX assets\nok 6 - R27B8 does not track model weights, tokenizer artifacts, shards, or ONNX assets\n  ---\n  duration_ms: 21.576208\n  type: 'test'\n  ...\n# Subtest: same-origin validator rejects external model asset URLs\nok 7 - same-origin validator rejects external model asset URLs\n  ---\n  duration_ms: 1.483458\n  type: 'test'\n  ...\n# Subtest: loader rejects external shard declared by same-origin manifest\nok 8 - loader rejects external shard declared by same-origin manifest\n  ---\n  duration_ms: 21.183666\n  type: 'test'\n  ...\n# Subtest: same-origin shard loader fetches, verifies, caches, and reports progress\nok 9 - same-origin shard loader fetches, verifies, caches, and reports progress\n  ---\n  duration_ms: 17.562125\n  type: 'test'\n  ...\n# Subtest: same-origin shard loader honors abort signals before shard fetch\nok 10 - same-origin shard loader honors abort signals before shard fetch\n  ---\n  duration_ms: 0.984583\n  type: 'test'\n  ...\n1..10\n# tests 10\n# suites 0\n# pass 10\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 92.429667\n"
         },
         "markers": {
           "checksum_subtest": true,
@@ -613,19 +613,19 @@ It contains synthetic/static smoke evidence only and no private adapter payloads
       "details": {
         "bundle": {
           "backend_inference": false,
-          "build_output_bytes": 22251715,
+          "build_output_bytes": 19638653,
           "candidate_injected_bytes_if_local_ignored_smoke_used": 0,
           "external_llm_api": false,
           "failures": [],
-          "gate_asset_bytes": 1639,
-          "margin_bytes": 77748285,
+          "gate_asset_bytes": 1988,
+          "margin_bytes": 80361347,
           "max_total_static_bytes": 100000000,
           "model_declared_bytes": 0,
           "ok": true,
           "product_model": false,
           "rag_asset_bytes": 2065,
-          "runtime_app_bytes": 86270,
-          "static_file_count": 158,
+          "runtime_app_bytes": 87120,
+          "static_file_count": 150,
           "tokenizer_declared_bytes": 0
         },
         "markers": {
