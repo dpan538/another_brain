@@ -5,7 +5,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "synthetic_tiny",
   rag_mode: "static_demo",
-  prelaunch_stage: "r28p0b",
+  prelaunch_stage: "r28p1",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -15,14 +15,24 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   candidate_route: "synthetic_only",
   handoff_source: "none",
   adapter_status: "local_session_import_export_ready",
-  release_blockers: ["product_admission_pending", "browser_admission_pending", "release_checkpoint_pending"],
+  release_blockers: [
+    "real_model_assets_not_admitted_or_committed",
+    "same_origin_model_shard_loader_not_tested_with_real_committed_shards",
+    "product_model_admission_not_done",
+    "browser_admission_not_done",
+    "release_checkpoint_admission_not_done",
+    "vercel_preview_must_pass",
+    "100mb_margin_tight",
+    "final_merge_to_main_pending"
+  ],
+  release_candidate_mode: "demo_static_with_engineering_candidate_metadata",
   candidate_static_bundle: false,
-  candidate_warning: "No product-path candidate is admitted into the static bundle; engineering smoke remains separate.",
+  candidate_warning: "No product-path candidate assets are admitted into the static bundle; engineering metadata remains separate.",
   asset_cache_mode: "memory_fallback",
   asset_cache_policy: "same_origin_shards_only",
   asset_loader_resilience: "checksum_retry_abort_partial_fallback",
   offline_static_readiness: "shell_reload_only_no_model_assets",
-  non_product_warning: "Demo static mode uses mock/synthetic generation and demo memory only."
+  non_product_warning: "R28P1 is a demo_static release-candidate gate with mock/synthetic generation and engineering metadata only; it is not product, browser, or release checkpoint admission."
 });
 
 const form = document.querySelector("#chat-form");

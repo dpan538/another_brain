@@ -2,7 +2,7 @@
   "delivery_mode": "demo_static",
   "model_mode": "candidate_manifest_experimental",
   "rag_mode": "static_demo",
-  "prelaunch_stage": "r28p0b",
+  "prelaunch_stage": "r28p1",
   "backend_inference": false,
   "external_llm_api": false,
   "hosted_vector_store": false,
@@ -20,8 +20,9 @@
   "full_static_bundle_estimate_bytes": 98385593,
   "remaining_bytes_under_100mb": 1614407,
   "budget_classification": "product_path_tight",
+  "release_candidate_mode": "demo_static_with_engineering_candidate_metadata",
   "candidate_static_bundle": false,
-  "candidate_warning": "A12 new_96m is bound as metadata-only prelaunch evidence; no model assets are admitted into this static bundle.",
+  "candidate_warning": "A12 new_96m is bound as metadata-only release-candidate evidence; no model assets are admitted into this static bundle.",
   "asset_cache_mode": "memory_fallback",
   "asset_cache_policy": "same_origin_shards_only",
   "asset_cache_status": "same_origin_manifest_smoke_metadata_only",
@@ -29,10 +30,14 @@
   "adapter_status": "local_session_import_export_ready",
   "offline_static_readiness": "shell_reload_only_no_model_assets",
   "release_blockers": [
-    "vercel_preview_not_checked",
-    "product_admission_pending",
-    "browser_admission_pending",
-    "release_checkpoint_pending"
+    "real_model_assets_not_admitted_or_committed",
+    "same_origin_model_shard_loader_not_tested_with_real_committed_shards",
+    "product_model_admission_not_done",
+    "browser_admission_not_done",
+    "release_checkpoint_admission_not_done",
+    "vercel_preview_must_pass",
+    "100mb_margin_tight",
+    "final_merge_to_main_pending"
   ],
-  "non_product_warning": "Prelaunch static mode keeps mock/synthetic generation until B-line admission; A12 handoff is engineering-only."
+  "non_product_warning": "R28P1 is a demo_static release-candidate gate with mock/synthetic generation and engineering metadata only; it is not product, browser, or release checkpoint admission."
 }
