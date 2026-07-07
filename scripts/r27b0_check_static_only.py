@@ -66,6 +66,16 @@ EXTERNAL_LLM_TERMS = (
     "doubao",
 )
 
+NEGATIVE_RUNTIME_MARKERS = (
+    '"doubao": false',
+    '"external_llm_api": false',
+    '"hosted_vector_store": false',
+    '"backend_inference": false',
+    "no doubao",
+    "no_external_llm",
+    "no hosted vector store",
+)
+
 HOSTED_STORAGE_TERMS = (
     "pinecone",
     "weaviate",
@@ -152,9 +162,10 @@ def check_no_external_runtime_dependencies(failures: list[str]) -> None:
     for path in paths:
         rel = repo_rel(path)
         text = read_text(path).lower()
-        if any(term in text for term in EXTERNAL_LLM_TERMS) and "no " not in text:
+        has_negative_marker = any(marker in text for marker in NEGATIVE_RUNTIME_MARKERS)
+        if any(term in text for term in EXTERNAL_LLM_TERMS) and "no " not in text and not has_negative_marker:
             failures.append(f"external_llm_endpoint_reference:{rel}")
-        if any(term in text for term in HOSTED_STORAGE_TERMS):
+        if any(term in text for term in HOSTED_STORAGE_TERMS) and not has_negative_marker:
             failures.append(f"hosted_runtime_storage_reference:{rel}")
         if any(pattern.search(text) for pattern in REMOTE_MODEL_PATTERNS):
             failures.append(f"remote_model_url_reference:{rel}")

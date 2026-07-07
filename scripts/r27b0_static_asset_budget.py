@@ -33,6 +33,8 @@ WEIGHT_EXTENSIONS = {
     ".safetensors",
 }
 
+R28M1_ALLOWED_STATIC_MODEL_SHARD_PREFIX = "web/another_brain/model_assets/r28m1/shards/model-q4-"
+
 FORBIDDEN_CODE_DIRS = (
     "api",
     "pages/api",
@@ -151,6 +153,16 @@ def tracked_files() -> list[str]:
     return result.stdout.splitlines()
 
 
+def is_allowed_r28m1_static_model_shard(rel: str) -> bool:
+    path = ROOT / rel
+    return (
+        rel.startswith(R28M1_ALLOWED_STATIC_MODEL_SHARD_PREFIX)
+        and rel.endswith(".bin")
+        and path.exists()
+        and path.stat().st_size <= 25_000_000
+    )
+
+
 def safe_walk_files() -> list[Path]:
     out = []
     for dirpath, dirnames, filenames in os.walk(ROOT):
@@ -261,7 +273,7 @@ def check_budget() -> list[str]:
 
     for tracked in tracked_files():
         suffix = Path(tracked).suffix.lower()
-        if suffix in WEIGHT_EXTENSIONS:
+        if suffix in WEIGHT_EXTENSIONS and not is_allowed_r28m1_static_model_shard(tracked):
             failures.append(f"tracked_weight_asset:{tracked}")
         if tracked.startswith("artifacts/") and tracked != "artifacts/.gitkeep":
             failures.append(f"tracked_artifact:{tracked}")

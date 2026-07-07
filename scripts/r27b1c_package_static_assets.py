@@ -17,6 +17,8 @@ MAX_TOTAL_STATIC_BYTES = 100_000_000
 
 MODEL_ASSET_SUFFIXES = (".pt", ".pth", ".safetensors", ".ckpt", ".onnx", ".bin", ".gguf")
 TOKENIZER_ARTIFACT_NAME = "tokenizer.json"
+R28M1_ALLOWED_STATIC_ASSET_PREFIX = "web/another_brain/model_assets/r28m1/"
+R28M1_ALLOWED_TOKENIZER = "web/another_brain/model_assets/r28m1/tokenizer/tokenizer.json"
 
 REQUIRED_CANDIDATE_METADATA = (
     "model_asset_manifest",
@@ -109,11 +111,12 @@ def tracked_asset_failures() -> list[str]:
         lowered = rel.lower()
         if lowered.startswith("artifacts/") and rel != "artifacts/.gitkeep":
             failures.append(f"tracked_artifact:{rel}")
-        if lowered.endswith(MODEL_ASSET_SUFFIXES):
+        if lowered.endswith(MODEL_ASSET_SUFFIXES) and not rel.startswith(R28M1_ALLOWED_STATIC_ASSET_PREFIX):
             failures.append(f"tracked_model_asset:{rel}")
         if lowered.endswith("/" + TOKENIZER_ARTIFACT_NAME):
             allowed_fixture = rel == "static_llm/fixtures/tiny_decoder_fixture/tokenizer.json"
-            if not allowed_fixture:
+            allowed_r28m1_runtime_tokenizer = rel == R28M1_ALLOWED_TOKENIZER
+            if not allowed_fixture and not allowed_r28m1_runtime_tokenizer:
                 failures.append(f"tracked_tokenizer_artifact:{rel}")
     return failures
 

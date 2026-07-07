@@ -1,0 +1,48 @@
+{
+  "approval_marker": "R28M1_STATIC_MODEL_ASSET_COMMIT_ALLOWED",
+  "approved": true,
+  "approved_in_prompt": true,
+  "candidate_source": "r27a12_new_96m",
+  "commit_scope": "one_time_static_q4_asset_commit",
+  "scope": {
+    "a12_new_96m_q4_static_shards": true,
+    "runtime_tokenizer_asset": true,
+    "model_config": true,
+    "quantization_manifest": true,
+    "shard_checksum_manifest": true,
+    "asset_manifest_metadata": true,
+    "tests_docs_scripts": true,
+    "raw_checkpoint": false,
+    "unquantized_weights": false,
+    "optimizer_state": false,
+    "training_artifacts": false,
+    "training_corpus": false,
+    "future_models": false,
+    "product_admission": false,
+    "browser_admission": false,
+    "release_checkpoint_admission": false,
+    "phase_4": false
+  },
+  "exclusions": {
+    "raw_checkpoint": true,
+    "unquantized_weights": true,
+    "optimizer_state": true,
+    "training_artifacts": true,
+    "training_corpus": true,
+    "future_models": true,
+    "product_admission": true,
+    "browser_admission": true,
+    "release_checkpoint_admission": true,
+    "phase_4": true
+  },
+  "non_claims": {
+    "product_model": false,
+    "product_admission": false,
+    "browser_admission": false,
+    "release_checkpoint_admission": false,
+    "backend_inference": false,
+    "external_llm_api": false,
+    "doubao": false,
+    "hosted_vector_store": false
+  }
+}
