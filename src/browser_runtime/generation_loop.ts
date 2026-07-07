@@ -7,6 +7,7 @@ import {
 import { buildDeterministicFallback, finalizeAnswerSurface } from "./finalizer_adapter.ts";
 import { applyGenerationGuards, isBadTokenText, normalizeGenerationPolicy } from "./generation_policy.ts";
 import { buildPromptPacket, buildRetrievalPacket, buildStatePacket } from "./rag_packet.ts";
+import { buildProcessTraceFromPacket } from "./trace/process_trace.ts";
 import { finalizeDraft, verifyDraft } from "./verifier_adapter.ts";
 
 export class SyntheticTinyRuntime {
@@ -153,7 +154,7 @@ export async function runChatPipeline(input, options = {}) {
       policy: generation.generation_policy
     });
     if (finalized.fallback_used) {
-      return {
+      const packet = {
         input,
         state_packet: statePacket,
         evidence_packet: evidencePacket,
@@ -171,8 +172,10 @@ export async function runChatPipeline(input, options = {}) {
           evidencePacket
         })
       };
+      packet.process_trace = buildProcessTraceFromPacket(packet);
+      return packet;
     }
-    return {
+    const packet = {
       input,
       state_packet: statePacket,
       evidence_packet: evidencePacket,
@@ -199,9 +202,11 @@ export async function runChatPipeline(input, options = {}) {
         evidencePacket
       })
     };
+    packet.process_trace = buildProcessTraceFromPacket(packet);
+    return packet;
   } catch (error) {
     const fallback = buildDeterministicFallback(input, error.message || "runtime_failed");
-    return {
+    const packet = {
       input,
       state_packet: statePacket,
       evidence_packet: evidencePacket,
@@ -217,5 +222,7 @@ export async function runChatPipeline(input, options = {}) {
         evidencePacket
       })
     };
+    packet.process_trace = buildProcessTraceFromPacket(packet);
+    return packet;
   }
 }

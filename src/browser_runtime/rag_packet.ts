@@ -92,4 +92,19 @@ export async function buildMockRetrievalPacket(input, statePacket = buildStatePa
   });
 }
 
+export function summarizeEvidenceForProcessTrace(evidencePacket = {}) {
+  const evidence = evidencePacket.retrieved_evidence || [];
+  return {
+    retrieval_used: true,
+    evidence_count: evidence.length,
+    evidence_status: evidencePacket.evidence_status || "none",
+    top_sources: evidence.slice(0, 3).map((item) => ({
+      source_id: item.source_id || "local",
+      title: item.title || "local evidence",
+      trust_level: item.trust_level || "local_static",
+      retrieval_score: Number(item.retrieval_score || 0)
+    }))
+  };
+}
+
 export { buildStaticEvidencePacket, DEFAULT_DEMO_MEMORY };

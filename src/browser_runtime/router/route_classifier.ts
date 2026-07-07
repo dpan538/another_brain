@@ -195,3 +195,12 @@ export function classifyAnswerRoute(rawInput = {}) {
     quality_flags: flags
   };
 }
+
+export function summarizeRouteForProcessTrace(route = {}, modelDraftGenerated = false) {
+  return {
+    route: route.route || "synthetic_demo_fallback",
+    used_model_draft: route.use_model_draft === true,
+    replaced_model_draft: modelDraftGenerated === true && route.use_model_draft !== true,
+    reason: route.fallback_reason || ""
+  };
+}

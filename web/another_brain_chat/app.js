@@ -53,6 +53,25 @@ const tokenCountStatus = document.querySelector("#token-count-status");
 const runtimeModeStatus = document.querySelector("#runtime-mode-status");
 const routeStatus = document.querySelector("#route-status");
 const fallbackReasonStatus = document.querySelector("#fallback-reason-status");
+const answerSourceStatus = document.querySelector("#answer-source-status");
+const draftGeneratedStatus = document.querySelector("#draft-generated-status");
+const draftReplacedStatus = document.querySelector("#draft-replaced-status");
+const modelSourceBadge = document.querySelector("#model-source-badge");
+const tokenizerStatusBadge = document.querySelector("#tokenizer-status-badge");
+const q4StatusBadge = document.querySelector("#q4-status-badge");
+const traceInputSummary = document.querySelector("#trace-input-summary");
+const traceContextSummary = document.querySelector("#trace-context-summary");
+const traceEvidenceSummary = document.querySelector("#trace-evidence-summary");
+const traceDraftSummary = document.querySelector("#trace-draft-summary");
+const traceRouterSummary = document.querySelector("#trace-router-summary");
+const traceFinalSummary = document.querySelector("#trace-final-summary");
+const modelSelfCheckButton = document.querySelector("#model-self-check-button");
+const selfCheckAssets = document.querySelector("#self-check-assets");
+const selfCheckTokenizer = document.querySelector("#self-check-tokenizer");
+const selfCheckQ4 = document.querySelector("#self-check-q4");
+const selfCheckFallback = document.querySelector("#self-check-fallback");
+const selfCheckOutput = document.querySelector("#self-check-output");
+const selfCheckBlockers = document.querySelector("#self-check-blockers");
 const debugToggle = document.querySelector("#debug-toggle");
 const debugOutput = document.querySelector("#debug-output");
 const contextImport = document.querySelector("#context-import");
@@ -70,9 +89,25 @@ const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 const INITIAL_ASSISTANT_MESSAGE = [
-  "我现在只是一个静态 browser shell：会展示 input/state packet -> local retrieval ->",
-  "browser decoder draft -> verifier/finalizer/fallback 的产品骨架；若 q4 runtime bundle 不可用，会明确显示 fallback reason。"
+  "我会显示公开过程摘要：输入包、本地上下文、检索证据、模型草稿、路由判断和最终回答。",
+  "若 q4 没有真正参与，会明确标出；这里不展示隐藏推理、内部提示或私人原文。"
 ].join(" ");
+
+function setText(node, value) {
+  if (node) node.textContent = String(value ?? "");
+}
+
+function boolText(value) {
+  return value === true ? "true" : "false";
+}
+
+function sourceLabel(trace = {}) {
+  if (trace.answer_source_label) return trace.answer_source_label;
+  if (trace.model?.q4_forward_ran && trace.router?.used_model_draft) return "static_q4_experimental";
+  if (trace.router?.replaced_model_draft || String(trace.router?.route || "").includes("boundary")) return "hard_router_boundary";
+  if (String(trace.runtime_mode || "").includes("synthetic")) return "synthetic_fallback";
+  return "no_model_fallback";
+}
 
 function appendMessage(role, text) {
   const article = document.createElement("article");
@@ -104,14 +139,38 @@ function clearConversation() {
     runtime_stats: { tokens_generated: 0, runtime_mode: runtime.mode, decode_status: "not checked" },
     state_packet: { mode: runtime.mode },
     answer_route: "not_run",
-    route_policy: { route: "not_run" }
+    route_policy: { route: "not_run" },
+    process_trace: null,
+    answer_source_label: "no_model_fallback"
   });
+  renderTrace(null);
   renderDebug();
+}
+
+function publicDebugPacket(packet = null) {
+  if (!packet) return {};
+  return {
+    process_trace: packet.process_trace || null,
+    answer_source_label: packet.answer_source_label || sourceLabel(packet.process_trace || {}),
+    route: packet.answer_route || packet.route_policy?.route || "not_run",
+    fallback_reason: packet.fallback_reason || "",
+    runtime_stats: packet.runtime_stats || {},
+    evidence_summary: {
+      evidence_count: packet.process_trace?.rag?.evidence_count || 0,
+      evidence_status: packet.process_trace?.rag?.evidence_status || packet.evidence_packet?.evidence_status || "none",
+      top_sources: packet.process_trace?.rag?.top_sources || []
+    },
+    non_claims: packet.process_trace?.non_claims || {
+      product_admission: false,
+      browser_admission: false,
+      release_checkpoint: false
+    }
+  };
 }
 
 function renderDebug() {
   debugOutput.hidden = !debugToggle.checked;
-  debugOutput.textContent = JSON.stringify(lastPacket || {}, null, 2);
+  debugOutput.textContent = JSON.stringify(publicDebugPacket(lastPacket), null, 2);
 }
 
 function updateStatus(packet) {
@@ -124,6 +183,42 @@ function updateStatus(packet) {
   runtimeModeStatus.textContent = packet.runtime_stats?.runtime_mode || packet.state_packet?.mode || "unknown";
   routeStatus.textContent = packet.answer_route || packet.route_policy?.route || "not_run";
   fallbackReasonStatus.textContent = packet.fallback_reason || (packet.fallback_used ? "runtime_or_verifier_fallback" : "none");
+  const trace = packet.process_trace || {};
+  setText(answerSourceStatus, packet.answer_source_label || sourceLabel(trace));
+  setText(draftGeneratedStatus, boolText(trace.model?.draft_generated));
+  setText(draftReplacedStatus, boolText(trace.router?.replaced_model_draft));
+  setText(modelSourceBadge, packet.answer_source_label || sourceLabel(trace));
+  setText(tokenizerStatusBadge, `tokenizer: ${trace.model?.tokenizer || packet.decode_status || "not checked"}`);
+  setText(q4StatusBadge, `q4 forward: ${trace.model?.q4_forward_ran ? "true" : "false"}`);
+  renderTrace(trace);
+}
+
+function renderTrace(trace = null) {
+  if (!trace) {
+    setText(traceInputSummary, "等待输入。");
+    setText(traceContextSummary, "local session only / not saved.");
+    setText(traceEvidenceSummary, "尚未检索。");
+    setText(traceDraftSummary, "q4_forward_ran=false / model_draft_generated=false");
+    setText(traceRouterSummary, "route: not_run");
+    setText(traceFinalSummary, "finalizer 等待回答。");
+    setText(answerSourceStatus, "no_model_fallback");
+    setText(draftGeneratedStatus, "false");
+    setText(draftReplacedStatus, "false");
+    setText(q4StatusBadge, "q4 forward: false");
+    return;
+  }
+  const input = trace.input_packet || {};
+  const rag = trace.rag || {};
+  const model = trace.model || {};
+  const router = trace.router || {};
+  const finalizer = trace.finalizer || {};
+  const topSources = (rag.top_sources || []).map((item) => item.title).filter(Boolean).join(" / ") || "无";
+  setText(traceInputSummary, `has_user_input=${boolText(input.has_user_input)} / adapter_context_present=${boolText(input.adapter_context_present)}`);
+  setText(traceContextSummary, `has_local_context=${boolText(input.has_local_context)} / local-session-only / not saved`);
+  setText(traceEvidenceSummary, `retrieval_used=${boolText(rag.retrieval_used)} / evidence_count=${rag.evidence_count || 0} / evidence_status=${rag.evidence_status || "none"} / sources=${topSources}`);
+  setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / tokens=${model.tokens_generated || 0} / model_draft_generated=${boolText(model.draft_generated)}`);
+  setText(traceRouterSummary, `route=${router.route || "not_run"} / used_model_draft=${boolText(router.used_model_draft)} / finalizer_replaced_draft=${boolText(router.replaced_model_draft)} / reason=${router.reason || "none"}`);
+  setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || "none"}`);
 }
 
 function renderContextBridge(result = null) {
@@ -154,6 +249,9 @@ function renderDeliveryConfig(config) {
   configuredModelMode.textContent = config.model_mode;
   configuredRagMode.textContent = config.rag_mode;
   budgetStatus.textContent = config.budget_status;
+  setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
+  setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
+  setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   candidateRouteStatus.textContent = config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route;
   handoffSourceStatus.textContent = config.handoff_source || DEFAULT_DELIVERY_CONFIG.handoff_source;
@@ -176,6 +274,25 @@ function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
   offlineStatus.textContent = assetStatus.offline_ready
     ? "Cache-capable shell"
     : `Fallback: ${assetStatus.fallback_reason || "offline_cache_unavailable"}`;
+}
+
+function renderSelfCheck(report = null) {
+  if (!report) {
+    setText(selfCheckAssets, "未检查");
+    setText(selfCheckTokenizer, "未检查");
+    setText(selfCheckQ4, "未检查");
+    setText(selfCheckFallback, "可用");
+    setText(selfCheckOutput, "输出：未检查");
+    setText(selfCheckBlockers, "blocker：none");
+    return;
+  }
+  setText(selfCheckAssets, `${report.assets?.status || "失败"} / shards ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}`);
+  setText(selfCheckTokenizer, report.tokenizer?.status || "fallback");
+  setText(selfCheckQ4, `${report.q4_forward?.status || "失败"} / q4_forward_ran=${boolText(report.q4_forward?.q4_forward_ran)}`);
+  setText(selfCheckFallback, report.fallback?.status || "可用");
+  setText(selfCheckOutput, `输出：tokens=${report.q4_forward?.tokens_generated || 0} / ${report.output?.text_preview || "no q4 text"}`);
+  setText(selfCheckBlockers, `blocker：${(report.blockers || []).join(" / ") || "none"}`);
+  setText(q4StatusBadge, `q4 forward: ${report.q4_forward?.q4_forward_ran ? "true" : "false"}`);
 }
 
 function setPipelineStatus(status) {
@@ -205,6 +322,8 @@ async function boot() {
   retrievalStatus.textContent = deliveryConfig.rag_mode;
   renderAssetStatus(loadResult.asset_status, deliveryConfig);
   renderContextBridge();
+  renderTrace(null);
+  renderSelfCheck(null);
 }
 
 contextImportButton.addEventListener("click", () => {
@@ -267,5 +386,27 @@ abortButton.addEventListener("click", () => {
   fallbackReasonStatus.textContent = "generation_aborted";
 });
 clearChatButton.addEventListener("click", clearConversation);
+
+modelSelfCheckButton.addEventListener("click", async () => {
+  modelSelfCheckButton.disabled = true;
+  setText(selfCheckAssets, "检查中");
+  setText(selfCheckTokenizer, "检查中");
+  setText(selfCheckQ4, "检查中");
+  try {
+    const report = await runtime.selfCheckModelPath();
+    renderSelfCheck(report);
+  } catch (error) {
+    renderSelfCheck({
+      assets: { status: "失败", q4_shard_count: 0, expected_shard_count: 0 },
+      tokenizer: { status: "fallback" },
+      q4_forward: { status: "失败", q4_forward_ran: false, tokens_generated: 0 },
+      fallback: { status: "可用" },
+      output: { text_preview: "" },
+      blockers: [error.message || "model_path_self_check_failed"]
+    });
+  } finally {
+    modelSelfCheckButton.disabled = false;
+  }
+});
 
 boot();

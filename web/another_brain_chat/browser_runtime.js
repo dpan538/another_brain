@@ -229,6 +229,178 @@ function uniqueFlags(flags) {
   return Array.from(new Set((flags || []).filter(Boolean).map(String)));
 }
 
+const TRACE_EVENT_TYPES = Object.freeze([
+  "input_received",
+  "adapter_context_loaded",
+  "rag_retrieval_started",
+  "rag_retrieval_completed",
+  "model_manifest_loaded",
+  "q4_shards_verified",
+  "tokenizer_ready",
+  "q4_forward_started",
+  "q4_forward_completed",
+  "draft_generated",
+  "router_route_selected",
+  "finalizer_applied",
+  "fallback_used",
+  "answer_completed"
+]);
+
+function makeTraceId(turnIndex = 0) {
+  return `r28ux3_${Date.now().toString(36)}_${Number(turnIndex || 0).toString(36)}`;
+}
+
+function traceEvent(type, payload = {}) {
+  return {
+    type: TRACE_EVENT_TYPES.includes(type) ? type : "answer_completed",
+    at: new Date().toISOString(),
+    public: true,
+    payload
+  };
+}
+
+function publicEvidenceSources(evidence = []) {
+  return (evidence || []).slice(0, 3).map((item) => ({
+    source_id: String(item.source_id || item.id || "local"),
+    title: String(item.title || "local evidence").slice(0, 120),
+    trust_level: String(item.trust_level || "local_static"),
+    retrieval_score: Number(item.retrieval_score || 0)
+  }));
+}
+
+function tokenizerStatusForTrace(packet = {}, runtimeStats = {}) {
+  const decodeStatus = String(packet.decode_status || runtimeStats.decode_status || "");
+  if (decodeStatus.includes("exact_runtime_tokenizer")) return "exact_runtime_tokenizer";
+  if (decodeStatus.includes("lossy")) return "lossy_fallback";
+  if (packet.delivery_config?.tokenizer_decode_status === "exact_runtime_tokenizer") return "exact_runtime_tokenizer";
+  return "none";
+}
+
+function q4ForwardRan(runtimeStats = {}) {
+  return runtimeStats.runtime_mode === "static_q4_experimental"
+    && Number(runtimeStats.tokens_generated || 0) > 0
+    && runtimeStats.fallback_used !== true;
+}
+
+function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, decoderDraft = "" } = {}) {
+  if (q4Ran && routePolicy.use_model_draft === true) return "model_draft";
+  if (String(decoderDraft || "").trim() && routePolicy.use_model_draft !== true) return "router_boundary";
+  if (String(routePolicy.route || "").includes("boundary")) return "router_boundary";
+  return fallbackUsed ? "fallback" : "fallback";
+}
+
+function publicAnswerSourceLabel(trace = {}) {
+  if (trace.model?.q4_forward_ran && trace.router?.used_model_draft) return "static_q4_experimental";
+  if (trace.router?.replaced_model_draft || String(trace.router?.route || "").includes("boundary")) return "hard_router_boundary";
+  if (String(trace.runtime_mode || "").includes("synthetic")) return "synthetic_fallback";
+  return "no_model_fallback";
+}
+
+function buildProcessTrace({
+  input,
+  statePacket,
+  evidencePacket,
+  runtimeStats,
+  decoderDraft,
+  routePolicy,
+  fallbackUsed,
+  fallbackReason,
+  qualityFlags,
+  adapterContextSummary,
+  assetStatus,
+  deliveryConfig,
+  turnIndex
+}) {
+  const evidence = evidencePacket?.retrieved_evidence || [];
+  const q4Ran = q4ForwardRan(runtimeStats);
+  const draftGenerated = String(decoderDraft || "").trim().length > 0;
+  const usedModelDraft = routePolicy?.use_model_draft === true;
+  const replacedModelDraft = draftGenerated && !usedModelDraft;
+  const tokenizer = tokenizerStatusForTrace({ decode_status: runtimeStats?.decode_status, delivery_config: deliveryConfig }, runtimeStats);
+  const route = routePolicy?.route || "synthetic_demo_fallback";
+  const trace = {
+    trace_id: makeTraceId(turnIndex),
+    created_at: new Date().toISOString(),
+    runtime_mode: runtimeStats?.runtime_mode || statePacket?.mode || "fallback",
+    input_packet: {
+      has_user_input: String(input || "").trim().length > 0,
+      has_local_context: Boolean(adapterContextSummary?.packet_count),
+      adapter_context_present: Boolean(adapterContextSummary?.packet_count)
+    },
+    rag: {
+      retrieval_used: true,
+      evidence_count: evidence.length,
+      evidence_status: evidencePacket?.evidence_status || "none",
+      top_sources: publicEvidenceSources(evidence)
+    },
+    model: {
+      asset_manifest_loaded: assetStatus?.verification !== "no_model_assets",
+      shards_verified: q4Ran,
+      tokenizer,
+      q4_forward_ran: q4Ran,
+      tokens_generated: Number(runtimeStats?.tokens_generated || 0),
+      draft_generated: draftGenerated
+    },
+    router: {
+      route,
+      used_model_draft: usedModelDraft,
+      replaced_model_draft: replacedModelDraft,
+      reason: fallbackReason || routePolicy?.fallback_reason || ""
+    },
+    finalizer: {
+      final_answer_source: finalAnswerSource({ q4Ran, routePolicy, fallbackUsed, decoderDraft }),
+      quality_flags: uniqueFlags(qualityFlags || routePolicy?.quality_flags || []),
+      fallback_reason: fallbackReason || routePolicy?.fallback_reason || ""
+    },
+    non_claims: {
+      product_admission: false,
+      browser_admission: false,
+      release_checkpoint: false
+    },
+    events: [
+      traceEvent("input_received", { has_user_input: String(input || "").trim().length > 0 }),
+      traceEvent("adapter_context_loaded", { adapter_context_present: Boolean(adapterContextSummary?.packet_count) }),
+      traceEvent("rag_retrieval_started"),
+      traceEvent("rag_retrieval_completed", { evidence_count: evidence.length, evidence_status: evidencePacket?.evidence_status || "none" }),
+      traceEvent("model_manifest_loaded", { asset_manifest_loaded: assetStatus?.verification !== "no_model_assets" }),
+      traceEvent("q4_shards_verified", { shards_verified: q4Ran }),
+      traceEvent("tokenizer_ready", { tokenizer }),
+      traceEvent("q4_forward_started", { runtime_mode: runtimeStats?.runtime_mode || statePacket?.mode || "fallback" }),
+      traceEvent("q4_forward_completed", { q4_forward_ran: q4Ran, tokens_generated: Number(runtimeStats?.tokens_generated || 0) }),
+      traceEvent("draft_generated", { draft_generated: draftGenerated }),
+      traceEvent("router_route_selected", { route }),
+      traceEvent("finalizer_applied", { final_answer_source: finalAnswerSource({ q4Ran, routePolicy, fallbackUsed, decoderDraft }) }),
+      ...(fallbackUsed ? [traceEvent("fallback_used", { reason: fallbackReason || routePolicy?.fallback_reason || "" })] : []),
+      traceEvent("answer_completed", { route })
+    ]
+  };
+  trace.answer_source_label = publicAnswerSourceLabel(trace);
+  return trace;
+}
+
+function baseUrlForAssets() {
+  if (!globalThis.location?.href) throw new Error("browser_location_unavailable");
+  return new URL(globalThis.location.href);
+}
+
+async function fetchJsonSameOrigin(path) {
+  const base = baseUrlForAssets();
+  const url = new URL(path, base);
+  if (url.origin !== base.origin) throw new Error("non_same_origin_asset_rejected");
+  const response = await fetch(url.href);
+  if (!response.ok) throw new Error(`fetch_failed:${path}:${response.status}`);
+  return response.json();
+}
+
+async function probeSameOriginAsset(path) {
+  const base = baseUrlForAssets();
+  const url = new URL(`../${path}`, base);
+  if (url.origin !== base.origin) throw new Error(`non_same_origin_asset_rejected:${path}`);
+  const response = await fetch(url.href, { method: "HEAD" });
+  if (!response.ok) throw new Error(`asset_probe_failed:${path}:${response.status}`);
+  return true;
+}
+
 function classifyAnswerRoute(routeInput = {}) {
   const evidencePacket = routeInput.evidence_packet || null;
   const evidenceStatus = classifyEvidenceForRouter(evidencePacket, routeInput.evidence_status || (evidencePacket ? evidencePacket.evidence_status : "none"));
@@ -374,6 +546,15 @@ export class BrowserChatRuntime {
       this.worker = new Worker("./runtime_worker.js", { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
+    if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
+      this.assetStatus = {
+        ...this.assetStatus,
+        cache_result: "same_origin_static_assets_declared",
+        progress: `0/${Number(this.deliveryConfig.shard_count || 0)}`,
+        verification: this.deliveryConfig.asset_cache_status || "same_origin_static_q4_assets_committed_checksum_required",
+        fallback_reason: this.deliveryConfig.runtime_fallback_reason || this.assetStatus.fallback_reason
+      };
+    }
     return {
       status: "loaded",
       mode: this.mode,
@@ -402,9 +583,136 @@ export class BrowserChatRuntime {
     this.contextPackets = Array.isArray(packets) ? [...packets] : [];
   }
 
+  async selfCheckModelPath() {
+    const previousStats = this.lastRuntimeStats;
+    const previousFallbackReason = this.lastFallbackReason;
+    const blockers = [];
+    let assetManifest = null;
+    let quantizationManifest = null;
+    let tokenizer = null;
+    let shardResults = [];
+    let smokeStats = null;
+    let smokePreview = "";
+
+    try {
+      assetManifest = await fetchJsonSameOrigin("../another_brain/asset_manifest.json");
+    } catch (error) {
+      blockers.push(error.message || "asset_manifest_fetch_failed");
+    }
+
+    const q4Assets = (assetManifest?.model_assets || []).filter((item) => item.role === "q4_shard");
+    const quantizationPath = assetManifest?.model_asset_manifest?.quantization_manifest || "another_brain/model_assets/r28m1/quantization.manifest.json";
+    const tokenizerPath = assetManifest?.model_asset_manifest?.tokenizer_manifest || "another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json";
+
+    if (assetManifest) {
+      try {
+        quantizationManifest = await fetchJsonSameOrigin(`../${quantizationPath}`);
+      } catch (error) {
+        blockers.push(error.message || "quantization_manifest_fetch_failed");
+      }
+      try {
+        tokenizer = await fetchJsonSameOrigin(`../${tokenizerPath}`);
+      } catch (error) {
+        blockers.push(error.message || "runtime_tokenizer_fetch_failed");
+      }
+      shardResults = await Promise.all(q4Assets.map(async (item) => {
+        try {
+          await probeSameOriginAsset(item.path);
+          return { path: item.path, ok: true, bytes: Number(item.bytes || 0) };
+        } catch (error) {
+          return { path: item.path, ok: false, blocker: error.message || "asset_probe_failed", bytes: Number(item.bytes || 0) };
+        }
+      }));
+      for (const result of shardResults.filter((item) => !item.ok).slice(0, 3)) {
+        blockers.push(result.blocker);
+      }
+    }
+
+    const exactTokenizer = tokenizer?.exact_runtime_tokenizer === true
+      || tokenizer?.runtime_compatible === true
+      || assetManifest?.tokenizer_decode_status === "exact_runtime_tokenizer";
+    if (!exactTokenizer) blockers.push("exact_runtime_tokenizer_not_confirmed");
+    if (q4Assets.length === 0) blockers.push("q4_shards_not_listed");
+    if (quantizationManifest?.shard_count && Number(quantizationManifest.shard_count) !== q4Assets.length) {
+      blockers.push(`q4_shard_count_mismatch:${q4Assets.length}/${quantizationManifest.shard_count}`);
+    }
+
+    try {
+      if (!this.worker && this.capabilities.worker_available) await this.load();
+      smokePreview = await this.draftWithWorker("R28UX3 q4 path smoke", { maxTokens: 1, timeoutMs: 2500 });
+      smokeStats = this.lastRuntimeStats || null;
+    } catch (error) {
+      blockers.push(error.message || this.lastFallbackReason || "q4_forward_smoke_failed");
+      smokeStats = {
+        tokens_generated: 0,
+        runtime_mode: this.mode,
+        decode_status: "failed",
+        fallback_used: true
+      };
+    } finally {
+      this.lastRuntimeStats = previousStats;
+      this.lastFallbackReason = previousFallbackReason;
+    }
+
+    const q4ForwardPassed = q4ForwardRan(smokeStats || {});
+    const shardsVerified = shardResults.length > 0 && shardResults.every((item) => item.ok);
+    if (!q4ForwardPassed) blockers.push("q4_forward_not_confirmed");
+
+    return {
+      ok: Boolean(assetManifest) && shardsVerified && exactTokenizer && q4ForwardPassed,
+      assets: {
+        status: Boolean(assetManifest) && shardsVerified ? "通过" : "失败",
+        manifest_loaded: Boolean(assetManifest),
+        q4_shard_count: q4Assets.length,
+        expected_shard_count: Number(quantizationManifest?.shard_count || assetManifest?.shard_count || 0),
+        shards_verified: shardsVerified,
+        total_model_asset_bytes: Number(assetManifest?.total_model_asset_bytes || 0)
+      },
+      tokenizer: {
+        status: exactTokenizer ? "exact" : "fallback",
+        exact_runtime_tokenizer: exactTokenizer,
+        path: tokenizerPath
+      },
+      q4_forward: {
+        status: q4ForwardPassed ? "通过" : "失败",
+        q4_forward_ran: q4ForwardPassed,
+        tokens_generated: Number(smokeStats?.tokens_generated || 0),
+        decode_status: smokeStats?.decode_status || "failed",
+        blocker: q4ForwardPassed ? "" : (blockers.find((item) => String(item).includes("web_static_q4_worker_bundle_not_embedded")) || "q4_forward_not_confirmed")
+      },
+      fallback: {
+        status: "可用",
+        reason: q4ForwardPassed ? "" : "no_model_fallback_available"
+      },
+      output: {
+        token_preview: smokeStats?.generated_token_ids?.slice?.(0, 4) || [],
+        text_preview: String(smokePreview || "").slice(0, 80)
+      },
+      blockers: uniqueFlags(blockers),
+      non_claims: {
+        product_admission: false,
+        browser_admission: false,
+        release_checkpoint: false,
+        backend_inference: false,
+        external_llm_api: false
+      }
+    };
+  }
+
   async draftWithWorker(input, options = {}) {
     if (this.abortRequested) throw new Error("generation_aborted");
-    if (!this.worker) return syntheticDraft(input, options.maxTokens);
+    if (!this.worker) {
+      this.lastRuntimeStats = {
+        tokens_generated: 0,
+        elapsed_ms: 0,
+        runtime_mode: "fallback",
+        decoded_text_available: false,
+        decode_status: "no_worker",
+        fallback_used: true
+      };
+      this.lastFallbackReason = "worker_unavailable";
+      return syntheticDraft(input, options.maxTokens);
+    }
     return new Promise((resolve, reject) => {
       const tokens = [];
       this.activeReject = reject;
@@ -449,6 +757,8 @@ export class BrowserChatRuntime {
 
   async run(input, hooks = {}) {
     this.abortRequested = false;
+    this.lastRuntimeStats = null;
+    this.lastFallbackReason = "";
     this.turnIndex += 1;
     const setStatus = typeof hooks.onStatus === "function" ? hooks.onStatus : () => {};
     const statePacket = applyImportedStatePackets(buildStatePacket(input, this.turnIndex, this.mode), this.contextPackets);
@@ -529,7 +839,8 @@ export class BrowserChatRuntime {
       decode_status: fallbackUsed ? "fallback_no_decode" : "not_checked",
       fallback_used: fallbackUsed
     };
-    return {
+    const adapterContextSummary = buildAdapterContextSummary(this.contextPackets);
+    const packet = {
       input,
       state_packet: statePacket,
       evidence_packet: evidencePacket,
@@ -550,7 +861,7 @@ export class BrowserChatRuntime {
       decode_status: runtimeStats.decode_status,
       prompt_packet: this.lastPromptPacket || buildPromptPacket(input, evidencePacket, statePacket),
       no_answer_bank: true,
-      adapter_context_summary: buildAdapterContextSummary(this.contextPackets),
+      adapter_context_summary: adapterContextSummary,
       answer_surface_request: answerSurfaceRequest,
       answer_surface_response: buildAnswerSurfaceResponse({
         finalAnswer,
@@ -561,5 +872,22 @@ export class BrowserChatRuntime {
       capabilities: this.capabilities,
       asset_status: this.assetStatus
     };
+    packet.process_trace = buildProcessTrace({
+      input,
+      statePacket,
+      evidencePacket,
+      runtimeStats,
+      decoderDraft,
+      routePolicy,
+      fallbackUsed,
+      fallbackReason,
+      qualityFlags: packet.quality_flags,
+      adapterContextSummary,
+      assetStatus: this.assetStatus,
+      deliveryConfig: this.deliveryConfig,
+      turnIndex: this.turnIndex
+    });
+    packet.answer_source_label = packet.process_trace.answer_source_label;
+    return packet;
   }
 }

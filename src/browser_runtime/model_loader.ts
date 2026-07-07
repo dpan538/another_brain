@@ -6,6 +6,7 @@ import {
   loadShardedAssetManifest
 } from "./assets/shard_loader.ts";
 import { verifySha256 as verifySha256Detailed } from "./assets/checksum.ts";
+import { createTraceEvent } from "./trace/trace_event.ts";
 
 export const RUNTIME_MODES = Object.freeze([
   "mock",
@@ -66,7 +67,12 @@ export async function loadRuntimeModel(options = {}) {
       tokenizer_decode_ready: load.tokenizer_decode_ready,
       tokenizer_exact_decode_ready: load.tokenizer_exact_decode_ready,
       tokenizer_decode_status: load.tokenizer_decode_status,
-      tokenizer_limitation: load.tokenizer_limitation
+      tokenizer_limitation: load.tokenizer_limitation,
+      trace_events: [
+        createTraceEvent("model_manifest_loaded", { mode }),
+        createTraceEvent("q4_shards_verified", { manifest_loaded: true }),
+        createTraceEvent("tokenizer_ready", { tokenizer: load.tokenizer_decode_status || "none" })
+      ]
     };
   }
   if (mode === "onnx_webgpu_experimental") {
