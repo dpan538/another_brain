@@ -1,21 +1,22 @@
 # R28D7 Final PR Instructions
 
-R28D7 is the final preview PR branch after exact tokenizer, deterministic generation policy, and post-tokenizer product-surface QA hardening.
+R28D7 is the final preview PR branch after exact tokenizer recovery, deterministic generation hardening, and post-GEN1 product-surface QA.
 
-Manual PR target:
+## Manual PR
 
 - base: `main`
 - head: `r28d7-final-preview-branch`
 - URL: `https://github.com/dpan538/another_brain/pull/new/r28d7-final-preview-branch`
 
-Integrated base chain:
+## Integrated Base
 
 - `origin/r28qa2-product-surface-qa`
-- includes R28GEN0 deterministic generation policy
-- includes R28TOK0 exact runtime tokenizer
-- includes R28M1 same-origin q4 static model assets
+- includes R28TOK1 exact runtime tokenizer
+- includes R28GEN1 deterministic generation policy and finalizer hardening
+- includes R28QA2 product-surface QA
+- retains R28M1 same-origin q4 static assets
 
-Required local checks before opening or updating the PR:
+## Required Checks
 
 ```bash
 npm run build
@@ -23,43 +24,41 @@ npm run build:vercel
 npm run check:r27b0-static-budget
 npm run check:r27b0-static-only
 npm run check:no-training-in-routine-gates
-npm run check:training-approval-markers
-python3 scripts/r27b4_bundle_report.py
+python3 scripts/r28d7_final_preview_audit.py
 python3 scripts/r28qa2_product_surface_matrix.py
 git diff --check
 git diff --cached --check
 git show --check HEAD
 ```
 
-Current preview summary:
+## Current Preview Summary
 
-- static q4 assets remain committed under `web/another_brain/model_assets/r28m1/`
-- exact runtime tokenizer is the primary tokenizer path
-- deterministic generation policy and answer-surface finalizer are present
-- QA2 product-surface matrix passed `13/13`
-- readable q4 generation produced `40` smoke tokens across 5 prompts
-- tokenizer decode status: `exact_runtime_tokenizer`
-- QA2 labels: `quality_weak`, `preview_ready`, `admission_not_ready`
-- deployable static bytes: `69,982,673`
-- 100MB margin: `30,017,327`
+- tokenizer status: `exact_runtime_tokenizer`
+- runtime mode: `static_q4_experimental`
+- q4 readable generation: passed with 40 smoke tokens across 5 prompts
+- generation policy: R28GEN1 greedy deterministic policy present
+- QA2 label: `preview_ready_with_quality_blocker`
+- QA2 matrix: 14 pass, 0 fail
+- deployable static bytes: 69,988,713
+- 100MB margin: 30,011,287
 - no backend inference
 - no external LLM API
 - no Doubao
 - no hosted vector store
 
-Preview validation checklist:
+## Preview Validation
 
 - Confirm Vercel preview is built from `r28d7-final-preview-branch`.
 - Open `/another_brain_chat/`.
 - Confirm local/static status and non-product warning are visible.
 - Confirm runtime mode is `static_q4_experimental`.
-- Confirm exact tokenizer status is visible or represented in runtime status.
+- Confirm exact tokenizer status is visible in runtime/metadata status.
 - Confirm generated q4 text can appear, with fallback reason shown when the finalizer blocks output.
-- Confirm RAG evidence, insufficient evidence, conflict, and malicious evidence paths remain visible.
+- Confirm RAG sufficient, insufficient, conflict, and malicious evidence paths.
 - Confirm adapter import remains local-session-only and not training data.
 - Confirm network panel has no backend, external LLM, Doubao, or hosted vector store calls.
 
-Merge discipline:
+## Merge Discipline
 
 - Do not merge main automatically.
 - Do not approve product admission in this PR.

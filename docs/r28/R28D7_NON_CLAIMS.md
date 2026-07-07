@@ -22,4 +22,4 @@ R28D7 does not claim:
 - hosted vector store
 - answer bank
 
-R28D7 does include the already admitted static q4 assets and exact runtime tokenizer path from prior R28 branches. It does not add new model weights or modify the committed q4 shards.
+R28D7 includes the already committed static q4 assets and exact runtime tokenizer path from prior R28 branches. It does not add new model weights or modify committed q4 shards.
