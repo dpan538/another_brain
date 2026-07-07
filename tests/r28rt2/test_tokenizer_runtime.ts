@@ -17,7 +17,7 @@ test("RT2 tokenizer runtime inspects R28M1 metadata without product-tokenizer cl
   assert.equal(inspected.encode_available, true);
   assert.equal(inspected.decode_available, true);
   assert.equal(inspected.exact_decode, false);
-  assert.equal(inspected.decode_status, "lossy_runtime_display_codec");
+  assert.equal(inspected.decode_status, "lossy_runtime_display_codec_emergency_fallback");
   assert.equal(inspected.non_claims.product_tokenizer, false);
   assert.equal(inspected.non_claims.tokenizer_training_artifact, false);
 });

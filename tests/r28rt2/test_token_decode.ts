@@ -8,7 +8,7 @@ test("RT2 display decoder returns readable text without exposing token ids by de
   assert.ok(decoded.text.trim().length > 0);
   assert.equal(decoded.text.includes("token_id:"), false);
   assert.equal(decoded.exact_decode, false);
-  assert.equal(decoded.decode_status, "lossy_runtime_display_codec");
+  assert.equal(decoded.decode_status, "lossy_runtime_display_codec_emergency_fallback");
   assert.equal(decoded.quality_status, "quality_not_ready");
 });
 

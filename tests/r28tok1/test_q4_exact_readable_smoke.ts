@@ -27,7 +27,7 @@ async function fileFetcher(url) {
   };
 }
 
-test("committed R28M1 q4 assets produce readable RT2 text", { timeout: 180000 }, async () => {
+test("R28TOK1 q4 generation uses exact tokenizer decode", { timeout: 180000 }, async () => {
   const runtimePackage = await loadR28M1Q4RuntimePackage({ fetcher: fileFetcher, baseUrl: "https://local.test/" });
   const checksum = await verifyCommittedShardChecksums(runtimePackage, { fetcher: fileFetcher, baseUrl: "https://local.test/" });
   assert.equal(checksum.ok, true, checksum.failures.join(","));
@@ -40,13 +40,15 @@ test("committed R28M1 q4 assets produce readable RT2 text", { timeout: 180000 },
   assert.equal(smoke.real_forward_passed, true, smoke.blocker || "");
   assert.equal(smoke.readable_generation_passed, true, smoke.blocker || "");
   assert.ok(smoke.generated_token_count >= 4);
-  assert.equal(smoke.decoded_text_available, true);
+  assert.equal(smoke.tokenizer_decode_status, "exact_runtime_tokenizer");
+  assert.equal(smoke.tokenizer_exact_decode, true);
+  assert.equal(smoke.tokenizer_limitation, "");
+  assert.equal(smoke.prompt_results[0].decode_status, "exact_runtime_tokenizer");
+  assert.equal(smoke.prompt_results[0].exact_decode, true);
   assert.equal(smoke.prompt_results[0].decoded_text.includes("token_id:"), false);
-  assert.equal(smoke.prompt_results[0].backend_inference, false);
-  assert.equal(smoke.prompt_results[0].external_api, false);
 });
 
-test("runtime worker returns readable text and debug token ids stay in stats", { timeout: 180000 }, async () => {
+test("R28TOK1 worker stats expose exact tokenizer status", { timeout: 180000 }, async () => {
   const runtimePackage = await loadR28M1Q4RuntimePackage({ fetcher: fileFetcher, baseUrl: "https://local.test/" });
   const events = [];
   const result = await handleRuntimeWorkerMessage(

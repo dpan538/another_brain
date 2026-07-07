@@ -27,6 +27,7 @@ export {
 export { decodeTokenIdsToText, displayPieceForTokenId } from "../tokenizer/token_decode.ts";
 export { encodeTextToTokenIds } from "../tokenizer/token_encode.ts";
 export { createRuntimeTokenizer, inspectRuntimeTokenizer, R28RT2_EXACT_TOKENIZER_LIMITATION } from "../tokenizer/runtime_tokenizer.ts";
+export { hasExactRuntimeTokenizer, inspectExactRuntimeTokenizer } from "../tokenizer/exact_runtime_tokenizer.ts";
 
 export const R28RT0_REAL_INFERENCE_BLOCKER = "real_browser_inference_not_verified";
 export const R28RT0_FORWARD_BLOCKER = "q4_model_forward_not_implemented";
@@ -121,7 +122,9 @@ export async function loadR28M1Q4RuntimePackage(options = {}) {
 
   if (quantizationManifest.quantization !== "q4") throw new Error("quantization_manifest_not_q4");
   if (quantizationManifest.same_origin_only !== true) throw new Error("quantization_manifest_not_same_origin");
-  if (tokenizer.browser_inference_ready === true) throw new Error("tokenizer_must_not_claim_browser_inference_ready");
+  if (tokenizer.browser_inference_ready === true && tokenizer.exact_runtime_tokenizer !== true) {
+    throw new Error("tokenizer_must_not_claim_browser_inference_ready");
+  }
 
   return {
     ok: true,
@@ -206,7 +209,7 @@ export function runtimeCapabilitySummary(runtimePackage = null) {
     architecture_ok: architecture?.ok === true,
     tokenizer_decode_ready: Boolean(runtimePackage?.tokenizer),
     tokenizer_exact_decode_ready: architecture?.tokenizer_browser_inference_ready === true,
-    tokenizer_decode_status: architecture?.tokenizer_browser_inference_ready === true ? "exact_vocab_decode" : "lossy_runtime_display_codec",
+    tokenizer_decode_status: architecture?.tokenizer_browser_inference_ready === true ? "exact_runtime_tokenizer" : "lossy_runtime_display_codec_emergency_fallback",
     tokenizer_blocker: architecture?.warnings?.includes("runtime_tokenizer_not_browser_compatible_for_text_decode")
       ? R28RT2_EXACT_TOKENIZER_LIMITATION
       : ""

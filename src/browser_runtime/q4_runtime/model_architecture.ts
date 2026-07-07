@@ -56,7 +56,8 @@ export function inspectModelArchitecture(modelConfig = {}, quantizationManifest 
   if (quantizationManifest.quantization_kind !== "q4_symmetric_per_tensor_with_bool_bitpack") {
     failures.push("unsupported_q4_packing_format");
   }
-  if (tokenizer.runtime_compatible === false || tokenizer.browser_inference_ready === false) {
+  const tokenizerReady = tokenizer.exact_runtime_tokenizer === true || tokenizer.runtime_compatible === true;
+  if (!tokenizerReady) {
     failures.push("runtime_tokenizer_not_browser_compatible_for_text_decode");
   }
 
@@ -89,8 +90,8 @@ export function inspectModelArchitecture(modelConfig = {}, quantizationManifest 
     },
     tensor_names: Array.from(tensorNames).sort(),
     q4_tensor_packing_format: quantizationManifest.quantization_kind || "",
-    tokenizer_runtime_compatible: tokenizer.runtime_compatible === true,
-    tokenizer_browser_inference_ready: tokenizer.browser_inference_ready === true
+    tokenizer_runtime_compatible: tokenizerReady,
+    tokenizer_browser_inference_ready: tokenizer.exact_runtime_tokenizer === true || tokenizer.browser_runtime_ready === true
   };
 }
 
