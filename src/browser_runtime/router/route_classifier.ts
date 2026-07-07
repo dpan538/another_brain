@@ -1,5 +1,6 @@
 import { detectOutputQualityFailure } from "../generation_policy.ts";
 import { normalizeAnswerRouteInput } from "./answer_route.ts";
+import { buildIdentityRouteOutput, isIdentityQuestion } from "./identity_route.ts";
 
 const MALICIOUS_EVIDENCE_MARKERS = [
   "ignore previous instructions",
@@ -83,6 +84,10 @@ export function classifyAnswerRoute(rawInput = {}) {
   const input = normalizeAnswerRouteInput(rawInput);
   const status = evidenceStatus(input);
   const flags = modelQualityFlags(input);
+
+  if (isIdentityQuestion(input.user_input)) {
+    return buildIdentityRouteOutput();
+  }
 
   if (status === "malicious") {
     return {

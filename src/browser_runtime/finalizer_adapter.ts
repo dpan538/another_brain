@@ -165,7 +165,7 @@ export function finalizeAnswerSurface({ input, draft = "", generation = {}, evid
     answer_status: "final",
     route: routed.route,
     answer_route: routed.route,
-    use_model_draft: true,
+    use_model_draft: routed.use_model_draft === true,
     quality_flags: routed.quality_flags,
     non_claims: routed.non_claims,
     route_policy: routed,

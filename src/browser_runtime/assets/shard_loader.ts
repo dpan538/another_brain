@@ -1,4 +1,5 @@
 import { BrowserAssetCache } from "./asset_cache.ts";
+import { toSameOriginAssetUrl } from "./asset_path_normalizer.ts";
 import { verifySha256 } from "./checksum.ts";
 
 export class ShardLoadError extends Error {
@@ -10,20 +11,25 @@ export class ShardLoadError extends Error {
 }
 
 export function isSameOriginUrl(value, base = "http://localhost/") {
-  const url = new URL(value, base);
-  const baseUrl = new URL(base);
-  return url.origin === baseUrl.origin;
+  try {
+    const url = toSameOriginAssetUrl(value, { origin: new URL(base).origin });
+    const baseUrl = new URL(base);
+    return url.origin === baseUrl.origin;
+  } catch {
+    return false;
+  }
 }
 
 export function assertSameOriginAssetUrl(value, base = "http://localhost/") {
-  if (!value || typeof value !== "string") throw new Error("missing_asset_path");
-  if (value.startsWith("//")) throw new Error("external_asset_url_rejected");
-  const url = new URL(value, base);
-  if (!isSameOriginUrl(url.href, base)) throw new Error("non_same_origin_asset_rejected");
-  if (url.pathname.includes("/artifacts/") || url.pathname.includes("/private")) {
-    throw new Error("private_or_artifact_path_rejected");
-  }
+  const url = toSameOriginAssetUrl(value, { origin: new URL(base).origin, basePath: basePathFromUrl(base) });
+  if (!isSameOriginUrl(url.pathname, base)) throw new Error("non_same_origin_asset_rejected");
   return url;
+}
+
+function basePathFromUrl(base) {
+  const url = new URL(base);
+  const path = url.pathname.endsWith("/") ? url.pathname : url.pathname.replace(/\/[^/]*$/, "/");
+  return path.startsWith("/another_brain/") ? path : "";
 }
 
 function emit(onProgress, event) {
