@@ -37,6 +37,9 @@ const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_ASSET_CACHE_KEY = "another_brain_r28rout1_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
+const SELF_CHECK_JSON_TIMEOUT_MS = 1500;
+const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
+const SELF_CHECK_DEEP_TIMEOUT_MS = 15000;
 const IDENTITY_ROUTE = "identity_boundary";
 const IDENTITY_ANSWER = "我是鳄鱼。更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。";
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
@@ -756,16 +759,17 @@ async function fetchJsonSameOrigin(path, options = {}) {
 async function probeSameOriginAsset(path, options = {}) {
   const url = sameOriginAssetUrl(path, options);
   const timed = timeoutSignal(options.timeoutMs || 1000, options.signal);
+  const cache = options.cache || "no-store";
+  const getRange = () => fetch(url.href, {
+    method: "GET",
+    headers: { Range: "bytes=0-0" },
+    cache,
+    signal: timed.signal
+  }).catch(() => null);
+  const head = () => fetch(url.href, { method: "HEAD", cache, signal: timed.signal }).catch(() => null);
   try {
-    let response = await fetch(url.href, { method: "HEAD", cache: "force-cache", signal: timed.signal }).catch(() => null);
-    if (!response?.ok) {
-      response = await fetch(url.href, {
-        method: "GET",
-        headers: { Range: "bytes=0-0" },
-        cache: "force-cache",
-        signal: timed.signal
-      }).catch(() => null);
-    }
+    let response = options.preferRangeGet === true ? await getRange() : await head();
+    if (!response?.ok) response = options.preferRangeGet === true ? await head() : await getRange();
     if (!response?.ok) throw new Error(`asset_probe_failed:${url.pathname}:${response?.status || 0}`);
     return {
       ok: true,
@@ -1090,11 +1094,22 @@ export class BrowserChatRuntime {
   }
 
   async quickSelfCheckModelPath(options = {}) {
-    return this.selfCheckModelPath({ ...options, runDeep: false, timeoutMs: options.timeoutMs || 1000 });
+    return this.selfCheckModelPath({
+      ...options,
+      runDeep: false,
+      jsonTimeoutMs: options.jsonTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS,
+      shardTimeoutMs: options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS
+    });
   }
 
   async deepSelfCheckModelPath(options = {}) {
-    return this.selfCheckModelPath({ ...options, runDeep: true, timeoutMs: options.timeoutMs || 8000 });
+    return this.selfCheckModelPath({
+      ...options,
+      runDeep: true,
+      timeoutMs: options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS,
+      jsonTimeoutMs: options.jsonTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS,
+      shardTimeoutMs: options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS
+    });
   }
 
   cancelSelfCheck(reason = "self_check_cancelled") {
@@ -1167,8 +1182,9 @@ export class BrowserChatRuntime {
     const startedAt = typeof performance !== "undefined" ? performance.now() : Date.now();
     this.activeSelfCheckStartedAt = startedAt;
     const runDeep = options.runDeep === true;
-    const quickTimeoutMs = Math.min(Number(options.quickTimeoutMs || options.timeoutMs || 1000), 1500);
-    const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
+    const jsonTimeoutMs = Math.min(Math.max(Number(options.jsonTimeoutMs || options.quickTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS), 500), 3000);
+    const shardProbeTimeoutMs = Math.min(Math.max(Number(options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS), 3000), 15000);
+    const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS), 1000), 15000);
     const blockers = [];
     let assetManifest = null;
     let quantizationManifest = null;
@@ -1184,7 +1200,7 @@ export class BrowserChatRuntime {
 
     emit("checking_quick", "manifest");
     try {
-      assetManifest = await fetchJsonSameOrigin("another_brain/asset_manifest.json", { timeoutMs: quickTimeoutMs, signal });
+      assetManifest = await fetchJsonSameOrigin("another_brain/asset_manifest.json", { timeoutMs: jsonTimeoutMs, signal });
     } catch (error) {
       blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "asset_manifest_fetch_failed");
     }
@@ -1198,12 +1214,12 @@ export class BrowserChatRuntime {
         assets: { manifest_loaded: true, q4_shard_count: q4Assets.length, expected_shard_count: Number(assetManifest?.shard_count || 0) }
       });
       try {
-        quantizationManifest = await fetchJsonSameOrigin(quantizationPath, { timeoutMs: quickTimeoutMs, signal });
+        quantizationManifest = await fetchJsonSameOrigin(quantizationPath, { timeoutMs: jsonTimeoutMs, signal });
       } catch (error) {
         blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "quantization_manifest_fetch_failed");
       }
       try {
-        tokenizer = await fetchJsonSameOrigin(tokenizerPath, { timeoutMs: quickTimeoutMs, signal });
+        tokenizer = await fetchJsonSameOrigin(tokenizerPath, { timeoutMs: jsonTimeoutMs, signal });
       } catch (error) {
         blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "runtime_tokenizer_fetch_failed");
       }
@@ -1216,7 +1232,12 @@ export class BrowserChatRuntime {
       });
       shardResults = await Promise.all(q4Assets.map(async (item) => {
         try {
-          const probe = await probeSameOriginAsset(item.path, { timeoutMs: quickTimeoutMs, signal });
+          const probe = await probeSameOriginAsset(item.path, {
+            timeoutMs: shardProbeTimeoutMs,
+            signal,
+            cache: "no-store",
+            preferRangeGet: true
+          });
           return { path: item.path, ok: true, bytes: Number(item.bytes || 0), ...probe };
         } catch (error) {
           let normalizedPath = "";

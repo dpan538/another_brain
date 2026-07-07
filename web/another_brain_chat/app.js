@@ -419,7 +419,7 @@ async function boot() {
     output: { text_preview: "" },
     blockers: []
   });
-  const report = await runtime.quickSelfCheckModelPath({ timeoutMs: 1000 });
+  const report = await runtime.quickSelfCheckModelPath({ jsonTimeoutMs: 1500, shardTimeoutMs: 8000 });
   renderSelfCheck(report);
   renderAssetStatus(runtime.assetStatus, runtime.deliveryConfig);
   if (report.ok) {
@@ -511,7 +511,8 @@ on(modelSelfCheckButton, "click", async () => {
   setText(selfCheckQ4, "quick check");
   try {
     const report = await runtime.deepSelfCheckModelPath({
-      timeoutMs: 8000,
+      timeoutMs: 15000,
+      shardTimeoutMs: 10000,
       signal: controller.signal,
       onProgress: renderSelfCheck
     });
