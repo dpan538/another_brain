@@ -15,8 +15,8 @@
             <h1 id="chat-title">鳄鱼的另一个大脑</h1>
           </div>
           <div class="header-badges" aria-label="runtime status">
-            <span class="badge badge-local" id="local-indicator">Local only</span>
-            <span class="badge badge-backend" id="backend-badge">No backend inference</span>
+            <span class="badge badge-local" id="local-indicator">Local only / no remote send</span>
+            <span class="badge badge-backend" id="backend-badge">No backend or external LLM</span>
           </div>
         </header>
 
@@ -80,7 +80,7 @@
 
         <section class="prelaunch-strip" aria-label="prelaunch candidate and release blocker status">
           <div>
-            <span class="status-label">Candidate Route</span>
+            <span class="status-label">Model Route</span>
             <strong id="candidate-route-status">synthetic_only</strong>
           </div>
           <div>
@@ -99,7 +99,7 @@
 
         <section class="context-bridge" aria-label="local context bridge">
           <div class="context-bridge-head">
-            <label for="context-import">Local context</label>
+            <label for="context-import">Local context / session-only</label>
             <span id="context-bridge-status">0 packets / 0 evidence</span>
           </div>
           <div class="context-bridge-body">

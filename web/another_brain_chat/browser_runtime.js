@@ -10,6 +10,92 @@ import {
 const HIDDEN_MARKERS = ["system prompt", "hidden prompt", "<hidden", "chain-of-thought"];
 const GENERIC_MARKERS = ["as an ai language model", "i cannot answer that"];
 const EVIDENCE_INJECTION_MARKERS = ["ignore previous instructions", "reveal hidden prompt", "developer message"];
+const MAX_STATIC_RUNTIME_INPUT_CHARS = 8192;
+const INPUT_SECURITY_MARKERS = [
+  "ignore previous instructions",
+  "ignore the previous instructions",
+  "disregard previous instructions",
+  "override runtime policy",
+  "reveal hidden prompt",
+  "reveal the hidden prompt",
+  "show hidden prompt",
+  "show the hidden prompt",
+  "print hidden prompt",
+  "hidden prompt:",
+  "reveal system prompt",
+  "show system prompt",
+  "show the system prompt",
+  "print system prompt",
+  "system prompt:",
+  "reveal developer message",
+  "show developer message",
+  "show the developer message",
+  "print developer message",
+  "developer message:",
+  "developer instructions:",
+  "chain-of-thought",
+  "chain of thought",
+  "hidden reasoning",
+  "<hidden",
+  "<system",
+  "<developer"
+];
+const SECRET_LIKE_PATTERN = /\b(?:api[_-]?key|secret|password|passwd|token)\s*[:=]\s*["']?[^"'\s]{8,}/i;
+
+function inspectSecurityText(value) {
+  const text = String(value || "").toLowerCase();
+  const failures = INPUT_SECURITY_MARKERS
+    .filter((marker) => text.includes(marker))
+    .map((marker) => marker.includes("chain") || marker.includes("reasoning")
+      ? "chain_of_thought_request_blocked"
+      : marker.includes("ignore") || marker.includes("override") || marker.includes("disregard")
+        ? "prompt_injection_marker_blocked"
+        : "hidden_prompt_or_developer_marker_blocked");
+  return {
+    ok: failures.length === 0,
+    failures: Array.from(new Set(failures)),
+    warnings: SECRET_LIKE_PATTERN.test(String(value || "")) ? ["secrets_like_input_warning"] : []
+  };
+}
+
+function sanitizeInputForLocalRuntime(input) {
+  const raw = String(input || "");
+  const inspection = inspectSecurityText(raw);
+  const failures = [...inspection.failures];
+  if (raw.length > MAX_STATIC_RUNTIME_INPUT_CHARS) failures.push("input_too_large");
+  const uniqueFailures = Array.from(new Set(failures));
+  const blocked = uniqueFailures.length > 0;
+  return {
+    ok: !blocked,
+    blocked,
+    failures: uniqueFailures,
+    warnings: inspection.warnings,
+    sanitized_input: blocked ? "" : raw.trim().slice(0, MAX_STATIC_RUNTIME_INPUT_CHARS),
+    redacted_input: blocked ? `[blocked by r28sec0-static-security-v1: ${uniqueFailures[0] || "security_guard"}]` : raw.trim(),
+    local_only: true,
+    allowed_for_training: false,
+    forwarded_to_external_runtime: false,
+    persisted: false
+  };
+}
+
+function validateDeliverySecurityPolicy(config = {}) {
+  const failures = [];
+  if (config.backend_inference !== false) failures.push("backend_inference_rejected");
+  if (config.external_llm_api !== false) failures.push("external_llm_api_rejected");
+  if (config.hosted_vector_store === true) failures.push("hosted_vector_store_rejected");
+  if (config.product_model === true) failures.push("product_model_rejected");
+  if (config.product_admission === true) failures.push("product_admission_rejected");
+  if (config.browser_admission === true) failures.push("browser_admission_rejected");
+  return {
+    ok: failures.length === 0,
+    failures,
+    policy_version: "r28sec0-static-security-v1",
+    local_only: true,
+    imported_context_is_training_data: false,
+    no_local_persistence_by_default: true
+  };
+}
 
 export function probeBrowserCapabilities() {
   const cacheStorageAvailable = typeof caches !== "undefined" && typeof caches.open === "function";
@@ -50,6 +136,7 @@ export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
     if (evidencePacket.evidence_status === "insufficient") failures.push("insufficient_evidence");
     if (evidencePacket.evidence_status === "conflicting") failures.push("conflicting_evidence");
     if (evidencePacket.answer_policy_hint === "refuse") failures.push("evidence_policy_refuse");
+    if (evidencePacket.security_guard?.hidden_prompt_disclosure_rejected) failures.push("evidence_hidden_prompt_request");
     if (evidence.some((item) => EVIDENCE_INJECTION_MARKERS.some((marker) => `${item.title}\n${item.text}`.toLowerCase().includes(marker)))) {
       failures.push("evidence_instruction_injection");
     }
@@ -62,7 +149,7 @@ export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
 }
 
 function fallbackAnswer(input, reason) {
-  return `Static fallback (${reason}): ${String(input || "").slice(0, 120)}`;
+  return `Static fallback (${reason}): local static guard could not produce a grounded answer.`;
 }
 
 function syntheticDraft(input, maxTokens = 32) {
@@ -168,10 +255,57 @@ export class BrowserChatRuntime {
   async run(input, hooks = {}) {
     this.turnIndex += 1;
     const setStatus = typeof hooks.onStatus === "function" ? hooks.onStatus : () => {};
-    const statePacket = applyImportedStatePackets(buildStatePacket(input, this.turnIndex, this.mode), this.contextPackets);
+    const inputGuard = sanitizeInputForLocalRuntime(input);
+    const policyGuard = validateDeliverySecurityPolicy(this.deliveryConfig);
+    const blockedReason = !policyGuard.ok
+      ? policyGuard.failures[0]
+      : (!inputGuard.ok ? inputGuard.failures[0] : null);
+    if (blockedReason) {
+      setStatus("fallback");
+      const statePacket = buildStatePacket("", this.turnIndex, this.mode);
+      statePacket.security_guard = { input: inputGuard, policy: policyGuard };
+      const finalAnswer = fallbackAnswer("", blockedReason);
+      const answerSurfaceRequest = buildAnswerSurfaceRequest({
+        input: inputGuard.redacted_input,
+        statePacket,
+        evidencePacket: null,
+        contextPackets: []
+      });
+      return {
+        input: inputGuard.redacted_input,
+        state_packet: statePacket,
+        evidence_packet: null,
+        retrieved_evidence: [],
+        decoder_draft: "",
+        verifier_result: {
+          passed: false,
+          failures: [blockedReason],
+          fallback_recommended: true,
+          security_guard: { input: inputGuard, policy: policyGuard }
+        },
+        final_answer: finalAnswer,
+        fallback_used: true,
+        reason: blockedReason,
+        security_guard: { input: inputGuard, policy: policyGuard },
+        adapter_context_summary: buildAdapterContextSummary([]),
+        answer_surface_request: answerSurfaceRequest,
+        answer_surface_response: buildAnswerSurfaceResponse({
+          finalAnswer,
+          requestPacket: answerSurfaceRequest,
+          evidencePacket: null
+        }),
+        delivery_config: this.deliveryConfig,
+        capabilities: this.capabilities,
+        asset_status: this.assetStatus
+      };
+    }
+
+    const safeInput = inputGuard.sanitized_input;
+    const statePacket = applyImportedStatePackets(buildStatePacket(safeInput, this.turnIndex, this.mode), this.contextPackets);
     statePacket.delivery_mode = this.deliveryConfig.delivery_mode || "demo_static";
     statePacket.rag_mode = this.deliveryConfig.rag_mode || "static_demo";
     statePacket.product_model = false;
+    statePacket.security_guard = { input: inputGuard, policy: policyGuard };
     setStatus("loading_model");
     if (!this.worker && this.capabilities.worker_available) await this.load();
     setStatus("retrieving_local_memory");
@@ -179,9 +313,9 @@ export class BrowserChatRuntime {
     const memoryRecords = this.contextPackets.length > 0
       ? mergeAdapterEvidenceRecords(this.memoryRecords || [], this.contextPackets)
       : this.memoryRecords || undefined;
-    const evidencePacket = buildRetrievalPacket(input, statePacket, memoryRecords);
+    const evidencePacket = buildRetrievalPacket(safeInput, statePacket, memoryRecords);
     const answerSurfaceRequest = buildAnswerSurfaceRequest({
-      input,
+      input: safeInput,
       statePacket,
       evidencePacket,
       contextPackets: this.contextPackets
@@ -194,7 +328,7 @@ export class BrowserChatRuntime {
     let verifierResult = { passed: false, failures: ["not_run"], fallback_recommended: true };
 
     try {
-      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket), { maxTokens: 32, timeoutMs: 3000 });
+      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(safeInput, evidencePacket), { maxTokens: 32, timeoutMs: 3000 });
       setStatus("verifying");
       verifierResult = verifyDraft(decoderDraft, evidencePacket);
       if (verifierResult.passed) {
@@ -202,18 +336,18 @@ export class BrowserChatRuntime {
         setStatus("final");
       } else {
         fallbackUsed = true;
-        finalAnswer = fallbackAnswer(input, verifierResult.failures[0]);
+        finalAnswer = fallbackAnswer(safeInput, verifierResult.failures[0]);
         setStatus("fallback");
       }
     } catch (error) {
       fallbackUsed = true;
       verifierResult = { passed: false, failures: [error.message], fallback_recommended: true };
-      finalAnswer = fallbackAnswer(input, error.message || "runtime_failed");
+      finalAnswer = fallbackAnswer(safeInput, error.message || "runtime_failed");
       setStatus("fallback");
     }
 
     return {
-      input,
+      input: safeInput,
       state_packet: statePacket,
       evidence_packet: evidencePacket,
       retrieved_evidence: evidencePacket.retrieved_evidence,
@@ -221,6 +355,8 @@ export class BrowserChatRuntime {
       verifier_result: verifierResult,
       final_answer: finalAnswer,
       fallback_used: fallbackUsed,
+      reason: fallbackUsed ? (verifierResult.failures[0] || "runtime_failed") : "",
+      security_guard: { input: inputGuard, policy: policyGuard, evidence: evidencePacket.security_guard },
       adapter_context_summary: buildAdapterContextSummary(this.contextPackets),
       answer_surface_request: answerSurfaceRequest,
       answer_surface_response: buildAnswerSurfaceResponse({

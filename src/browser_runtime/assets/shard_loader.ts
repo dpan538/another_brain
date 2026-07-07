@@ -1,5 +1,10 @@
 import { BrowserAssetCache } from "./asset_cache.ts";
 import { verifySha256 } from "./checksum.ts";
+import {
+  MAX_DECLARED_STATIC_ASSET_BYTES,
+  assertSameOriginStaticAssetPath,
+  validateQuantizationManifest
+} from "../security/static_security_policy.ts";
 
 export class ShardLoadError extends Error {
   constructor(message, state) {
@@ -16,14 +21,7 @@ export function isSameOriginUrl(value, base = "http://localhost/") {
 }
 
 export function assertSameOriginAssetUrl(value, base = "http://localhost/") {
-  if (!value || typeof value !== "string") throw new Error("missing_asset_path");
-  if (value.startsWith("//")) throw new Error("external_asset_url_rejected");
-  const url = new URL(value, base);
-  if (!isSameOriginUrl(url.href, base)) throw new Error("non_same_origin_asset_rejected");
-  if (url.pathname.includes("/artifacts/") || url.pathname.includes("/private")) {
-    throw new Error("private_or_artifact_path_rejected");
-  }
-  return url;
+  return assertSameOriginStaticAssetPath(value, base);
 }
 
 function emit(onProgress, event) {
@@ -57,6 +55,56 @@ function declaredShards(manifest) {
   return shards;
 }
 
+function createFailClosedState(reason, { manifestUrl = null, manifest = null, cache = null, shards = [] } = {}) {
+  return {
+    ok: false,
+    manifest,
+    manifest_url: manifestUrl?.href || String(manifestUrl || ""),
+    manifest_version: manifestVersion(manifest || {}),
+    loadedShards: [],
+    failures: [{ path: manifestUrl?.pathname || "manifest", reason }],
+    fallback_reason: `security_guard:${reason}`,
+    fallback_mode: "synthetic_demo",
+    cache: cache ? { mode: cache.mode(), capabilities: cache.capabilities } : null,
+    progress: {
+      loaded_shards: 0,
+      total_shards: shards.length,
+      bytes_loaded: 0,
+      total_declared_bytes: shards.reduce((total, shard) => total + Number(shard.bytes || 0), 0)
+    }
+  };
+}
+
+function validateDeclaredShard(shard) {
+  if (!shard || typeof shard !== "object") throw new Error("declared_shard_invalid");
+  if (!shard.path || typeof shard.path !== "string") throw new Error("missing_asset_path");
+  if (!shard.sha256) throw new Error(`missing_sha256:${shard.path}`);
+  if (typeof shard.bytes !== "number" || !Number.isFinite(shard.bytes) || shard.bytes <= 0) {
+    throw new Error(`missing_declared_asset_bytes:${shard.path}`);
+  }
+  if (shard.bytes > MAX_DECLARED_STATIC_ASSET_BYTES) {
+    throw new Error(`declared_asset_too_large:${shard.path}`);
+  }
+}
+
+function validateManifestSecurity(manifest) {
+  const budget = requireBudgetMetadata(manifest);
+  validateQuantizationManifest(manifest);
+  if (manifest.backend_inference !== false || manifest.external_runtime_dependency !== false) {
+    throw new Error("runtime_dependency_flags_rejected");
+  }
+  const shards = declaredShards(manifest);
+  for (const shard of shards) validateDeclaredShard(shard);
+  const totalDeclaredBytes = shards.reduce((total, shard) => total + Number(shard.bytes || 0), 0);
+  if (totalDeclaredBytes > Number(budget.max_total_static_bytes || MAX_DECLARED_STATIC_ASSET_BYTES)) {
+    throw new Error("declared_asset_budget_exceeded");
+  }
+  if (typeof manifest.total_bytes === "number" && totalDeclaredBytes > manifest.total_bytes) {
+    throw new Error("undeclared_asset_size_exceeded");
+  }
+  return { budget, shards, totalDeclaredBytes };
+}
+
 async function fetchBytesWithRetry(url, options) {
   const fetchImpl = options.fetcher || globalThis.fetch;
   if (typeof fetchImpl !== "function") throw new Error("fetch_unavailable");
@@ -80,10 +128,10 @@ async function fetchBytesWithRetry(url, options) {
 
 async function loadOneShard({ shard, manifestUrl, version, cache, state, options }) {
   const shardUrl = assertSameOriginAssetUrl(shard.path, manifestUrl.href);
-  if (!shard.sha256) throw new Error(`missing_sha256:${shard.path}`);
   const cached = await cache.get(shardUrl.href, { manifestVersion: version });
   if (cached.hit) {
     emit(options.onProgress, { type: "shard", status: "cache_hit", path: shard.path, cache_mode: cached.cache_mode });
+    if (cached.bytes.byteLength > Number(shard.bytes)) throw new Error(`undeclared_asset_size_exceeded:${shard.path}`);
     const cachedVerification = await verifySha256(cached.bytes, shard.sha256);
     if (cachedVerification.ok) {
       emit(options.onProgress, { type: "shard", status: "verified", path: shard.path, source: "cache" });
@@ -100,6 +148,7 @@ async function loadOneShard({ shard, manifestUrl, version, cache, state, options
   }
 
   const bytes = await fetchBytesWithRetry(shardUrl, options);
+  if (bytes.byteLength > Number(shard.bytes)) throw new Error(`undeclared_asset_size_exceeded:${shard.path}`);
   const verification = await verifySha256(bytes, shard.sha256);
   if (!verification.ok) throw new Error(`sha256_mismatch:${shard.path}`);
   await cache.put(shardUrl.href, bytes, { manifestVersion: version });
@@ -116,12 +165,17 @@ export async function loadShardedAssetManifest(options = {}) {
   const response = await fetchImpl(manifestUrl.href, { signal: options.signal });
   if (!response.ok) throw new Error(`manifest_fetch_failed:${response.status}`);
   const manifest = await response.json();
-  requireBudgetMetadata(manifest);
-  if (manifest.backend_inference !== false || manifest.external_runtime_dependency !== false) {
-    throw new Error("runtime_dependency_flags_rejected");
+  let manifestSecurity = null;
+  try {
+    manifestSecurity = validateManifestSecurity(manifest);
+  } catch (error) {
+    const state = createFailClosedState(error.message, { manifestUrl, manifest });
+    emit(options.onProgress, { type: "manifest", status: "security_rejected", error: error.message });
+    if (options.allowPartialFailure === true) return state;
+    throw new ShardLoadError("asset_manifest_security_rejected", state);
   }
 
-  const shards = declaredShards(manifest);
+  const shards = manifestSecurity.shards;
   const version = manifestVersion(manifest);
   const cache = options.cache || new BrowserAssetCache({ manifestVersion: version, env: options.env, caches: options.caches });
   await cache.invalidateByManifestVersion(version);

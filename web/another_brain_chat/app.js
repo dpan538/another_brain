@@ -18,6 +18,10 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   release_blockers: ["product_admission_pending", "browser_admission_pending", "release_checkpoint_pending"],
   candidate_static_bundle: false,
   candidate_warning: "No product-path candidate is admitted into the static bundle; engineering smoke remains separate.",
+  security_policy: "r28sec0-static-security-v1",
+  local_only: true,
+  imported_context_training_data: false,
+  no_local_persistence_default: true,
   asset_cache_mode: "memory_fallback",
   asset_cache_policy: "same_origin_shards_only",
   asset_loader_resilience: "checksum_retry_abort_partial_fallback",
@@ -53,6 +57,8 @@ const contextClearButton = document.querySelector("#context-clear-button");
 const stateExportButton = document.querySelector("#state-export-button");
 const contextBridgeStatus = document.querySelector("#context-bridge-status");
 const contextValidation = document.querySelector("#context-validation");
+const localIndicator = document.querySelector("#local-indicator");
+const backendBadge = document.querySelector("#backend-badge");
 
 let lastPacket = null;
 const contextBridge = createLocalContextBridge();
@@ -83,18 +89,20 @@ function updateStatus(packet) {
   const evidenceStatus = packet.evidence_packet?.evidence_status || "unknown";
   retrievalStatus.textContent = `${packet.retrieved_evidence.length} evidence / ${evidenceStatus}`;
   verifierStatus.textContent = packet.verifier_result.passed ? "Passed" : "Blocked";
-  fallbackStatus.textContent = packet.fallback_used ? "Used" : "Unused";
+  const fallbackReason = packet.reason || packet.verifier_result.failures?.[0] || "security_guard";
+  fallbackStatus.textContent = packet.fallback_used ? `Used / ${fallbackReason}` : "Unused";
 }
 
 function renderContextBridge(result = null) {
   const summary = contextBridge.summary();
   contextBridgeStatus.textContent = `${summary.packet_count} packets / ${summary.evidence_record_count} evidence`;
   if (result?.ok) {
-    contextValidation.textContent = `${result.packet.packet_type} imported for this session`;
+    const warning = result.warnings?.length ? ` / ${result.warnings.join(", ")}` : "";
+    contextValidation.textContent = `${result.packet.packet_type} imported for this session / not training data${warning}`;
   } else if (result?.failures?.length) {
     contextValidation.textContent = `Rejected: ${result.failures.join(", ")}`;
   } else {
-    contextValidation.textContent = "Local session only / not saved / not training data";
+    contextValidation.textContent = "Local session only / not saved / not training data / no local persistence";
   }
 }
 
@@ -110,19 +118,28 @@ async function loadDeliveryConfig() {
 }
 
 function renderDeliveryConfig(config) {
+  localIndicator.textContent = config.local_only === false ? "Local policy blocked" : "Local only / no remote send";
+  backendBadge.textContent = config.external_llm_api || config.backend_inference
+    ? "Blocked remote inference config"
+    : "No backend or external LLM";
   deliveryMode.textContent = config.delivery_mode;
   configuredModelMode.textContent = config.model_mode;
   configuredRagMode.textContent = config.rag_mode;
   budgetStatus.textContent = config.budget_status;
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
-  candidateRouteStatus.textContent = config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route;
+  const route = config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route;
+  candidateRouteStatus.textContent = route.includes("product_path")
+    ? "metadata-bound product-path candidate"
+    : route.includes("synthetic")
+      ? "synthetic"
+      : "metadata-bound";
   handoffSourceStatus.textContent = config.handoff_source || DEFAULT_DELIVERY_CONFIG.handoff_source;
-  adapterStatus.textContent = config.adapter_status || DEFAULT_DELIVERY_CONFIG.adapter_status;
+  adapterStatus.textContent = `${config.adapter_status || DEFAULT_DELIVERY_CONFIG.adapter_status} / session-only`;
   releaseBlockerStatus.textContent = releaseBlockers.join(" / ");
   const candidateWarning = config.candidate_route === "product_path" ? "" : config.candidate_warning;
   nonProductWarning.textContent = config.product_model
-    ? ""
-    : candidateWarning || config.non_product_warning || DEFAULT_DELIVERY_CONFIG.non_product_warning;
+    ? "Blocked: product model admission is not allowed in this static shell."
+    : `No product model admission. ${candidateWarning || config.non_product_warning || DEFAULT_DELIVERY_CONFIG.non_product_warning}`;
 }
 
 function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
