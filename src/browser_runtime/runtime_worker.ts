@@ -58,7 +58,13 @@ export async function handleRuntimeWorkerMessage(message, sink = {}) {
         decode_status: generation.decode_status,
         generated_token_ids: generation.generated_token_ids,
         quality_status: generation.quality_status,
-        fallback_used: false
+        fallback_used: generation.needs_fallback === true,
+        fallback_reason: generation.fallback_reason || "",
+        finish_reason: generation.finish_reason,
+        generation_policy: generation.generation_policy,
+        bad_token_blocked: generation.bad_token_blocked === true,
+        repetition_guard_triggered: generation.repetition_guard_triggered === true,
+        lossy_decode_warning: generation.lossy_decode_warning === true
       }
     };
     post(final);

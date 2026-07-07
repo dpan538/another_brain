@@ -3,6 +3,6 @@ export function buildFallbackAnswer(input, reason = "runtime_unavailable") {
   return {
     fallback_used: true,
     reason,
-    final_answer: `Static fallback (${reason}): ${trimmed || "empty input"}`
+    final_answer: `静态 fallback（${reason}）：${trimmed || "空输入"}`
   };
 }
