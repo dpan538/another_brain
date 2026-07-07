@@ -3,6 +3,7 @@ export const R28ROUT0_ROUTE_SCHEMA_VERSION = "r28rout0-answer-route-schema-v1";
 export const ANSWER_ROUTES = Object.freeze([
   "direct_model_draft",
   "rag_grounded_answer",
+  "identity_boundary",
   "insufficient_evidence_boundary",
   "conflicting_evidence_boundary",
   "malicious_evidence_boundary",
