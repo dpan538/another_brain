@@ -68,15 +68,57 @@ function loadIgnoreEntries(text) {
   return text
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#") && !line.startsWith("!"));
+    .filter((line) => line && !line.startsWith("#"));
+}
+
+function globToRegExp(pattern) {
+  let out = "";
+  for (let index = 0; index < pattern.length; index += 1) {
+    const char = pattern[index];
+    const next = pattern[index + 1];
+    if (char === "*" && next === "*") {
+      out += ".*";
+      index += 1;
+    } else if (char === "*") {
+      out += "[^/]*";
+    } else if (char === "?") {
+      out += "[^/]";
+    } else if ("\\^$+?.()|{}[]".includes(char)) {
+      out += `\\${char}`;
+    } else {
+      out += char;
+    }
+  }
+  return new RegExp(`^${out}$`);
+}
+
+function ignorePatternMatches(rel, rawPattern) {
+  const pattern = rawPattern.replace(/^!/, "").replace(/^\/+/, "");
+  if (!pattern) return false;
+  if (pattern.endsWith("/**")) {
+    const prefix = pattern.slice(0, -3).replace(/\/+$/, "");
+    return rel === prefix || rel.startsWith(`${prefix}/`);
+  }
+  if (pattern.endsWith("/")) {
+    const prefix = pattern.replace(/\/+$/, "");
+    return rel === prefix || rel.startsWith(`${prefix}/`);
+  }
+  if (!pattern.includes("/")) {
+    return rel.split("/").some((part) => globToRegExp(pattern).test(part));
+  }
+  if (!/[*?]/.test(pattern)) {
+    return rel === pattern || rel.startsWith(`${pattern}/`);
+  }
+  return globToRegExp(pattern).test(rel);
 }
 
 function isIgnoredByVercel(rel, ignoreEntries) {
-  return ignoreEntries.some((entry) => {
-    const normalized = entry.replace(/\/+$/, "");
-    if (entry.endsWith("/**")) return rel === normalized.slice(0, -3) || rel.startsWith(`${normalized.slice(0, -3)}/`);
-    return rel === normalized || rel.startsWith(`${normalized}/`);
-  });
+  let ignored = false;
+  for (const entry of ignoreEntries) {
+    if (!ignorePatternMatches(rel, entry)) continue;
+    ignored = !entry.startsWith("!");
+  }
+  return ignored;
 }
 
 async function exists(path) {
@@ -185,7 +227,14 @@ async function main() {
   const app = await readFile(resolve(ROOT, "web/app.js"), "utf8");
   const runtimeVersion = await readFile(resolve(ROOT, "web/runtime_version.js"), "utf8");
   const dialogRules = await readFile(resolve(ROOT, "web/dialog_rules.js"), "utf8");
-  if (!/type="module" src="\.\/app\.js\?v=/.test(index)) failures.push("index_missing_versioned_app_module");
+  const rootHasVersionedAppModule = /type="module" src="\.\/app\.js\?v=/.test(index);
+  const rootHasR28ux4ChatRedirect =
+    /R28UX4/.test(index) &&
+    /过程摘要/.test(index) &&
+    /static_q4_experimental/.test(index) &&
+    /exact_runtime_tokenizer/.test(index) &&
+    /another_brain_chat\/\?v=/.test(index);
+  if (!rootHasVersionedAppModule && !rootHasR28ux4ChatRedirect) failures.push("index_missing_versioned_app_module");
   if (!/runtime_version\.js\?v=/.test(app)) failures.push("app_missing_versioned_runtime_version_import");
   if (/knowledge_base\.generated\.js/.test(dialogRules)) {
     failures.push("dialog_rules_imports_monolithic_knowledge");
@@ -232,6 +281,11 @@ async function main() {
   }
 
   const webFiles = await walk(resolve(ROOT, "web"));
+  for (const admittedAssetPath of staticLlm.admittedAssetPaths) {
+    if (isIgnoredByVercel(admittedAssetPath, vercelIgnoreEntries)) {
+      failures.push(`admitted_static_llm_asset_ignored_by_vercel:${admittedAssetPath}`);
+    }
+  }
   const actualShardFiles = new Set(
     webFiles
       .map((file) => relative(ROOT, file))

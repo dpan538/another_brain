@@ -14,6 +14,25 @@ artifacts/**
 !artifacts/.gitkeep
 artifacts/training_os/personal_writing_intake/
 artifacts/training_os/corpus_expansion/
+artifacts/r27a2/
+artifacts/r27a3/
+artifacts/r27a4/
+artifacts/r27a5/
+artifacts/r27a6/
+artifacts/r27b1a/
+**/model_lab/checkpoints/
+**/raw_public_samples/
+**/clean_public_samples/
+**/*.pt
+**/*.pth
+**/*.safetensors
+**/*.ckpt
+**/*.onnx
+**/*.gguf
+**/tokenizer.model
+artifacts/**/tokenizer.json
+artifacts/**/*.parquet
+artifacts/**/*.jsonl
 
 # Raw identity interviews and unredacted personal/background cards are local-only
 # inputs. Public Identity Pack files live in identity_pack/ and must be redacted
@@ -76,3 +95,11 @@ web/vendor/
 # Private generated memory payload. The public app ships without personal
 # memory cards; local builds can regenerate this file when needed.
 web/brain_pack.js
+
+# R27C0 manual adapter bridge payloads are local-session scratch data only.
+adapter_payloads/
+context_payloads/
+*.adapter-packet.json
+*.context-packet.json
+*.evidence-packet.json
+*.state-packet.json

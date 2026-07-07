@@ -1,0 +1,49 @@
+{
+  "schema_version": "r27b3.demo_static_rag.v1",
+  "fixture_policy": {
+    "demo_only": true,
+    "synthetic_public_safe": true,
+    "private_raw_data": false,
+    "answer_bank": false,
+    "eval_prompts": false,
+    "old_question_pack_rows_51_100": false
+  },
+  "records": [
+    {
+      "source_id": "r27b3-demo-browser-memory-surface",
+      "title": "Browser memory surface demo boundary",
+      "text": "another_brain is rehearsing a static browser chat surface that retrieves local evidence packets before drafting.",
+      "trust_level": "high",
+      "license_or_origin": "synthetic demo fixture",
+      "can_answer": true,
+      "keywords": ["another_brain", "browser", "memory", "surface", "local", "evidence", "packet"]
+    },
+    {
+      "source_id": "r27b3-demo-runtime-boundary",
+      "title": "Runtime boundary",
+      "text": "The browser path stays static-only with same-origin demo files, no remote retrieval service, no server retrieval, and no external generator call.",
+      "trust_level": "high",
+      "license_or_origin": "synthetic demo fixture",
+      "can_answer": true,
+      "keywords": ["static", "same-origin", "browser", "retrieval", "external", "generator"]
+    },
+    {
+      "source_id": "r27b3-demo-pipeline-shape",
+      "title": "Evidence packet pipeline",
+      "text": "The intended path is input, state packet, local retrieval, evidence packet, local decoder draft, verifier, finalizer, and fallback.",
+      "trust_level": "high",
+      "license_or_origin": "synthetic demo fixture",
+      "can_answer": true,
+      "keywords": ["state", "retrieval", "evidence", "decoder", "verifier", "fallback"]
+    },
+    {
+      "source_id": "r27b3-demo-non-claim",
+      "title": "Demo non-claim",
+      "text": "This fixture does not claim a product model, browser admission, private memory ingestion, or release checkpoint.",
+      "trust_level": "high",
+      "license_or_origin": "synthetic demo fixture",
+      "can_answer": true,
+      "keywords": ["demo", "non-claim", "product model", "admission", "checkpoint"]
+    }
+  ]
+}

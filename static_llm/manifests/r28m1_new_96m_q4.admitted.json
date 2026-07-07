@@ -1,0 +1,106 @@
+{
+  "admission_status": "admitted",
+  "architecture": "decoder_only",
+  "backend_required": false,
+  "browser_admission": false,
+  "contains_private_data": false,
+  "context_length": 256,
+  "conversion_tool": "src/browser_export/r28m1_asset_commit.py",
+  "converted_by": "R28M1 local q4 quantization scripts",
+  "external_urls_allowed": false,
+  "files": [
+    {
+      "bytes": 34076,
+      "path": "web/another_brain/model_assets/r28m1/model.config.json",
+      "required": true,
+      "role": "config",
+      "sha256": "3b4335088e7ea223adce8d5a83be982e95cbc953cc4b0dc590b498932c5d06bf"
+    },
+    {
+      "bytes": 2655,
+      "path": "web/another_brain/model_assets/r28m1/quantization.manifest.json",
+      "required": true,
+      "role": "metadata",
+      "sha256": "bea1dfcbbbe1ef4fcf3554abee23abde94dba5516a6c4b5d9c8a05dcd9f184c3"
+    },
+    {
+      "bytes": 1894,
+      "path": "web/another_brain/model_assets/r28m1/checksums.sha256.json",
+      "required": true,
+      "role": "metadata",
+      "sha256": "dffee9db056fb49a7eae4bb64c9072150f89efbfffc07a2e30abe9753d5dd7b9"
+    },
+    {
+      "bytes": 12000000,
+      "path": "web/another_brain/model_assets/r28m1/shards/model-q4-00001.bin",
+      "required": true,
+      "role": "weights",
+      "sha256": "14401ed8b6a7e808591c0b987f53d9206f8bc92fa4ebfccb588040e05f9a40f6"
+    },
+    {
+      "bytes": 12000000,
+      "path": "web/another_brain/model_assets/r28m1/shards/model-q4-00002.bin",
+      "required": true,
+      "role": "weights",
+      "sha256": "164057d4467d154b37740df08dacc2baa8ce9104bb37ad6cfd47b4e10ee5f10d"
+    },
+    {
+      "bytes": 12000000,
+      "path": "web/another_brain/model_assets/r28m1/shards/model-q4-00003.bin",
+      "required": true,
+      "role": "weights",
+      "sha256": "f0baf8217d6c344cf3824b2bbfbec575d807d49294063b6d4f3cfde5c5bb547e"
+    },
+    {
+      "bytes": 12000000,
+      "path": "web/another_brain/model_assets/r28m1/shards/model-q4-00004.bin",
+      "required": true,
+      "role": "weights",
+      "sha256": "e4c221d7aafba229f8e5f90edc9d67744c4926143efaefe5fe03b77673d9e38e"
+    },
+    {
+      "bytes": 267968,
+      "path": "web/another_brain/model_assets/r28m1/shards/model-q4-00005.bin",
+      "required": true,
+      "role": "weights",
+      "sha256": "c18a6b45165a2fbf38df6d95b528a0245332ce225f4ead14769bb855ebe365e5"
+    },
+    {
+      "bytes": 938,
+      "path": "web/another_brain/model_assets/r28m1/tokenizer/tokenizer.json",
+      "required": false,
+      "role": "metadata",
+      "sha256": "a6aaf5af5d649e5bc8895fff46a4d1ee9719c4808a420c197d3a8d3d8722024f"
+    },
+    {
+      "bytes": 997450,
+      "path": "web/another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json",
+      "required": true,
+      "role": "tokenizer",
+      "sha256": "a61b7aecc96d699be421b7d8b220e5d5cf04df3da6da5943715388a95bea115b"
+    }
+  ],
+  "license": "project-internal-engineering-candidate",
+  "license_url": "local-non-release-asset",
+  "model_family": "another_brain_a12_new_96m",
+  "model_id": "r28m1_new_96m_q4_engineering_candidate",
+  "parameter_count": 96363008,
+  "phase_4": false,
+  "product_model_admission": false,
+  "profile": "hobby_static_llm_lite",
+  "provenance": "reviewed_admitted for static asset commit only; product/browser/release admission remain false",
+  "quantization": "q4",
+  "release_checkpoint_admission": false,
+  "review_status": "reviewed_admitted",
+  "runtime_backend": "webgpu",
+  "same_origin_only": true,
+  "schema_version": 1,
+  "shard_policy": {
+    "max_file_bytes": 25000000,
+    "shard_count": 10,
+    "target_file_bytes": 12000000
+  },
+  "source_url": "local-a12-handoff",
+  "tokenizer": "exact_runtime_bpe_16000_runtime_compatibility_only",
+  "total_bytes": 49304981
+}

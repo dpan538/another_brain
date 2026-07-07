@@ -1,0 +1,1430 @@
+{
+  "architecture": {
+    "context_length": 256,
+    "model_size": "r27a11_96m",
+    "n_embd": 896,
+    "n_head": 14,
+    "n_layer": 7,
+    "vocab_size": 16000
+  },
+  "backend_inference": false,
+  "browser_admission": false,
+  "candidate_source": "r27a12_new_96m",
+  "doubao": false,
+  "external_llm_api": false,
+  "hosted_vector_store": false,
+  "model_assets_admitted": true,
+  "model_id": "r27a12_new_96m_q4_engineering_candidate",
+  "model_route": "r28m1_static_q4_engineering_candidate",
+  "non_claims": {
+    "no_backend_inference": true,
+    "no_doubao": true,
+    "no_external_llm_api": true,
+    "no_hosted_vector_store": true,
+    "no_raw_checkpoint_committed": true,
+    "no_training_corpus_committed": true,
+    "not_browser_admission": true,
+    "not_product_admission": true,
+    "not_product_model": true,
+    "not_release_checkpoint": true
+  },
+  "product_model_admission": false,
+  "quantization": "q4",
+  "release_checkpoint_admission": false,
+  "schema_version": "r28m1.model_config.v1",
+  "selected_model": "new_96m",
+  "source_lineage": {
+    "browser_admission": false,
+    "campaign_id": "r27a12_budgetfit_product_path_training_v1",
+    "candidate_source": "r27a12_new_96m",
+    "checkpoint_bytes": 386182803,
+    "checkpoint_relpath": "artifacts/r27a12/model_lab/checkpoints/r27a12_budgetfit_product_path_training_v1_seg10_chinese_general.pt",
+    "dialogue_readiness": "candidate",
+    "handoff_relpath": "artifacts/r27a12/handoff/R27_BROWSER_CANDIDATE_HANDOFF.json",
+    "phase_4": false,
+    "product_model_admission": false,
+    "rag_honesty": "basic_probe_clean",
+    "release_checkpoint_admission": false,
+    "safety_guard": "clean",
+    "selected_checkpoint": "best_product_probe",
+    "selected_model": "new_96m"
+  },
+  "tensor_count": 96,
+  "tensors": [
+    {
+      "bytes": 7168000,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 5.491878986358643,
+      "name": "token_emb.weight",
+      "numel": 14336000,
+      "offset": 0,
+      "pad_nibbles": 0,
+      "scale": 0.7845541409083775,
+      "shape": [
+        16000,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 114688,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 4.384463787078857,
+      "name": "pos_emb.weight",
+      "numel": 229376,
+      "offset": 7168000,
+      "pad_nibbles": 0,
+      "scale": 0.6263519695826939,
+      "shape": [
+        256,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.9153517484664917,
+      "name": "blocks.0.ln1.weight",
+      "numel": 896,
+      "offset": 7282688,
+      "pad_nibbles": 0,
+      "scale": 0.1307645354952131,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1184702068567276,
+      "name": "blocks.0.ln1.bias",
+      "numel": 896,
+      "offset": 7283136,
+      "pad_nibbles": 0,
+      "scale": 0.0169243152652468,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bitorder": "little",
+      "bytes": 8192,
+      "encoding": "bitpack_bool",
+      "name": "blocks.0.attn.mask",
+      "numel": 65536,
+      "offset": 7283584,
+      "pad_bits": 0,
+      "shape": [
+        256,
+        256
+      ],
+      "source_dtype": "bool"
+    },
+    {
+      "bytes": 1204224,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.11091156303882599,
+      "name": "blocks.0.attn.attn.in_proj_weight",
+      "numel": 2408448,
+      "offset": 7291776,
+      "pad_nibbles": 0,
+      "scale": 0.01584450900554657,
+      "shape": [
+        2688,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1344,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.12643510103225708,
+      "name": "blocks.0.attn.attn.in_proj_bias",
+      "numel": 2688,
+      "offset": 8496000,
+      "pad_nibbles": 0,
+      "scale": 0.01806215729032244,
+      "shape": [
+        2688
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 401408,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1995643973350525,
+      "name": "blocks.0.attn.attn.out_proj.weight",
+      "numel": 802816,
+      "offset": 8497344,
+      "pad_nibbles": 0,
+      "scale": 0.028509199619293213,
+      "shape": [
+        896,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07650066167116165,
+      "name": "blocks.0.attn.attn.out_proj.bias",
+      "numel": 896,
+      "offset": 8898752,
+      "pad_nibbles": 0,
+      "scale": 0.010928665953023093,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.9822143316268921,
+      "name": "blocks.0.ln2.weight",
+      "numel": 896,
+      "offset": 8899200,
+      "pad_nibbles": 0,
+      "scale": 0.14031633308955602,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.17262834310531616,
+      "name": "blocks.0.ln2.bias",
+      "numel": 896,
+      "offset": 8899648,
+      "pad_nibbles": 0,
+      "scale": 0.024661191872188022,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.11006718873977661,
+      "name": "blocks.0.mlp.0.weight",
+      "numel": 3211264,
+      "offset": 8900096,
+      "pad_nibbles": 0,
+      "scale": 0.015723884105682373,
+      "shape": [
+        3584,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1792,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.08068086206912994,
+      "name": "blocks.0.mlp.0.bias",
+      "numel": 3584,
+      "offset": 10505728,
+      "pad_nibbles": 0,
+      "scale": 0.011525837438447135,
+      "shape": [
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.10483182221651077,
+      "name": "blocks.0.mlp.2.weight",
+      "numel": 3211264,
+      "offset": 10507520,
+      "pad_nibbles": 0,
+      "scale": 0.014975974602358682,
+      "shape": [
+        896,
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.05823270231485367,
+      "name": "blocks.0.mlp.2.bias",
+      "numel": 896,
+      "offset": 12113152,
+      "pad_nibbles": 0,
+      "scale": 0.008318957473550524,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.9415749311447144,
+      "name": "blocks.1.ln1.weight",
+      "numel": 896,
+      "offset": 12113600,
+      "pad_nibbles": 0,
+      "scale": 0.1345107044492449,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.08160717040300369,
+      "name": "blocks.1.ln1.bias",
+      "numel": 896,
+      "offset": 12114048,
+      "pad_nibbles": 0,
+      "scale": 0.0116581672004291,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bitorder": "little",
+      "bytes": 8192,
+      "encoding": "bitpack_bool",
+      "name": "blocks.1.attn.mask",
+      "numel": 65536,
+      "offset": 12114496,
+      "pad_bits": 0,
+      "shape": [
+        256,
+        256
+      ],
+      "source_dtype": "bool"
+    },
+    {
+      "bytes": 1204224,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.11997012048959732,
+      "name": "blocks.1.attn.attn.in_proj_weight",
+      "numel": 2408448,
+      "offset": 12122688,
+      "pad_nibbles": 0,
+      "scale": 0.017138588641371046,
+      "shape": [
+        2688,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1344,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.16898275911808014,
+      "name": "blocks.1.attn.attn.in_proj_bias",
+      "numel": 2688,
+      "offset": 13326912,
+      "pad_nibbles": 0,
+      "scale": 0.024140394159725735,
+      "shape": [
+        2688
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 401408,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.21095500886440277,
+      "name": "blocks.1.attn.attn.out_proj.weight",
+      "numel": 802816,
+      "offset": 13328256,
+      "pad_nibbles": 0,
+      "scale": 0.030136429837771823,
+      "shape": [
+        896,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07774049788713455,
+      "name": "blocks.1.attn.attn.out_proj.bias",
+      "numel": 896,
+      "offset": 13729664,
+      "pad_nibbles": 0,
+      "scale": 0.011105785412447793,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.0694676637649536,
+      "name": "blocks.1.ln2.weight",
+      "numel": 896,
+      "offset": 13730112,
+      "pad_nibbles": 0,
+      "scale": 0.1527810948235648,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.17874673008918762,
+      "name": "blocks.1.ln2.bias",
+      "numel": 896,
+      "offset": 13730560,
+      "pad_nibbles": 0,
+      "scale": 0.025535247155598233,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.12166598439216614,
+      "name": "blocks.1.mlp.0.weight",
+      "numel": 3211264,
+      "offset": 13731008,
+      "pad_nibbles": 0,
+      "scale": 0.017380854913166592,
+      "shape": [
+        3584,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1792,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.08327726274728775,
+      "name": "blocks.1.mlp.0.bias",
+      "numel": 3584,
+      "offset": 15336640,
+      "pad_nibbles": 0,
+      "scale": 0.011896751821041107,
+      "shape": [
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.10954827815294266,
+      "name": "blocks.1.mlp.2.weight",
+      "numel": 3211264,
+      "offset": 15338432,
+      "pad_nibbles": 0,
+      "scale": 0.01564975402184895,
+      "shape": [
+        896,
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.06514491140842438,
+      "name": "blocks.1.mlp.2.bias",
+      "numel": 896,
+      "offset": 16944064,
+      "pad_nibbles": 0,
+      "scale": 0.009306415915489197,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.0116363763809204,
+      "name": "blocks.2.ln1.weight",
+      "numel": 896,
+      "offset": 16944512,
+      "pad_nibbles": 0,
+      "scale": 0.14451948234013148,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07431206107139587,
+      "name": "blocks.2.ln1.bias",
+      "numel": 896,
+      "offset": 16944960,
+      "pad_nibbles": 0,
+      "scale": 0.010616008724485124,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bitorder": "little",
+      "bytes": 8192,
+      "encoding": "bitpack_bool",
+      "name": "blocks.2.attn.mask",
+      "numel": 65536,
+      "offset": 16945408,
+      "pad_bits": 0,
+      "shape": [
+        256,
+        256
+      ],
+      "source_dtype": "bool"
+    },
+    {
+      "bytes": 1204224,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.15772870182991028,
+      "name": "blocks.2.attn.attn.in_proj_weight",
+      "numel": 2408448,
+      "offset": 16953600,
+      "pad_nibbles": 0,
+      "scale": 0.022532671689987183,
+      "shape": [
+        2688,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1344,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.11972162872552872,
+      "name": "blocks.2.attn.attn.in_proj_bias",
+      "numel": 2688,
+      "offset": 18157824,
+      "pad_nibbles": 0,
+      "scale": 0.017103089817932675,
+      "shape": [
+        2688
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 401408,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.11207550019025803,
+      "name": "blocks.2.attn.attn.out_proj.weight",
+      "numel": 802816,
+      "offset": 18159168,
+      "pad_nibbles": 0,
+      "scale": 0.016010785741465434,
+      "shape": [
+        896,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.06191324442625046,
+      "name": "blocks.2.attn.attn.out_proj.bias",
+      "numel": 896,
+      "offset": 18560576,
+      "pad_nibbles": 0,
+      "scale": 0.008844749203750066,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.1313248872756958,
+      "name": "blocks.2.ln2.weight",
+      "numel": 896,
+      "offset": 18561024,
+      "pad_nibbles": 0,
+      "scale": 0.16161784103938512,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.23058302700519562,
+      "name": "blocks.2.ln2.bias",
+      "numel": 896,
+      "offset": 18561472,
+      "pad_nibbles": 0,
+      "scale": 0.03294043242931366,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.13317501544952393,
+      "name": "blocks.2.mlp.0.weight",
+      "numel": 3211264,
+      "offset": 18561920,
+      "pad_nibbles": 0,
+      "scale": 0.019025002207074846,
+      "shape": [
+        3584,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1792,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.11731640994548798,
+      "name": "blocks.2.mlp.0.bias",
+      "numel": 3584,
+      "offset": 20167552,
+      "pad_nibbles": 0,
+      "scale": 0.016759487135069712,
+      "shape": [
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.11982199549674988,
+      "name": "blocks.2.mlp.2.weight",
+      "numel": 3211264,
+      "offset": 20169344,
+      "pad_nibbles": 0,
+      "scale": 0.017117427928107127,
+      "shape": [
+        896,
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07412637770175934,
+      "name": "blocks.2.mlp.2.bias",
+      "numel": 896,
+      "offset": 21774976,
+      "pad_nibbles": 0,
+      "scale": 0.010589482528822762,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.047419786453247,
+      "name": "blocks.3.ln1.weight",
+      "numel": 896,
+      "offset": 21775424,
+      "pad_nibbles": 0,
+      "scale": 0.1496313980647496,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.08424049615859985,
+      "name": "blocks.3.ln1.bias",
+      "numel": 896,
+      "offset": 21775872,
+      "pad_nibbles": 0,
+      "scale": 0.012034356594085693,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bitorder": "little",
+      "bytes": 8192,
+      "encoding": "bitpack_bool",
+      "name": "blocks.3.attn.mask",
+      "numel": 65536,
+      "offset": 21776320,
+      "pad_bits": 0,
+      "shape": [
+        256,
+        256
+      ],
+      "source_dtype": "bool"
+    },
+    {
+      "bytes": 1204224,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.18030406534671783,
+      "name": "blocks.3.attn.attn.in_proj_weight",
+      "numel": 2408448,
+      "offset": 21784512,
+      "pad_nibbles": 0,
+      "scale": 0.02575772362095969,
+      "shape": [
+        2688,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1344,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.12435793876647949,
+      "name": "blocks.3.attn.attn.in_proj_bias",
+      "numel": 2688,
+      "offset": 22988736,
+      "pad_nibbles": 0,
+      "scale": 0.017765419823782786,
+      "shape": [
+        2688
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 401408,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1189669817686081,
+      "name": "blocks.3.attn.attn.out_proj.weight",
+      "numel": 802816,
+      "offset": 22990080,
+      "pad_nibbles": 0,
+      "scale": 0.016995283109801158,
+      "shape": [
+        896,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07403036952018738,
+      "name": "blocks.3.attn.attn.out_proj.bias",
+      "numel": 896,
+      "offset": 23391488,
+      "pad_nibbles": 0,
+      "scale": 0.010575767074312483,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.188549280166626,
+      "name": "blocks.3.ln2.weight",
+      "numel": 896,
+      "offset": 23391936,
+      "pad_nibbles": 0,
+      "scale": 0.16979275430951798,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.19475685060024261,
+      "name": "blocks.3.ln2.bias",
+      "numel": 896,
+      "offset": 23392384,
+      "pad_nibbles": 0,
+      "scale": 0.02782240722860609,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.13551971316337585,
+      "name": "blocks.3.mlp.0.weight",
+      "numel": 3211264,
+      "offset": 23392832,
+      "pad_nibbles": 0,
+      "scale": 0.019359959023339406,
+      "shape": [
+        3584,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1792,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.0738152414560318,
+      "name": "blocks.3.mlp.0.bias",
+      "numel": 3584,
+      "offset": 24998464,
+      "pad_nibbles": 0,
+      "scale": 0.010545034493718828,
+      "shape": [
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.11975566297769547,
+      "name": "blocks.3.mlp.2.weight",
+      "numel": 3211264,
+      "offset": 25000256,
+      "pad_nibbles": 0,
+      "scale": 0.017107951853956496,
+      "shape": [
+        896,
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07779860496520996,
+      "name": "blocks.3.mlp.2.bias",
+      "numel": 896,
+      "offset": 26605888,
+      "pad_nibbles": 0,
+      "scale": 0.011114086423601423,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.0669538974761963,
+      "name": "blocks.4.ln1.weight",
+      "numel": 896,
+      "offset": 26606336,
+      "pad_nibbles": 0,
+      "scale": 0.15242198535374232,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.09252147376537323,
+      "name": "blocks.4.ln1.bias",
+      "numel": 896,
+      "offset": 26606784,
+      "pad_nibbles": 0,
+      "scale": 0.01321735339505332,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bitorder": "little",
+      "bytes": 8192,
+      "encoding": "bitpack_bool",
+      "name": "blocks.4.attn.mask",
+      "numel": 65536,
+      "offset": 26607232,
+      "pad_bits": 0,
+      "shape": [
+        256,
+        256
+      ],
+      "source_dtype": "bool"
+    },
+    {
+      "bytes": 1204224,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1614256054162979,
+      "name": "blocks.4.attn.attn.in_proj_weight",
+      "numel": 2408448,
+      "offset": 26615424,
+      "pad_nibbles": 0,
+      "scale": 0.023060800773756846,
+      "shape": [
+        2688,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1344,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.08832389861345291,
+      "name": "blocks.4.attn.attn.in_proj_bias",
+      "numel": 2688,
+      "offset": 27819648,
+      "pad_nibbles": 0,
+      "scale": 0.012617699801921844,
+      "shape": [
+        2688
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 401408,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1138417199254036,
+      "name": "blocks.4.attn.attn.out_proj.weight",
+      "numel": 802816,
+      "offset": 27820992,
+      "pad_nibbles": 0,
+      "scale": 0.016263102846486226,
+      "shape": [
+        896,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07488908618688583,
+      "name": "blocks.4.attn.attn.out_proj.bias",
+      "numel": 896,
+      "offset": 28222400,
+      "pad_nibbles": 0,
+      "scale": 0.010698440883840834,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.196998953819275,
+      "name": "blocks.4.ln2.weight",
+      "numel": 896,
+      "offset": 28222848,
+      "pad_nibbles": 0,
+      "scale": 0.1709998505456107,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.2078610360622406,
+      "name": "blocks.4.ln2.bias",
+      "numel": 896,
+      "offset": 28223296,
+      "pad_nibbles": 0,
+      "scale": 0.02969443372317723,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.14122991263866425,
+      "name": "blocks.4.mlp.0.weight",
+      "numel": 3211264,
+      "offset": 28223744,
+      "pad_nibbles": 0,
+      "scale": 0.020175701805523465,
+      "shape": [
+        3584,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1792,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.08130843937397003,
+      "name": "blocks.4.mlp.0.bias",
+      "numel": 3584,
+      "offset": 29829376,
+      "pad_nibbles": 0,
+      "scale": 0.011615491339138575,
+      "shape": [
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.25313740968704224,
+      "name": "blocks.4.mlp.2.weight",
+      "numel": 3211264,
+      "offset": 29831168,
+      "pad_nibbles": 0,
+      "scale": 0.03616248709814889,
+      "shape": [
+        896,
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.0694093406200409,
+      "name": "blocks.4.mlp.2.bias",
+      "numel": 896,
+      "offset": 31436800,
+      "pad_nibbles": 0,
+      "scale": 0.00991562008857727,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.007670283317566,
+      "name": "blocks.5.ln1.weight",
+      "numel": 896,
+      "offset": 31437248,
+      "pad_nibbles": 0,
+      "scale": 0.14395289761679514,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.09464269131422043,
+      "name": "blocks.5.ln1.bias",
+      "numel": 896,
+      "offset": 31437696,
+      "pad_nibbles": 0,
+      "scale": 0.013520384473460061,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bitorder": "little",
+      "bytes": 8192,
+      "encoding": "bitpack_bool",
+      "name": "blocks.5.attn.mask",
+      "numel": 65536,
+      "offset": 31438144,
+      "pad_bits": 0,
+      "shape": [
+        256,
+        256
+      ],
+      "source_dtype": "bool"
+    },
+    {
+      "bytes": 1204224,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1470031887292862,
+      "name": "blocks.5.attn.attn.in_proj_weight",
+      "numel": 2408448,
+      "offset": 31446336,
+      "pad_nibbles": 0,
+      "scale": 0.02100045553275517,
+      "shape": [
+        2688,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1344,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07341879606246948,
+      "name": "blocks.5.attn.attn.in_proj_bias",
+      "numel": 2688,
+      "offset": 32650560,
+      "pad_nibbles": 0,
+      "scale": 0.010488399437495641,
+      "shape": [
+        2688
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 401408,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.12375986576080322,
+      "name": "blocks.5.attn.attn.out_proj.weight",
+      "numel": 802816,
+      "offset": 32651904,
+      "pad_nibbles": 0,
+      "scale": 0.01767998082297189,
+      "shape": [
+        896,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.054363854229450226,
+      "name": "blocks.5.attn.attn.out_proj.bias",
+      "numel": 896,
+      "offset": 33053312,
+      "pad_nibbles": 0,
+      "scale": 0.0077662648899214605,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.2059385776519775,
+      "name": "blocks.5.ln2.weight",
+      "numel": 896,
+      "offset": 33053760,
+      "pad_nibbles": 0,
+      "scale": 0.17227693966456822,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.16731920838356018,
+      "name": "blocks.5.ln2.bias",
+      "numel": 896,
+      "offset": 33054208,
+      "pad_nibbles": 0,
+      "scale": 0.02390274405479431,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1467231959104538,
+      "name": "blocks.5.mlp.0.weight",
+      "numel": 3211264,
+      "offset": 33054656,
+      "pad_nibbles": 0,
+      "scale": 0.020960456558636258,
+      "shape": [
+        3584,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1792,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.08016490936279297,
+      "name": "blocks.5.mlp.0.bias",
+      "numel": 3584,
+      "offset": 34660288,
+      "pad_nibbles": 0,
+      "scale": 0.011452129908970423,
+      "shape": [
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.29341188073158264,
+      "name": "blocks.5.mlp.2.weight",
+      "numel": 3211264,
+      "offset": 34662080,
+      "pad_nibbles": 0,
+      "scale": 0.04191598296165466,
+      "shape": [
+        896,
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.047378137707710266,
+      "name": "blocks.5.mlp.2.bias",
+      "numel": 896,
+      "offset": 36267712,
+      "pad_nibbles": 0,
+      "scale": 0.006768305386815753,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.9942076802253723,
+      "name": "blocks.6.ln1.weight",
+      "numel": 896,
+      "offset": 36268160,
+      "pad_nibbles": 0,
+      "scale": 0.14202966860362462,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.13950702548027039,
+      "name": "blocks.6.ln1.bias",
+      "numel": 896,
+      "offset": 36268608,
+      "pad_nibbles": 0,
+      "scale": 0.019929575068610057,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bitorder": "little",
+      "bytes": 8192,
+      "encoding": "bitpack_bool",
+      "name": "blocks.6.attn.mask",
+      "numel": 65536,
+      "offset": 36269056,
+      "pad_bits": 0,
+      "shape": [
+        256,
+        256
+      ],
+      "source_dtype": "bool"
+    },
+    {
+      "bytes": 1204224,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.13150572776794434,
+      "name": "blocks.6.attn.attn.in_proj_weight",
+      "numel": 2408448,
+      "offset": 36277248,
+      "pad_nibbles": 0,
+      "scale": 0.01878653253827776,
+      "shape": [
+        2688,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1344,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07947559654712677,
+      "name": "blocks.6.attn.attn.in_proj_bias",
+      "numel": 2688,
+      "offset": 37481472,
+      "pad_nibbles": 0,
+      "scale": 0.011353656649589539,
+      "shape": [
+        2688
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 401408,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1450764387845993,
+      "name": "blocks.6.attn.attn.out_proj.weight",
+      "numel": 802816,
+      "offset": 37482816,
+      "pad_nibbles": 0,
+      "scale": 0.020725205540657043,
+      "shape": [
+        896,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.05680103600025177,
+      "name": "blocks.6.attn.attn.out_proj.bias",
+      "numel": 896,
+      "offset": 37884224,
+      "pad_nibbles": 0,
+      "scale": 0.00811443371432168,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.1258708238601685,
+      "name": "blocks.6.ln2.weight",
+      "numel": 896,
+      "offset": 37884672,
+      "pad_nibbles": 0,
+      "scale": 0.1608386891228812,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1700233519077301,
+      "name": "blocks.6.ln2.bias",
+      "numel": 896,
+      "offset": 37885120,
+      "pad_nibbles": 0,
+      "scale": 0.02428905027253287,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.14757275581359863,
+      "name": "blocks.6.mlp.0.weight",
+      "numel": 3211264,
+      "offset": 37885568,
+      "pad_nibbles": 0,
+      "scale": 0.02108182225908552,
+      "shape": [
+        3584,
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1792,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07712855190038681,
+      "name": "blocks.6.mlp.0.bias",
+      "numel": 3584,
+      "offset": 39491200,
+      "pad_nibbles": 0,
+      "scale": 0.011018364557198115,
+      "shape": [
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 1605632,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.3338810205459595,
+      "name": "blocks.6.mlp.2.weight",
+      "numel": 3211264,
+      "offset": 39492992,
+      "pad_nibbles": 0,
+      "scale": 0.047697288649422784,
+      "shape": [
+        896,
+        3584
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.07192015647888184,
+      "name": "blocks.6.mlp.2.bias",
+      "numel": 896,
+      "offset": 41098624,
+      "pad_nibbles": 0,
+      "scale": 0.01027430806841169,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 1.9490833282470703,
+      "name": "ln_f.weight",
+      "numel": 896,
+      "offset": 41099072,
+      "pad_nibbles": 0,
+      "scale": 0.2784404754638672,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 448,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.1129574105143547,
+      "name": "ln_f.bias",
+      "numel": 896,
+      "offset": 41099520,
+      "pad_nibbles": 0,
+      "scale": 0.0161367729306221,
+      "shape": [
+        896
+      ],
+      "source_dtype": "float32"
+    },
+    {
+      "bytes": 7168000,
+      "encoding": "q4_symmetric_per_tensor",
+      "max_abs": 0.2570413053035736,
+      "name": "lm_head.weight",
+      "numel": 14336000,
+      "offset": 41099968,
+      "pad_nibbles": 0,
+      "scale": 0.03672018647193909,
+      "shape": [
+        16000,
+        896
+      ],
+      "source_dtype": "float32"
+    }
+  ]
+}

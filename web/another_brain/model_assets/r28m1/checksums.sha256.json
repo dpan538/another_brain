@@ -1,0 +1,53 @@
+{
+  "file_count": 9,
+  "files": [
+    {
+      "bytes": 34076,
+      "path": "another_brain/model_assets/r28m1/model.config.json",
+      "sha256": "3b4335088e7ea223adce8d5a83be982e95cbc953cc4b0dc590b498932c5d06bf"
+    },
+    {
+      "bytes": 2655,
+      "path": "another_brain/model_assets/r28m1/quantization.manifest.json",
+      "sha256": "bea1dfcbbbe1ef4fcf3554abee23abde94dba5516a6c4b5d9c8a05dcd9f184c3"
+    },
+    {
+      "bytes": 12000000,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00001.bin",
+      "sha256": "14401ed8b6a7e808591c0b987f53d9206f8bc92fa4ebfccb588040e05f9a40f6"
+    },
+    {
+      "bytes": 12000000,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00002.bin",
+      "sha256": "164057d4467d154b37740df08dacc2baa8ce9104bb37ad6cfd47b4e10ee5f10d"
+    },
+    {
+      "bytes": 12000000,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00003.bin",
+      "sha256": "f0baf8217d6c344cf3824b2bbfbec575d807d49294063b6d4f3cfde5c5bb547e"
+    },
+    {
+      "bytes": 12000000,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00004.bin",
+      "sha256": "e4c221d7aafba229f8e5f90edc9d67744c4926143efaefe5fe03b77673d9e38e"
+    },
+    {
+      "bytes": 267968,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00005.bin",
+      "sha256": "c18a6b45165a2fbf38df6d95b528a0245332ce225f4ead14769bb855ebe365e5"
+    },
+    {
+      "bytes": 938,
+      "path": "another_brain/model_assets/r28m1/tokenizer/tokenizer.json",
+      "sha256": "a6aaf5af5d649e5bc8895fff46a4d1ee9719c4808a420c197d3a8d3d8722024f"
+    },
+    {
+      "bytes": 997450,
+      "path": "another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json",
+      "sha256": "a61b7aecc96d699be421b7d8b220e5d5cf04df3da6da5943715388a95bea115b"
+    }
+  ],
+  "same_origin_only": true,
+  "schema_version": "r28tok1.checksums.v1",
+  "total_bytes": 49303087
+}

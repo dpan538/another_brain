@@ -1,147 +1,64 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content"
-    />
-    <title>Answer Machine | efishother</title>
-    <meta
-      name="description"
-      content="Answer Machine is a local-first browser-side answer machine at efishother.com: a bounded dialog web app with static knowledge, deterministic rules, and no cloud inference."
-    />
-    <meta name="robots" content="index,follow,max-image-preview:large" />
-    <meta name="author" content="Dai Pan" />
-    <meta name="application-name" content="Answer Machine" />
-    <meta name="theme-color" content="#fff4e2" />
-    <link rel="canonical" href="https://www.efishother.com/" />
-    <link rel="alternate" hreflang="zh-CN" href="https://www.efishother.com/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.efishother.com/" />
-    <link rel="manifest" href="./site.webmanifest" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="efishother" />
-    <meta property="og:title" content="Answer Machine | efishother" />
-    <meta
-      property="og:description"
-      content="A local-first browser-side answer machine: short answers, bounded memory, static knowledge, no account, and no cloud inference."
-    />
-    <meta property="og:url" content="https://www.efishother.com/" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Answer Machine | efishother" />
-    <meta
-      name="twitter:description"
-      content="A bounded browser-side answer machine with static knowledge and no cloud inference."
-    />
-    <link rel="stylesheet" href="./styles.css?v=10" />
-    <link rel="stylesheet" href="./affordance_ui.css?v=1" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "WebSite",
-            "@id": "https://www.efishother.com/#website",
-            "name": "efishother",
-            "url": "https://www.efishother.com/",
-            "inLanguage": "zh-CN",
-            "description": "efishother is the home of Answer Machine, a local-first browser-side answer machine."
-          },
-          {
-            "@type": "WebApplication",
-            "@id": "https://www.efishother.com/#answer-machine",
-            "name": "Answer Machine",
-            "alternateName": ["another_brain", "efishother answer machine"],
-            "url": "https://www.efishother.com/",
-            "applicationCategory": "BrowserApplication",
-            "operatingSystem": "Any modern browser",
-            "isAccessibleForFree": true,
-            "creator": {
-              "@type": "Person",
-              "name": "Dai Pan",
-              "url": "https://daipan.art/"
-            },
-            "description": "A bounded browser-side answer machine that uses deterministic dialog rules, static knowledge cards, and a tiny route-and-answer model. It does not require an account or cloud inference.",
-            "featureList": [
-              "short browser-side answers",
-              "bounded local conversation context",
-              "static public knowledge lookup",
-              "privacy-preserving no-cloud-inference runtime"
-            ],
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "USD"
-            }
-          },
-          {
-            "@type": "WebPage",
-            "@id": "https://www.efishother.com/#webpage",
-            "url": "https://www.efishother.com/",
-            "name": "Answer Machine | efishother",
-            "isPartOf": {
-              "@id": "https://www.efishother.com/#website"
-            },
-            "mainEntity": {
-              "@id": "https://www.efishother.com/#answer-machine"
-            },
-            "inLanguage": "zh-CN",
-            "description": "The public page for Answer Machine, a minimal local-first answer interface."
-          }
-        ]
-      }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>R28UX4 another_brain preview redirect</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta http-equiv="refresh" content="0; url=./another_brain_chat/?v=r28ux4-visible-preview-ui" />
+    <script>
+      (() => {
+        const target = new URL("./another_brain_chat/", window.location.href);
+        target.searchParams.set("v", "r28ux4-visible-preview-ui");
+        for (const [key, value] of new URLSearchParams(window.location.search)) {
+          if (key !== "v") target.searchParams.set(key, value);
+        }
+        target.hash = window.location.hash;
+        window.location.replace(target.href);
+      })();
     </script>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f4f6f5;
+        --ink: #1d2528;
+        --line: #d9e1df;
+        --accent: #13746f;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(620px, calc(100% - 32px));
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      a {
+        color: var(--accent);
+        font-weight: 800;
+      }
+    </style>
   </head>
   <body>
-    <main class="shell" aria-label="Answer Machine" aria-describedby="siteSummary">
-      <section id="siteSummary" class="sr-only">
-        <h1>Answer Machine</h1>
-        <p>
-          Answer Machine is a local-first browser-side answer machine at efishother.com.
-          It gives short bounded answers through deterministic rules, static knowledge cards,
-          and a tiny route-and-answer runtime. It is not a general-purpose cloud LLM and does
-          not require an account.
-        </p>
-      </section>
-      <section class="chatbox" aria-label="Answer Machine input">
-        <section id="contextPanel" class="context-panel" aria-label="Context" hidden>
-          <div id="contextList" class="context-list"></div>
-        </section>
-        <section id="answer" class="answer" aria-live="polite" hidden></section>
-        <p id="quietAffordance" class="quiet-affordance" aria-live="polite" hidden></p>
-        <p id="status" class="status" aria-live="polite" hidden>
-          <span class="thinking-dots" aria-label="思考中">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-        </p>
-        <form id="chatForm" class="entry" autocomplete="off">
-          <label class="sr-only" for="prompt">Ask me</label>
-          <textarea
-            id="prompt"
-            rows="1"
-            placeholder="Ask me"
-            autocomplete="off"
-            spellcheck="true"
-          ></textarea>
-          <button
-            id="contextToggle"
-            class="context-toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="contextPanel"
-            aria-label="展开上下文"
-          >
-            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-              <path d="M7 9l5-5 5 5" />
-              <path d="M7 15l5 5 5-5" />
-            </svg>
-          </button>
-        </form>
-      </section>
+    <main aria-label="R28UX4 root route redirect">
+      <p>R28UX4 / 过程摘要 / static_q4_experimental / exact_runtime_tokenizer</p>
+      <h1>正在打开过程透明 preview UI</h1>
+      <p>
+        root `/` 已指向同一套新界面：
+        <a href="./another_brain_chat/?v=r28ux4-visible-preview-ui">/another_brain_chat/</a>
+      </p>
+      <p>本地静态运行；no backend inference；not product admission。</p>
     </main>
-
-    <script type="module" src="./app.js?v=66"></script>
   </body>
 </html>

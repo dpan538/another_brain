@@ -1,0 +1,28 @@
+{
+  "browser_inference_ready": false,
+  "candidate_source": "r27a12_new_96m",
+  "context_length": 256,
+  "non_claims": {
+    "no_tokenizer_training_artifact_committed": true,
+    "not_browser_inference_admission": true,
+    "not_product_tokenizer": true
+  },
+  "reason": "A12 handoff did not include a commit-safe tokenizer.json; R28M1 commits lineage/runtime metadata only and blocks inference admission.",
+  "runtime_compatible": false,
+  "schema_version": "r28m1.runtime_tokenizer_metadata.v1",
+  "selected_model": "new_96m",
+  "special_tokens": {
+    "bos": "<bos>",
+    "eos": "<eos>",
+    "pad": "<pad>",
+    "unk": "<unk>"
+  },
+  "tokenizer_kind": "runtime_lineage_metadata",
+  "tokenizer_lineage": {
+    "family": "r27a4_or_r27a5_chinese_aware_bpe_16000_lineage",
+    "raw_or_clean_corpus_committed": false,
+    "tokenizer_training_artifact_committed": false,
+    "training_artifact_committed": false
+  },
+  "vocab_size": 16000
+}

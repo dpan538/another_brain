@@ -17,7 +17,8 @@ export const STATIC_LLM_POLICY = Object.freeze({
   maxShardFileBytes: 64_000_000,
   approvedAssetPrefixes: Object.freeze([
     "static_llm/assets/",
-    "web/static_llm/assets/"
+    "web/static_llm/assets/",
+    "web/another_brain/model_assets/r28m1/"
   ]),
   approvedFixturePrefixes: Object.freeze([
     "static_llm/fixtures/"

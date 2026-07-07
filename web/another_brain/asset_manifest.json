@@ -1,0 +1,143 @@
+{
+  "backend_inference": false,
+  "browser_admission": false,
+  "candidate_source": "r27a12_new_96m",
+  "doubao": false,
+  "external_llm_api": false,
+  "external_runtime_dependency": false,
+  "full_bundle_estimate_bytes": 69982911,
+  "gate_assets": [
+    {
+      "bytes": 2843,
+      "delivery_config": true,
+      "path": "another_brain/runtime_mode.json",
+      "product_model": false,
+      "sha256": "1405e15c9b972eae1f783d47b31c5b91e091e14a2e5d861e9ac5f59bb252a6b6"
+    }
+  ],
+  "hosted_vector_store": false,
+  "max_total_static_bytes": 100000000,
+  "model_asset_manifest": {
+    "browser_admission": false,
+    "exact_runtime_tokenizer": true,
+    "model_asset_manifest": "static_llm/manifests/r28m1_new_96m_q4.admitted.json",
+    "non_product": true,
+    "product_admitted": false,
+    "quantization_manifest": "another_brain/model_assets/r28m1/quantization.manifest.json",
+    "release_checkpoint_admission": false,
+    "sha256": "292d63f03b5f0988f8c3a56b1279829aece02e41ae3d74cd07c285e66a2b958b",
+    "source_lineage_metadata": "source_lineage",
+    "tokenizer_manifest": "another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json",
+    "tokenizer_metadata_manifest": "another_brain/model_assets/r28m1/tokenizer/tokenizer.json"
+  },
+  "model_assets": [
+    {
+      "bytes": 34076,
+      "path": "another_brain/model_assets/r28m1/model.config.json",
+      "role": "model_config",
+      "sha256": "3b4335088e7ea223adce8d5a83be982e95cbc953cc4b0dc590b498932c5d06bf"
+    },
+    {
+      "bytes": 2655,
+      "path": "another_brain/model_assets/r28m1/quantization.manifest.json",
+      "role": "quantization_manifest",
+      "sha256": "bea1dfcbbbe1ef4fcf3554abee23abde94dba5516a6c4b5d9c8a05dcd9f184c3"
+    },
+    {
+      "bytes": 1894,
+      "path": "another_brain/model_assets/r28m1/checksums.sha256.json",
+      "role": "checksum_manifest",
+      "sha256": "dffee9db056fb49a7eae4bb64c9072150f89efbfffc07a2e30abe9753d5dd7b9"
+    },
+    {
+      "bytes": 12000000,
+      "index": 1,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00001.bin",
+      "role": "q4_shard",
+      "sha256": "14401ed8b6a7e808591c0b987f53d9206f8bc92fa4ebfccb588040e05f9a40f6"
+    },
+    {
+      "bytes": 12000000,
+      "index": 2,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00002.bin",
+      "role": "q4_shard",
+      "sha256": "164057d4467d154b37740df08dacc2baa8ce9104bb37ad6cfd47b4e10ee5f10d"
+    },
+    {
+      "bytes": 12000000,
+      "index": 3,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00003.bin",
+      "role": "q4_shard",
+      "sha256": "f0baf8217d6c344cf3824b2bbfbec575d807d49294063b6d4f3cfde5c5bb547e"
+    },
+    {
+      "bytes": 12000000,
+      "index": 4,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00004.bin",
+      "role": "q4_shard",
+      "sha256": "e4c221d7aafba229f8e5f90edc9d67744c4926143efaefe5fe03b77673d9e38e"
+    },
+    {
+      "bytes": 267968,
+      "index": 5,
+      "path": "another_brain/model_assets/r28m1/shards/model-q4-00005.bin",
+      "role": "q4_shard",
+      "sha256": "c18a6b45165a2fbf38df6d95b528a0245332ce225f4ead14769bb855ebe365e5"
+    }
+  ],
+  "model_assets_admitted": true,
+  "model_route": "r28m1_static_q4_engineering_candidate",
+  "non_claims": {
+    "backend_inference": false,
+    "browser_admission": false,
+    "doubao": false,
+    "external_llm_api": false,
+    "hosted_vector_store": false,
+    "product_admission": false,
+    "product_model": false,
+    "raw_checkpoint_committed": false,
+    "release_checkpoint_admission": false,
+    "training_corpus_committed": false
+  },
+  "prelaunch_stage": "r28tok1",
+  "product_model_admission": false,
+  "quantization": "q4",
+  "rag_assets": [
+    {
+      "answer_bank": false,
+      "bytes": 2065,
+      "demo_only": true,
+      "path": "another_brain/static_rag/demo_memory.json",
+      "sha256": "b581a77428613b622bcd62df06b61783a2120cc6a3a2326b06de763a2aef5a18"
+    }
+  ],
+  "release_checkpoint_admission": false,
+  "remaining_bytes_under_100mb": 30017089,
+  "runtime_tokenizer_blocker": "",
+  "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
+  "same_origin_only": true,
+  "shard_count": 5,
+  "tokenizer_asset_bytes": 998388,
+  "tokenizer_assets": [
+    {
+      "bytes": 997450,
+      "path": "another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json",
+      "role": "exact_runtime_tokenizer",
+      "sha256": "a61b7aecc96d699be421b7d8b220e5d5cf04df3da6da5943715388a95bea115b"
+    },
+    {
+      "bytes": 938,
+      "path": "another_brain/model_assets/r28m1/tokenizer/tokenizer.json",
+      "role": "runtime_tokenizer_metadata",
+      "sha256": "a6aaf5af5d649e5bc8895fff46a4d1ee9719c4808a420c197d3a8d3d8722024f"
+    }
+  ],
+  "tokenizer_decode_status": "exact_runtime_tokenizer",
+  "tokenizer_exact_decode": true,
+  "total_declared_bytes": 49309889,
+  "ui_build_marker": "R28UX4",
+  "ui_build_timestamp": "2026-07-07T18:10:00+08:00",
+  "ui_root_route": "/",
+  "ui_version": "r28ux4-visible-preview-ui",
+  "total_model_asset_bytes": 48267968
+}
