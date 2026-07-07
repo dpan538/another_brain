@@ -39,7 +39,7 @@ function main() {
     "// This module contains abstract public-safe culture cards, not raw source text.",
     ""
   ].join("\n");
-  const body = `export const CULTURE_CARDS = ${JSON.stringify(cards, null, 2)};\n`;
+  const body = `export const CULTURE_CARDS = ${JSON.stringify(cards)};\n`;
   fs.writeFileSync(OUT, `${header}${body}`);
   console.log(`generated ${path.relative(ROOT, OUT)} (${cards.length} cards from ${files.length} files)`);
 }
