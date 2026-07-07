@@ -48,7 +48,12 @@ function publicSourceSummary(item = {}) {
     source_id: safeString(item.source_id, safeString(item.id, "local")),
     title: safeString(item.title, "local evidence"),
     trust_level: safeString(item.trust_level, "local_static"),
-    retrieval_score: Number.isFinite(Number(item.retrieval_score)) ? Number(item.retrieval_score) : 0
+    retrieval_score: Number.isFinite(Number(item.retrieval_score)) ? Number(item.retrieval_score) : 0,
+    provenance: safeString(item.metadata?.provenance, safeString(item.provenance, safeString(item.license_or_origin, "local_static"))),
+    kind: safeString(item.metadata?.card_kind, safeString(item.kind, safeString(item.metadata?.kind, ""))),
+    tone_hints: Array.isArray(item.metadata?.tone_hints)
+      ? item.metadata.tone_hints.map(String).slice(0, 5)
+      : (Array.isArray(item.tone_hints) ? item.tone_hints.map(String).slice(0, 5) : [])
   };
 }
 
@@ -79,7 +84,9 @@ export function createProcessTrace(input = {}) {
       retrieval_used: bool(input.rag?.retrieval_used),
       evidence_count: Math.max(0, Number(input.rag?.evidence_count || 0)),
       evidence_status: safeString(input.rag?.evidence_status, "none"),
-      top_sources: Array.isArray(input.rag?.top_sources) ? input.rag.top_sources.map(publicSourceSummary).slice(0, 3) : []
+      top_sources: Array.isArray(input.rag?.top_sources) ? input.rag.top_sources.map(publicSourceSummary).slice(0, 3) : [],
+      tone_hints: Array.isArray(input.rag?.tone_hints) ? input.rag.tone_hints.map(String).slice(0, 5) : [],
+      profile_pack: input.rag?.profile_pack || null
     },
     model: {
       asset_manifest_loaded: bool(input.model?.asset_manifest_loaded),
@@ -155,7 +162,19 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
       retrieval_used: true,
       evidence_count: evidence.length,
       evidence_status: evidencePacket.evidence_status || "none",
-      top_sources: evidence
+      top_sources: evidence,
+      tone_hints: Array.isArray(evidencePacket.rag_profile_pack?.tone_hints)
+        ? evidencePacket.rag_profile_pack.tone_hints.map(String).slice(0, 5)
+        : [],
+      profile_pack: evidencePacket.rag_profile_pack
+        ? {
+            version: evidencePacket.rag_profile_pack.version || "",
+            runtime_hints_only: evidencePacket.rag_profile_pack.runtime_hints_only === true,
+            broad_answer_bank: evidencePacket.rag_profile_pack.broad_answer_bank === true,
+            private_raw_data: evidencePacket.rag_profile_pack.private_raw_data === true,
+            hosted_vector_store: evidencePacket.rag_profile_pack.hosted_vector_store === true
+          }
+        : null
     },
     model: {
       asset_manifest_loaded: packet.asset_status?.verification !== "no_model_assets",

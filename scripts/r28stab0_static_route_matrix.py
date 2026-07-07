@@ -11,8 +11,8 @@ from urllib.parse import parse_qs, unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28stab0" / "reports" / "static_route_matrix.json"
-VERSION = "r28surf2-anchor-informed-answer-surfaces"
-BUILD_MARKERS = ("R28SURF2", "R28ROUT1", "R28HOTFIX3", "R28HOTFIX2", "R28HOTFIX1")
+VERSION = "r28rag3-lightweight-affective-rag"
+BUILD_MARKERS = ("R28RAG3", "R28SURF2", "R28ROUT1", "R28HOTFIX3", "R28HOTFIX2", "R28HOTFIX1")
 
 ROUTES = [
     "/",

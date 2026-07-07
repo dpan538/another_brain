@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28surf2-anchor-informed-answer-surfaces";
+import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28rag3-lightweight-affective-rag";
 
 function tokensFor(prompt, maxTokens) {
   const parts = [

@@ -32,7 +32,7 @@ const ROUTER_NON_CLAIMS = [
   "no broad answer bank",
   "hard router is product-surface guard only"
 ];
-const R28HOTFIX3_UI_VERSION = "r28surf2-anchor-informed-answer-surfaces";
+const R28HOTFIX3_UI_VERSION = "r28rag3-lightweight-affective-rag";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -665,7 +665,12 @@ function publicEvidenceSources(evidence = []) {
     source_id: String(item.source_id || item.id || "local"),
     title: String(item.title || "local evidence").slice(0, 120),
     trust_level: String(item.trust_level || "local_static"),
-    retrieval_score: Number(item.retrieval_score || 0)
+    retrieval_score: Number(item.retrieval_score || 0),
+    provenance: String(item.metadata?.provenance || item.provenance || item.license_or_origin || "local_static").slice(0, 80),
+    kind: String(item.metadata?.card_kind || item.kind || item.metadata?.kind || "").slice(0, 40),
+    tone_hints: Array.isArray(item.metadata?.tone_hints)
+      ? item.metadata.tone_hints.map(String).slice(0, 5)
+      : (Array.isArray(item.tone_hints) ? item.tone_hints.map(String).slice(0, 5) : [])
   }));
 }
 
@@ -735,7 +740,19 @@ function buildProcessTrace({
       retrieval_used: true,
       evidence_count: evidence.length,
       evidence_status: evidencePacket?.evidence_status || "none",
-      top_sources: publicEvidenceSources(evidence)
+      top_sources: publicEvidenceSources(evidence),
+      tone_hints: Array.isArray(evidencePacket?.rag_profile_pack?.tone_hints)
+        ? evidencePacket.rag_profile_pack.tone_hints.map(String).slice(0, 5)
+        : [],
+      profile_pack: evidencePacket?.rag_profile_pack
+        ? {
+            version: evidencePacket.rag_profile_pack.version || "",
+            runtime_hints_only: evidencePacket.rag_profile_pack.runtime_hints_only === true,
+            broad_answer_bank: evidencePacket.rag_profile_pack.broad_answer_bank === true,
+            private_raw_data: evidencePacket.rag_profile_pack.private_raw_data === true,
+            hosted_vector_store: evidencePacket.rag_profile_pack.hosted_vector_store === true
+          }
+        : null
     },
     model: {
       asset_manifest_loaded: assetStatus?.verification !== "no_model_assets",
@@ -1107,7 +1124,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28surf2-anchor-informed-answer-surfaces", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28rag3-lightweight-affective-rag", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -1131,7 +1148,7 @@ export class BrowserChatRuntime {
       status: "loaded",
       mode: this.mode,
       delivery_mode: this.deliveryConfig.delivery_mode || "demo_static",
-      rag_mode: this.deliveryConfig.rag_mode || "static_demo",
+      rag_mode: this.deliveryConfig.rag_mode || "static_profile_pack",
       product_model: false,
       capabilities: this.capabilities,
       asset_status: this.assetStatus
@@ -1230,7 +1247,7 @@ export class BrowserChatRuntime {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
     const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28surf2-anchor-informed-answer-surfaces", import.meta.url), { type: "module" });
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28rag3-lightweight-affective-rag", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
@@ -1271,7 +1288,7 @@ export class BrowserChatRuntime {
       };
       worker.postMessage({
         type: "q4_smoke",
-        prompt: "R28SURF2 q4 path smoke",
+        prompt: "R28RAG3 q4 path smoke",
         maxTokens: 1,
         contextLength: 32,
         timeoutMs
@@ -1557,7 +1574,7 @@ export class BrowserChatRuntime {
     const setStatus = typeof hooks.onStatus === "function" ? hooks.onStatus : () => {};
     const statePacket = applyImportedStatePackets(buildStatePacket(input, this.turnIndex, this.mode), this.contextPackets);
     statePacket.delivery_mode = this.deliveryConfig.delivery_mode || "demo_static";
-    statePacket.rag_mode = this.deliveryConfig.rag_mode || "static_demo";
+    statePacket.rag_mode = this.deliveryConfig.rag_mode || "static_profile_pack";
     statePacket.product_model = false;
     setStatus("retrieving_local_memory");
     if (!this.memoryRecords) this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);

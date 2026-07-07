@@ -1,8 +1,8 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28surf2-anchor-informed-answer-surfaces";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28surf2-anchor-informed-answer-surfaces";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28rag3-lightweight-affective-rag";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28rag3-lightweight-affective-rag";
 
-const R28HOTFIX3_UI_VERSION = "r28surf2-anchor-informed-answer-surfaces";
-const R28HOTFIX3_BUILD_MARKER = "R28SURF2";
+const R28HOTFIX3_UI_VERSION = "r28rag3-lightweight-affective-rag";
+const R28HOTFIX3_BUILD_MARKER = "R28RAG3";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -11,8 +11,8 @@ const R28HOTFIX1_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
-  rag_mode: "static_demo",
-  prelaunch_stage: "r28surf2",
+  rag_mode: "static_profile_pack",
+  prelaunch_stage: "r28rag3",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -270,10 +270,15 @@ function renderTrace(trace = null) {
   const model = trace.model || {};
   const router = trace.router || {};
   const finalizer = trace.finalizer || {};
-  const topSources = (rag.top_sources || []).map((item) => item.title).filter(Boolean).join(" / ") || "无";
+  const topSources = (rag.top_sources || []).map((item) => {
+    const provenance = item.provenance ? `:${item.provenance}` : "";
+    const kind = item.kind ? `:${item.kind}` : "";
+    return `${item.title || "local evidence"}${kind}${provenance}`;
+  }).filter(Boolean).join(" / ") || "无";
+  const toneHints = (rag.tone_hints || []).join(", ") || "none";
   setText(traceInputSummary, `has_user_input=${boolText(input.has_user_input)} / adapter_context_present=${boolText(input.adapter_context_present)}`);
   setText(traceContextSummary, `has_local_context=${boolText(input.has_local_context)} / local-session-only / not saved`);
-  setText(traceEvidenceSummary, `retrieval_used=${boolText(rag.retrieval_used)} / evidence_count=${rag.evidence_count || 0} / evidence_status=${rag.evidence_status || "none"} / sources=${topSources}`);
+  setText(traceEvidenceSummary, `retrieval_used=${boolText(rag.retrieval_used)} / evidence_count=${rag.evidence_count || 0} / evidence_status=${rag.evidence_status || "none"} / sources=${topSources} / tone_hints=${toneHints}`);
   setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / tokens=${model.tokens_generated || 0} / model_draft_generated=${boolText(model.draft_generated)}`);
   setText(traceRouterSummary, `route=${router.route || "not_run"} / used_model_draft=${boolText(router.used_model_draft)} / finalizer_replaced_draft=${boolText(router.replaced_model_draft)} / reason=${router.reason || "none"}`);
   setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || "none"}`);
