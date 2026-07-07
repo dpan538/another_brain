@@ -3,12 +3,13 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createRuntimeTokenizer, inspectRuntimeTokenizer } from "../../src/browser_runtime/tokenizer/runtime_tokenizer.ts";
 import { decodeTokenIdsToText, displayPieceForTokenId } from "../../src/browser_runtime/tokenizer/token_decode.ts";
+import { summarizeTokenizerSource } from "../../src/browser_runtime/tokenizer/tokenizer_source.ts";
 
 async function readJson(path) {
   return JSON.parse(await readFile(path, "utf8"));
 }
 
-test("R28TOK0 committed runtime tokenizer is exact BPE primary path", async () => {
+test("R28TOK1 committed runtime tokenizer is exact BPE primary path", async () => {
   const tokenizer = await readJson("web/another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json");
   const modelConfig = await readJson("web/another_brain/model_assets/r28m1/model.config.json");
   const quantization = await readJson("web/another_brain/model_assets/r28m1/quantization.manifest.json");
@@ -20,11 +21,12 @@ test("R28TOK0 committed runtime tokenizer is exact BPE primary path", async () =
   assert.equal(inspected.exact_decode, true);
   assert.equal(inspected.decode_status, "exact_runtime_tokenizer");
   assert.equal(inspected.limitation, "");
+  assert.equal(inspected.emergency_lossy_fallback_available, true);
   assert.equal(inspected.non_claims.product_tokenizer, false);
   assert.equal(inspected.non_claims.browser_admission, false);
 });
 
-test("R28TOK0 exact tokenizer encodes and decodes Chinese text", async () => {
+test("R28TOK1 exact tokenizer encodes and decodes Chinese text", async () => {
   const tokenizer = await readJson("web/another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json");
   const runtimeTokenizer = createRuntimeTokenizer({
     tokenizer,
@@ -45,8 +47,22 @@ test("R28TOK0 exact tokenizer encodes and decodes Chinese text", async () => {
   }
 });
 
-test("R28TOK0 lossy display codec remains emergency fallback only", () => {
+test("R28TOK1 lossy display codec remains emergency fallback only", () => {
   const decoded = decodeTokenIdsToText([123, 456], { tokenizer: { vocab_size: 16000 } });
   assert.equal(decoded.decode_status, "lossy_runtime_display_codec_emergency_fallback");
   assert.ok(decoded.text.includes(displayPieceForTokenId(123, 0)));
+});
+
+test("R28TOK1 tokenizer source summary keeps non-claims", () => {
+  const summary = summarizeTokenizerSource({
+    exact_tokenizer_found: true,
+    tokenizer_type: "BPE",
+    vocab_size: 16000,
+    source_kind: "r27a4_model_lab_tokenizer",
+    can_commit_runtime_asset: true
+  });
+  assert.equal(summary.exact_tokenizer_found, true);
+  assert.equal(summary.can_commit_runtime_asset, true);
+  assert.equal(summary.non_claims.training, false);
+  assert.equal(summary.non_claims.browser_admission, false);
 });

@@ -27,7 +27,7 @@ async function fileFetcher(url) {
   };
 }
 
-test("R28TOK0 q4 generation uses exact tokenizer decode", { timeout: 180000 }, async () => {
+test("R28TOK1 q4 generation uses exact tokenizer decode", { timeout: 180000 }, async () => {
   const runtimePackage = await loadR28M1Q4RuntimePackage({ fetcher: fileFetcher, baseUrl: "https://local.test/" });
   const checksum = await verifyCommittedShardChecksums(runtimePackage, { fetcher: fileFetcher, baseUrl: "https://local.test/" });
   assert.equal(checksum.ok, true, checksum.failures.join(","));
@@ -48,7 +48,7 @@ test("R28TOK0 q4 generation uses exact tokenizer decode", { timeout: 180000 }, a
   assert.equal(smoke.prompt_results[0].decoded_text.includes("token_id:"), false);
 });
 
-test("R28TOK0 worker stats expose exact tokenizer status", { timeout: 180000 }, async () => {
+test("R28TOK1 worker stats expose exact tokenizer status", { timeout: 180000 }, async () => {
   const runtimePackage = await loadR28M1Q4RuntimePackage({ fetcher: fileFetcher, baseUrl: "https://local.test/" });
   const events = [];
   const result = await handleRuntimeWorkerMessage(

@@ -63293,11 +63293,11 @@
   "product_model": false,
   "release_checkpoint_admission": false,
   "runtime_compatible": true,
-  "schema_version": "r28tok0.exact_runtime_tokenizer.v1",
+  "schema_version": "r28tok1.exact_runtime_tokenizer.v1",
   "source_lineage": {
     "raw_or_clean_corpus_committed": false,
     "source_path_kind": "ignored_artifact_read_only",
-    "source_tokenizer": "r27a4_model_lab_bpe_16000",
+    "source_tokenizer": "r27a4_model_lab_bpe_16000_or_equivalent_a_line_tokenizer",
     "tokenizer_training_artifact_committed": false,
     "training_artifact_committed": false
   },
