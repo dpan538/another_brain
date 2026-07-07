@@ -230,13 +230,11 @@ def run_q4_forward_smoke(run_q4: bool) -> dict:
 def source_health_checks() -> dict:
     app = read_text(WEB / "another_brain_chat" / "app.js")
     runtime = read_text(WEB / "another_brain_chat" / "browser_runtime.js")
-    self_check_nonblocking = all(
-        marker in app
-        for marker in [
-            "runtime.quickSelfCheckModelPath({ jsonTimeoutMs: 1500, shardTimeoutMs: 8000 })",
-            "q4_forward: { status: \"skipped\"",
-            "boot().catch",
-        ]
+    quick_check_present = all(
+        marker in app for marker in ["runtime.quickSelfCheckModelPath({", "jsonTimeoutMs: 1500", "shardTimeoutMs: 8000"]
+    )
+    self_check_nonblocking = quick_check_present and all(
+        marker in app for marker in ["q4_forward: { status: \"skipped\"", "boot().catch"]
     ) and "setDisabled(input" not in app and "setDisabled(form" not in app
     self_check_timeout_recovery = all(
         marker in app + runtime

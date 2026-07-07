@@ -439,6 +439,7 @@
     "test:r28surf2": "node scripts/r28surf2_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28surf2 -p 'test_*.py'",
     "test:r28rag3": "node scripts/r28rag3_run_ts_tests.mjs",
     "test:r28ux5": "node scripts/r28ux5_run_ts_tests.mjs",
+    "test:r28merge1": "python3 -m unittest discover -s tests/r28merge1",
     "test:r28pr0": "python3 -m unittest discover -s tests/r28pr0",
     "test:r28d8": "python3 -m unittest discover -s tests/r28d8",
     "test:r28qa2": "python3 -m unittest discover -s tests/r28qa2",
