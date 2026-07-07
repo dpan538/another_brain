@@ -4,6 +4,9 @@ import { composeAnswerSurface } from "./answer_surface_composer.ts";
 import { matchMicroIntent } from "./fuzzy_intent_matcher.ts";
 import { buildIdentityRouteOutput, isIdentityQuestion } from "./identity_route.ts";
 import { isMicroIntentRoute, routeForMicroIntent } from "./intent_taxonomy.ts";
+import { matchR28Surf2Intent } from "./r28surf2_fuzzy_matcher.ts";
+import { isR28Surf2RouterSurfaceRoute } from "./r28surf2_intents.ts";
+import { composeR28Surf2Surface } from "./r28surf2_surface_composer.ts";
 
 const MALICIOUS_EVIDENCE_MARKERS = [
   "ignore previous instructions",
@@ -110,10 +113,10 @@ export function classifyAnswerRoute(rawInput = {}) {
   const status = evidenceStatus(input);
   const flags = modelQualityFlags(input);
   const microBaseFlags = uniqueFlags(input.generation_flags);
-  const microIntent = matchMicroIntent(input.user_input);
+  const microIntent = matchR28Surf2Intent(input.user_input);
 
   if (microIntent.route && !hasBlockingModelFailure(input, flags)) {
-    const composed = composeAnswerSurface({
+    const composed = composeR28Surf2Surface({
       intent: microIntent.intent,
       input: input.user_input,
       runtimeStatus: {
@@ -128,7 +131,9 @@ export function classifyAnswerRoute(rawInput = {}) {
       route: microIntent.route,
       use_model_draft: false,
       final_answer: composed.final_answer,
-      fallback_reason: isMicroIntentRoute(microIntent.route) ? "micro_intent_fast_path" : composed.fallback_reason,
+      fallback_reason: isMicroIntentRoute(microIntent.route) || isR28Surf2RouterSurfaceRoute(microIntent.route)
+        ? "micro_intent_fast_path"
+        : composed.fallback_reason,
       quality_flags: uniqueFlags([...microBaseFlags, ...composed.quality_flags, `intent_confidence:${microIntent.confidence}`]),
       intent: microIntent.intent,
       intent_confidence: microIntent.confidence,
@@ -136,7 +141,39 @@ export function classifyAnswerRoute(rawInput = {}) {
       final_answer_source: composed.final_answer_source,
       fragment_ids: composed.fragment_ids || [],
       indexed_surface: composed.indexed_surface === true,
-      answer_bank: false
+      answer_bank: false,
+      broad_answer_bank: false,
+      surface_composer_version: composed.composer_version
+    };
+  }
+
+  const legacyMicroIntent = matchMicroIntent(input.user_input);
+  if (legacyMicroIntent.route && !hasBlockingModelFailure(input, flags)) {
+    const composed = composeAnswerSurface({
+      intent: legacyMicroIntent.intent,
+      input: input.user_input,
+      runtimeStatus: {
+        runtime_mode: input.runtime_mode,
+        decode_status: input.decode_status
+      },
+      evidenceStatus: status,
+      adapterContextPresent: input.adapter_context_present,
+      productAdmission: input.product_admission
+    });
+    return {
+      route: legacyMicroIntent.route,
+      use_model_draft: false,
+      final_answer: composed.final_answer,
+      fallback_reason: isMicroIntentRoute(legacyMicroIntent.route) ? "micro_intent_fast_path" : composed.fallback_reason,
+      quality_flags: uniqueFlags([...microBaseFlags, ...composed.quality_flags, `intent_confidence:${legacyMicroIntent.confidence}`]),
+      intent: legacyMicroIntent.intent,
+      intent_confidence: legacyMicroIntent.confidence,
+      intent_matcher_version: legacyMicroIntent.matcher_version,
+      final_answer_source: composed.final_answer_source,
+      fragment_ids: composed.fragment_ids || [],
+      indexed_surface: composed.indexed_surface === true,
+      answer_bank: false,
+      broad_answer_bank: false
     };
   }
 
@@ -274,6 +311,7 @@ export function summarizeRouteForProcessTrace(route = {}, modelDraftGenerated = 
     reason: route.fallback_reason || "",
     intent: route.intent || "",
     fragment_ids: route.fragment_ids || [],
-    indexed_surface: route.indexed_surface === true
+    indexed_surface: route.indexed_surface === true,
+    intent_confidence: route.intent_confidence || 0
   };
 }

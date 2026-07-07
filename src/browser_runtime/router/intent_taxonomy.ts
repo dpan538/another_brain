@@ -133,8 +133,13 @@ export function isMicroIntentRoute(route) {
   return [
     "greeting_surface",
     "identity_surface",
-    "origin_surface",
-    "capability_surface",
-    "runtime_status_surface"
+  "origin_surface",
+  "capability_surface",
+  "relation_surface",
+  "value_surface",
+  "aesthetic_surface",
+  "abstract_meaning_surface",
+  "smalltalk_surface",
+  "runtime_status_surface"
   ].includes(route);
 }

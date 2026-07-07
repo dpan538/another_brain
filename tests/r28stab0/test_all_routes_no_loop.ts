@@ -32,7 +32,7 @@ test("R28STAB0 route matrix serves direct static entries without loops", async (
     const entry = routeEntries.get(routePath(route));
     assert.ok(entry, route);
     const html = await readFile(new URL(entry, import.meta.url), "utf8");
-    assert.ok(html.includes("R28ROUT1") || html.includes("R28HOTFIX3") || html.includes("R28HOTFIX2") || html.includes("R28HOTFIX1"), route);
+    assert.ok(html.includes("R28SURF2") || html.includes("R28ROUT1") || html.includes("R28HOTFIX3") || html.includes("R28HOTFIX2") || html.includes("R28HOTFIX1"), route);
     assert.ok(html.includes("过程摘要"), route);
     assert.ok(html.includes("检查本地模型路径"), route);
     assert.ok(html.includes("static_q4_experimental"), route);

@@ -7,6 +7,11 @@ export const ANSWER_ROUTES = Object.freeze([
   "identity_surface",
   "origin_surface",
   "capability_surface",
+  "relation_surface",
+  "value_surface",
+  "aesthetic_surface",
+  "abstract_meaning_surface",
+  "smalltalk_surface",
   "runtime_status_surface",
   "identity_boundary",
   "insufficient_evidence_boundary",
@@ -50,6 +55,7 @@ export const ROUTER_NON_CLAIMS = Object.freeze([
   "no backend inference",
   "no external LLM API",
   "no Doubao",
+  "no broad answer bank",
   "hard router is product-surface guard only"
 ]);
 

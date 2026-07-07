@@ -10,6 +10,16 @@ export const PROCESS_TRACE_RUNTIME_MODES = Object.freeze([
 export const PROCESS_TRACE_ROUTES = Object.freeze([
   "direct_model_draft",
   "rag_grounded_answer",
+  "greeting_surface",
+  "identity_surface",
+  "origin_surface",
+  "capability_surface",
+  "relation_surface",
+  "value_surface",
+  "aesthetic_surface",
+  "abstract_meaning_surface",
+  "smalltalk_surface",
+  "runtime_status_surface",
   "insufficient_evidence_boundary",
   "conflicting_evidence_boundary",
   "malicious_evidence_boundary",
@@ -20,6 +30,7 @@ export const PROCESS_TRACE_ROUTES = Object.freeze([
 
 export const FINAL_ANSWER_SOURCES = Object.freeze([
   "model_draft",
+  "router_surface",
   "router_boundary",
   "fallback"
 ]);
@@ -43,6 +54,7 @@ function publicSourceSummary(item = {}) {
 
 export function inferFinalAnswerSource(trace = {}) {
   if (trace?.router?.used_model_draft === true && trace?.model?.q4_forward_ran === true) return "model_draft";
+  if (String(trace?.router?.route || "").endsWith("_surface")) return "router_surface";
   if (trace?.router?.replaced_model_draft === true || String(trace?.router?.route || "").includes("boundary")) return "router_boundary";
   return "fallback";
 }
@@ -81,7 +93,11 @@ export function createProcessTrace(input = {}) {
       route: safeString(input.router?.route, "synthetic_demo_fallback"),
       used_model_draft: usedModelDraft,
       replaced_model_draft: replacedModelDraft,
-      reason: safeString(input.router?.reason, "")
+      reason: safeString(input.router?.reason, ""),
+      intent: safeString(input.router?.intent, ""),
+      intent_confidence: Number.isFinite(Number(input.router?.intent_confidence)) ? Number(input.router.intent_confidence) : 0,
+      fragment_ids: Array.isArray(input.router?.fragment_ids) ? input.router.fragment_ids.map(String) : [],
+      indexed_surface: bool(input.router?.indexed_surface)
     },
     finalizer: {
       final_answer_source: FINAL_ANSWER_SOURCES.includes(input.finalizer?.final_answer_source)
@@ -121,7 +137,7 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
     createTraceEvent("q4_forward_started", { runtime_mode: runtimeStats.runtime_mode || packet.state_packet?.mode || "fallback" }),
     createTraceEvent("q4_forward_completed", { q4_forward_ran: q4ForwardRan, tokens_generated: runtimeStats.tokens_generated || 0 }),
     createTraceEvent("draft_generated", { draft_generated: draftGenerated }),
-    createTraceEvent("router_route_selected", { route: packet.answer_route || routePolicy.route || "synthetic_demo_fallback" }),
+    createTraceEvent("router_route_selected", { route: packet.answer_route || routePolicy.route || "synthetic_demo_fallback", intent_confidence: routePolicy.intent_confidence || 0 }),
     createTraceEvent("finalizer_applied", { used_model_draft: routePolicy.use_model_draft === true }),
     ...(packet.fallback_used ? [createTraceEvent("fallback_used", { reason: packet.fallback_reason || routePolicy.fallback_reason || "" })] : []),
     createTraceEvent("answer_completed", { final_answer_source: packet.use_model_draft ? "model_draft" : "fallback" })
@@ -152,7 +168,11 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
     router: {
       route: packet.answer_route || routePolicy.route || "synthetic_demo_fallback",
       used_model_draft: routePolicy.use_model_draft === true,
-      reason: packet.fallback_reason || routePolicy.fallback_reason || ""
+      reason: packet.fallback_reason || routePolicy.fallback_reason || "",
+      intent: routePolicy.intent || "",
+      intent_confidence: routePolicy.intent_confidence || 0,
+      fragment_ids: routePolicy.fragment_ids || [],
+      indexed_surface: routePolicy.indexed_surface === true
     },
     finalizer: {
       final_answer_source: packet.use_model_draft ? "model_draft" : "fallback",

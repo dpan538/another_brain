@@ -2,6 +2,7 @@ import { buildAnswerRouteOutput, ROUTER_NON_CLAIMS } from "./answer_route.ts";
 import { answerSurfaceForRoute } from "./answer_surfaces.ts";
 import { classifyAnswerRoute } from "./route_classifier.ts";
 import { isMicroIntentRoute } from "./intent_taxonomy.ts";
+import { isR28Surf2RouterSurfaceRoute } from "./r28surf2_intents.ts";
 
 export const R28ROUT0_POLICY_VERSION = "r28rout0-answer-surface-policy-v1";
 
@@ -36,7 +37,7 @@ export function applyAnswerSurfacePolicy(routeInput = {}, options = {}) {
   }
 
   const finalAnswer = classified.final_answer || answerSurfaceForRoute(classified.route);
-  const isSurfaceFinal = classified.route === "identity_boundary" || isMicroIntentRoute(classified.route);
+  const isSurfaceFinal = classified.route === "identity_boundary" || isMicroIntentRoute(classified.route) || isR28Surf2RouterSurfaceRoute(classified.route);
   return {
     ...buildAnswerRouteOutput({
       route: classified.route,
@@ -48,11 +49,12 @@ export function applyAnswerSurfacePolicy(routeInput = {}, options = {}) {
     }),
     answer_status: isSurfaceFinal ? "final" : "fallback",
     fallback_used: !isSurfaceFinal,
-    final_answer_source: isMicroIntentRoute(classified.route) ? "router_surface" : "router_boundary",
+    final_answer_source: isMicroIntentRoute(classified.route) || isR28Surf2RouterSurfaceRoute(classified.route) ? "router_surface" : "router_boundary",
     intent: classified.intent || "",
     intent_confidence: classified.intent_confidence || 0,
     fragment_ids: classified.fragment_ids || [],
     indexed_surface: classified.indexed_surface === true,
+    broad_answer_bank: false,
     answer_surface_policy_version: R28ROUT0_POLICY_VERSION
   };
 }
