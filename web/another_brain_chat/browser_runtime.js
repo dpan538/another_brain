@@ -149,7 +149,7 @@ export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
 }
 
 function fallbackAnswer(input, reason) {
-  return `Static fallback (${reason}): local static guard could not produce a grounded answer.`;
+  return `本地静态 fallback（${reason}）：当前没有足够的已校验证据或可用模型资产来生成稳定回答。`;
 }
 
 function syntheticDraft(input, maxTokens = 32) {

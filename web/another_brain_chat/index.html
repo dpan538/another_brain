@@ -3,84 +3,85 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>鳄鱼的另一个大脑 | Static Chat Shell</title>
+    <title>鳄鱼的另一个大脑 | 本地静态对话框</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="chat-shell" aria-label="鳄鱼的另一个大脑 static chat shell">
+    <main class="chat-shell" aria-label="鳄鱼的另一个大脑本地静态对话框">
       <section class="chat-window" aria-labelledby="chat-title">
         <header class="chat-header">
           <div>
-            <p class="eyebrow">another_brain</p>
+            <p class="eyebrow">prelaunch engineering candidate</p>
             <h1 id="chat-title">鳄鱼的另一个大脑</h1>
+            <p class="header-copy">中文优先的本地静态演示壳；没有接入真实模型资产时，会走 synthetic / fallback 路径。</p>
           </div>
           <div class="header-badges" aria-label="runtime status">
-            <span class="badge badge-local" id="local-indicator">Local only / no remote send</span>
-            <span class="badge badge-backend" id="backend-badge">No backend or external LLM</span>
+            <span class="badge badge-local" id="local-indicator">本地静态运行<span class="sr-only">Local only / no remote send</span></span>
+            <span class="badge badge-backend" id="backend-badge">无后端 / 无外部 LLM<span class="sr-only">No backend inference / no external LLM</span></span>
           </div>
         </header>
 
-        <section class="status-strip" aria-label="runtime pipeline status">
+        <section class="status-strip" aria-label="runtime pipeline status" aria-live="polite">
           <div>
-            <span class="status-label">Model</span>
-            <strong id="model-status">Placeholder loaded</strong>
+            <span class="status-label">模型状态</span>
+            <strong id="model-status">等待加载</strong>
           </div>
           <div>
-            <span class="status-label">Retrieval</span>
-            <strong id="retrieval-status">Mock local packet</strong>
+            <span class="status-label">证据检索</span>
+            <strong id="retrieval-status">本地 demo 证据</strong>
           </div>
           <div>
-            <span class="status-label">Verifier</span>
-            <strong id="verifier-status">Ready</strong>
+            <span class="status-label">答案校验</span>
+            <strong id="verifier-status">就绪</strong>
           </div>
           <div>
-            <span class="status-label">Fallback</span>
-            <strong id="fallback-status">Unused</strong>
+            <span class="status-label">回退状态</span>
+            <strong id="fallback-status">未使用</strong>
           </div>
         </section>
 
-        <section class="delivery-strip" aria-label="delivery mode status">
+        <section class="delivery-strip" aria-label="交付模式">
           <div>
-            <span class="status-label">Delivery</span>
+            <span class="status-label">交付层</span>
             <strong id="delivery-mode">demo_static</strong>
           </div>
           <div>
-            <span class="status-label">Model Mode</span>
+            <span class="status-label">模型模式</span>
             <strong id="configured-model-mode">synthetic_tiny</strong>
           </div>
           <div>
-            <span class="status-label">RAG Mode</span>
+            <span class="status-label">RAG 模式</span>
             <strong id="configured-rag-mode">static_demo</strong>
           </div>
           <div>
-            <span class="status-label">Budget</span>
+            <span class="status-label">预算</span>
             <strong id="budget-status">under_100mb</strong>
           </div>
-          <p id="non-product-warning">Demo static mode uses mock/synthetic generation and demo memory only.</p>
+          <p id="non-product-warning">当前不是 product model，也没有 admission；A-line handoff 仅作为 metadata-bound candidate 展示。</p>
         </section>
 
-        <section class="asset-strip" aria-label="asset loading status">
+        <section class="asset-strip" aria-label="资产状态">
           <div>
-            <span class="status-label">Asset Cache</span>
-            <strong id="asset-cache-status">Memory fallback</strong>
+            <span class="status-label">缓存</span>
+            <strong id="asset-cache-status">内存回退</strong>
           </div>
           <div>
-            <span class="status-label">Asset Progress</span>
+            <span class="status-label">加载进度</span>
             <strong id="asset-progress-status">0/0</strong>
           </div>
           <div>
-            <span class="status-label">Verification</span>
-            <strong id="asset-verification-status">No model assets</strong>
+            <span class="status-label">校验</span>
+            <strong id="asset-verification-status">无模型资产</strong>
           </div>
           <div>
-            <span class="status-label">Offline</span>
-            <strong id="offline-status">Static shell only</strong>
+            <span class="status-label">离线</span>
+            <strong id="offline-status">静态壳可用</strong>
           </div>
         </section>
 
         <section class="prelaunch-strip" aria-label="prelaunch candidate and release blocker status">
           <div>
-            <span class="status-label">Model Route</span>
+            <span class="status-label">当前路线</span>
             <strong id="candidate-route-status">synthetic_only</strong>
           </div>
           <div>
@@ -89,52 +90,72 @@
           </div>
           <div>
             <span class="status-label">Adapter</span>
-            <strong id="adapter-status">local session ready</strong>
+            <strong id="adapter-status">本地 session 可导入</strong>
           </div>
           <div>
-            <span class="status-label">Release Blockers</span>
+            <span class="status-label">阻塞项</span>
             <strong id="release-blocker-status">product admission pending</strong>
           </div>
         </section>
 
-        <section class="context-bridge" aria-label="local context bridge">
+        <section class="context-bridge" aria-label="本地上下文导入">
           <div class="context-bridge-head">
-            <label for="context-import">Local context / session-only</label>
-            <span id="context-bridge-status">0 packets / 0 evidence</span>
+            <label for="context-import">导入上下文</label>
+            <span id="context-bridge-status">0 个 packet / 0 条证据</span>
+          </div>
+          <div class="context-tabs" role="tablist" aria-label="导入格式">
+            <button type="button" id="context-tab-text" class="tab-button is-active" role="tab" aria-selected="true" aria-controls="context-import">纯文本</button>
+            <button type="button" id="context-tab-json" class="tab-button" role="tab" aria-selected="false" aria-controls="context-import">JSON packet</button>
           </div>
           <div class="context-bridge-body">
-            <textarea id="context-import" rows="3" placeholder="Context packet or text"></textarea>
+            <textarea id="context-import" rows="3" placeholder="粘贴一段本地上下文；只进入当前 session，不保存，不训练。"></textarea>
             <div class="context-actions">
-              <button type="button" id="context-import-button">Import</button>
-              <button type="button" id="state-export-button" disabled>Export state</button>
-              <button type="button" class="button-secondary" id="context-clear-button">Clear</button>
+              <button type="button" id="context-import-button">导入</button>
+              <button type="button" id="state-export-button" disabled>导出状态</button>
+              <button type="button" class="button-secondary" id="context-clear-button">清空上下文</button>
             </div>
           </div>
-          <p id="context-validation" role="status" aria-live="polite">Local session only / not saved / not training data</p>
+          <p class="context-note" id="context-privacy-note">仅本地 session 使用；不会写入训练数据，也不会发送到后端。</p>
+          <p id="context-validation" role="status" aria-live="polite">等待导入：支持纯文本或符合 C0 contract 的 JSON packet。</p>
         </section>
 
-        <section class="message-list" id="message-list" aria-live="polite" aria-label="messages">
+        <section class="message-toolbar" aria-label="对话操作">
+          <div>
+            <span class="status-label">回答状态</span>
+            <strong id="answer-status" role="status" aria-live="polite">等待输入</strong>
+          </div>
+          <div class="message-actions">
+            <button type="button" class="button-secondary" id="retry-last-button" disabled>重试</button>
+            <button type="button" class="button-secondary" id="clear-conversation-button">清空对话</button>
+          </div>
+        </section>
+
+        <section class="message-list" id="message-list" aria-live="polite" aria-label="对话消息">
           <article class="message message-assistant">
-            <div class="message-role">another_brain</div>
+            <div class="message-role">another_brain · 本地静态壳</div>
             <p>
-              我现在只是一个静态 browser shell：会展示 input/state packet -> local retrieval ->
-              browser decoder draft -> verifier/finalizer/fallback 的产品骨架，但不会加载真实模型。
+              这里展示的是 prelaunch 工程候选的对话骨架：本地检索 demo evidence、生成 synthetic draft、再由 verifier/fallback 收口。
+              证据面板只提供辅助证据，不是 answer bank；导入上下文只在当前 session 生效，不进入训练。
             </p>
           </article>
         </section>
 
-        <section class="debug-panel" aria-label="evidence drawer and retrieval packet debug panel">
-          <label class="debug-toggle">
-            <input type="checkbox" id="debug-toggle" />
-            <span>Evidence drawer / retrieval packet debug</span>
-          </label>
-          <pre id="debug-output" hidden>{}</pre>
+        <section class="debug-panel" aria-label="证据抽屉">
+          <button type="button" class="debug-toggle" id="debug-toggle" aria-expanded="false" aria-controls="debug-output">
+            <span>展开 evidence panel</span>
+            <span id="evidence-count">0 条证据</span>
+          </button>
+          <div id="debug-output" class="evidence-content" hidden>
+            <p class="context-note">Evidence 是辅助证据，不是 answer bank；恶意指令和 hidden prompt 请求会被 guard 拒绝。</p>
+            <ol id="evidence-list"></ol>
+            <pre id="packet-debug-output">{}</pre>
+          </div>
         </section>
 
         <form class="composer" id="chat-form">
-          <label class="sr-only" for="chat-input">Message</label>
-          <textarea id="chat-input" name="message" rows="2" placeholder="Ask the local mock shell..." required></textarea>
-          <button type="submit" id="send-button">Send</button>
+          <label class="sr-only" for="chat-input">输入消息</label>
+          <textarea id="chat-input" name="message" rows="2" placeholder="输入中文问题，按 ⌘/Ctrl + Enter 发送..." required></textarea>
+          <button type="submit" id="send-button">发送</button>
         </form>
       </section>
     </main>
