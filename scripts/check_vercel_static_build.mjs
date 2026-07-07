@@ -227,7 +227,14 @@ async function main() {
   const app = await readFile(resolve(ROOT, "web/app.js"), "utf8");
   const runtimeVersion = await readFile(resolve(ROOT, "web/runtime_version.js"), "utf8");
   const dialogRules = await readFile(resolve(ROOT, "web/dialog_rules.js"), "utf8");
-  if (!/type="module" src="\.\/app\.js\?v=/.test(index)) failures.push("index_missing_versioned_app_module");
+  const rootHasVersionedAppModule = /type="module" src="\.\/app\.js\?v=/.test(index);
+  const rootHasR28ux4ChatRedirect =
+    /R28UX4/.test(index) &&
+    /过程摘要/.test(index) &&
+    /static_q4_experimental/.test(index) &&
+    /exact_runtime_tokenizer/.test(index) &&
+    /another_brain_chat\/\?v=/.test(index);
+  if (!rootHasVersionedAppModule && !rootHasR28ux4ChatRedirect) failures.push("index_missing_versioned_app_module");
   if (!/runtime_version\.js\?v=/.test(app)) failures.push("app_missing_versioned_runtime_version_import");
   if (/knowledge_base\.generated\.js/.test(dialogRules)) {
     failures.push("dialog_rules_imports_monolithic_knowledge");

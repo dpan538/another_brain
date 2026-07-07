@@ -133,9 +133,15 @@ h3 {
   background: var(--amber-bg);
 }
 
+.badge-version {
+  color: #315f8d;
+  border-color: #a8c8e8;
+  background: #eef6ff;
+}
+
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(9, minmax(0, 1fr));
   margin-top: 14px;
   overflow: hidden;
 }
@@ -491,14 +497,14 @@ summary {
 
 @media (max-width: 1080px) {
   .status-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .status-grid > div:nth-child(4n) {
+  .status-grid > div:nth-child(3n) {
     border-right: 0;
   }
 
-  .status-grid > div:nth-child(-n + 4) {
+  .status-grid > div:nth-child(-n + 6) {
     border-bottom: 1px solid var(--line);
   }
 

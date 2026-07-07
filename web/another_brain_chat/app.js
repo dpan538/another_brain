@@ -1,5 +1,8 @@
-import { BrowserChatRuntime } from "./browser_runtime.js";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28ux4-visible-preview-ui";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28ux4-visible-preview-ui";
+
+const R28UX4_UI_VERSION = "r28ux4-visible-preview-ui";
+const R28UX4_BUILD_MARKER = "R28UX4";
 
 const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
@@ -59,6 +62,9 @@ const draftReplacedStatus = document.querySelector("#draft-replaced-status");
 const modelSourceBadge = document.querySelector("#model-source-badge");
 const tokenizerStatusBadge = document.querySelector("#tokenizer-status-badge");
 const q4StatusBadge = document.querySelector("#q4-status-badge");
+const routerStatusBadge = document.querySelector("#router-status-badge");
+const uiVersionBadge = document.querySelector("#ui-version-badge");
+const uiBuildStatus = document.querySelector("#ui-build-status");
 const traceInputSummary = document.querySelector("#trace-input-summary");
 const traceContextSummary = document.querySelector("#trace-context-summary");
 const traceEvidenceSummary = document.querySelector("#trace-evidence-summary");
@@ -251,6 +257,9 @@ function renderDeliveryConfig(config) {
   budgetStatus.textContent = config.budget_status;
   setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
+  setText(routerStatusBadge, "router: enabled");
+  setText(uiVersionBadge, `${R28UX4_BUILD_MARKER} · ${config.ui_version || R28UX4_UI_VERSION}`);
+  setText(uiBuildStatus, `${R28UX4_BUILD_MARKER} / ${config.ui_version || R28UX4_UI_VERSION}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   candidateRouteStatus.textContent = config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route;
@@ -268,7 +277,7 @@ function renderDeliveryConfig(config) {
 
 function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
   const assetStatus = status || {};
-  assetCacheStatus.textContent = `${assetStatus.cache_mode || config.asset_cache_mode} / ${assetStatus.cache_result || "not_checked"}`;
+  assetCacheStatus.textContent = `${assetStatus.cache_mode || config.asset_cache_mode} / ${assetStatus.cache_result || "not_checked"} / ${assetStatus.cache_version || config.ui_version || R28UX4_UI_VERSION}`;
   assetProgressStatus.textContent = assetStatus.progress || "0/0";
   assetVerificationStatus.textContent = assetStatus.verification || config.asset_cache_status || "no_model_assets";
   offlineStatus.textContent = assetStatus.offline_ready
@@ -286,8 +295,8 @@ function renderSelfCheck(report = null) {
     setText(selfCheckBlockers, "blocker：none");
     return;
   }
-  setText(selfCheckAssets, `${report.assets?.status || "失败"} / shards ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}`);
-  setText(selfCheckTokenizer, report.tokenizer?.status || "fallback");
+  setText(selfCheckAssets, `manifest=${report.assets?.manifest_loaded ? "pass" : "fail"} / q4 shards=${report.assets?.shards_verified ? "pass" : "fail"} ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}`);
+  setText(selfCheckTokenizer, `exact tokenizer=${report.tokenizer?.exact_runtime_tokenizer ? "pass" : "fail"}`);
   setText(selfCheckQ4, `${report.q4_forward?.status || "失败"} / q4_forward_ran=${boolText(report.q4_forward?.q4_forward_ran)}`);
   setText(selfCheckFallback, report.fallback?.status || "可用");
   setText(selfCheckOutput, `输出：tokens=${report.q4_forward?.tokens_generated || 0} / ${report.output?.text_preview || "no q4 text"}`);
@@ -315,7 +324,7 @@ async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
   renderAssetStatus(null, deliveryConfig);
-  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig });
+  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: deliveryConfig.ui_version || R28UX4_UI_VERSION });
   runtime.setContextPackets(contextBridge.getPackets());
   const loadResult = await runtime.load();
   modelStatus.textContent = `${loadResult.mode} loaded`;

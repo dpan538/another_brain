@@ -31,6 +31,9 @@ const ROUTER_NON_CLAIMS = [
   "no Doubao",
   "hard router is product-surface guard only"
 ];
+const R28UX4_UI_VERSION = "r28ux4-visible-preview-ui";
+const R28UX4_ASSET_CACHE_KEY = "another_brain_r28ux4_asset_cache_version";
+const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
   insufficient_evidence: "目前证据不足，我不能把这个判断说成确定结论。",
   malicious_evidence: "检索到的材料里有试图改变规则的内容，我会把它当作不可信指令处理。",
@@ -525,6 +528,7 @@ export class BrowserChatRuntime {
     this.turnIndex = 0;
     this.worker = null;
     this.capabilities = probeBrowserCapabilities();
+    this.uiVersion = options.uiVersion || options.deliveryConfig?.ui_version || R28UX4_UI_VERSION;
     this.memoryRecords = null;
     this.contextPackets = [];
     this.lastRuntimeStats = null;
@@ -536,12 +540,37 @@ export class BrowserChatRuntime {
       cache_result: "not_checked",
       progress: "0/0",
       verification: "no_model_assets",
+      cache_version: this.uiVersion,
       fallback_reason: this.capabilities.cache_storage_available ? "" : "cache_storage_unavailable",
       offline_ready: this.capabilities.offline_static_cache_supported
     };
   }
 
+  async invalidateStaleAssetCache() {
+    if (typeof localStorage === "undefined") return { status: "local_storage_unavailable", cleared: false };
+    const previous = localStorage.getItem(R28UX4_ASSET_CACHE_KEY);
+    if (previous === this.uiVersion) return { status: "cache_version_current", cleared: false, previous };
+    let cleared = false;
+    if (typeof caches !== "undefined" && typeof caches.delete === "function") {
+      for (const cacheName of R28UX4_CACHE_NAMES) {
+        cleared = (await caches.delete(cacheName).catch(() => false)) || cleared;
+      }
+    }
+    localStorage.setItem(R28UX4_ASSET_CACHE_KEY, this.uiVersion);
+    return {
+      status: previous ? "cache_version_mismatch_invalidated" : "cache_version_initialized",
+      cleared,
+      previous: previous || "",
+      current: this.uiVersion
+    };
+  }
+
   async load() {
+    const cacheVersion = await this.invalidateStaleAssetCache().catch((error) => ({
+      status: "cache_version_check_failed",
+      cleared: false,
+      error: error.message || "cache_version_check_failed"
+    }));
     if (this.capabilities.worker_available) {
       this.worker = new Worker("./runtime_worker.js", { type: "module" });
     }
@@ -552,7 +581,15 @@ export class BrowserChatRuntime {
         cache_result: "same_origin_static_assets_declared",
         progress: `0/${Number(this.deliveryConfig.shard_count || 0)}`,
         verification: this.deliveryConfig.asset_cache_status || "same_origin_static_q4_assets_committed_checksum_required",
+        cache_version: this.uiVersion,
+        cache_version_status: cacheVersion.status,
         fallback_reason: this.deliveryConfig.runtime_fallback_reason || this.assetStatus.fallback_reason
+      };
+    } else {
+      this.assetStatus = {
+        ...this.assetStatus,
+        cache_version: this.uiVersion,
+        cache_version_status: cacheVersion.status
       };
     }
     return {

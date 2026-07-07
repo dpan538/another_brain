@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>another_brain preview | Process Transparent Chat</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <title>R28UX4 another_brain preview | Process Transparent Chat</title>
+    <meta name="another-brain-ui-version" content="r28ux4-visible-preview-ui" />
+    <link rel="stylesheet" href="./styles.css?v=r28ux4-visible-preview-ui" />
   </head>
   <body>
     <main class="app-shell" aria-label="another_brain process transparent preview">
@@ -15,10 +16,12 @@
           <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
         </div>
         <div class="header-badges" aria-label="runtime status">
+          <span class="badge badge-version" id="ui-version-badge">R28UX4 · r28ux4-visible-preview-ui</span>
           <span class="badge badge-local" id="local-indicator">local/static</span>
           <span class="badge badge-backend" id="backend-badge">No backend inference</span>
           <span class="badge" id="model-source-badge">static_q4_experimental</span>
           <span class="badge" id="tokenizer-status-badge">exact tokenizer: checking</span>
+          <span class="badge" id="router-status-badge">router: enabled</span>
           <span class="badge badge-warn" id="q4-status-badge">q4 forward: not checked</span>
         </div>
       </header>
@@ -55,6 +58,10 @@
         <div>
           <span class="status-label">Fallback Reason</span>
           <strong id="fallback-reason-status">none</strong>
+        </div>
+        <div>
+          <span class="status-label">UI Build</span>
+          <strong id="ui-build-status">R28UX4 / r28ux4-visible-preview-ui</strong>
         </div>
       </section>
 
@@ -244,6 +251,6 @@
       </section>
     </main>
 
-    <script type="module" src="./app.js"></script>
+    <script type="module" src="./app.js?v=r28ux4-visible-preview-ui"></script>
   </body>
 </html>

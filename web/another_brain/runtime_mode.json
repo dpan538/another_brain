@@ -1,6 +1,7 @@
 {
   "adapter_status": "local_session_import_export_ready",
   "asset_cache_mode": "memory_fallback",
+  "asset_cache_version": "r28ux4-visible-preview-ui",
   "asset_cache_policy": "same_origin_shards_only",
   "asset_cache_status": "same_origin_static_q4_assets_committed_checksum_required",
   "asset_loader_resilience": "checksum_retry_abort_partial_fallback",
@@ -58,5 +59,9 @@
   "tokenizer": "exact_runtime_tokenizer",
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_model_asset_bytes": 48267968
+  "total_model_asset_bytes": 48267968,
+  "ui_build_marker": "R28UX4",
+  "ui_build_timestamp": "2026-07-07T18:10:00+08:00",
+  "ui_root_route": "/",
+  "ui_version": "r28ux4-visible-preview-ui"
 }
