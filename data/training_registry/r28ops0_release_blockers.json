@@ -1,0 +1,11 @@
+{
+  "product_model_admission": false,
+  "browser_admission": false,
+  "release_checkpoint_admission": false,
+  "real_model_assets_committed": false,
+  "vercel_preview_passed": "unknown",
+  "bundle_under_100mb": true,
+  "backend_inference": false,
+  "external_llm_runtime": false,
+  "hosted_vector_store": false
+}

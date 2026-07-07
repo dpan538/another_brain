@@ -1,4 +1,5 @@
 import { normalizeTrustLevel, validateEvidencePacket } from "./retrieval_schema.ts";
+import { evidenceGuardMetadata, guardEvidenceRecords } from "../security/evidence_injection_guard.ts";
 
 const MALICIOUS_EVIDENCE_MARKERS = [
   "ignore previous instructions",
@@ -25,10 +26,7 @@ export function normalizeEvidenceItem(item, index = 0) {
 }
 
 export function evidenceContainsInstructionInjection(evidence) {
-  return (evidence || []).some((item) => {
-    const text = `${item.title || ""}\n${item.text || ""}`.toLowerCase();
-    return MALICIOUS_EVIDENCE_MARKERS.some((marker) => text.includes(marker));
-  });
+  return guardEvidenceRecords(evidence || []).rejected_count > 0;
 }
 
 export function evidenceHasConflict(evidence) {
@@ -64,8 +62,23 @@ export function classifyEvidence(query, evidence) {
 }
 
 export function createEvidencePacket({ query, retrievedEvidence = [], statePacket = null }) {
-  const evidence = retrievedEvidence.map((item, index) => normalizeEvidenceItem(item, index));
-  const classification = classifyEvidence(query, evidence);
+  const rawGuard = guardEvidenceRecords(retrievedEvidence);
+  const normalizedEvidence = rawGuard.safe_evidence.map((item, index) => normalizeEvidenceItem(item, index));
+  const normalizedGuard = guardEvidenceRecords(normalizedEvidence);
+  const guard = {
+    ...normalizedGuard,
+    rejected_count: rawGuard.rejected_count + normalizedGuard.rejected_count,
+    rejected_evidence: [...rawGuard.rejected_evidence, ...normalizedGuard.rejected_evidence],
+    failures: Array.from(new Set([...rawGuard.failures, ...normalizedGuard.failures])),
+    warnings: Array.from(new Set([...rawGuard.warnings, ...normalizedGuard.warnings])),
+    forced_refusal: (rawGuard.forced_refusal && normalizedEvidence.length === 0) || normalizedGuard.forced_refusal,
+    malicious_evidence_ignored: rawGuard.malicious_evidence_ignored || normalizedGuard.malicious_evidence_ignored,
+    hidden_prompt_disclosure_rejected: rawGuard.hidden_prompt_disclosure_rejected || normalizedGuard.hidden_prompt_disclosure_rejected
+  };
+  const evidence = guard.safe_evidence;
+  const classification = guard.forced_refusal
+    ? { evidence_status: "insufficient", answer_policy_hint: "refuse" }
+    : classifyEvidence(query, evidence);
   const packet = {
     query: String(query || ""),
     retrieved_evidence: evidence,
@@ -75,7 +88,8 @@ export function createEvidencePacket({ query, retrievedEvidence = [], statePacke
     same_origin_only: true,
     backend_retrieval: false,
     hosted_vector_store: false,
-    external_storage_runtime: false
+    external_storage_runtime: false,
+    security_guard: evidenceGuardMetadata(guard)
   };
   if (statePacket) packet.state_packet = statePacket;
   const validation = validateEvidencePacket(packet);

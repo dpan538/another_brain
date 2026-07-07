@@ -7,6 +7,8 @@ import {
 } from "./context_adapter.ts";
 import { buildRetrievalPacket, buildStatePacket } from "./rag_packet.ts";
 import { finalizeDraft, verifyDraft } from "./verifier_adapter.ts";
+import { buildSecurityBlockedResult, sanitizeInputForLocalRuntime } from "./security/input_sanitizer.ts";
+import { validateStaticSecurityPolicy } from "./security/static_security_policy.ts";
 
 export class SyntheticTinyRuntime {
   constructor(options = {}) {
@@ -95,25 +97,66 @@ function buildDecoderPrompt(input, evidencePacket) {
 
 export async function runChatPipeline(input, options = {}) {
   const contextPackets = options.contextPackets || options.adapterPackets || [];
-  const statePacket = applyImportedStatePackets(buildStatePacket(input, options), contextPackets);
+  const policyGuard = validateStaticSecurityPolicy(options.deliveryConfig || options.staticSecurityConfig || options);
+  const inputGuard = sanitizeInputForLocalRuntime(input, options.security || {});
+  const safeInput = inputGuard.sanitized_input;
+  const blockedReason = !policyGuard.ok
+    ? policyGuard.failures[0]
+    : (!inputGuard.ok ? inputGuard.failures[0] : null);
+  if (blockedReason) {
+    const statePacket = buildStatePacket("", options);
+    statePacket.security_guard = { policy: policyGuard, input: inputGuard };
+    const verifierResult = buildSecurityBlockedResult(blockedReason, {
+      policy: policyGuard,
+      input: inputGuard
+    });
+    const fallback = buildFallbackAnswer("", blockedReason);
+    const answerSurfaceRequest = buildAnswerSurfaceRequest({
+      input: inputGuard.redacted_input,
+      statePacket,
+      evidencePacket: null,
+      contextPackets: []
+    });
+    return {
+      input: inputGuard.redacted_input,
+      state_packet: statePacket,
+      evidence_packet: null,
+      retrieved_evidence: [],
+      decoder_draft: "",
+      verifier_result: verifierResult,
+      ...fallback,
+      security_guard: { policy: policyGuard, input: inputGuard },
+      adapter_context_summary: buildAdapterContextSummary([]),
+      answer_surface_request: answerSurfaceRequest,
+      answer_surface_response: buildAnswerSurfaceResponse({
+        finalAnswer: fallback.final_answer,
+        requestPacket: answerSurfaceRequest,
+        evidencePacket: null
+      })
+    };
+  }
+
+  const statePacket = applyImportedStatePackets(buildStatePacket(safeInput, options), contextPackets);
+  statePacket.security_guard = { policy: policyGuard, input: inputGuard };
   const runtime = options.runtime || new SyntheticTinyRuntime({ mode: statePacket.mode });
   let evidencePacket = null;
   let answerSurfaceRequest = null;
   try {
-    evidencePacket = options.evidencePacket || await buildRetrievalPacket(input, statePacket, { ...options, contextPackets });
-    answerSurfaceRequest = buildAnswerSurfaceRequest({ input, statePacket, evidencePacket, contextPackets });
-    const generation = await runGenerationLoop(runtime, buildDecoderPrompt(input, evidencePacket), options);
+    evidencePacket = options.evidencePacket || await buildRetrievalPacket(safeInput, statePacket, { ...options, contextPackets });
+    answerSurfaceRequest = buildAnswerSurfaceRequest({ input: safeInput, statePacket, evidencePacket, contextPackets });
+    const generation = await runGenerationLoop(runtime, buildDecoderPrompt(safeInput, evidencePacket), options);
     const verifierResult = verifyDraft(generation.draft, { ...options, evidencePacket });
     if (!verifierResult.passed) {
       const fallback = buildFallbackAnswer(input, verifierResult.failures[0] || "verification_failed");
       return {
-        input,
+        input: safeInput,
         state_packet: statePacket,
         evidence_packet: evidencePacket,
         retrieved_evidence: evidencePacket.retrieved_evidence,
         decoder_draft: generation.draft,
         verifier_result: verifierResult,
         ...fallback,
+        security_guard: { policy: policyGuard, input: inputGuard, evidence: evidencePacket.security_guard },
         adapter_context_summary: buildAdapterContextSummary(contextPackets),
         answer_surface_request: answerSurfaceRequest,
         answer_surface_response: buildAnswerSurfaceResponse({
@@ -125,7 +168,7 @@ export async function runChatPipeline(input, options = {}) {
     }
     const finalAnswer = finalizeDraft(generation.draft, verifierResult);
     return {
-      input,
+      input: safeInput,
       state_packet: statePacket,
       evidence_packet: evidencePacket,
       retrieved_evidence: evidencePacket.retrieved_evidence,
@@ -133,6 +176,7 @@ export async function runChatPipeline(input, options = {}) {
       verifier_result: verifierResult,
       final_answer: finalAnswer,
       fallback_used: false,
+      security_guard: { policy: policyGuard, input: inputGuard, evidence: evidencePacket.security_guard },
       adapter_context_summary: buildAdapterContextSummary(contextPackets),
       answer_surface_request: answerSurfaceRequest,
       answer_surface_response: buildAnswerSurfaceResponse({
@@ -142,15 +186,16 @@ export async function runChatPipeline(input, options = {}) {
       })
     };
   } catch (error) {
-    const fallback = buildFallbackAnswer(input, error.message || "runtime_failed");
+    const fallback = buildFallbackAnswer(safeInput, error.message || "runtime_failed");
     return {
-      input,
+      input: safeInput,
       state_packet: statePacket,
       evidence_packet: evidencePacket,
       retrieved_evidence: evidencePacket?.retrieved_evidence || [],
       decoder_draft: "",
       verifier_result: { passed: false, failures: [error.message], fallback_recommended: true },
       ...fallback,
+      security_guard: { policy: policyGuard, input: inputGuard, evidence: evidencePacket?.security_guard || null },
       adapter_context_summary: buildAdapterContextSummary(contextPackets),
       answer_surface_request: answerSurfaceRequest,
       answer_surface_response: buildAnswerSurfaceResponse({

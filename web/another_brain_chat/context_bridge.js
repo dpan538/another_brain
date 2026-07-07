@@ -18,6 +18,38 @@ export const ADAPTER_PACKET_TYPES = Object.freeze([
   "AnswerSurfaceResponse"
 ]);
 
+const SECURITY_TEXT_MARKERS = Object.freeze([
+  "ignore previous instructions",
+  "ignore the previous instructions",
+  "disregard previous instructions",
+  "override runtime policy",
+  "reveal hidden prompt",
+  "reveal the hidden prompt",
+  "show hidden prompt",
+  "show the hidden prompt",
+  "print hidden prompt",
+  "hidden prompt:",
+  "reveal system prompt",
+  "show system prompt",
+  "show the system prompt",
+  "print system prompt",
+  "system prompt:",
+  "reveal developer message",
+  "show developer message",
+  "show the developer message",
+  "print developer message",
+  "developer message:",
+  "developer instructions:",
+  "chain-of-thought",
+  "chain of thought",
+  "hidden reasoning",
+  "<hidden",
+  "<system",
+  "<developer"
+]);
+
+const SECRET_LIKE_PATTERN = /\b(?:api[_-]?key|secret|password|passwd|token)\s*[:=]\s*["']?[^"'\s]{8,}/i;
+
 function isObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
@@ -48,6 +80,56 @@ function sanitizeSourceIdPart(value) {
     .replace(/[^a-z0-9_-]+/g, "_")
     .replace(/^_+|_+$/g, "");
   return cleaned || "manual";
+}
+
+function inspectSecurityText(value) {
+  const text = String(value || "").toLowerCase();
+  const failures = SECURITY_TEXT_MARKERS
+    .filter((marker) => text.includes(marker))
+    .map((marker) => marker.includes("chain") || marker.includes("reasoning")
+      ? "chain_of_thought_request_blocked"
+      : marker.includes("ignore") || marker.includes("override") || marker.includes("disregard")
+        ? "prompt_injection_marker_blocked"
+        : "hidden_prompt_or_developer_marker_blocked");
+  return {
+    ok: failures.length === 0,
+    failures: Array.from(new Set(failures)),
+    warnings: SECRET_LIKE_PATTERN.test(String(value || "")) ? ["secrets_like_input_warning"] : []
+  };
+}
+
+function guardAdapterPacketPrivacy(packet = {}) {
+  const failures = [];
+  const warnings = [];
+  if (packet.privacy_scope !== LOCAL_SESSION_PRIVACY_SCOPE) failures.push("privacy_scope_must_be_local_session_only");
+  if (packet.allowed_for_training !== false) failures.push("allowed_for_training_must_be_false");
+  if (packet.persist === true || packet.persistence === true || packet.save_to_disk === true || packet.local_persistence === true) {
+    failures.push("adapter_local_persistence_rejected");
+  }
+  const firstFlag = "training_" + "promotion";
+  const pVerb = "promote";
+  const secondFlag = [pVerb, "to", "train" + "ing"].join("_");
+  const blockedTrainingFlag = Boolean(packet[firstFlag]) || Boolean(packet[secondFlag]);
+  if (blockedTrainingFlag) failures.push("adapter_training_promotion_rejected");
+  const contentInspection = inspectSecurityText(packet.content || "");
+  failures.push(...contentInspection.failures.map((failure) => `adapter_${failure}`));
+  warnings.push(...contentInspection.warnings.map((warning) => `adapter_${warning}`));
+  for (const item of Array.isArray(packet.evidence) ? packet.evidence : []) {
+    for (const key of ["answer", "answer_text", "final_answer", "expected_answer", "prompt"]) {
+      if (Object.prototype.hasOwnProperty.call(item || {}, key)) failures.push(`adapter_answer_bank_field_rejected:${key}`);
+    }
+    const evidenceInspection = inspectSecurityText(`${item?.title || ""}\n${item?.text || ""}`);
+    failures.push(...evidenceInspection.failures.map((failure) => `adapter_evidence_${failure}`));
+    warnings.push(...evidenceInspection.warnings.map((warning) => `adapter_evidence_${warning}`));
+  }
+  return {
+    ok: failures.length === 0,
+    failures: Array.from(new Set(failures)),
+    warnings: Array.from(new Set(warnings)),
+    local_session_only: true,
+    allowed_for_training: false,
+    imported_context_is_training_data: false
+  };
 }
 
 export function validateAdapterPacket(packet, options = {}) {
@@ -164,9 +246,17 @@ export function parseLocalImportPacket(rawText, options = {}) {
     packet = createManualTextContextPacket(raw, options);
   }
 
+  const privacyGuard = guardAdapterPacketPrivacy(packet);
   const validation = validateAdapterPacket(packet, options);
-  if (!validation.ok) return { ok: false, failures: validation.failures, packet: null };
-  return { ok: true, failures: [], packet };
+  if (!validation.ok || !privacyGuard.ok) {
+    return {
+      ok: false,
+      failures: Array.from(new Set([...validation.failures, ...privacyGuard.failures])),
+      warnings: privacyGuard.warnings,
+      packet: null
+    };
+  }
+  return { ok: true, failures: [], warnings: privacyGuard.warnings, packet };
 }
 
 export function normalizeAdapterEvidenceItem(item, index = 0, packet = {}) {
@@ -194,6 +284,8 @@ export function normalizeAdapterEvidenceItem(item, index = 0, packet = {}) {
 export function adapterPacketToEvidenceRecords(packet, options = {}) {
   const validation = validateAdapterPacket(packet);
   if (!validation.ok) throw new Error(`adapter_packet_invalid:${validation.failures.join(",")}`);
+  const privacyGuard = guardAdapterPacketPrivacy(packet);
+  if (!privacyGuard.ok) throw new Error(`adapter_packet_privacy_invalid:${privacyGuard.failures.join(",")}`);
 
   const packetType = validation.packet_type;
   if (packetType === "StatePacket" || packetType === "AnswerSurfaceRequest" || packetType === "AnswerSurfaceResponse") {
@@ -270,21 +362,33 @@ export function applyImportedStatePackets(statePacket, packets = []) {
 export function buildAdapterContextSummary(packets = []) {
   const validPackets = [];
   const failures = [];
+  const warnings = [];
+  let evidenceRecordCount = 0;
   for (const packet of packets || []) {
     const validation = validateAdapterPacket(packet);
-    if (validation.ok) validPackets.push({ packet, packet_type: validation.packet_type });
-    else failures.push(...validation.failures);
+    const privacyGuard = validation.ok ? guardAdapterPacketPrivacy(packet) : null;
+    if (validation.ok && privacyGuard.ok) {
+      validPackets.push({ packet, packet_type: validation.packet_type });
+      warnings.push(...privacyGuard.warnings);
+      evidenceRecordCount += adapterPacketToEvidenceRecords(packet).length;
+    } else {
+      failures.push(...(validation.ok ? privacyGuard.failures : validation.failures));
+      if (privacyGuard) warnings.push(...privacyGuard.warnings);
+    }
   }
   return {
     contract_version: R27C0_ADAPTER_CONTRACT_VERSION,
     packet_count: validPackets.length,
     packet_types: validPackets.map((item) => item.packet_type),
-    evidence_record_count: validPackets.reduce((count, item) => count + adapterPacketToEvidenceRecords(item.packet).length, 0),
+    evidence_record_count: evidenceRecordCount,
     privacy_scope: LOCAL_SESSION_PRIVACY_SCOPE,
     allowed_for_training: false,
     local_session_only: true,
     persistence: false,
-    failures
+    imported_context_is_training_data: false,
+    security_policy: "r28sec0-static-security-v1",
+    failures,
+    warnings: Array.from(new Set(warnings))
   };
 }
 

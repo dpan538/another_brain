@@ -2,6 +2,8 @@ export const R27C0_ADAPTER_CONTRACT_VERSION = "r27c0-adapter-packets-v1";
 export const LOCAL_SESSION_PRIVACY_SCOPE = "local_session_only";
 export const MAX_ADAPTER_CONTENT_CHARS = 64000;
 
+import { guardAdapterPacketPrivacy } from "./security/adapter_privacy_guard.ts";
+
 export const ADAPTER_SOURCE_TYPES = Object.freeze([
   "manual_text",
   "manual_json",
@@ -214,9 +216,17 @@ export function parseLocalImportPacket(rawText, options = {}) {
     packet = createManualTextContextPacket(raw, options);
   }
 
+  const privacyGuard = guardAdapterPacketPrivacy(packet);
   const validation = validateAdapterPacket(packet, options);
-  if (!validation.ok) return { ok: false, failures: validation.failures, packet: null };
-  return { ok: true, failures: [], packet };
+  if (!validation.ok || !privacyGuard.ok) {
+    return {
+      ok: false,
+      failures: Array.from(new Set([...validation.failures, ...privacyGuard.failures])),
+      warnings: privacyGuard.warnings,
+      packet: null
+    };
+  }
+  return { ok: true, failures: [], warnings: privacyGuard.warnings, packet };
 }
 
 export function normalizeAdapterEvidenceItem(item, index = 0, packet = {}) {
@@ -244,6 +254,8 @@ export function normalizeAdapterEvidenceItem(item, index = 0, packet = {}) {
 export function adapterPacketToEvidenceRecords(packet, options = {}) {
   const validation = validateAdapterPacket(packet);
   if (!validation.ok) throw new Error(`adapter_packet_invalid:${validation.failures.join(",")}`);
+  const privacyGuard = guardAdapterPacketPrivacy(packet);
+  if (!privacyGuard.ok) throw new Error(`adapter_packet_privacy_invalid:${privacyGuard.failures.join(",")}`);
 
   const packetType = validation.packet_type;
   if (packetType === "StatePacket" || packetType === "AnswerSurfaceRequest" || packetType === "AnswerSurfaceResponse") {
@@ -272,7 +284,7 @@ export function adapterPacketToEvidenceRecords(packet, options = {}) {
     });
   }
 
-  for (const [index, item] of packet.evidence.entries()) {
+  for (const [index, item] of privacyGuard.evidence_guard.safe_evidence.entries()) {
     const normalized = normalizeAdapterEvidenceItem(item, index, packet);
     if (normalized.text.trim()) records.push(normalized);
   }
@@ -322,21 +334,33 @@ export function applyImportedStatePackets(statePacket, packets = []) {
 export function buildAdapterContextSummary(packets = []) {
   const validPackets = [];
   const failures = [];
+  const warnings = [];
+  let evidenceRecordCount = 0;
   for (const packet of packets || []) {
     const validation = validateAdapterPacket(packet);
-    if (validation.ok) validPackets.push({ packet, packet_type: validation.packet_type });
-    else failures.push(...validation.failures);
+    const privacyGuard = validation.ok ? guardAdapterPacketPrivacy(packet) : null;
+    if (validation.ok && privacyGuard.ok) {
+      validPackets.push({ packet, packet_type: validation.packet_type });
+      warnings.push(...privacyGuard.warnings);
+      evidenceRecordCount += adapterPacketToEvidenceRecords(packet).length;
+    } else {
+      failures.push(...(validation.ok ? privacyGuard.failures : validation.failures));
+      if (privacyGuard) warnings.push(...privacyGuard.warnings);
+    }
   }
   return {
     contract_version: R27C0_ADAPTER_CONTRACT_VERSION,
     packet_count: validPackets.length,
     packet_types: validPackets.map((item) => item.packet_type),
-    evidence_record_count: validPackets.reduce((count, item) => count + adapterPacketToEvidenceRecords(item.packet).length, 0),
+    evidence_record_count: evidenceRecordCount,
     privacy_scope: LOCAL_SESSION_PRIVACY_SCOPE,
     allowed_for_training: false,
     local_session_only: true,
     persistence: false,
-    failures
+    imported_context_is_training_data: false,
+    security_policy: "r28sec0-static-security-v1",
+    failures,
+    warnings: Array.from(new Set(warnings))
   };
 }
 
