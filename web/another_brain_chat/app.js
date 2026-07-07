@@ -1,16 +1,18 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix2-nonblocking-selfcheck";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix2-nonblocking-selfcheck";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix3-q4-asset-path-fix";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix3-q4-asset-path-fix";
 
-const R28HOTFIX2_UI_VERSION = "r28hotfix2-nonblocking-selfcheck";
-const R28HOTFIX2_BUILD_MARKER = "R28HOTFIX2";
-const R28HOTFIX1_UI_VERSION = R28HOTFIX2_UI_VERSION;
-const R28HOTFIX1_BUILD_MARKER = R28HOTFIX2_BUILD_MARKER;
+const R28HOTFIX3_UI_VERSION = "r28hotfix3-q4-asset-path-fix";
+const R28HOTFIX3_BUILD_MARKER = "R28HOTFIX3";
+const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
+const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
+const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
+const R28HOTFIX1_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 
 const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_demo",
-  prelaunch_stage: "r28hotfix2",
+  prelaunch_stage: "r28hotfix3",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -292,7 +294,7 @@ function renderContextBridge(result = null) {
 async function loadDeliveryConfig() {
   if (!globalThis.location?.href) return DEFAULT_DELIVERY_CONFIG;
   const base = new URL(globalThis.location.href);
-  const url = new URL("../another_brain/runtime_mode.json", base);
+  const url = new URL("/another_brain/runtime_mode.json", base);
   if (url.origin !== base.origin) throw new Error("non_same_origin_runtime_mode_rejected");
   const response = await fetch(url.href);
   if (!response.ok) throw new Error(`runtime_mode_fetch_failed:${response.status}`);
@@ -357,7 +359,14 @@ function renderSelfCheck(report = null) {
   const manifestStatus = report.assets?.manifest_loaded ? "pass" : isChecking ? "checking" : "fail";
   const shardStatus = report.assets?.shards_verified ? "pass" : isChecking ? "checking" : "fail";
   const tokenizerStatus = report.tokenizer?.exact_runtime_tokenizer ? "pass" : isChecking ? "checking" : "fail";
-  setText(selfCheckAssets, `manifest=${manifestStatus} / q4 shards=${shardStatus} ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}`);
+  const normalizedShardPaths = Array.isArray(report.assets?.normalized_shard_paths) ? report.assets.normalized_shard_paths : [];
+  const failingShardPaths = Array.isArray(report.assets?.failing_shard_paths) ? report.assets.failing_shard_paths : [];
+  const pathHint = failingShardPaths.length
+    ? ` / failing=${failingShardPaths.slice(0, 2).join(", ")}`
+    : normalizedShardPaths.length
+      ? ` / path=${normalizedShardPaths[0]}`
+      : "";
+  setText(selfCheckAssets, `manifest=${manifestStatus} / q4 shards=${shardStatus} ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}${pathHint}`);
   setText(selfCheckTokenizer, `exact tokenizer=${tokenizerStatus}`);
   setText(selfCheckQ4, `${report.q4_forward?.status || "失败"} / q4_forward_ran=${boolText(report.q4_forward?.q4_forward_ran)}`);
   setText(selfCheckTokens, String(report.q4_forward?.tokens_generated || 0));

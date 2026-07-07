@@ -10,8 +10,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28hotfix1" / "reports" / "route_loop_audit.json"
-VERSION = "r28hotfix2-nonblocking-selfcheck"
-BUILD_MARKERS = ("R28HOTFIX1", "R28HOTFIX2")
+VERSION = "r28hotfix3-q4-asset-path-fix"
+BUILD_MARKERS = ("R28HOTFIX1", "R28HOTFIX2", "R28HOTFIX3")
 MARKERS = ("过程摘要", "static_q4_experimental", "exact_runtime_tokenizer", "检查本地模型路径")
 ENTRY_FILES = {
     "/": WEB / "index.html",

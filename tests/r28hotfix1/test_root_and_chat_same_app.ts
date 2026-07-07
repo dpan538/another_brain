@@ -8,6 +8,6 @@ test("root and chat entries serve the same app shell", async () => {
   const slash = await readFile(new URL("../../web/another_brain_chat/index.html", import.meta.url), "utf8");
   assert.equal(root, slash);
   assert.equal(noSlash, slash);
-  assert.ok(root.includes('src="/another_brain_chat/app.js?v=r28hotfix2-nonblocking-selfcheck"'));
-  assert.ok(root.includes('href="/another_brain_chat/styles.css?v=r28hotfix2-nonblocking-selfcheck"'));
+  assert.ok(root.includes('src="/another_brain_chat/app.js?v=r28hotfix2-nonblocking-selfcheck"') || root.includes('src="/another_brain_chat/app.js?v=r28hotfix3-q4-asset-path-fix"'));
+  assert.ok(root.includes('href="/another_brain_chat/styles.css?v=r28hotfix2-nonblocking-selfcheck"') || root.includes('href="/another_brain_chat/styles.css?v=r28hotfix3-q4-asset-path-fix"'));
 });

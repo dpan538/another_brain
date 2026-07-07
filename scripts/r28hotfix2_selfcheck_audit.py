@@ -21,7 +21,8 @@ def main() -> int:
         "button_bound": 'on(modelSelfCheckButton, "click"' in app,
         "stop_button_bound": 'on(modelSelfCheckStopButton, "click"' in app,
         "boot_uses_quick_check": "runtime.quickSelfCheckModelPath" in app and "runtime.selfCheckModelPath();" not in app,
-        "deep_check_uses_worker": 'new Worker(new URL("./self_check_worker.js?v=r28hotfix2-nonblocking-selfcheck"' in runtime,
+        "deep_check_uses_worker": 'new Worker(new URL("./self_check_worker.js?v=r28hotfix2-nonblocking-selfcheck"' in runtime
+        or 'new Worker(new URL("./self_check_worker.js?v=r28hotfix3-q4-asset-path-fix"' in runtime,
         "worker_runs_q4_smoke": "generateStaticQ4Draft" in worker and "q4_smoke" in worker,
         "timeout_present": "self_check_timeout" in runtime and "timeoutMs: 8000" in app,
         "abort_present": "AbortController" in app and "cancelSelfCheck" in runtime,

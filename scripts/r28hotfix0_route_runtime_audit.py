@@ -11,8 +11,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28hotfix0" / "reports" / "route_runtime_audit.json"
-ACCEPTED_VERSIONS = ("r28hotfix0-runtime-ui-activation", "r28hotfix1-route-loop-free-runtime", "r28hotfix2-nonblocking-selfcheck")
-ACCEPTED_MARKERS = ("R28HOTFIX0", "R28HOTFIX1", "R28HOTFIX2")
+ACCEPTED_VERSIONS = ("r28hotfix0-runtime-ui-activation", "r28hotfix1-route-loop-free-runtime", "r28hotfix2-nonblocking-selfcheck", "r28hotfix3-q4-asset-path-fix")
+ACCEPTED_MARKERS = ("R28HOTFIX0", "R28HOTFIX1", "R28HOTFIX2", "R28HOTFIX3")
 
 
 def read(path: Path) -> str:

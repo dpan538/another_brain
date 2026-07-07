@@ -9,8 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28hotfix1" / "reports" / "static_route_smoke.json"
-VERSION = "r28hotfix2-nonblocking-selfcheck"
-ACCEPTED_MARKERS = ("R28HOTFIX1", "R28HOTFIX2")
+VERSION = "r28hotfix3-q4-asset-path-fix"
+ACCEPTED_MARKERS = ("R28HOTFIX1", "R28HOTFIX2", "R28HOTFIX3")
 
 ROUTE_TO_FILE = {
     "/": WEB / "index.html",

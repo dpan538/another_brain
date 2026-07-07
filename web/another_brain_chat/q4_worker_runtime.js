@@ -1,5 +1,6 @@
-const R28HOTFIX2_Q4_RUNTIME_VERSION = "r28hotfix2-nonblocking-selfcheck";
+const R28HOTFIX2_Q4_RUNTIME_VERSION = "r28hotfix3-q4-asset-path-fix";
 const R28HOTFIX1_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
+const R28HOTFIX3_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
 const PAIR_SEPARATOR = "\u0001";
 const BYTE_ENCODER = new Map();
 const BYTE_DECODER = new Map();
@@ -15,8 +16,34 @@ function originRoot() {
   return new URL("/", location.href);
 }
 
+function decodeURIComponentSafe(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+function normalizeBrowserAssetPath(value) {
+  if (!value || typeof value !== "string") throw new Error("missing_asset_path");
+  let path = value.trim().replace(/\\/g, "/");
+  if (!path) throw new Error("missing_asset_path");
+  if (path.startsWith("/" + "/") || /^[a-z][a-z0-9+.-]*:/i.test(path)) throw new Error("external_asset_url_rejected");
+  if (path.startsWith("web/another_brain/")) path = path.slice("web/".length);
+  if (path.startsWith("./")) throw new Error("relative_asset_base_missing");
+  if (path.startsWith("another_brain/")) path = `/${path}`;
+  path = path.replace(/\/{2,}/g, "/");
+  const segments = path.split("/").filter(Boolean);
+  if (segments.some((part) => part === "." || part === ".." || decodeURIComponentSafe(part) === "..")) {
+    throw new Error("path_traversal_rejected");
+  }
+  if (!path.startsWith("/another_brain/")) throw new Error(`asset_path_not_public_another_brain:${value}`);
+  if (path.includes("/artifacts/") || path.includes("/data/public_ingestion/")) throw new Error("forbidden_asset_path_rejected");
+  return path;
+}
+
 function assetUrl(path) {
-  const url = new URL(String(path || "").replace(/^\/+/, ""), originRoot());
+  const url = new URL(normalizeBrowserAssetPath(path), originRoot());
   if (url.origin !== location.origin) throw new Error(`non_same_origin_asset_rejected:${path}`);
   return url.href;
 }

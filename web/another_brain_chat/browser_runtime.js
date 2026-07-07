@@ -31,10 +31,11 @@ const ROUTER_NON_CLAIMS = [
   "no Doubao",
   "hard router is product-surface guard only"
 ];
-const R28HOTFIX2_UI_VERSION = "r28hotfix2-nonblocking-selfcheck";
-const R28HOTFIX1_UI_VERSION = R28HOTFIX2_UI_VERSION;
-const R28UX4_UI_VERSION = R28HOTFIX2_UI_VERSION;
-const R28UX4_ASSET_CACHE_KEY = "another_brain_r28hotfix2_asset_cache_version";
+const R28HOTFIX3_UI_VERSION = "r28hotfix3-q4-asset-path-fix";
+const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
+const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
+const R28UX4_UI_VERSION = R28HOTFIX3_UI_VERSION;
+const R28UX4_ASSET_CACHE_KEY = "another_brain_r28hotfix3_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
 const IDENTITY_ROUTE = "identity_boundary";
 const IDENTITY_ANSWER = "我是鳄鱼。更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。";
@@ -408,7 +409,51 @@ function buildProcessTrace({
 
 function baseUrlForAssets() {
   if (!globalThis.location?.href) throw new Error("browser_location_unavailable");
-  return new URL(globalThis.location.href);
+  return new URL("/", globalThis.location.href);
+}
+
+function decodeURIComponentSafe(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+function normalizeBrowserAssetPath(value, options = {}) {
+  if (!value || typeof value !== "string") throw new Error("missing_asset_path");
+  const raw = value.trim();
+  if (!raw) throw new Error("missing_asset_path");
+  if (raw.startsWith("/" + "/") || /^[a-z][a-z0-9+.-]*:/i.test(raw)) throw new Error("external_asset_url_rejected");
+  let path = raw.replace(/\\/g, "/");
+  const basePath = options.basePath ? normalizeBrowserAssetPath(options.basePath) : "";
+  if (path.startsWith("web/another_brain/")) path = path.slice("web/".length);
+  if (path.startsWith("./")) {
+    if (!basePath) throw new Error("relative_asset_base_missing");
+    path = `${basePath.replace(/\/+$/, "")}/${path.slice(2)}`;
+  } else if (!path.startsWith("/") && !path.startsWith("another_brain/")) {
+    if (basePath) path = `${basePath.replace(/\/+$/, "")}/${path}`;
+  }
+  if (path.startsWith("another_brain/")) path = `/${path}`;
+  path = path.replace(/\/{2,}/g, "/");
+  const segments = path.split("/").filter(Boolean);
+  if (segments.some((part) => part === "." || part === ".." || decodeURIComponentSafe(part) === "..")) {
+    throw new Error("path_traversal_rejected");
+  }
+  if (!path.startsWith("/another_brain/")) throw new Error(`asset_path_not_public_another_brain:${raw}`);
+  if (path.includes("/artifacts/") || path.startsWith("/artifacts/")) throw new Error("artifact_path_rejected");
+  if (path.includes("/data/public_ingestion/") || path.startsWith("/data/public_ingestion/")) {
+    throw new Error("public_ingestion_path_rejected");
+  }
+  return path;
+}
+
+function sameOriginAssetUrl(path, options = {}) {
+  const base = baseUrlForAssets();
+  const normalizedPath = normalizeBrowserAssetPath(path, options);
+  const url = new URL(normalizedPath, base);
+  if (url.origin !== base.origin) throw new Error(`non_same_origin_asset_rejected:${path}`);
+  return url;
 }
 
 function timeoutSignal(timeoutMs = 1000, signal = null) {
@@ -422,13 +467,11 @@ function timeoutSignal(timeoutMs = 1000, signal = null) {
 }
 
 async function fetchJsonSameOrigin(path, options = {}) {
-  const base = baseUrlForAssets();
-  const url = new URL(path, base);
-  if (url.origin !== base.origin) throw new Error("non_same_origin_asset_rejected");
+  const url = sameOriginAssetUrl(path, options);
   const timed = timeoutSignal(options.timeoutMs || 1000, options.signal);
   try {
     const response = await fetch(url.href, { signal: timed.signal, cache: options.cache || "force-cache" });
-    if (!response.ok) throw new Error(`fetch_failed:${path}:${response.status}`);
+    if (!response.ok) throw new Error(`fetch_failed:${url.pathname}:${response.status}`);
     return response.json();
   } finally {
     timed.clear();
@@ -436,9 +479,7 @@ async function fetchJsonSameOrigin(path, options = {}) {
 }
 
 async function probeSameOriginAsset(path, options = {}) {
-  const base = baseUrlForAssets();
-  const url = new URL(`../${path}`, base);
-  if (url.origin !== base.origin) throw new Error(`non_same_origin_asset_rejected:${path}`);
+  const url = sameOriginAssetUrl(path, options);
   const timed = timeoutSignal(options.timeoutMs || 1000, options.signal);
   try {
     let response = await fetch(url.href, { method: "HEAD", cache: "force-cache", signal: timed.signal }).catch(() => null);
@@ -450,8 +491,15 @@ async function probeSameOriginAsset(path, options = {}) {
         signal: timed.signal
       }).catch(() => null);
     }
-    if (!response?.ok) throw new Error(`asset_probe_failed:${path}:${response?.status || 0}`);
-    return true;
+    if (!response?.ok) throw new Error(`asset_probe_failed:${url.pathname}:${response?.status || 0}`);
+    return {
+      ok: true,
+      requested_path: path,
+      normalized_path: url.pathname,
+      normalized_url: url.href,
+      status: response.status,
+      content_length: Number(response.headers?.get?.("content-length") || 0)
+    };
   } finally {
     timed.clear();
   }
@@ -630,7 +678,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28hotfix2-nonblocking-selfcheck", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28hotfix3-q4-asset-path-fix", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -689,7 +737,12 @@ export class BrowserChatRuntime {
         manifest_loaded: partial.assets?.manifest_loaded === true,
         q4_shard_count: Number(partial.assets?.q4_shard_count || 0),
         expected_shard_count: Number(partial.assets?.expected_shard_count || 0),
-        shards_verified: partial.assets?.shards_verified === true
+        shards_verified: partial.assets?.shards_verified === true,
+        normalized_manifest_path: partial.assets?.normalized_manifest_path || "",
+        normalized_quantization_path: partial.assets?.normalized_quantization_path || "",
+        normalized_tokenizer_path: partial.assets?.normalized_tokenizer_path || "",
+        normalized_shard_paths: Array.isArray(partial.assets?.normalized_shard_paths) ? partial.assets.normalized_shard_paths : [],
+        failing_shard_paths: Array.isArray(partial.assets?.failing_shard_paths) ? partial.assets.failing_shard_paths : []
       },
       tokenizer: {
         status: partial.tokenizer?.status || "skipped",
@@ -737,7 +790,7 @@ export class BrowserChatRuntime {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
     const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28hotfix2-nonblocking-selfcheck", import.meta.url), { type: "module" });
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28hotfix3-q4-asset-path-fix", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
@@ -778,7 +831,7 @@ export class BrowserChatRuntime {
       };
       worker.postMessage({
         type: "q4_smoke",
-        prompt: "R28HOTFIX2 q4 path smoke",
+        prompt: "R28HOTFIX3 q4 path smoke",
         maxTokens: 1,
         contextLength: 32,
         timeoutMs
@@ -811,7 +864,7 @@ export class BrowserChatRuntime {
 
     emit("checking_quick", "manifest");
     try {
-      assetManifest = await fetchJsonSameOrigin("../another_brain/asset_manifest.json", { timeoutMs: quickTimeoutMs, signal });
+      assetManifest = await fetchJsonSameOrigin("another_brain/asset_manifest.json", { timeoutMs: quickTimeoutMs, signal });
     } catch (error) {
       blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "asset_manifest_fetch_failed");
     }
@@ -825,12 +878,12 @@ export class BrowserChatRuntime {
         assets: { manifest_loaded: true, q4_shard_count: q4Assets.length, expected_shard_count: Number(assetManifest?.shard_count || 0) }
       });
       try {
-        quantizationManifest = await fetchJsonSameOrigin(`../${quantizationPath}`, { timeoutMs: quickTimeoutMs, signal });
+        quantizationManifest = await fetchJsonSameOrigin(quantizationPath, { timeoutMs: quickTimeoutMs, signal });
       } catch (error) {
         blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "quantization_manifest_fetch_failed");
       }
       try {
-        tokenizer = await fetchJsonSameOrigin(`../${tokenizerPath}`, { timeoutMs: quickTimeoutMs, signal });
+        tokenizer = await fetchJsonSameOrigin(tokenizerPath, { timeoutMs: quickTimeoutMs, signal });
       } catch (error) {
         blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "runtime_tokenizer_fetch_failed");
       }
@@ -843,10 +896,22 @@ export class BrowserChatRuntime {
       });
       shardResults = await Promise.all(q4Assets.map(async (item) => {
         try {
-          await probeSameOriginAsset(item.path, { timeoutMs: quickTimeoutMs, signal });
-          return { path: item.path, ok: true, bytes: Number(item.bytes || 0) };
+          const probe = await probeSameOriginAsset(item.path, { timeoutMs: quickTimeoutMs, signal });
+          return { path: item.path, ok: true, bytes: Number(item.bytes || 0), ...probe };
         } catch (error) {
-          return { path: item.path, ok: false, blocker: signal.aborted ? "self_check_cancelled" : error.message || "asset_probe_failed", bytes: Number(item.bytes || 0) };
+          let normalizedPath = "";
+          try {
+            normalizedPath = sameOriginAssetUrl(item.path).pathname;
+          } catch {
+            normalizedPath = item.path;
+          }
+          return {
+            path: item.path,
+            normalized_path: normalizedPath,
+            ok: false,
+            blocker: signal.aborted ? "self_check_cancelled" : error.message || `asset_probe_failed:${normalizedPath}:0`,
+            bytes: Number(item.bytes || 0)
+          };
         }
       }));
       for (const result of shardResults.filter((item) => !item.ok).slice(0, 3)) {
@@ -929,7 +994,12 @@ export class BrowserChatRuntime {
         q4_shard_count: q4Assets.length,
         expected_shard_count: Number(quantizationManifest?.shard_count || assetManifest?.shard_count || 0),
         shards_verified: shardsVerified,
-        total_model_asset_bytes: Number(assetManifest?.total_model_asset_bytes || 0)
+        total_model_asset_bytes: Number(assetManifest?.total_model_asset_bytes || 0),
+        normalized_manifest_path: assetManifest ? sameOriginAssetUrl("another_brain/asset_manifest.json").pathname : "",
+        normalized_quantization_path: assetManifest ? sameOriginAssetUrl(quantizationPath).pathname : "",
+        normalized_tokenizer_path: assetManifest ? sameOriginAssetUrl(tokenizerPath).pathname : "",
+        normalized_shard_paths: shardResults.map((item) => item.normalized_path || item.path),
+        failing_shard_paths: shardResults.filter((item) => !item.ok).map((item) => item.normalized_path || item.path)
       },
       tokenizer: {
         status: exactTokenizer ? "exact" : "fallback",

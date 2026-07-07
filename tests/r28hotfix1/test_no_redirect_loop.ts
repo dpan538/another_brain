@@ -11,5 +11,5 @@ test("R28HOTFIX1 removes explicit redirect-loop sources", async () => {
   assert.equal(Array.isArray(vercel.redirects) ? vercel.redirects.length : 0, 0);
   assert.equal(/http-equiv=["']refresh/i.test(combined), false);
   assert.equal(/location\.replace|location\.href|history\.replaceState/.test(combined), false);
-  assert.ok(combined.includes("R28HOTFIX1") || combined.includes("R28HOTFIX2"));
+  assert.ok(combined.includes("R28HOTFIX1") || combined.includes("R28HOTFIX2") || combined.includes("R28HOTFIX3"));
 });

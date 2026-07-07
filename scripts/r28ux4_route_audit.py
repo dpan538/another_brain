@@ -11,9 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 WEB_ROOT = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28ux4" / "reports" / "route_audit.json"
 
-ACCEPTED_UI_VERSIONS = ("r28ux4-visible-preview-ui", "r28hotfix0-runtime-ui-activation", "r28hotfix1-route-loop-free-runtime", "r28hotfix2-nonblocking-selfcheck")
+ACCEPTED_UI_VERSIONS = ("r28ux4-visible-preview-ui", "r28hotfix0-runtime-ui-activation", "r28hotfix1-route-loop-free-runtime", "r28hotfix2-nonblocking-selfcheck", "r28hotfix3-q4-asset-path-fix")
 PROCESS_MARKERS = ("过程摘要", "static_q4_experimental", "exact_runtime_tokenizer")
-BUILD_MARKERS = ("R28UX4", "R28HOTFIX0", "R28HOTFIX1", "R28HOTFIX2")
+BUILD_MARKERS = ("R28UX4", "R28HOTFIX0", "R28HOTFIX1", "R28HOTFIX2", "R28HOTFIX3")
 
 
 def read_text(path: Path) -> str:
