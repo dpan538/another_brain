@@ -1,7 +1,7 @@
 {
   "adapter_status": "local_session_import_export_ready",
   "asset_cache_mode": "memory_fallback",
-  "asset_cache_version": "r28hotfix3-q4-asset-path-fix",
+  "asset_cache_version": "r28rout1-fuzzy-intent-surfaces",
   "asset_cache_policy": "same_origin_shards_only",
   "asset_cache_status": "same_origin_static_q4_assets_committed_checksum_required",
   "asset_loader_resilience": "checksum_retry_abort_partial_fallback",
@@ -60,8 +60,8 @@
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
   "total_model_asset_bytes": 48267968,
-  "ui_build_marker": "R28HOTFIX3",
-  "ui_build_timestamp": "2026-07-07T23:10:00+08:00",
+  "ui_build_marker": "R28ROUT1",
+  "ui_build_timestamp": "2026-07-08T00:00:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28hotfix3-q4-asset-path-fix"
+  "ui_version": "r28rout1-fuzzy-intent-surfaces"
 }

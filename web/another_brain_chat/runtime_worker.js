@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28hotfix3-q4-asset-path-fix";
+import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28rout1-fuzzy-intent-surfaces";
 
 function tokensFor(prompt, maxTokens) {
   const parts = [

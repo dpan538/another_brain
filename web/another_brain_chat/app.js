@@ -1,8 +1,8 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix3-q4-asset-path-fix";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix3-q4-asset-path-fix";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28rout1-fuzzy-intent-surfaces";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28rout1-fuzzy-intent-surfaces";
 
-const R28HOTFIX3_UI_VERSION = "r28hotfix3-q4-asset-path-fix";
-const R28HOTFIX3_BUILD_MARKER = "R28HOTFIX3";
+const R28HOTFIX3_UI_VERSION = "r28rout1-fuzzy-intent-surfaces";
+const R28HOTFIX3_BUILD_MARKER = "R28ROUT1";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -12,7 +12,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_demo",
-  prelaunch_stage: "r28hotfix3",
+  prelaunch_stage: "r28rout1",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,

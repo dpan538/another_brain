@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28hotfix3-q4-asset-path-fix";
+import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28rout1-fuzzy-intent-surfaces";
 
 async function handleSelfCheck(message = {}) {
   if (message.type !== "q4_smoke") {
@@ -9,7 +9,7 @@ async function handleSelfCheck(message = {}) {
   try {
     self.postMessage({ type: "progress", stage: "worker_loaded" });
     self.postMessage({ type: "progress", stage: "q4_forward_started" });
-    const generation = await generateStaticQ4Draft(message.prompt || "R28HOTFIX3 q4 path smoke", {
+    const generation = await generateStaticQ4Draft(message.prompt || "R28ROUT1 q4 path smoke", {
       maxTokens: Math.min(Number(message.maxTokens || 1), 1),
       contextLength: Math.min(Number(message.contextLength || 32), 32),
       timeoutMs,

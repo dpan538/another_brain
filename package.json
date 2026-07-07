@@ -428,6 +428,7 @@
     "test:r28tok1": "python3 -m unittest discover -s tests/r28tok1 && node scripts/r28tok1_run_ts_tests.mjs",
     "test:r28gen1": "node scripts/r28gen1_run_ts_tests.mjs",
     "test:r28rout0": "node scripts/r28rout0_run_ts_tests.mjs",
+    "test:r28rout1": "node scripts/r28rout1_run_ts_tests.mjs",
     "test:r28ux3": "node scripts/r28ux3_run_ts_tests.mjs",
     "test:r28ux4": "node scripts/r28ux4_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28ux4 -p 'test_*.py'",
     "test:r28hotfix0": "node scripts/r28hotfix0_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28hotfix0 -p 'test_*.py'",
