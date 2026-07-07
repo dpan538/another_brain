@@ -15,6 +15,20 @@ web/knowledge_base.generated.js
 web/models
 web/vendor
 
+# R28B9 bundle diet: keep local eval/demo harness inputs in the repo, but keep
+# them out of production static upload. The runtime app and /another_brain_chat/
+# acceptance shell do not fetch these files.
+web/context_stress_cases.json
+web/model_inference_cases.json
+web/model_gate.html
+web/model_gate.js
+web/bench.html
+web/bench.js
+web/webgpu_bench.html
+web/webgpu_bench.js
+web/*.map
+web/**/*.map
+
 *.safetensors
 *.gguf
 *.bin
