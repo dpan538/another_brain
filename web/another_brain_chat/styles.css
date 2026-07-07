@@ -334,6 +334,21 @@ button:disabled {
   background: #ffffff;
 }
 
+.composer-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  width: 132px;
+}
+
+.composer-actions button {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 0 12px;
+  font-size: 0.82rem;
+}
+
 textarea {
   width: 100%;
   min-height: 54px;
@@ -452,6 +467,11 @@ button:focus-visible {
 
   .composer {
     grid-template-columns: 1fr;
+  }
+
+  .composer-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
   }
 
   button {

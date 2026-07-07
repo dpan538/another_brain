@@ -153,7 +153,11 @@
         <form class="composer" id="chat-form">
           <label class="sr-only" for="chat-input">Message</label>
           <textarea id="chat-input" name="message" rows="2" placeholder="Ask the local mock shell..." required></textarea>
-          <button type="submit" id="send-button">Send</button>
+          <div class="composer-actions">
+            <button type="submit" id="send-button">Send</button>
+            <button type="button" class="button-secondary" id="abort-button" disabled>Abort</button>
+            <button type="button" class="button-secondary" id="clear-chat-button">Clear chat</button>
+          </div>
         </form>
       </section>
     </main>

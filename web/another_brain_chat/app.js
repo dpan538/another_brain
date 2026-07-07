@@ -58,12 +58,20 @@ const contextImport = document.querySelector("#context-import");
 const contextImportButton = document.querySelector("#context-import-button");
 const contextClearButton = document.querySelector("#context-clear-button");
 const stateExportButton = document.querySelector("#state-export-button");
+const abortButton = document.querySelector("#abort-button");
+const clearChatButton = document.querySelector("#clear-chat-button");
 const contextBridgeStatus = document.querySelector("#context-bridge-status");
 const contextValidation = document.querySelector("#context-validation");
 
 let lastPacket = null;
+let running = false;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
+
+const INITIAL_ASSISTANT_MESSAGE = [
+  "我现在只是一个静态 browser shell：会展示 input/state packet -> local retrieval ->",
+  "browser decoder draft -> verifier/finalizer/fallback 的产品骨架；若 q4 runtime bundle 不可用，会明确显示 fallback reason。"
+].join(" ");
 
 function appendMessage(role, text) {
   const article = document.createElement("article");
@@ -79,6 +87,23 @@ function appendMessage(role, text) {
   article.append(roleNode, body);
   messageList.append(article);
   messageList.scrollTop = messageList.scrollHeight;
+}
+
+function clearConversation() {
+  messageList.textContent = "";
+  appendMessage("assistant", INITIAL_ASSISTANT_MESSAGE);
+  lastPacket = null;
+  stateExportButton.disabled = true;
+  setPipelineStatus("final");
+  updateStatus({
+    retrieved_evidence: [],
+    evidence_packet: { evidence_status: "not_run" },
+    verifier_result: { passed: true },
+    fallback_used: false,
+    runtime_stats: { tokens_generated: 0, runtime_mode: runtime.mode, decode_status: "not checked" },
+    state_packet: { mode: runtime.mode }
+  });
+  renderDebug();
 }
 
 function renderDebug() {
@@ -206,6 +231,7 @@ stateExportButton.addEventListener("click", () => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (running) return;
   const text = input.value.trim();
   if (!text) return;
 
@@ -213,15 +239,29 @@ form.addEventListener("submit", async (event) => {
   input.value = "";
   input.focus();
 
-  const packet = await runtime.run(text, { onStatus: setPipelineStatus });
-  lastPacket = packet;
-  stateExportButton.disabled = false;
-  appendMessage("assistant", packet.final_answer);
-  updateStatus(packet);
-  renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
-  renderDebug();
+  running = true;
+  abortButton.disabled = false;
+  try {
+    const packet = await runtime.run(text, { onStatus: setPipelineStatus });
+    lastPacket = packet;
+    stateExportButton.disabled = false;
+    appendMessage("assistant", packet.final_answer);
+    updateStatus(packet);
+    renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
+    renderDebug();
+  } finally {
+    running = false;
+    abortButton.disabled = true;
+  }
 });
 
 debugToggle.addEventListener("change", renderDebug);
+abortButton.addEventListener("click", () => {
+  runtime.abort();
+  abortButton.disabled = true;
+  setPipelineStatus("fallback");
+  fallbackReasonStatus.textContent = "generation_aborted";
+});
+clearChatButton.addEventListener("click", clearConversation);
 
 boot();

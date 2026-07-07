@@ -5,14 +5,14 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 68981802,
+  "full_bundle_estimate_bytes": 68984504,
   "gate_assets": [
     {
       "bytes": 2686,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "e4502f99db54e33f181c4952b9daf5de999d0762f11194133d5094b313d8cd91"
+      "sha256": "bc5fc3f7edb300b4d2d8f232f9598f28d8886e51dbbd7bdbb9ce05282a80fc6d"
     }
   ],
   "hosted_vector_store": false,

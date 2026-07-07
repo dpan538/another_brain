@@ -103,6 +103,8 @@ export class BrowserChatRuntime {
     this.contextPackets = [];
     this.lastRuntimeStats = null;
     this.lastFallbackReason = "";
+    this.activeReject = null;
+    this.abortRequested = false;
     this.assetStatus = {
       cache_mode: this.capabilities.cache_storage_available ? "cache_storage" : "memory_fallback",
       cache_result: "not_checked",
@@ -130,6 +132,12 @@ export class BrowserChatRuntime {
   }
 
   abort() {
+    this.abortRequested = true;
+    if (this.activeReject) {
+      this.lastFallbackReason = "generation_aborted";
+      this.activeReject(new Error("generation_aborted"));
+      this.activeReject = null;
+    }
     if (this.worker) {
       this.worker.terminate();
       this.worker = null;
@@ -141,20 +149,29 @@ export class BrowserChatRuntime {
   }
 
   async draftWithWorker(input, options = {}) {
+    if (this.abortRequested) throw new Error("generation_aborted");
     if (!this.worker) return syntheticDraft(input, options.maxTokens);
     return new Promise((resolve, reject) => {
       const tokens = [];
-      const timeout = setTimeout(() => reject(new Error("generation_timeout")), options.timeoutMs || 3000);
+      this.activeReject = reject;
+      const finish = (callback) => {
+        clearTimeout(timeout);
+        this.activeReject = null;
+        callback();
+      };
+      const timeout = setTimeout(() => {
+        this.lastFallbackReason = "generation_timeout";
+        this.activeReject = null;
+        reject(new Error("generation_timeout"));
+      }, options.timeoutMs || 3000);
       this.worker.onmessage = (event) => {
         const message = event.data || {};
         if (message.type === "token") tokens.push(message.token);
         if (message.type === "error") {
-          clearTimeout(timeout);
           this.lastFallbackReason = message.fallback_reason || message.error || "worker_generation_failed";
-          reject(new Error(message.error || "worker_generation_failed"));
+          finish(() => reject(new Error(message.error || "worker_generation_failed")));
         }
         if (message.type === "final") {
-          clearTimeout(timeout);
           this.lastRuntimeStats = message.stats || {
             tokens_generated: Array.isArray(message.tokens) ? message.tokens.length : tokens.length,
             runtime_mode: this.mode,
@@ -163,7 +180,7 @@ export class BrowserChatRuntime {
             fallback_used: false
           };
           this.lastFallbackReason = "";
-          resolve(message.draft || tokens.join(" "));
+          finish(() => resolve(message.draft || tokens.join(" ")));
         }
       };
       this.worker.postMessage({
@@ -177,6 +194,7 @@ export class BrowserChatRuntime {
   }
 
   async run(input, hooks = {}) {
+    this.abortRequested = false;
     this.turnIndex += 1;
     const setStatus = typeof hooks.onStatus === "function" ? hooks.onStatus : () => {};
     const statePacket = applyImportedStatePackets(buildStatePacket(input, this.turnIndex, this.mode), this.contextPackets);
@@ -206,6 +224,7 @@ export class BrowserChatRuntime {
     let verifierResult = { passed: false, failures: ["not_run"], fallback_recommended: true };
 
     try {
+      if (this.abortRequested) throw new Error("generation_aborted");
       decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket), { maxTokens: 32, timeoutMs: 3000 });
       setStatus("verifying");
       verifierResult = verifyDraft(decoderDraft, evidencePacket);
@@ -225,6 +244,7 @@ export class BrowserChatRuntime {
       finalAnswer = fallbackAnswer(input, fallbackReason);
       setStatus("fallback");
     }
+    this.abortRequested = false;
 
     const runtimeStats = this.lastRuntimeStats || {
       tokens_generated: 0,
