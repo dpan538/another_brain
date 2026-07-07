@@ -47,6 +47,7 @@ export async function runGenerationLoop(runtime, prompt, options = {}) {
   const maxTokens = Math.min(Math.max(Number(options.maxTokens || 32), 1), Number(options.maxTokenCap || 128));
   const contextLength = Number(options.contextLength || 256);
   const timeoutMs = Number(options.timeoutMs || 3000);
+  const repetitionLimit = Math.max(2, Number(options.repetitionLimit || 6));
   const signal = options.signal;
   const onToken = typeof options.onToken === "function" ? options.onToken : () => {};
   const started = Date.now();
@@ -65,17 +66,26 @@ export async function runGenerationLoop(runtime, prompt, options = {}) {
     if (Date.now() - started > timeoutMs) throw new Error("generation_timeout");
     if (token === previous) repeatCount += 1;
     else repeatCount = 0;
-    if (repeatCount >= 3) break;
+    if (repeatCount >= repetitionLimit) break;
     previous = token;
     tokens.push(token);
-    onToken(token);
+    onToken(token, { token_index: tokens.length - 1 });
     if (tokens.length >= maxTokens) break;
   }
 
+  const runtimeStats = runtime.lastGenerationStats || {};
   return {
     draft: tokens.join(" ").replace(/\s+/g, " ").trim(),
     tokens,
-    finish_reason: tokens.length >= maxTokens ? "max_tokens" : "stop"
+    finish_reason: tokens.length >= maxTokens ? "max_tokens" : "stop",
+    tokens_generated: tokens.length,
+    elapsed_ms: Date.now() - started,
+    runtime_mode: runtime.mode || "unknown",
+    fallback_used: false,
+    decode_status: runtimeStats.decode_status || "",
+    decoded_text_available: runtimeStats.decoded_text_available === true || tokens.join("").trim().length > 0,
+    generated_token_ids: runtimeStats.token_ids || [],
+    quality_status: runtimeStats.quality_status || "not_assessed"
   };
 }
 

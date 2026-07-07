@@ -4,6 +4,7 @@ import { inspectModelArchitecture } from "./model_architecture.ts";
 import { matmulQ4Vector } from "./kernels.ts";
 import { q4SignedValue, unpackQ4Nibbles } from "./q4_dequant.ts";
 import { StaticQ4ForwardRuntime, runR28RT1RealForwardSmoke } from "./static_q4_runtime.ts";
+import { R28RT2_EXACT_TOKENIZER_LIMITATION } from "../tokenizer/runtime_tokenizer.ts";
 
 export { attentionOneToken } from "./attention.ts";
 export { decoderForwardOneToken, embeddingForToken } from "./decoder_forward.ts";
@@ -20,8 +21,12 @@ export {
   decodeTokenForSmoke,
   encodePromptForForwardSmoke,
   runGenerationSmoke,
-  runR28RT1RealForwardSmoke
+  runR28RT1RealForwardSmoke,
+  runR28RT2ReadableGenerationSmoke
 } from "./static_q4_runtime.ts";
+export { decodeTokenIdsToText, displayPieceForTokenId } from "../tokenizer/token_decode.ts";
+export { encodeTextToTokenIds } from "../tokenizer/token_encode.ts";
+export { createRuntimeTokenizer, inspectRuntimeTokenizer, R28RT2_EXACT_TOKENIZER_LIMITATION } from "../tokenizer/runtime_tokenizer.ts";
 
 export const R28RT0_REAL_INFERENCE_BLOCKER = "real_browser_inference_not_verified";
 export const R28RT0_FORWARD_BLOCKER = "q4_model_forward_not_implemented";
@@ -199,9 +204,11 @@ export function runtimeCapabilitySummary(runtimePackage = null) {
     real_browser_inference_admitted: false,
     release_admission: false,
     architecture_ok: architecture?.ok === true,
-    tokenizer_decode_ready: architecture?.tokenizer_browser_inference_ready === true,
+    tokenizer_decode_ready: Boolean(runtimePackage?.tokenizer),
+    tokenizer_exact_decode_ready: architecture?.tokenizer_browser_inference_ready === true,
+    tokenizer_decode_status: architecture?.tokenizer_browser_inference_ready === true ? "exact_vocab_decode" : "lossy_runtime_display_codec",
     tokenizer_blocker: architecture?.warnings?.includes("runtime_tokenizer_not_browser_compatible_for_text_decode")
-      ? "runtime_tokenizer_not_browser_compatible_for_text_decode"
+      ? R28RT2_EXACT_TOKENIZER_LIMITATION
       : ""
   };
 }

@@ -57,7 +57,17 @@ export async function loadRuntimeModel(options = {}) {
       baseUrl: options.baseUrl
     });
     const load = await runtime.load();
-    return { mode, runtime, status: load.status, product_model: false, browser_admission: false };
+    return {
+      mode,
+      runtime,
+      status: load.status,
+      product_model: false,
+      browser_admission: false,
+      tokenizer_decode_ready: load.tokenizer_decode_ready,
+      tokenizer_exact_decode_ready: load.tokenizer_exact_decode_ready,
+      tokenizer_decode_status: load.tokenizer_decode_status,
+      tokenizer_limitation: load.tokenizer_limitation
+    };
   }
   if (mode === "onnx_webgpu_experimental") {
     return {

@@ -97,6 +97,25 @@
           </div>
         </section>
 
+        <section class="runtime-strip" aria-label="readable runtime decode status">
+          <div>
+            <span class="status-label">Decode</span>
+            <strong id="decode-status">not checked</strong>
+          </div>
+          <div>
+            <span class="status-label">Tokens</span>
+            <strong id="token-count-status">0 generated</strong>
+          </div>
+          <div>
+            <span class="status-label">Runtime</span>
+            <strong id="runtime-mode-status">synthetic_tiny</strong>
+          </div>
+          <div>
+            <span class="status-label">Fallback Reason</span>
+            <strong id="fallback-reason-status">none</strong>
+          </div>
+        </section>
+
         <section class="context-bridge" aria-label="local context bridge">
           <div class="context-bridge-head">
             <label for="context-import">Local context</label>
@@ -118,7 +137,7 @@
             <div class="message-role">another_brain</div>
             <p>
               我现在只是一个静态 browser shell：会展示 input/state packet -> local retrieval ->
-              browser decoder draft -> verifier/finalizer/fallback 的产品骨架，但不会加载真实模型。
+              browser decoder draft -> verifier/finalizer/fallback 的产品骨架；若 q4 runtime bundle 不可用，会明确显示 fallback reason。
             </p>
           </article>
         </section>

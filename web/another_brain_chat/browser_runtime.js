@@ -101,6 +101,8 @@ export class BrowserChatRuntime {
     this.capabilities = probeBrowserCapabilities();
     this.memoryRecords = null;
     this.contextPackets = [];
+    this.lastRuntimeStats = null;
+    this.lastFallbackReason = "";
     this.assetStatus = {
       cache_mode: this.capabilities.cache_storage_available ? "cache_storage" : "memory_fallback",
       cache_result: "not_checked",
@@ -148,10 +150,19 @@ export class BrowserChatRuntime {
         if (message.type === "token") tokens.push(message.token);
         if (message.type === "error") {
           clearTimeout(timeout);
+          this.lastFallbackReason = message.fallback_reason || message.error || "worker_generation_failed";
           reject(new Error(message.error || "worker_generation_failed"));
         }
         if (message.type === "final") {
           clearTimeout(timeout);
+          this.lastRuntimeStats = message.stats || {
+            tokens_generated: Array.isArray(message.tokens) ? message.tokens.length : tokens.length,
+            runtime_mode: this.mode,
+            decoded_text_available: true,
+            decode_status: "synthetic_text",
+            fallback_used: false
+          };
+          this.lastFallbackReason = "";
           resolve(message.draft || tokens.join(" "));
         }
       };
@@ -191,6 +202,7 @@ export class BrowserChatRuntime {
     let decoderDraft = "";
     let fallbackUsed = false;
     let finalAnswer = "";
+    let fallbackReason = "";
     let verifierResult = { passed: false, failures: ["not_run"], fallback_recommended: true };
 
     try {
@@ -202,16 +214,26 @@ export class BrowserChatRuntime {
         setStatus("final");
       } else {
         fallbackUsed = true;
-        finalAnswer = fallbackAnswer(input, verifierResult.failures[0]);
+        fallbackReason = verifierResult.failures[0];
+        finalAnswer = fallbackAnswer(input, fallbackReason);
         setStatus("fallback");
       }
     } catch (error) {
       fallbackUsed = true;
       verifierResult = { passed: false, failures: [error.message], fallback_recommended: true };
-      finalAnswer = fallbackAnswer(input, error.message || "runtime_failed");
+      fallbackReason = this.lastFallbackReason || error.message || "runtime_failed";
+      finalAnswer = fallbackAnswer(input, fallbackReason);
       setStatus("fallback");
     }
 
+    const runtimeStats = this.lastRuntimeStats || {
+      tokens_generated: 0,
+      elapsed_ms: 0,
+      runtime_mode: this.mode,
+      decoded_text_available: false,
+      decode_status: fallbackUsed ? "fallback_no_decode" : "not_checked",
+      fallback_used: fallbackUsed
+    };
     return {
       input,
       state_packet: statePacket,
@@ -221,6 +243,9 @@ export class BrowserChatRuntime {
       verifier_result: verifierResult,
       final_answer: finalAnswer,
       fallback_used: fallbackUsed,
+      fallback_reason: fallbackReason,
+      runtime_stats: runtimeStats,
+      decode_status: runtimeStats.decode_status,
       adapter_context_summary: buildAdapterContextSummary(this.contextPackets),
       answer_surface_request: answerSurfaceRequest,
       answer_surface_response: buildAnswerSurfaceResponse({

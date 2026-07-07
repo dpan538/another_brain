@@ -23,5 +23,7 @@ test("static q4 runtime uses real forward path for generated fixture", async () 
   await runtime.load();
   const generation = await runGenerationSmoke(runtime, "hello", { maxTokens: 1, timeoutMs: 1000 });
   assert.equal(generation.tokens.length, 1);
-  assert.match(generation.tokens[0], /^token_id:/);
+  assert.ok(generation.tokens[0].length > 0);
+  assert.equal(generation.tokens[0].includes("token_id:"), false);
+  assert.equal(generation.decode_status, "lossy_runtime_display_codec");
 });

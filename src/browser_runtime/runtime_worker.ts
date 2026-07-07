@@ -46,7 +46,21 @@ export async function handleRuntimeWorkerMessage(message, sink = {}) {
       timeoutMs: message.timeoutMs || 3000,
       onToken: (token) => post({ type: "token", token })
     });
-    const final = { type: "final", draft: generation.draft, tokens: generation.tokens };
+    const final = {
+      type: "final",
+      draft: generation.draft,
+      tokens: generation.tokens,
+      stats: {
+        tokens_generated: generation.tokens_generated,
+        elapsed_ms: generation.elapsed_ms,
+        runtime_mode: generation.runtime_mode,
+        decoded_text_available: generation.decoded_text_available,
+        decode_status: generation.decode_status,
+        generated_token_ids: generation.generated_token_ids,
+        quality_status: generation.quality_status,
+        fallback_used: false
+      }
+    };
     post(final);
     return final;
   } catch (error) {

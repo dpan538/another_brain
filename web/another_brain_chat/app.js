@@ -22,7 +22,10 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   asset_cache_policy: "same_origin_shards_only",
   asset_loader_resilience: "checksum_retry_abort_partial_fallback",
   offline_static_readiness: "shell_reload_only_no_model_assets",
-  non_product_warning: "Demo static mode uses mock/synthetic generation and demo memory only."
+  non_product_warning: "Demo static mode uses mock/synthetic generation and demo memory only.",
+  tokenizer_decode_status: "not_checked",
+  runtime_tokenizer_blocker: "",
+  runtime_fallback_reason: "fallback_available"
 });
 
 const form = document.querySelector("#chat-form");
@@ -45,6 +48,10 @@ const candidateRouteStatus = document.querySelector("#candidate-route-status");
 const handoffSourceStatus = document.querySelector("#handoff-source-status");
 const adapterStatus = document.querySelector("#adapter-status");
 const releaseBlockerStatus = document.querySelector("#release-blocker-status");
+const decodeStatus = document.querySelector("#decode-status");
+const tokenCountStatus = document.querySelector("#token-count-status");
+const runtimeModeStatus = document.querySelector("#runtime-mode-status");
+const fallbackReasonStatus = document.querySelector("#fallback-reason-status");
 const debugToggle = document.querySelector("#debug-toggle");
 const debugOutput = document.querySelector("#debug-output");
 const contextImport = document.querySelector("#context-import");
@@ -84,6 +91,10 @@ function updateStatus(packet) {
   retrievalStatus.textContent = `${packet.retrieved_evidence.length} evidence / ${evidenceStatus}`;
   verifierStatus.textContent = packet.verifier_result.passed ? "Passed" : "Blocked";
   fallbackStatus.textContent = packet.fallback_used ? "Used" : "Unused";
+  decodeStatus.textContent = packet.decode_status || packet.runtime_stats?.decode_status || "not checked";
+  tokenCountStatus.textContent = `${packet.runtime_stats?.tokens_generated || 0} generated`;
+  runtimeModeStatus.textContent = packet.runtime_stats?.runtime_mode || packet.state_packet?.mode || "unknown";
+  fallbackReasonStatus.textContent = packet.fallback_reason || (packet.fallback_used ? "runtime_or_verifier_fallback" : "none");
 }
 
 function renderContextBridge(result = null) {
@@ -119,6 +130,9 @@ function renderDeliveryConfig(config) {
   handoffSourceStatus.textContent = config.handoff_source || DEFAULT_DELIVERY_CONFIG.handoff_source;
   adapterStatus.textContent = config.adapter_status || DEFAULT_DELIVERY_CONFIG.adapter_status;
   releaseBlockerStatus.textContent = releaseBlockers.join(" / ");
+  decodeStatus.textContent = config.tokenizer_decode_status || "not checked";
+  runtimeModeStatus.textContent = config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode;
+  fallbackReasonStatus.textContent = config.runtime_fallback_reason || "fallback_available";
   const candidateWarning = config.candidate_route === "product_path" ? "" : config.candidate_warning;
   nonProductWarning.textContent = config.product_model
     ? ""

@@ -18,10 +18,30 @@ self.addEventListener("message", (event) => {
     self.postMessage({ type: "error", error: "unsupported_worker_message" });
     return;
   }
+  if (message.mode === "static_q4_experimental") {
+    self.postMessage({
+      type: "error",
+      error: "web_static_q4_worker_bundle_not_embedded",
+      fallback_reason: "static_ui_q4_runtime_package_unavailable"
+    });
+    return;
+  }
   self.postMessage({ type: "state", state: "drafting" });
   const tokens = tokensFor(message.prompt, message.maxTokens);
   for (const token of tokens) {
     self.postMessage({ type: "token", token });
   }
-  self.postMessage({ type: "final", draft: tokens.join(" "), tokens });
+  self.postMessage({
+    type: "final",
+    draft: tokens.join(" "),
+    tokens,
+    stats: {
+      tokens_generated: tokens.length,
+      elapsed_ms: 0,
+      runtime_mode: message.mode || "synthetic_tiny",
+      decoded_text_available: true,
+      decode_status: "synthetic_text",
+      fallback_used: false
+    }
+  });
 });
