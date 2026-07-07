@@ -417,6 +417,7 @@
     "test:r28p0b": "python3 -m unittest discover -s tests/r28p0b",
     "test:r28sec0": "node scripts/r28sec0_run_ts_tests.mjs",
     "test:r28ux2": "node scripts/r28ux2_run_ts_tests.mjs",
+    "test:r28e1": "python3 -m unittest discover -s tests/r28e1",
     "check:r28p0b-prelaunch-integration": "npm run test:r28p0b && python3 scripts/r28p0b_intake_a12_handoff.py && python3 scripts/r28p0b_bind_candidate.py --synthetic-if-missing && python3 scripts/r28p0b_export_candidate.py --synthetic-if-missing && python3 scripts/r28p0b_quantize_candidate.py --synthetic-if-missing --quant q4 && python3 scripts/r28p0b_loader_smoke.py --synthetic-if-missing && python3 scripts/r28p0b_prelaunch_acceptance.py",
     "analyze:r25y-pilot": "node scripts/analyze_r25y_pilot_results.mjs",
     "eval:r25y-heldout-breakdown": "node scripts/eval_r25y_heldout_breakdown.mjs",
