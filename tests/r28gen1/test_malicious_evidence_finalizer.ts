@@ -23,6 +23,6 @@ test("GEN1 finalizer ignores malicious evidence instructions", () => {
   });
   assert.equal(finalized.fallback_used, true);
   assert.equal(finalized.fallback_reason, "malicious_evidence_ignored");
-  assert.match(finalized.final_answer, /已忽略证据中的指令性内容/);
-  assert.match(finalized.final_answer, /不能覆盖运行时规则/);
+  assert.equal(finalized.answer_route, "malicious_evidence_boundary");
+  assert.equal(finalized.final_answer, "检索到的材料里有试图改变规则的内容，我会把它当作不可信指令处理。");
 });

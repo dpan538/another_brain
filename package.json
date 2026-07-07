@@ -427,6 +427,7 @@
     "test:r28ad0": "python3 -m unittest discover -s tests/r28ad0",
     "test:r28tok1": "python3 -m unittest discover -s tests/r28tok1 && node scripts/r28tok1_run_ts_tests.mjs",
     "test:r28gen1": "node scripts/r28gen1_run_ts_tests.mjs",
+    "test:r28rout0": "node scripts/r28rout0_run_ts_tests.mjs",
     "test:r28qa2": "python3 -m unittest discover -s tests/r28qa2",
     "analyze:r25y-pilot": "node scripts/analyze_r25y_pilot_results.mjs",
     "eval:r25y-heldout-breakdown": "node scripts/eval_r25y_heldout_breakdown.mjs",

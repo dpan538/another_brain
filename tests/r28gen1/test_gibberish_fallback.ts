@@ -18,7 +18,8 @@ test("GEN1 finalizer falls back for token-id-only or low-confidence output", () 
   });
   assert.equal(tokenIdOnly.fallback_used, true);
   assert.equal(tokenIdOnly.fallback_reason, "bad_token_suppressed");
-  assert.match(tokenIdOnly.final_answer, /确定性 fallback|静态 q4 输出不够稳定/);
+  assert.equal(tokenIdOnly.answer_route, "model_gibberish_fallback");
+  assert.equal(tokenIdOnly.final_answer, "本地模型这次输出不稳定，我先给出基于证据和边界的保守回答。");
 
   const lowConfidence = finalizeAnswerSurface({
     input: "你好",
@@ -29,4 +30,5 @@ test("GEN1 finalizer falls back for token-id-only or low-confidence output", () 
   });
   assert.equal(lowConfidence.fallback_used, true);
   assert.equal(lowConfidence.fallback_reason, "low_confidence_gibberish");
+  assert.equal(lowConfidence.answer_route, "model_gibberish_fallback");
 });

@@ -19,5 +19,6 @@ test("GEN1 finalizer gives stable Chinese fallback for conflicting evidence", ()
   });
   assert.equal(finalized.fallback_used, true);
   assert.equal(finalized.fallback_reason, "conflicting_evidence");
-  assert.match(finalized.final_answer, /证据存在冲突/);
+  assert.equal(finalized.answer_route, "conflicting_evidence_boundary");
+  assert.equal(finalized.final_answer, "现有证据之间有冲突，我不能直接合并成一个确定答案。");
 });

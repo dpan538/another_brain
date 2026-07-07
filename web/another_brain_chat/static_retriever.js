@@ -19,7 +19,10 @@ const MALICIOUS_MARKERS = [
   "system prompt",
   "developer message",
   "chain-of-thought",
-  "<hidden"
+  "<hidden",
+  "忽略前面的规则",
+  "隐藏提示",
+  "开发者消息"
 ];
 
 function tokenize(text) {
@@ -65,6 +68,17 @@ function classifyEvidence(query, evidence) {
   if (!String(query || "").trim() || evidence.length === 0) {
     return { evidence_status: "insufficient", answer_policy_hint: "ask_clarifying" };
   }
+  const groups = new Map();
+  for (const item of evidence) {
+    const group = item.metadata?.conflict_group;
+    const value = item.metadata?.claim_value;
+    if (!group || value === undefined || value === null) continue;
+    if (!groups.has(group)) groups.set(group, new Set());
+    groups.get(group).add(String(value));
+  }
+  if (Array.from(groups.values()).some((values) => values.size > 1)) {
+    return { evidence_status: "conflicting", answer_policy_hint: "identify_conflict" };
+  }
   const malicious = evidence.some((item) => {
     const text = `${item.title || ""}\n${item.text || ""}`.toLowerCase();
     return MALICIOUS_MARKERS.some((marker) => text.includes(marker));
@@ -105,7 +119,8 @@ export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_
       trust_level: ["high", "medium", "low"].includes(record.trust_level) ? record.trust_level : "low",
       retrieval_score: Number(record.retrieval_score || 0),
       license_or_origin: String(record.license_or_origin || "synthetic demo fixture"),
-      can_answer: record.can_answer !== false
+      can_answer: record.can_answer !== false,
+      metadata: record.metadata || {}
     }));
   const classification = classifyEvidence(input, ranked);
   return {

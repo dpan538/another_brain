@@ -51,6 +51,7 @@ const releaseBlockerStatus = document.querySelector("#release-blocker-status");
 const decodeStatus = document.querySelector("#decode-status");
 const tokenCountStatus = document.querySelector("#token-count-status");
 const runtimeModeStatus = document.querySelector("#runtime-mode-status");
+const routeStatus = document.querySelector("#route-status");
 const fallbackReasonStatus = document.querySelector("#fallback-reason-status");
 const debugToggle = document.querySelector("#debug-toggle");
 const debugOutput = document.querySelector("#debug-output");
@@ -101,7 +102,9 @@ function clearConversation() {
     verifier_result: { passed: true },
     fallback_used: false,
     runtime_stats: { tokens_generated: 0, runtime_mode: runtime.mode, decode_status: "not checked" },
-    state_packet: { mode: runtime.mode }
+    state_packet: { mode: runtime.mode },
+    answer_route: "not_run",
+    route_policy: { route: "not_run" }
   });
   renderDebug();
 }
@@ -119,6 +122,7 @@ function updateStatus(packet) {
   decodeStatus.textContent = packet.decode_status || packet.runtime_stats?.decode_status || "not checked";
   tokenCountStatus.textContent = `${packet.runtime_stats?.tokens_generated || 0} generated`;
   runtimeModeStatus.textContent = packet.runtime_stats?.runtime_mode || packet.state_packet?.mode || "unknown";
+  routeStatus.textContent = packet.answer_route || packet.route_policy?.route || "not_run";
   fallbackReasonStatus.textContent = packet.fallback_reason || (packet.fallback_used ? "runtime_or_verifier_fallback" : "none");
 }
 

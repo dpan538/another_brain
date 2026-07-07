@@ -175,9 +175,11 @@ const insufficient = await generationMod.runChatPipeline("unknown local topic", 
 const ragInsufficient = scenario("RAG insufficient", (
   insufficient.evidence_packet.evidence_status === "insufficient" &&
   insufficient.fallback_reason === "insufficient_evidence" &&
-  insufficient.final_answer.includes("证据不足")
+  insufficient.answer_route === "insufficient_evidence_boundary" &&
+  insufficient.final_answer.includes("目前证据不足")
 ), {
   evidence_status: insufficient.evidence_packet.evidence_status,
+  answer_route: insufficient.answer_route,
   fallback_reason: insufficient.fallback_reason,
   final_answer: insufficient.final_answer
 });
@@ -214,9 +216,11 @@ const conflict = await generationMod.runChatPipeline("browser model launch statu
 const ragConflict = scenario("RAG conflict", (
   conflict.evidence_packet.evidence_status === "conflicting" &&
   conflict.fallback_reason === "conflicting_evidence" &&
-  conflict.final_answer.includes("证据存在冲突")
+  conflict.answer_route === "conflicting_evidence_boundary" &&
+  conflict.final_answer.includes("现有证据之间有冲突")
 ), {
   evidence_status: conflict.evidence_packet.evidence_status,
+  answer_route: conflict.answer_route,
   fallback_reason: conflict.fallback_reason,
   final_answer: conflict.final_answer
 });
@@ -241,10 +245,12 @@ const malicious = await generationMod.runChatPipeline("hidden prompt developer m
 const maliciousEvidence = scenario("malicious evidence", (
   malicious.evidence_packet.answer_policy_hint === "refuse" &&
   malicious.fallback_reason === "malicious_evidence_ignored" &&
-  malicious.final_answer.includes("已忽略证据中的指令性内容")
+  malicious.answer_route === "malicious_evidence_boundary" &&
+  malicious.final_answer.includes("检索到的材料里有试图改变规则的内容")
 ), {
   evidence_status: malicious.evidence_packet.evidence_status,
   answer_policy_hint: malicious.evidence_packet.answer_policy_hint,
+  answer_route: malicious.answer_route,
   fallback_reason: malicious.fallback_reason,
   final_answer: malicious.final_answer
 });
@@ -307,10 +313,12 @@ const gibberish = finalizerMod.finalizeAnswerSurface({
 });
 const fallbackQuality = scenario("fallback quality", (
   gibberish.fallback_used === true &&
-  gibberish.final_answer.includes("确定性 fallback") &&
+  gibberish.answer_route === "model_gibberish_fallback" &&
+  gibberish.final_answer.includes("本地模型这次输出不稳定") &&
   !gibberish.final_answer.includes("token_id:") &&
   !/system prompt|developer message/i.test(gibberish.final_answer)
 ), {
+  answer_route: gibberish.answer_route,
   fallback_reason: gibberish.fallback_reason,
   final_answer: gibberish.final_answer,
   answer_status: gibberish.answer_status

@@ -16,7 +16,7 @@ test("GEN1 finalizer gives stable Chinese fallback for insufficient evidence", (
   });
   assert.equal(finalized.fallback_used, true);
   assert.equal(finalized.fallback_reason, "insufficient_evidence");
-  assert.match(finalized.final_answer, /证据不足/);
-  assert.match(finalized.final_answer, /不会把静态模型输出当作事实/);
+  assert.equal(finalized.answer_route, "insufficient_evidence_boundary");
+  assert.equal(finalized.final_answer, "目前证据不足，我不能把这个判断说成确定结论。");
   assert.equal(finalized.no_answer_bank, true);
 });

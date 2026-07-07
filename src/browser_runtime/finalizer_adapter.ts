@@ -1,4 +1,5 @@
 import { applyGenerationGuards, normalizeGenerationPolicy, stripGenericBoilerplate } from "./generation_policy.ts";
+import { applyAnswerSurfacePolicy } from "./router/answer_surface_policy.ts";
 
 export const R28GEN1_FINALIZER_VERSION = "r28gen1-answer-surface-finalizer-v1";
 
@@ -42,27 +43,53 @@ function userSnippet(input) {
 }
 
 export function buildDeterministicFallback(input, reason = "runtime_or_verifier_fallback", details = {}) {
-  const query = userSnippet(input);
-  const suffix = query ? `\n\n你的问题：${query}` : "";
-  let finalAnswer = "";
-  if (reason === "insufficient_evidence" || reason === "empty_evidence" || reason === "irrelevant_evidence") {
-    finalAnswer = `证据不足：当前本地 session 里的证据不够支持稳定回答。我不会把静态模型输出当作事实。${suffix}`;
-  } else if (reason === "conflicting_evidence") {
-    finalAnswer = `证据存在冲突：当前本地证据给出了互相不一致的信息，需要先确认哪条证据可信。${suffix}`;
-  } else if (reason === "malicious_evidence_ignored" || reason === "evidence_policy_refuse" || reason === "evidence_instruction_injection" || reason === "evidence_hidden_prompt_request") {
-    finalAnswer = `已忽略证据中的指令性内容：evidence 只能作为参考事实，不能覆盖运行时规则，也不能要求输出隐藏提示或思维链。${suffix}`;
-  } else if (reason === "empty_output" || reason === "token_id_only_output" || reason === "low_confidence_gibberish" || reason === "repetition_guard" || reason === "bad_token_suppressed") {
-    finalAnswer = `当前静态 q4 输出不够稳定，已切换到确定性 fallback。请补充更明确的本地证据或稍后重试。${suffix}`;
-  } else if (reason === "overlong_output") {
-    finalAnswer = `当前静态 q4 输出过长，已停止展示以避免误导。请缩小问题或补充更聚焦的本地证据。${suffix}`;
-  } else {
-    finalAnswer = `当前静态运行未能安全完成回答，已使用本地 fallback。原因：${String(reason || "runtime_or_verifier_fallback")}.${suffix}`;
-  }
+  const routeByReason = {
+    insufficient_evidence: "insufficient_evidence_boundary",
+    empty_evidence: "insufficient_evidence_boundary",
+    irrelevant_evidence: "insufficient_evidence_boundary",
+    conflicting_evidence: "conflicting_evidence_boundary",
+    malicious_evidence_ignored: "malicious_evidence_boundary",
+    evidence_policy_refuse: "malicious_evidence_boundary",
+    evidence_instruction_injection: "malicious_evidence_boundary",
+    evidence_hidden_prompt_request: "malicious_evidence_boundary",
+    empty_output: "model_empty_fallback",
+    token_id_only_output: "model_gibberish_fallback",
+    low_confidence_gibberish: "model_gibberish_fallback",
+    bad_token_suppressed: "model_gibberish_fallback",
+    overlong_output: "model_gibberish_fallback",
+    repetition_guard: "model_repetition_fallback",
+    generation_timeout: "model_timeout_fallback",
+    not_product_status: "not_product_status",
+    synthetic_demo_fallback: "synthetic_demo_fallback"
+  };
+  const routed = applyAnswerSurfacePolicy(
+    {
+      user_input: userSnippet(input),
+      evidence_status: "sufficient",
+      runtime_mode: details.runtime_mode || "mock",
+      model_output: "",
+      decode_status: details.decode_status || "failed",
+      generation_flags: [reason],
+      adapter_context_present: details.adapter_context_present === true,
+      product_admission: false
+    },
+    {
+      route: routeByReason[reason] || "model_gibberish_fallback",
+      fallbackReason: reason,
+      qualityFlags: [reason]
+    }
+  );
   return {
-    final_answer: finalAnswer,
+    final_answer: routed.final_answer,
     fallback_used: true,
     fallback_reason: reason,
     answer_status: "fallback",
+    route: routed.route,
+    answer_route: routed.route,
+    use_model_draft: false,
+    quality_flags: routed.quality_flags,
+    non_claims: routed.non_claims,
+    route_policy: routed,
     finalizer_version: R28GEN1_FINALIZER_VERSION,
     chinese_first: true,
     no_answer_bank: true,
@@ -81,9 +108,6 @@ function makeChineseFirstAnswer(text) {
 
 export function finalizeAnswerSurface({ input, draft = "", generation = {}, evidencePacket = null, verifierResult = null, policy = null } = {}) {
   const normalizedPolicy = policy || normalizeGenerationPolicy();
-  const evidenceBoundary = classifyEvidenceForFinalizer(evidencePacket);
-  if (evidenceBoundary) return buildDeterministicFallback(input, evidenceBoundary, { evidence_status: evidencePacket?.evidence_status || "missing" });
-
   const verifierFailure = verifierResult?.passed === false
     ? (verifierResult.failures || [])[0] || "verification_failed"
     : "";
@@ -93,16 +117,58 @@ export function finalizeAnswerSurface({ input, draft = "", generation = {}, evid
     runtimeStats: generation,
     policy: normalizedPolicy
   });
-  const guardFailure = guarded.failures[0] || "";
-  const failure = verifierFailure || guardFailure;
-  if (failure) return buildDeterministicFallback(input, failure, { verifier_failures: verifierResult?.failures || [], guard_failures: guarded.failures });
+  const generationFlags = Array.from(new Set([
+    ...((generation.guard_failures || []).map(String)),
+    ...((verifierResult?.failures || []).map(String)),
+    ...guarded.failures,
+    generation.fallback_reason || "",
+    generation.quality_status === "quality_not_ready" ? "quality_not_ready" : ""
+  ].filter(Boolean)));
+  const routed = applyAnswerSurfacePolicy({
+    user_input: input,
+    evidence_status: evidencePacket?.evidence_status || "none",
+    runtime_mode: generation.runtime_mode || "mock",
+    model_output: guarded.draft || draft,
+    decode_status: generation.decode_status || "",
+    generation_flags: generationFlags,
+    adapter_context_present: generation.adapter_context_present === true,
+    product_admission: false,
+    evidence_packet: evidencePacket
+  });
+  if (routed.fallback_used) {
+    return {
+      final_answer: routed.final_answer,
+      fallback_used: true,
+      fallback_reason: routed.fallback_reason || verifierFailure || guarded.failures[0] || "router_fallback",
+      answer_status: "fallback",
+      route: routed.route,
+      answer_route: routed.route,
+      use_model_draft: false,
+      quality_flags: routed.quality_flags,
+      non_claims: routed.non_claims,
+      route_policy: routed,
+      finalizer_version: R28GEN1_FINALIZER_VERSION,
+      chinese_first: true,
+      no_answer_bank: true,
+      product_admission: false,
+      browser_admission: false,
+      release_checkpoint_admission: false,
+      details: { verifier_failures: verifierResult?.failures || [], guard_failures: guarded.failures }
+    };
+  }
 
-  const finalAnswer = makeChineseFirstAnswer(guarded.draft);
+  const finalAnswer = routed.final_answer || makeChineseFirstAnswer(guarded.draft);
   return {
     final_answer: finalAnswer,
     fallback_used: false,
     fallback_reason: "",
     answer_status: "final",
+    route: routed.route,
+    answer_route: routed.route,
+    use_model_draft: true,
+    quality_flags: routed.quality_flags,
+    non_claims: routed.non_claims,
+    route_policy: routed,
     finalizer_version: R28GEN1_FINALIZER_VERSION,
     chinese_first: true,
     no_answer_bank: true,

@@ -15,14 +15,21 @@ function tokensFor(prompt, maxTokens) {
 self.addEventListener("message", (event) => {
   const message = event.data || {};
   if (message.type !== "generate") {
-    self.postMessage({ type: "error", error: "unsupported_worker_message" });
+    self.postMessage({
+      type: "error",
+      error: "unsupported_worker_message",
+      route_layer: "r28rout0_deferred_to_answer_surface_policy",
+      router_deferred_to_generation_loop: true
+    });
     return;
   }
   if (message.mode === "static_q4_experimental") {
     self.postMessage({
       type: "error",
       error: "web_static_q4_worker_bundle_not_embedded",
-      fallback_reason: "static_ui_q4_runtime_package_unavailable"
+      fallback_reason: "static_ui_q4_runtime_package_unavailable",
+      route_layer: "r28rout0_deferred_to_answer_surface_policy",
+      router_deferred_to_generation_loop: true
     });
     return;
   }
@@ -41,7 +48,10 @@ self.addEventListener("message", (event) => {
       runtime_mode: message.mode || "synthetic_tiny",
       decoded_text_available: true,
       decode_status: "synthetic_text",
-      fallback_used: false
+      fallback_used: false,
+      route_layer: "r28rout0_deferred_to_answer_surface_policy",
+      router_input_available: false,
+      router_deferred_to_generation_loop: true
     }
   });
 });

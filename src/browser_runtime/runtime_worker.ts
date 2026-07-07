@@ -58,13 +58,21 @@ export async function handleRuntimeWorkerMessage(message, sink = {}) {
         decode_status: generation.decode_status,
         generated_token_ids: generation.generated_token_ids,
         quality_status: generation.quality_status,
-        fallback_used: false
+        fallback_used: false,
+        route_layer: "r28rout0_deferred_to_answer_surface_policy",
+        router_input_available: false,
+        router_deferred_to_generation_loop: true
       }
     };
     post(final);
     return final;
   } catch (error) {
-    const failure = { type: "error", error: error.message || "worker_generation_failed" };
+    const failure = {
+      type: "error",
+      error: error.message || "worker_generation_failed",
+      route_layer: "r28rout0_deferred_to_answer_surface_policy",
+      router_deferred_to_generation_loop: true
+    };
     post(failure);
     return failure;
   }

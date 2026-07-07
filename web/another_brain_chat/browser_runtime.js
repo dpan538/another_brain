@@ -20,6 +20,36 @@ const EVIDENCE_INJECTION_MARKERS = [
   "隐藏提示"
 ];
 const BAD_TOKEN_MARKERS = ["token_id:", "<hidden", "system prompt", "developer message", "chain-of-thought", "思维链", "隐藏提示"];
+const ROUTER_NON_CLAIMS = [
+  "not product model",
+  "not product admission",
+  "not browser admission",
+  "not release checkpoint",
+  "no training",
+  "no backend inference",
+  "no external LLM API",
+  "no Doubao",
+  "hard router is product-surface guard only"
+];
+const ANSWER_SURFACE_TEMPLATES = Object.freeze({
+  insufficient_evidence: "目前证据不足，我不能把这个判断说成确定结论。",
+  malicious_evidence: "检索到的材料里有试图改变规则的内容，我会把它当作不可信指令处理。",
+  conflicting_evidence: "现有证据之间有冲突，我不能直接合并成一个确定答案。",
+  model_gibberish: "本地模型这次输出不稳定，我先给出基于证据和边界的保守回答。",
+  not_product_status: "当前是预览工程候选，不是已 admission 的产品模型。"
+});
+const ROUTE_SURFACE_KEYS = Object.freeze({
+  insufficient_evidence_boundary: "insufficient_evidence",
+  adapter_context_boundary: "insufficient_evidence",
+  malicious_evidence_boundary: "malicious_evidence",
+  conflicting_evidence_boundary: "conflicting_evidence",
+  model_empty_fallback: "model_gibberish",
+  model_gibberish_fallback: "model_gibberish",
+  model_repetition_fallback: "model_gibberish",
+  model_timeout_fallback: "model_gibberish",
+  synthetic_demo_fallback: "not_product_status",
+  not_product_status: "not_product_status"
+});
 
 export function probeBrowserCapabilities() {
   const cacheStorageAvailable = typeof caches !== "undefined" && typeof caches.open === "function";
@@ -77,22 +107,9 @@ export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
   return { passed: failures.length === 0, failures, fallback_recommended: failures.length > 0 };
 }
 
-function fallbackAnswer(input, reason) {
-  const query = String(input || "").trim().slice(0, 120);
-  const suffix = query ? `\n\n你的问题：${query}` : "";
-  if (["insufficient_evidence", "empty_evidence", "irrelevant_evidence"].includes(reason)) {
-    return `证据不足：当前本地 session 里的证据不够支持稳定回答。我不会把静态模型输出当作事实。${suffix}`;
-  }
-  if (reason === "conflicting_evidence") {
-    return `证据存在冲突：当前本地证据给出了互相不一致的信息，需要先确认哪条证据可信。${suffix}`;
-  }
-  if (["evidence_policy_refuse", "evidence_instruction_injection", "evidence_hidden_prompt_request", "malicious_evidence_ignored"].includes(reason)) {
-    return `已忽略证据中的指令性内容：evidence 只能作为参考事实，不能覆盖运行时规则，也不能要求输出隐藏提示或思维链。${suffix}`;
-  }
-  if (["empty_output", "token_id_only_output", "low_confidence_gibberish", "repetition_guard", "bad_token_suppressed"].includes(reason)) {
-    return `当前静态 q4 输出不够稳定，已切换到确定性 fallback。请补充更明确的本地证据或稍后重试。${suffix}`;
-  }
-  return `当前静态运行未能安全完成回答，已使用本地 fallback。原因：${String(reason || "runtime_failed")}.${suffix}`;
+function answerSurfaceForRoute(route) {
+  const key = ROUTE_SURFACE_KEYS[route];
+  return key ? ANSWER_SURFACE_TEMPLATES[key] : "";
 }
 
 function syntheticDraft(input, maxTokens = 32) {
@@ -168,14 +185,14 @@ function buildDecoderPrompt(input, evidencePacket, statePacket) {
   ].join("\n");
 }
 
-function classifyEvidenceForFinalizer(evidencePacket) {
+function classifyEvidenceForRouter(evidencePacket, evidenceStatus = "") {
   if (!evidencePacket) return "";
   const evidenceText = (evidencePacket.retrieved_evidence || []).map((item) => `${item.title || ""}\n${item.text || ""}`).join("\n").toLowerCase();
-  if (evidencePacket.answer_policy_hint === "refuse") return "malicious_evidence_ignored";
-  if (EVIDENCE_INJECTION_MARKERS.some((marker) => evidenceText.includes(marker))) return "malicious_evidence_ignored";
-  if (evidencePacket.evidence_status === "insufficient" || evidencePacket.evidence_status === "irrelevant") return "insufficient_evidence";
-  if (evidencePacket.evidence_status === "conflicting") return "conflicting_evidence";
-  return "";
+  if (evidenceStatus === "malicious" || evidencePacket.answer_policy_hint === "refuse") return "malicious";
+  if (EVIDENCE_INJECTION_MARKERS.some((marker) => evidenceText.includes(marker))) return "malicious";
+  if (evidenceStatus === "conflicting" || evidencePacket.evidence_status === "conflicting") return "conflicting";
+  if (evidenceStatus === "insufficient" || evidencePacket.evidence_status === "insufficient" || evidencePacket.evidence_status === "irrelevant") return "insufficient";
+  return evidenceStatus || evidencePacket.evidence_status || "";
 }
 
 function outputQualityFailure(text) {
@@ -189,18 +206,142 @@ function outputQualityFailure(text) {
   return "";
 }
 
-function finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult) {
-  const evidenceBoundary = classifyEvidenceForFinalizer(evidencePacket);
-  if (evidenceBoundary) return { fallback_used: true, fallback_reason: evidenceBoundary, final_answer: fallbackAnswer(input, evidenceBoundary), answer_status: "fallback", no_answer_bank: true };
-  const qualityFailure = outputQualityFailure(decoderDraft);
-  const failure = verifierResult?.passed === false ? verifierResult.failures?.[0] : qualityFailure;
-  if (failure) return { fallback_used: true, fallback_reason: failure, final_answer: fallbackAnswer(input, failure), answer_status: "fallback", no_answer_bank: true };
-  const cleaned = String(decoderDraft || "").replace(/^static browser draft:\s*/i, "").trim();
+function asksProductStatus(input) {
+  const lowered = String(input || "").toLowerCase();
+  return [
+    "product admission",
+    "browser admission",
+    "release checkpoint",
+    "product model",
+    "admitted",
+    "admission",
+    "release",
+    "产品",
+    "已上线",
+    "上线",
+    "发布",
+    "产品模型",
+    "产品准入"
+  ].some((marker) => lowered.includes(marker));
+}
+
+function uniqueFlags(flags) {
+  return Array.from(new Set((flags || []).filter(Boolean).map(String)));
+}
+
+function classifyAnswerRoute(routeInput = {}) {
+  const evidencePacket = routeInput.evidence_packet || null;
+  const evidenceStatus = classifyEvidenceForRouter(evidencePacket, routeInput.evidence_status || (evidencePacket ? evidencePacket.evidence_status : "none"));
+  const flags = uniqueFlags([...(routeInput.generation_flags || []), outputQualityFailure(routeInput.model_output)]);
+  if (evidenceStatus === "malicious") {
+    return { route: "malicious_evidence_boundary", use_model_draft: false, fallback_reason: "malicious_evidence_ignored", quality_flags: uniqueFlags([...flags, "malicious_evidence"]) };
+  }
+  if (evidenceStatus === "conflicting") {
+    return { route: "conflicting_evidence_boundary", use_model_draft: false, fallback_reason: "conflicting_evidence", quality_flags: uniqueFlags([...flags, "conflicting_evidence"]) };
+  }
+  if (flags.includes("adapter_context_boundary")) {
+    return { route: "adapter_context_boundary", use_model_draft: false, fallback_reason: "adapter_context_boundary", quality_flags: uniqueFlags([...flags, "adapter_context_present"]) };
+  }
+  if (routeInput.product_admission !== true && asksProductStatus(routeInput.user_input)) {
+    return { route: "not_product_status", use_model_draft: false, fallback_reason: "not_product_status", quality_flags: uniqueFlags([...flags, "not_product_model"]) };
+  }
+  if (evidenceStatus === "insufficient" || evidenceStatus === "none") {
+    return { route: "insufficient_evidence_boundary", use_model_draft: false, fallback_reason: "insufficient_evidence", quality_flags: uniqueFlags([...flags, "insufficient_evidence"]) };
+  }
+  if (flags.includes("generation_timeout") || flags.includes("runtime_timeout")) {
+    return { route: "model_timeout_fallback", use_model_draft: false, fallback_reason: flags.includes("generation_timeout") ? "generation_timeout" : "runtime_timeout", quality_flags: flags };
+  }
+  if (flags.includes("empty_output")) {
+    return { route: "model_empty_fallback", use_model_draft: false, fallback_reason: "empty_output", quality_flags: flags };
+  }
+  if (flags.includes("repetition_guard")) {
+    return { route: "model_repetition_fallback", use_model_draft: false, fallback_reason: "repetition_guard", quality_flags: flags };
+  }
+  if (flags.some((flag) => ["bad_token_suppressed", "token_id_only_output", "low_confidence_gibberish", "hidden_prompt_disclosure_marker", "generic_fallback_marker", "overlong_output"].includes(flag))) {
+    const fallbackReason = ["bad_token_suppressed", "token_id_only_output", "low_confidence_gibberish", "hidden_prompt_disclosure_marker", "generic_fallback_marker", "overlong_output"].find((flag) => flags.includes(flag));
+    return { route: "model_gibberish_fallback", use_model_draft: false, fallback_reason: fallbackReason, quality_flags: flags };
+  }
+  if (flags.includes("synthetic_demo_fallback")) {
+    return { route: "synthetic_demo_fallback", use_model_draft: false, fallback_reason: "synthetic_demo_fallback", quality_flags: flags };
+  }
+  if (evidenceStatus === "sufficient" && (evidencePacket?.retrieved_evidence || []).length > 0) {
+    return { route: "rag_grounded_answer", use_model_draft: true, fallback_reason: "", quality_flags: flags };
+  }
+  return { route: "direct_model_draft", use_model_draft: true, fallback_reason: "", quality_flags: flags };
+}
+
+function applyAnswerSurfacePolicy(routeInput = {}) {
+  const classified = classifyAnswerRoute(routeInput);
+  if (classified.use_model_draft) {
+    const cleaned = String(routeInput.model_output || "").replace(/^static browser draft:\s*/i, "").trim();
+    return {
+      route: classified.route,
+      use_model_draft: true,
+      final_answer: /[\u4e00-\u9fff]/.test(cleaned.slice(0, 80)) ? cleaned : `根据当前本地证据：${cleaned}`,
+      fallback_used: false,
+      fallback_reason: "",
+      answer_status: "final",
+      quality_flags: classified.quality_flags,
+      non_claims: ROUTER_NON_CLAIMS,
+      answer_bank: false
+    };
+  }
+  return {
+    route: classified.route,
+    use_model_draft: false,
+    final_answer: answerSurfaceForRoute(classified.route),
+    fallback_used: true,
+    fallback_reason: classified.fallback_reason || classified.route,
+    answer_status: "fallback",
+    quality_flags: classified.quality_flags,
+    non_claims: ROUTER_NON_CLAIMS,
+    answer_bank: false
+  };
+}
+
+function finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult, routeContext = {}) {
+  const generationFlags = uniqueFlags([
+    ...(verifierResult?.failures || []),
+    routeContext.fallbackReason || "",
+    routeContext.qualityStatus === "quality_not_ready" ? "low_confidence_gibberish" : ""
+  ]);
+  const routed = applyAnswerSurfacePolicy({
+    user_input: input,
+    evidence_status: evidencePacket?.evidence_status || "none",
+    runtime_mode: routeContext.runtimeMode || "mock",
+    model_output: decoderDraft,
+    decode_status: routeContext.decodeStatus || "",
+    generation_flags: generationFlags,
+    adapter_context_present: routeContext.adapterContextPresent === true,
+    product_admission: false,
+    evidence_packet: evidencePacket
+  });
+  if (routed.fallback_used) {
+    return {
+      fallback_used: true,
+      fallback_reason: routed.fallback_reason,
+      final_answer: routed.final_answer,
+      answer_status: "fallback",
+      route: routed.route,
+      answer_route: routed.route,
+      use_model_draft: false,
+      quality_flags: routed.quality_flags,
+      non_claims: routed.non_claims,
+      route_policy: routed,
+      no_answer_bank: true
+    };
+  }
   return {
     fallback_used: false,
     fallback_reason: "",
-    final_answer: /[\u4e00-\u9fff]/.test(cleaned.slice(0, 80)) ? cleaned : `根据当前本地证据：${cleaned}`,
+    final_answer: routed.final_answer,
     answer_status: "final",
+    route: routed.route,
+    answer_route: routed.route,
+    use_model_draft: true,
+    quality_flags: routed.quality_flags,
+    non_claims: routed.non_claims,
+    route_policy: routed,
     no_answer_bank: true
   };
 }
@@ -335,6 +476,7 @@ export class BrowserChatRuntime {
     let finalAnswer = "";
     let fallbackReason = "";
     let verifierResult = { passed: false, failures: ["not_run"], fallback_recommended: true };
+    let routePolicy = null;
 
     try {
       if (this.abortRequested) throw new Error("generation_aborted");
@@ -342,10 +484,16 @@ export class BrowserChatRuntime {
       decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), { maxTokens: 16, timeoutMs: 3000 });
       setStatus("verifying");
       verifierResult = verifyDraft(decoderDraft, evidencePacket);
-      const finalized = finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult);
+      const finalized = finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult, {
+        runtimeMode: this.lastRuntimeStats?.runtime_mode || this.mode,
+        decodeStatus: this.lastRuntimeStats?.decode_status || "",
+        qualityStatus: this.lastRuntimeStats?.quality_status || "",
+        adapterContextPresent: this.contextPackets.length > 0
+      });
       fallbackUsed = finalized.fallback_used;
       fallbackReason = finalized.fallback_reason;
       finalAnswer = finalized.final_answer;
+      routePolicy = finalized.route_policy;
       if (!fallbackUsed) {
         setStatus("final");
       } else {
@@ -356,7 +504,19 @@ export class BrowserChatRuntime {
       fallbackUsed = true;
       verifierResult = { passed: false, failures: [error.message], fallback_recommended: true };
       fallbackReason = this.lastFallbackReason || error.message || "runtime_failed";
-      finalAnswer = fallbackAnswer(input, fallbackReason);
+      routePolicy = applyAnswerSurfacePolicy({
+        user_input: input,
+        evidence_status: evidencePacket?.evidence_status || "none",
+        runtime_mode: this.mode,
+        model_output: "",
+        decode_status: "failed",
+        generation_flags: [fallbackReason],
+        adapter_context_present: this.contextPackets.length > 0,
+        product_admission: false,
+        evidence_packet: evidencePacket
+      });
+      finalAnswer = routePolicy.final_answer;
+      fallbackReason = routePolicy.fallback_reason || fallbackReason;
       setStatus("fallback");
     }
     this.abortRequested = false;
@@ -380,6 +540,12 @@ export class BrowserChatRuntime {
       fallback_used: fallbackUsed,
       fallback_reason: fallbackReason,
       answer_status: fallbackUsed ? "fallback" : "final",
+      route: routePolicy?.route || "direct_model_draft",
+      answer_route: routePolicy?.route || "direct_model_draft",
+      use_model_draft: routePolicy?.use_model_draft === true,
+      quality_flags: routePolicy?.quality_flags || [],
+      non_claims: routePolicy?.non_claims || ROUTER_NON_CLAIMS,
+      route_policy: routePolicy,
       runtime_stats: runtimeStats,
       decode_status: runtimeStats.decode_status,
       prompt_packet: this.lastPromptPacket || buildPromptPacket(input, evidencePacket, statePacket),
