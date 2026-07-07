@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { pathToFileURL } from "node:url";
 
 const root = resolve(new URL("..", import.meta.url).pathname);
-const out = join(tmpdir(), `r28tok0-exact-tokenizer-${process.pid}`);
+const out = join(tmpdir(), `r28tok1-exact-tokenizer-${process.pid}`);
 
 async function copyAsMjs(fromDir, toDir) {
   await mkdir(toDir, { recursive: true });

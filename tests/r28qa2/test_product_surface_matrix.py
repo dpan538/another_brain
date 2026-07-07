@@ -10,17 +10,16 @@ class R28QA2ProductSurfaceMatrixTests(unittest.TestCase):
 
     def test_matrix_has_no_hard_failures(self):
         self.assertTrue(self.report["ok"], self.report.get("failures"))
-        self.assertFalse(self.report["quality_blocked"], self.report.get("failures"))
         self.assertEqual(self.report["fail_count"], 0)
         self.assertGreaterEqual(self.report["pass_count"], 13)
 
-    def test_expected_quality_labels(self):
+    def test_expected_output_label(self):
         labels = set(self.report["labels"])
-        self.assertIn("quality_weak", labels)
-        self.assertIn("preview_ready", labels)
-        self.assertIn("admission_not_ready", labels)
-        self.assertNotIn("quality_blocked", labels)
-        self.assertFalse(self.report["quality_pass"])
+        self.assertEqual(self.report["output_label"], "preview_ready_with_quality_blocker")
+        self.assertIn("preview_ready_with_quality_blocker", labels)
+        self.assertNotIn("blocked_tokenizer", labels)
+        self.assertNotIn("blocked_runtime", labels)
+        self.assertNotIn("blocked_budget", labels)
 
     def test_required_surface_scenarios_present(self):
         names = {item["name"] for item in self.report["scenarios"]}
@@ -34,8 +33,10 @@ class R28QA2ProductSurfaceMatrixTests(unittest.TestCase):
             "adapter local context",
             "fallback quality",
             "no product claim",
+            "exact tokenizer status",
             "mobile/accessibility",
             "Vercel build config",
+            "bundle under 100MB",
         ]:
             self.assertIn(name, names)
 
@@ -45,6 +46,7 @@ class R28QA2ProductSurfaceMatrixTests(unittest.TestCase):
         self.assertTrue(summary["exact_decode"])
         self.assertGreaterEqual(summary["generated_token_count"], 40)
         self.assertEqual(summary["runtime_quality_status"], "quality_not_ready")
+        self.assertTrue(summary["quality_blocker"])
 
     def test_non_claims_remain_false(self):
         non_claims = self.report["non_claims"]

@@ -28,7 +28,7 @@
       "path": "web/another_brain/model_assets/r28m1/checksums.sha256.json",
       "required": true,
       "role": "metadata",
-      "sha256": "b3324d11fdfc0375fbb8420b8239c2160d06882d2dd32ef7da522aed0d54a765"
+      "sha256": "dffee9db056fb49a7eae4bb64c9072150f89efbfffc07a2e30abe9753d5dd7b9"
     },
     {
       "bytes": 12000000,
@@ -73,11 +73,11 @@
       "sha256": "a6aaf5af5d649e5bc8895fff46a4d1ee9719c4808a420c197d3a8d3d8722024f"
     },
     {
-      "bytes": 997419,
+      "bytes": 997450,
       "path": "web/another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json",
       "required": true,
       "role": "tokenizer",
-      "sha256": "b5eea6b2a578c705da409827fd821674fa1b2b642c6564e8f4f4abbf6f3d02ac"
+      "sha256": "a61b7aecc96d699be421b7d8b220e5d5cf04df3da6da5943715388a95bea115b"
     }
   ],
   "license": "project-internal-engineering-candidate",
@@ -102,5 +102,5 @@
   },
   "source_url": "local-a12-handoff",
   "tokenizer": "exact_runtime_bpe_16000_runtime_compatibility_only",
-  "total_bytes": 49304950
+  "total_bytes": 49304981
 }

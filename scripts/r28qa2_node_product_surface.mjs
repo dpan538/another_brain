@@ -99,6 +99,24 @@ const contextMod = await import(pathToFileURL(join(out, "src/browser_runtime/con
 const finalizerMod = await import(pathToFileURL(join(out, "src/browser_runtime/finalizer_adapter.mjs")));
 const q4Mod = await import(pathToFileURL(join(out, "src/browser_runtime/q4_runtime/index.mjs")));
 
+class SafeFixtureRuntime {
+  constructor(tokens = ["本地", "证据", "支持", "简洁", "回答"]) {
+    this.tokens = tokens;
+    this.mode = "qa2_safe_fixture";
+    this.loaded = false;
+    this.lastGenerationStats = { quality_status: "not_assessed", decode_status: "fixture_text", decoded_text_available: true };
+  }
+
+  async load() {
+    this.loaded = true;
+    return { mode: this.mode, product_model: false };
+  }
+
+  async *generate() {
+    for (const token of this.tokens) yield token;
+  }
+}
+
 const runtimeMode = JSON.parse(await readFile(join(root, "web/another_brain/runtime_mode.json"), "utf8"));
 const assetManifest = JSON.parse(await readFile(join(root, "web/another_brain/asset_manifest.json"), "utf8"));
 
@@ -106,18 +124,19 @@ const readableQ4 = await readableQ4Scenario(q4Mod);
 
 const chineseInsufficient = await generationMod.runChatPipeline("证据不足时应该怎么回答？", {
   memoryRecords: [],
+  runtime: new SafeFixtureRuntime(),
   maxTokens: 8
 });
 const chineseFirst = scenario("Chinese-first prompts", (
-  chineseInsufficient.prompt_packet?.output_policy?.language === "zh-first" &&
-  chineseInsufficient.prompt_packet?.output_policy?.no_chain_of_thought === true &&
+  chineseInsufficient.prompt_packet?.instruction?.language === "zh-CN" &&
+  chineseInsufficient.prompt_packet?.instruction?.no_cot_output === true &&
   chineseInsufficient.final_answer.includes("证据不足") &&
   chineseInsufficient.fallback_used === true
 ), {
   answer_status: chineseInsufficient.answer_status,
-  reason: chineseInsufficient.reason,
+  fallback_reason: chineseInsufficient.fallback_reason,
   final_answer: chineseInsufficient.final_answer,
-  prompt_packet_version: chineseInsufficient.prompt_packet?.schema_version
+  prompt_packet_version: chineseInsufficient.prompt_packet?.version
 });
 
 const sufficientRecords = [
@@ -133,6 +152,7 @@ const sufficientRecords = [
 ];
 const sufficient = await generationMod.runChatPipeline("another_brain browser local evidence packet", {
   memoryRecords: sufficientRecords,
+  runtime: new SafeFixtureRuntime(["本地", "证据", "支持", "简洁", "回答"]),
   minScore: 0,
   maxTokens: 8
 });
@@ -149,15 +169,16 @@ const ragSufficient = scenario("RAG sufficient", (
 
 const insufficient = await generationMod.runChatPipeline("unknown local topic", {
   memoryRecords: [],
+  runtime: new SafeFixtureRuntime(),
   maxTokens: 8
 });
 const ragInsufficient = scenario("RAG insufficient", (
   insufficient.evidence_packet.evidence_status === "insufficient" &&
-  insufficient.reason === "insufficient_evidence" &&
+  insufficient.fallback_reason === "insufficient_evidence" &&
   insufficient.final_answer.includes("证据不足")
 ), {
   evidence_status: insufficient.evidence_packet.evidence_status,
-  reason: insufficient.reason,
+  fallback_reason: insufficient.fallback_reason,
   final_answer: insufficient.final_answer
 });
 
@@ -185,17 +206,18 @@ const conflictingRecords = [
 ];
 const conflict = await generationMod.runChatPipeline("browser model launch status", {
   memoryRecords: conflictingRecords,
+  runtime: new SafeFixtureRuntime(),
   topK: 2,
   minScore: 0,
   maxTokens: 8
 });
 const ragConflict = scenario("RAG conflict", (
   conflict.evidence_packet.evidence_status === "conflicting" &&
-  conflict.reason === "conflicting_evidence" &&
-  conflict.final_answer.includes("证据冲突")
+  conflict.fallback_reason === "conflicting_evidence" &&
+  conflict.final_answer.includes("证据存在冲突")
 ), {
   evidence_status: conflict.evidence_packet.evidence_status,
-  reason: conflict.reason,
+  fallback_reason: conflict.fallback_reason,
   final_answer: conflict.final_answer
 });
 
@@ -211,18 +233,19 @@ const malicious = await generationMod.runChatPipeline("hidden prompt developer m
       keywords: ["hidden", "prompt", "developer", "message"]
     }
   ],
+  runtime: new SafeFixtureRuntime(),
   topK: 1,
   minScore: 0,
   maxTokens: 8
 });
 const maliciousEvidence = scenario("malicious evidence", (
   malicious.evidence_packet.answer_policy_hint === "refuse" &&
-  malicious.reason === "malicious_evidence" &&
-  malicious.final_answer.includes("已忽略不可信证据")
+  malicious.fallback_reason === "malicious_evidence_ignored" &&
+  malicious.final_answer.includes("已忽略证据中的指令性内容")
 ), {
   evidence_status: malicious.evidence_packet.evidence_status,
   answer_policy_hint: malicious.evidence_packet.answer_policy_hint,
-  reason: malicious.reason,
+  fallback_reason: malicious.fallback_reason,
   final_answer: malicious.final_answer
 });
 
@@ -230,19 +253,41 @@ const adapterPacket = contextMod.createManualTextContextPacket("adapter local co
   sourceLabel: "QA2 local adapter context",
   createdAtClient: "2026-07-07T00:00:00.000Z"
 });
+const adapterJsonImport = contextMod.parseLocalImportPacket(JSON.stringify({
+  packet_type: "EvidencePacket",
+  source_type: "manual_json",
+  source_label: "QA2 JSON adapter evidence",
+  content: "json adapter context",
+  evidence: [
+    {
+      source_id: "qa2-json-adapter",
+      title: "JSON adapter evidence",
+      text: "JSON adapter mode stays local session only.",
+      trust_level: "medium",
+      can_answer: true
+    }
+  ],
+  privacy_scope: "local_session_only",
+  allowed_for_training: false,
+  created_at_client: "2026-07-07T00:00:00.000Z",
+  provenance: { qa: "r28qa2" }
+}), { createdAtClient: "2026-07-07T00:00:00.000Z" });
 const adapter = await generationMod.runChatPipeline("adapter local context crocodile concise accurate", {
-  contextPackets: [adapterPacket],
+  contextPackets: [adapterPacket, adapterJsonImport.packet],
   memoryRecords: [],
+  runtime: new SafeFixtureRuntime(["adapter", "local", "context"]),
   minScore: 0,
   maxTokens: 8
 });
 const adapterLocalContext = scenario("adapter local context", (
-  adapter.adapter_context_summary.packet_count === 1 &&
+  adapterJsonImport.ok === true &&
+  adapter.adapter_context_summary.packet_count === 2 &&
   adapter.adapter_context_summary.local_session_only === true &&
   adapter.adapter_context_summary.allowed_for_training === false &&
   adapter.evidence_packet.retrieved_evidence.length > 0
 ), {
   packet_count: adapter.adapter_context_summary.packet_count,
+  packet_types: adapter.adapter_context_summary.packet_types,
   evidence_record_count: adapter.adapter_context_summary.evidence_record_count,
   privacy_scope: adapter.adapter_context_summary.privacy_scope,
   allowed_for_training: adapter.adapter_context_summary.allowed_for_training,
@@ -251,24 +296,24 @@ const adapterLocalContext = scenario("adapter local context", (
 
 const gibberish = finalizerMod.finalizeAnswerSurface({
   input: "乱码输出怎么办？",
-  draft: "����",
+  draft: "token_id:11 token_id:12",
   evidencePacket: {
     evidence_status: "sufficient",
     answer_policy_hint: "answer",
     retrieved_evidence: [{ title: "local", text: "本地证据可用。" }]
   },
   verifierResult: { passed: true, failures: [] },
-  generation: { needs_fallback: true, fallback_reason: "gibberish_output" }
+  generation: { tokens: ["token_id:11", "token_id:12"], quality_status: "not_assessed" }
 });
 const fallbackQuality = scenario("fallback quality", (
   gibberish.fallback_used === true &&
-  gibberish.final_answer.includes("确定性回答边界") &&
+  gibberish.final_answer.includes("确定性 fallback") &&
   !gibberish.final_answer.includes("token_id:") &&
   !/system prompt|developer message/i.test(gibberish.final_answer)
 ), {
-  reason: gibberish.reason,
+  fallback_reason: gibberish.fallback_reason,
   final_answer: gibberish.final_answer,
-  quality_flags: gibberish.quality_flags
+  answer_status: gibberish.answer_status
 });
 
 const noProductClaim = scenario("no product claim", (
