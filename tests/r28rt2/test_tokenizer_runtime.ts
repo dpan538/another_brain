@@ -8,7 +8,7 @@ async function readJson(path) {
 }
 
 test("RT2 tokenizer runtime inspects R28M1 metadata without product-tokenizer claims", async () => {
-  const tokenizer = await readJson("web/another_brain/model_assets/r28m1/tokenizer/tokenizer.json");
+  const tokenizer = await readJson("web/another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json");
   const modelConfig = await readJson("web/another_brain/model_assets/r28m1/model.config.json");
   const quantization = await readJson("web/another_brain/model_assets/r28m1/quantization.manifest.json");
   const inspected = inspectRuntimeTokenizer(tokenizer, modelConfig, quantization);
@@ -16,8 +16,8 @@ test("RT2 tokenizer runtime inspects R28M1 metadata without product-tokenizer cl
   assert.equal(inspected.vocab_size, 16000);
   assert.equal(inspected.encode_available, true);
   assert.equal(inspected.decode_available, true);
-  assert.equal(inspected.exact_decode, false);
-  assert.equal(inspected.decode_status, "lossy_runtime_display_codec");
+  assert.equal(inspected.exact_decode, true);
+  assert.equal(inspected.decode_status, "exact_runtime_tokenizer");
   assert.equal(inspected.non_claims.product_tokenizer, false);
   assert.equal(inspected.non_claims.tokenizer_training_artifact, false);
 });

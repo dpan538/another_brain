@@ -25,5 +25,5 @@ test("static q4 runtime uses real forward path for generated fixture", async () 
   assert.equal(generation.tokens.length, 1);
   assert.ok(generation.tokens[0].length > 0);
   assert.equal(generation.tokens[0].includes("token_id:"), false);
-  assert.equal(generation.decode_status, "lossy_runtime_display_codec");
+  assert.equal(generation.decode_status, "lossy_runtime_display_codec_emergency_fallback");
 });

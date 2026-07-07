@@ -1,4 +1,5 @@
 import { DEFAULT_SPECIAL_TOKEN_IDS, normalizeSpecialTokens } from "./special_tokens.ts";
+import { encodeExactRuntimeText, hasExactRuntimeTokenizer } from "./exact_runtime_tokenizer.ts";
 
 function clampVocabId(value, vocabSize) {
   const id = Number(value);
@@ -7,6 +8,9 @@ function clampVocabId(value, vocabSize) {
 }
 
 export function encodeTextToTokenIds(text, options = {}) {
+  if (hasExactRuntimeTokenizer(options.tokenizer || {})) {
+    return encodeExactRuntimeText(text, options);
+  }
   const vocabSize = Math.max(4, Number(options.vocabSize || options.tokenizer?.vocab_size || 16000));
   const maxTokens = Math.max(1, Number(options.maxTokens || options.contextLength || 256));
   const special = normalizeSpecialTokens(options.tokenizer || {});
@@ -25,6 +29,7 @@ export function encodeTextToTokenIds(text, options = {}) {
     vocab_size: vocabSize,
     tokenizer_type: "unicode_modulo_runtime_display_codec",
     exact_encode: false,
+    encode_status: "lossy_runtime_display_codec_emergency_fallback",
     preserves_chinese_codepoints_before_modulo: /[\u3400-\u9fff]/u.test(value),
     unknown_token_id: special.unk,
     special_tokens: special

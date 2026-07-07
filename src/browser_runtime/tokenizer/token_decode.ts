@@ -1,4 +1,5 @@
 import { isSpecialTokenId, normalizeSpecialTokens } from "./special_tokens.ts";
+import { decodeExactRuntimeTokenIds, hasExactRuntimeTokenizer } from "./exact_runtime_tokenizer.ts";
 
 const DISPLAY_PIECES = Object.freeze([
   "我",
@@ -52,6 +53,10 @@ export function displayPieceForTokenId(tokenId, index = 0) {
 }
 
 export function decodeTokenIdsToText(tokenIds, options = {}) {
+  if (hasExactRuntimeTokenizer(options.tokenizer || {})) {
+    const decoded = decodeExactRuntimeTokenIds(tokenIds, options);
+    if (decoded.ok || options.disableLossyFallback === true) return decoded;
+  }
   const ids = Array.isArray(tokenIds) ? tokenIds.map((token) => Number(token)) : [];
   const tokenizer = options.tokenizer || {};
   const special = normalizeSpecialTokens(tokenizer);
@@ -79,7 +84,7 @@ export function decodeTokenIdsToText(tokenIds, options = {}) {
     ok: text.length > 0,
     text,
     exact_decode: exact,
-    decode_status: exact ? "exact_vocab_decode" : "lossy_runtime_display_codec",
+    decode_status: exact ? "exact_vocab_decode" : "lossy_runtime_display_codec_emergency_fallback",
     quality_status: exact ? "not_assessed" : "quality_not_ready",
     debug_token_ids: options.debugTokenIds ? ids : [],
     debug_unknown_tokens: options.debugUnknownTokens ? debugUnknownTokens : [],

@@ -1,5 +1,5 @@
 {
-  "file_count": 8,
+  "file_count": 9,
   "files": [
     {
       "bytes": 34076,
@@ -40,9 +40,14 @@
       "bytes": 938,
       "path": "another_brain/model_assets/r28m1/tokenizer/tokenizer.json",
       "sha256": "a6aaf5af5d649e5bc8895fff46a4d1ee9719c4808a420c197d3a8d3d8722024f"
+    },
+    {
+      "bytes": 997419,
+      "path": "another_brain/model_assets/r28m1/tokenizer/runtime_tokenizer.json",
+      "sha256": "b5eea6b2a578c705da409827fd821674fa1b2b642c6564e8f4f4abbf6f3d02ac"
     }
   ],
   "same_origin_only": true,
-  "schema_version": "r28m1.checksums.v1",
-  "total_bytes": 48305637
+  "schema_version": "r28tok0.checksums.v1",
+  "total_bytes": 49303056
 }
