@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run build:vercel",
-    "build:vercel": "node scripts/prepare_vercel_static_build.mjs && npm run check:knowledge-runtime && npm run check:vercel-build",
+    "build:vercel": "node scripts/r28hotfix1_sync_static_entries.mjs && node scripts/prepare_vercel_static_build.mjs && npm run check:knowledge-runtime && npm run check:vercel-build",
     "check:vercel-build": "node scripts/check_vercel_static_build.mjs",
     "build:knowledge": "python3 scripts/build_knowledge_base.py && python3 scripts/build_knowledge_shards.py",
     "check": "npm run check:release && npm run check:launch-policy && npm run check:seo && npm run check:identity-pack && npm run check:help-onboarding && npm run check:fallback-overuse && npm run check:dataset-splits && npm run check:frontend-latency && npm run check:voice-verifier && npm run check:output-sanitizer && npm run check:dialog-sanity && npm run check:gate-effectiveness && npm run check:r9-reasoning-gate && npm run check:culture-awareness && npm run check:context-gate && npm run check:blind-casepacks && python3 scripts/validate_distillation.py && python3 scripts/eval_tiny_router.py && python3 scripts/eval_dialog_persona.py && python3 scripts/validate_context_stress_cases.py && python3 scripts/validate_clone_logic_ethics.py && node scripts/eval_casepacks_node.mjs --min-score 0.88 --out artifacts/training_os/casepack_eval_report.json && node scripts/run_model_gate_node.mjs --out artifacts/training_os/model_inference_report.json",
@@ -431,6 +431,7 @@
     "test:r28ux3": "node scripts/r28ux3_run_ts_tests.mjs",
     "test:r28ux4": "node scripts/r28ux4_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28ux4 -p 'test_*.py'",
     "test:r28hotfix0": "node scripts/r28hotfix0_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28hotfix0 -p 'test_*.py'",
+    "test:r28hotfix1": "node scripts/r28hotfix1_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28hotfix1 -p 'test_*.py'",
     "test:r28pr0": "python3 -m unittest discover -s tests/r28pr0",
     "test:r28d8": "python3 -m unittest discover -s tests/r28d8",
     "test:r28qa2": "python3 -m unittest discover -s tests/r28qa2",

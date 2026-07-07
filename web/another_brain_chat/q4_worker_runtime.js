@@ -1,4 +1,4 @@
-const R28HOTFIX0_Q4_RUNTIME_VERSION = "r28hotfix0-runtime-ui-activation";
+const R28HOTFIX1_Q4_RUNTIME_VERSION = "r28hotfix1-route-loop-free-runtime";
 const PAIR_SEPARATOR = "\u0001";
 const BYTE_ENCODER = new Map();
 const BYTE_DECODER = new Map();
@@ -411,7 +411,7 @@ export async function staticQ4Capability() {
   const pkg = await runtimePackage();
   return {
     ok: true,
-    runtime_version: R28HOTFIX0_Q4_RUNTIME_VERSION,
+    runtime_version: R28HOTFIX1_Q4_RUNTIME_VERSION,
     mode: "static_q4_experimental",
     manifest_loaded: true,
     q4_shard_count: (pkg.quantizationManifest.shards || []).length || pkg.summary.shardAssets.length,

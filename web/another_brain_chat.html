@@ -3,25 +3,260 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>R28HOTFIX0 chat route redirect</title>
-    <meta name="robots" content="noindex,nofollow" />
-    <meta http-equiv="refresh" content="0; url=/another_brain_chat/?v=r28hotfix0-runtime-ui-activation" />
-    <script>
-      (() => {
-        const target = new URL("/another_brain_chat/", window.location.href);
-        target.searchParams.set("v", "r28hotfix0-runtime-ui-activation");
-        for (const [key, value] of new URLSearchParams(window.location.search)) {
-          if (key !== "v") target.searchParams.set(key, value);
-        }
-        target.hash = window.location.hash;
-        window.location.replace(target.href);
-      })();
-    </script>
+    <title>R28HOTFIX1 another_brain preview | Process Transparent Chat</title>
+    <meta name="another-brain-ui-version" content="r28hotfix1-route-loop-free-runtime" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2528'/%3E%3Cpath d='M8 18h16M8 12h10M8 24h7' stroke='%23f4f6f5' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28hotfix1-route-loop-free-runtime" />
   </head>
   <body>
-    <main aria-label="R28HOTFIX0 /another_brain_chat canonical redirect">
-      <p>R28HOTFIX0 / 过程摘要 / static_q4_experimental / exact_runtime_tokenizer</p>
-      <p><a href="/another_brain_chat/?v=r28hotfix0-runtime-ui-activation">打开 /another_brain_chat/</a></p>
+    <main class="app-shell" aria-label="another_brain process transparent preview">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">another_brain preview</p>
+          <h1 id="chat-title">过程透明的本地回答界面</h1>
+          <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
+        </div>
+        <div class="header-badges" aria-label="runtime status">
+          <span class="badge badge-version" id="ui-version-badge">R28HOTFIX1 · r28hotfix1-route-loop-free-runtime</span>
+          <span class="badge badge-local" id="local-indicator">local/static</span>
+          <span class="badge badge-backend" id="backend-badge">No backend inference</span>
+          <span class="badge" id="model-source-badge">static_q4_experimental</span>
+          <span class="badge" id="tokenizer-status-badge">exact_runtime_tokenizer: checking</span>
+          <span class="badge" id="router-status-badge">router: enabled</span>
+          <span class="badge badge-warn" id="q4-status-badge">q4 forward: not checked</span>
+          <span class="badge badge-warn" id="non-product-badge">not product model</span>
+        </div>
+      </header>
+
+      <section class="status-grid" aria-label="delivery and runtime summary">
+        <div>
+          <span class="status-label">Delivery</span>
+          <strong id="delivery-mode">demo_static</strong>
+        </div>
+        <div>
+          <span class="status-label">Model Mode</span>
+          <strong id="configured-model-mode">static_q4_experimental</strong>
+        </div>
+        <div>
+          <span class="status-label">RAG Mode</span>
+          <strong id="configured-rag-mode">static_demo</strong>
+        </div>
+        <div>
+          <span class="status-label">Budget</span>
+          <strong id="budget-status">under_100mb</strong>
+        </div>
+        <div>
+          <span class="status-label">Runtime</span>
+          <strong id="runtime-mode-status">static_q4_experimental</strong>
+        </div>
+        <div>
+          <span class="status-label">Tokenizer</span>
+          <strong id="decode-status">not checked</strong>
+        </div>
+        <div>
+          <span class="status-label">Answer Source</span>
+          <strong id="answer-source-status">not_run</strong>
+        </div>
+        <div>
+          <span class="status-label">Fallback Reason</span>
+          <strong id="fallback-reason-status">none</strong>
+        </div>
+        <div>
+          <span class="status-label">UI Build</span>
+          <strong id="ui-build-status">R28HOTFIX1 / r28hotfix1-route-loop-free-runtime</strong>
+        </div>
+      </section>
+
+      <section class="workspace-grid">
+        <section class="conversation-pane" aria-labelledby="chat-title">
+          <section class="compact-status" aria-label="answer pipeline status">
+            <div>
+              <span class="status-label">Model</span>
+              <strong id="model-status">q4 checking</strong>
+            </div>
+            <div>
+              <span class="status-label">Retrieval</span>
+              <strong id="retrieval-status">static/local packet</strong>
+            </div>
+            <div>
+              <span class="status-label">Verifier</span>
+              <strong id="verifier-status">Ready</strong>
+            </div>
+            <div>
+              <span class="status-label">Fallback</span>
+              <strong id="fallback-status">Unused</strong>
+            </div>
+          </section>
+
+          <section class="message-list" id="message-list" aria-live="polite" aria-label="messages">
+            <article class="message message-assistant">
+              <div class="message-role">another_brain</div>
+              <p>
+                我会显示公开过程摘要：输入包、本地上下文、检索证据、模型草稿、路由判断和最终回答。若 q4 没有真正参与，会明确标出。
+              </p>
+            </article>
+          </section>
+
+          <section class="answer-status-card" aria-label="answer status">
+            <div>
+              <span class="status-label">Route</span>
+              <strong id="route-status">not_run</strong>
+            </div>
+            <div>
+              <span class="status-label">Tokens</span>
+              <strong id="token-count-status">0 generated</strong>
+            </div>
+            <div>
+              <span class="status-label">model_draft_generated</span>
+              <strong id="draft-generated-status">false</strong>
+            </div>
+            <div>
+              <span class="status-label">finalizer_replaced_draft</span>
+              <strong id="draft-replaced-status">false</strong>
+            </div>
+          </section>
+
+          <form class="composer" id="chat-form">
+            <label class="sr-only" for="chat-input">Message</label>
+            <textarea id="chat-input" name="message" rows="2" placeholder="输入中文问题，或试试：你好" required></textarea>
+            <div class="composer-actions">
+              <button type="submit" id="send-button">发送</button>
+              <button type="button" class="button-secondary" id="abort-button" disabled>停止</button>
+              <button type="button" class="button-secondary" id="clear-chat-button">清空</button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="process-panel" id="process-panel" aria-label="过程摘要">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">公开过程</p>
+              <h2>过程摘要</h2>
+            </div>
+            <button type="button" class="button-secondary small-button" id="model-self-check-button">检查本地模型路径</button>
+          </div>
+
+          <section class="self-check" aria-label="model path self check">
+            <div><span>模型资产</span><strong id="self-check-assets">未检查</strong></div>
+            <div><span>Tokenizer</span><strong id="self-check-tokenizer">未检查</strong></div>
+            <div><span>q4 forward</span><strong id="self-check-q4">未检查</strong></div>
+            <div><span>tokens generated</span><strong id="self-check-tokens">0</strong></div>
+            <div><span>runtime mode</span><strong id="self-check-runtime-mode">not_checked</strong></div>
+            <div><span>answer source</span><strong id="self-check-answer-source">not_run</strong></div>
+            <div><span>fallback</span><strong id="self-check-fallback">可用</strong></div>
+            <div><span>fallback reason</span><strong id="self-check-fallback-reason">none</strong></div>
+            <p id="self-check-output">输出：未检查</p>
+            <p id="self-check-blockers">blocker：none</p>
+          </section>
+
+          <ol class="trace-steps" aria-label="six stage process trace">
+            <li class="process-step" data-stage="input-packet">
+              <span class="step-index">①</span>
+              <div>
+                <h3>输入包</h3>
+                <p id="trace-input-summary">等待输入。</p>
+              </div>
+            </li>
+            <li class="process-step" data-stage="local-context">
+              <span class="step-index">②</span>
+              <div>
+                <h3>本地上下文</h3>
+                <p id="trace-context-summary">local session only / not saved.</p>
+              </div>
+            </li>
+            <li class="process-step" data-stage="rag-evidence">
+              <span class="step-index">③</span>
+              <div>
+                <h3>检索证据</h3>
+                <p id="trace-evidence-summary">尚未检索。</p>
+              </div>
+            </li>
+            <li class="process-step" data-stage="model-draft">
+              <span class="step-index">④</span>
+              <div>
+                <h3>模型草稿</h3>
+                <p id="trace-draft-summary">q4 forward 未检查。</p>
+              </div>
+            </li>
+            <li class="process-step" data-stage="router-route">
+              <span class="step-index">⑤</span>
+              <div>
+                <h3>路由判断</h3>
+                <p id="trace-router-summary">route: not_run</p>
+              </div>
+            </li>
+            <li class="process-step" data-stage="final-answer">
+              <span class="step-index">⑥</span>
+              <div>
+                <h3>最终回答</h3>
+                <p id="trace-final-summary">finalizer 等待回答。</p>
+              </div>
+            </li>
+          </ol>
+
+          <details class="context-bridge">
+            <summary>
+              <span>Local context / adapter</span>
+              <strong id="context-bridge-status">0 packets / 0 evidence</strong>
+            </summary>
+            <div class="context-bridge-body">
+              <textarea id="context-import" rows="3" placeholder="粘贴本地 context packet 或临时文本"></textarea>
+              <div class="context-actions">
+                <button type="button" id="context-import-button">导入</button>
+                <button type="button" id="state-export-button" disabled>导出 state</button>
+                <button type="button" class="button-secondary" id="context-clear-button">清除</button>
+              </div>
+            </div>
+            <p id="context-validation" role="status" aria-live="polite">Local session only / not saved / not training data</p>
+          </details>
+
+          <details class="debug-panel">
+            <summary>
+              <label class="debug-toggle">
+                <input type="checkbox" id="debug-toggle" />
+                <span>Debug drawer</span>
+              </label>
+            </summary>
+            <div class="debug-grid">
+              <div>
+                <span class="status-label">Asset Cache</span>
+                <strong id="asset-cache-status">Memory fallback</strong>
+              </div>
+              <div>
+                <span class="status-label">Asset Progress</span>
+                <strong id="asset-progress-status">0/0</strong>
+              </div>
+              <div>
+                <span class="status-label">Verification</span>
+                <strong id="asset-verification-status">No model assets</strong>
+              </div>
+              <div>
+                <span class="status-label">Offline</span>
+                <strong id="offline-status">Static shell only</strong>
+              </div>
+              <div>
+                <span class="status-label">Candidate Route</span>
+                <strong id="candidate-route-status">synthetic_only</strong>
+              </div>
+              <div>
+                <span class="status-label">Handoff</span>
+                <strong id="handoff-source-status">none</strong>
+              </div>
+              <div>
+                <span class="status-label">Adapter</span>
+                <strong id="adapter-status">local session ready</strong>
+              </div>
+              <div>
+                <span class="status-label">Release Blockers</span>
+                <strong id="release-blocker-status">product admission pending</strong>
+              </div>
+            </div>
+            <pre id="debug-output" hidden>{}</pre>
+          </details>
+        </aside>
+      </section>
     </main>
+
+    <script type="module" src="/another_brain_chat/app.js?v=r28hotfix1-route-loop-free-runtime"></script>
   </body>
 </html>

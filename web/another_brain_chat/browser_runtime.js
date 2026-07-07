@@ -31,9 +31,9 @@ const ROUTER_NON_CLAIMS = [
   "no Doubao",
   "hard router is product-surface guard only"
 ];
-const R28HOTFIX0_UI_VERSION = "r28hotfix0-runtime-ui-activation";
-const R28UX4_UI_VERSION = R28HOTFIX0_UI_VERSION;
-const R28UX4_ASSET_CACHE_KEY = "another_brain_r28hotfix0_asset_cache_version";
+const R28HOTFIX1_UI_VERSION = "r28hotfix1-route-loop-free-runtime";
+const R28UX4_UI_VERSION = R28HOTFIX1_UI_VERSION;
+const R28UX4_ASSET_CACHE_KEY = "another_brain_r28hotfix1_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
   insufficient_evidence: "目前证据不足，我不能把这个判断说成确定结论。",
@@ -580,7 +580,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28hotfix0-runtime-ui-activation", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28hotfix1-route-loop-free-runtime", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -684,7 +684,7 @@ export class BrowserChatRuntime {
 
     try {
       if (!this.worker && this.capabilities.worker_available) await this.load();
-      smokePreview = await this.draftWithWorker("R28HOTFIX0 q4 path smoke", { maxTokens: 1, timeoutMs: 120000, contextLength: 32 });
+      smokePreview = await this.draftWithWorker("R28HOTFIX1 q4 path smoke", { maxTokens: 1, timeoutMs: 120000, contextLength: 32 });
       smokeStats = this.lastRuntimeStats || null;
     } catch (error) {
       blockers.push(error.message || this.lastFallbackReason || "q4_forward_smoke_failed");

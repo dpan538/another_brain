@@ -1,14 +1,14 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix0-runtime-ui-activation";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix0-runtime-ui-activation";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix1-route-loop-free-runtime";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix1-route-loop-free-runtime";
 
-const R28HOTFIX0_UI_VERSION = "r28hotfix0-runtime-ui-activation";
-const R28HOTFIX0_BUILD_MARKER = "R28HOTFIX0";
+const R28HOTFIX1_UI_VERSION = "r28hotfix1-route-loop-free-runtime";
+const R28HOTFIX1_BUILD_MARKER = "R28HOTFIX1";
 
 const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_demo",
-  prelaunch_stage: "r28hotfix0",
+  prelaunch_stage: "r28hotfix1",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -302,8 +302,8 @@ function renderDeliveryConfig(config) {
   setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
   setText(routerStatusBadge, "router: enabled");
-  setText(uiVersionBadge, `${R28HOTFIX0_BUILD_MARKER} · ${config.ui_version || R28HOTFIX0_UI_VERSION}`);
-  setText(uiBuildStatus, `${R28HOTFIX0_BUILD_MARKER} / ${config.ui_version || R28HOTFIX0_UI_VERSION}`);
+  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${config.ui_version || R28HOTFIX1_UI_VERSION}`);
+  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${config.ui_version || R28HOTFIX1_UI_VERSION}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   setText(candidateRouteStatus, config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route);
@@ -321,7 +321,7 @@ function renderDeliveryConfig(config) {
 
 function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
   const assetStatus = status || {};
-  setText(assetCacheStatus, `${assetStatus.cache_mode || config.asset_cache_mode} / ${assetStatus.cache_result || "not_checked"} / ${assetStatus.cache_version || config.ui_version || R28HOTFIX0_UI_VERSION}`);
+  setText(assetCacheStatus, `${assetStatus.cache_mode || config.asset_cache_mode} / ${assetStatus.cache_result || "not_checked"} / ${assetStatus.cache_version || config.ui_version || R28HOTFIX1_UI_VERSION}`);
   setText(assetProgressStatus, assetStatus.progress || "0/0");
   setText(assetVerificationStatus, assetStatus.verification || config.asset_cache_status || "no_model_assets");
   setText(offlineStatus, assetStatus.offline_ready
@@ -376,7 +376,7 @@ async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
   renderAssetStatus(null, deliveryConfig);
-  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: deliveryConfig.ui_version || R28HOTFIX0_UI_VERSION });
+  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: deliveryConfig.ui_version || R28HOTFIX1_UI_VERSION });
   runtime.setContextPackets(contextBridge.getPackets());
   const loadResult = await runtime.load();
   setText(modelStatus, `${loadResult.mode} loaded`);

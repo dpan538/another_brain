@@ -5,13 +5,6 @@
   "outputDirectory": "web",
   "cleanUrls": true,
   "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/another_brain_chat",
-      "destination": "/another_brain_chat/",
-      "permanent": false
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",

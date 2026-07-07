@@ -11,9 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 WEB_ROOT = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28ux4" / "reports" / "route_audit.json"
 
-ACCEPTED_UI_VERSIONS = ("r28ux4-visible-preview-ui", "r28hotfix0-runtime-ui-activation")
+ACCEPTED_UI_VERSIONS = ("r28ux4-visible-preview-ui", "r28hotfix0-runtime-ui-activation", "r28hotfix1-route-loop-free-runtime")
 PROCESS_MARKERS = ("过程摘要", "static_q4_experimental", "exact_runtime_tokenizer")
-BUILD_MARKERS = ("R28UX4", "R28HOTFIX0")
+BUILD_MARKERS = ("R28UX4", "R28HOTFIX0", "R28HOTFIX1")
 
 
 def read_text(path: Path) -> str:
@@ -49,7 +49,7 @@ def build_route_audit_report(write: bool = True) -> dict[str, Any]:
   checks = {
     "root_contains_build_marker": any(marker in root_html for marker in BUILD_MARKERS),
     "root_contains_process_marker": "过程摘要" in root_html,
-    "root_redirects_to_chat": root_redirect_target == "/another_brain_chat/",
+    "root_redirects_to_chat": root_redirect_target in ("", "/another_brain_chat/"),
     "chat_contains_build_marker": any(marker in chat_html for marker in BUILD_MARKERS),
     "chat_contains_process_panel": all(marker in chat_html for marker in ("process-panel", "过程摘要", "输入包", "最终回答")),
     "chat_loads_cache_busted_app": any(f"app.js?v={version}" in chat_html for version in ACCEPTED_UI_VERSIONS),
