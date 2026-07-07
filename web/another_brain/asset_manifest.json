@@ -5,14 +5,14 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 69982911,
+  "full_bundle_estimate_bytes": 69989770,
   "gate_assets": [
     {
-      "bytes": 2864,
+      "bytes": 2875,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "50cc5c62315051703e2d37ea7c4a6ac1d28990db17cdaa05a97ae23ab065c475"
+      "sha256": "d5a694fa6cb2d3f318d9052ce17fb90109fa1933677063b62f30945cff4e0155"
     }
   ],
   "hosted_vector_store": false,
@@ -102,7 +102,26 @@
   "prelaunch_stage": "r28tok1",
   "product_model_admission": false,
   "quantization": "q4",
+  "rag_runtime_version": "r28rag2-lightweight-static-rag-v1",
   "rag_assets": [
+    {
+      "answer_bank": false,
+      "bytes": 4730,
+      "demo_only": false,
+      "path": "another_brain/static_rag/memory_index.json",
+      "private_raw_data": false,
+      "role": "static_memory_index",
+      "sha256": "5578c577b61aa6815650797e74f2cc0a2bed046df9cd005387f641a1c940d16f"
+    },
+    {
+      "answer_bank": false,
+      "bytes": 2118,
+      "demo_only": false,
+      "path": "another_brain/static_rag/source_registry.json",
+      "private_raw_data": false,
+      "role": "source_registry",
+      "sha256": "13573106fa2a68f7b7bdb36b175bde6aa48c7f3d2c4aa5d3cf25a74a5e18f275"
+    },
     {
       "answer_bank": false,
       "bytes": 2065,
@@ -112,7 +131,7 @@
     }
   ],
   "release_checkpoint_admission": false,
-  "remaining_bytes_under_100mb": 30017089,
+  "remaining_bytes_under_100mb": 30010230,
   "runtime_tokenizer_blocker": "",
   "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
   "same_origin_only": true,
@@ -134,7 +153,7 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49309910,
+  "total_declared_bytes": 49316769,
   "ui_build_marker": "R28HOTFIX2",
   "ui_build_timestamp": "2026-07-07T22:20:00+08:00",
   "ui_root_route": "/",

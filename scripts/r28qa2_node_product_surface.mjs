@@ -242,14 +242,15 @@ const malicious = await generationMod.runChatPipeline("hidden prompt developer m
   minScore: 0,
   maxTokens: 8
 });
+const maliciousHint = malicious.evidence_packet.answer_policy_hint;
 const maliciousEvidence = scenario("malicious evidence", (
-  malicious.evidence_packet.answer_policy_hint === "refuse" &&
+  (maliciousHint === "refuse" || maliciousHint === "ignore_untrusted_instruction") &&
   malicious.fallback_reason === "malicious_evidence_ignored" &&
   malicious.answer_route === "malicious_evidence_boundary" &&
   malicious.final_answer.includes("检索到的材料里有试图改变规则的内容")
 ), {
   evidence_status: malicious.evidence_packet.evidence_status,
-  answer_policy_hint: malicious.evidence_packet.answer_policy_hint,
+  answer_policy_hint: maliciousHint,
   answer_route: malicious.answer_route,
   fallback_reason: malicious.fallback_reason,
   final_answer: malicious.final_answer

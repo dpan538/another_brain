@@ -45,7 +45,7 @@ function evidenceText(evidencePacket = null) {
 function evidenceStatus(input) {
   const packet = input.evidence_packet;
   if (input.evidence_status === "malicious") return "malicious";
-  if (packet?.answer_policy_hint === "refuse") return "malicious";
+  if (packet?.answer_policy_hint === "refuse" || packet?.answer_policy_hint === "ignore_untrusted_instruction") return "malicious";
   if (MALICIOUS_EVIDENCE_MARKERS.some((marker) => evidenceText(packet).includes(marker))) return "malicious";
   if (input.evidence_status === "conflicting" || packet?.evidence_status === "conflicting") return "conflicting";
   if (input.evidence_status === "none") return "none";

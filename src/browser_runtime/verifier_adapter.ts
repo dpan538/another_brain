@@ -19,7 +19,9 @@ function verifyEvidencePacket(evidencePacket) {
   if (evidencePacket.evidence_status === "insufficient") failures.push("insufficient_evidence");
   if (evidencePacket.evidence_status === "conflicting") failures.push("conflicting_evidence");
   if (evidencePacket.evidence_status === "irrelevant") failures.push("irrelevant_evidence");
-  if (evidencePacket.answer_policy_hint === "refuse") failures.push("evidence_policy_refuse");
+  if (evidencePacket.answer_policy_hint === "refuse" || evidencePacket.answer_policy_hint === "ignore_untrusted_instruction") {
+    failures.push("evidence_policy_refuse");
+  }
   for (const item of evidence) {
     const text = `${item.title || ""}\n${item.text || ""}`.toLowerCase();
     if (MALICIOUS_EVIDENCE_MARKERS.some((marker) => text.includes(marker))) {

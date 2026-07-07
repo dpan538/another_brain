@@ -9,7 +9,7 @@ const R28HOTFIX1_BUILD_MARKER = R28HOTFIX2_BUILD_MARKER;
 const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
-  rag_mode: "static_demo",
+  rag_mode: "static_lightweight_rag",
   prelaunch_stage: "r28hotfix2",
   backend_inference: false,
   external_llm_api: false,
@@ -268,7 +268,10 @@ function renderTrace(trace = null) {
   const model = trace.model || {};
   const router = trace.router || {};
   const finalizer = trace.finalizer || {};
-  const topSources = (rag.top_sources || []).map((item) => item.title).filter(Boolean).join(" / ") || "无";
+  const topSources = (rag.top_sources || [])
+    .map((item) => `${item.title} [${item.origin || "source"} / ${item.review_status || "reviewed"}]`)
+    .filter(Boolean)
+    .join(" / ") || "无";
   setText(traceInputSummary, `has_user_input=${boolText(input.has_user_input)} / adapter_context_present=${boolText(input.adapter_context_present)}`);
   setText(traceContextSummary, `has_local_context=${boolText(input.has_local_context)} / local-session-only / not saved`);
   setText(traceEvidenceSummary, `retrieval_used=${boolText(rag.retrieval_used)} / evidence_count=${rag.evidence_count || 0} / evidence_status=${rag.evidence_status || "none"} / sources=${topSources}`);

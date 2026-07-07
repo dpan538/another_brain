@@ -104,7 +104,9 @@ export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
     if (evidence.length === 0) failures.push("empty_evidence");
     if (evidencePacket.evidence_status === "insufficient") failures.push("insufficient_evidence");
     if (evidencePacket.evidence_status === "conflicting") failures.push("conflicting_evidence");
-    if (evidencePacket.answer_policy_hint === "refuse") failures.push("evidence_policy_refuse");
+    if (evidencePacket.answer_policy_hint === "refuse" || evidencePacket.answer_policy_hint === "ignore_untrusted_instruction") {
+      failures.push("evidence_policy_refuse");
+    }
     if (evidence.some((item) => EVIDENCE_INJECTION_MARKERS.some((marker) => `${item.title}\n${item.text}`.toLowerCase().includes(marker)))) {
       failures.push("evidence_instruction_injection");
     }
@@ -197,7 +199,7 @@ function buildDecoderPrompt(input, evidencePacket, statePacket) {
 function classifyEvidenceForRouter(evidencePacket, evidenceStatus = "") {
   if (!evidencePacket) return "";
   const evidenceText = (evidencePacket.retrieved_evidence || []).map((item) => `${item.title || ""}\n${item.text || ""}`).join("\n").toLowerCase();
-  if (evidenceStatus === "malicious" || evidencePacket.answer_policy_hint === "refuse") return "malicious";
+  if (evidenceStatus === "malicious" || evidencePacket.answer_policy_hint === "refuse" || evidencePacket.answer_policy_hint === "ignore_untrusted_instruction") return "malicious";
   if (EVIDENCE_INJECTION_MARKERS.some((marker) => evidenceText.includes(marker))) return "malicious";
   if (evidenceStatus === "conflicting" || evidencePacket.evidence_status === "conflicting") return "conflicting";
   if (evidenceStatus === "insufficient" || evidencePacket.evidence_status === "insufficient" || evidencePacket.evidence_status === "irrelevant") return "insufficient";
@@ -291,6 +293,9 @@ function publicEvidenceSources(evidence = []) {
   return (evidence || []).slice(0, 3).map((item) => ({
     source_id: String(item.source_id || item.id || "local"),
     title: String(item.title || "local evidence").slice(0, 120),
+    origin: String(item.origin || item.license_or_origin || "synthetic demo fixture").slice(0, 120),
+    provenance: String(item.provenance || item.origin || item.license_or_origin || "synthetic demo fixture").slice(0, 160),
+    review_status: String(item.review_status || item.metadata?.review_status || "reviewed_demo_safe"),
     trust_level: String(item.trust_level || "local_static"),
     retrieval_score: Number(item.retrieval_score || 0)
   }));
@@ -654,7 +659,7 @@ export class BrowserChatRuntime {
       status: "loaded",
       mode: this.mode,
       delivery_mode: this.deliveryConfig.delivery_mode || "demo_static",
-      rag_mode: this.deliveryConfig.rag_mode || "static_demo",
+      rag_mode: this.deliveryConfig.rag_mode || "static_lightweight_rag",
       product_model: false,
       capabilities: this.capabilities,
       asset_status: this.assetStatus
@@ -1041,7 +1046,7 @@ export class BrowserChatRuntime {
     const setStatus = typeof hooks.onStatus === "function" ? hooks.onStatus : () => {};
     const statePacket = applyImportedStatePackets(buildStatePacket(input, this.turnIndex, this.mode), this.contextPackets);
     statePacket.delivery_mode = this.deliveryConfig.delivery_mode || "demo_static";
-    statePacket.rag_mode = this.deliveryConfig.rag_mode || "static_demo";
+    statePacket.rag_mode = this.deliveryConfig.rag_mode || "static_lightweight_rag";
     statePacket.product_model = false;
     setStatus("retrieving_local_memory");
     if (!this.memoryRecords) this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);

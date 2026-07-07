@@ -1,11 +1,13 @@
 export const TRUST_LEVELS = Object.freeze(["high", "medium", "low"]);
-export const EVIDENCE_STATUSES = Object.freeze(["sufficient", "insufficient", "conflicting", "irrelevant"]);
+export const EVIDENCE_STATUSES = Object.freeze(["sufficient", "insufficient", "conflicting", "irrelevant", "malicious"]);
 export const ANSWER_POLICY_HINTS = Object.freeze([
   "answer",
+  "answer_with_evidence",
   "refuse",
   "challenge_premise",
   "ask_clarifying",
-  "identify_conflict"
+  "identify_conflict",
+  "ignore_untrusted_instruction"
 ]);
 
 export const EVIDENCE_PACKET_SCHEMA = Object.freeze({
@@ -21,8 +23,8 @@ export const EVIDENCE_PACKET_SCHEMA = Object.freeze({
       can_answer: "boolean"
     }
   ],
-  evidence_status: "sufficient | insufficient | conflicting | irrelevant",
-  answer_policy_hint: "answer | refuse | challenge_premise | ask_clarifying | identify_conflict"
+  evidence_status: "sufficient | insufficient | conflicting | irrelevant | malicious",
+  answer_policy_hint: "answer | answer_with_evidence | refuse | challenge_premise | ask_clarifying | identify_conflict | ignore_untrusted_instruction"
 });
 
 export function normalizeTrustLevel(value) {

@@ -29,7 +29,9 @@ function evidenceText(evidencePacket = null) {
 export function classifyEvidenceForFinalizer(evidencePacket = null) {
   if (!evidencePacket) return "";
   const status = evidencePacket.evidence_status || "insufficient";
-  if (evidencePacket.answer_policy_hint === "refuse") return "malicious_evidence_ignored";
+  if (evidencePacket.answer_policy_hint === "refuse" || evidencePacket.answer_policy_hint === "ignore_untrusted_instruction") {
+    return "malicious_evidence_ignored";
+  }
   if (MALICIOUS_EVIDENCE_MARKERS.some((marker) => evidenceText(evidencePacket).includes(marker))) {
     return "malicious_evidence_ignored";
   }

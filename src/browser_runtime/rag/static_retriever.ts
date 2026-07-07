@@ -1,5 +1,12 @@
 import { createEvidencePacket } from "./evidence_packet.ts";
-import { rankEvidence } from "./evidence_ranker.ts";
+import { rankEvidence } from "./rag_ranker.ts";
+import {
+  DEFAULT_MEMORY_INDEX,
+  DEFAULT_SOURCE_REGISTRY,
+  STATIC_RAG_MEMORY_INDEX_ASSET,
+  STATIC_RAG_SOURCE_REGISTRY_ASSET,
+  normalizeMemoryIndex
+} from "./static_memory_index.ts";
 
 export const STATIC_RAG_DEMO_ASSET = "../another_brain/static_rag/demo_memory.json";
 
@@ -24,40 +31,33 @@ function assertSameOriginAsset(assetUrl, baseUrl) {
 }
 
 export function normalizeMemoryFixture(fixture) {
-  const records = Array.isArray(fixture) ? fixture : fixture?.records;
-  if (!Array.isArray(records)) throw new Error("rag_fixture_records_missing");
-  if (fixture?.fixture_policy?.answer_bank === true) throw new Error("answer_bank_fixture_rejected");
-  return records.map((record, index) => {
-    if ("answer" in record || "final_answer" in record || "answer_text" in record) {
-      throw new Error(`answer_bank_record_rejected:${record.source_id || index}`);
-    }
-    return {
-      source_id: String(record.source_id || `demo_memory_${index}`),
-      title: String(record.title || "Demo memory"),
-      text: String(record.text || ""),
-      trust_level: record.trust_level || "low",
-      license_or_origin: String(record.license_or_origin || "synthetic demo fixture"),
-      can_answer: record.can_answer !== false,
-      keywords: Array.isArray(record.keywords) ? record.keywords.map(String) : [],
-      metadata: record.metadata || {}
-    };
-  });
+  const index = Array.isArray(fixture) ? { ...DEFAULT_MEMORY_INDEX, records: fixture } : fixture || DEFAULT_MEMORY_INDEX;
+  const normalized = normalizeMemoryIndex(index, DEFAULT_SOURCE_REGISTRY);
+  return normalized.records;
 }
 
 export async function loadStaticRagAsset(options = {}) {
   const fetcher = options.fetcher || globalThis.fetch;
   if (typeof fetcher !== "function") throw new Error("rag_fetch_unavailable");
-  const url = assertSameOriginAsset(options.assetUrl || STATIC_RAG_DEMO_ASSET, options.baseUrl);
-  const response = await fetcher(url.href);
-  if (!response.ok) throw new Error(`rag_asset_fetch_failed:${response.status}`);
-  return normalizeMemoryFixture(await response.json());
+  const memoryUrl = assertSameOriginAsset(options.assetUrl || STATIC_RAG_MEMORY_INDEX_ASSET, options.baseUrl);
+  const registryUrl = assertSameOriginAsset(options.registryUrl || STATIC_RAG_SOURCE_REGISTRY_ASSET, options.baseUrl);
+  const [memoryResponse, registryResponse] = await Promise.all([
+    fetcher(memoryUrl.href),
+    fetcher(registryUrl.href)
+  ]);
+  if (!memoryResponse.ok) throw new Error(`rag_asset_fetch_failed:${memoryResponse.status}`);
+  if (!registryResponse.ok) throw new Error(`rag_registry_fetch_failed:${registryResponse.status}`);
+  const normalized = normalizeMemoryIndex(await memoryResponse.json(), await registryResponse.json());
+  return normalized.records;
 }
 
 export class StaticRetriever {
   constructor(options = {}) {
-    this.records = normalizeMemoryFixture(options.fixture || { records: options.records || DEFAULT_DEMO_MEMORY });
-    this.topK = Number(options.topK || 1);
-    this.minScore = Number(options.minScore ?? 0.04);
+    this.records = options.records
+      ? normalizeMemoryIndex({ ...DEFAULT_MEMORY_INDEX, records: options.records }, DEFAULT_SOURCE_REGISTRY).records
+      : normalizeMemoryFixture(options.fixture || DEFAULT_MEMORY_INDEX);
+    this.topK = Number(options.topK || 3);
+    this.minScore = Number(options.minScore ?? 0.035);
   }
 
   async retrieve(query, statePacket = null, options = {}) {

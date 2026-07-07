@@ -1,0 +1,59 @@
+{
+  "schema_version": "r28rag2.source_registry.v1",
+  "registry_policy": {
+    "synthetic_public_safe": true,
+    "private_raw_data": false,
+    "answer_bank": false,
+    "eval_prompts": false,
+    "old_question_pack_001_rows_51_100": false,
+    "backend_retrieval": false,
+    "hosted_vector_store": false
+  },
+  "sources": [
+    {
+      "source_id": "r28rag2-system-boundary",
+      "title": "another_brain runtime boundary",
+      "origin": "synthetic_public_safe_runtime_note",
+      "provenance": "R28RAG2 authored static fixture",
+      "review_status": "reviewed_demo_safe",
+      "license_or_origin": "synthetic demo fixture",
+      "allowed_for_training": false
+    },
+    {
+      "source_id": "r28rag2-static-model",
+      "title": "Static q4 model path",
+      "origin": "synthetic_public_safe_runtime_note",
+      "provenance": "R28M1/R28TOK1 public runtime metadata summary",
+      "review_status": "reviewed_demo_safe",
+      "license_or_origin": "synthetic demo fixture",
+      "allowed_for_training": false
+    },
+    {
+      "source_id": "r28rag2-router-boundary",
+      "title": "Hard router boundary behavior",
+      "origin": "synthetic_public_safe_runtime_note",
+      "provenance": "R28ROUT0 boundary policy summary",
+      "review_status": "reviewed_demo_safe",
+      "license_or_origin": "synthetic demo fixture",
+      "allowed_for_training": false
+    },
+    {
+      "source_id": "r28rag2-conflict-demo",
+      "title": "Conflict detection demo source",
+      "origin": "synthetic_public_safe_conflict_fixture",
+      "provenance": "R28RAG2 synthetic conflict fixture",
+      "review_status": "reviewed_demo_safe",
+      "license_or_origin": "synthetic demo fixture",
+      "allowed_for_training": false
+    },
+    {
+      "source_id": "r28rag2-malicious-demo",
+      "title": "Malicious evidence boundary demo source",
+      "origin": "synthetic_public_safe_boundary_fixture",
+      "provenance": "R28RAG2 synthetic malicious-evidence fixture",
+      "review_status": "reviewed_demo_safe",
+      "license_or_origin": "synthetic demo fixture",
+      "allowed_for_training": false
+    }
+  ]
+}
