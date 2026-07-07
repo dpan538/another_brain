@@ -1,5 +1,9 @@
 import { detectOutputQualityFailure } from "../generation_policy.ts";
 import { normalizeAnswerRouteInput } from "./answer_route.ts";
+import { composeAnswerSurface } from "./answer_surface_composer.ts";
+import { matchMicroIntent } from "./fuzzy_intent_matcher.ts";
+import { buildIdentityRouteOutput, isIdentityQuestion } from "./identity_route.ts";
+import { isMicroIntentRoute, routeForMicroIntent } from "./intent_taxonomy.ts";
 
 const MALICIOUS_EVIDENCE_MARKERS = [
   "ignore previous instructions",
@@ -79,10 +83,76 @@ function failureReason(flags, preferred) {
   return preferred[0] || "";
 }
 
+function hasBlockingModelFailure(input, flags) {
+  const draftPresent = String(input.model_output || "").trim().length > 0;
+  const explicitFlags = new Set(input.generation_flags || []);
+  return flags.some((flag) => {
+    if (flag === "empty_output") return draftPresent || explicitFlags.has("empty_output");
+    return [
+      "generation_timeout",
+      "model_timeout",
+      "runtime_timeout",
+      "bad_token_suppressed",
+      "token_id_only_output",
+      "low_confidence_gibberish",
+      "hidden_prompt_or_cot_marker",
+      "hidden_prompt_disclosure_marker",
+      "generic_fallback_marker",
+      "overlong_output",
+      "repetition_guard",
+      "quality_not_ready"
+    ].includes(flag);
+  });
+}
+
 export function classifyAnswerRoute(rawInput = {}) {
   const input = normalizeAnswerRouteInput(rawInput);
   const status = evidenceStatus(input);
   const flags = modelQualityFlags(input);
+  const microBaseFlags = uniqueFlags(input.generation_flags);
+  const microIntent = matchMicroIntent(input.user_input);
+
+  if (microIntent.route && !hasBlockingModelFailure(input, flags)) {
+    const composed = composeAnswerSurface({
+      intent: microIntent.intent,
+      input: input.user_input,
+      runtimeStatus: {
+        runtime_mode: input.runtime_mode,
+        decode_status: input.decode_status
+      },
+      evidenceStatus: status,
+      adapterContextPresent: input.adapter_context_present,
+      productAdmission: input.product_admission
+    });
+    return {
+      route: microIntent.route,
+      use_model_draft: false,
+      final_answer: composed.final_answer,
+      fallback_reason: isMicroIntentRoute(microIntent.route) ? "micro_intent_fast_path" : composed.fallback_reason,
+      quality_flags: uniqueFlags([...microBaseFlags, ...composed.quality_flags, `intent_confidence:${microIntent.confidence}`]),
+      intent: microIntent.intent,
+      intent_confidence: microIntent.confidence,
+      intent_matcher_version: microIntent.matcher_version,
+      final_answer_source: composed.final_answer_source,
+      fragment_ids: composed.fragment_ids || [],
+      indexed_surface: composed.indexed_surface === true,
+      answer_bank: false
+    };
+  }
+
+  if (isIdentityQuestion(input.user_input)) {
+    const legacy = buildIdentityRouteOutput();
+    return {
+      ...legacy,
+      route: routeForMicroIntent("identity_who_are_you") || legacy.route,
+      fallback_reason: "micro_intent_fast_path",
+      quality_flags: uniqueFlags([...microBaseFlags, "micro_intent:identity_who_are_you", "micro_intent_fast_path"]),
+      intent: "identity_who_are_you",
+      final_answer_source: "router_surface",
+      fragment_ids: ["identity_core_01", "identity_core_02", "identity_core_03"],
+      indexed_surface: true
+    };
+  }
 
   if (status === "malicious") {
     return {
@@ -201,6 +271,9 @@ export function summarizeRouteForProcessTrace(route = {}, modelDraftGenerated = 
     route: route.route || "synthetic_demo_fallback",
     used_model_draft: route.use_model_draft === true,
     replaced_model_draft: modelDraftGenerated === true && route.use_model_draft !== true,
-    reason: route.fallback_reason || ""
+    reason: route.fallback_reason || "",
+    intent: route.intent || "",
+    fragment_ids: route.fragment_ids || [],
+    indexed_surface: route.indexed_surface === true
   };
 }

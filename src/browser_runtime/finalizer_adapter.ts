@@ -165,7 +165,7 @@ export function finalizeAnswerSurface({ input, draft = "", generation = {}, evid
     answer_status: "final",
     route: routed.route,
     answer_route: routed.route,
-    use_model_draft: true,
+    use_model_draft: routed.use_model_draft === true,
     quality_flags: routed.quality_flags,
     non_claims: routed.non_claims,
     route_policy: routed,
@@ -183,8 +183,11 @@ export function summarizeFinalizerDecision(finalized = {}, generation = {}) {
   const q4ForwardRan = generation.runtime_mode === "static_q4_experimental"
     && Number(generation.tokens_generated || 0) > 0
     && generation.fallback_used !== true;
+  const route = finalized.route || finalized.answer_route || "";
+  const source = finalized.route_policy?.final_answer_source
+    || (String(route).endsWith("_surface") ? "router_surface" : "");
   return {
-    final_answer_source: finalized.use_model_draft && q4ForwardRan ? "model_draft" : finalized.fallback_used ? "fallback" : "router_boundary",
+    final_answer_source: finalized.use_model_draft && q4ForwardRan ? "model_draft" : finalized.fallback_used ? "fallback" : source || "router_boundary",
     quality_flags: finalized.quality_flags || [],
     fallback_reason: finalized.fallback_reason || "",
     replaced_model_draft: Boolean(generation.draft || generation.tokens?.length) && finalized.use_model_draft !== true

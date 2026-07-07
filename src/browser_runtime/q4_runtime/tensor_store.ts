@@ -1,4 +1,5 @@
 import { verifySha256 } from "../assets/checksum.ts";
+import { toSameOriginAssetUrl } from "../assets/asset_path_normalizer.ts";
 import { Q4Tensor } from "./q4_tensor.ts";
 
 function metadataByName(config) {
@@ -6,7 +7,7 @@ function metadataByName(config) {
 }
 
 async function fetchBytes(fetcher, path, baseUrl) {
-  const response = await fetcher(new URL(path, baseUrl).href);
+  const response = await fetcher(toSameOriginAssetUrl(path, { origin: new URL(baseUrl).origin }).href);
   if (!response.ok) throw new Error(`fetch_bytes_failed:${path}:${response.status}`);
   return new Uint8Array(await response.arrayBuffer());
 }

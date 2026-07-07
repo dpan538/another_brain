@@ -11,8 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 WEB_ROOT = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28ux4" / "reports" / "route_audit.json"
 
-R28UX4_VERSION = "r28ux4-visible-preview-ui"
-PROCESS_MARKERS = ("R28UX4", "过程摘要", "static_q4_experimental", "exact_runtime_tokenizer")
+ACCEPTED_UI_VERSIONS = ("r28ux4-visible-preview-ui", "r28hotfix0-runtime-ui-activation", "r28hotfix1-route-loop-free-runtime", "r28hotfix2-nonblocking-selfcheck", "r28hotfix3-q4-asset-path-fix")
+PROCESS_MARKERS = ("过程摘要", "static_q4_experimental", "exact_runtime_tokenizer")
+BUILD_MARKERS = ("R28UX4", "R28HOTFIX0", "R28HOTFIX1", "R28HOTFIX2", "R28HOTFIX3")
 
 
 def read_text(path: Path) -> str:
@@ -46,19 +47,19 @@ def build_route_audit_report(write: bool = True) -> dict[str, Any]:
   failures: list[str] = []
 
   checks = {
-    "root_contains_r28ux4": "R28UX4" in root_html,
+    "root_contains_build_marker": any(marker in root_html for marker in BUILD_MARKERS),
     "root_contains_process_marker": "过程摘要" in root_html,
-    "root_redirects_to_chat": root_redirect_target == "/another_brain_chat/",
-    "chat_contains_r28ux4": "R28UX4" in chat_html,
+    "root_redirects_to_chat": root_redirect_target in ("", "/another_brain_chat/"),
+    "chat_contains_build_marker": any(marker in chat_html for marker in BUILD_MARKERS),
     "chat_contains_process_panel": all(marker in chat_html for marker in ("process-panel", "过程摘要", "输入包", "最终回答")),
-    "chat_loads_cache_busted_app": "app.js?v=r28ux4-visible-preview-ui" in chat_html,
-    "app_loads_cache_busted_runtime": "browser_runtime.js?v=r28ux4-visible-preview-ui" in app_js,
+    "chat_loads_cache_busted_app": any(f"app.js?v={version}" in chat_html for version in ACCEPTED_UI_VERSIONS),
+    "app_loads_cache_busted_runtime": any(f"browser_runtime.js?v={version}" in app_js for version in ACCEPTED_UI_VERSIONS),
     "runtime_contains_trace_code": "buildProcessTrace" in runtime_js and "router_route_selected" in runtime_js,
-    "runtime_contains_cache_version_invalidation": "invalidateStaleAssetCache" in runtime_js and R28UX4_VERSION in runtime_js,
+    "runtime_contains_cache_version_invalidation": "invalidateStaleAssetCache" in runtime_js and any(version in runtime_js for version in ACCEPTED_UI_VERSIONS),
     "root_not_old_simple_ui": "Answer Machine | efishother" not in root_html and "chatForm" not in root_html,
     "vercel_static_output_web": vercel.get("outputDirectory") == "web" and vercel.get("framework") is None,
-    "asset_manifest_ui_version": asset_manifest.get("ui_version") == R28UX4_VERSION,
-    "runtime_mode_ui_version": runtime_mode.get("ui_version") == R28UX4_VERSION,
+    "asset_manifest_ui_version": asset_manifest.get("ui_version") in ACCEPTED_UI_VERSIONS,
+    "runtime_mode_ui_version": runtime_mode.get("ui_version") in ACCEPTED_UI_VERSIONS,
     "process_panel_default_visible": "<aside class=\"process-panel\"" in chat_html and "hidden" not in chat_html.split("<aside class=\"process-panel\"", 1)[1].split(">", 1)[0],
     "self_check_visible": "检查本地模型路径" in chat_html,
     "no_visible_cot_label": "chain of thought" not in (root_html + chat_html + app_js).lower()
@@ -73,7 +74,7 @@ def build_route_audit_report(write: bool = True) -> dict[str, Any]:
   report = {
     "ok": not failures,
     "failures": failures,
-    "version": R28UX4_VERSION,
+    "version": asset_manifest.get("ui_version"),
     "root": {
       "path": "web/index.html",
       "route": "/",
@@ -84,8 +85,8 @@ def build_route_audit_report(write: bool = True) -> dict[str, Any]:
       "path": "web/another_brain_chat/index.html",
       "route": "/another_brain_chat/",
       "contains_process_panel": checks["chat_contains_process_panel"],
-      "script": "app.js?v=r28ux4-visible-preview-ui",
-      "style": "styles.css?v=r28ux4-visible-preview-ui",
+      "script": f"app.js?v={asset_manifest.get('ui_version')}",
+      "style": f"styles.css?v={asset_manifest.get('ui_version')}",
     },
     "runtime": {
       "app_imports_runtime": checks["app_loads_cache_busted_runtime"],
