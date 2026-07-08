@@ -1,4 +1,4 @@
-export const R28HOTFIX3_ASSET_PATH_NORMALIZER_VERSION = "r28hotfix3-asset-path-normalizer-v1";
+export const R28HOTFIX3_ASSET_PATH_NORMALIZER_VERSION = "r28livefix0-asset-path-normalizer-v2";
 
 export function normalizeBrowserAssetPath(value, options = {}) {
   if (!value || typeof value !== "string") throw new Error("missing_asset_path");

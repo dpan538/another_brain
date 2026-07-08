@@ -38,7 +38,10 @@ const ROUTER_NON_CLAIMS = [
   "no broad answer bank",
   "hard router is product-surface guard only"
 ];
-const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
+const R28LIVEFIX0_BRANCH_MARKER = "R28LIVEFIX0";
+const R28LIVEFIX0_BRANCH_NAME = "r28livefix0-live-q4-mount";
+const R28LIVEFIX0_PROBE_VERSION = "r28livefix0-live-asset-probe-v1";
+const R28SHIP0_UI_VERSION = R28LIVEFIX0_BRANCH_NAME;
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -47,7 +50,7 @@ const R28UX4_ASSET_CACHE_KEY = "another_brain_r28rout1_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
 const R28SHIP0_MODEL_CACHE_PREFIX = "another-brain-model";
 const R28SHIP0_Q4_RETRY_STRATEGIES = Object.freeze(["primary", "normalized_absolute", "cache_bust", "clear_model_cache", "worker_restart"]);
-const R28SHIP0_RUNTIME_TRUTH_BLOCKERS = Object.freeze(["asset_missing", "tokenizer_fail", "forward_timeout", "worker_error", "q4_forward_not_confirmed", "q4_retry_plan_exhausted", "model_loading_cancelled"]);
+const R28SHIP0_RUNTIME_TRUTH_BLOCKERS = Object.freeze(["asset_missing", "tokenizer_fail", "forward_timeout", "q4_forward_timeout", "worker_error", "q4_forward_not_confirmed", "q4_retry_plan_exhausted", "model_loading_cancelled"]);
 const R28HOTFIX4_UI_VERSION = "r28hotfix4-open-question-generation-sla";
 const R28SURF5_SURFACE_COMPOSER_VERSION = "r28surf5-wide-surface-composer-v1";
 const SELF_CHECK_JSON_TIMEOUT_MS = 900;
@@ -1449,25 +1452,63 @@ async function probeSameOriginAsset(path, options = {}) {
   const url = sameOriginAssetUrl(path, options);
   const timed = timeoutSignal(options.timeoutMs || 1000, options.signal);
   const cache = options.cache || "no-store";
+  const readProbeBytes = async (response) => {
+    if (response?.body?.getReader) {
+      const reader = response.body.getReader();
+      try {
+        const chunk = await reader.read();
+        return Math.min(Number(chunk?.value?.byteLength || chunk?.value?.length || 0), 16);
+      } finally {
+        await reader.cancel().catch(() => {});
+      }
+    }
+    const buffer = await response.arrayBuffer();
+    return Math.min(Number(buffer?.byteLength || 0), 16);
+  };
+  const contentLengthHeader = (response) => {
+    const value = response?.headers?.get?.("content-length");
+    return value == null ? "" : String(value);
+  };
+  const buildProbeReport = ({ response, method, bytesRead, ok, failureReason = "" }) => ({
+    ok: ok === true,
+    requested_path: path,
+    normalized_path: url.pathname,
+    normalized_url: url.href,
+    method,
+    status: Number(response?.status || 0),
+    content_length_header: contentLengthHeader(response),
+    content_length: Number(contentLengthHeader(response) || 0),
+    bytes_read: Number(bytesRead || 0),
+    probe_strategy: "get_range_then_get_body",
+    failure_reason: failureReason,
+    probe_version: R28LIVEFIX0_PROBE_VERSION
+  });
   const getRange = () => fetch(url.href, {
     method: "GET",
-    headers: { Range: "bytes=0-0" },
+    headers: { Range: "bytes=0-15" },
     cache,
     signal: timed.signal
-  }).catch(() => null);
-  const head = () => fetch(url.href, { method: "HEAD", cache, signal: timed.signal }).catch(() => null);
+  });
+  const getBody = () => fetch(url.href, { method: "GET", cache, signal: timed.signal });
   try {
-    let response = options.preferRangeGet === true ? await getRange() : await head();
-    if (!response?.ok) response = options.preferRangeGet === true ? await head() : await getRange();
-    if (!response?.ok) throw new Error(`asset_probe_failed:${url.pathname}:${response?.status || 0}`);
-    return {
-      ok: true,
-      requested_path: path,
-      normalized_path: url.pathname,
-      normalized_url: url.href,
-      status: response.status,
-      content_length: Number(response.headers?.get?.("content-length") || 0)
-    };
+    const rangeResponse = await getRange().catch((error) => ({ ok: false, status: 0, headers: new Map(), error }));
+    if (rangeResponse?.ok) {
+      const rangeBytes = await readProbeBytes(rangeResponse);
+      if (rangeResponse.status === 206 && rangeBytes > 0) {
+        return buildProbeReport({ response: rangeResponse, method: "GET_RANGE", bytesRead: rangeBytes, ok: true });
+      }
+      if (rangeResponse.status === 200 && rangeBytes > 0) {
+        return buildProbeReport({ response: rangeResponse, method: "GET_RANGE_AS_200", bytesRead: rangeBytes, ok: true });
+      }
+    }
+
+    const bodyResponse = await getBody().catch((error) => ({ ok: false, status: 0, headers: new Map(), error }));
+    const bodyBytes = bodyResponse?.ok ? await readProbeBytes(bodyResponse) : 0;
+    if (bodyResponse?.ok && bodyBytes > 0) {
+      return buildProbeReport({ response: bodyResponse, method: "GET_BODY", bytesRead: bodyBytes, ok: true });
+    }
+    const failureReason = `asset_probe_failed:${url.pathname}:${bodyResponse?.status || rangeResponse?.status || 0}:${bodyBytes}`;
+    throw new Error(failureReason);
   } finally {
     timed.clear();
   }
@@ -2121,7 +2162,7 @@ export class BrowserChatRuntime {
             preferRangeGet: true,
             cacheBust
           });
-          return { path: item.path, ok: true, bytes: Number(item.bytes || 0), ...probe };
+          return { path: item.path, ok: probe.ok === true && Number(probe.bytes_read || 0) > 0, bytes: Number(item.bytes || 0), ...probe };
         } catch (error) {
           let normalizedPath = "";
           try {
@@ -2133,13 +2174,19 @@ export class BrowserChatRuntime {
             path: item.path,
             normalized_path: normalizedPath,
             ok: false,
-            blocker: signal.aborted ? "self_check_cancelled" : error.message || `asset_probe_failed:${normalizedPath}:0`,
+            blocker: signal.aborted ? "self_check_cancelled" : error.message || `asset_probe_failed:${normalizedPath}:0:0`,
+            failure_reason: signal.aborted ? "self_check_cancelled" : error.message || `asset_probe_failed:${normalizedPath}:0:0`,
+            method: "GET_RANGE_THEN_GET_BODY",
+            status: 0,
+            content_length_header: "",
+            bytes_read: 0,
+            probe_strategy: "get_range_then_get_body",
             bytes: Number(item.bytes || 0)
           };
         }
       }));
       for (const result of shardResults.filter((item) => !item.ok).slice(0, 3)) {
-        blockers.push(result.blocker);
+        blockers.push(result.failure_reason || result.blocker);
       }
     }
 
@@ -2187,11 +2234,12 @@ export class BrowserChatRuntime {
         smokeStats = smoke.stats || null;
         smokePreview = String(smoke.draft || "").slice(0, 80);
       } catch (error) {
-        blockers.push(error.message || "q4_forward_smoke_failed");
+        const forwardReason = error.message === "self_check_timeout" ? "q4_forward_timeout" : error.message || "q4_forward_smoke_failed";
+        blockers.push(forwardReason);
         smokeStats = {
           tokens_generated: 0,
           runtime_mode: this.mode,
-          decode_status: error.message === "self_check_timeout" ? "timeout" : "failed",
+          decode_status: forwardReason === "q4_forward_timeout" ? "timeout" : "failed",
           fallback_used: true
         };
       }
@@ -2204,10 +2252,10 @@ export class BrowserChatRuntime {
     const q4ForwardPassed = runDeep && q4ForwardRan(smokeStats || {});
     if (runDeep && !q4ForwardPassed && !blockers.includes("self_check_timeout")) blockers.push("q4_forward_not_confirmed");
     const elapsedMs = Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt));
-    const timedOut = blockers.includes("self_check_timeout");
+    const timedOut = blockers.includes("self_check_timeout") || blockers.includes("q4_forward_timeout");
     const cancelled = signal.aborted || blockers.includes("self_check_cancelled");
     const quickOrDeepOk = runDeep ? quickPassed && q4ForwardPassed : quickPassed;
-    const forwardBlocker = q4ForwardPassed ? "" : (timedOut ? "forward_timeout" : runDeep ? "q4_forward_not_confirmed" : "q4_forward_skipped_quick_check");
+    const forwardBlocker = q4ForwardPassed ? "" : (timedOut ? "q4_forward_timeout" : runDeep ? "q4_forward_not_confirmed" : "q4_forward_skipped_quick_check");
     const reportRuntimeMode = q4ForwardPassed || (runDeep && timedOut && quickPassed) || (!runDeep && quickPassed) ? "static_q4_experimental" : "synthetic_fallback";
     const report = {
       status: cancelled ? "cancelled" : timedOut ? "timeout" : quickOrDeepOk ? "passed" : "failed",
@@ -2227,7 +2275,19 @@ export class BrowserChatRuntime {
         normalized_quantization_path: assetManifest ? sameOriginAssetUrl(quantizationPath).pathname : "",
         normalized_tokenizer_path: assetManifest ? sameOriginAssetUrl(tokenizerPath).pathname : "",
         normalized_shard_paths: shardResults.map((item) => item.normalized_path || item.path),
-        failing_shard_paths: shardResults.filter((item) => !item.ok).map((item) => item.normalized_path || item.path)
+        failing_shard_paths: shardResults.filter((item) => !item.ok).map((item) => item.normalized_path || item.path),
+        shard_probe_results: shardResults.map((item) => ({
+          requested_path: item.requested_path || item.path,
+          normalized_path: item.normalized_path || item.path,
+          normalized_url: item.normalized_url || "",
+          method: item.method || "",
+          status: Number(item.status || 0),
+          content_length_header: item.content_length_header || "",
+          bytes_read: Number(item.bytes_read || 0),
+          ok: item.ok === true,
+          probe_strategy: item.probe_strategy || "get_range_then_get_body",
+          failure_reason: item.failure_reason || item.blocker || ""
+        }))
       },
       tokenizer: {
         status: exactTokenizer ? "exact" : "fallback",
@@ -2282,10 +2342,13 @@ export class BrowserChatRuntime {
     const report = this.q4MountReport?.report || this.q4MountReport || {};
     const blockers = Array.isArray(report.blockers) ? report.blockers.join(" / ") : "";
     if (String(blockers).includes("tokenizer") || report.tokenizer?.exact_runtime_tokenizer === false) return "tokenizer_unavailable";
-    if (String(blockers).includes("asset") || String(blockers).includes("shard") || report.assets?.shards_verified === false) {
-      return "q4_assets_unavailable";
+    if (report.assets?.shards_verified === false || report.assets?.manifest_loaded === false) {
+      const failing = report.assets?.shard_probe_results?.find?.((item) => item.ok !== true);
+      return failing?.failure_reason || failing?.normalized_url || "q4_assets_unavailable";
     }
-    if (report.q4_forward?.status === "timeout" || String(blockers).includes("timeout")) return "q4_forward_timeout";
+    if (report.q4_forward?.blocker) return report.q4_forward.blocker;
+    if (report.q4_forward?.status === "timeout" || String(blockers).includes("q4_forward_timeout")) return "q4_forward_timeout";
+    if (String(blockers).includes("q4_forward_not_confirmed")) return "q4_forward_not_confirmed";
     return "q4_forward_timeout";
   }
 

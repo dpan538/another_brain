@@ -448,6 +448,7 @@
     "test:r28qa2": "python3 -m unittest discover -s tests/r28qa2",
     "test:r28qa6": "python3 -m unittest discover -s tests/r28qa6",
     "test:r28ship2": "node scripts/r28ship2_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28ship2 -p 'test_*.py'",
+    "test:r28livefix0": "node scripts/r28livefix0_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28livefix0 -p 'test_*.py'",
     "analyze:r25y-pilot": "node scripts/analyze_r25y_pilot_results.mjs",
     "eval:r25y-heldout-breakdown": "node scripts/eval_r25y_heldout_breakdown.mjs",
     "compare:r25y-data-regularization": "node scripts/compare_r25y_data_regularization.mjs",

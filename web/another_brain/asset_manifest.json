@@ -5,14 +5,14 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 70152623,
+  "full_bundle_estimate_bytes": 70152827,
   "gate_assets": [
     {
-      "bytes": 2854,
+      "bytes": 3058,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "35d61270b5e4f682dd1b95144e4ae05970106567bcff630ce66ead1aed083911"
+      "sha256": "cad90a959cb27bfaea65befbe4da546f4da6cf1328d07f27fb51aa9b8c618435"
     }
   ],
   "hosted_vector_store": false,
@@ -99,7 +99,7 @@
     "release_checkpoint_admission": false,
     "training_corpus_committed": false
   },
-  "prelaunch_stage": "r28ship0",
+  "prelaunch_stage": "r28livefix0",
   "product_model_admission": false,
   "quantization": "q4",
   "rag_assets": [
@@ -144,7 +144,7 @@
     }
   ],
   "release_checkpoint_admission": false,
-  "remaining_bytes_under_100mb": 29847377,
+  "remaining_bytes_under_100mb": 29847173,
   "runtime_tokenizer_blocker": "",
   "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
   "same_origin_only": true,
@@ -166,10 +166,13 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49316880,
-  "ui_build_marker": "R28SHIP0",
-  "ui_build_timestamp": "2026-07-08T00:00:00+08:00",
+  "total_declared_bytes": 49317084,
+  "branch_marker": "R28LIVEFIX0",
+  "branch_name": "r28livefix0-live-q4-mount",
+  "build_commit_short": "build-env-pending",
+  "ui_build_marker": "R28LIVEFIX0",
+  "ui_build_timestamp": "2026-07-09T00:00:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28ship0-unified-q4-mount",
+  "ui_version": "r28livefix0-live-q4-mount",
   "total_model_asset_bytes": 48267968
 }

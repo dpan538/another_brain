@@ -1,9 +1,12 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix4-open-question-generation-sla";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix4-open-question-generation-sla";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28livefix0-live-q4-mount";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28livefix0-live-q4-mount";
 
-const R28SHIP0_UI_VERSION = "r28hotfix4-open-question-generation-sla";
+const R28LIVEFIX0_BRANCH_MARKER = "R28LIVEFIX0";
+const R28LIVEFIX0_BRANCH_NAME = "r28livefix0-live-q4-mount";
+const R28LIVEFIX0_SOURCE_COMMIT = "build-env-pending";
+const R28SHIP0_UI_VERSION = R28LIVEFIX0_BRANCH_NAME;
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
-const R28HOTFIX3_BUILD_MARKER = "R28HOTFIX4";
+const R28HOTFIX3_BUILD_MARKER = R28LIVEFIX0_BRANCH_MARKER;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -13,7 +16,13 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28hotfix4",
+  prelaunch_stage: "r28livefix0",
+  branch_marker: R28LIVEFIX0_BRANCH_MARKER,
+  branch_name: R28LIVEFIX0_BRANCH_NAME,
+  build_commit_short: R28LIVEFIX0_SOURCE_COMMIT,
+  ui_version: R28LIVEFIX0_BRANCH_NAME,
+  ui_build_marker: R28LIVEFIX0_BRANCH_MARKER,
+  ui_build_timestamp: "2026-07-09T00:00:00+08:00",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -135,6 +144,7 @@ const loadingCancelButton = document.querySelector("#loading-cancel-button");
 const q4RetryStatus = document.querySelector("#q4-retry-status");
 
 let lastPacket = null;
+let lastSelfCheckReport = null;
 let running = false;
 let activeSelfCheckController = null;
 let activeLoadingController = null;
@@ -481,8 +491,12 @@ function renderDeliveryConfig(config) {
   setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
   setText(routerStatusBadge, "router: enabled");
-  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${config.ui_version || R28HOTFIX1_UI_VERSION}`);
-  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${config.ui_version || R28HOTFIX1_UI_VERSION}`);
+  const marker = config.branch_marker || config.ui_build_marker || R28HOTFIX1_BUILD_MARKER;
+  const branch = config.branch_name || config.ui_version || R28HOTFIX1_UI_VERSION;
+  const commit = config.build_commit_short || R28LIVEFIX0_SOURCE_COMMIT;
+  const buildTime = config.ui_build_timestamp || "timestamp_missing";
+  setText(uiVersionBadge, `${marker} · ${branch} · ${commit}`);
+  setText(uiBuildStatus, `${marker} / ${branch} / ${commit} / ${buildTime}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   setText(candidateRouteStatus, config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route);
@@ -509,6 +523,7 @@ function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
 }
 
 function renderSelfCheck(report = null) {
+  lastSelfCheckReport = report || null;
   if (!report) {
     setText(selfCheckStage, "idle");
     setText(selfCheckElapsed, "0 ms");
@@ -532,11 +547,15 @@ function renderSelfCheck(report = null) {
   const tokenizerStatus = report.tokenizer?.exact_runtime_tokenizer ? "pass" : isChecking ? "checking" : "fail";
   const normalizedShardPaths = Array.isArray(report.assets?.normalized_shard_paths) ? report.assets.normalized_shard_paths : [];
   const failingShardPaths = Array.isArray(report.assets?.failing_shard_paths) ? report.assets.failing_shard_paths : [];
-  const pathHint = failingShardPaths.length
-    ? ` / failing=${failingShardPaths.slice(0, 2).join(", ")}`
-    : normalizedShardPaths.length
-      ? ` / path=${normalizedShardPaths[0]}`
-      : "";
+  const shardProbeResults = Array.isArray(report.assets?.shard_probe_results) ? report.assets.shard_probe_results : [];
+  const probeHint = shardProbeResults.find((item) => item.ok !== true) || shardProbeResults[0] || null;
+  const pathHint = probeHint
+    ? ` / url=${probeHint.normalized_url || probeHint.normalized_path} / status=${probeHint.status || 0} / bytes=${probeHint.bytes_read || 0} / strategy=${probeHint.probe_strategy || probeHint.method || "unknown"}`
+    : failingShardPaths.length
+      ? ` / failing=${failingShardPaths.slice(0, 2).join(", ")}`
+      : normalizedShardPaths.length
+        ? ` / path=${normalizedShardPaths[0]}`
+        : "";
   setText(selfCheckAssets, `manifest=${manifestStatus} / q4 shards=${shardStatus} ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}${pathHint}`);
   setText(selfCheckTokenizer, `exact tokenizer=${tokenizerStatus}`);
   setText(selfCheckQ4, `${report.q4_forward?.status || "失败"} / q4_forward_ran=${boolText(report.q4_forward?.q4_forward_ran)}`);
@@ -549,6 +568,86 @@ function renderSelfCheck(report = null) {
   setText(selfCheckBlockers, `blocker：${(report.blockers || []).join(" / ") || "none"}`);
   setText(q4StatusBadge, `q4 forward: ${report.q4_forward?.q4_forward_ran ? "true" : report.q4_forward?.status || "false"}`);
   renderModelLoading({ report });
+}
+
+async function fetchAssetManifestStatus() {
+  const localBaseHref = ["http:", "", "localhost", ""].join("/");
+  const base = new URL(globalThis.location?.href || localBaseHref);
+  const url = new URL("/another_brain/asset_manifest.json", base);
+  if (url.origin !== base.origin) return { ok: false, status: 0, normalized_url: url.href, failure_reason: "non_same_origin_manifest_rejected" };
+  try {
+    const response = await fetch(url.href, { cache: "no-store" });
+    return {
+      ok: response.ok,
+      status: response.status,
+      normalized_url: url.href,
+      content_length_header: response.headers.get("content-length") || ""
+    };
+  } catch (error) {
+    return { ok: false, status: 0, normalized_url: url.href, failure_reason: error.message || "asset_manifest_fetch_failed" };
+  }
+}
+
+function diagnosticsFromReport(config, manifestStatus, report) {
+  const q4Shards = Array.isArray(report?.assets?.shard_probe_results) ? report.assets.shard_probe_results : [];
+  const q4Forward = report?.q4_forward || {};
+  const tokenizer = report?.tokenizer || {};
+  const tokensGenerated = Number(q4Forward.tokens_generated || 0);
+  const forwardOk = q4Forward.q4_forward_ran === true && tokensGenerated > 0;
+  const assetsOk = manifestStatus.ok === true && q4Shards.length === 5 && q4Shards.every((item) => item.ok === true && Number(item.bytes_read || 0) > 0);
+  const tokenizerOk = tokenizer.exact_runtime_tokenizer === true;
+  return {
+    branch_marker: config.branch_marker || config.ui_build_marker || R28LIVEFIX0_BRANCH_MARKER,
+    branch_name: config.branch_name || config.ui_version || R28LIVEFIX0_BRANCH_NAME,
+    commit_short: config.build_commit_short || R28LIVEFIX0_SOURCE_COMMIT,
+    build_timestamp: config.ui_build_timestamp || "",
+    runtime_mode: q4Forward.runtime_mode || config.model_mode || "unknown",
+    asset_manifest: manifestStatus,
+    q4_shards: q4Shards.map((item) => ({
+      path: item.requested_path || item.normalized_path || "",
+      normalized_url: item.normalized_url || "",
+      ok: item.ok === true,
+      method: item.method || "",
+      status: Number(item.status || 0),
+      content_length_header: item.content_length_header || "",
+      bytes_read: Number(item.bytes_read || 0),
+      probe_strategy: item.probe_strategy || "",
+      failure_reason: item.failure_reason || ""
+    })),
+    tokenizer: {
+      ok: tokenizerOk,
+      status: tokenizer.status || (tokenizerOk ? "exact" : "fallback"),
+      path: tokenizer.path || ""
+    },
+    q4_forward: {
+      attempted: q4Forward.status !== "skipped",
+      ok: forwardOk,
+      q4_forward_ran: q4Forward.q4_forward_ran === true,
+      tokens_generated: tokensGenerated,
+      blocker: q4Forward.blocker || report?.fallback?.reason || ""
+    },
+    answer_source: forwardOk ? "static_q4_experimental" : "no_model_fallback",
+    merge_runtime_ready: assetsOk && tokenizerOk && forwardOk,
+    blockers: report?.blockers || []
+  };
+}
+
+async function anotherBrainDiagnostics() {
+  const config = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
+  const manifestStatus = await fetchAssetManifestStatus();
+  const report = await runtime.deepSelfCheckModelPath({
+    timeoutMs: 15000,
+    shardTimeoutMs: 10000,
+    jsonTimeoutMs: 1200,
+    cacheBust: "r28livefix0-diagnostics",
+    onProgress: (progressReport) => renderSelfCheck(progressReport)
+  });
+  renderSelfCheck(report);
+  return diagnosticsFromReport(config, manifestStatus, report);
+}
+
+if (typeof window !== "undefined") {
+  window.__anotherBrainDiagnostics = anotherBrainDiagnostics;
 }
 
 function setPipelineStatus(status) {
