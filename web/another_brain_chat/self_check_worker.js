@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28p0-q4-mount-timeout-fix";
+import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28p0b-primary-q4-mount-state";
 
 async function handleSelfCheck(message = {}) {
   if (message.type !== "q4_smoke") {

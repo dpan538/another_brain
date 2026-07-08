@@ -1,11 +1,12 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0-q4-mount-timeout-fix";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0-q4-mount-timeout-fix";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0b-primary-q4-mount-state";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0b-primary-q4-mount-state";
 
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28MERGE3_UI_VERSION = "r28merge3-final-premerge-gate";
 const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
+const R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION = "r28p0b-primary-q4-mount-state";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
-const R28HOTFIX3_BUILD_MARKER = "R28P0";
+const R28HOTFIX3_BUILD_MARKER = "R28P0B";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -223,27 +224,36 @@ function renderQ4RetryStatus(input = {}) {
   const attempts = retryPlan?.attempts || input.attempts || report.attempts || [];
   const currentAttempt = input.attempt || report.attempt || attempts.at?.(-1)?.attempt || 1;
   const currentStrategy = input.strategy || report.strategy || attempts.at?.(-1)?.strategy || "primary";
-  const lastBlocker = input.blocker || report.q4_forward?.blocker || report.fallback?.reason || retryPlan?.fallback_reason || (report.blockers || [])[0] || "";
-  const retrying = input.retrying === true || retryPlan?.status === "retrying";
+  const rawBlocker = input.blocker || report.q4_forward?.blocker || report.fallback?.reason || retryPlan?.fallback_reason || (report.blockers || [])[0] || "";
+  const lastBlocker = rawBlocker === "q4_retry_plan_not_complete" ? "" : rawBlocker;
+  const passed = retryPlan?.status === "q4_ready" || report.ok;
   const finalFallback = retryPlan?.status === "fallback_ready" || report.status === "failed" || report.status === "timeout";
+  const primaryCompleted = attempts.some((attempt) => Number(attempt.attempt) === 1);
+  const primaryPassed = attempts.some((attempt) => Number(attempt.attempt) === 1 && attempt.q4_forward === "pass");
+  const planBActive = input.plan_b_active === true || currentAttempt > 1 || (primaryCompleted && !primaryPassed && !passed);
+  const primaryFailed = input.status === "primary_failed" || (primaryCompleted && !primaryPassed && !passed && !finalFallback && currentAttempt <= 1);
   if (!q4RetryStatus) return;
-  if (!attempts.length && !retrying) {
-    setText(q4RetryStatus, "Plan B：等待 q4 初始检查");
-    return;
-  }
-  if (retrying) {
-    setText(q4RetryStatus, `正在重试模型加载：第 ${currentAttempt} 次尝试 / 当前策略 ${currentStrategy}${lastBlocker ? ` / 失败原因 ${lastBlocker}` : ""}`);
-    return;
-  }
-  if (retryPlan?.status === "q4_ready" || report.ok) {
-    setText(q4RetryStatus, `q4 ready：第 ${retryPlan?.passed_attempt?.attempt || currentAttempt} 次尝试 / 当前策略 ${retryPlan?.passed_attempt?.strategy || currentStrategy}`);
+  if (passed) {
+    setText(q4RetryStatus, `q4 ready：主路径${Number(retryPlan?.passed_attempt?.attempt || currentAttempt) > 1 ? ` / 第 ${retryPlan?.passed_attempt?.attempt || currentAttempt} 次尝试` : ""} / 策略 ${retryPlan?.passed_attempt?.strategy || currentStrategy}`);
     return;
   }
   if (finalFallback) {
     setText(q4RetryStatus, `最终 fallback reason：${lastBlocker || "q4_retry_plan_exhausted"}`);
     return;
   }
-  setText(q4RetryStatus, `Plan B：第 ${currentAttempt} 次尝试 / 当前策略 ${currentStrategy}${lastBlocker ? ` / 失败原因 ${lastBlocker}` : ""}`);
+  if (!planBActive && !primaryCompleted) {
+    setText(q4RetryStatus, `主路径：正在挂载 q4 / 当前策略 ${currentStrategy}`);
+    return;
+  }
+  if (primaryFailed) {
+    setText(q4RetryStatus, `主路径失败，准备 Plan B${lastBlocker ? ` / 失败原因 ${lastBlocker}` : ""}`);
+    return;
+  }
+  if (planBActive) {
+    setText(q4RetryStatus, `Plan B：正在重试模型加载 / 第 ${currentAttempt} 次尝试 / 当前策略 ${currentStrategy}${lastBlocker ? ` / 失败原因 ${lastBlocker}` : ""}`);
+    return;
+  }
+  setText(q4RetryStatus, `主路径：q4 初始检查中 / 当前策略 ${currentStrategy}`);
 }
 
 function renderModelLoading(input = {}) {
@@ -447,7 +457,7 @@ async function loadDeliveryConfig() {
   if (!globalThis.location?.href) return DEFAULT_DELIVERY_CONFIG;
   const base = new URL(globalThis.location.href);
   const url = new URL("/another_brain/runtime_mode.json", base);
-  url.searchParams.set("v", R28P0_Q4_MOUNT_FIX_VERSION);
+  url.searchParams.set("v", R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION);
   if (url.origin !== base.origin) throw new Error("non_same_origin_runtime_mode_rejected");
   const response = await fetch(url.href, { cache: "no-store" });
   if (!response.ok) throw new Error(`runtime_mode_fetch_failed:${response.status}`);
@@ -463,8 +473,8 @@ function renderDeliveryConfig(config) {
   setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
   setText(routerStatusBadge, "router: enabled");
-  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0_Q4_MOUNT_FIX_VERSION}`);
-  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0_Q4_MOUNT_FIX_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
+  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION}`);
+  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   setText(candidateRouteStatus, config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route);
@@ -553,7 +563,7 @@ async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
   renderAssetStatus(null, deliveryConfig);
-  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0_Q4_MOUNT_FIX_VERSION });
+  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION });
   runtime.setContextPackets(contextBridge.getPackets());
   renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   const loadResult = await runtime.load();
@@ -589,7 +599,7 @@ async function boot() {
       }
     });
     renderSelfCheck(report);
-    renderModelLoading({ report, retrying: true, attempt: 1, strategy: "primary" });
+    renderModelLoading({ report, status: "primary_mount", attempt: 1, strategy: "primary", plan_b_active: false });
     const mountResult = await runtime.mountQ4WithRetry({
       timeoutMs: R28P0_Q4_WARMUP_TIMEOUT_MS,
       shardTimeoutMs: 10000,

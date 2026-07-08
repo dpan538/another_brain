@@ -18,6 +18,16 @@ R28P0 addresses the preview failure where q4 assets were fetchable but browser m
 - Fetch `runtime_mode.json` with a P0 cache-bust and `no-store`.
 - Update UI/cache metadata to the P0 version without changing model shard paths, bytes, or checksums.
 
+## P0B Primary Mount State Fix
+
+The first P0 preview still showed `Plan B` while the primary q4 mount had not failed. That was a status-machine bug:
+
+- `summarizeQ4RetryPlan([])` reports `retrying/q4_retry_plan_not_complete`, which is correct internally but must not be surfaced as a failed retry.
+- Attempt 1 now emits `primary_mount`, not `retrying`.
+- Plan B UI is only allowed when attempt 1 has completed and failed, or when the active attempt is greater than 1.
+- `q4_retry_plan_not_complete` is hidden from failure copy because it is a pending state, not a blocker.
+- The visible version is bumped to `r28p0b-primary-q4-mount-state`.
+
 ## Non-Claims
 
 - Not product model admission.

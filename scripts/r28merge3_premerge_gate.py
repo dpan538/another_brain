@@ -130,7 +130,9 @@ def run_gate(root: Path = ROOT) -> dict:
             "/another_brain_chat/app.js?v=r28merge3-final-premerge-gate" in index
             or "/another_brain_chat/app.js?v=r28merge3-final-premerge-gate" in root_index
             or "/another_brain_chat/app.js?v=r28p0-q4-mount-timeout-fix" in index
-            or "/another_brain_chat/app.js?v=r28p0-q4-mount-timeout-fix" in root_index,
+            or "/another_brain_chat/app.js?v=r28p0-q4-mount-timeout-fix" in root_index
+            or "/another_brain_chat/app.js?v=r28p0b-primary-q4-mount-state" in index
+            or "/another_brain_chat/app.js?v=r28p0b-primary-q4-mount-state" in root_index,
             "merge3_versioned_app",
         ),
     ]

@@ -34,6 +34,7 @@ const ROUTER_NON_CLAIMS = [
 ];
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
+const R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION = "r28p0b-primary-q4-mount-state";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -1298,7 +1299,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28p0-q4-mount-timeout-fix", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28p0b-primary-q4-mount-state", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -1344,7 +1345,7 @@ export class BrowserChatRuntime {
 
   createRuntimeWorker() {
     if (!this.capabilities.worker_available) return null;
-    return new Worker(new URL("./runtime_worker.js?v=r28p0-q4-mount-timeout-fix", import.meta.url), { type: "module" });
+    return new Worker(new URL("./runtime_worker.js?v=r28p0b-primary-q4-mount-state", import.meta.url), { type: "module" });
   }
 
   async clearModelAssetCacheNamespace() {
@@ -1473,7 +1474,15 @@ export class BrowserChatRuntime {
       for (let index = 0; index < R28SHIP0_Q4_RETRY_STRATEGIES.length; index += 1) {
         const attempt = index + 1;
         const strategy = R28SHIP0_Q4_RETRY_STRATEGIES[index];
-        emit({ status: "retrying", state: "warming_q4", attempt, strategy, retrying: attempt > 1 });
+        emit({
+          status: attempt === 1 ? "primary_mount" : "plan_b_retrying",
+          state: "warming_q4",
+          attempt,
+          strategy,
+          retrying: attempt > 1,
+          plan_b_active: attempt > 1,
+          primary_mount: attempt === 1
+        });
         if (strategy === "clear_model_cache") await this.clearModelAssetCacheNamespace();
         if (strategy === "worker_restart") this.restartModelWorkerOnce();
         let report;
@@ -1489,6 +1498,10 @@ export class BrowserChatRuntime {
             onProgress: (progressReport) => {
               progressReport.attempt = attempt;
               progressReport.strategy = strategy;
+              progressReport.status = attempt === 1 ? (progressReport.status || "primary_mount") : (progressReport.status || "plan_b_retrying");
+              progressReport.retrying = attempt > 1;
+              progressReport.plan_b_active = attempt > 1;
+              progressReport.primary_mount = attempt === 1;
               progressReport.retry_plan = summarizeQ4RetryPlan(this.q4RetryAttempts);
               if (typeof options.onProgress === "function") options.onProgress(progressReport);
             }
@@ -1521,7 +1534,16 @@ export class BrowserChatRuntime {
         this.q4RetryAttempts.push(retryAttempt);
         report.retry_plan = summarizeQ4RetryPlan(this.q4RetryAttempts);
         report.attempts = this.q4RetryAttempts;
-        emit({ status: report.ok ? "passed" : "retrying", state: report.ok ? "q4_ready" : "warming_q4", attempt, strategy, report });
+        emit({
+          status: report.ok ? "passed" : attempt === 1 ? "primary_failed" : "plan_b_retrying",
+          state: report.ok ? "q4_ready" : "warming_q4",
+          attempt,
+          strategy,
+          report,
+          retrying: !report.ok && attempt > 1,
+          plan_b_active: !report.ok && attempt > 1,
+          plan_b_pending: !report.ok && attempt === 1
+        });
         if (q4RetryAttemptPassed(retryAttempt)) {
           this.q4MountReport = { ok: true, state: "q4_ready", report, attempts: this.q4RetryAttempts, retry_plan: report.retry_plan };
           return this.q4MountReport;
@@ -1652,7 +1674,7 @@ export class BrowserChatRuntime {
   async runQ4SelfCheckSmokeInIsolatedWorker(options = {}) {
     const timeoutMs = clampQ4WarmupTimeout(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS);
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28p0-q4-mount-timeout-fix", import.meta.url), { type: "module" });
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28p0b-primary-q4-mount-state", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
