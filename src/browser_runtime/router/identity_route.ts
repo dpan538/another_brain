@@ -3,7 +3,7 @@ export const R28HOTFIX2_IDENTITY_ROUTE_VERSION = "r28hotfix2-identity-route-v1";
 export const IDENTITY_ROUTE = "identity_boundary";
 
 export const IDENTITY_ANSWER =
-  "我是鳄鱼。更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。";
+  "我是鳄鱼，另一个大脑界面。";
 
 const CHINESE_IDENTITY_PATTERNS = [
   "你是谁",

@@ -1,9 +1,10 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28ship0-unified-q4-mount";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28ship0-unified-q4-mount";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28merge3-final-premerge-gate";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28merge3-final-premerge-gate";
 
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
+const R28MERGE3_UI_VERSION = "r28merge3-final-premerge-gate";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
-const R28HOTFIX3_BUILD_MARKER = "R28SHIP0";
+const R28HOTFIX3_BUILD_MARKER = "R28MERGE3";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -13,7 +14,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28ship0",
+  prelaunch_stage: "r28merge3",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -127,6 +128,7 @@ const modelLoadingDetail = document.querySelector("#model-loading-detail");
 const modelLoadingProgressBar = document.querySelector("#model-loading-progress-bar");
 const modelLoadingStages = document.querySelector("#model-loading-stages");
 const loadingCancelButton = document.querySelector("#loading-cancel-button");
+const loadingDashboardButton = document.querySelector("#loading-dashboard-button");
 const q4RetryStatus = document.querySelector("#q4-retry-status");
 
 let lastPacket = null;
@@ -137,8 +139,8 @@ const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 const INITIAL_ASSISTANT_MESSAGE = [
-  "你好，我在本地静态页面里运行。你可以直接问日常问题；需要看 RAG、q4 状态或 self-check 时，点右上角 Dashboard。",
-  "这里不展示隐藏推理、内部提示或私人原文，也不声称这是产品模型。"
+  "你好，我在。你可以直接问；需要看 q4、RAG 或 blocker 时，点 Dashboard。",
+  "这里不展示隐藏推理或内部提示，也不声称这是产品模型。"
 ].join(" ");
 
 function setText(node, value) {
@@ -164,6 +166,11 @@ function setDisabled(node, value) {
 
 function setHidden(node, value) {
   if (node) node.hidden = Boolean(value);
+}
+
+function setLoadingScreenActive(value) {
+  if (appShell) appShell.dataset.loading = value ? "active" : "idle";
+  setHidden(modelLoadingPanel, !value);
 }
 
 function focusNode(node) {
@@ -247,7 +254,7 @@ function renderModelLoading(input = {}) {
   const cancelled = status === "cancelled";
   const failed = status === "failed" || status === "timeout";
   const progress = Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 8);
-  setHidden(modelLoadingPanel, input.hidden === true);
+  setLoadingScreenActive(input.hidden !== true);
   setText(modelLoadingTitle, done ? "模型资产检查完成" : cancelled ? "模型资产检查已取消" : failed ? "模型资产检查未完成" : "模型资产检查中");
   setText(modelLoadingDetail, `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback available${fallbackReason ? ` / ${fallbackReason}` : ""}`);
   renderQ4RetryStatus(input);
@@ -271,6 +278,7 @@ function completeModelLoading(report = {}) {
     status: report.status || (report.ok ? "passed" : "failed"),
     progress: 100
   });
+  globalThis.setTimeout?.(() => setLoadingScreenActive(false), 450);
 }
 
 function sourceLabel(trace = {}) {
@@ -281,7 +289,7 @@ function sourceLabel(trace = {}) {
   return "no_model_fallback";
 }
 
-function appendMessage(role, text) {
+function appendMessage(role, text, meta = null) {
   if (!messageList) {
     warnMissing("message-list", "append_message");
     return;
@@ -297,6 +305,12 @@ function appendMessage(role, text) {
   body.textContent = text;
 
   article.append(roleNode, body);
+  if (role === "assistant" && meta) {
+    const footer = document.createElement("div");
+    footer.className = "message-footer";
+    footer.textContent = `source: ${meta.source || "unknown"} / evidence: ${meta.evidence || "none"}`;
+    article.append(footer);
+  }
   messageList.append(article);
   messageList.scrollTop = messageList.scrollHeight;
 }
@@ -447,7 +461,7 @@ function renderDeliveryConfig(config) {
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
   setText(routerStatusBadge, "router: enabled");
   setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${config.ui_version || R28HOTFIX1_UI_VERSION}`);
-  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${config.ui_version || R28HOTFIX1_UI_VERSION}`);
+  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28MERGE3_UI_VERSION} / base=${config.ui_version || R28HOTFIX1_UI_VERSION}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   setText(candidateRouteStatus, config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route);
@@ -609,6 +623,7 @@ async function boot() {
 function bindEvents() {
 on(chatModeButton, "click", () => setUiMode("chat"));
 on(dashboardModeButton, "click", () => setUiMode("dashboard"));
+on(loadingDashboardButton, "click", () => setUiMode("dashboard"));
 on(loadingCancelButton, "click", () => {
   if (activeLoadingController) activeLoadingController.abort();
   if (activeSelfCheckController) activeSelfCheckController.abort();
@@ -639,6 +654,7 @@ on(loadingCancelButton, "click", () => {
     blockers: ["model_loading_cancelled"]
   });
   setText(fallbackReasonStatus, "model_loading_cancelled");
+  setLoadingScreenActive(false);
 });
 
 on(contextImportButton, "click", () => {
@@ -678,17 +694,22 @@ on(form, "submit", async (event) => {
   focusNode(input);
 
   running = true;
+  if (appShell) appShell.dataset.generating = "true";
   setDisabled(abortButton, false);
   try {
     const packet = await runtime.run(text, { onStatus: setPipelineStatus });
     lastPacket = packet;
     setDisabled(stateExportButton, false);
-    appendMessage("assistant", packet.final_answer);
+    appendMessage("assistant", packet.final_answer, {
+      source: packet.answer_source_label || sourceLabel(packet.process_trace || {}),
+      evidence: packet.evidence_packet?.evidence_status || "none"
+    });
     updateStatus(packet);
     renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
     renderDebug();
   } finally {
     running = false;
+    if (appShell) appShell.dataset.generating = "false";
     setDisabled(abortButton, true);
   }
 });
@@ -801,6 +822,7 @@ function start() {
       output: { text_preview: "" },
       blockers: [error.message || "boot_failed"]
     });
+    setLoadingScreenActive(false);
   });
 }
 

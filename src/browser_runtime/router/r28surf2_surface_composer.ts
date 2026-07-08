@@ -1,4 +1,5 @@
 import { isR28Surf2RouterSurfaceRoute, routeForR28Surf2Intent } from "./r28surf2_intents.ts";
+import { composeNaturalSurface } from "./natural_surfaces.ts";
 import { R28SURF2_SURFACE_FRAGMENT_INDEX, R28SURF2_SURFACE_FRAGMENTS } from "./r28surf2_surface_fragments.ts";
 
 export const R28SURF2_SURFACE_COMPOSER_VERSION = "r28surf2-anchor-informed-surface-composer-v1";
@@ -47,6 +48,14 @@ function composeEvidence(intent, input) {
 }
 
 export function composeR28Surf2Surface({ intent, input = "", runtimeStatus = {}, evidenceStatus = "none", adapterContextPresent = false, productAdmission = false } = {}) {
+  const natural = composeNaturalSurface({ intent, input, runtimeStatus, evidenceStatus, adapterContextPresent, productAdmission });
+  if (natural) {
+    return {
+      ...natural,
+      quality_flags: [...natural.quality_flags, "r28surf2_route_compatible"]
+    };
+  }
+
   const route = routeForR28Surf2Intent(intent);
   const runtimeMode = runtimeStatus.runtime_mode || runtimeStatus.runtimeMode || "";
   const tokenizer = runtimeStatus.tokenizer || runtimeStatus.decode_status || runtimeStatus.decodeStatus || "";

@@ -3,19 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>R28SHIP0 another_brain preview | Unified q4 mount</title>
-    <meta name="another-brain-ui-version" content="r28ship0-unified-q4-mount" />
+    <title>R28SHIP0 / R28MERGE3 another_brain preview | Final premerge gate</title>
+    <meta name="another-brain-ui-version" content="r28merge3-final-premerge-gate" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2528'/%3E%3Cpath d='M8 18h16M8 12h10M8 24h7' stroke='%23f4f6f5' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28ship0-unified-q4-mount" />
+    <link rel="stylesheet" href="/another_brain_chat/design_tokens.css?v=r28merge3-final-premerge-gate" />
+    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28merge3-final-premerge-gate" />
+    <link rel="stylesheet" href="/another_brain_chat/loading_screen.css?v=r28merge3-final-premerge-gate" />
   </head>
   <body>
     <main class="app-shell" id="app-shell" data-ui-mode="chat" aria-label="another_brain chat preview">
       <header class="app-header">
         <div class="header-copy">
-          <p class="eyebrow">another_brain preview</p>
-          <h1 id="chat-title">轻量本地聊天</h1>
-          <p class="chat-subtitle">日常问答优先走轻量路由和本地 profile pack；需要过程细节时再打开 Dashboard。</p>
-          <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
+          <p class="eyebrow">another_brain</p>
+          <h1 id="chat-title">鳄鱼在。</h1>
+          <p class="chat-subtitle">直接问。需要过程细节时再打开 Dashboard。</p>
+          <p id="non-product-warning" class="header-warning">预览工程候选，不是产品模型。</p>
         </div>
         <div class="header-side">
           <nav class="mode-toggle" aria-label="view mode">
@@ -23,14 +25,14 @@
             <button type="button" class="mode-button" id="dashboard-mode-button" aria-pressed="false">Dashboard</button>
           </nav>
           <div class="header-badges" aria-label="runtime status">
-            <span class="badge badge-version" id="ui-version-badge">R28SHIP0 · r28ship0-unified-q4-mount</span>
+            <span class="badge badge-version dashboard-only" id="ui-version-badge">R28MERGE3 · final-premerge</span>
             <span class="badge badge-local" id="local-indicator">local/static</span>
-            <span class="badge badge-backend" id="backend-badge">No backend inference</span>
-            <span class="badge" id="model-source-badge">static_q4_experimental</span>
+            <span class="badge badge-backend dashboard-only" id="backend-badge">No backend inference</span>
+            <span class="badge dashboard-only" id="model-source-badge">static_q4_experimental</span>
             <span class="badge dashboard-only" id="tokenizer-status-badge">exact_runtime_tokenizer: checking</span>
             <span class="badge dashboard-only" id="router-status-badge">router: enabled</span>
             <span class="badge badge-warn" id="q4-status-badge">q4 forward: not checked</span>
-            <span class="badge badge-warn" id="non-product-badge">not product model</span>
+            <span class="badge badge-warn dashboard-only" id="non-product-badge">not product model</span>
           </div>
         </div>
       </header>
@@ -77,7 +79,7 @@
       <section class="workspace-grid">
         <section class="conversation-pane" aria-labelledby="chat-title">
           <section class="chat-intro" aria-label="chat mode summary">
-            <p>直接提问就好。短问候、身份、来源和边界类问题会快速返回；开放问题会使用本地 static RAG、q4 experimental path 和可用 fallback。</p>
+            <p>你好，我在。短问候和身份问题会快一点；开放问题仍走本地 q4、RAG 和边界路由。</p>
             <div class="chat-badges" aria-label="chat badges">
               <span class="badge badge-local">local/static</span>
               <span class="badge">q4 experimental</span>
@@ -85,30 +87,45 @@
             </div>
           </section>
 
-          <section class="model-loading-panel" id="model-loading-panel" aria-label="模型加载状态" aria-live="polite">
-            <div class="loading-head">
-              <div>
-                <span class="status-label">模型加载</span>
-                <strong id="model-loading-title">模型资产检查中</strong>
-                <p id="model-loading-detail">读取 manifest，fallback 已可用。</p>
+          <section class="model-loading-panel" id="model-loading-panel" data-loading-screen aria-label="模型加载状态" aria-live="polite">
+            <div class="loading-card">
+              <svg class="loading-mascot" viewBox="0 0 120 90" role="img" aria-label="鳄鱼头像">
+                <rect x="18" y="26" width="84" height="42" rx="21" fill="#16877D" />
+                <circle cx="44" cy="30" r="12" fill="#7FC7D9" />
+                <circle cx="76" cy="30" r="12" fill="#7FC7D9" />
+                <circle cx="44" cy="30" r="4" fill="#1F2933" />
+                <circle cx="76" cy="30" r="4" fill="#1F2933" />
+                <path d="M30 54c12 10 48 10 60 0" fill="none" stroke="#F7F2E8" stroke-width="5" stroke-linecap="round" />
+                <path d="M49 51l5 8 5-8M67 51l5 8 5-8" fill="none" stroke="#F7F2E8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div class="loading-head">
+                <div>
+                  <span class="status-label">模型加载</span>
+                  <strong id="model-loading-title">模型资产检查中</strong>
+                  <p id="model-loading-detail">读取 manifest，fallback 已可用。</p>
+                </div>
               </div>
-              <button type="button" class="button-secondary small-button" id="loading-cancel-button">取消加载</button>
-            </div>
-            <div class="loading-progress" aria-label="loading progress">
-              <span id="model-loading-progress-bar" style="width: 8%"></span>
-            </div>
-            <ol class="loading-stages" id="model-loading-stages" aria-label="model loading stages">
-              <li data-loading-stage="manifest" class="active"><span></span>读取 manifest</li>
-              <li data-loading-stage="shards"><span></span>校验 shards</li>
-              <li data-loading-stage="tokenizer"><span></span>加载 tokenizer</li>
-              <li data-loading-stage="q4-warmup"><span></span>q4 warmup</li>
-              <li data-loading-stage="fallback"><span></span>fallback available</li>
-            </ol>
-            <p class="q4-retry-status" id="q4-retry-status">Plan B：等待 q4 初始检查</p>
-            <div class="loading-skeleton" aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
+              <p class="loading-microcopy" id="loading-microcopy">本地加载小模型，可能需要一点时间。</p>
+              <div class="loading-progress" aria-label="loading progress">
+                <span id="model-loading-progress-bar" style="width: 8%"></span>
+              </div>
+              <ol class="loading-stages" id="model-loading-stages" aria-label="model loading stages">
+                <li data-loading-stage="manifest" class="active"><span></span>读取模型清单</li>
+                <li data-loading-stage="shards"><span></span>校验模型分片</li>
+                <li data-loading-stage="tokenizer"><span></span>加载 tokenizer</li>
+                <li data-loading-stage="q4-warmup"><span></span>q4 warmup</li>
+                <li data-loading-stage="fallback"><span></span>fallback ready</li>
+              </ol>
+              <p class="q4-retry-status" id="q4-retry-status">Plan B：等待 q4 初始检查</p>
+              <div class="loading-skeleton" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="loading-actions">
+                <button type="button" class="button-secondary small-button" id="loading-cancel-button">进入轻量模式</button>
+                <button type="button" class="button-secondary small-button" id="loading-dashboard-button">Dashboard</button>
+              </div>
             </div>
           </section>
 
@@ -135,7 +152,7 @@
             <article class="message message-assistant">
               <div class="message-role">another_brain</div>
               <p>
-                我会显示公开过程摘要：输入包、本地上下文、检索证据、模型草稿、路由判断和最终回答。若 q4 没有真正参与，会明确标出。
+                你好，我在。你可以直接问；如果 q4 没有真正参与，我会把 fallback 原因标出来。
               </p>
             </article>
           </section>
@@ -305,6 +322,7 @@
       </section>
     </main>
 
-    <script type="module" src="/another_brain_chat/app.js?v=r28ship0-unified-q4-mount"></script>
+    <script src="/another_brain_chat/loading_screen.js?v=r28merge3-final-premerge-gate"></script>
+    <script type="module" src="/another_brain_chat/app.js?v=r28merge3-final-premerge-gate"></script>
   </body>
 </html>

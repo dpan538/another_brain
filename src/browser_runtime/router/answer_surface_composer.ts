@@ -1,4 +1,5 @@
 import { MICRO_INTENT_ROUTES, isMicroIntentRoute, routeForMicroIntent } from "./intent_taxonomy.ts";
+import { composeNaturalSurface } from "./natural_surfaces.ts";
 import { SURFACE_FRAGMENT_INDEX, SURFACE_FRAGMENTS } from "./surface_fragments.ts";
 
 export const R28ROUT1_SURFACE_COMPOSER_VERSION = "r28rout1-compositional-answer-surface-v1";
@@ -30,6 +31,19 @@ function admissionCaveat(productAdmission) {
 }
 
 export function composeAnswerSurface({ intent, input = "", runtimeStatus = {}, evidenceStatus = "none", adapterContextPresent = false, productAdmission = false } = {}) {
+  const naturalIntent = intent === "smalltalk_light" ? "smalltalk_safe" : intent;
+  const natural = composeNaturalSurface({ intent: naturalIntent, input, runtimeStatus, evidenceStatus, adapterContextPresent, productAdmission });
+  if (natural) {
+    return {
+      ...natural,
+      intent,
+      route: routeForMicroIntent(intent) || natural.route,
+      final_answer_source: isMicroIntentRoute(routeForMicroIntent(intent) || natural.route) ? "router_surface" : "router_boundary",
+      quality_flags: [...natural.quality_flags, "r28rout1_route_compatible"],
+      route_schema_hint: MICRO_INTENT_ROUTES[intent] || ""
+    };
+  }
+
   const route = routeForMicroIntent(intent);
   const runtimeMode = runtimeStatus.runtime_mode || runtimeStatus.runtimeMode || "";
   const tokenizer = runtimeStatus.tokenizer || runtimeStatus.decode_status || runtimeStatus.decodeStatus || "";
@@ -47,7 +61,7 @@ export function composeAnswerSurface({ intent, input = "", runtimeStatus = {}, e
     fragmentIds.push(fragment.id, "identity_core_02");
     finalAnswer = compactJoin([
       fragment.text,
-      "更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。"
+      "这里我就叫鳄鱼。"
     ]);
   } else if (intent === "identity_who_are_you" || intent === "boundary_are_you_ai") {
     fragmentIds.push("identity_core_01", "identity_core_02", "identity_core_03");

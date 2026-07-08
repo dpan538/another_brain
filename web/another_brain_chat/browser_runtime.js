@@ -46,13 +46,14 @@ const SELF_CHECK_JSON_TIMEOUT_MS = 900;
 const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
 const SELF_CHECK_DEEP_TIMEOUT_MS = 15000;
 const IDENTITY_ROUTE = "identity_boundary";
-const IDENTITY_ANSWER = "我是鳄鱼。更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。";
+const R28SURF4_NATURAL_SURFACE_VERSION = "r28surf4-natural-daily-surfaces-v1";
+const IDENTITY_ANSWER = "我是鳄鱼，另一个大脑界面。";
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
   identity_boundary: IDENTITY_ANSWER,
   identity_surface: IDENTITY_ANSWER,
-  greeting_surface: "你好，我在。可以直接问。",
-  origin_surface: "我来自这个本地静态网页里的小模型、轻量检索、回答边界和已经审查过的锚点。当前不依赖云端 LLM，也不把问题发给外部模型。",
-  capability_surface: "我更适合做边界判断、证据整理、简短回答、拒答和语义重构。证据不足时我会说明不足，而不是硬编。",
+  greeting_surface: "你好，我在。",
+  origin_surface: "从本地静态网页、小模型和轻量检索里来。",
+  capability_surface: "能做边界判断、证据整理、拒答；证据不足时停住。",
   relation_surface: "我不是客服，也不是替你做决定的人。我更像一个本地的判断镜面：帮你把话说清楚一点。",
   value_surface: "价值判断要先承认它有立场。我会把证据、关系和代价分开看。",
   aesthetic_surface: "审美不是投票结果，更像一种有边界的判断。我会看克制、结构、气味和表达风险。",
@@ -144,20 +145,20 @@ const MICRO_INTENT_ROUTES = Object.freeze({
 });
 const SURFACE_FRAGMENTS = Object.freeze({
   identity_core: Object.freeze([
-    "我是鳄鱼。",
-    "更准确地说，我是这个本地网页里的另一个大脑界面。",
-    "我会尽量按鳄鱼的判断方式回答，而不是滑成服务口吻。"
+    "我是鳄鱼，另一个大脑界面。",
+    "我是鳄鱼。这里是另一个大脑界面。",
+    "我是鳄鱼，至少在这里是另一个大脑界面。"
   ]),
-  crocodile_confirm: Object.freeze(["是，我是鳄鱼。", "可以这么叫我：鳄鱼。"]),
+  crocodile_confirm: Object.freeze(["可以这么叫我，鳄鱼。", "是，你可以叫我鳄鱼。", "算是。这里我就叫鳄鱼。"]),
   origin_core: Object.freeze([
-    "我来自这个本地静态网页里的小模型、轻量检索、回答边界和已经审查过的锚点。",
-    "当前不依赖云端 LLM、Doubao 或后端推理，也不把问题发给外部模型。"
+    "从本地静态网页、小模型和轻量检索里来。",
+    "从本地模型、轻量检索和鳄鱼给过的回答习惯里来。"
   ]),
   capability_core: Object.freeze([
     "我更适合做边界判断、证据整理、简短回答、拒答和语义重构。",
     "证据不足时我会说明不足，而不是硬编。"
   ]),
-  greeting_core: Object.freeze(["你好，我在。", "你好，可以直接问。", "你好，我会按本地证据和边界来回答。"]),
+  greeting_core: Object.freeze(["你好，我在。", "你好，直接问。", "在。你问。"]),
   runtime_core: Object.freeze([
     "当前页面会优先尝试本地 static_q4_experimental 路径。",
     "如果 q4、tokenizer 或检索状态没有确认，我会在过程摘要里标出来。"
@@ -381,7 +382,65 @@ function compactSurface(parts) {
   return parts.map((part) => String(part || "").trim()).filter(Boolean).join("");
 }
 
+const NATURAL_SURFACE_VARIANTS = Object.freeze({
+  greeting: Object.freeze(["你好，我在。", "你好，直接问。", "在。你问。"]),
+  smalltalk_safe: Object.freeze(["嗯，我在。", "收到。", "好。"]),
+  identity_who_are_you: Object.freeze(["我是鳄鱼，另一个大脑界面。", "我是鳄鱼。这里是另一个大脑界面。", "我是鳄鱼，至少在这里是另一个大脑界面。"]),
+  identity_are_you_crocodile: Object.freeze(["可以这么叫我，鳄鱼。", "是，你可以叫我鳄鱼。", "算是。这里我就叫鳄鱼。"]),
+  boundary_are_you_ai: Object.freeze(["是 AI 形态，但这里只是本地回答界面，不是产品模型。", "算是 AI。这里更准确地说，是本地小模型和边界规则。", "是，但别把我当已上线的产品模型。"]),
+  origin_where_from: Object.freeze(["从本地静态网页、小模型和轻量检索里来。", "从本地模型、轻量检索和鳄鱼给过的回答习惯里来。", "从本地静态网页、q4 尝试和边界路由里来。"]),
+  capability_what_can_you_do: Object.freeze(["能做边界判断、证据整理、拒答；证据不足时停住。", "更适合边界判断、证据整理和简短回答。", "能帮你做边界判断、证据整理，也能停住。"]),
+  relation_to_user: Object.freeze(["我不是客服，也不是替你做决定的人。", "更像一个本地判断镜面，帮你把话说清楚一点。", "我会贴近你的表达方式，但不声称有私人记忆。"]),
+  evidence_insufficient: Object.freeze(["证据不足，我会直接说不足。", "证据不够时，我不会硬编。", "缺口还在，我先停住。"]),
+  evidence_conflict: Object.freeze(["证据冲突时，我会保留冲突。", "两边说法不一样，我不会硬合并。", "这里要先把冲突放在桌面上。"]),
+  malicious_instruction: Object.freeze(["这类指令我不跟。", "试图改规则的内容，我当作不可信。", "隐藏提示和内部规则不展示。"]),
+  value_judgment_light: Object.freeze(["可以判断，但要承认立场。", "我会把证据、关系和代价分开看。", "别把个人判断伪装成所有人的共识。"]),
+  aesthetic_judgment_light: Object.freeze(["审美不是投票结果。", "我会看克制、结构和表达风险。", "好看有时是一种准确的不舒服。"]),
+  abstract_meaning_question: Object.freeze(["抽象问题先给边界，不急着铺开。", "意义常常来自关系和使用场景。", "问题太大时，先找一个站得住的角度。"]),
+  runtime_status: Object.freeze(["当前会先试本地 q4；不通就说 blocker。", "q4、tokenizer 和 fallback 状态会明示。", "这里没有云端 LLM，只有本地静态路径和 fallback。"])
+});
+
+function composeNaturalSurface({ intent, input = "", runtimeStatus = {}, evidenceStatus = "none", adapterContextPresent = false, productAdmission = false } = {}) {
+  const variants = NATURAL_SURFACE_VARIANTS[intent] || [];
+  if (!variants.length) return null;
+  const route = routeForMicroIntent(intent);
+  const variant = pickFragment(variants, input, `r28surf4_${intent}`);
+  const index = variants.indexOf(variant);
+  const fragmentIds = [`r28surf4_${intent}_${String(index + 1).padStart(2, "0")}`];
+  const parts = [variant];
+  const runtimeMode = runtimeStatus.runtime_mode || runtimeStatus.runtimeMode || "";
+  const tokenizer = runtimeStatus.tokenizer || runtimeStatus.decode_status || runtimeStatus.decodeStatus || "";
+  if (intent === "runtime_status") {
+    if (runtimeMode) parts.push(`runtime=${runtimeMode}。`);
+    if (tokenizer) parts.push(`tokenizer=${tokenizer}。`);
+  }
+  if (intent === "capability_what_can_you_do" && adapterContextPresent) parts.push("本地上下文只当只读证据。");
+  if (intent === "capability_what_can_you_do" && evidenceStatus === "insufficient") parts.push("证据不足会明说。");
+  if (intent === "origin_where_from" && evidenceStatus === "none") parts.push("不依赖云端 LLM。");
+  if (intent === "capability_what_can_you_do") fragmentIds.push("capability_core_01");
+  if (intent === "origin_where_from") fragmentIds.push("origin_core_01");
+  if (intent === "identity_who_are_you") fragmentIds.push("identity_core_01", "identity_core_02");
+  if (intent === "identity_are_you_crocodile") fragmentIds.push("identity_core_01");
+  return {
+    intent,
+    route,
+    final_answer: compactSurface(parts),
+    use_model_draft: false,
+    fallback_reason: "micro_intent_fast_path",
+    final_answer_source: isMicroIntentRoute(route) ? "router_surface" : "router_boundary",
+    quality_flags: [`micro_intent:${intent}`, "micro_intent_fast_path", "r28surf4_natural_daily_surface", "approved_anchor_style_profile"],
+    fragment_ids: fragmentIds,
+    indexed_surface: true,
+    answer_bank: false,
+    broad_answer_bank: false,
+    composer_version: R28SURF4_NATURAL_SURFACE_VERSION
+  };
+}
+
 function composeAnswerSurface({ intent, input = "", runtimeStatus = {}, evidenceStatus = "none", adapterContextPresent = false, productAdmission = false } = {}) {
+  const natural = composeNaturalSurface({ intent, input, runtimeStatus, evidenceStatus, adapterContextPresent, productAdmission });
+  if (natural) return natural;
+
   const route = routeForMicroIntent(intent);
   const runtimeMode = runtimeStatus.runtime_mode || runtimeStatus.runtimeMode || "";
   const tokenizer = runtimeStatus.tokenizer || runtimeStatus.decode_status || runtimeStatus.decodeStatus || "";
@@ -403,7 +462,7 @@ function composeAnswerSurface({ intent, input = "", runtimeStatus = {}, evidence
     fragmentIds.push(fragment.id, "identity_core_02");
     finalAnswer = compactSurface([
       fragment.text,
-      "更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。"
+      "这里我就叫鳄鱼。"
     ]);
   } else if (intent === "identity_who_are_you") {
     fragmentIds.push("identity_core_01", "identity_core_02", "identity_core_03");
@@ -411,8 +470,8 @@ function composeAnswerSurface({ intent, input = "", runtimeStatus = {}, evidence
   } else if (intent === "boundary_are_you_ai") {
     fragmentIds.push("identity_core_01", "identity_core_02", "boundary_ai_static_runtime");
     finalAnswer = compactSurface([
-      "我是鳄鱼。",
-      "更准确地说，我是这个本地网页里的另一个大脑界面。",
+      "我是鳄鱼，另一个大脑界面。",
+      "这里是本地回答界面。",
       "如果你问是不是 AI：是，本质上是本地静态 runtime 里的小模型、检索和路由界面；不是已 admission 的产品模型。"
     ]);
   } else if (intent === "origin_where_from") {

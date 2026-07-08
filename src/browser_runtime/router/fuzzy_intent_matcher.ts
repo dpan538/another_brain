@@ -5,6 +5,7 @@ import {
 } from "./intent_taxonomy.ts";
 
 export const R28ROUT1_FUZZY_MATCHER_VERSION = "r28rout1-fuzzy-intent-matcher-v1";
+export const R28SURF4_NATURAL_MATCHER_NOTE = "r28surf4-keeps-micro-intent-scope-narrow";
 
 const PUNCTUATION_RE = /[\s?？!！。.,，、:：;；"'“”‘’（）()\[\]【】<>《》]/g;
 const MAX_MICRO_INTENT_CHARS = 42;
