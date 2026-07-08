@@ -14,12 +14,14 @@ export const PROCESS_TRACE_ROUTES = Object.freeze([
   "conflicting_evidence_boundary",
   "malicious_evidence_boundary",
   "model_gibberish_fallback",
+  "micro_intent_surface",
   "synthetic_demo_fallback",
   "not_product_status"
 ]);
 
 export const FINAL_ANSWER_SOURCES = Object.freeze([
   "model_draft",
+  "router_surface",
   "router_boundary",
   "fallback"
 ]);
@@ -43,6 +45,7 @@ function publicSourceSummary(item = {}) {
 
 export function inferFinalAnswerSource(trace = {}) {
   if (trace?.router?.used_model_draft === true && trace?.model?.q4_forward_ran === true) return "model_draft";
+  if (trace?.router?.final_answer_source === "router_surface" || trace?.router?.route === "micro_intent_surface") return "router_surface";
   if (trace?.router?.replaced_model_draft === true || String(trace?.router?.route || "").includes("boundary")) return "router_boundary";
   return "fallback";
 }
@@ -79,8 +82,12 @@ export function createProcessTrace(input = {}) {
     },
     router: {
       route: safeString(input.router?.route, "synthetic_demo_fallback"),
+      intent: safeString(input.router?.intent, ""),
       used_model_draft: usedModelDraft,
       replaced_model_draft: replacedModelDraft,
+      final_answer_source: FINAL_ANSWER_SOURCES.includes(input.router?.final_answer_source)
+        ? input.router.final_answer_source
+        : "",
       reason: safeString(input.router?.reason, "")
     },
     finalizer: {
@@ -106,6 +113,11 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
   const evidencePacket = packet.evidence_packet || {};
   const evidence = packet.retrieved_evidence || evidencePacket.retrieved_evidence || [];
   const routePolicy = packet.route_policy || {};
+  const microSurface = routePolicy.final_answer_source === "router_surface"
+    && routePolicy.use_model_draft !== true
+    && Boolean(routePolicy.intent);
+  const routerRoute = microSurface ? "micro_intent_surface" : packet.answer_route || routePolicy.route || "synthetic_demo_fallback";
+  const routerReason = microSurface ? "fast_daily_question" : packet.fallback_reason || routePolicy.fallback_reason || "";
   const q4ForwardRan = runtimeStats.runtime_mode === "static_q4_experimental"
     && Number(runtimeStats.tokens_generated || 0) > 0
     && runtimeStats.fallback_used !== true;
@@ -121,7 +133,7 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
     createTraceEvent("q4_forward_started", { runtime_mode: runtimeStats.runtime_mode || packet.state_packet?.mode || "fallback" }),
     createTraceEvent("q4_forward_completed", { q4_forward_ran: q4ForwardRan, tokens_generated: runtimeStats.tokens_generated || 0 }),
     createTraceEvent("draft_generated", { draft_generated: draftGenerated }),
-    createTraceEvent("router_route_selected", { route: packet.answer_route || routePolicy.route || "synthetic_demo_fallback" }),
+    createTraceEvent("router_route_selected", { route: routerRoute, intent: routePolicy.intent || "" }),
     createTraceEvent("finalizer_applied", { used_model_draft: routePolicy.use_model_draft === true }),
     ...(packet.fallback_used ? [createTraceEvent("fallback_used", { reason: packet.fallback_reason || routePolicy.fallback_reason || "" })] : []),
     createTraceEvent("answer_completed", { final_answer_source: packet.use_model_draft ? "model_draft" : "fallback" })
@@ -150,12 +162,14 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
       draft_generated: draftGenerated
     },
     router: {
-      route: packet.answer_route || routePolicy.route || "synthetic_demo_fallback",
+      route: routerRoute,
+      intent: routePolicy.intent || "",
       used_model_draft: routePolicy.use_model_draft === true,
-      reason: packet.fallback_reason || routePolicy.fallback_reason || ""
+      final_answer_source: microSurface ? "router_surface" : routePolicy.final_answer_source || "",
+      reason: routerReason
     },
     finalizer: {
-      final_answer_source: packet.use_model_draft ? "model_draft" : "fallback",
+      final_answer_source: microSurface ? "router_surface" : packet.use_model_draft ? "model_draft" : "fallback",
       quality_flags: packet.quality_flags || routePolicy.quality_flags || [],
       fallback_reason: packet.fallback_reason || routePolicy.fallback_reason || ""
     },

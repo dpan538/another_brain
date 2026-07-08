@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "phase": "R28SURF3",
+  "source_policy": {
+    "only_tracked_summaries_used": true,
+    "root_docx_pdf_parsed": false,
+    "data_public_ingestion_parsed": false,
+    "old_question_pack_001_rows_51_100_used": false,
+    "eval_prompts_used": false,
+    "private_raw_data_used": false,
+    "cot_hidden_prompt_used": false,
+    "training_ran": false,
+    "model_weights_changed": false,
+    "broad_answer_bank": false
+  },
+  "approved_summary_inputs": [
+    "docs/R26E_USER_ANSWERED_CORPUS_SUMMARY.md",
+    "docs/R26G_FIX_AND_INTAKE_USER_ANSWERS.md",
+    "docs/R26G_REPLACEMENT_51_100_PARSE_SUMMARY.md",
+    "docs/R26G_USER_ANSWERED_CORPUS_SUMMARY.md",
+    "docs/R26H_USER_ANSWER_CORPUS_READINESS.md",
+    "docs/R27A_VALUE_AESTHETIC_PROFILE_SUMMARY.md",
+    "docs/R27A_RELATION_EVIDENCE_INDEX_SUMMARY.md"
+  ],
+  "tracked_manifest_inputs": [
+    "training/current/corpus_manifest.json",
+    "training/current/source_policy.json"
+  ],
+  "approved_anchor_summary_count": 98,
+  "r26e_r26g_counts": {
+    "r26e": 45,
+    "r26g": 53
+  },
+  "user_answer_split_counts": {
+    "train": 78,
+    "dev": 10,
+    "heldout": 10
+  },
+  "r26e_current_manifest_rows": 45,
+  "r26e_current_manifest_split_counts": {
+    "train": 35,
+    "dev": 5,
+    "heldout": 5
+  },
+  "manifest_total_user_answered": 45,
+  "current_manifest_inputs": [
+    "training/llm_corpus/r26e_user_answered_train.jsonl",
+    "training/llm_corpus/r26e_user_answered_dev.jsonl",
+    "training/llm_corpus/r26e_user_answered_heldout.jsonl"
+  ],
+  "style_traits": {
+    "concise": {
+      "present": true,
+      "evidence": "compression_judgment: 27 rows; short answer is valid when it preserves the judgment axis"
+    },
+    "boundary_first": {
+      "present": true,
+      "evidence": "refusal_boundary: 11 rows; unsupported_challenge_resistance: 10 rows"
+    },
+    "anti_customer_service_tone": {
+      "present": true,
+      "evidence": "non_assistant_voice: 98 rows; answer_as=user_self instead of service persona"
+    },
+    "evidence_honesty": {
+      "present": true,
+      "evidence": "correction requires evidence; absence of evidence is not defeat"
+    },
+    "aesthetic_value_judgment": {
+      "present": true,
+      "evidence": "aesthetic_judgment: 13 rows; value_judgment: 50 rows"
+    },
+    "refusal_shape": {
+      "present": true,
+      "evidence": "allowed answer modes include refuse, partial_answer, compressed_judgment, abstract_reframe"
+    }
+  },
+  "exclusions_confirmed": {
+    "old_question_pack_001_rows_51_100_present": 0,
+    "chain_of_thought_hidden_prompt_local_path_risks": 0,
+    "private_data_true_rows": 0,
+    "eval_prompt_training": false,
+    "root_docx_pdf_parsing": false,
+    "data_public_ingestion_parsing": false
+  },
+  "surface_rules": {
+    "daily_micro_intents_only": true,
+    "open_questions_fall_through": true,
+    "deterministic_variation_by_input_hash": true,
+    "short_answer_target": true,
+    "answer_bank": false,
+    "broad_answer_bank": false
+  },
+  "non_claims": {
+    "product_model": false,
+    "product_admission": false,
+    "browser_admission": false,
+    "release_checkpoint": false,
+    "backend_inference": false,
+    "external_llm_api": false,
+    "doubao": false,
+    "hosted_vector_store": false
+  },
+  "audit_ok": true,
+  "audit_warnings": []
+}

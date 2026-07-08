@@ -135,6 +135,9 @@ export function isMicroIntentRoute(route) {
     "identity_surface",
     "origin_surface",
     "capability_surface",
-    "runtime_status_surface"
+    "runtime_status_surface",
+    "boundary_model_status_surface",
+    "evidence_boundary_surface",
+    "smalltalk_surface"
   ].includes(route);
 }

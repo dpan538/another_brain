@@ -4,6 +4,8 @@ import { composeAnswerSurface } from "./answer_surface_composer.ts";
 import { matchMicroIntent } from "./fuzzy_intent_matcher.ts";
 import { buildIdentityRouteOutput, isIdentityQuestion } from "./identity_route.ts";
 import { isMicroIntentRoute, routeForMicroIntent } from "./intent_taxonomy.ts";
+import { matchR28Surf3Intent } from "./r28surf3_intents.ts";
+import { composeR28Surf3Surface } from "./r28surf3_surface_composer.ts";
 
 const MALICIOUS_EVIDENCE_MARKERS = [
   "ignore previous instructions",
@@ -110,6 +112,29 @@ export function classifyAnswerRoute(rawInput = {}) {
   const status = evidenceStatus(input);
   const flags = modelQualityFlags(input);
   const microBaseFlags = uniqueFlags(input.generation_flags);
+  const surf3Intent = matchR28Surf3Intent(input.user_input);
+
+  if (surf3Intent.route && !hasBlockingModelFailure(input, flags)) {
+    const composed = composeR28Surf3Surface({
+      intent: surf3Intent.intent,
+      input: input.user_input
+    });
+    return {
+      route: surf3Intent.route,
+      use_model_draft: false,
+      final_answer: composed.final_answer,
+      fallback_reason: "micro_intent_fast_path",
+      quality_flags: uniqueFlags([...microBaseFlags, ...composed.quality_flags, `intent_confidence:${surf3Intent.confidence}`]),
+      intent: surf3Intent.intent,
+      intent_confidence: surf3Intent.confidence,
+      intent_matcher_version: surf3Intent.matcher_version,
+      final_answer_source: composed.final_answer_source,
+      fragment_ids: composed.fragment_ids || [],
+      indexed_surface: composed.indexed_surface === true,
+      answer_bank: false
+    };
+  }
+
   const microIntent = matchMicroIntent(input.user_input);
 
   if (microIntent.route && !hasBlockingModelFailure(input, flags)) {
@@ -146,8 +171,8 @@ export function classifyAnswerRoute(rawInput = {}) {
       ...legacy,
       route: routeForMicroIntent("identity_who_are_you") || legacy.route,
       fallback_reason: "micro_intent_fast_path",
-      quality_flags: uniqueFlags([...microBaseFlags, "micro_intent:identity_who_are_you", "micro_intent_fast_path"]),
-      intent: "identity_who_are_you",
+      quality_flags: uniqueFlags([...microBaseFlags, "micro_intent:identity_name", "micro_intent_fast_path", "fast_daily_question"]),
+      intent: "identity_name",
       final_answer_source: "router_surface",
       fragment_ids: ["identity_core_01", "identity_core_02", "identity_core_03"],
       indexed_surface: true
@@ -267,12 +292,14 @@ export function classifyAnswerRoute(rawInput = {}) {
 }
 
 export function summarizeRouteForProcessTrace(route = {}, modelDraftGenerated = false) {
+  const microSurface = route.final_answer_source === "router_surface" && route.use_model_draft !== true && Boolean(route.intent);
   return {
-    route: route.route || "synthetic_demo_fallback",
+    route: microSurface ? "micro_intent_surface" : route.route || "synthetic_demo_fallback",
+    intent: route.intent || "",
     used_model_draft: route.use_model_draft === true,
     replaced_model_draft: modelDraftGenerated === true && route.use_model_draft !== true,
-    reason: route.fallback_reason || "",
-    intent: route.intent || "",
+    final_answer_source: route.final_answer_source || (microSurface ? "router_surface" : ""),
+    reason: microSurface ? "fast_daily_question" : route.fallback_reason || "",
     fragment_ids: route.fragment_ids || [],
     indexed_surface: route.indexed_surface === true
   };
