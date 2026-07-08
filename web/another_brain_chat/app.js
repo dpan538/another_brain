@@ -1,5 +1,6 @@
 import { BrowserChatRuntime } from "./browser_runtime.js?v=r28rout1-fuzzy-intent-surfaces";
 import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28rout1-fuzzy-intent-surfaces";
+import { createModelLoadingScreen } from "./loading_screen.js?v=r28load0-model-loading-state-machine";
 
 const R28HOTFIX3_UI_VERSION = "r28rout1-fuzzy-intent-surfaces";
 const R28HOTFIX3_BUILD_MARKER = "R28ROUT1";
@@ -105,6 +106,7 @@ const contextValidation = document.querySelector("#context-validation");
 let lastPacket = null;
 let running = false;
 let activeSelfCheckController = null;
+let loadingScreen = null;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
@@ -211,6 +213,7 @@ function publicDebugPacket(packet = null) {
     answer_source_label: packet.answer_source_label || sourceLabel(packet.process_trace || {}),
     route: packet.answer_route || packet.route_policy?.route || "not_run",
     fallback_reason: packet.fallback_reason || "",
+    loading_state: packet.loading_state || null,
     runtime_stats: packet.runtime_stats || {},
     evidence_summary: {
       evidence_count: packet.process_trace?.rag?.evidence_count || 0,
@@ -232,6 +235,7 @@ function renderDebug() {
 }
 
 function updateStatus(packet) {
+  if (packet.loading_state) renderLoadingPanel(packet.loading_state);
   const evidenceStatus = packet.evidence_packet?.evidence_status || "unknown";
   setText(retrievalStatus, `${packet.retrieved_evidence.length} evidence / ${evidenceStatus}`);
   setText(verifierStatus, packet.verifier_result.passed ? "Passed" : "Blocked");
@@ -247,7 +251,8 @@ function updateStatus(packet) {
   setText(draftReplacedStatus, boolText(trace.router?.replaced_model_draft));
   setText(modelSourceBadge, packet.answer_source_label || sourceLabel(trace));
   setText(tokenizerStatusBadge, `tokenizer: ${trace.model?.tokenizer || packet.decode_status || "not checked"}`);
-  setText(q4StatusBadge, `q4 forward: ${trace.model?.q4_forward_ran ? "true" : "false"}`);
+  const loadingState = packet.loading_state || {};
+  setText(q4StatusBadge, loadingState.state === "q4_ready" ? "q4 ready" : `q4 forward: ${trace.model?.q4_forward_ran ? "true" : "false"}`);
   renderTrace(trace);
 }
 
@@ -262,7 +267,7 @@ function renderTrace(trace = null) {
     setText(answerSourceStatus, "no_model_fallback");
     setText(draftGeneratedStatus, "false");
     setText(draftReplacedStatus, "false");
-    setText(q4StatusBadge, "q4 forward: false");
+    setText(q4StatusBadge, runtime.loadingState?.state === "q4_ready" ? "q4 ready" : "q4 forward: false");
     return;
   }
   const input = trace.input_packet || {};
@@ -337,7 +342,26 @@ function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
     : `Fallback: ${assetStatus.fallback_reason || "offline_cache_unavailable"}`);
 }
 
+function renderLoadingPanel(report = null) {
+  if (!loadingScreen) return;
+  if (!report) {
+    loadingScreen.render({
+      state: "idle",
+      manifest: "skipped",
+      shards: "skipped",
+      tokenizer: "skipped",
+      q4_forward: "skipped",
+      runtime_mode: "synthetic_fallback",
+      decode_status: "not_run",
+      cancelable: false
+    });
+    return;
+  }
+  loadingScreen.render(report.loading_state || report);
+}
+
 function renderSelfCheck(report = null) {
+  renderLoadingPanel(report);
   if (!report) {
     setText(selfCheckStage, "idle");
     setText(selfCheckElapsed, "0 ms");
@@ -353,12 +377,13 @@ function renderSelfCheck(report = null) {
     setText(selfCheckBlockers, "blocker：none");
     return;
   }
-  setText(selfCheckStage, `${report.status || "idle"}${report.check_level ? ` / ${report.check_level}` : ""}${report.stage ? ` / ${report.stage}` : ""}`);
+  const loading = report.loading_state || {};
+  setText(selfCheckStage, `${loading.state || report.state || report.status || "idle"}${report.check_level ? ` / ${report.check_level}` : ""}${report.stage ? ` / ${report.stage}` : ""}`);
   setText(selfCheckElapsed, `${Number(report.elapsed_ms || 0)} ms`);
   const isChecking = String(report.status || "").startsWith("checking");
-  const manifestStatus = report.assets?.manifest_loaded ? "pass" : isChecking ? "checking" : "fail";
-  const shardStatus = report.assets?.shards_verified ? "pass" : isChecking ? "checking" : "fail";
-  const tokenizerStatus = report.tokenizer?.exact_runtime_tokenizer ? "pass" : isChecking ? "checking" : "fail";
+  const manifestStatus = loading.manifest || (report.assets?.manifest_loaded ? "pass" : isChecking ? "checking" : "fail");
+  const shardStatus = loading.shards || (report.assets?.shards_verified ? "pass" : isChecking ? "checking" : "fail");
+  const tokenizerStatus = loading.tokenizer || (report.tokenizer?.exact_runtime_tokenizer ? "pass" : isChecking ? "checking" : "fail");
   const normalizedShardPaths = Array.isArray(report.assets?.normalized_shard_paths) ? report.assets.normalized_shard_paths : [];
   const failingShardPaths = Array.isArray(report.assets?.failing_shard_paths) ? report.assets.failing_shard_paths : [];
   const pathHint = failingShardPaths.length
@@ -368,15 +393,15 @@ function renderSelfCheck(report = null) {
       : "";
   setText(selfCheckAssets, `manifest=${manifestStatus} / q4 shards=${shardStatus} ${report.assets?.q4_shard_count || 0}/${report.assets?.expected_shard_count || 0}${pathHint}`);
   setText(selfCheckTokenizer, `exact tokenizer=${tokenizerStatus}`);
-  setText(selfCheckQ4, `${report.q4_forward?.status || "失败"} / q4_forward_ran=${boolText(report.q4_forward?.q4_forward_ran)}`);
-  setText(selfCheckTokens, String(report.q4_forward?.tokens_generated || 0));
-  setText(selfCheckRuntimeMode, report.q4_forward?.runtime_mode || (report.q4_forward?.q4_forward_ran ? "static_q4_experimental" : "synthetic_fallback"));
-  setText(selfCheckAnswerSource, report.q4_forward?.q4_forward_ran ? "static_q4_experimental" : "no_model_fallback");
+  setText(selfCheckQ4, `${loading.q4_forward || report.q4_forward?.status || "fail"} / q4_forward_ran=${boolText(loading.q4_forward_ran ?? report.q4_forward?.q4_forward_ran)}`);
+  setText(selfCheckTokens, String(loading.tokens_generated ?? report.q4_forward?.tokens_generated ?? 0));
+  setText(selfCheckRuntimeMode, loading.runtime_mode || report.q4_forward?.runtime_mode || (report.q4_forward?.q4_forward_ran ? "static_q4_experimental" : "synthetic_fallback"));
+  setText(selfCheckAnswerSource, (loading.state === "q4_ready" || report.q4_forward?.q4_forward_ran) ? "static_q4_experimental" : "no_model_fallback");
   setText(selfCheckFallback, report.fallback?.status || "可用");
-  setText(selfCheckFallbackReason, report.fallback?.reason || report.q4_forward?.blocker || "none");
+  setText(selfCheckFallbackReason, loading.blocker || report.fallback?.reason || report.q4_forward?.blocker || "none");
   setText(selfCheckOutput, `输出：tokens=${report.q4_forward?.tokens_generated || 0} / ${report.output?.text_preview || "no q4 text"}`);
-  setText(selfCheckBlockers, `blocker：${(report.blockers || []).join(" / ") || "none"}`);
-  setText(q4StatusBadge, `q4 forward: ${report.q4_forward?.q4_forward_ran ? "true" : report.q4_forward?.status || "false"}`);
+  setText(selfCheckBlockers, `blocker：${loading.blocker || (report.blockers || []).join(" / ") || "none"}`);
+  setText(q4StatusBadge, loading.state === "q4_ready" ? "q4 ready" : `q4 forward: ${loading.q4_forward || report.q4_forward?.status || "false"}`);
 }
 
 function setPipelineStatus(status) {
@@ -409,6 +434,21 @@ async function boot() {
   renderTrace(null);
   renderSelfCheck({
     status: "checking_quick",
+    state: "checking_manifest",
+    loading_state: {
+      state: "checking_manifest",
+      manifest: "pending",
+      shards: "pending",
+      tokenizer: "pending",
+      q4_forward: "pending",
+      q4_forward_ran: false,
+      tokens_generated: 0,
+      decode_status: "not_run",
+      runtime_mode: "synthetic_fallback",
+      blocker: null,
+      elapsed_ms: 0,
+      cancelable: true
+    },
     check_level: "quick",
     stage: "boot_quick_check",
     elapsed_ms: 0,
@@ -419,19 +459,37 @@ async function boot() {
     output: { text_preview: "" },
     blockers: []
   });
-  const report = await runtime.quickSelfCheckModelPath({ jsonTimeoutMs: 1500, shardTimeoutMs: 8000 });
+  const report = await runtime.quickSelfCheckModelPath({ jsonTimeoutMs: 1000, shardTimeoutMs: 1000 });
   renderSelfCheck(report);
   renderAssetStatus(runtime.assetStatus, runtime.deliveryConfig);
   if (report.ok) {
-    setText(modelStatus, "q4_metadata_ready");
-    setText(runtimeModeStatus, "static_q4_experimental");
-    setText(decodeStatus, report.q4_forward?.decode_status || "exact_runtime_tokenizer");
-    setText(tokenCountStatus, `${report.q4_forward?.tokens_generated || 0} generated`);
-    setText(answerSourceStatus, report.q4_forward?.q4_forward_ran ? "self_check_static_q4_experimental" : "no_model_fallback");
-  } else {
-    setText(modelStatus, "q4_blocked");
+    setText(modelStatus, "warming_q4");
     setText(runtimeModeStatus, "synthetic_fallback");
-    setText(fallbackReasonStatus, (report.blockers || []).join(" / ") || "q4_self_check_failed");
+    setText(decodeStatus, "exact_runtime_tokenizer");
+    setText(tokenCountStatus, "0 generated");
+    setText(answerSourceStatus, "no_model_fallback");
+    const warmupReport = await runtime.deepSelfCheckModelPath({
+      timeoutMs: 8000,
+      shardTimeoutMs: 10000,
+      onProgress: renderSelfCheck
+    });
+    renderSelfCheck(warmupReport);
+    renderAssetStatus(runtime.assetStatus, runtime.deliveryConfig);
+    if (warmupReport.loading_state?.state === "q4_ready") {
+      setText(modelStatus, "q4_ready");
+      setText(runtimeModeStatus, "static_q4_experimental");
+      setText(decodeStatus, warmupReport.loading_state.decode_status);
+      setText(tokenCountStatus, `${warmupReport.loading_state.tokens_generated || 0} generated`);
+      setText(answerSourceStatus, "self_check_static_q4_experimental");
+    } else {
+      setText(modelStatus, warmupReport.loading_state?.state || "fallback_ready");
+      setText(runtimeModeStatus, "synthetic_fallback");
+      setText(fallbackReasonStatus, warmupReport.loading_state?.blocker || (warmupReport.blockers || []).join(" / ") || "q4_self_check_failed");
+    }
+  } else {
+    setText(modelStatus, report.loading_state?.state || "fallback_ready");
+    setText(runtimeModeStatus, "synthetic_fallback");
+    setText(fallbackReasonStatus, report.loading_state?.blocker || (report.blockers || []).join(" / ") || "q4_self_check_failed");
   }
 }
 
@@ -511,7 +569,7 @@ on(modelSelfCheckButton, "click", async () => {
   setText(selfCheckQ4, "quick check");
   try {
     const report = await runtime.deepSelfCheckModelPath({
-      timeoutMs: 15000,
+      timeoutMs: 8000,
       shardTimeoutMs: 10000,
       signal: controller.signal,
       onProgress: renderSelfCheck
@@ -547,6 +605,21 @@ on(modelSelfCheckStopButton, "click", () => {
   setDisabled(modelSelfCheckButton, false);
   renderSelfCheck({
     status: "cancelled",
+    state: "cancelled",
+    loading_state: {
+      state: "cancelled",
+      manifest: "skipped",
+      shards: "skipped",
+      tokenizer: "skipped",
+      q4_forward: "skipped",
+      q4_forward_ran: false,
+      tokens_generated: 0,
+      decode_status: "not_run",
+      runtime_mode: "synthetic_fallback",
+      blocker: "self_check_cancelled",
+      elapsed_ms: 0,
+      cancelable: false
+    },
     check_level: "deep",
     stage: "user_cancelled",
     elapsed_ms: 0,
@@ -560,7 +633,50 @@ on(modelSelfCheckStopButton, "click", () => {
 });
 }
 
+function renderCancelledLoading(reason = "model_loading_cancelled") {
+  renderSelfCheck({
+    status: "cancelled",
+    state: "cancelled",
+    check_level: "deep",
+    stage: "user_cancelled",
+    elapsed_ms: 0,
+    loading_state: {
+      state: "cancelled",
+      manifest: "skipped",
+      shards: "skipped",
+      tokenizer: "skipped",
+      q4_forward: "skipped",
+      q4_forward_ran: false,
+      tokens_generated: 0,
+      decode_status: "not_run",
+      runtime_mode: "synthetic_fallback",
+      blocker: reason,
+      elapsed_ms: 0,
+      cancelable: false
+    },
+    assets: { status: "取消", q4_shard_count: 0, expected_shard_count: Number(runtime.deliveryConfig?.shard_count || 0) },
+    tokenizer: { status: "skipped" },
+    q4_forward: { status: "skipped", q4_forward_ran: false, tokens_generated: 0, blocker: reason },
+    fallback: { status: "可用", reason },
+    output: { text_preview: "" },
+    blockers: [reason]
+  });
+  setText(modelStatus, "cancelled / fallback_ready");
+  setText(runtimeModeStatus, "synthetic_fallback");
+  setText(fallbackReasonStatus, reason);
+}
+
 function start() {
+  loadingScreen = createModelLoadingScreen({
+    onCancel: () => {
+      if (activeSelfCheckController) activeSelfCheckController.abort();
+      runtime.cancelSelfCheck("model_loading_cancelled");
+      activeSelfCheckController = null;
+      setDisabled(modelSelfCheckButton, false);
+      setDisabled(modelSelfCheckStopButton, true);
+      renderCancelledLoading("model_loading_cancelled");
+    }
+  });
   bindEvents();
   boot().catch((error) => {
     console.warn("[another_brain] boot_warning", error);
@@ -568,6 +684,22 @@ function start() {
     setText(runtimeModeStatus, "synthetic_fallback");
     setText(fallbackReasonStatus, error.message || "boot_failed");
     renderSelfCheck({
+      status: "failed",
+      state: "failed",
+      loading_state: {
+        state: "failed",
+        manifest: "fail",
+        shards: "skipped",
+        tokenizer: "skipped",
+        q4_forward: "skipped",
+        q4_forward_ran: false,
+        tokens_generated: 0,
+        decode_status: "not_run",
+        runtime_mode: "synthetic_fallback",
+        blocker: error.message || "boot_failed",
+        elapsed_ms: 0,
+        cancelable: false
+      },
       assets: { manifest_loaded: false, shards_verified: false, q4_shard_count: 0, expected_shard_count: 0 },
       tokenizer: { exact_runtime_tokenizer: false },
       q4_forward: { status: "失败", q4_forward_ran: false, tokens_generated: 0 },

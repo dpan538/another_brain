@@ -7,9 +7,55 @@
     <meta name="another-brain-ui-version" content="r28rout1-fuzzy-intent-surfaces" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2528'/%3E%3Cpath d='M8 18h16M8 12h10M8 24h7' stroke='%23f4f6f5' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28rout1-fuzzy-intent-surfaces" />
+    <link rel="stylesheet" href="/another_brain_chat/loading_screen.css?v=r28load0-model-loading-state-machine" />
   </head>
   <body>
     <main class="app-shell" aria-label="another_brain process transparent preview">
+      <section class="model-loading-panel" id="model-loading-panel" aria-label="本地模型加载状态" data-loading-state="idle">
+        <div class="loading-orbit" aria-hidden="true">
+          <svg class="loading-brain" viewBox="0 0 48 48" role="img">
+            <path d="M18 12c-5 0-9 4-9 9 0 2 .7 4 2 5.5C9.7 28 9 30 9 32.5 9 37 12.5 40 17 40h15c4.5 0 8-3 8-7.5 0-2.5-.9-4.7-2.4-6.2 1-1.5 1.4-3.2 1.4-5.3 0-5-4-9-9-9-2.3 0-4.5.9-6 2.4A8.3 8.3 0 0 0 18 12Z" />
+            <path d="M18 18c-2.4.8-4 2.7-4 5.2 0 1.7.7 3.2 2 4.3-1.4.9-2 2.2-2 3.9 0 2.5 1.9 4.2 4.8 4.2M30 18c2.4.8 4 2.7 4 5.2 0 1.7-.7 3.2-2 4.3 1.4.9 2 2.2 2 3.9 0 2.5-1.9 4.2-4.8 4.2M24 14.4V40" />
+          </svg>
+        </div>
+        <div class="loading-main">
+          <div class="loading-head">
+            <strong id="loading-state-label">idle</strong>
+            <span class="loading-copy" id="loading-copy">正在加载本地小模型</span>
+          </div>
+          <p class="loading-substatus" id="loading-substatus">runtime: synthetic_fallback / tokenizer: not_run</p>
+          <div class="loading-progress" aria-label="model loading progress">
+            <div class="loading-progress-bar" id="loading-progress-bar"></div>
+          </div>
+          <span class="loading-progress-text" id="loading-progress-text">0%</span>
+          <div class="loading-steps" aria-label="model loading steps">
+            <div class="loading-step" data-loading-step="checking_manifest">
+              <span data-step-label>读取 manifest</span>
+              <span data-step-status>pending</span>
+            </div>
+            <div class="loading-step" data-loading-step="checking_shards">
+              <span data-step-label>校验 shards</span>
+              <span data-step-status>pending</span>
+            </div>
+            <div class="loading-step" data-loading-step="checking_tokenizer">
+              <span data-step-label>加载 tokenizer</span>
+              <span data-step-status>pending</span>
+            </div>
+            <div class="loading-step" data-loading-step="warming_q4">
+              <span data-step-label>q4 warmup</span>
+              <span data-step-status>pending</span>
+            </div>
+            <div class="loading-step" data-loading-step="fallback_ready">
+              <span data-step-label>fallback available</span>
+              <span data-step-status>pending</span>
+            </div>
+          </div>
+        </div>
+        <div class="loading-actions">
+          <button type="button" class="button-secondary" id="loading-cancel-button" disabled>取消/稍后加载</button>
+          <button type="button" class="button-secondary" id="loading-dashboard-button">Dashboard</button>
+        </div>
+      </section>
       <header class="app-header">
         <div>
           <p class="eyebrow">another_brain preview</p>

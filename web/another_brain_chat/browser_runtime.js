@@ -37,9 +37,28 @@ const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_ASSET_CACHE_KEY = "another_brain_r28rout1_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
-const SELF_CHECK_JSON_TIMEOUT_MS = 1500;
-const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
-const SELF_CHECK_DEEP_TIMEOUT_MS = 15000;
+const R28LOAD0_QUICK_CHECK_TIMEOUT_MS = 1000;
+const R28LOAD0_DEEP_CHECK_TIMEOUT_MS = 8000;
+const R28LOAD0_DEEP_CHECK_MAX_TIMEOUT_MS = 15000;
+const SELF_CHECK_JSON_TIMEOUT_MS = R28LOAD0_QUICK_CHECK_TIMEOUT_MS;
+const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = R28LOAD0_QUICK_CHECK_TIMEOUT_MS;
+const SELF_CHECK_DEEP_TIMEOUT_MS = R28LOAD0_DEEP_CHECK_TIMEOUT_MS;
+const R28LOAD0_LOADING_STATES = Object.freeze([
+  "idle",
+  "checking_manifest",
+  "checking_shards",
+  "checking_tokenizer",
+  "warming_q4",
+  "q4_ready",
+  "fallback_ready",
+  "timeout",
+  "cancelled",
+  "failed"
+]);
+const R28LOAD0_COMPONENT_STATUSES = Object.freeze(["pass", "fail", "pending", "skipped"]);
+const R28LOAD0_Q4_STATUSES = Object.freeze(["pass", "fail", "timeout", "pending", "skipped"]);
+const R28LOAD0_DECODE_STATUSES = Object.freeze(["exact_runtime_tokenizer", "fallback", "not_run"]);
+const R28LOAD0_RUNTIME_MODES = Object.freeze(["static_q4_experimental", "synthetic_fallback"]);
 const IDENTITY_ROUTE = "identity_boundary";
 const IDENTITY_ANSWER = "我是鳄鱼。更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。";
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
@@ -583,6 +602,108 @@ function q4ForwardRan(runtimeStats = {}) {
     && runtimeStats.fallback_used !== true;
 }
 
+function normalizeLoadingEnum(value, allowed, fallback) {
+  return allowed.includes(value) ? value : fallback;
+}
+
+function normalizeLoadingBlocker(value) {
+  if (value === null || value === undefined || value === "") return null;
+  return String(value);
+}
+
+function buildModelLoadingState(input = {}) {
+  const state = normalizeLoadingEnum(input.state || "idle", R28LOAD0_LOADING_STATES, "failed");
+  return {
+    state,
+    manifest: normalizeLoadingEnum(input.manifest || "pending", R28LOAD0_COMPONENT_STATUSES, "pending"),
+    shards: normalizeLoadingEnum(input.shards || "pending", R28LOAD0_COMPONENT_STATUSES, "pending"),
+    tokenizer: normalizeLoadingEnum(input.tokenizer || "pending", R28LOAD0_COMPONENT_STATUSES, "pending"),
+    q4_forward: normalizeLoadingEnum(input.q4_forward || "pending", R28LOAD0_Q4_STATUSES, "pending"),
+    q4_forward_ran: input.q4_forward_ran === true,
+    tokens_generated: Math.max(0, Number(input.tokens_generated || 0)),
+    decode_status: normalizeLoadingEnum(input.decode_status || "not_run", R28LOAD0_DECODE_STATUSES, "not_run"),
+    runtime_mode: normalizeLoadingEnum(input.runtime_mode || (state === "q4_ready" ? "static_q4_experimental" : "synthetic_fallback"), R28LOAD0_RUNTIME_MODES, "synthetic_fallback"),
+    blocker: normalizeLoadingBlocker(input.blocker),
+    elapsed_ms: Math.max(0, Math.round(Number(input.elapsed_ms || 0))),
+    cancelable: input.cancelable === true
+  };
+}
+
+function initialModelLoadingState() {
+  return buildModelLoadingState({
+    state: "idle",
+    manifest: "skipped",
+    shards: "skipped",
+    tokenizer: "skipped",
+    q4_forward: "skipped",
+    runtime_mode: "synthetic_fallback",
+    cancelable: false
+  });
+}
+
+function q4ReadyLoadingState(input = {}) {
+  return buildModelLoadingState({
+    state: "q4_ready",
+    manifest: "pass",
+    shards: "pass",
+    tokenizer: "pass",
+    q4_forward: "pass",
+    q4_forward_ran: true,
+    tokens_generated: Math.max(1, Number(input.tokens_generated || 1)),
+    decode_status: "exact_runtime_tokenizer",
+    runtime_mode: "static_q4_experimental",
+    blocker: null,
+    elapsed_ms: input.elapsed_ms,
+    cancelable: false
+  });
+}
+
+function fallbackLoadingState(input = {}) {
+  return buildModelLoadingState({
+    state: input.state || "fallback_ready",
+    manifest: input.manifest || "fail",
+    shards: input.shards || "fail",
+    tokenizer: input.tokenizer || "fail",
+    q4_forward: input.q4_forward || "skipped",
+    q4_forward_ran: false,
+    tokens_generated: input.tokens_generated || 0,
+    decode_status: input.decode_status || "fallback",
+    runtime_mode: "synthetic_fallback",
+    blocker: input.blocker || "fallback_available",
+    elapsed_ms: input.elapsed_ms,
+    cancelable: false
+  });
+}
+
+function loadingStateForSelfCheckProgress(status, stage, partial = {}, elapsedMs = 0) {
+  const checking = String(status || "").startsWith("checking");
+  const manifest = partial.assets?.manifest_loaded ? "pass" : checking ? "pending" : "fail";
+  const shards = partial.assets?.shards_verified ? "pass" : checking ? "pending" : "fail";
+  const tokenizer = partial.tokenizer?.exact_runtime_tokenizer ? "pass" : checking ? "pending" : "fail";
+  const stageName = String(stage || "");
+  let state = "checking_manifest";
+  if (stageName.includes("shard")) state = "checking_shards";
+  if (stageName.includes("tokenizer")) state = "checking_tokenizer";
+  if (String(status || "") === "checking_deep" || stageName.includes("q4_forward") || stageName.includes("token")) state = "warming_q4";
+  if (status === "cancelled") state = "cancelled";
+  if (status === "timeout") state = "timeout";
+  if (status === "failed") state = "failed";
+  return buildModelLoadingState({
+    state,
+    manifest,
+    shards,
+    tokenizer,
+    q4_forward: state === "warming_q4" ? "pending" : "skipped",
+    q4_forward_ran: partial.q4_forward?.q4_forward_ran === true,
+    tokens_generated: partial.q4_forward?.tokens_generated || 0,
+    decode_status: partial.q4_forward?.decode_status || (tokenizer === "pass" ? "exact_runtime_tokenizer" : "not_run"),
+    runtime_mode: partial.q4_forward?.runtime_mode || "synthetic_fallback",
+    blocker: partial.q4_forward?.blocker || partial.fallback?.reason || null,
+    elapsed_ms: elapsedMs,
+    cancelable: checking
+  });
+}
+
 function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, decoderDraft = "" } = {}) {
   if (q4Ran && routePolicy.use_model_draft === true) return "model_draft";
   if (routePolicy.final_answer_source) return routePolicy.final_answer_source;
@@ -965,6 +1086,7 @@ export class BrowserChatRuntime {
     this.abortRequested = false;
     this.activeSelfCheckController = null;
     this.activeSelfCheckStartedAt = 0;
+    this.loadingState = initialModelLoadingState();
     this.assetStatus = {
       cache_mode: this.capabilities.cache_storage_available ? "cache_storage" : "memory_fallback",
       cache_result: "not_checked",
@@ -1051,11 +1173,16 @@ export class BrowserChatRuntime {
   }
 
   buildSelfCheckProgress(status, stage, startedAt, partial = {}) {
+    const elapsedMs = Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt));
+    const loadingState = loadingStateForSelfCheckProgress(status, stage, partial, elapsedMs);
+    this.loadingState = loadingState;
     return {
       status,
+      state: loadingState.state,
+      loading_state: loadingState,
       stage,
       ok: false,
-      elapsed_ms: Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt)),
+      elapsed_ms: elapsedMs,
       assets: {
         status: partial.assets?.status || "检查中",
         manifest_loaded: partial.assets?.manifest_loaded === true,
@@ -1123,7 +1250,7 @@ export class BrowserChatRuntime {
 
   async runQ4SelfCheckSmoke(options = {}) {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
-    const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
+    const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || R28LOAD0_DEEP_CHECK_TIMEOUT_MS), 1000), R28LOAD0_DEEP_CHECK_MAX_TIMEOUT_MS);
     return new Promise((resolve, reject) => {
       const worker = new Worker(new URL("./self_check_worker.js?v=r28rout1-fuzzy-intent-surfaces", import.meta.url), { type: "module" });
       let settled = false;
@@ -1138,7 +1265,7 @@ export class BrowserChatRuntime {
         callback();
       };
       const timeout = setTimeout(() => {
-        finish(() => reject(new Error("self_check_timeout")));
+        finish(() => reject(new Error("q4_forward_timeout")));
       }, timeoutMs);
       if (options.signal) {
         if (options.signal.aborted) {
@@ -1166,7 +1293,7 @@ export class BrowserChatRuntime {
       };
       worker.postMessage({
         type: "q4_smoke",
-        prompt: "R28ROUT1 q4 path smoke",
+        prompt: "R28HOTFIX3 q4 path smoke / R28LOAD0 q4 warmup",
         maxTokens: 1,
         contextLength: 32,
         timeoutMs
@@ -1183,8 +1310,8 @@ export class BrowserChatRuntime {
     this.activeSelfCheckStartedAt = startedAt;
     const runDeep = options.runDeep === true;
     const jsonTimeoutMs = Math.min(Math.max(Number(options.jsonTimeoutMs || options.quickTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS), 500), 3000);
-    const shardProbeTimeoutMs = Math.min(Math.max(Number(options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS), 3000), 15000);
-    const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS), 1000), 15000);
+    const shardProbeTimeoutMs = Math.min(Math.max(Number(options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS), 250), R28LOAD0_DEEP_CHECK_MAX_TIMEOUT_MS);
+    const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS), 1000), R28LOAD0_DEEP_CHECK_MAX_TIMEOUT_MS);
     const blockers = [];
     let assetManifest = null;
     let quantizationManifest = null;
@@ -1308,7 +1435,7 @@ export class BrowserChatRuntime {
         smokeStats = {
           tokens_generated: 0,
           runtime_mode: this.mode,
-          decode_status: error.message === "self_check_timeout" ? "timeout" : "failed",
+          decode_status: error.message === "q4_forward_timeout" || error.message === "self_check_timeout" ? "timeout" : "failed",
           fallback_used: true
         };
       }
@@ -1319,13 +1446,42 @@ export class BrowserChatRuntime {
     }
 
     const q4ForwardPassed = runDeep && q4ForwardRan(smokeStats || {});
-    if (runDeep && !q4ForwardPassed && !blockers.includes("self_check_timeout")) blockers.push("q4_forward_not_confirmed");
+    if (runDeep && !q4ForwardPassed && !blockers.includes("self_check_timeout") && !blockers.includes("q4_forward_timeout")) blockers.push("q4_forward_not_confirmed");
     const elapsedMs = Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt));
-    const timedOut = blockers.includes("self_check_timeout");
+    const timedOut = blockers.includes("q4_forward_timeout") || blockers.includes("self_check_timeout");
     const cancelled = signal.aborted || blockers.includes("self_check_cancelled");
     const quickOrDeepOk = runDeep ? quickPassed && q4ForwardPassed : quickPassed;
+    const shardUnavailable = q4Assets.length === 0 || shardResults.some((item) => !item.ok) || blockers.some((item) => String(item || "").includes("q4_shard") || String(item || "").includes("asset_probe_failed"));
+    const normalizedBlocker = q4ForwardPassed
+      ? null
+      : cancelled
+        ? "self_check_cancelled"
+        : timedOut
+          ? "q4_forward_timeout"
+          : shardUnavailable
+            ? "q4_shards_unavailable"
+            : !exactTokenizer
+              ? "exact_runtime_tokenizer_unavailable"
+              : runDeep
+                ? "q4_forward_not_confirmed"
+                : "q4_forward_skipped_quick_check";
+    const loadingState = q4ForwardPassed
+      ? q4ReadyLoadingState({ elapsed_ms: elapsedMs, tokens_generated: Number(smokeStats?.tokens_generated || 1) })
+      : fallbackLoadingState({
+        state: cancelled ? "cancelled" : timedOut ? "timeout" : "fallback_ready",
+        manifest: assetManifest ? "pass" : "fail",
+        shards: shardsVerified ? "pass" : "fail",
+        tokenizer: exactTokenizer ? "pass" : "fail",
+        q4_forward: timedOut ? "timeout" : runDeep ? "fail" : "skipped",
+        decode_status: exactTokenizer ? "exact_runtime_tokenizer" : "fallback",
+        blocker: normalizedBlocker,
+        elapsed_ms: elapsedMs
+      });
+    this.loadingState = loadingState;
     const report = {
       status: cancelled ? "cancelled" : timedOut ? "timeout" : quickOrDeepOk ? "passed" : "failed",
+      state: loadingState.state,
+      loading_state: loadingState,
       check_level: runDeep ? "deep" : "quick",
       ok: quickOrDeepOk,
       elapsed_ms: elapsedMs,
@@ -1348,22 +1504,22 @@ export class BrowserChatRuntime {
         path: tokenizerPath
       },
       q4_forward: {
-        status: runDeep ? (timedOut ? "timeout" : q4ForwardPassed ? "通过" : "失败") : "skipped",
+        status: runDeep ? (timedOut ? "timeout" : q4ForwardPassed ? "pass" : "fail") : "skipped",
         q4_forward_ran: q4ForwardPassed,
         runtime_mode: q4ForwardPassed || quickPassed ? "static_q4_experimental" : "synthetic_fallback",
         tokens_generated: Number(smokeStats?.tokens_generated || 0),
         decode_status: smokeStats?.decode_status || (exactTokenizer ? "exact_runtime_tokenizer" : "not_run"),
-        blocker: q4ForwardPassed ? "" : (timedOut ? "self_check_timeout" : runDeep ? "q4_forward_not_confirmed" : "q4_forward_skipped_quick_check")
+        blocker: normalizedBlocker || ""
       },
       fallback: {
         status: "可用",
-        reason: q4ForwardPassed ? "" : runDeep ? "no_model_fallback_available" : "q4_forward_skipped_quick_check"
+        reason: q4ForwardPassed ? "" : normalizedBlocker || "fallback_available"
       },
       output: {
         token_preview: smokeStats?.generated_token_ids?.slice?.(0, 4) || [],
         text_preview: smokePreview || (runDeep ? "no q4 text" : "quick check only")
       },
-      blockers: uniqueFlags(blockers),
+      blockers: uniqueFlags([normalizedBlocker, ...blockers]),
       non_claims: {
         product_admission: false,
         browser_admission: false,
@@ -1520,6 +1676,7 @@ export class BrowserChatRuntime {
         }),
         delivery_config: this.deliveryConfig,
         capabilities: this.capabilities,
+        loading_state: this.loadingState,
         asset_status: this.assetStatus
       };
       packet.process_trace = buildProcessTrace({
@@ -1635,6 +1792,7 @@ export class BrowserChatRuntime {
       }),
       delivery_config: this.deliveryConfig,
       capabilities: this.capabilities,
+      loading_state: this.loadingState,
       asset_status: this.assetStatus
     };
     packet.process_trace = buildProcessTrace({
