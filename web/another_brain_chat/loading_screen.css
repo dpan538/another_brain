@@ -55,6 +55,8 @@
 
 .loading-main {
   min-width: 0;
+  width: min(100% - 24px, 460px);
+  justify-self: center;
 }
 
 .loading-head {

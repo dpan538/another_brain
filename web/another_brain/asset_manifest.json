@@ -5,7 +5,7 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 70165324,
+  "full_bundle_estimate_bytes": 70165443,
   "gate_assets": [
     {
       "bytes": 2858,
@@ -139,7 +139,7 @@
     }
   ],
   "release_checkpoint_admission": false,
-  "remaining_bytes_under_100mb": 29834676,
+  "remaining_bytes_under_100mb": 29834557,
   "runtime_tokenizer_blocker": "",
   "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
   "same_origin_only": true,
