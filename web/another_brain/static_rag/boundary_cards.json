@@ -1,0 +1,83 @@
+{
+  "schema_version": "r28rag3.boundary_cards.v1",
+  "fixture_policy": {
+    "runtime_hints_only": true,
+    "answer_bank": false,
+    "allowed_for_training": false,
+    "private_raw_data": false,
+    "eval_prompts": false,
+    "old_question_pack_rows_51_100": false,
+    "backend_inference": false,
+    "external_llm_api": false,
+    "doubao": false,
+    "hosted_vector_store": false
+  },
+  "cards": [
+    {
+      "id": "r28rag3_boundary_static_only",
+      "kind": "boundary",
+      "text": "边界提示：当前 runtime 保持 static-only，同源静态资产加载，不接后端推理。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["static-only", "本地", "同源", "后端", "推理"],
+      "expressive_hints": ["bounded", "local_first"]
+    },
+    {
+      "id": "r28rag3_boundary_no_training",
+      "kind": "boundary",
+      "text": "边界提示：这些 cards 是 runtime hints/evidence，不是训练数据，不允许用于训练。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["不训练", "training", "runtime hints", "evidence", "allowed_for_training"],
+      "expressive_hints": ["non_training"]
+    },
+    {
+      "id": "r28rag3_boundary_no_external_llm",
+      "kind": "boundary",
+      "text": "边界提示：当前 release 不接 external LLM API、Doubao 或远端检索服务。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["external LLM API", "Doubao", "remote retrieval", "边界"],
+      "expressive_hints": ["no_remote_runtime"]
+    },
+    {
+      "id": "r28rag3_boundary_no_cot",
+      "kind": "boundary",
+      "text": "边界提示：过程透明只展示公开状态、来源和路由结果，不展示 hidden prompt 或 chain-of-thought。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["CoT", "hidden prompt", "过程透明", "来源", "路由"],
+      "expressive_hints": ["transparent_without_cot"]
+    },
+    {
+      "id": "r28rag3_boundary_no_old_rows",
+      "kind": "boundary",
+      "text": "边界提示：R28RAG3 不使用 eval prompts，也不使用 old question_pack_001 rows 51-100。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["eval prompts", "old rows", "51-100", "excluded"],
+      "expressive_hints": ["source_guard"]
+    },
+    {
+      "id": "r28rag3_boundary_no_answer_bank",
+      "kind": "boundary",
+      "text": "边界提示：profile RAG 只提供可组合上下文和来源，不保存 broad answer bank 或最终回答模板库。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["answer bank", "profile RAG", "context", "来源", "模板库"],
+      "expressive_hints": ["composable"]
+    }
+  ]
+}

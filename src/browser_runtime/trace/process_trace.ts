@@ -39,7 +39,10 @@ function publicSourceSummary(item = {}) {
     source_id: safeString(item.source_id, safeString(item.id, "local")),
     title: safeString(item.title, "local evidence"),
     trust_level: safeString(item.trust_level, "local_static"),
-    retrieval_score: Number.isFinite(Number(item.retrieval_score)) ? Number(item.retrieval_score) : 0
+    retrieval_score: Number.isFinite(Number(item.retrieval_score)) ? Number(item.retrieval_score) : 0,
+    provenance: safeString(item.metadata?.provenance, safeString(item.license_or_origin, "")),
+    kind: safeString(item.metadata?.kind, ""),
+    review_status: safeString(item.metadata?.review_status, "")
   };
 }
 

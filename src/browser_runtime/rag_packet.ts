@@ -1,4 +1,5 @@
 import { buildStaticEvidencePacket, DEFAULT_DEMO_MEMORY } from "./rag/static_retriever.ts";
+import { buildExpressiveRagPacket } from "./rag/expressive_rag.ts";
 import { mergeAdapterEvidenceRecords } from "./context_adapter.ts";
 
 export function buildStatePacket(input, options = {}) {
@@ -44,10 +45,23 @@ export function buildPromptPacket(input, statePacket = buildStatePacket(input), 
         text: item.text,
         trust_level: item.trust_level,
         retrieval_score: item.retrieval_score,
-        can_answer: item.can_answer !== false
+        can_answer: item.can_answer !== false,
+        provenance: item.metadata?.provenance || item.license_or_origin || "",
+        kind: item.metadata?.kind || ""
       })),
       evidence_is_instruction: false,
-      answer_bank: false
+      answer_bank: false,
+      expressive_context_pack: evidencePacket?.expressive_context_pack
+        ? {
+            schema_version: evidencePacket.expressive_context_pack.schema_version,
+            runtime_hints_only: true,
+            evidence_is_instruction: false,
+            answer_bank: false,
+            cards_used: evidencePacket.expressive_context_pack.cards_used || [],
+            expressive_hints: (evidencePacket.expressive_context_pack.expressive_hints || []).slice(0, 3),
+            chat_mode_hint: evidencePacket.expressive_context_pack.chat_mode_hint || ""
+          }
+        : null
     },
     answer_mode: statePacket?.answer_mode || "local_evidence_first",
     runtime_constraints: {
@@ -82,13 +96,23 @@ export async function buildRetrievalPacket(input, statePacket = buildStatePacket
   const memoryRecords = contextPackets.length > 0
     ? mergeAdapterEvidenceRecords(options.memoryRecords || DEFAULT_DEMO_MEMORY, contextPackets)
     : options.memoryRecords;
-  return buildStaticEvidencePacket(input, statePacket, { ...options, memoryRecords });
+  const baseEvidencePacket = await buildStaticEvidencePacket(input, statePacket, { ...options, memoryRecords });
+  if (options.profileRag === false || options.enableProfileRag === false) return baseEvidencePacket;
+  return buildExpressiveRagPacket(input, statePacket, {
+    ...options,
+    baseEvidencePacket
+  });
 }
 
 export async function buildMockRetrievalPacket(input, statePacket = buildStatePacket(input), options = {}) {
-  return buildStaticEvidencePacket(input, statePacket, {
+  const baseEvidencePacket = await buildStaticEvidencePacket(input, statePacket, {
     ...options,
     memoryRecords: options.memoryRecords || DEFAULT_DEMO_MEMORY
+  });
+  if (options.profileRag === false || options.enableProfileRag === false) return baseEvidencePacket;
+  return buildExpressiveRagPacket(input, statePacket, {
+    ...options,
+    baseEvidencePacket
   });
 }
 
@@ -102,7 +126,10 @@ export function summarizeEvidenceForProcessTrace(evidencePacket = {}) {
       source_id: item.source_id || "local",
       title: item.title || "local evidence",
       trust_level: item.trust_level || "local_static",
-      retrieval_score: Number(item.retrieval_score || 0)
+      retrieval_score: Number(item.retrieval_score || 0),
+      provenance: item.metadata?.provenance || item.license_or_origin || "",
+      kind: item.metadata?.kind || "",
+      review_status: item.metadata?.review_status || ""
     }))
   };
 }

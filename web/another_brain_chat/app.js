@@ -319,7 +319,11 @@ function renderTrace(trace = null) {
   const model = trace.model || {};
   const router = trace.router || {};
   const finalizer = trace.finalizer || {};
-  const topSources = (rag.top_sources || []).map((item) => item.title).filter(Boolean).join(" / ") || "无";
+  const topSources = (rag.top_sources || []).map((item) => {
+    const title = item.title || item.source_id || "local";
+    const provenance = item.provenance || item.kind || "";
+    return provenance ? `${title} (${provenance})` : title;
+  }).filter(Boolean).join(" / ") || "无";
   setText(traceInputSummary, `has_user_input=${boolText(input.has_user_input)} / adapter_context_present=${boolText(input.adapter_context_present)}`);
   setText(traceContextSummary, `has_local_context=${boolText(input.has_local_context)} / local-session-only / not saved`);
   setText(traceEvidenceSummary, `retrieval_used=${boolText(rag.retrieval_used)} / evidence_count=${rag.evidence_count || 0} / evidence_status=${rag.evidence_status || "none"} / sources=${topSources}`);
