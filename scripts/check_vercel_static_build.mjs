@@ -235,12 +235,12 @@ async function main() {
     /exact_runtime_tokenizer/.test(index) &&
     /another_brain_chat\/\?v=/.test(index);
   const rootHasR28hotfix1DirectApp =
-    /R28HOTFIX1|R28HOTFIX2|R28HOTFIX3|R28ROUT1|R28SURF2|R28RAG3|R28UX5|R28SHIP0|R28P0|R28P0C|R28P0D/.test(index) &&
+    /R28HOTFIX1|R28HOTFIX2|R28HOTFIX3|R28ROUT1|R28SURF2|R28RAG3|R28UX5|R28SHIP0|R28P0|R28P0C|R28P0D|R28P0E/.test(index) &&
     /过程摘要/.test(index) &&
     /static_q4_experimental/.test(index) &&
     /exact_runtime_tokenizer/.test(index) &&
     /检查本地模型路径/.test(index) &&
-    /\/another_brain_chat\/app\.js\?v=(r28hotfix1-route-loop-free-runtime|r28hotfix2-nonblocking-selfcheck|r28hotfix3-q4-asset-path-fix|r28rout1-fuzzy-intent-surfaces|r28surf2-anchor-informed-answer-surfaces|r28rag3-lightweight-affective-rag|r28ux5-chat-dashboard-split|r28ship0-unified-q4-mount|r28merge3-final-premerge-gate|r28p0-q4-mount-timeout-fix|r28p0c-coldstart-mobile-chat|r28p0d-browser-compat-no-fallback-choice)/.test(index);
+    /\/another_brain_chat\/app\.js\?v=(r28hotfix1-route-loop-free-runtime|r28hotfix2-nonblocking-selfcheck|r28hotfix3-q4-asset-path-fix|r28rout1-fuzzy-intent-surfaces|r28surf2-anchor-informed-answer-surfaces|r28rag3-lightweight-affective-rag|r28ux5-chat-dashboard-split|r28ship0-unified-q4-mount|r28merge3-final-premerge-gate|r28p0-q4-mount-timeout-fix|r28p0c-coldstart-mobile-chat|r28p0d-browser-compat-no-fallback-choice|r28p0e-real-browser-q4-forward)/.test(index);
   if (!rootHasVersionedAppModule && !rootHasR28ux4ChatRedirect && !rootHasR28hotfix1DirectApp) failures.push("index_missing_versioned_app_module");
   if (!/runtime_version\.js\?v=/.test(app)) failures.push("app_missing_versioned_runtime_version_import");
   if (/knowledge_base\.generated\.js/.test(dialogRules)) {

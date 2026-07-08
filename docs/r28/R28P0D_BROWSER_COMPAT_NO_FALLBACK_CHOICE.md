@@ -1,6 +1,6 @@
 # R28P0D Browser Compat No Fallback Choice
 
-R28P0D keeps q4 as the default browser runtime path while making Chat usable immediately on cold start. Chat no longer exposes a fast/lightweight/fallback choice. Users see a simple 鳄鱼 chat surface; Dashboard keeps q4, tokenizer, worker, cache, and blocker diagnostics.
+R28P0D keeps q4 as the default browser runtime path and removes any user-facing fast/lightweight/fallback choice. Users see a simple 鳄鱼 chat surface; Dashboard keeps q4, tokenizer, worker, cache, and blocker diagnostics.
 
 ## Compatibility Targets
 
@@ -22,7 +22,8 @@ R28P0D keeps q4 as the default browser runtime path while making Chat usable imm
 - Chat mode shows 鳄鱼 branding, Chat/Dashboard toggle, message card, input card, and one visible send button on mobile.
 - Chat hides model parameters, answer source footers, and engineering build badges.
 - No `?lightweight=1` path, no “进入轻量模式” button, and no user-facing fast-chat option.
-- q4 mount continues in the background; final q4 failure remains visible in Dashboard as a blocker.
+- Chat input and Send remain disabled while q4 is mounting; the loading screen stays visible until q4 is ready or an explicit blocker is shown.
+- Final q4 failure remains visible in Dashboard as a blocker.
 
 ## Matrix Evidence
 

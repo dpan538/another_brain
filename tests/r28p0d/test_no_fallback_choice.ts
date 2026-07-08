@@ -15,7 +15,9 @@ test("Chat mode does not expose a fast or lightweight fallback choice", async ()
     assert.doesNotMatch(source, /进入轻量模式|fast chat|lightweight_ready|lightweight_until_q4_ready|mobile_q4_warmup_deferred|q4_deferred|shouldDeferQ4WarmupOnThisDevice/);
   }
   assert.doesNotMatch(app, /params\.get\(["']lightweight["']\)/);
-  assert.match(html, /dashboard-only[^>]*id="loading-cancel-button"[^>]*>停止检查</);
+  assert.doesNotMatch(html, /loading-cancel-button|进入轻量模式/);
+  assert.match(app, /q4_mount_required_before_chat/);
+  assert.match(app, /setModelFullyLoaded\(false\)/);
   assert.match(app, /function shouldMountQ4InBackground\(\)/);
   assert.match(app, /q4_background/);
 });

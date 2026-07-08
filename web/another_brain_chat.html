@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>鳄鱼 preview | browser compatible chat</title>
-    <meta name="another-brain-ui-version" content="r28p0d-browser-compat-no-fallback-choice" />
+    <title>鳄鱼 preview | real browser q4 chat</title>
+    <meta name="another-brain-ui-version" content="r28p0e-real-browser-q4-forward" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2528'/%3E%3Cpath d='M8 18h16M8 12h10M8 24h7' stroke='%23f4f6f5' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="/another_brain_chat/design_tokens.css?v=r28p0d-browser-compat-no-fallback-choice" />
-    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28p0d-browser-compat-no-fallback-choice" />
-    <link rel="stylesheet" href="/another_brain_chat/loading_screen.css?v=r28p0d-browser-compat-no-fallback-choice" />
+    <link rel="stylesheet" href="/another_brain_chat/design_tokens.css?v=r28p0e-real-browser-q4-forward" />
+    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28p0e-real-browser-q4-forward" />
+    <link rel="stylesheet" href="/another_brain_chat/loading_screen.css?v=r28p0e-real-browser-q4-forward" />
   </head>
   <body>
     <main class="app-shell" id="app-shell" data-ui-mode="chat" aria-label="鳄鱼 chat preview">
@@ -25,7 +25,7 @@
             <button type="button" class="mode-button" id="dashboard-mode-button" aria-pressed="false">Dashboard</button>
           </nav>
           <div class="header-badges" aria-label="runtime status">
-            <span class="badge badge-version dashboard-only" id="ui-version-badge">R28P0D · browser compat</span>
+            <span class="badge badge-version dashboard-only" id="ui-version-badge">R28P0E · real browser q4</span>
             <span class="badge badge-local dashboard-only" id="local-indicator">local/static</span>
             <span class="badge badge-backend dashboard-only" id="backend-badge">No backend inference</span>
             <span class="badge dashboard-only" id="model-source-badge">static_q4_experimental</span>
@@ -72,7 +72,7 @@
         </div>
         <div>
           <span class="status-label">UI Build</span>
-          <strong id="ui-build-status">R28P0D / r28p0d-browser-compat-no-fallback-choice</strong>
+          <strong id="ui-build-status">R28P0E / r28p0e-real-browser-q4-forward</strong>
         </div>
       </section>
 
@@ -114,7 +114,7 @@
                 <li data-loading-stage="shards"><span></span>校验模型分片</li>
                 <li data-loading-stage="tokenizer"><span></span>加载 tokenizer</li>
                 <li data-loading-stage="q4-warmup"><span></span>q4 warmup</li>
-                <li data-loading-stage="fallback"><span></span>边界回答待命</li>
+                <li data-loading-stage="fallback"><span></span>阻塞状态</li>
               </ol>
               <p class="q4-retry-status" id="q4-retry-status">正在连接本地模型。</p>
               <div class="loading-skeleton" aria-hidden="true">
@@ -123,7 +123,6 @@
                 <span></span>
               </div>
               <div class="loading-actions">
-                <button type="button" class="button-secondary small-button dashboard-only" id="loading-cancel-button">停止检查</button>
                 <button type="button" class="button-secondary small-button" id="loading-dashboard-button">Dashboard</button>
               </div>
             </div>
@@ -143,7 +142,7 @@
               <strong id="verifier-status">Ready</strong>
             </div>
             <div>
-              <span class="status-label">Fallback</span>
+              <span class="status-label">Blocker</span>
               <strong id="fallback-status">Unused</strong>
             </div>
           </section>
@@ -214,6 +213,33 @@
             <div><span>fallback reason</span><strong id="self-check-fallback-reason">none</strong></div>
             <p id="self-check-output">输出：未检查</p>
             <p id="self-check-blockers">blocker：none</p>
+          </section>
+
+          <section class="runtime-chart" aria-label="q4 runtime visual summary">
+            <div class="chart-head">
+              <span class="status-label">q4 path</span>
+              <strong id="runtime-chart-status">waiting</strong>
+            </div>
+            <svg viewBox="0 0 320 112" role="img" aria-label="q4 loading and token chart">
+              <path class="chart-axis" d="M20 88H300" />
+              <path class="chart-axis" d="M20 24V88" />
+              <polyline id="runtime-chart-line" class="chart-line" points="20,88 76,88 132,88 188,88 244,88 300,88" />
+              <g class="chart-dots" id="runtime-chart-dots">
+                <circle cx="20" cy="88" r="4" />
+                <circle cx="76" cy="88" r="4" />
+                <circle cx="132" cy="88" r="4" />
+                <circle cx="188" cy="88" r="4" />
+                <circle cx="244" cy="88" r="4" />
+                <circle cx="300" cy="88" r="4" />
+              </g>
+            </svg>
+            <div class="chart-labels">
+              <span>manifest</span>
+              <span>shards</span>
+              <span>tokenizer</span>
+              <span>q4</span>
+              <span>tokens</span>
+            </div>
           </section>
 
           <ol class="trace-steps" aria-label="six stage process trace">
@@ -324,7 +350,7 @@
       </section>
     </main>
 
-    <script src="/another_brain_chat/loading_screen.js?v=r28p0d-browser-compat-no-fallback-choice"></script>
-    <script type="module" src="/another_brain_chat/app.js?v=r28p0d-browser-compat-no-fallback-choice"></script>
+    <script src="/another_brain_chat/loading_screen.js?v=r28p0e-real-browser-q4-forward"></script>
+    <script type="module" src="/another_brain_chat/app.js?v=r28p0e-real-browser-q4-forward"></script>
   </body>
 </html>

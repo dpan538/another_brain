@@ -6,7 +6,7 @@ async function readWeb(path) {
   return readFile(new URL(`../../web/${path}`, import.meta.url), "utf8");
 }
 
-test("P0D hotfix cache-busts app, runtime worker, self-check worker, and q4 runtime modules", async () => {
+test("P0E hotfix cache-busts app, runtime worker, self-check worker, and q4 runtime modules", async () => {
   const index = await readWeb("another_brain_chat/index.html");
   const app = await readWeb("another_brain_chat/app.js");
   const runtime = await readWeb("another_brain_chat/browser_runtime.js");
@@ -14,7 +14,7 @@ test("P0D hotfix cache-busts app, runtime worker, self-check worker, and q4 runt
   const selfCheckWorker = await readWeb("another_brain_chat/self_check_worker.js");
 
   for (const source of [index, app, runtime, runtimeWorker, selfCheckWorker]) {
-    assert.ok(source.includes("r28p0d-browser-compat-no-fallback-choice"));
+    assert.ok(source.includes("r28p0e-real-browser-q4-forward"));
   }
   assert.ok(!runtime.includes("./runtime_worker.js?v=r28ship0-unified-q4-mount"));
   assert.ok(!runtime.includes("./self_check_worker.js?v=r28ship0-unified-q4-mount"));
@@ -51,11 +51,11 @@ test("runtime mode metadata invalidates the old SHIP0/P0 asset cache namespace",
   const runtimeMode = JSON.parse(await readWeb("another_brain/runtime_mode.json"));
   const assetManifest = JSON.parse(await readWeb("another_brain/asset_manifest.json"));
 
-  assert.ok(app.includes("url.searchParams.set(\"v\", R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION)"));
+  assert.ok(app.includes("url.searchParams.set(\"v\", R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION)"));
   assert.ok(app.includes("fetch(url.href, { cache: \"no-store\" })"));
-  assert.equal(runtimeMode.ui_version, "r28p0d-browser-compat-no-fallback-choice");
-  assert.equal(runtimeMode.asset_cache_version, "r28p0d-browser-compat-no-fallback-choice");
-  assert.equal(assetManifest.ui_version, "r28p0d-browser-compat-no-fallback-choice");
+  assert.equal(runtimeMode.ui_version, "r28p0e-real-browser-q4-forward");
+  assert.equal(runtimeMode.asset_cache_version, "r28p0e-real-browser-q4-forward");
+  assert.equal(assetManifest.ui_version, "r28p0e-real-browser-q4-forward");
   assert.equal(assetManifest.model_assets.filter((item) => item.role === "q4_shard").length, 5);
 });
 

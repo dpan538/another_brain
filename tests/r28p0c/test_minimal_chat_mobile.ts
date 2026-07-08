@@ -44,6 +44,7 @@ test("P0C chat layout is two cards and protected against horizontal overflow", a
   assert.ok(css.includes(".app-shell[data-ui-mode=\"chat\"] .message-list"));
   assert.ok(css.includes(".app-shell[data-ui-mode=\"chat\"] .composer"));
   assert.ok(css.includes("overflow-x: hidden"));
-  assert.ok(css.includes("min-height: calc(100svh - 142px)"));
-  assert.ok(css.includes("min-height: max(260px, calc(100svh - 314px))"));
+  assert.ok(css.includes("grid-template-rows: minmax(0, 3fr) minmax(116px, 1fr)"));
+  assert.ok(css.includes("height: 100%;"));
+  assert.ok(css.includes("resize: none;"));
 });

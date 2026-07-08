@@ -34,7 +34,7 @@ const ROUTER_NON_CLAIMS = [
 ];
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
-const R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION = "r28p0d-browser-compat-no-fallback-choice";
+const R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION = "r28p0e-real-browser-q4-forward";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -294,7 +294,7 @@ export function probeBrowserCapabilities() {
   const workerAvailable = typeof Worker !== "undefined";
   if (!workerAvailable) blockers.push("worker_unavailable");
   return {
-    version: R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION,
+    version: R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION,
     browser_family: environment.browser_family,
     in_app_browser: environment.in_app_browser,
     webview_family: environment.webview_family,
@@ -359,6 +359,8 @@ export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
   if (text.length > maxChars) failures.push("overlong_output");
   if (HIDDEN_MARKERS.some((marker) => lowered.includes(marker))) failures.push("hidden_prompt_disclosure_marker");
   if (GENERIC_MARKERS.some((marker) => lowered.includes(marker))) failures.push("generic_fallback_marker");
+  const qualityFailure = outputQualityFailure(text);
+  if (qualityFailure) failures.push(qualityFailure);
   return { passed: failures.length === 0, failures, fallback_recommended: failures.length > 0 };
 }
 
@@ -737,7 +739,13 @@ function outputQualityFailure(text) {
   if (draft.length > 900) return "overlong_output";
   if (/^(token_id:\d+\s*)+$/i.test(draft)) return "token_id_only_output";
   if (BAD_TOKEN_MARKERS.some((marker) => lowered.includes(marker))) return "bad_token_suppressed";
+  if (draft.includes("\uFFFD")) return "bad_token_suppressed";
   if (/(.)\1{7,}/u.test(draft)) return "repetition_guard";
+  if (/(.{3,16})\1{1,}/u.test(draft)) return "repetition_guard";
+  const cjk = (draft.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu) || []).length;
+  const latin = (draft.match(/\p{Script=Latin}/gu) || []).length;
+  const rareScript = (draft.match(/[\p{Script=Cyrillic}\p{Script=Arabic}\p{Script=Hebrew}\p{Script=Devanagari}]/gu) || []).length;
+  if (rareScript > 0 && (cjk > 0 || latin > 0)) return "low_confidence_gibberish";
   return "";
 }
 
@@ -954,6 +962,7 @@ function summarizeQ4RetryPlan(attempts = []) {
 
 function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, decoderDraft = "" } = {}) {
   if (q4Ran && routePolicy.use_model_draft === true) return "model_draft";
+  if (q4Ran && String(decoderDraft || "").trim()) return "router_after_model_draft";
   if (routePolicy.final_answer_source) return routePolicy.final_answer_source;
   if (String(routePolicy.route || "").endsWith("_surface")) return "router_surface";
   if (String(decoderDraft || "").trim() && routePolicy.use_model_draft !== true) return "router_boundary";
@@ -1358,7 +1367,7 @@ export class BrowserChatRuntime {
     this.turnIndex = 0;
     this.worker = null;
     this.capabilities = probeBrowserCapabilities();
-    this.uiVersion = options.uiVersion || options.deliveryConfig?.ui_version || R28UX4_UI_VERSION;
+    this.uiVersion = options.uiVersion || options.deliveryConfig?.ui_version || R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION;
     this.memoryRecords = null;
     this.contextPackets = [];
     this.lastRuntimeStats = null;
@@ -1454,7 +1463,7 @@ export class BrowserChatRuntime {
   createRuntimeWorker() {
     if (!this.capabilities.worker_available) return null;
     const result = createWorkerSafely(
-      new URL("./runtime_worker.js?v=r28p0d-browser-compat-no-fallback-choice", import.meta.url),
+      new URL("./runtime_worker.js?v=r28p0e-real-browser-q4-forward", import.meta.url),
       { type: "module" },
       "runtime_worker"
     );
@@ -1798,7 +1807,7 @@ export class BrowserChatRuntime {
     const timeoutMs = clampQ4WarmupTimeout(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS);
     return new Promise((resolve, reject) => {
       const workerResult = createWorkerSafely(
-        new URL("./self_check_worker.js?v=r28p0d-browser-compat-no-fallback-choice", import.meta.url),
+        new URL("./self_check_worker.js?v=r28p0e-real-browser-q4-forward", import.meta.url),
         { type: "module" },
         "isolated_self_check_worker"
       );
@@ -2075,6 +2084,48 @@ export class BrowserChatRuntime {
     return report;
   }
 
+  isStaticQ4Mode() {
+    return this.mode === "static_q4_experimental" || this.deliveryConfig?.model_mode === "static_q4_experimental";
+  }
+
+  q4MountFailureReason(mountResult = {}) {
+    const report = mountResult.report || {};
+    return mountResult.fallback_reason
+      || mountResult.retry_plan?.fallback_reason
+      || report.retry_plan?.fallback_reason
+      || report.q4_forward?.blocker
+      || report.fallback?.reason
+      || (Array.isArray(report.blockers) ? report.blockers[0] : "")
+      || "q4_mount_not_ready";
+  }
+
+  async waitForQ4MountBeforeDraft(options = {}) {
+    if (!this.isStaticQ4Mode()) return { ok: true, skipped: true, state: "not_static_q4" };
+    if (this.q4MountReport?.ok) return this.q4MountReport;
+    const setStatus = typeof options.onStatus === "function" ? options.onStatus : () => {};
+    setStatus("waiting_q4_mount");
+    const mountResult = await (this.activeQ4MountPromise || this.mountQ4WithRetry({
+      timeoutMs: options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS,
+      shardTimeoutMs: options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS,
+      signal: options.signal,
+      onProgress: options.onProgress
+    }));
+    if (!mountResult?.ok) {
+      const reason = this.q4MountFailureReason(mountResult);
+      this.lastRuntimeStats = {
+        tokens_generated: 0,
+        elapsed_ms: 0,
+        runtime_mode: "synthetic_fallback",
+        decoded_text_available: false,
+        decode_status: "q4_mount_failed",
+        fallback_used: true
+      };
+      this.lastFallbackReason = reason;
+      throw new Error(reason);
+    }
+    return mountResult;
+  }
+
   async draftWithWorker(input, options = {}) {
     if (this.abortRequested) throw new Error("generation_aborted");
     if (!this.worker) {
@@ -2238,6 +2289,7 @@ export class BrowserChatRuntime {
 
     setStatus("loading_model");
     if (!this.worker && this.capabilities.worker_available) await this.load();
+    await this.waitForQ4MountBeforeDraft({ onStatus: setStatus });
     setStatus("drafting");
 
     let decoderDraft = "";

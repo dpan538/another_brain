@@ -8,11 +8,11 @@
   "full_bundle_estimate_bytes": 70152623,
   "gate_assets": [
     {
-      "bytes": 3301,
+      "bytes": 3242,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "81dbed0c8cbec14d832767bebefccd300a89adb1167c8618617f79debfd7d750"
+      "sha256": "1d0139457cd92e72a68ec4a0bfd19ab402c9fd4a8e7f440ba73025e91c208427"
     }
   ],
   "hosted_vector_store": false,
@@ -99,7 +99,7 @@
     "release_checkpoint_admission": false,
     "training_corpus_committed": false
   },
-  "prelaunch_stage": "r28p0d",
+  "prelaunch_stage": "r28p0e",
   "product_model_admission": false,
   "quantization": "q4",
   "rag_assets": [
@@ -166,11 +166,11 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49317327,
-  "ui_build_marker": "R28P0D",
+  "total_declared_bytes": 49317268,
+  "ui_build_marker": "R28P0E",
   "ui_build_timestamp": "2026-07-08T00:00:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28p0d-browser-compat-no-fallback-choice",
+  "ui_version": "r28p0e-real-browser-q4-forward",
   "total_model_asset_bytes": 48267968,
   "browser_compatibility_mode": "guarded_static_q4_background_mount",
   "browser_compatibility_targets": [

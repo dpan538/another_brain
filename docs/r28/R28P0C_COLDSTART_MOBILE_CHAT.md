@@ -4,13 +4,13 @@ R28P0C fixes the user-facing cold-start failure mode without training, changing 
 
 ## What Changed
 
-- Chat mode no longer blocks first paint on deep q4 warmup.
-- Mobile and slow-network sessions enter lightweight chat after quick static checks.
+- Chat mode no longer blocks first paint on deep q4 warmup, but input remains locked until q4 is ready.
+- Mobile and slow-network sessions show the loading screen instead of entering lightweight chat.
 - Desktop fast cold-start still attempts q4 warmup and reports q4 ready when forward passes.
 - Technical q4 details are hidden from Chat and kept in Dashboard.
 - User-facing brand is `鳄鱼`; `another_brain` remains an internal project/path name only.
 - Mobile Chat is reduced to two cards: message area and input card.
-- Chat composer shows one action: send.
+- Chat composer shows one action: send, and Send is disabled until full q4 mount.
 
 ## Cold-Start Matrix
 
@@ -46,12 +46,12 @@ Measured fields:
 
 Latest local matrix:
 
-- desktop fast: Chat interactive 20 ms; q4 ready 1078 ms; overflow 0.
-- desktop 3G: Chat interactive 13 ms; q4 deferred; overflow 0.
-- mobile fast: Chat interactive 13 ms; q4 deferred; overflow 0.
-- mobile 3G: Chat interactive 13 ms; q4 deferred; overflow 0.
+- desktop fast: Chat shell paints quickly; q4 must become ready before Send is enabled.
+- desktop 3G: Chat shell paints quickly; loading remains active until q4 readiness or explicit blocker.
+- mobile fast: Chat shell paints quickly; q4 must become ready before Send is enabled.
+- mobile 3G: Chat shell paints quickly; loading remains active until q4 readiness or explicit blocker.
 
-The mobile result is intentionally `deferred`, not a q4-ready claim.
+The mobile result is no longer a lightweight-chat claim. User chat submission is gated on q4 readiness.
 
 ## Non-Claims
 

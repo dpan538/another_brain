@@ -8,13 +8,11 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
   overflow-x: hidden;
   background-color: #101010;
-  background-image:
-    linear-gradient(rgba(64, 208, 64, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(64, 208, 64, 0.035) 1px, transparent 1px);
-  background-size: 34px 34px;
   color: var(--ink);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -26,9 +24,10 @@ textarea {
 
 .app-shell {
   width: min(1440px, 100%);
-  min-height: 100vh;
+  height: 100svh;
   margin: 0 auto;
   padding: 18px;
+  overflow: hidden;
 }
 
 .app-header,
@@ -226,6 +225,7 @@ strong {
 
 .app-shell[data-ui-mode="chat"] {
   width: min(780px, 100%);
+  height: 100svh;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 14px;
@@ -241,7 +241,7 @@ strong {
   padding: 10px;
   border-color: var(--poster-line);
   box-shadow: none;
-  background: rgba(16, 16, 16, 0.92);
+  background: #101010;
 }
 
 .app-shell[data-ui-mode="chat"] .header-copy {
@@ -281,17 +281,19 @@ strong {
 .app-shell[data-ui-mode="chat"] .workspace-grid {
   display: block;
   min-height: 0;
+  height: 100%;
   margin-top: 0;
 }
 
 .app-shell[data-ui-mode="chat"] .conversation-pane {
   width: 100%;
-  min-height: calc(100svh - 96px);
+  height: 100%;
+  min-height: 0;
   margin: 0 auto;
   display: grid;
-  grid-template-rows: minmax(260px, 1fr) auto;
+  grid-template-rows: minmax(0, 3fr) minmax(116px, 1fr);
   gap: 14px;
-  overflow: visible;
+  overflow: hidden;
   border: 0;
   box-shadow: none;
   background: transparent;
@@ -299,10 +301,18 @@ strong {
 
 .app-shell[data-ui-mode="dashboard"] {
   width: min(1440px, 100%);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 12px;
 }
 
 .app-shell[data-ui-mode="dashboard"] .chat-intro {
   border-bottom: 1px solid var(--line);
+}
+
+.app-shell[data-ui-mode="dashboard"] .workspace-grid {
+  min-height: 0;
+  height: 100%;
 }
 
 .conversation-pane {
@@ -322,7 +332,7 @@ strong {
   display: grid;
   gap: 10px;
   padding: 17px 18px 14px;
-  background: linear-gradient(180deg, #202020 0%, #171817 100%);
+  background: #202020;
 }
 
 .chat-intro p {
@@ -381,7 +391,7 @@ strong {
   height: 100%;
   width: 8%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--poster-green), var(--poster-red));
+  background: var(--poster-green);
   transition: width 180ms ease;
 }
 
@@ -461,9 +471,9 @@ strong {
 .loading-skeleton span {
   height: 9px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #e3e9e8 0%, #f6faf9 48%, #e3e9e8 100%);
-  background-size: 220% 100%;
-  animation: loading-sheen 1.2s ease-in-out infinite;
+  background: #f2f0e7;
+  opacity: 0.28;
+  animation: loading-pulse 1.2s ease-in-out infinite;
 }
 
 .loading-skeleton span:nth-child(2) {
@@ -474,12 +484,12 @@ strong {
   width: 46%;
 }
 
-@keyframes loading-sheen {
+@keyframes loading-pulse {
   from {
-    background-position: 120% 0;
+    opacity: 0.22;
   }
   to {
-    background-position: -120% 0;
+    opacity: 0.48;
   }
 }
 
@@ -502,13 +512,12 @@ strong {
 }
 
 .app-shell[data-ui-mode="chat"] .message-list {
-  min-height: clamp(310px, calc(100svh - 260px), 620px);
+  min-height: 0;
+  height: 100%;
   padding: 16px;
   border: 1px solid var(--poster-line);
   border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(32, 32, 32, 0.94), rgba(16, 16, 16, 0.96)),
-    repeating-linear-gradient(90deg, transparent 0 26px, rgba(64, 208, 64, 0.04) 26px 27px);
+  background: #171817;
   box-shadow: var(--shadow);
 }
 
@@ -576,10 +585,11 @@ strong {
 
 .app-shell[data-ui-mode="chat"] .composer {
   grid-template-columns: minmax(0, 1fr) 112px;
+  min-height: 0;
   padding: 12px;
   border: 1px solid var(--poster-line);
   border-radius: 8px;
-  background: rgba(32, 32, 32, 0.96);
+  background: #202020;
   box-shadow: var(--shadow);
 }
 
@@ -627,7 +637,10 @@ textarea {
 }
 
 .app-shell[data-ui-mode="chat"] textarea {
-  min-height: 86px;
+  height: 100%;
+  min-height: 84px;
+  max-height: none;
+  resize: none;
   color: var(--poster-cream);
   border-color: var(--poster-line-soft);
   background: #101010;
@@ -680,8 +693,8 @@ button:disabled {
 }
 
 .process-panel {
-  min-height: calc(100vh - 170px);
-  padding: 16px;
+  min-height: 0;
+  padding: 12px;
   overflow: auto;
 }
 
@@ -705,10 +718,80 @@ button:disabled {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--blue-bg);
+}
+
+.runtime-chart {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid var(--poster-line-soft);
+  border-radius: 8px;
+  background: #101010;
+}
+
+.chart-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chart-head strong {
+  color: var(--poster-red);
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
+}
+
+.runtime-chart svg {
+  display: block;
+  width: 100%;
+  height: 96px;
+}
+
+.chart-axis {
+  fill: none;
+  stroke: rgba(64, 208, 64, 0.28);
+  stroke-width: 1;
+}
+
+.chart-line {
+  fill: none;
+  stroke: var(--poster-red);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-dots circle {
+  fill: #101010;
+  stroke: var(--poster-green);
+  stroke-width: 3;
+}
+
+.chart-dots circle.active {
+  fill: var(--poster-green);
+  stroke: var(--poster-green-soft);
+}
+
+.chart-labels {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.chart-labels span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .self-check div {
@@ -744,7 +827,7 @@ button:disabled {
   display: grid;
   grid-template-columns: 34px minmax(0, 1fr);
   gap: 10px;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #171817;
@@ -904,7 +987,8 @@ summary {
 
   .app-shell[data-ui-mode="chat"] {
     width: 100%;
-    min-height: 100svh;
+    height: 100svh;
+    min-height: 0;
     padding: 8px;
     gap: 10px;
   }
@@ -984,13 +1068,15 @@ summary {
   }
 
   .app-shell[data-ui-mode="chat"] .conversation-pane {
-    min-height: calc(100svh - 142px);
-    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100%;
+    min-height: 0;
+    grid-template-rows: minmax(0, 3fr) minmax(116px, 1fr);
     gap: 10px;
   }
 
   .app-shell[data-ui-mode="chat"] .message-list {
-    min-height: max(260px, calc(100svh - 314px));
+    height: 100%;
+    min-height: 0;
     padding: 12px;
   }
 
@@ -1030,8 +1116,8 @@ summary {
   }
 
   .app-shell[data-ui-mode="chat"] textarea {
-    min-height: 112px;
-    max-height: 170px;
+    min-height: 84px;
+    max-height: none;
   }
 
   .self-check {

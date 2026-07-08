@@ -6,8 +6,8 @@ async function readWeb(path) {
   return readFile(new URL(`../../web/${path}`, import.meta.url), "utf8");
 }
 
-test("P0D version is wired through chat entrypoints and workers", async () => {
-  const version = "r28p0d-browser-compat-no-fallback-choice";
+test("latest P0 version is wired through chat entrypoints and workers", async () => {
+  const version = "r28p0e-real-browser-q4-forward";
   const html = await readWeb("another_brain_chat/index.html");
   const app = await readWeb("another_brain_chat/app.js");
   const runtime = await readWeb("another_brain_chat/browser_runtime.js");

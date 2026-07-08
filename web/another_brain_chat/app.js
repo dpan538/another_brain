@@ -1,13 +1,13 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0d-browser-compat-no-fallback-choice";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0d-browser-compat-no-fallback-choice";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0e-real-browser-q4-forward";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0e-real-browser-q4-forward";
 
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28MERGE3_UI_VERSION = "r28merge3-final-premerge-gate";
 const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
 const R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION = "r28p0b-primary-q4-mount-state";
-const R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION = "r28p0d-browser-compat-no-fallback-choice";
+const R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION = "r28p0e-real-browser-q4-forward";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
-const R28HOTFIX3_BUILD_MARKER = "R28P0D";
+const R28HOTFIX3_BUILD_MARKER = "R28P0E";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -17,7 +17,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28p0d",
+  prelaunch_stage: "r28p0e",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -47,7 +47,7 @@ const MODEL_LOADING_LABELS = {
   shards: "校验 shards",
   tokenizer: "加载 tokenizer",
   "q4-warmup": "q4 warmup",
-  fallback: "边界回答待命"
+  fallback: "阻塞状态"
 };
 const MODEL_LOADING_PROGRESS = {
   manifest: 14,
@@ -59,7 +59,7 @@ const MODEL_LOADING_PROGRESS = {
 const R28SHIP0_DEEP_SELFCHECK_METHOD = "deepSelfCheckModelPath";
 const R28P0_Q4_WARMUP_TIMEOUT_MS = 90000;
 const bootMetrics = globalThis.__anotherBrainBootMetrics = {
-  version: R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION,
+  version: R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION,
   started_at_ms: Math.round(performance.now()),
   chat_interactive_ms: null,
   quick_check_ms: null,
@@ -138,6 +138,7 @@ const contextClearButton = document.querySelector("#context-clear-button");
 const stateExportButton = document.querySelector("#state-export-button");
 const abortButton = document.querySelector("#abort-button");
 const clearChatButton = document.querySelector("#clear-chat-button");
+const sendButton = document.querySelector("#send-button");
 const contextBridgeStatus = document.querySelector("#context-bridge-status");
 const contextValidation = document.querySelector("#context-validation");
 const modelLoadingPanel = document.querySelector("#model-loading-panel");
@@ -145,15 +146,18 @@ const modelLoadingTitle = document.querySelector("#model-loading-title");
 const modelLoadingDetail = document.querySelector("#model-loading-detail");
 const modelLoadingProgressBar = document.querySelector("#model-loading-progress-bar");
 const modelLoadingStages = document.querySelector("#model-loading-stages");
-const loadingCancelButton = document.querySelector("#loading-cancel-button");
 const loadingDashboardButton = document.querySelector("#loading-dashboard-button");
 const q4RetryStatus = document.querySelector("#q4-retry-status");
+const runtimeChartStatus = document.querySelector("#runtime-chart-status");
+const runtimeChartLine = document.querySelector("#runtime-chart-line");
+const runtimeChartDots = document.querySelector("#runtime-chart-dots");
 
 let lastPacket = null;
 let running = false;
 let activeSelfCheckController = null;
 let activeLoadingController = null;
 let modelLoadingRequested = false;
+let modelFullyLoaded = false;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
@@ -199,11 +203,17 @@ function isDashboardMode() {
   return appShell?.dataset?.uiMode === "dashboard";
 }
 
+function setModelFullyLoaded(value) {
+  modelFullyLoaded = Boolean(value);
+  if (appShell) appShell.dataset.modelReady = modelFullyLoaded ? "true" : "false";
+  setDisabled(input, !modelFullyLoaded);
+  setDisabled(sendButton, !modelFullyLoaded);
+}
+
 function setLoadingScreenActive(value) {
   modelLoadingRequested = Boolean(value);
   if (appShell) appShell.dataset.loading = value ? "active" : "idle";
-  const showPanel = modelLoadingRequested && isDashboardMode();
-  setHidden(modelLoadingPanel, !showPanel);
+  setHidden(modelLoadingPanel, !modelLoadingRequested);
   if (!value) markBootMetric("loading_hidden_ms");
 }
 
@@ -230,7 +240,7 @@ function setUiMode(mode) {
   dashboardModeButton?.classList.toggle("active", nextMode === "dashboard");
   chatModeButton?.setAttribute("aria-pressed", boolText(nextMode === "chat"));
   dashboardModeButton?.setAttribute("aria-pressed", boolText(nextMode === "dashboard"));
-  setHidden(modelLoadingPanel, !(modelLoadingRequested && nextMode === "dashboard"));
+  setHidden(modelLoadingPanel, !modelLoadingRequested);
   if (nextMode === "dashboard") renderDebug();
 }
 
@@ -270,7 +280,7 @@ function renderQ4RetryStatus(input = {}) {
     return;
   }
   if (finalFallback) {
-    setText(q4RetryStatus, `最终 fallback reason：${lastBlocker || "q4_retry_plan_exhausted"}`);
+    setText(q4RetryStatus, `最终 blocker：${lastBlocker || "q4_retry_plan_exhausted"}`);
     return;
   }
   if (!planBActive && !primaryCompleted) {
@@ -312,7 +322,7 @@ function renderModelLoading(input = {}) {
     node.classList.toggle("done", done || (activeIndex >= 0 && nodeIndex >= 0 && nodeIndex < activeIndex));
     node.classList.toggle("warn", (cancelled || failed) && nodeStage === "fallback");
   });
-  setDisabled(loadingCancelButton, done || cancelled || failed || !activeLoadingController);
+  renderRuntimeChart(report);
 }
 
 function completeModelLoading(report = {}) {
@@ -322,7 +332,42 @@ function completeModelLoading(report = {}) {
     status: report.status || (report.ok ? "passed" : "failed"),
     progress: 100
   });
-  globalThis.setTimeout?.(() => setLoadingScreenActive(false), 450);
+  if (report.ok) {
+    setModelFullyLoaded(true);
+    setLoadingScreenActive(false);
+  } else {
+    setModelFullyLoaded(false);
+    setLoadingScreenActive(true);
+  }
+}
+
+function renderRuntimeChart(reportOrTrace = {}) {
+  if (!runtimeChartLine || !runtimeChartDots) return;
+  const report = reportOrTrace.runtime_truth_table ? null : reportOrTrace;
+  const trace = reportOrTrace.runtime_truth_table ? reportOrTrace : null;
+  const manifest = report ? report.assets?.manifest_loaded === true : trace?.model?.asset_manifest_loaded === true;
+  const shards = report ? report.assets?.shards_verified === true : trace?.model?.shards_verified === true;
+  const tokenizer = report ? report.tokenizer?.exact_runtime_tokenizer === true : trace?.model?.tokenizer === "exact_runtime_tokenizer";
+  const q4Forward = report ? report.q4_forward?.q4_forward_ran === true : trace?.model?.q4_forward_ran === true;
+  const tokens = report ? Number(report.q4_forward?.tokens_generated || 0) : Number(trace?.model?.tokens_generated || 0);
+  const values = [
+    manifest ? 1 : 0.08,
+    shards ? 1 : 0.08,
+    tokenizer ? 1 : 0.08,
+    q4Forward ? 1 : 0.08,
+    tokens > 0 ? Math.min(1, 0.25 + tokens / 12) : 0.08
+  ];
+  const x = [24, 92, 160, 228, 296];
+  const yFor = (value) => Math.round(88 - value * 60);
+  const points = values.map((value, index) => `${x[index]},${yFor(value)}`).join(" ");
+  runtimeChartLine.setAttribute("points", points);
+  runtimeChartDots.querySelectorAll("circle").forEach((dot, index) => {
+    dot.setAttribute("cx", String(x[index] || 296));
+    dot.setAttribute("cy", String(yFor(values[index] || 0.08)));
+    dot.classList.toggle("active", values[index] > 0.5);
+  });
+  const blocker = report?.q4_forward?.blocker || report?.fallback?.reason || (report?.blockers || [])[0] || trace?.finalizer?.fallback_reason || "";
+  setText(runtimeChartStatus, q4Forward && tokens > 0 ? `q4 tokens ${tokens}` : blocker ? `blocked: ${blocker}` : "waiting");
 }
 
 function sourceLabel(trace = {}) {
@@ -451,6 +496,7 @@ function renderTrace(trace = null) {
     setText(draftGeneratedStatus, "false");
     setText(draftReplacedStatus, "false");
     setText(q4StatusBadge, "q4 forward: false");
+    renderRuntimeChart({});
     return;
   }
   const input = trace.input_packet || {};
@@ -471,6 +517,7 @@ function renderTrace(trace = null) {
   setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / tokens=${model.tokens_generated || 0} / model_draft_generated=${boolText(model.draft_generated)}`);
   setText(traceRouterSummary, `route=${router.route || "not_run"} / used_model_draft=${boolText(router.used_model_draft)} / finalizer_replaced_draft=${boolText(router.replaced_model_draft)} / reason=${router.reason || "none"}`);
   setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / truth=${truth.ok === false ? (truth.failures || []).join(", ") : "pass"} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || truth.blocker || "none"}`);
+  renderRuntimeChart(trace);
 }
 
 function renderContextBridge(result = null) {
@@ -489,7 +536,7 @@ async function loadDeliveryConfig() {
   if (!globalThis.location?.href) return DEFAULT_DELIVERY_CONFIG;
   const base = new URL(globalThis.location.href);
   const url = new URL("/another_brain/runtime_mode.json", base);
-  url.searchParams.set("v", R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION);
+  url.searchParams.set("v", R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION);
   if (url.origin !== base.origin) throw new Error("non_same_origin_runtime_mode_rejected");
   const response = await fetch(url.href, { cache: "no-store" });
   if (!response.ok) throw new Error(`runtime_mode_fetch_failed:${response.status}`);
@@ -505,8 +552,8 @@ function renderDeliveryConfig(config) {
   setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
   setText(routerStatusBadge, "router: enabled");
-  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION}`);
-  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
+  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION}`);
+  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   setText(candidateRouteStatus, config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route);
@@ -585,6 +632,7 @@ function renderSelfCheck(report = null) {
 function setPipelineStatus(status) {
   const labels = {
     loading_model: ["Loading", "Pending", "Pending", "Unused"],
+    waiting_q4_mount: ["Mounting q4", "Ready", "Waiting", "Unused"],
     retrieving_local_memory: ["Loaded", "Retrieving", "Pending", "Unused"],
     drafting: ["Loaded", "Ready", "Drafting", "Unused"],
     verifying: ["Loaded", "Ready", "Verifying", "Unused"],
@@ -602,7 +650,7 @@ async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
   renderAssetStatus(null, deliveryConfig);
-  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION });
+  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0E_REAL_BROWSER_Q4_FORWARD_VERSION });
   renderBrowserCompatibility(runtime.capabilities || {});
   runtime.setContextPackets(contextBridge.getPackets());
   renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
@@ -627,7 +675,6 @@ async function boot() {
   });
   const bootController = new AbortController();
   activeLoadingController = bootController;
-  setDisabled(loadingCancelButton, false);
   let report = null;
   try {
     report = await runtime.quickSelfCheckModelPath({
@@ -659,7 +706,6 @@ async function boot() {
     if (mountResult.attempts) report.attempts = mountResult.attempts;
   } finally {
     if (activeLoadingController === bootController) activeLoadingController = null;
-    setDisabled(loadingCancelButton, true);
   }
   renderSelfCheck(report);
   completeModelLoading(report);
@@ -686,38 +732,6 @@ function bindEvents() {
 on(chatModeButton, "click", () => setUiMode("chat"));
 on(dashboardModeButton, "click", () => setUiMode("dashboard"));
 on(loadingDashboardButton, "click", () => setUiMode("dashboard"));
-on(loadingCancelButton, "click", () => {
-  if (activeLoadingController) activeLoadingController.abort();
-  if (activeSelfCheckController) activeSelfCheckController.abort();
-  runtime.cancelSelfCheck("model_loading_cancelled");
-  activeLoadingController = null;
-  activeSelfCheckController = null;
-  renderModelLoading({
-    status: "cancelled",
-    stage: "fallback",
-    progress: 100,
-    report: {
-      status: "cancelled",
-      fallback: { status: "可用", reason: "model_loading_cancelled" },
-      q4_forward: { status: "skipped", q4_forward_ran: false, blocker: "model_loading_cancelled" },
-      blockers: ["model_loading_cancelled"]
-    }
-  });
-  renderSelfCheck({
-    status: "cancelled",
-    check_level: "quick",
-    stage: "user_cancelled",
-    elapsed_ms: 0,
-    assets: { status: "取消", q4_shard_count: 0, expected_shard_count: Number(runtime.deliveryConfig?.shard_count || 0) },
-    tokenizer: { status: "skipped" },
-    q4_forward: { status: "skipped", q4_forward_ran: false, tokens_generated: 0 },
-    fallback: { status: "可用", reason: "model_loading_cancelled" },
-    output: { text_preview: "" },
-    blockers: ["model_loading_cancelled"]
-  });
-  setText(fallbackReasonStatus, "model_loading_cancelled");
-  setLoadingScreenActive(false);
-});
 
 on(contextImportButton, "click", () => {
   const result = contextBridge.importText(getValue(contextImport), { sourceLabel: "Manual local import" });
@@ -748,6 +762,11 @@ on(stateExportButton, "click", () => {
 on(form, "submit", async (event) => {
   event.preventDefault();
   if (running) return;
+  if (!modelFullyLoaded) {
+    setText(fallbackReasonStatus, "q4_mount_required_before_chat");
+    setLoadingScreenActive(true);
+    return;
+  }
   const text = getValue(input).trim();
   if (!text) return;
 
@@ -795,7 +814,6 @@ on(modelSelfCheckButton, "click", async () => {
   activeLoadingController = controller;
   setDisabled(modelSelfCheckButton, true);
   setDisabled(modelSelfCheckStopButton, false);
-  setDisabled(loadingCancelButton, false);
   setText(selfCheckAssets, "检查中");
   setText(selfCheckTokenizer, "检查中");
   setText(selfCheckQ4, "quick check");
@@ -838,7 +856,6 @@ on(modelSelfCheckButton, "click", async () => {
     if (activeLoadingController === controller) activeLoadingController = null;
     setDisabled(modelSelfCheckButton, false);
     setDisabled(modelSelfCheckStopButton, true);
-    setDisabled(loadingCancelButton, true);
   }
 });
 
@@ -870,6 +887,7 @@ on(modelSelfCheckStopButton, "click", () => {
 
 function start() {
   setUiMode(inferInitialMode());
+  setModelFullyLoaded(false);
   bindEvents();
   renderBrowserCompatibility(runtime.capabilities || {});
   if (typeof globalThis.requestAnimationFrame === "function") {

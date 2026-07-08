@@ -10,7 +10,7 @@ async function readScript(path) {
   return readFile(new URL(`../../scripts/${path}`, import.meta.url), "utf8");
 }
 
-test("P0D cache version is wired through entrypoints and runtime truth files", async () => {
+test("P0E cache version is wired through entrypoints and runtime truth files", async () => {
   const html = await readWeb("another_brain_chat/index.html");
   const app = await readWeb("another_brain_chat/app.js");
   const runtime = await readWeb("another_brain_chat/browser_runtime.js");
@@ -21,13 +21,13 @@ test("P0D cache version is wired through entrypoints and runtime truth files", a
   const manifest = JSON.parse(await readWeb("another_brain/asset_manifest.json"));
 
   for (const source of [html, app, runtime, worker, selfCheck, q4]) {
-    assert.ok(source.includes("r28p0d-browser-compat-no-fallback-choice"));
+    assert.ok(source.includes("r28p0e-real-browser-q4-forward"));
   }
-  assert.equal(runtimeMode.ui_version, "r28p0d-browser-compat-no-fallback-choice");
-  assert.equal(runtimeMode.asset_cache_version, "r28p0d-browser-compat-no-fallback-choice");
-  assert.equal(runtimeMode.ui_build_marker, "R28P0D");
-  assert.equal(manifest.ui_version, "r28p0d-browser-compat-no-fallback-choice");
-  assert.equal(manifest.ui_build_marker, "R28P0D");
+  assert.equal(runtimeMode.ui_version, "r28p0e-real-browser-q4-forward");
+  assert.equal(runtimeMode.asset_cache_version, "r28p0e-real-browser-q4-forward");
+  assert.equal(runtimeMode.ui_build_marker, "R28P0E");
+  assert.equal(manifest.ui_version, "r28p0e-real-browser-q4-forward");
+  assert.equal(manifest.ui_build_marker, "R28P0E");
 });
 
 test("P0D records cold-start metrics without exposing hidden reasoning", async () => {
