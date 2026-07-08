@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import { join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+
+const root = resolve(new URL("..", import.meta.url).pathname);
+const out = join(tmpdir(), `r28p0d-ts-tests-${process.pid}`);
+
+async function copyTsAsMjs(fromDir, toDir) {
+  await mkdir(toDir, { recursive: true });
+  for (const entry of await readdir(fromDir, { withFileTypes: true })) {
+    const source = join(fromDir, entry.name);
+    const targetBase = join(toDir, entry.name);
+    if (entry.isDirectory()) {
+      await copyTsAsMjs(source, targetBase);
+      continue;
+    }
+    if (!entry.name.endsWith(".ts")) continue;
+    const target = targetBase.replace(/\.ts$/, ".mjs");
+    const text = (await readFile(source, "utf8")).replace(/\.ts(["'])/g, ".mjs$1");
+    await writeFile(target, text, "utf8");
+  }
+}
+
+await rm(out, { recursive: true, force: true });
+await copyTsAsMjs(join(root, "tests/r28p0d"), join(out, "tests/r28p0d"));
+await cp(join(root, "web"), join(out, "web"), { recursive: true });
+await mkdir(join(out, "scripts"), { recursive: true });
+await cp(join(root, "scripts/r28p0d_browser_compat_matrix.mjs"), join(out, "scripts/r28p0d_browser_compat_matrix.mjs"));
+await cp(join(root, "package.json"), join(out, "package.json"));
+
+const result = spawnSync("node", ["--test", join(out, "tests/r28p0d/*.mjs")], {
+  cwd: out,
+  shell: true,
+  stdio: "inherit"
+});
+await rm(out, { recursive: true, force: true });
+process.exit(result.status || 0);

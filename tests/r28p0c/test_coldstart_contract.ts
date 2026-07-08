@@ -10,7 +10,7 @@ async function readScript(path) {
   return readFile(new URL(`../../scripts/${path}`, import.meta.url), "utf8");
 }
 
-test("P0C cache version is wired through entrypoints and runtime truth files", async () => {
+test("P0D cache version is wired through entrypoints and runtime truth files", async () => {
   const html = await readWeb("another_brain_chat/index.html");
   const app = await readWeb("another_brain_chat/app.js");
   const runtime = await readWeb("another_brain_chat/browser_runtime.js");
@@ -21,34 +21,33 @@ test("P0C cache version is wired through entrypoints and runtime truth files", a
   const manifest = JSON.parse(await readWeb("another_brain/asset_manifest.json"));
 
   for (const source of [html, app, runtime, worker, selfCheck, q4]) {
-    assert.ok(source.includes("r28p0c-coldstart-mobile-chat"));
+    assert.ok(source.includes("r28p0d-browser-compat-no-fallback-choice"));
   }
-  assert.equal(runtimeMode.ui_version, "r28p0c-coldstart-mobile-chat");
-  assert.equal(runtimeMode.asset_cache_version, "r28p0c-coldstart-mobile-chat");
-  assert.equal(runtimeMode.ui_build_marker, "R28P0C");
-  assert.equal(manifest.ui_version, "r28p0c-coldstart-mobile-chat");
-  assert.equal(manifest.ui_build_marker, "R28P0C");
+  assert.equal(runtimeMode.ui_version, "r28p0d-browser-compat-no-fallback-choice");
+  assert.equal(runtimeMode.asset_cache_version, "r28p0d-browser-compat-no-fallback-choice");
+  assert.equal(runtimeMode.ui_build_marker, "R28P0D");
+  assert.equal(manifest.ui_version, "r28p0d-browser-compat-no-fallback-choice");
+  assert.equal(manifest.ui_build_marker, "R28P0D");
 });
 
-test("P0C records cold-start metrics without exposing hidden reasoning", async () => {
+test("P0D records cold-start metrics without exposing hidden reasoning", async () => {
   const app = await readWeb("another_brain_chat/app.js");
   assert.ok(app.includes("globalThis.__anotherBrainBootMetrics"));
   assert.ok(app.includes("chat_interactive_ms"));
   assert.ok(app.includes("quick_check_ms"));
   assert.ok(app.includes("q4_ready_ms"));
-  assert.ok(app.includes("q4_deferred"));
+  assert.ok(app.includes("q4_background"));
   assert.ok(!app.includes("chain of thought"));
   assert.ok(!app.includes("hidden prompt"));
 });
 
-test("P0C defers deep q4 warmup on mobile and slow connections", async () => {
+test("P0D keeps q4 mount as the default background path on mobile and slow connections", async () => {
   const app = await readWeb("another_brain_chat/app.js");
-  assert.ok(app.includes("function shouldDeferQ4WarmupOnThisDevice"));
-  assert.ok(app.includes("matchMedia(\"(pointer: coarse)\")"));
-  assert.ok(app.includes("Number(globalThis.innerWidth || 0) <= 760"));
-  assert.ok(app.includes("mobile_q4_warmup_deferred"));
-  assert.ok(app.includes("lightweight_ready"));
-  assert.ok(app.includes("lightweight_until_q4_ready"));
+  assert.ok(app.includes("function shouldMountQ4InBackground"));
+  assert.ok(app.includes("q4_status = \"background_mount\""));
+  assert.ok(!app.includes("mobile_q4_warmup_deferred"));
+  assert.ok(!app.includes("lightweight_ready"));
+  assert.ok(!app.includes("lightweight_until_q4_ready"));
 });
 
 test("P0C cold-start matrix covers desktop, mobile, fast, and 3G profiles", async () => {

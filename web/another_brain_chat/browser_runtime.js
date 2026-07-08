@@ -34,7 +34,7 @@ const ROUTER_NON_CLAIMS = [
 ];
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
-const R28P0C_PRIMARY_Q4_MOUNT_STATE_VERSION = "r28p0c-coldstart-mobile-chat";
+const R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION = "r28p0d-browser-compat-no-fallback-choice";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -197,14 +197,123 @@ const SURFACE_FRAGMENT_INDEX = Object.freeze(Object.fromEntries(Object.entries(S
   fragments.map((text, index) => Object.freeze({ id: `${group}_${String(index + 1).padStart(2, "0")}`, group, text }))
 ])));
 
-export function probeBrowserCapabilities() {
-  const cacheStorageAvailable = typeof caches !== "undefined" && typeof caches.open === "function";
+function safeErrorMessage(error, fallback = "unknown_error") {
+  return String(error?.message || error?.name || fallback).replace(/\s+/g, "_").slice(0, 120);
+}
+
+export function detectBrowserEnvironment(userAgent = "") {
+  const ua = String(userAgent || (typeof navigator !== "undefined" ? navigator.userAgent || "" : ""));
+  const lower = ua.toLowerCase();
+  const isWechat = /micromessenger/.test(lower);
+  const isQq = new RegExp("mqqbrowser| qq/| qqbrowser|qbcore").test(lower);
+  const isBing = /bingpreview|bingsapphire|bingweb|msapphost/.test(lower);
+  const isEdge = new RegExp("edg(e|a|ios)?/").test(lower);
+  const isChrome = new RegExp("chrome/|crios/").test(lower) && !isEdge && !isWechat && !isQq && !isBing;
+  const isSafari = new RegExp("safari/").test(lower) && !new RegExp("chrome/|crios/|chromium/|edg(e|a|ios)?/").test(lower);
+  const isIos = /iphone|ipad|ipod/.test(lower);
+  const isAndroid = /android/.test(lower);
+  let browser_family = "unknown";
+  if (isWechat) browser_family = "wechat_in_app";
+  else if (isQq) browser_family = "qq_in_app";
+  else if (isBing) browser_family = "bing_microsoft";
+  else if (isEdge) browser_family = "microsoft_edge";
+  else if (isChrome) browser_family = "chrome";
+  else if (isSafari) browser_family = "safari";
+  const mobile = isIos || isAndroid || /mobile/.test(lower);
   return {
+    browser_family,
+    in_app_browser: isWechat || isQq || isBing || /wv\)|webview/.test(lower),
+    webview_family: isWechat ? "wechat" : isQq ? "qq" : isBing ? "bing" : /wv\)|webview/.test(lower) ? "generic_webview" : "",
+    mobile,
+    ios: isIos,
+    android: isAndroid,
+    user_agent_family: browser_family
+  };
+}
+
+function safeLocalStorageGet(key) {
+  try {
+    if (typeof globalThis.localStorage === "undefined") return { ok: false, status: "local_storage_unavailable", value: null };
+    return { ok: true, status: "local_storage_available", value: globalThis.localStorage.getItem(key) };
+  } catch (error) {
+    return { ok: false, status: `local_storage_blocked:${safeErrorMessage(error)}`, value: null };
+  }
+}
+
+function safeLocalStorageSet(key, value) {
+  try {
+    if (typeof globalThis.localStorage === "undefined") return { ok: false, status: "local_storage_unavailable" };
+    globalThis.localStorage.setItem(key, String(value));
+    return { ok: true, status: "local_storage_written" };
+  } catch (error) {
+    return { ok: false, status: `local_storage_write_blocked:${safeErrorMessage(error)}` };
+  }
+}
+
+function safeLocalStorageRemove(key) {
+  try {
+    if (typeof globalThis.localStorage === "undefined") return { ok: false, status: "local_storage_unavailable" };
+    globalThis.localStorage.removeItem(key);
+    return { ok: true, status: "local_storage_removed" };
+  } catch (error) {
+    return { ok: false, status: `local_storage_remove_blocked:${safeErrorMessage(error)}` };
+  }
+}
+
+function createWorkerSafely(url, options = {}, label = "runtime_worker") {
+  if (typeof Worker === "undefined") {
+    return { worker: null, ok: false, blocker: `${label}_unavailable`, module_worker_allowed: false };
+  }
+  try {
+    const worker = new Worker(url, options);
+    return { worker, ok: true, blocker: "", module_worker_allowed: options.type === "module" };
+  } catch (error) {
+    return {
+      worker: null,
+      ok: false,
+      blocker: `${label}_constructor_failed:${safeErrorMessage(error)}`,
+      module_worker_allowed: false
+    };
+  }
+}
+
+export function probeBrowserCapabilities() {
+  const environment = detectBrowserEnvironment();
+  const blockers = [];
+  let cacheStorageAvailable = false;
+  let cacheStorageBlocker = "";
+  try {
+    cacheStorageAvailable = typeof caches !== "undefined" && typeof caches.open === "function";
+    if (!cacheStorageAvailable) cacheStorageBlocker = "cache_storage_unavailable";
+  } catch (error) {
+    cacheStorageBlocker = `cache_storage_blocked:${safeErrorMessage(error)}`;
+  }
+  if (cacheStorageBlocker) blockers.push(cacheStorageBlocker);
+  const localStorageProbe = safeLocalStorageGet("__another_brain_storage_probe__");
+  if (!localStorageProbe.ok) blockers.push(localStorageProbe.status);
+  const workerAvailable = typeof Worker !== "undefined";
+  if (!workerAvailable) blockers.push("worker_unavailable");
+  return {
+    version: R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION,
+    browser_family: environment.browser_family,
+    in_app_browser: environment.in_app_browser,
+    webview_family: environment.webview_family,
+    mobile: environment.mobile,
+    ios: environment.ios,
+    android: environment.android,
+    compatibility_profile: environment.in_app_browser ? `${environment.webview_family || environment.browser_family}_guarded` : `${environment.browser_family}_standard`,
+    compatibility_blockers: uniqueFlags(blockers),
     webgpu_available: typeof navigator !== "undefined" && Boolean(navigator.gpu),
     webassembly_available: typeof WebAssembly !== "undefined",
-    worker_available: typeof Worker !== "undefined",
+    worker_available: workerAvailable,
+    module_worker_allowed: workerAvailable,
     shared_array_buffer_available: typeof SharedArrayBuffer !== "undefined",
     cache_storage_available: cacheStorageAvailable,
+    local_storage_available: localStorageProbe.ok,
+    range_request_supported: true,
+    abort_controller_available: typeof AbortController !== "undefined",
+    request_idle_callback_available: typeof globalThis.requestIdleCallback === "function",
+    performance_now_available: typeof performance !== "undefined" && typeof performance.now === "function",
     offline_static_cache_supported: cacheStorageAvailable,
     online: typeof navigator === "undefined" || navigator.onLine !== false
   };
@@ -1274,8 +1383,9 @@ export class BrowserChatRuntime {
   }
 
   async invalidateStaleAssetCache() {
-    if (typeof localStorage === "undefined") return { status: "local_storage_unavailable", cleared: false };
-    const previous = localStorage.getItem(R28UX4_ASSET_CACHE_KEY);
+    const previousProbe = safeLocalStorageGet(R28UX4_ASSET_CACHE_KEY);
+    if (!previousProbe.ok) return { status: previousProbe.status, cleared: false };
+    const previous = previousProbe.value;
     if (previous === this.uiVersion) return { status: "cache_version_current", cleared: false, previous };
     let cleared = false;
     if (typeof caches !== "undefined" && typeof caches.delete === "function") {
@@ -1283,9 +1393,9 @@ export class BrowserChatRuntime {
         cleared = (await caches.delete(cacheName).catch(() => false)) || cleared;
       }
     }
-    localStorage.setItem(R28UX4_ASSET_CACHE_KEY, this.uiVersion);
+    const writeProbe = safeLocalStorageSet(R28UX4_ASSET_CACHE_KEY, this.uiVersion);
     return {
-      status: previous ? "cache_version_mismatch_invalidated" : "cache_version_initialized",
+      status: writeProbe.ok ? (previous ? "cache_version_mismatch_invalidated" : "cache_version_initialized") : writeProbe.status,
       cleared,
       previous: previous || "",
       current: this.uiVersion
@@ -1298,9 +1408,7 @@ export class BrowserChatRuntime {
       cleared: false,
       error: error.message || "cache_version_check_failed"
     }));
-    if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28p0c-coldstart-mobile-chat", import.meta.url), { type: "module" });
-    }
+    if (this.capabilities.worker_available) this.worker = this.createRuntimeWorker();
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
       this.assetStatus = {
@@ -1345,7 +1453,22 @@ export class BrowserChatRuntime {
 
   createRuntimeWorker() {
     if (!this.capabilities.worker_available) return null;
-    return new Worker(new URL("./runtime_worker.js?v=r28p0c-coldstart-mobile-chat", import.meta.url), { type: "module" });
+    const result = createWorkerSafely(
+      new URL("./runtime_worker.js?v=r28p0d-browser-compat-no-fallback-choice", import.meta.url),
+      { type: "module" },
+      "runtime_worker"
+    );
+    if (!result.ok) {
+      this.capabilities = {
+        ...this.capabilities,
+        worker_available: false,
+        module_worker_allowed: false,
+        compatibility_blockers: uniqueFlags([...(this.capabilities.compatibility_blockers || []), result.blocker])
+      };
+      this.lastFallbackReason = result.blocker;
+      this.assetStatus = { ...this.assetStatus, fallback_reason: result.blocker };
+    }
+    return result.worker;
   }
 
   async clearModelAssetCacheNamespace() {
@@ -1369,7 +1492,7 @@ export class BrowserChatRuntime {
         }
       }
     }
-    if (typeof localStorage !== "undefined") localStorage.removeItem(R28UX4_ASSET_CACHE_KEY);
+    safeLocalStorageRemove(R28UX4_ASSET_CACHE_KEY);
     return { cleared, deleted };
   }
 
@@ -1674,7 +1797,21 @@ export class BrowserChatRuntime {
   async runQ4SelfCheckSmokeInIsolatedWorker(options = {}) {
     const timeoutMs = clampQ4WarmupTimeout(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS);
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28p0c-coldstart-mobile-chat", import.meta.url), { type: "module" });
+      const workerResult = createWorkerSafely(
+        new URL("./self_check_worker.js?v=r28p0d-browser-compat-no-fallback-choice", import.meta.url),
+        { type: "module" },
+        "isolated_self_check_worker"
+      );
+      if (!workerResult.worker) {
+        this.capabilities = {
+          ...this.capabilities,
+          module_worker_allowed: false,
+          compatibility_blockers: uniqueFlags([...(this.capabilities.compatibility_blockers || []), workerResult.blocker])
+        };
+        reject(new Error(workerResult.blocker || "isolated_self_check_worker_unavailable"));
+        return;
+      }
+      const worker = workerResult.worker;
       let settled = false;
       const finish = (callback) => {
         if (settled) return;

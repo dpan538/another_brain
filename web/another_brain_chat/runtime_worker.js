@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28p0c-coldstart-mobile-chat";
+import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28p0d-browser-compat-no-fallback-choice";
 
 function tokensFor(prompt, maxTokens) {
   const parts = [

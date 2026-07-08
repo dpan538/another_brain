@@ -42,8 +42,7 @@ const SCENARIOS = [
     network: { latency: 40, downloadThroughput: 1_600_000, uploadThroughput: 750_000 },
     cpuRate: 4,
     q4CapMs: 20_000,
-    maxInteractiveMs: 2200,
-    expectQ4Deferred: true
+    maxInteractiveMs: 2200
   },
   {
     id: "mobile_3g_cold",
@@ -52,8 +51,7 @@ const SCENARIOS = [
     network: { latency: 300, downloadThroughput: 96_000, uploadThroughput: 48_000 },
     cpuRate: 4,
     q4CapMs: 20_000,
-    maxInteractiveMs: 4200,
-    expectQ4Deferred: true
+    maxInteractiveMs: 4200
   }
 ];
 
@@ -251,7 +249,9 @@ async function runScenario(serverUrl, chrome, scenario) {
     );
     await waitForValue(
       cdp,
-      `["ready","deferred","fallback"].includes(window.__anotherBrainBootMetrics?.q4_status)`,
+      scenario.expectQ4Ready
+        ? `window.__anotherBrainBootMetrics?.q4_status === "ready"`
+        : `["ready","fallback","background_mount"].includes(window.__anotherBrainBootMetrics?.q4_status)`,
       scenario.q4CapMs
     );
     const snapshot = await readSnapshot(cdp);
@@ -262,7 +262,7 @@ async function runScenario(serverUrl, chrome, scenario) {
     if (Number(metrics.chat_interactive_ms || elapsedMs) > scenario.maxInteractiveMs) failures.push("chat_interactive_too_slow");
     if (Number(snapshot.overflowX || 0) > 1) failures.push(`horizontal_overflow:${snapshot.overflowX}`);
     if (scenario.viewport.mobile && snapshot.visibleComposerButtons.length !== 1) failures.push(`mobile_expected_send_only:${snapshot.visibleComposerButtons.join(",")}`);
-    if (scenario.viewport.mobile && metrics.q4_status !== "deferred") failures.push(`mobile_expected_q4_deferred:${metrics.q4_status || "missing"}`);
+    if (scenario.viewport.mobile && metrics.q4_status === "deferred") failures.push("mobile_q4_deferred_regression");
     if (scenario.expectQ4Ready && metrics.q4_status !== "ready") failures.push(`q4_not_ready:${metrics.q4_status || "missing"}`);
     if (!scenario.viewport.mobile && snapshot.hasEngineeringBrand) failures.push("chat_visible_engineering_brand");
     if (snapshot.hasChatModelParams && snapshot.uiMode === "chat") failures.push("chat_visible_model_parameters");
@@ -277,7 +277,7 @@ async function runScenario(serverUrl, chrome, scenario) {
       q4_ready_ms: metrics.q4_ready_ms,
       fallback_ready_ms: metrics.fallback_ready_ms,
       q4_status: metrics.q4_status || "missing",
-      q4_deferred: metrics.q4_deferred === true,
+      q4_background: metrics.q4_background === true,
       overflow_x: snapshot.overflowX,
       visible_composer_buttons: snapshot.visibleComposerButtons,
       network: scenario.network,

@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28p0c-coldstart-mobile-chat";
+import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28p0d-browser-compat-no-fallback-choice";
 
 async function handleSelfCheck(message = {}) {
   if (message.type !== "q4_smoke") {

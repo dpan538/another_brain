@@ -1,13 +1,13 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0c-coldstart-mobile-chat";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0c-coldstart-mobile-chat";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0d-browser-compat-no-fallback-choice";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0d-browser-compat-no-fallback-choice";
 
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28MERGE3_UI_VERSION = "r28merge3-final-premerge-gate";
 const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
 const R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION = "r28p0b-primary-q4-mount-state";
-const R28P0C_COLDSTART_MOBILE_CHAT_VERSION = "r28p0c-coldstart-mobile-chat";
+const R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION = "r28p0d-browser-compat-no-fallback-choice";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
-const R28HOTFIX3_BUILD_MARKER = "R28P0C";
+const R28HOTFIX3_BUILD_MARKER = "R28P0D";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -17,7 +17,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28p0c",
+  prelaunch_stage: "r28p0d",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -47,7 +47,7 @@ const MODEL_LOADING_LABELS = {
   shards: "校验 shards",
   tokenizer: "加载 tokenizer",
   "q4-warmup": "q4 warmup",
-  fallback: "fallback available"
+  fallback: "边界回答待命"
 };
 const MODEL_LOADING_PROGRESS = {
   manifest: 14,
@@ -58,16 +58,16 @@ const MODEL_LOADING_PROGRESS = {
 };
 const R28SHIP0_DEEP_SELFCHECK_METHOD = "deepSelfCheckModelPath";
 const R28P0_Q4_WARMUP_TIMEOUT_MS = 90000;
-const MOBILE_Q4_WARMUP_DEFERRED_REASON = "mobile_q4_warmup_deferred";
 const bootMetrics = globalThis.__anotherBrainBootMetrics = {
-  version: R28P0C_COLDSTART_MOBILE_CHAT_VERSION,
+  version: R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION,
   started_at_ms: Math.round(performance.now()),
   chat_interactive_ms: null,
   quick_check_ms: null,
   q4_ready_ms: null,
   fallback_ready_ms: null,
   loading_hidden_ms: null,
-  q4_deferred: false,
+  q4_background_mount_ms: null,
+  q4_background: false,
   q4_status: "pending"
 };
 
@@ -124,6 +124,8 @@ const selfCheckQ4 = document.querySelector("#self-check-q4");
 const selfCheckTokens = document.querySelector("#self-check-tokens");
 const selfCheckRuntimeMode = document.querySelector("#self-check-runtime-mode");
 const selfCheckAnswerSource = document.querySelector("#self-check-answer-source");
+const browserCompatStatus = document.querySelector("#browser-compat-status");
+const browserEmbedStatus = document.querySelector("#browser-embed-status");
 const selfCheckFallback = document.querySelector("#self-check-fallback");
 const selfCheckFallbackReason = document.querySelector("#self-check-fallback-reason");
 const selfCheckOutput = document.querySelector("#self-check-output");
@@ -293,13 +295,12 @@ function renderModelLoading(input = {}) {
   const status = String(input.status || report.status || "checking");
   const fallbackReason = report.fallback?.reason || report.q4_forward?.blocker || (report.blockers || [])[0] || "";
   const done = status === "passed";
-  const deferred = status === "deferred" || status === "mobile_deferred";
   const cancelled = status === "cancelled";
   const failed = status === "failed" || status === "timeout";
   const progress = Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 8);
   setLoadingScreenActive(input.hidden !== true);
-  setText(modelLoadingTitle, done ? "模型已连接" : deferred ? "先进入轻量聊天" : cancelled ? "模型连接已取消" : failed ? "模型连接未完成" : "正在连接");
-  setText(modelLoadingDetail, deferred ? "手机端先打开输入框；需要细节可看 Dashboard。" : `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback available${fallbackReason ? ` / ${fallbackReason}` : ""}`);
+  setText(modelLoadingTitle, done ? "模型已连接" : cancelled ? "模型检查已停止" : failed ? "模型连接遇到问题" : "正在连接本地模型");
+  setText(modelLoadingDetail, `${MODEL_LOADING_LABELS[stage] || "读取模型清单"}；我会继续尝试本地模型${fallbackReason ? ` / blocker ${fallbackReason}` : ""}`);
   renderQ4RetryStatus(input);
   if (modelLoadingProgressBar) modelLoadingProgressBar.style.width = `${Math.max(8, Math.min(100, progress))}%`;
   const stageNodes = modelLoadingStages?.querySelectorAll?.("[data-loading-stage]") || [];
@@ -307,8 +308,8 @@ function renderModelLoading(input = {}) {
   stageNodes.forEach((node) => {
     const nodeStage = node.getAttribute("data-loading-stage");
     const nodeIndex = MODEL_LOADING_STAGES.indexOf(nodeStage);
-    node.classList.toggle("active", nodeStage === stage && !done && !deferred && !cancelled && !failed);
-    node.classList.toggle("done", done || deferred || (activeIndex >= 0 && nodeIndex >= 0 && nodeIndex < activeIndex));
+    node.classList.toggle("active", nodeStage === stage && !done && !cancelled && !failed);
+    node.classList.toggle("done", done || (activeIndex >= 0 && nodeIndex >= 0 && nodeIndex < activeIndex));
     node.classList.toggle("warn", (cancelled || failed) && nodeStage === "fallback");
   });
   setDisabled(loadingCancelButton, done || cancelled || failed || !activeLoadingController);
@@ -318,7 +319,7 @@ function completeModelLoading(report = {}) {
   renderModelLoading({
     report,
     stage: "fallback",
-    status: report.status || (report.deferred ? "deferred" : report.ok ? "passed" : "failed"),
+    status: report.status || (report.ok ? "passed" : "failed"),
     progress: 100
   });
   globalThis.setTimeout?.(() => setLoadingScreenActive(false), 450);
@@ -488,7 +489,7 @@ async function loadDeliveryConfig() {
   if (!globalThis.location?.href) return DEFAULT_DELIVERY_CONFIG;
   const base = new URL(globalThis.location.href);
   const url = new URL("/another_brain/runtime_mode.json", base);
-  url.searchParams.set("v", R28P0C_COLDSTART_MOBILE_CHAT_VERSION);
+  url.searchParams.set("v", R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION);
   if (url.origin !== base.origin) throw new Error("non_same_origin_runtime_mode_rejected");
   const response = await fetch(url.href, { cache: "no-store" });
   if (!response.ok) throw new Error(`runtime_mode_fetch_failed:${response.status}`);
@@ -504,8 +505,8 @@ function renderDeliveryConfig(config) {
   setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
   setText(routerStatusBadge, "router: enabled");
-  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0C_COLDSTART_MOBILE_CHAT_VERSION}`);
-  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0C_COLDSTART_MOBILE_CHAT_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
+  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION}`);
+  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   setText(candidateRouteStatus, config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route);
@@ -528,17 +529,14 @@ function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
     : `Fallback: ${assetStatus.fallback_reason || "offline_cache_unavailable"}`);
 }
 
-function shouldDeferQ4WarmupOnThisDevice() {
-  const params = new URLSearchParams(globalThis.location?.search || "");
-  if (params.get("force_q4_warmup") === "1") return false;
-  if (params.get("lightweight") === "1") return true;
-  const connection = navigator.connection || navigator.webkitConnection || navigator.mozConnection || {};
-  const effectiveType = String(connection.effectiveType || "");
-  const saveData = connection.saveData === true;
-  const coarsePointer = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
-  const narrowViewport = Number(globalThis.innerWidth || 0) > 0 && Number(globalThis.innerWidth || 0) <= 760;
-  const slowConnection = /(^|-)2g$|3g/.test(effectiveType);
-  return saveData || slowConnection || coarsePointer || narrowViewport;
+function shouldMountQ4InBackground() {
+  return true;
+}
+
+function renderBrowserCompatibility(capabilities = {}) {
+  const blockers = Array.isArray(capabilities.compatibility_blockers) ? capabilities.compatibility_blockers : [];
+  setText(browserCompatStatus, `${capabilities.browser_family || "unknown"} / worker=${boolText(capabilities.worker_available)} / cache=${boolText(capabilities.cache_storage_available)} / storage=${boolText(capabilities.local_storage_available)}`);
+  setText(browserEmbedStatus, `${capabilities.in_app_browser ? capabilities.webview_family || "in_app" : "standard"}${blockers.length ? ` / blocker=${blockers.slice(0, 2).join(", ")}` : " / guarded"}`);
 }
 
 function renderSelfCheck(report = null) {
@@ -604,10 +602,12 @@ async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
   renderAssetStatus(null, deliveryConfig);
-  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0C_COLDSTART_MOBILE_CHAT_VERSION });
+  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0D_BROWSER_COMPAT_NO_FALLBACK_CHOICE_VERSION });
+  renderBrowserCompatibility(runtime.capabilities || {});
   runtime.setContextPackets(contextBridge.getPackets());
   renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   const loadResult = await runtime.load();
+  renderBrowserCompatibility(loadResult.capabilities || runtime.capabilities || {});
   setText(modelStatus, `${loadResult.mode} loaded`);
   setText(retrievalStatus, deliveryConfig.rag_mode);
   renderAssetStatus(loadResult.asset_status, deliveryConfig);
@@ -641,30 +641,9 @@ async function boot() {
     });
     renderSelfCheck(report);
     markBootMetric("quick_check_ms");
-    if (shouldDeferQ4WarmupOnThisDevice()) {
-      report = {
-        ...report,
-        status: "deferred",
-        deferred: true,
-        fallback: { status: "可用", reason: MOBILE_Q4_WARMUP_DEFERRED_REASON },
-        q4_forward: {
-          ...(report.q4_forward || {}),
-          status: "skipped",
-          q4_forward_ran: false,
-          tokens_generated: 0,
-          blocker: MOBILE_Q4_WARMUP_DEFERRED_REASON
-        },
-        blockers: Array.from(new Set([...(report.blockers || []), MOBILE_Q4_WARMUP_DEFERRED_REASON]))
-      };
-      bootMetrics.q4_deferred = true;
-      bootMetrics.q4_status = "deferred";
-      renderSelfCheck(report);
-      completeModelLoading(report);
-      setText(modelStatus, "lightweight_ready");
-      setText(answerSourceStatus, "lightweight_until_q4_ready");
-      setText(fallbackReasonStatus, MOBILE_Q4_WARMUP_DEFERRED_REASON);
-      return;
-    }
+    bootMetrics.q4_background = shouldMountQ4InBackground();
+    markBootMetric("q4_background_mount_ms");
+    bootMetrics.q4_status = "background_mount";
     renderModelLoading({ report, status: "primary_mount", attempt: 1, strategy: "primary", plan_b_active: false });
     const mountResult = await runtime.mountQ4WithRetry({
       timeoutMs: R28P0_Q4_WARMUP_TIMEOUT_MS,
@@ -892,6 +871,7 @@ on(modelSelfCheckStopButton, "click", () => {
 function start() {
   setUiMode(inferInitialMode());
   bindEvents();
+  renderBrowserCompatibility(runtime.capabilities || {});
   if (typeof globalThis.requestAnimationFrame === "function") {
     globalThis.requestAnimationFrame(() => markBootMetric("chat_interactive_ms"));
   } else {
