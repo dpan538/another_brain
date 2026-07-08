@@ -12,7 +12,7 @@
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "1054ff4dca82f47dd1e922406286e714afa4eb47682c564a811f1728554f10ee"
+      "sha256": "35d61270b5e4f682dd1b95144e4ae05970106567bcff630ce66ead1aed083911"
     }
   ],
   "hosted_vector_store": false,
@@ -99,7 +99,7 @@
     "release_checkpoint_admission": false,
     "training_corpus_committed": false
   },
-  "prelaunch_stage": "r28ux5",
+  "prelaunch_stage": "r28ship0",
   "product_model_admission": false,
   "quantization": "q4",
   "rag_assets": [
@@ -167,9 +167,9 @@
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
   "total_declared_bytes": 49316880,
-  "ui_build_marker": "R28UX5",
+  "ui_build_marker": "R28SHIP0",
   "ui_build_timestamp": "2026-07-08T00:00:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28ux5-chat-dashboard-split",
+  "ui_version": "r28ship0-unified-q4-mount",
   "total_model_asset_bytes": 48267968
 }

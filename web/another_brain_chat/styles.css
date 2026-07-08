@@ -392,6 +392,16 @@ strong {
   background: var(--amber);
 }
 
+.q4-retry-status {
+  margin: 0;
+  min-height: 22px;
+  color: var(--amber);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .loading-skeleton {
   display: grid;
   gap: 7px;

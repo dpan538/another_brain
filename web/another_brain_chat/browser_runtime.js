@@ -32,13 +32,17 @@ const ROUTER_NON_CLAIMS = [
   "no broad answer bank",
   "hard router is product-surface guard only"
 ];
-const R28HOTFIX3_UI_VERSION = "r28ux5-chat-dashboard-split";
+const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
+const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_ASSET_CACHE_KEY = "another_brain_r28rout1_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
-const SELF_CHECK_JSON_TIMEOUT_MS = 1500;
+const R28SHIP0_MODEL_CACHE_PREFIX = "another-brain-model";
+const R28SHIP0_Q4_RETRY_STRATEGIES = Object.freeze(["primary", "normalized_absolute", "cache_bust", "clear_model_cache", "worker_restart"]);
+const R28SHIP0_RUNTIME_TRUTH_BLOCKERS = Object.freeze(["asset_missing", "tokenizer_fail", "forward_timeout", "worker_error", "q4_forward_not_confirmed", "q4_retry_plan_exhausted", "model_loading_cancelled"]);
+const SELF_CHECK_JSON_TIMEOUT_MS = 900;
 const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
 const SELF_CHECK_DEEP_TIMEOUT_MS = 15000;
 const IDENTITY_ROUTE = "identity_boundary";
@@ -688,6 +692,95 @@ function q4ForwardRan(runtimeStats = {}) {
     && runtimeStats.fallback_used !== true;
 }
 
+function normalizeRuntimeTruthStatus(value) {
+  if (value === true || value === "pass" || value === "passed" || value === "通过") return "pass";
+  if (value === "warming" || value === "pending" || value === "检查中") return "warming";
+  if (value === "timeout") return "timeout";
+  if (value === "skipped") return "skipped";
+  return "fail";
+}
+
+function evaluateRuntimeTruth(input = {}) {
+  const runtimeMode = String(input.runtime_mode || "");
+  const answerSource = String(input.answer_source || input.answer_source_label || "");
+  const blocker = String(input.blocker || input.fallback_reason || input.q4_forward_blocker || "").trim();
+  const assets = normalizeRuntimeTruthStatus(input.assets || input.manifest || input.q4_assets);
+  const tokenizer = normalizeRuntimeTruthStatus(input.tokenizer);
+  const q4Forward = normalizeRuntimeTruthStatus(input.q4_forward);
+  const q4ForwardBoolean = input.q4_forward === true || input.q4_forward_ran === true;
+  const tokensGenerated = Math.max(0, Number(input.tokens_generated || 0));
+  const failures = [];
+  if (runtimeMode === "static_q4_experimental") {
+    if (assets !== "pass") failures.push("static_q4_requires_assets_pass");
+    if (tokenizer !== "pass") failures.push("static_q4_requires_tokenizer_pass");
+    if (!["pass", "warming", "timeout"].includes(q4Forward)) failures.push("static_q4_requires_forward_pass_warming_or_timeout");
+    if (answerSource === "no_model_fallback" && !blocker) failures.push("fallback_source_requires_visible_blocker");
+  }
+  if (input.q4_forward === false || q4Forward === "fail" || q4Forward === "timeout") {
+    if (!blocker) failures.push("q4_forward_false_requires_visible_reason");
+    if (blocker
+      && !R28SHIP0_RUNTIME_TRUTH_BLOCKERS.includes(blocker)
+      && !blocker.includes("asset")
+      && !blocker.includes("tokenizer")
+      && !blocker.includes("timeout")
+      && !blocker.includes("worker")
+      && !blocker.includes("q4")) {
+      failures.push("q4_forward_false_reason_not_specific");
+    }
+  }
+  if (q4ForwardBoolean || q4Forward === "pass") {
+    if (tokensGenerated <= 0) failures.push("q4_forward_true_requires_tokens_generated");
+    if (!["model_draft", "router_after_model_draft", "static_q4_experimental", "self_check_static_q4_experimental"].includes(answerSource)) {
+      failures.push("q4_forward_true_answer_source_mismatch");
+    }
+  }
+  return { ok: failures.length === 0, failures, runtime_mode: runtimeMode, q4_forward: q4Forward, tokens_generated: tokensGenerated, answer_source: answerSource, blocker };
+}
+
+function retryStrategyForAttempt(attempt) {
+  return R28SHIP0_Q4_RETRY_STRATEGIES[Math.min(Math.max(1, Number(attempt || 1)) - 1, R28SHIP0_Q4_RETRY_STRATEGIES.length - 1)];
+}
+
+function normalizeRetryStatus(value, allowed, fallback) {
+  if (value === true || value === "passed" || value === "通过") return "pass";
+  if (value === false || value === "失败") return allowed.includes("fail") ? "fail" : fallback;
+  return allowed.includes(value) ? value : fallback;
+}
+
+function buildQ4RetryAttempt(input = {}) {
+  const attempt = Math.max(1, Number(input.attempt || 1));
+  const strategy = R28SHIP0_Q4_RETRY_STRATEGIES.includes(input.strategy) ? input.strategy : retryStrategyForAttempt(attempt);
+  return {
+    attempt,
+    strategy,
+    manifest: normalizeRetryStatus(input.manifest, ["pass", "fail"], "fail"),
+    shards: normalizeRetryStatus(input.shards, ["pass", "fail"], "fail"),
+    tokenizer: normalizeRetryStatus(input.tokenizer, ["pass", "fail"], "fail"),
+    q4_forward: normalizeRetryStatus(input.q4_forward, ["pass", "fail", "timeout", "skipped"], "fail"),
+    blocker: String(input.blocker || ""),
+    elapsed_ms: Math.max(0, Math.round(Number(input.elapsed_ms || 0)))
+  };
+}
+
+function q4RetryAttemptPassed(attempt = {}) {
+  return attempt.manifest === "pass" && attempt.shards === "pass" && attempt.tokenizer === "pass" && attempt.q4_forward === "pass";
+}
+
+function summarizeQ4RetryPlan(attempts = []) {
+  const normalized = attempts.map((attempt, index) => buildQ4RetryAttempt({ attempt: index + 1, ...attempt }));
+  const passed = normalized.find((attempt) => q4RetryAttemptPassed(attempt));
+  const last = normalized[normalized.length - 1] || null;
+  const exhausted = normalized.length >= R28SHIP0_Q4_RETRY_STRATEGIES.length && normalized.every((attempt) => !q4RetryAttemptPassed(attempt));
+  return {
+    status: passed ? "q4_ready" : exhausted ? "fallback_ready" : "retrying",
+    attempts: normalized,
+    passed_attempt: passed || null,
+    final_strategy: passed?.strategy || last?.strategy || "primary",
+    fallback_reason: passed ? "" : last?.blocker || "q4_retry_plan_not_complete",
+    exhausted
+  };
+}
+
 function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, decoderDraft = "" } = {}) {
   if (q4Ran && routePolicy.use_model_draft === true) return "model_draft";
   if (routePolicy.final_answer_source) return routePolicy.final_answer_source;
@@ -777,6 +870,17 @@ function buildProcessTrace({
       quality_flags: uniqueFlags(qualityFlags || routePolicy?.quality_flags || []),
       fallback_reason: fallbackReason || routePolicy?.fallback_reason || ""
     },
+    runtime_truth_table: evaluateRuntimeTruth({
+      runtime_mode: runtimeStats?.runtime_mode || statePacket?.mode || "fallback",
+      assets: assetStatus?.verification === "q4_manifest_shards_tokenizer_forward_verified" || assetStatus?.verification === "q4_manifest_shards_tokenizer_verified_forward_skipped" ? "pass" : "fail",
+      tokenizer: tokenizer === "exact_runtime_tokenizer" ? "pass" : "fail",
+      q4_forward: q4Ran ? "pass" : fallbackReason && String(fallbackReason).includes("timeout") ? "timeout" : "fail",
+      q4_forward_ran: q4Ran,
+      tokens_generated: Number(runtimeStats?.tokens_generated || 0),
+      answer_source: finalAnswerSource({ q4Ran, routePolicy, fallbackUsed, decoderDraft }),
+      fallback_reason: fallbackReason || routePolicy?.fallback_reason || "",
+      blocker: fallbackReason || routePolicy?.fallback_reason || ""
+    }),
     non_claims: {
       product_admission: false,
       browser_admission: false,
@@ -849,6 +953,7 @@ function sameOriginAssetUrl(path, options = {}) {
   const normalizedPath = normalizeBrowserAssetPath(path, options);
   const url = new URL(normalizedPath, base);
   if (url.origin !== base.origin) throw new Error(`non_same_origin_asset_rejected:${path}`);
+  if (options.cacheBust) url.searchParams.set("r28ship0_cache_bust", String(options.cacheBust === true ? Date.now() : options.cacheBust));
   return url;
 }
 
@@ -1087,6 +1192,10 @@ export class BrowserChatRuntime {
     this.abortRequested = false;
     this.activeSelfCheckController = null;
     this.activeSelfCheckStartedAt = 0;
+    this.activeQ4MountPromise = null;
+    this.q4RetryAttempts = [];
+    this.q4MountReport = null;
+    this.q4WorkerRestarted = false;
     this.assetStatus = {
       cache_mode: this.capabilities.cache_storage_available ? "cache_storage" : "memory_fallback",
       cache_result: "not_checked",
@@ -1124,7 +1233,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28ux5-chat-dashboard-split", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -1166,6 +1275,50 @@ export class BrowserChatRuntime {
       this.worker.terminate();
       this.worker = null;
     }
+  }
+
+  createRuntimeWorker() {
+    if (!this.capabilities.worker_available) return null;
+    return new Worker(new URL("./runtime_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
+  }
+
+  async clearModelAssetCacheNamespace() {
+    let cleared = false;
+    const deleted = [];
+    if (typeof caches !== "undefined" && typeof caches.keys === "function" && typeof caches.delete === "function") {
+      const names = await caches.keys().catch(() => []);
+      for (const name of names) {
+        if (String(name).startsWith(R28SHIP0_MODEL_CACHE_PREFIX) || R28UX4_CACHE_NAMES.includes(name)) {
+          if (await caches.delete(name).catch(() => false)) {
+            cleared = true;
+            deleted.push(name);
+          }
+        }
+      }
+    } else if (typeof caches !== "undefined" && typeof caches.delete === "function") {
+      for (const name of R28UX4_CACHE_NAMES) {
+        if (await caches.delete(name).catch(() => false)) {
+          cleared = true;
+          deleted.push(name);
+        }
+      }
+    }
+    if (typeof localStorage !== "undefined") localStorage.removeItem(R28UX4_ASSET_CACHE_KEY);
+    return { cleared, deleted };
+  }
+
+  restartModelWorkerOnce() {
+    if (this.q4WorkerRestarted) return { restarted: false, blocker: "worker_restart_already_used" };
+    this.q4WorkerRestarted = true;
+    if (this.worker) {
+      try {
+        this.worker.terminate();
+      } catch {
+      }
+      this.worker = null;
+    }
+    this.worker = this.createRuntimeWorker();
+    return { restarted: Boolean(this.worker), blocker: this.worker ? "" : "worker_unavailable" };
   }
 
   setContextPackets(packets = []) {
@@ -1218,9 +1371,10 @@ export class BrowserChatRuntime {
   async quickSelfCheckModelPath(options = {}) {
     return this.selfCheckModelPath({
       ...options,
+      quickOnly: true,
       runDeep: false,
       jsonTimeoutMs: options.jsonTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS,
-      shardTimeoutMs: options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS
+      shardTimeoutMs: options.shardTimeoutMs || 900
     });
   }
 
@@ -1232,6 +1386,106 @@ export class BrowserChatRuntime {
       jsonTimeoutMs: options.jsonTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS,
       shardTimeoutMs: options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS
     });
+  }
+
+  async mountQ4WithRetry(options = {}) {
+    if (this.activeQ4MountPromise) return this.activeQ4MountPromise;
+    this.q4WorkerRestarted = false;
+    this.q4RetryAttempts = [];
+    const startedAt = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const emit = (partial = {}) => {
+      if (typeof options.onProgress === "function") {
+        options.onProgress({
+          ...partial,
+          retry_plan: summarizeQ4RetryPlan(this.q4RetryAttempts),
+          attempts: this.q4RetryAttempts,
+          elapsed_ms: Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt))
+        });
+      }
+    };
+    const run = async () => {
+      let lastReport = null;
+      for (let index = 0; index < R28SHIP0_Q4_RETRY_STRATEGIES.length; index += 1) {
+        const attempt = index + 1;
+        const strategy = R28SHIP0_Q4_RETRY_STRATEGIES[index];
+        emit({ status: "retrying", state: "warming_q4", attempt, strategy, retrying: attempt > 1 });
+        if (strategy === "clear_model_cache") await this.clearModelAssetCacheNamespace();
+        if (strategy === "worker_restart") this.restartModelWorkerOnce();
+        let report;
+        try {
+          report = await this.deepSelfCheckModelPath({
+            ...options,
+            attempt,
+            strategy,
+            cacheBust: strategy === "cache_bust",
+            forceNormalizedAbsolutePaths: strategy === "normalized_absolute",
+            timeoutMs: options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS,
+            shardTimeoutMs: options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS,
+            onProgress: (progressReport) => {
+              progressReport.attempt = attempt;
+              progressReport.strategy = strategy;
+              progressReport.retry_plan = summarizeQ4RetryPlan(this.q4RetryAttempts);
+              if (typeof options.onProgress === "function") options.onProgress(progressReport);
+            }
+          });
+        } catch (error) {
+          report = {
+            status: error.message === "self_check_timeout" || error.message === "q4_forward_timeout" ? "timeout" : "failed",
+            check_level: "deep",
+            attempt,
+            strategy,
+            assets: { manifest_loaded: false, shards_verified: false, q4_shard_count: 0, expected_shard_count: Number(this.deliveryConfig?.shard_count || 0) },
+            tokenizer: { exact_runtime_tokenizer: false },
+            q4_forward: { status: error.message === "self_check_timeout" ? "timeout" : "fail", q4_forward_ran: false, tokens_generated: 0, blocker: error.message || "q4_mount_check_failed" },
+            fallback: { status: "可用", reason: error.message || "q4_mount_check_failed" },
+            output: { text_preview: "" },
+            blockers: [error.message || "q4_mount_check_failed"]
+          };
+        }
+        lastReport = report;
+        const retryAttempt = buildQ4RetryAttempt({
+          attempt,
+          strategy,
+          manifest: report.assets?.manifest_loaded === true ? "pass" : "fail",
+          shards: report.assets?.shards_verified === true ? "pass" : "fail",
+          tokenizer: report.tokenizer?.exact_runtime_tokenizer === true ? "pass" : "fail",
+          q4_forward: report.q4_forward?.q4_forward_ran === true ? "pass" : report.q4_forward?.status || "fail",
+          blocker: (report.blockers || [])[0] || report.q4_forward?.blocker || report.fallback?.reason || "",
+          elapsed_ms: Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt))
+        });
+        this.q4RetryAttempts.push(retryAttempt);
+        report.retry_plan = summarizeQ4RetryPlan(this.q4RetryAttempts);
+        report.attempts = this.q4RetryAttempts;
+        emit({ status: report.ok ? "passed" : "retrying", state: report.ok ? "q4_ready" : "warming_q4", attempt, strategy, report });
+        if (q4RetryAttemptPassed(retryAttempt)) {
+          this.q4MountReport = { ok: true, state: "q4_ready", report, attempts: this.q4RetryAttempts, retry_plan: report.retry_plan };
+          return this.q4MountReport;
+        }
+      }
+      const retryPlan = summarizeQ4RetryPlan(this.q4RetryAttempts);
+      const fallbackReason = retryPlan.fallback_reason || "q4_retry_plan_exhausted";
+      if (lastReport) {
+        lastReport.status = lastReport.status === "timeout" ? "timeout" : "failed";
+        lastReport.ok = false;
+        lastReport.fallback = { ...(lastReport.fallback || {}), status: "可用", reason: fallbackReason };
+        lastReport.blockers = uniqueFlags([...(lastReport.blockers || []), fallbackReason, "q4_retry_plan_exhausted"]);
+        lastReport.retry_plan = retryPlan;
+        lastReport.attempts = this.q4RetryAttempts;
+      }
+      this.q4MountReport = {
+        ok: false,
+        state: "fallback_ready",
+        report: lastReport,
+        attempts: this.q4RetryAttempts,
+        retry_plan: retryPlan,
+        fallback_reason: fallbackReason
+      };
+      return this.q4MountReport;
+    };
+    this.activeQ4MountPromise = run().finally(() => {
+      this.activeQ4MountPromise = null;
+    });
+    return this.activeQ4MountPromise;
   }
 
   cancelSelfCheck(reason = "self_check_cancelled") {
@@ -1247,7 +1501,7 @@ export class BrowserChatRuntime {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
     const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28ux5-chat-dashboard-split", import.meta.url), { type: "module" });
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
@@ -1288,7 +1542,7 @@ export class BrowserChatRuntime {
       };
       worker.postMessage({
         type: "q4_smoke",
-        prompt: "R28UX5 q4 path smoke",
+        prompt: "R28SHIP0 q4 path smoke",
         maxTokens: 1,
         contextLength: 32,
         timeoutMs
@@ -1305,8 +1559,9 @@ export class BrowserChatRuntime {
     this.activeSelfCheckStartedAt = startedAt;
     const runDeep = options.runDeep === true;
     const jsonTimeoutMs = Math.min(Math.max(Number(options.jsonTimeoutMs || options.quickTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS), 500), 3000);
-    const shardProbeTimeoutMs = Math.min(Math.max(Number(options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS), 3000), 15000);
+    const shardProbeTimeoutMs = Math.min(Math.max(Number(options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS), 100), 15000);
     const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS), 1000), 15000);
+    const cacheBust = options.cacheBust ? `attempt_${options.attempt || 1}_${Date.now()}` : "";
     const blockers = [];
     let assetManifest = null;
     let quantizationManifest = null;
@@ -1322,7 +1577,7 @@ export class BrowserChatRuntime {
 
     emit("checking_quick", "manifest");
     try {
-      assetManifest = await fetchJsonSameOrigin("another_brain/asset_manifest.json", { timeoutMs: jsonTimeoutMs, signal });
+      assetManifest = await fetchJsonSameOrigin("another_brain/asset_manifest.json", { timeoutMs: jsonTimeoutMs, signal, cacheBust });
     } catch (error) {
       blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "asset_manifest_fetch_failed");
     }
@@ -1336,12 +1591,12 @@ export class BrowserChatRuntime {
         assets: { manifest_loaded: true, q4_shard_count: q4Assets.length, expected_shard_count: Number(assetManifest?.shard_count || 0) }
       });
       try {
-        quantizationManifest = await fetchJsonSameOrigin(quantizationPath, { timeoutMs: jsonTimeoutMs, signal });
+        quantizationManifest = await fetchJsonSameOrigin(quantizationPath, { timeoutMs: jsonTimeoutMs, signal, cacheBust });
       } catch (error) {
         blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "quantization_manifest_fetch_failed");
       }
       try {
-        tokenizer = await fetchJsonSameOrigin(tokenizerPath, { timeoutMs: jsonTimeoutMs, signal });
+        tokenizer = await fetchJsonSameOrigin(tokenizerPath, { timeoutMs: jsonTimeoutMs, signal, cacheBust });
       } catch (error) {
         blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "runtime_tokenizer_fetch_failed");
       }
@@ -1358,7 +1613,8 @@ export class BrowserChatRuntime {
             timeoutMs: shardProbeTimeoutMs,
             signal,
             cache: "no-store",
-            preferRangeGet: true
+            preferRangeGet: true,
+            cacheBust
           });
           return { path: item.path, ok: true, bytes: Number(item.bytes || 0), ...probe };
         } catch (error) {
@@ -1446,9 +1702,13 @@ export class BrowserChatRuntime {
     const timedOut = blockers.includes("self_check_timeout");
     const cancelled = signal.aborted || blockers.includes("self_check_cancelled");
     const quickOrDeepOk = runDeep ? quickPassed && q4ForwardPassed : quickPassed;
+    const forwardBlocker = q4ForwardPassed ? "" : (timedOut ? "forward_timeout" : runDeep ? "q4_forward_not_confirmed" : "q4_forward_skipped_quick_check");
+    const reportRuntimeMode = q4ForwardPassed || (runDeep && timedOut && quickPassed) || (!runDeep && quickPassed) ? "static_q4_experimental" : "synthetic_fallback";
     const report = {
       status: cancelled ? "cancelled" : timedOut ? "timeout" : quickOrDeepOk ? "passed" : "failed",
       check_level: runDeep ? "deep" : "quick",
+      strategy: options.strategy || "primary",
+      attempt: Number(options.attempt || 1),
       ok: quickOrDeepOk,
       elapsed_ms: elapsedMs,
       assets: {
@@ -1472,14 +1732,14 @@ export class BrowserChatRuntime {
       q4_forward: {
         status: runDeep ? (timedOut ? "timeout" : q4ForwardPassed ? "通过" : "失败") : "skipped",
         q4_forward_ran: q4ForwardPassed,
-        runtime_mode: q4ForwardPassed || quickPassed ? "static_q4_experimental" : "synthetic_fallback",
+        runtime_mode: reportRuntimeMode,
         tokens_generated: Number(smokeStats?.tokens_generated || 0),
         decode_status: smokeStats?.decode_status || (exactTokenizer ? "exact_runtime_tokenizer" : "not_run"),
-        blocker: q4ForwardPassed ? "" : (timedOut ? "self_check_timeout" : runDeep ? "q4_forward_not_confirmed" : "q4_forward_skipped_quick_check")
+        blocker: forwardBlocker
       },
       fallback: {
         status: "可用",
-        reason: q4ForwardPassed ? "" : runDeep ? "no_model_fallback_available" : "q4_forward_skipped_quick_check"
+        reason: q4ForwardPassed ? "" : forwardBlocker
       },
       output: {
         token_preview: smokeStats?.generated_token_ids?.slice?.(0, 4) || [],
@@ -1642,7 +1902,9 @@ export class BrowserChatRuntime {
         }),
         delivery_config: this.deliveryConfig,
         capabilities: this.capabilities,
-        asset_status: this.assetStatus
+        asset_status: this.assetStatus,
+        q4_retry_plan: summarizeQ4RetryPlan(this.q4RetryAttempts),
+        q4_mount_report: this.q4MountReport
       };
       packet.process_trace = buildProcessTrace({
         input,
@@ -1757,7 +2019,9 @@ export class BrowserChatRuntime {
       }),
       delivery_config: this.deliveryConfig,
       capabilities: this.capabilities,
-      asset_status: this.assetStatus
+      asset_status: this.assetStatus,
+      q4_retry_plan: summarizeQ4RetryPlan(this.q4RetryAttempts),
+      q4_mount_report: this.q4MountReport
     };
     packet.process_trace = buildProcessTrace({
       input,

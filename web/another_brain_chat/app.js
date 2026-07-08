@@ -1,8 +1,9 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28ux5-chat-dashboard-split";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28ux5-chat-dashboard-split";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28ship0-unified-q4-mount";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28ship0-unified-q4-mount";
 
-const R28HOTFIX3_UI_VERSION = "r28ux5-chat-dashboard-split";
-const R28HOTFIX3_BUILD_MARKER = "R28UX5";
+const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
+const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
+const R28HOTFIX3_BUILD_MARKER = "R28SHIP0";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -12,7 +13,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28ux5",
+  prelaunch_stage: "r28ship0",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -51,6 +52,7 @@ const MODEL_LOADING_PROGRESS = {
   "q4-warmup": 86,
   fallback: 100
 };
+const R28SHIP0_DEEP_SELFCHECK_METHOD = "deepSelfCheckModelPath";
 
 const appShell = document.querySelector("#app-shell");
 const chatModeButton = document.querySelector("#chat-mode-button");
@@ -125,6 +127,7 @@ const modelLoadingDetail = document.querySelector("#model-loading-detail");
 const modelLoadingProgressBar = document.querySelector("#model-loading-progress-bar");
 const modelLoadingStages = document.querySelector("#model-loading-stages");
 const loadingCancelButton = document.querySelector("#loading-cancel-button");
+const q4RetryStatus = document.querySelector("#q4-retry-status");
 
 let lastPacket = null;
 let running = false;
@@ -205,6 +208,35 @@ function loadingStageFromReport(report = {}) {
   return "manifest";
 }
 
+function renderQ4RetryStatus(input = {}) {
+  const report = input.report || input.last_report || input;
+  const retryPlan = input.retry_plan || report.retry_plan || null;
+  const attempts = retryPlan?.attempts || input.attempts || report.attempts || [];
+  const currentAttempt = input.attempt || report.attempt || attempts.at?.(-1)?.attempt || 1;
+  const currentStrategy = input.strategy || report.strategy || attempts.at?.(-1)?.strategy || "primary";
+  const lastBlocker = input.blocker || report.q4_forward?.blocker || report.fallback?.reason || retryPlan?.fallback_reason || (report.blockers || [])[0] || "";
+  const retrying = input.retrying === true || retryPlan?.status === "retrying";
+  const finalFallback = retryPlan?.status === "fallback_ready" || report.status === "failed" || report.status === "timeout";
+  if (!q4RetryStatus) return;
+  if (!attempts.length && !retrying) {
+    setText(q4RetryStatus, "Plan B：等待 q4 初始检查");
+    return;
+  }
+  if (retrying) {
+    setText(q4RetryStatus, `正在重试模型加载：第 ${currentAttempt} 次尝试 / 当前策略 ${currentStrategy}${lastBlocker ? ` / 失败原因 ${lastBlocker}` : ""}`);
+    return;
+  }
+  if (retryPlan?.status === "q4_ready" || report.ok) {
+    setText(q4RetryStatus, `q4 ready：第 ${retryPlan?.passed_attempt?.attempt || currentAttempt} 次尝试 / 当前策略 ${retryPlan?.passed_attempt?.strategy || currentStrategy}`);
+    return;
+  }
+  if (finalFallback) {
+    setText(q4RetryStatus, `最终 fallback reason：${lastBlocker || "q4_retry_plan_exhausted"}`);
+    return;
+  }
+  setText(q4RetryStatus, `Plan B：第 ${currentAttempt} 次尝试 / 当前策略 ${currentStrategy}${lastBlocker ? ` / 失败原因 ${lastBlocker}` : ""}`);
+}
+
 function renderModelLoading(input = {}) {
   if (!modelLoadingPanel) return;
   const report = input.report || input;
@@ -218,6 +250,7 @@ function renderModelLoading(input = {}) {
   setHidden(modelLoadingPanel, input.hidden === true);
   setText(modelLoadingTitle, done ? "模型资产检查完成" : cancelled ? "模型资产检查已取消" : failed ? "模型资产检查未完成" : "模型资产检查中");
   setText(modelLoadingDetail, `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback available${fallbackReason ? ` / ${fallbackReason}` : ""}`);
+  renderQ4RetryStatus(input);
   if (modelLoadingProgressBar) modelLoadingProgressBar.style.width = `${Math.max(8, Math.min(100, progress))}%`;
   const stageNodes = modelLoadingStages?.querySelectorAll?.("[data-loading-stage]") || [];
   const activeIndex = MODEL_LOADING_STAGES.indexOf(stage);
@@ -299,6 +332,7 @@ function publicDebugPacket(packet = null) {
   return {
     process_trace: packet.process_trace || null,
     answer_source_label: packet.answer_source_label || sourceLabel(packet.process_trace || {}),
+    q4_mount_method: R28SHIP0_DEEP_SELFCHECK_METHOD,
     route: packet.answer_route || packet.route_policy?.route || "not_run",
     fallback_reason: packet.fallback_reason || "",
     runtime_stats: packet.runtime_stats || {},
@@ -322,6 +356,12 @@ function renderDebug() {
 }
 
 function updateStatus(packet) {
+  const trace = packet.process_trace || {};
+  const truth = trace.runtime_truth_table || {};
+  const visibleFallbackReason = packet.fallback_reason
+    || truth.blocker
+    || (!truth.ok && Array.isArray(truth.failures) ? truth.failures[0] : "")
+    || (packet.fallback_used ? "runtime_or_verifier_fallback" : "none");
   const evidenceStatus = packet.evidence_packet?.evidence_status || "unknown";
   setText(retrievalStatus, `${packet.retrieved_evidence.length} evidence / ${evidenceStatus}`);
   setText(verifierStatus, packet.verifier_result.passed ? "Passed" : "Blocked");
@@ -330,14 +370,14 @@ function updateStatus(packet) {
   setText(tokenCountStatus, `${packet.runtime_stats?.tokens_generated || 0} generated`);
   setText(runtimeModeStatus, packet.runtime_stats?.runtime_mode || packet.state_packet?.mode || "unknown");
   setText(routeStatus, packet.answer_route || packet.route_policy?.route || "not_run");
-  setText(fallbackReasonStatus, packet.fallback_reason || (packet.fallback_used ? "runtime_or_verifier_fallback" : "none"));
-  const trace = packet.process_trace || {};
+  setText(fallbackReasonStatus, visibleFallbackReason);
   setText(answerSourceStatus, packet.answer_source_label || sourceLabel(trace));
   setText(draftGeneratedStatus, boolText(trace.model?.draft_generated));
   setText(draftReplacedStatus, boolText(trace.router?.replaced_model_draft));
   setText(modelSourceBadge, packet.answer_source_label || sourceLabel(trace));
   setText(tokenizerStatusBadge, `tokenizer: ${trace.model?.tokenizer || packet.decode_status || "not checked"}`);
-  setText(q4StatusBadge, `q4 forward: ${trace.model?.q4_forward_ran ? "true" : "false"}`);
+  setText(q4StatusBadge, `q4 forward: ${trace.model?.q4_forward_ran ? "true" : `false / ${visibleFallbackReason}`}`);
+  renderQ4RetryStatus(packet);
   renderTrace(trace);
 }
 
@@ -360,6 +400,7 @@ function renderTrace(trace = null) {
   const model = trace.model || {};
   const router = trace.router || {};
   const finalizer = trace.finalizer || {};
+  const truth = trace.runtime_truth_table || {};
   const topSources = (rag.top_sources || []).map((item) => {
     const provenance = item.provenance ? `:${item.provenance}` : "";
     const kind = item.kind ? `:${item.kind}` : "";
@@ -371,7 +412,7 @@ function renderTrace(trace = null) {
   setText(traceEvidenceSummary, `retrieval_used=${boolText(rag.retrieval_used)} / evidence_count=${rag.evidence_count || 0} / evidence_status=${rag.evidence_status || "none"} / sources=${topSources} / tone_hints=${toneHints}`);
   setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / tokens=${model.tokens_generated || 0} / model_draft_generated=${boolText(model.draft_generated)}`);
   setText(traceRouterSummary, `route=${router.route || "not_run"} / used_model_draft=${boolText(router.used_model_draft)} / finalizer_replaced_draft=${boolText(router.replaced_model_draft)} / reason=${router.reason || "none"}`);
-  setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || "none"}`);
+  setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / truth=${truth.ok === false ? (truth.failures || []).join(", ") : "pass"} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || truth.blocker || "none"}`);
 }
 
 function renderContextBridge(result = null) {
@@ -522,14 +563,28 @@ async function boot() {
   let report = null;
   try {
     report = await runtime.quickSelfCheckModelPath({
-      jsonTimeoutMs: 1500,
-      shardTimeoutMs: 8000,
+      jsonTimeoutMs: 900,
+      shardTimeoutMs: 900,
       signal: bootController.signal,
       onProgress: (progressReport) => {
         renderSelfCheck(progressReport);
         renderModelLoading({ report: progressReport });
       }
     });
+    renderSelfCheck(report);
+    renderModelLoading({ report, retrying: true, attempt: 1, strategy: "primary" });
+    const mountResult = await runtime.mountQ4WithRetry({
+      timeoutMs: 15000,
+      shardTimeoutMs: 10000,
+      signal: bootController.signal,
+      onProgress: (progressReport) => {
+        renderSelfCheck(progressReport.report || progressReport);
+        renderModelLoading(progressReport);
+      }
+    });
+    report = mountResult.report || report;
+    if (mountResult.retry_plan) report.retry_plan = mountResult.retry_plan;
+    if (mountResult.attempts) report.attempts = mountResult.attempts;
   } finally {
     if (activeLoadingController === bootController) activeLoadingController = null;
     setDisabled(loadingCancelButton, true);
@@ -538,7 +593,7 @@ async function boot() {
   completeModelLoading(report);
   renderAssetStatus(runtime.assetStatus, runtime.deliveryConfig);
   if (report.ok) {
-    setText(modelStatus, "q4_metadata_ready");
+    setText(modelStatus, "q4_ready");
     setText(runtimeModeStatus, "static_q4_experimental");
     setText(decodeStatus, report.q4_forward?.decode_status || "exact_runtime_tokenizer");
     setText(tokenCountStatus, `${report.q4_forward?.tokens_generated || 0} generated`);
@@ -546,7 +601,8 @@ async function boot() {
   } else {
     setText(modelStatus, "q4_blocked");
     setText(runtimeModeStatus, "synthetic_fallback");
-    setText(fallbackReasonStatus, (report.blockers || []).join(" / ") || "q4_self_check_failed");
+    setText(answerSourceStatus, "no_model_fallback");
+    setText(fallbackReasonStatus, report.retry_plan?.fallback_reason || (report.blockers || []).join(" / ") || "q4_self_check_failed");
   }
 }
 
@@ -662,15 +718,21 @@ on(modelSelfCheckButton, "click", async () => {
   setText(selfCheckQ4, "quick check");
   renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   try {
-    const report = await runtime.deepSelfCheckModelPath({
+    const mountResult = await runtime.mountQ4WithRetry({
       timeoutMs: 15000,
       shardTimeoutMs: 10000,
       signal: controller.signal,
       onProgress: (progressReport) => {
-        renderSelfCheck(progressReport);
-        renderModelLoading({ report: progressReport });
+        renderSelfCheck(progressReport.report || progressReport);
+        renderModelLoading(progressReport);
       }
     });
+    const report = mountResult.report || {
+      status: mountResult.ok ? "passed" : "failed",
+      retry_plan: mountResult.retry_plan,
+      attempts: mountResult.attempts,
+      blockers: [mountResult.fallback_reason || "q4_retry_plan_exhausted"]
+    };
     renderSelfCheck(report);
     completeModelLoading(report);
   } catch (error) {

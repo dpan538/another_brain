@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28ux5-chat-dashboard-split";
+import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28ship0-unified-q4-mount";
 
 function tokensFor(prompt, maxTokens) {
   const parts = [
