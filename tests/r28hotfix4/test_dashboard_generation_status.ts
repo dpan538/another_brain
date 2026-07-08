@@ -11,9 +11,15 @@ test("dashboard exposes q4 generation trace fields", () => {
     assert.match(html, new RegExp(`id="${id}"`));
   }
   assert.match(app, /trace\.generation \|\| trace\.model/);
+  assert.match(app, /routeStatus/);
   assert.match(app, /q4_attempted/);
+  assert.match(app, /generation_started/);
   assert.match(app, /generation_status/);
+  assert.match(app, /answerSourceStatus/);
+  assert.match(app, /fallbackReasonStatus/);
   assert.match(runtime, /generation:\s*{/);
+  assert.match(runtime, /answer_source_label/);
   assert.match(runtime, /first_token_ms/);
   assert.match(runtime, /total_generation_ms/);
+  assert.match(runtime, /fallback_reason/);
 });

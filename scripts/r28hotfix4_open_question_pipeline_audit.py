@@ -20,6 +20,7 @@ READ_PATHS = {
     "app": ROOT / "web" / "another_brain_chat" / "app.js",
     "html": ROOT / "web" / "another_brain_chat" / "index.html",
     "open_question_route": ROOT / "src" / "browser_runtime" / "router" / "open_question_route.ts",
+    "route_classifier": ROOT / "src" / "browser_runtime" / "router" / "route_classifier.ts",
     "abstract_value_surfaces": ROOT / "src" / "browser_runtime" / "router" / "abstract_value_surfaces.ts",
     "generation_watchdog": ROOT / "src" / "browser_runtime" / "generation" / "generation_watchdog.ts",
     "generation_result": ROOT / "src" / "browser_runtime" / "generation" / "generation_result.ts",
@@ -40,6 +41,7 @@ def main() -> int:
     app = sources["app"]
     html = sources["html"]
     route = sources["open_question_route"]
+    route_classifier = sources["route_classifier"]
     watchdog = sources["generation_watchdog"]
     result = sources["generation_result"]
 
@@ -56,17 +58,24 @@ def main() -> int:
         "no_infinite_pending": "TERMINAL_GENERATION_STATUSES" in runtime and "generationAlwaysResolves" in result,
         "process_trace_generation_started": "generation_started" in runtime and "q4_generation_attempted" in runtime,
         "dashboard_tokens_generated": "tokens_generated" in runtime and "token-count-status" in html,
+        "dashboard_answer_source": "answer-source-status" in html and "answerSourceStatus" in app,
+        "dashboard_fallback_reason": "fallback-reason-status" in html and "fallbackReasonStatus" in app,
         "failure_blocker_visible": "q4GenerationBlocker()" in runtime and "fallbackReasonStatus" in app,
+        "module_route_classifier_uses_open_route": "classifyOpenQuestionRoute(input.user_input)" in route_classifier,
     }
 
     classified_inputs = []
     for prompt in TEST_INPUTS:
-        if "生与死" in prompt or "意义" in prompt:
+        if "生与死" in prompt:
             category = "abstract_value_question"
         elif "活着" in prompt:
             category = "philosophical_question"
         elif "美" in prompt:
             category = "aesthetic_question"
+        elif "关系" in prompt:
+            category = "value_or_relation_question"
+        elif "语言" in prompt:
+            category = "abstract_meaning_question"
         else:
             category = "open_question"
         classified_inputs.append(

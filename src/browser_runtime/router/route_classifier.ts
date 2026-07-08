@@ -1,9 +1,11 @@
 import { detectOutputQualityFailure } from "../generation_policy.ts";
+import { abstractValueFallbackSurface } from "./abstract_value_surfaces.ts";
 import { normalizeAnswerRouteInput } from "./answer_route.ts";
 import { composeAnswerSurface } from "./answer_surface_composer.ts";
 import { matchMicroIntent } from "./fuzzy_intent_matcher.ts";
 import { buildIdentityRouteOutput, isIdentityQuestion } from "./identity_route.ts";
 import { isMicroIntentRoute, routeForMicroIntent } from "./intent_taxonomy.ts";
+import { classifyOpenQuestionRoute, openQuestionShouldAttemptQ4 } from "./open_question_route.ts";
 import { matchR28Surf2Intent } from "./r28surf2_fuzzy_matcher.ts";
 import { isR28Surf2RouterSurfaceRoute } from "./r28surf2_intents.ts";
 import { composeR28Surf2Surface } from "./r28surf2_surface_composer.ts";
@@ -66,6 +68,16 @@ function asksProductStatus(text) {
   return PRODUCT_STATUS_MARKERS.some((marker) => lowered.includes(marker));
 }
 
+function shouldPreferOpenQuestionRoute(text = "", openRoute = {}) {
+  if (!openQuestionShouldAttemptQ4(openRoute)) return false;
+  if (openRoute.category === "philosophical_question") return true;
+  if (openRoute.category === "abstract_meaning_question") return true;
+  if (openRoute.category === "value_or_relation_question") return /最重要|关系里|亲密|朋友|爱情|爱/.test(String(text || ""));
+  if (openRoute.category === "aesthetic_question") return /什么是|什么叫|美|漂亮|难看/.test(String(text || ""));
+  if (openRoute.category === "abstract_value_question") return /生与死|生死|死亡|活着|意义/.test(String(text || ""));
+  return false;
+}
+
 function uniqueFlags(flags) {
   return Array.from(new Set((flags || []).filter(Boolean).map(String)));
 }
@@ -113,6 +125,26 @@ export function classifyAnswerRoute(rawInput = {}) {
   const status = evidenceStatus(input);
   const flags = modelQualityFlags(input);
   const microBaseFlags = uniqueFlags(input.generation_flags);
+  const openRoute = classifyOpenQuestionRoute(input.user_input);
+
+  if (shouldPreferOpenQuestionRoute(input.user_input, openRoute) && !hasBlockingModelFailure(input, flags)) {
+    const draftPresent = String(input.model_output || "").trim().length > 0;
+    const useModelDraft = draftPresent && status === "sufficient";
+    return {
+      route: openRoute.route,
+      open_question_category: openRoute.category,
+      use_model_draft: useModelDraft,
+      final_answer: useModelDraft ? "" : abstractValueFallbackSurface(input.user_input, { route: openRoute }),
+      fallback_reason: useModelDraft ? "" : status === "sufficient" ? "open_question_q4_required" : "open_question_fallback",
+      quality_flags: uniqueFlags([...microBaseFlags, "open_question_route", `open_question_category:${openRoute.category}`, openRoute.reason]),
+      intent: "open_question",
+      intent_confidence: 1,
+      final_answer_source: useModelDraft ? "model_draft" : "router_boundary",
+      answer_bank: false,
+      broad_answer_bank: false
+    };
+  }
+
   const microIntent = matchR28Surf2Intent(input.user_input);
 
   if (microIntent.route && !hasBlockingModelFailure(input, flags)) {

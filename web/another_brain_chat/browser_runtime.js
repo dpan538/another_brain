@@ -75,15 +75,35 @@ const ABSTRACT_VALUE_FALLBACKS = Object.freeze({
   life_death: "我会把它看成边界问题。生不是纯粹的开始，死也不是纯粹的结论；人能做的，是在有限时间里留下判断、关系和作品。说得太漂亮就假，完全说成虚无也偷懒。",
   philosophical_question: "我会先把它放回有限性里看。人为什么活着，没有一个总答案；但关系、判断和作品会让时间不只是消耗。把它说成使命太满，说成虚无又太轻。",
   aesthetic_question: "美不是单纯好看。它更像一种准确的关系：形式、克制、风险和当时的处境刚好咬住。完全靠流行解释会浅，完全靠私人感受也会散。",
+  value_or_relation_question: "关系里最重要的不是把话说满，而是可信的边界。爱、亲密和朋友都需要热度，但没有尊重和可被验证的承诺，热度很快会变成消耗。",
+  abstract_meaning_question: "语言的意义不只在词典里。它来自使用、关系和当时的处境：一句话能不能成立，要看它压住了什么、照亮了什么，也看它有没有被滥用。",
   open_question: "这个问题太大，不能装成一句确定结论。我会先给一个边界判断：先看关系、代价和证据；证据不足时就停住，不把漂亮话当答案。",
   unsafe_self_harm_or_crisis: "如果这和现实里的自伤或立即危险有关，先离开危险物，联系身边的人或当地紧急服务。这个页面不能替代危机支持。",
   unknown: "我现在没有足够证据给确定结论。能给的是边界：别硬编，先把问题里的关系、代价和判断对象拆清楚。"
 });
-const ABSTRACT_VALUE_TRIGGERS = Object.freeze(["生与死", "活着", "死亡", "意义", "价值", "判断"]);
-const AESTHETIC_TRIGGERS = Object.freeze(["美", "审美", "好看", "风格", "品味"]);
+const ABSTRACT_VALUE_TRIGGERS = Object.freeze(["生与死", "生死", "活着", "死亡", "有限", "价值", "判断"]);
+const AESTHETIC_TRIGGERS = Object.freeze(["美", "审美", "漂亮", "难看", "好看", "风格", "品味"]);
 const PHILOSOPHICAL_TRIGGERS = Object.freeze(["为什么要活", "人为什么", "存在", "虚无", "有限"]);
-const OPEN_QUESTION_TRIGGERS = Object.freeze(["怎么看", "如何看待", "你觉得", "什么是", "关系", "语言", "爱"]);
+const RELATION_VALUE_TRIGGERS = Object.freeze(["关系", "爱", "亲密", "朋友", "信任", "承诺"]);
+const LANGUAGE_MEANING_TRIGGERS = Object.freeze(["语言", "文字", "词语", "词", "表达"]);
+const MEANING_TRIGGERS = Object.freeze(["意义"]);
+const OPEN_QUESTION_TRIGGERS = Object.freeze(["怎么看", "如何看待", "你觉得", "什么是"]);
 const SELF_HARM_TRIGGERS = Object.freeze(["自杀", "不想活", "结束生命", "伤害自己", "活不下去"]);
+const ROUTER_SURFACE_EXCEPTIONS = Object.freeze([
+  "你和我是什么关系",
+  "你跟用户是什么关系",
+  "你像我的什么",
+  "你怎么理解我",
+  "你会怎么陪我说话",
+  "你会怎么判断审美问题",
+  "你怎么看审美",
+  "审美怎么判断",
+  "你怎么判断风格",
+  "你怎么看价值判断",
+  "你怎么判断对错",
+  "你会怎么判断承诺",
+  "你会怎么判断信任"
+]);
 const TERMINAL_GENERATION_STATUSES = Object.freeze(["completed", "timeout", "failed", "aborted", "fallback"]);
 const ROUTE_SURFACE_KEYS = Object.freeze({
   identity_boundary: "identity_boundary",
@@ -389,6 +409,25 @@ function containsAnyTrigger(input = "", triggers = []) {
   return triggers.some((trigger) => normalized.includes(normalizeOpenQuestionText(trigger)));
 }
 
+function fallbackCategoryFromRouteCategory(category = "") {
+  if (["aesthetic", "abstract_value", "relation_value", "language_meaning"].includes(category)) return category;
+  if (category === "aesthetic_question") return "aesthetic";
+  if (category === "abstract_value_question" || category === "philosophical_question") return "abstract_value";
+  if (category === "value_or_relation_question") return "relation_value";
+  if (category === "abstract_meaning_question") return "language_meaning";
+  return "";
+}
+
+function inferAbstractValueFallbackCategory(input = "", route = {}) {
+  const mapped = fallbackCategoryFromRouteCategory(route.category || route.route || "");
+  if (mapped) return mapped;
+  if (containsAnyTrigger(input, ["美", "审美", "漂亮", "难看", "好看", "风格", "品味"])) return "aesthetic";
+  if (containsAnyTrigger(input, ["语言", "文字", "词语", "词", "表达"])) return "language_meaning";
+  if (containsAnyTrigger(input, ["关系", "爱", "亲密", "朋友", "信任", "承诺"])) return "relation_value";
+  if (containsAnyTrigger(input, ["生与死", "生死", "活着", "死亡", "意义", "存在", "虚无", "有限", "价值", "判断"])) return "abstract_value";
+  return "";
+}
+
 function classifyOpenQuestionRoute(input = "") {
   const raw = String(input || "").trim();
   const normalized = normalizeOpenQuestionText(raw);
@@ -403,6 +442,14 @@ function classifyOpenQuestionRoute(input = "") {
       reason: "safety_boundary"
     };
   }
+  if (containsAnyTrigger(raw, ROUTER_SURFACE_EXCEPTIONS)) {
+    return {
+      category: "router_surface_exception",
+      route: "router_surface_exception",
+      should_attempt_q4: false,
+      reason: "micro_intent_fast_path_exception"
+    };
+  }
   if (containsAnyTrigger(raw, PHILOSOPHICAL_TRIGGERS)) {
     return {
       category: "philosophical_question",
@@ -411,12 +458,20 @@ function classifyOpenQuestionRoute(input = "") {
       reason: "philosophical_trigger"
     };
   }
-  if (containsAnyTrigger(raw, ABSTRACT_VALUE_TRIGGERS)) {
+  if (containsAnyTrigger(raw, LANGUAGE_MEANING_TRIGGERS)) {
     return {
-      category: "abstract_value_question",
-      route: "abstract_value_question",
+      category: "abstract_meaning_question",
+      route: "abstract_meaning_question",
       should_attempt_q4: true,
-      reason: "abstract_value_trigger"
+      reason: "language_meaning_trigger"
+    };
+  }
+  if (containsAnyTrigger(raw, RELATION_VALUE_TRIGGERS)) {
+    return {
+      category: "value_or_relation_question",
+      route: "value_or_relation_question",
+      should_attempt_q4: true,
+      reason: "relation_value_trigger"
     };
   }
   if (containsAnyTrigger(raw, AESTHETIC_TRIGGERS)) {
@@ -425,6 +480,14 @@ function classifyOpenQuestionRoute(input = "") {
       route: "aesthetic_question",
       should_attempt_q4: true,
       reason: "aesthetic_trigger"
+    };
+  }
+  if (containsAnyTrigger(raw, ABSTRACT_VALUE_TRIGGERS) || containsAnyTrigger(raw, MEANING_TRIGGERS)) {
+    return {
+      category: "abstract_value_question",
+      route: "abstract_value_question",
+      should_attempt_q4: true,
+      reason: "abstract_value_trigger"
     };
   }
   if (containsAnyTrigger(raw, OPEN_QUESTION_TRIGGERS) || normalized.length > 18) {
@@ -439,14 +502,18 @@ function classifyOpenQuestionRoute(input = "") {
 }
 
 function abstractValueFallbackSurface(input = "", route = {}) {
-  const category = route.category || classifyOpenQuestionRoute(input).category || "unknown";
-  if (category === "unsafe_self_harm_or_crisis") return ABSTRACT_VALUE_FALLBACKS.unsafe_self_harm_or_crisis;
-  if (containsAnyTrigger(input, ["生与死", "死亡", "死", "生"])) return ABSTRACT_VALUE_FALLBACKS.life_death;
-  if (category === "aesthetic_question") return ABSTRACT_VALUE_FALLBACKS.aesthetic_question;
-  if (category === "philosophical_question" || containsAnyTrigger(input, ["活着", "存在", "虚无"])) {
+  const routeCategory = route.category || classifyOpenQuestionRoute(input).category || "unknown";
+  const category = inferAbstractValueFallbackCategory(input, route);
+  if (routeCategory === "unsafe_self_harm_or_crisis") return ABSTRACT_VALUE_FALLBACKS.unsafe_self_harm_or_crisis;
+  if (containsAnyTrigger(input, ["为什么要活", "人为什么", "存在", "虚无"])) {
     return ABSTRACT_VALUE_FALLBACKS.philosophical_question;
   }
-  if (category === "open_question" || category === "abstract_value_question") return ABSTRACT_VALUE_FALLBACKS.open_question;
+  if (containsAnyTrigger(input, ["生与死", "生死", "死亡", "死", "活着"])) return ABSTRACT_VALUE_FALLBACKS.life_death;
+  if (category === "aesthetic") return ABSTRACT_VALUE_FALLBACKS.aesthetic_question;
+  if (category === "language_meaning") return ABSTRACT_VALUE_FALLBACKS.abstract_meaning_question;
+  if (category === "relation_value") return ABSTRACT_VALUE_FALLBACKS.value_or_relation_question;
+  if (category === "abstract_value") return ABSTRACT_VALUE_FALLBACKS.life_death;
+  if (routeCategory === "open_question") return ABSTRACT_VALUE_FALLBACKS.open_question;
   return ABSTRACT_VALUE_FALLBACKS.unknown;
 }
 
@@ -967,7 +1034,7 @@ function buildProcessTrace({
   const route = routePolicy?.route || "synthetic_demo_fallback";
   const tokensGenerated = Number(runtimeStats?.tokens_generated || 0);
   const generationStatus = String(runtimeStats?.generation_status || (q4Ran ? "completed" : fallbackUsed ? "fallback" : "not_run"));
-  const generationAttempted = runtimeStats?.q4_attempted === true || generationStatus !== "not_run" || q4Ran;
+  const generationAttempted = runtimeStats?.q4_attempted === true || q4Ran;
   const generationStarted = runtimeStats?.generation_started === true || q4Ran;
   const generationFinished = runtimeStats?.generation_finished === true || q4Ran || TERMINAL_GENERATION_STATUSES.includes(generationStatus);
   const generationFallbackReason = fallbackReason || routePolicy?.fallback_reason || runtimeStats?.fallback_reason || "";
@@ -2107,7 +2174,7 @@ export class BrowserChatRuntime {
         const message = event.data || {};
         if (message.type === "state") {
           if (message.stage === "q4_forward_started" || message.stage === "loading_model") {
-            generationStarted = message.stage === "q4_forward_started" || generationStarted;
+            generationStarted = true;
             emit({ status: "running", generation_status: "started", stage: message.stage });
           }
         }
@@ -2156,14 +2223,24 @@ export class BrowserChatRuntime {
         });
       };
       emit({ status: "attempted", generation_status: "attempted" });
-      this.worker.postMessage({
-        type: "generate",
-        prompt: input,
-        mode: this.mode,
-        maxTokens,
-        contextLength: Math.min(options.contextLength || 256, 1024),
-        timeoutMs: Math.min(totalTimeoutMs, 20000)
-      });
+      try {
+        this.worker.postMessage({
+          type: "generate",
+          prompt: input,
+          mode: this.mode,
+          maxTokens,
+          contextLength: Math.min(options.contextLength || 256, 1024),
+          timeoutMs: Math.min(totalTimeoutMs, 20000)
+        });
+      } catch (error) {
+        const reason = error.message || "worker_post_message_failed";
+        terminateWorker();
+        finish("failed", () => reject(new Error(reason)), {
+          fallback_reason: reason,
+          decode_status: reason,
+          generation_started: generationStarted
+        });
+      }
     });
   }
 
