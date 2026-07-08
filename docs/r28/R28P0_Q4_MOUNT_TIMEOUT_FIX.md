@@ -26,7 +26,16 @@ The first P0 preview still showed `Plan B` while the primary q4 mount had not fa
 - Attempt 1 now emits `primary_mount`, not `retrying`.
 - Plan B UI is only allowed when attempt 1 has completed and failed, or when the active attempt is greater than 1.
 - `q4_retry_plan_not_complete` is hidden from failure copy because it is a pending state, not a blocker.
-- The visible version is bumped to `r28p0b-primary-q4-mount-state`.
+- The visible version was bumped to `r28p0b-primary-q4-mount-state`.
+
+## P0C Cold-Start Mobile Chat Extension
+
+R28P0C keeps the P0/P0B q4 mount path, but removes q4 warmup as a blocking Chat first-screen requirement:
+
+- Desktop fast cold-start still attempts q4 warmup and reports q4 ready when forward passes.
+- Mobile and slow-network sessions defer deep q4 warmup and enter lightweight Chat after quick static checks.
+- Chat mode hides model parameters and keeps q4 details in Dashboard.
+- The visible version is bumped to `r28p0c-coldstart-mobile-chat`.
 
 ## Non-Claims
 

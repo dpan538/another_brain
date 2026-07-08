@@ -7,7 +7,7 @@
   min-height: 100vh;
   padding: 22px;
   border: 0;
-  background: linear-gradient(180deg, rgba(247, 242, 232, 0.98), rgba(255, 250, 240, 0.99));
+  background: rgba(16, 16, 16, 0.88);
 }
 
 .model-loading-panel[hidden] {
@@ -67,8 +67,10 @@
   }
 
   .loading-card {
-    min-height: calc(100vh - 24px);
+    min-height: auto;
     align-content: center;
+    gap: 12px;
+    padding: 16px;
   }
 
   .loading-actions {

@@ -3,21 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>R28P0B another_brain preview | primary q4 mount state</title>
-    <meta name="another-brain-ui-version" content="r28p0b-primary-q4-mount-state" />
+    <title>R28P0C 鳄鱼 preview | cold-start mobile chat</title>
+    <meta name="another-brain-ui-version" content="r28p0c-coldstart-mobile-chat" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2528'/%3E%3Cpath d='M8 18h16M8 12h10M8 24h7' stroke='%23f4f6f5' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="/another_brain_chat/design_tokens.css?v=r28p0b-primary-q4-mount-state" />
-    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28p0b-primary-q4-mount-state" />
-    <link rel="stylesheet" href="/another_brain_chat/loading_screen.css?v=r28p0b-primary-q4-mount-state" />
+    <link rel="stylesheet" href="/another_brain_chat/design_tokens.css?v=r28p0c-coldstart-mobile-chat" />
+    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28p0c-coldstart-mobile-chat" />
+    <link rel="stylesheet" href="/another_brain_chat/loading_screen.css?v=r28p0c-coldstart-mobile-chat" />
   </head>
   <body>
-    <main class="app-shell" id="app-shell" data-ui-mode="chat" aria-label="another_brain chat preview">
+    <main class="app-shell" id="app-shell" data-ui-mode="chat" aria-label="鳄鱼 chat preview">
       <header class="app-header">
         <div class="header-copy">
-          <p class="eyebrow">another_brain</p>
-          <h1 id="chat-title">鳄鱼在。</h1>
-          <p class="chat-subtitle">直接问。需要过程细节时再打开 Dashboard。</p>
-          <p id="non-product-warning" class="header-warning">预览工程候选，不是产品模型。</p>
+          <p class="eyebrow">鳄鱼</p>
+          <h1 id="chat-title">问吧。</h1>
+          <p class="chat-subtitle">短一点，直接一点。</p>
+          <p id="non-product-warning" class="header-warning">预览，不是正式产品。</p>
         </div>
         <div class="header-side">
           <nav class="mode-toggle" aria-label="view mode">
@@ -25,14 +25,14 @@
             <button type="button" class="mode-button" id="dashboard-mode-button" aria-pressed="false">Dashboard</button>
           </nav>
           <div class="header-badges" aria-label="runtime status">
-            <span class="badge badge-version dashboard-only" id="ui-version-badge">R28P0B · primary q4 mount</span>
-            <span class="badge badge-local" id="local-indicator">local/static</span>
+            <span class="badge badge-version dashboard-only" id="ui-version-badge">R28P0C · cold-start mobile chat</span>
+            <span class="badge badge-local dashboard-only" id="local-indicator">local/static</span>
             <span class="badge badge-backend dashboard-only" id="backend-badge">No backend inference</span>
             <span class="badge dashboard-only" id="model-source-badge">static_q4_experimental</span>
             <span class="badge dashboard-only" id="tokenizer-status-badge">exact_runtime_tokenizer: checking</span>
             <span class="badge dashboard-only" id="router-status-badge">router: enabled</span>
-            <span class="badge badge-warn" id="q4-status-badge">q4 forward: not checked</span>
-            <span class="badge badge-warn dashboard-only" id="non-product-badge">not product model</span>
+            <span class="badge badge-warn dashboard-only" id="q4-status-badge">q4 forward: not checked</span>
+            <span class="badge badge-warn dashboard-only" id="non-product-badge">不是产品模型 / not product model</span>
           </div>
         </div>
       </header>
@@ -72,14 +72,14 @@
         </div>
         <div>
           <span class="status-label">UI Build</span>
-          <strong id="ui-build-status">R28P0B / r28p0b-primary-q4-mount-state</strong>
+          <strong id="ui-build-status">R28P0C / r28p0c-coldstart-mobile-chat</strong>
         </div>
       </section>
 
       <section class="workspace-grid">
         <section class="conversation-pane" aria-labelledby="chat-title">
           <section class="chat-intro" aria-label="chat mode summary">
-            <p>你好，我在。短问候和身份问题会快一点；开放问题仍走本地 q4、RAG 和边界路由。</p>
+            <p>你好，我在。复杂问题可能慢一点；证据不足时我会停住。</p>
             <div class="chat-badges" aria-label="chat badges">
               <span class="badge badge-local">local/static</span>
               <span class="badge">q4 experimental</span>
@@ -116,7 +116,7 @@
                 <li data-loading-stage="q4-warmup"><span></span>q4 warmup</li>
                 <li data-loading-stage="fallback"><span></span>fallback ready</li>
               </ol>
-              <p class="q4-retry-status" id="q4-retry-status">Plan B：等待 q4 初始检查</p>
+              <p class="q4-retry-status" id="q4-retry-status">正在连接本地模型。</p>
               <div class="loading-skeleton" aria-hidden="true">
                 <span></span>
                 <span></span>
@@ -150,9 +150,9 @@
 
           <section class="message-list" id="message-list" aria-live="polite" aria-label="messages">
             <article class="message message-assistant">
-              <div class="message-role">another_brain</div>
+              <div class="message-role">鳄鱼</div>
               <p>
-                你好，我在。你可以直接问；如果 q4 没有真正参与，我会把 fallback 原因标出来。
+                你好，我在。
               </p>
             </article>
           </section>
@@ -176,7 +176,7 @@
             </div>
           </section>
 
-          <form class="composer" id="chat-form">
+          <form class="composer" id="chat-form" aria-label="chat composer">
             <label class="sr-only" for="chat-input">Message</label>
             <textarea id="chat-input" name="message" rows="2" placeholder="输入中文问题，或试试：你好" required></textarea>
             <div class="composer-actions">
@@ -322,7 +322,7 @@
       </section>
     </main>
 
-    <script src="/another_brain_chat/loading_screen.js?v=r28p0b-primary-q4-mount-state"></script>
-    <script type="module" src="/another_brain_chat/app.js?v=r28p0b-primary-q4-mount-state"></script>
+    <script src="/another_brain_chat/loading_screen.js?v=r28p0c-coldstart-mobile-chat"></script>
+    <script type="module" src="/another_brain_chat/app.js?v=r28p0c-coldstart-mobile-chat"></script>
   </body>
 </html>

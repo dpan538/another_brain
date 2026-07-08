@@ -8,11 +8,11 @@
   "full_bundle_estimate_bytes": 70152623,
   "gate_assets": [
     {
-      "bytes": 2858,
+      "bytes": 2824,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "c244097ce124eba211e2300438e809bd52a4b18461240542c77e06457b0c0d06"
+      "sha256": "d27dc1cb1ac2fe907fe931071b726af6666ec45bc3ee11b5884a0fd623fa3726"
     }
   ],
   "hosted_vector_store": false,
@@ -166,10 +166,10 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49316884,
-  "ui_build_marker": "R28P0B",
+  "total_declared_bytes": 49316850,
+  "ui_build_marker": "R28P0C",
   "ui_build_timestamp": "2026-07-08T00:00:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28p0b-primary-q4-mount-state",
+  "ui_version": "r28p0c-coldstart-mobile-chat",
   "total_model_asset_bytes": 48267968
 }

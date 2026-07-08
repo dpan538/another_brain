@@ -1,12 +1,13 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0b-primary-q4-mount-state";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0b-primary-q4-mount-state";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0c-coldstart-mobile-chat";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0c-coldstart-mobile-chat";
 
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28MERGE3_UI_VERSION = "r28merge3-final-premerge-gate";
 const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
 const R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION = "r28p0b-primary-q4-mount-state";
+const R28P0C_COLDSTART_MOBILE_CHAT_VERSION = "r28p0c-coldstart-mobile-chat";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
-const R28HOTFIX3_BUILD_MARKER = "R28P0B";
+const R28HOTFIX3_BUILD_MARKER = "R28P0C";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -16,7 +17,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28p0",
+  prelaunch_stage: "r28p0c",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -28,7 +29,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   adapter_status: "local_session_import_export_ready",
   release_blockers: ["product_admission_pending", "browser_admission_pending", "release_checkpoint_pending"],
   candidate_static_bundle: true,
-  candidate_warning: "Static q4 runtime is an engineering preview path only; this P0 mount fix is not product, browser, or release admission.",
+  candidate_warning: "预览，不是正式产品；not product, browser, or release admission.",
   asset_cache_mode: "memory_fallback",
   asset_cache_policy: "same_origin_shards_only",
   asset_loader_resilience: "checksum_retry_abort_partial_fallback",
@@ -57,6 +58,18 @@ const MODEL_LOADING_PROGRESS = {
 };
 const R28SHIP0_DEEP_SELFCHECK_METHOD = "deepSelfCheckModelPath";
 const R28P0_Q4_WARMUP_TIMEOUT_MS = 90000;
+const MOBILE_Q4_WARMUP_DEFERRED_REASON = "mobile_q4_warmup_deferred";
+const bootMetrics = globalThis.__anotherBrainBootMetrics = {
+  version: R28P0C_COLDSTART_MOBILE_CHAT_VERSION,
+  started_at_ms: Math.round(performance.now()),
+  chat_interactive_ms: null,
+  quick_check_ms: null,
+  q4_ready_ms: null,
+  fallback_ready_ms: null,
+  loading_hidden_ms: null,
+  q4_deferred: false,
+  q4_status: "pending"
+};
 
 const appShell = document.querySelector("#app-shell");
 const chatModeButton = document.querySelector("#chat-mode-button");
@@ -138,13 +151,22 @@ let lastPacket = null;
 let running = false;
 let activeSelfCheckController = null;
 let activeLoadingController = null;
+let modelLoadingRequested = false;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 const INITIAL_ASSISTANT_MESSAGE = [
-  "你好，我在。你可以直接问；需要看 q4、RAG 或 blocker 时，点 Dashboard。",
-  "这里不展示隐藏推理或内部提示，也不声称这是产品模型。"
+  "你好，我在。"
 ].join(" ");
+
+function markBootMetric(name, value = null) {
+  if (!bootMetrics) return;
+  if (value === null && bootMetrics[name] === null) {
+    bootMetrics[name] = Math.round(performance.now() - bootMetrics.started_at_ms);
+    return;
+  }
+  bootMetrics[name] = value;
+}
 
 function setText(node, value) {
   if (node) node.textContent = String(value ?? "");
@@ -171,9 +193,16 @@ function setHidden(node, value) {
   if (node) node.hidden = Boolean(value);
 }
 
+function isDashboardMode() {
+  return appShell?.dataset?.uiMode === "dashboard";
+}
+
 function setLoadingScreenActive(value) {
+  modelLoadingRequested = Boolean(value);
   if (appShell) appShell.dataset.loading = value ? "active" : "idle";
-  setHidden(modelLoadingPanel, !value);
+  const showPanel = modelLoadingRequested && isDashboardMode();
+  setHidden(modelLoadingPanel, !showPanel);
+  if (!value) markBootMetric("loading_hidden_ms");
 }
 
 function focusNode(node) {
@@ -199,6 +228,7 @@ function setUiMode(mode) {
   dashboardModeButton?.classList.toggle("active", nextMode === "dashboard");
   chatModeButton?.setAttribute("aria-pressed", boolText(nextMode === "chat"));
   dashboardModeButton?.setAttribute("aria-pressed", boolText(nextMode === "dashboard"));
+  setHidden(modelLoadingPanel, !(modelLoadingRequested && nextMode === "dashboard"));
   if (nextMode === "dashboard") renderDebug();
 }
 
@@ -263,12 +293,13 @@ function renderModelLoading(input = {}) {
   const status = String(input.status || report.status || "checking");
   const fallbackReason = report.fallback?.reason || report.q4_forward?.blocker || (report.blockers || [])[0] || "";
   const done = status === "passed";
+  const deferred = status === "deferred" || status === "mobile_deferred";
   const cancelled = status === "cancelled";
   const failed = status === "failed" || status === "timeout";
   const progress = Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 8);
   setLoadingScreenActive(input.hidden !== true);
-  setText(modelLoadingTitle, done ? "模型资产检查完成" : cancelled ? "模型资产检查已取消" : failed ? "模型资产检查未完成" : "模型资产检查中");
-  setText(modelLoadingDetail, `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback available${fallbackReason ? ` / ${fallbackReason}` : ""}`);
+  setText(modelLoadingTitle, done ? "模型已连接" : deferred ? "先进入轻量聊天" : cancelled ? "模型连接已取消" : failed ? "模型连接未完成" : "正在连接");
+  setText(modelLoadingDetail, deferred ? "手机端先打开输入框；需要细节可看 Dashboard。" : `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback available${fallbackReason ? ` / ${fallbackReason}` : ""}`);
   renderQ4RetryStatus(input);
   if (modelLoadingProgressBar) modelLoadingProgressBar.style.width = `${Math.max(8, Math.min(100, progress))}%`;
   const stageNodes = modelLoadingStages?.querySelectorAll?.("[data-loading-stage]") || [];
@@ -276,8 +307,8 @@ function renderModelLoading(input = {}) {
   stageNodes.forEach((node) => {
     const nodeStage = node.getAttribute("data-loading-stage");
     const nodeIndex = MODEL_LOADING_STAGES.indexOf(nodeStage);
-    node.classList.toggle("active", nodeStage === stage && !done && !cancelled && !failed);
-    node.classList.toggle("done", done || (activeIndex >= 0 && nodeIndex >= 0 && nodeIndex < activeIndex));
+    node.classList.toggle("active", nodeStage === stage && !done && !deferred && !cancelled && !failed);
+    node.classList.toggle("done", done || deferred || (activeIndex >= 0 && nodeIndex >= 0 && nodeIndex < activeIndex));
     node.classList.toggle("warn", (cancelled || failed) && nodeStage === "fallback");
   });
   setDisabled(loadingCancelButton, done || cancelled || failed || !activeLoadingController);
@@ -287,7 +318,7 @@ function completeModelLoading(report = {}) {
   renderModelLoading({
     report,
     stage: "fallback",
-    status: report.status || (report.ok ? "passed" : "failed"),
+    status: report.status || (report.deferred ? "deferred" : report.ok ? "passed" : "failed"),
     progress: 100
   });
   globalThis.setTimeout?.(() => setLoadingScreenActive(false), 450);
@@ -311,7 +342,7 @@ function appendMessage(role, text, meta = null) {
 
   const roleNode = document.createElement("div");
   roleNode.className = "message-role";
-  roleNode.textContent = role === "user" ? "you" : "another_brain";
+  roleNode.textContent = role === "user" ? "你" : "鳄鱼";
 
   const body = document.createElement("p");
   body.textContent = text;
@@ -457,7 +488,7 @@ async function loadDeliveryConfig() {
   if (!globalThis.location?.href) return DEFAULT_DELIVERY_CONFIG;
   const base = new URL(globalThis.location.href);
   const url = new URL("/another_brain/runtime_mode.json", base);
-  url.searchParams.set("v", R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION);
+  url.searchParams.set("v", R28P0C_COLDSTART_MOBILE_CHAT_VERSION);
   if (url.origin !== base.origin) throw new Error("non_same_origin_runtime_mode_rejected");
   const response = await fetch(url.href, { cache: "no-store" });
   if (!response.ok) throw new Error(`runtime_mode_fetch_failed:${response.status}`);
@@ -473,8 +504,8 @@ function renderDeliveryConfig(config) {
   setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
   setText(routerStatusBadge, "router: enabled");
-  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION}`);
-  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
+  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0C_COLDSTART_MOBILE_CHAT_VERSION}`);
+  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0C_COLDSTART_MOBILE_CHAT_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   setText(candidateRouteStatus, config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route);
@@ -484,10 +515,7 @@ function renderDeliveryConfig(config) {
   setText(decodeStatus, config.tokenizer_decode_status || "not checked");
   setText(runtimeModeStatus, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(fallbackReasonStatus, config.runtime_fallback_reason || "fallback_available");
-  const candidateWarning = config.candidate_route === "product_path" ? "" : config.candidate_warning;
-  setText(nonProductWarning, config.product_model
-    ? ""
-    : candidateWarning || config.non_product_warning || DEFAULT_DELIVERY_CONFIG.non_product_warning);
+  setText(nonProductWarning, config.product_model ? "" : "预览，不是正式产品。");
 }
 
 function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
@@ -498,6 +526,19 @@ function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
   setText(offlineStatus, assetStatus.offline_ready
     ? "Cache-capable shell"
     : `Fallback: ${assetStatus.fallback_reason || "offline_cache_unavailable"}`);
+}
+
+function shouldDeferQ4WarmupOnThisDevice() {
+  const params = new URLSearchParams(globalThis.location?.search || "");
+  if (params.get("force_q4_warmup") === "1") return false;
+  if (params.get("lightweight") === "1") return true;
+  const connection = navigator.connection || navigator.webkitConnection || navigator.mozConnection || {};
+  const effectiveType = String(connection.effectiveType || "");
+  const saveData = connection.saveData === true;
+  const coarsePointer = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+  const narrowViewport = Number(globalThis.innerWidth || 0) > 0 && Number(globalThis.innerWidth || 0) <= 760;
+  const slowConnection = /(^|-)2g$|3g/.test(effectiveType);
+  return saveData || slowConnection || coarsePointer || narrowViewport;
 }
 
 function renderSelfCheck(report = null) {
@@ -563,7 +604,7 @@ async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
   renderAssetStatus(null, deliveryConfig);
-  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION });
+  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0C_COLDSTART_MOBILE_CHAT_VERSION });
   runtime.setContextPackets(contextBridge.getPackets());
   renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   const loadResult = await runtime.load();
@@ -599,6 +640,31 @@ async function boot() {
       }
     });
     renderSelfCheck(report);
+    markBootMetric("quick_check_ms");
+    if (shouldDeferQ4WarmupOnThisDevice()) {
+      report = {
+        ...report,
+        status: "deferred",
+        deferred: true,
+        fallback: { status: "可用", reason: MOBILE_Q4_WARMUP_DEFERRED_REASON },
+        q4_forward: {
+          ...(report.q4_forward || {}),
+          status: "skipped",
+          q4_forward_ran: false,
+          tokens_generated: 0,
+          blocker: MOBILE_Q4_WARMUP_DEFERRED_REASON
+        },
+        blockers: Array.from(new Set([...(report.blockers || []), MOBILE_Q4_WARMUP_DEFERRED_REASON]))
+      };
+      bootMetrics.q4_deferred = true;
+      bootMetrics.q4_status = "deferred";
+      renderSelfCheck(report);
+      completeModelLoading(report);
+      setText(modelStatus, "lightweight_ready");
+      setText(answerSourceStatus, "lightweight_until_q4_ready");
+      setText(fallbackReasonStatus, MOBILE_Q4_WARMUP_DEFERRED_REASON);
+      return;
+    }
     renderModelLoading({ report, status: "primary_mount", attempt: 1, strategy: "primary", plan_b_active: false });
     const mountResult = await runtime.mountQ4WithRetry({
       timeoutMs: R28P0_Q4_WARMUP_TIMEOUT_MS,
@@ -620,12 +686,16 @@ async function boot() {
   completeModelLoading(report);
   renderAssetStatus(runtime.assetStatus, runtime.deliveryConfig);
   if (report.ok) {
+    markBootMetric("q4_ready_ms");
+    bootMetrics.q4_status = "ready";
     setText(modelStatus, "q4_ready");
     setText(runtimeModeStatus, "static_q4_experimental");
     setText(decodeStatus, report.q4_forward?.decode_status || "exact_runtime_tokenizer");
     setText(tokenCountStatus, `${report.q4_forward?.tokens_generated || 0} generated`);
     setText(answerSourceStatus, report.q4_forward?.q4_forward_ran ? "self_check_static_q4_experimental" : "no_model_fallback");
   } else {
+    markBootMetric("fallback_ready_ms");
+    bootMetrics.q4_status = "fallback";
     setText(modelStatus, "q4_blocked");
     setText(runtimeModeStatus, "synthetic_fallback");
     setText(answerSourceStatus, "no_model_fallback");
@@ -822,6 +892,11 @@ on(modelSelfCheckStopButton, "click", () => {
 function start() {
   setUiMode(inferInitialMode());
   bindEvents();
+  if (typeof globalThis.requestAnimationFrame === "function") {
+    globalThis.requestAnimationFrame(() => markBootMetric("chat_interactive_ms"));
+  } else {
+    markBootMetric("chat_interactive_ms");
+  }
   boot().catch((error) => {
     console.warn("[another_brain] boot_warning", error);
     setText(modelStatus, "q4_blocked");

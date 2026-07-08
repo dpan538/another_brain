@@ -34,7 +34,7 @@ const ROUTER_NON_CLAIMS = [
 ];
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
-const R28P0B_PRIMARY_Q4_MOUNT_STATE_VERSION = "r28p0b-primary-q4-mount-state";
+const R28P0C_PRIMARY_Q4_MOUNT_STATE_VERSION = "r28p0c-coldstart-mobile-chat";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -1299,7 +1299,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28p0b-primary-q4-mount-state", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28p0c-coldstart-mobile-chat", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -1345,7 +1345,7 @@ export class BrowserChatRuntime {
 
   createRuntimeWorker() {
     if (!this.capabilities.worker_available) return null;
-    return new Worker(new URL("./runtime_worker.js?v=r28p0b-primary-q4-mount-state", import.meta.url), { type: "module" });
+    return new Worker(new URL("./runtime_worker.js?v=r28p0c-coldstart-mobile-chat", import.meta.url), { type: "module" });
   }
 
   async clearModelAssetCacheNamespace() {
@@ -1674,7 +1674,7 @@ export class BrowserChatRuntime {
   async runQ4SelfCheckSmokeInIsolatedWorker(options = {}) {
     const timeoutMs = clampQ4WarmupTimeout(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS);
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28p0b-primary-q4-mount-state", import.meta.url), { type: "module" });
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28p0c-coldstart-mobile-chat", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
