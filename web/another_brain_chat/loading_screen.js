@@ -1,16 +1,16 @@
 const LOADING_COPY = Object.freeze([
-  "正在加载本地小模型",
-  "不会调用云端 LLM",
+  "本地运行，不调用云端 LLM",
+  "小模型加载可能需要几十秒",
   "如果模型不可用，会使用边界回答",
   "证据不足时不会硬编"
 ]);
 
 const STEP_ORDER = Object.freeze([
-  ["checking_manifest", "读取 manifest", "manifest"],
-  ["checking_shards", "校验 shards", "shards"],
+  ["checking_manifest", "读取模型清单", "manifest"],
+  ["checking_shards", "校验模型分片", "shards"],
   ["checking_tokenizer", "加载 tokenizer", "tokenizer"],
   ["warming_q4", "q4 warmup", "q4_forward"],
-  ["fallback_ready", "fallback available", "fallback"]
+  ["fallback_ready", "fallback ready", "fallback"]
 ]);
 
 function text(node, value) {
@@ -126,6 +126,7 @@ export function createModelLoadingScreen(options = {}) {
   }
   if (dashboardButton) {
     dashboardButton.addEventListener("click", () => {
+      if (typeof options.onDashboard === "function") options.onDashboard();
       const target = document.querySelector("#process-panel");
       if (target?.scrollIntoView) target.scrollIntoView({ behavior: "smooth", block: "start" });
     });

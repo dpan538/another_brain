@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>R28ROUT1 another_brain preview | Process Transparent Chat</title>
-    <meta name="another-brain-ui-version" content="r28rout1-fuzzy-intent-surfaces" />
+    <title>R28UX6 another_brain preview | Chat</title>
+    <meta name="another-brain-ui-version" content="r28ux6-minimal-chat-dashboard" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d2528'/%3E%3Cpath d='M8 18h16M8 12h10M8 24h7' stroke='%23f4f6f5' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28rout1-fuzzy-intent-surfaces" />
-    <link rel="stylesheet" href="/another_brain_chat/loading_screen.css?v=r28load0-model-loading-state-machine" />
+    <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28ux6-minimal-chat-dashboard" />
+    <link rel="stylesheet" href="/another_brain_chat/loading_screen.css?v=r28ux6-minimal-chat-dashboard" />
   </head>
   <body>
-    <main class="app-shell" aria-label="another_brain process transparent preview">
-      <section class="model-loading-panel" id="model-loading-panel" aria-label="本地模型加载状态" data-loading-state="idle">
+    <main class="app-shell" id="app-shell" aria-label="another_brain chat preview" data-ui-mode="chat" data-loading-mode="active" data-generating="false">
+      <section class="model-loading-panel" id="model-loading-panel" aria-label="本地模型加载状态" data-loading-state="idle" role="status" aria-live="polite">
         <div class="loading-orbit" aria-hidden="true">
           <svg class="loading-brain" viewBox="0 0 48 48" role="img">
             <path d="M18 12c-5 0-9 4-9 9 0 2 .7 4 2 5.5C9.7 28 9 30 9 32.5 9 37 12.5 40 17 40h15c4.5 0 8-3 8-7.5 0-2.5-.9-4.7-2.4-6.2 1-1.5 1.4-3.2 1.4-5.3 0-5-4-9-9-9-2.3 0-4.5.9-6 2.4A8.3 8.3 0 0 0 18 12Z" />
@@ -20,8 +20,14 @@
         </div>
         <div class="loading-main">
           <div class="loading-head">
+            <div>
+              <p class="eyebrow">local model</p>
+              <h2 id="loading-title">正在启动本地小模型</h2>
+            </div>
             <strong id="loading-state-label">idle</strong>
-            <span class="loading-copy" id="loading-copy">正在加载本地小模型</span>
+          </div>
+          <div class="loading-copy-row">
+            <span class="loading-copy" id="loading-copy">本地运行，不调用云端 LLM</span>
           </div>
           <p class="loading-substatus" id="loading-substatus">runtime: synthetic_fallback / tokenizer: not_run</p>
           <div class="loading-progress" aria-label="model loading progress">
@@ -30,11 +36,11 @@
           <span class="loading-progress-text" id="loading-progress-text">0%</span>
           <div class="loading-steps" aria-label="model loading steps">
             <div class="loading-step" data-loading-step="checking_manifest">
-              <span data-step-label>读取 manifest</span>
+              <span data-step-label>读取模型清单</span>
               <span data-step-status>pending</span>
             </div>
             <div class="loading-step" data-loading-step="checking_shards">
-              <span data-step-label>校验 shards</span>
+              <span data-step-label>校验模型分片</span>
               <span data-step-status>pending</span>
             </div>
             <div class="loading-step" data-loading-step="checking_tokenizer">
@@ -46,22 +52,26 @@
               <span data-step-status>pending</span>
             </div>
             <div class="loading-step" data-loading-step="fallback_ready">
-              <span data-step-label>fallback available</span>
+              <span data-step-label>fallback ready</span>
               <span data-step-status>pending</span>
             </div>
           </div>
         </div>
         <div class="loading-actions">
-          <button type="button" class="button-secondary" id="loading-cancel-button" disabled>取消/稍后加载</button>
+          <button type="button" class="button-secondary" id="loading-cancel-button" disabled>取消加载 / 进入轻量模式</button>
           <button type="button" class="button-secondary" id="loading-dashboard-button">Dashboard</button>
         </div>
       </section>
       <header class="app-header">
         <div>
           <p class="eyebrow">another_brain preview</p>
-          <h1 id="chat-title">过程透明的本地回答界面</h1>
+          <h1 id="chat-title">another_brain</h1>
           <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
         </div>
+        <nav class="mode-toggle" aria-label="view mode">
+          <button type="button" id="mode-chat-button" class="mode-button" aria-pressed="true">Chat</button>
+          <button type="button" id="mode-dashboard-button" class="mode-button" aria-pressed="false">Dashboard</button>
+        </nav>
         <div class="header-badges" aria-label="runtime status">
           <span class="badge badge-version" id="ui-version-badge">R28ROUT1 · r28rout1-fuzzy-intent-surfaces</span>
           <span class="badge badge-local" id="local-indicator">local/static</span>
@@ -74,7 +84,7 @@
         </div>
       </header>
 
-      <section class="status-grid" aria-label="delivery and runtime summary">
+      <section class="status-grid dashboard-only" aria-label="delivery and runtime summary">
         <div>
           <span class="status-label">Delivery</span>
           <strong id="delivery-mode">demo_static</strong>
@@ -114,8 +124,14 @@
       </section>
 
       <section class="workspace-grid">
-        <section class="conversation-pane" aria-labelledby="chat-title">
-          <section class="compact-status" aria-label="answer pipeline status">
+        <section class="conversation-pane chat-surface" aria-labelledby="chat-title">
+          <section class="chat-status-strip chat-only" aria-label="chat status">
+            <span class="mini-badge" id="chat-model-badge">model: checking</span>
+            <span class="mini-badge" id="chat-source-badge">source: none</span>
+            <span class="mini-badge mini-warning">not product</span>
+          </section>
+
+          <section class="compact-status dashboard-only" aria-label="answer pipeline status">
             <div>
               <span class="status-label">Model</span>
               <strong id="model-status">q4 checking</strong>
@@ -138,12 +154,13 @@
             <article class="message message-assistant">
               <div class="message-role">another_brain</div>
               <p>
-                我会显示公开过程摘要：输入包、本地上下文、检索证据、模型草稿、路由判断和最终回答。若 q4 没有真正参与，会明确标出。
+                你好。我会先用本地小模型和边界回答；证据不足时不会硬编。
               </p>
+              <div class="message-meta">source: router · evidence: none</div>
             </article>
           </section>
 
-          <section class="answer-status-card" aria-label="answer status">
+          <section class="answer-status-card dashboard-only" aria-label="answer status">
             <div>
               <span class="status-label">Route</span>
               <strong id="route-status">not_run</strong>
@@ -173,7 +190,7 @@
           </form>
         </section>
 
-        <aside class="process-panel" id="process-panel" aria-label="过程摘要">
+        <aside class="process-panel dashboard-only" id="process-panel" aria-label="Dashboard Mode 过程摘要">
           <div class="panel-head">
             <div>
               <p class="eyebrow">公开过程</p>

@@ -1,9 +1,11 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28rout1-fuzzy-intent-surfaces";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28rout1-fuzzy-intent-surfaces";
-import { createModelLoadingScreen } from "./loading_screen.js?v=r28load0-model-loading-state-machine";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28ux6-minimal-chat-dashboard";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28ux6-minimal-chat-dashboard";
+import { createModelLoadingScreen } from "./loading_screen.js?v=r28ux6-minimal-chat-dashboard";
 
-const R28HOTFIX3_UI_VERSION = "r28rout1-fuzzy-intent-surfaces";
-const R28HOTFIX3_BUILD_MARKER = "R28ROUT1";
+const R28UX6_UI_VERSION = "r28ux6-minimal-chat-dashboard";
+const R28UX6_BUILD_MARKER = "R28UX6";
+const R28HOTFIX3_UI_VERSION = R28UX6_UI_VERSION;
+const R28HOTFIX3_BUILD_MARKER = R28UX6_BUILD_MARKER;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -102,17 +104,22 @@ const abortButton = document.querySelector("#abort-button");
 const clearChatButton = document.querySelector("#clear-chat-button");
 const contextBridgeStatus = document.querySelector("#context-bridge-status");
 const contextValidation = document.querySelector("#context-validation");
+const appShell = document.querySelector("#app-shell");
+const modeChatButton = document.querySelector("#mode-chat-button");
+const modeDashboardButton = document.querySelector("#mode-dashboard-button");
+const chatModelBadge = document.querySelector("#chat-model-badge");
+const chatSourceBadge = document.querySelector("#chat-source-badge");
 
 let lastPacket = null;
 let running = false;
 let activeSelfCheckController = null;
 let loadingScreen = null;
+let loadingScreenDismissed = false;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 const INITIAL_ASSISTANT_MESSAGE = [
-  "我会显示公开过程摘要：输入包、本地上下文、检索证据、模型草稿、路由判断和最终回答。",
-  "若 q4 没有真正参与，会明确标出；这里不展示隐藏推理、内部提示或私人原文。"
+  "你好。我会先用本地小模型和边界回答；证据不足时不会硬编。"
 ].join(" ");
 
 function setText(node, value) {
@@ -152,6 +159,21 @@ function boolText(value) {
   return value === true ? "true" : "false";
 }
 
+function setUIMode(mode = "chat") {
+  const nextMode = mode === "dashboard" ? "dashboard" : "chat";
+  if (appShell) appShell.dataset.uiMode = nextMode;
+  if (modeChatButton) modeChatButton.setAttribute("aria-pressed", nextMode === "chat" ? "true" : "false");
+  if (modeDashboardButton) modeDashboardButton.setAttribute("aria-pressed", nextMode === "dashboard" ? "true" : "false");
+}
+
+function setLoadingMode(active = false) {
+  if (appShell) appShell.dataset.loadingMode = active ? "active" : "done";
+}
+
+function setGenerating(value = false) {
+  if (appShell) appShell.dataset.generating = value ? "true" : "false";
+}
+
 function sourceLabel(trace = {}) {
   if (trace.answer_source_label) return trace.answer_source_label;
   if (trace.model?.q4_forward_ran && trace.router?.used_model_draft) return "static_q4_experimental";
@@ -160,7 +182,21 @@ function sourceLabel(trace = {}) {
   return "no_model_fallback";
 }
 
-function appendMessage(role, text) {
+function compactSourceLabel(packet = null) {
+  if (!packet) return "none";
+  const trace = packet.process_trace || {};
+  if (trace.model?.q4_forward_ran) return "q4";
+  if (packet.fallback_used || String(trace.runtime_mode || "").includes("synthetic")) return "fallback";
+  if (String(trace.router?.route || "").includes("surface") || String(trace.router?.route || "").includes("boundary")) return "router";
+  return sourceLabel(trace).includes("fallback") ? "fallback" : "router";
+}
+
+function evidenceLabel(packet = null) {
+  if (!packet) return "none";
+  return packet.evidence_packet?.evidence_status || packet.process_trace?.rag?.evidence_status || "none";
+}
+
+function appendMessage(role, text, meta = null) {
   if (!messageList) {
     warnMissing("message-list", "append_message");
     return;
@@ -176,6 +212,12 @@ function appendMessage(role, text) {
   body.textContent = text;
 
   article.append(roleNode, body);
+  if (meta && role === "assistant") {
+    const metaNode = document.createElement("div");
+    metaNode.className = "message-meta";
+    metaNode.textContent = `source: ${meta.source || "router"} · evidence: ${meta.evidence || "none"}`;
+    article.append(metaNode);
+  }
   messageList.append(article);
   messageList.scrollTop = messageList.scrollHeight;
 }
@@ -186,7 +228,7 @@ function clearConversation() {
     return;
   }
   messageList.textContent = "";
-  appendMessage("assistant", INITIAL_ASSISTANT_MESSAGE);
+  appendMessage("assistant", INITIAL_ASSISTANT_MESSAGE, { source: "router", evidence: "none" });
   lastPacket = null;
   setDisabled(stateExportButton, true);
   setPipelineStatus("final");
@@ -253,6 +295,8 @@ function updateStatus(packet) {
   setText(tokenizerStatusBadge, `tokenizer: ${trace.model?.tokenizer || packet.decode_status || "not checked"}`);
   const loadingState = packet.loading_state || {};
   setText(q4StatusBadge, loadingState.state === "q4_ready" ? "q4 ready" : `q4 forward: ${trace.model?.q4_forward_ran ? "true" : "false"}`);
+  setText(chatModelBadge, `model: ${loadingState.state === "q4_ready" ? "q4 ready" : packet.runtime_stats?.runtime_mode || runtime.loadingState?.state || "fallback"}`);
+  setText(chatSourceBadge, `source: ${compactSourceLabel(packet)} / evidence: ${evidenceLabel(packet)}`);
   renderTrace(trace);
 }
 
@@ -326,6 +370,7 @@ function renderDeliveryConfig(config) {
   setText(decodeStatus, config.tokenizer_decode_status || "not checked");
   setText(runtimeModeStatus, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(fallbackReasonStatus, config.runtime_fallback_reason || "fallback_available");
+  setText(chatModelBadge, `model: ${config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode}`);
   const candidateWarning = config.candidate_route === "product_path" ? "" : config.candidate_warning;
   setText(nonProductWarning, config.product_model
     ? ""
@@ -344,8 +389,9 @@ function renderAssetStatus(status, config = DEFAULT_DELIVERY_CONFIG) {
 
 function renderLoadingPanel(report = null) {
   if (!loadingScreen) return;
+  let state = null;
   if (!report) {
-    loadingScreen.render({
+    state = loadingScreen.render({
       state: "idle",
       manifest: "skipped",
       shards: "skipped",
@@ -355,9 +401,14 @@ function renderLoadingPanel(report = null) {
       decode_status: "not_run",
       cancelable: false
     });
-    return;
+  } else {
+    state = loadingScreen.render(report.loading_state || report);
   }
-  loadingScreen.render(report.loading_state || report);
+  if (["q4_ready", "fallback_ready", "timeout", "cancelled", "failed"].includes(state?.state)) {
+    setLoadingMode(false);
+  } else if (!loadingScreenDismissed) {
+    setLoadingMode(true);
+  }
 }
 
 function renderSelfCheck(report = null) {
@@ -481,15 +532,18 @@ async function boot() {
       setText(decodeStatus, warmupReport.loading_state.decode_status);
       setText(tokenCountStatus, `${warmupReport.loading_state.tokens_generated || 0} generated`);
       setText(answerSourceStatus, "self_check_static_q4_experimental");
+      setText(chatModelBadge, "model: q4 ready");
     } else {
       setText(modelStatus, warmupReport.loading_state?.state || "fallback_ready");
       setText(runtimeModeStatus, "synthetic_fallback");
       setText(fallbackReasonStatus, warmupReport.loading_state?.blocker || (warmupReport.blockers || []).join(" / ") || "q4_self_check_failed");
+      setText(chatModelBadge, "model: fallback ready");
     }
   } else {
     setText(modelStatus, report.loading_state?.state || "fallback_ready");
     setText(runtimeModeStatus, "synthetic_fallback");
     setText(fallbackReasonStatus, report.loading_state?.blocker || (report.blockers || []).join(" / ") || "q4_self_check_failed");
+    setText(chatModelBadge, "model: fallback ready");
   }
 }
 
@@ -531,17 +585,22 @@ on(form, "submit", async (event) => {
   focusNode(input);
 
   running = true;
+  setGenerating(true);
   setDisabled(abortButton, false);
   try {
     const packet = await runtime.run(text, { onStatus: setPipelineStatus });
     lastPacket = packet;
     setDisabled(stateExportButton, false);
-    appendMessage("assistant", packet.final_answer);
+    appendMessage("assistant", packet.final_answer, {
+      source: compactSourceLabel(packet),
+      evidence: evidenceLabel(packet)
+    });
     updateStatus(packet);
     renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
     renderDebug();
   } finally {
     running = false;
+    setGenerating(false);
     setDisabled(abortButton, true);
   }
 });
@@ -554,6 +613,8 @@ on(abortButton, "click", () => {
   setText(fallbackReasonStatus, "generation_aborted");
 });
 on(clearChatButton, "click", clearConversation);
+on(modeChatButton, "click", () => setUIMode("chat"));
+on(modeDashboardButton, "click", () => setUIMode("dashboard"));
 
 on(modelSelfCheckButton, "click", async () => {
   if (activeSelfCheckController) {
@@ -664,17 +725,28 @@ function renderCancelledLoading(reason = "model_loading_cancelled") {
   setText(modelStatus, "cancelled / fallback_ready");
   setText(runtimeModeStatus, "synthetic_fallback");
   setText(fallbackReasonStatus, reason);
+  setText(chatModelBadge, "model: light mode");
 }
 
 function start() {
+  setUIMode("chat");
+  setLoadingMode(true);
   loadingScreen = createModelLoadingScreen({
     onCancel: () => {
+      loadingScreenDismissed = true;
       if (activeSelfCheckController) activeSelfCheckController.abort();
       runtime.cancelSelfCheck("model_loading_cancelled");
       activeSelfCheckController = null;
       setDisabled(modelSelfCheckButton, false);
       setDisabled(modelSelfCheckStopButton, true);
       renderCancelledLoading("model_loading_cancelled");
+      setLoadingMode(false);
+      setUIMode("chat");
+    },
+    onDashboard: () => {
+      loadingScreenDismissed = true;
+      setLoadingMode(false);
+      setUIMode("dashboard");
     }
   });
   bindEvents();
