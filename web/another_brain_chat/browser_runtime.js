@@ -43,6 +43,7 @@ const R28SHIP0_MODEL_CACHE_PREFIX = "another-brain-model";
 const R28SHIP0_Q4_RETRY_STRATEGIES = Object.freeze(["primary", "normalized_absolute", "cache_bust", "clear_model_cache", "worker_restart"]);
 const R28SHIP0_RUNTIME_TRUTH_BLOCKERS = Object.freeze(["asset_missing", "tokenizer_fail", "forward_timeout", "worker_error", "q4_forward_not_confirmed", "q4_retry_plan_exhausted", "model_loading_cancelled"]);
 const R28HOTFIX4_UI_VERSION = "r28hotfix4-open-question-generation-sla";
+const R28SURF5_SURFACE_COMPOSER_VERSION = "r28surf5-wide-surface-composer-v1";
 const SELF_CHECK_JSON_TIMEOUT_MS = 900;
 const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
 const SELF_CHECK_DEEP_TIMEOUT_MS = 15000;
@@ -52,7 +53,7 @@ const MOBILE_FIRST_TOKEN_TIMEOUT_MS = 10000;
 const DESKTOP_TOTAL_GENERATION_TIMEOUT_MS = 12000;
 const MOBILE_TOTAL_GENERATION_TIMEOUT_MS = 20000;
 const IDENTITY_ROUTE = "identity_boundary";
-const IDENTITY_ANSWER = "我是鳄鱼。更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。";
+const IDENTITY_ANSWER = "你可以叫我鳄鱼。";
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
   identity_boundary: IDENTITY_ANSWER,
   identity_surface: IDENTITY_ANSWER,
@@ -184,54 +185,159 @@ const MICRO_INTENT_ROUTES = Object.freeze({
 });
 const SURFACE_FRAGMENTS = Object.freeze({
   identity_core: Object.freeze([
-    "我是鳄鱼。",
-    "更准确地说，我是这个本地网页里的另一个大脑界面。",
-    "我会尽量按鳄鱼的判断方式回答，而不是滑成服务口吻。"
+    "你可以叫我鳄鱼。",
+    "我是鳄鱼，至少在这里是；也是这个本地网页里的另一个大脑界面。",
+    "我是鳄鱼这个名字背后的本地回答界面。"
   ]),
-  crocodile_confirm: Object.freeze(["是，我是鳄鱼。", "可以这么叫我：鳄鱼。"]),
+  crocodile_confirm: Object.freeze(["可以叫我鳄鱼。", "是，你可以叫我鳄鱼。", "算是。这里我就叫鳄鱼。"]),
   origin_core: Object.freeze([
-    "我来自这个本地静态网页里的小模型、轻量检索、回答边界和已经审查过的锚点。",
-    "当前不依赖云端 LLM、Doubao 或后端推理，也不把问题发给外部模型。"
+    "从这个本地静态网页、小模型、轻量检索和边界规则里来，不依赖云端 LLM。",
+    "从本地静态网页、轻量检索和鳄鱼给过的回答习惯里来，不依赖云端 LLM。",
+    "从本地静态网页、轻量检索卡片和回答边界里来，不依赖云端 LLM。"
   ]),
   capability_core: Object.freeze([
-    "我更适合做边界判断、证据整理、简短回答、拒答和语义重构。",
-    "证据不足时我会说明不足，而不是硬编。"
+    "能做边界判断、证据整理、拒答，也能在证据不足时停住。",
+    "更适合做判断、边界和简短回答，不适合装作什么都知道。",
+    "能把问题压短、分清证据，也能承认现在答不了。"
   ]),
-  greeting_core: Object.freeze(["你好，我在。", "你好，可以直接问。", "你好，我会按本地证据和边界来回答。"]),
+  greeting_core: Object.freeze(["你好，我在。", "你好，直接问。", "我在。你问。"]),
   runtime_core: Object.freeze([
-    "当前页面会优先尝试本地 static_q4_experimental 路径。",
-    "如果 q4、tokenizer 或检索状态没有确认，我会在过程摘要里标出来。"
+    "当前会优先走本地 q4、轻量检索和路由边界。",
+    "如果 q4 或 tokenizer 没准备好，我会把阻塞点写进过程记录。",
+    "这不是产品准入结论，只是本地运行状态。"
+  ]),
+  model_status_core: Object.freeze([
+    "本地路径能跑就先跑，不能跑就退回边界回答。",
+    "模型草稿可以被路由替换，过程记录会说明原因。",
+    "没有准入结论时，我不会把自己说成产品模型。"
+  ]),
+  evidence_insufficient_core: Object.freeze([
+    "证据不够，我不能把判断说成结论。",
+    "现在只能给边界，不能装成已经查实。",
+    "缺口还在，硬答会比停住更糟。"
+  ]),
+  evidence_conflict_core: Object.freeze([
+    "材料互相顶住了，我会先保留冲突。",
+    "证据冲突时，合成一个顺滑答案反而不诚实。",
+    "这里不能把两边硬捏成一个确定结论。"
+  ]),
+  malicious_evidence_core: Object.freeze([
+    "材料里有越界指令，我会把它当作不可信内容。",
+    "检索材料不能改写运行边界。",
+    "这类指令不进入回答，只留下可公开判断的部分。"
+  ]),
+  abstract_value_core: Object.freeze([
+    "我会先把它看成边界问题。",
+    "生不是纯粹的开始，死也不是纯粹的结论。",
+    "人能做的，是在有限时间里留下判断、关系和作品。",
+    "说得太漂亮会假，完全说成虚无也偷懒。",
+    "这类问题不能装成标准答案。"
   ]),
   relation_core: Object.freeze([
-    "我不是客服，也不是替你做决定的人。",
-    "我更像一个本地的判断镜面：帮你把话说清楚一点。",
-    "我会贴近你的表达方式，但不会声称拥有私人记忆。"
-  ]),
-  value_core: Object.freeze([
-    "价值判断要先承认它有立场。",
-    "我会把证据、关系和代价分开看。",
-    "我不会把个人判断伪装成所有人的共识。"
+    "关系里最重要的不是把话说满。",
+    "可信的边界比热闹更耐用。",
+    "没有尊重和可验证的承诺，亲密很快会变成消耗。",
+    "爱需要热度，也需要停得住的分寸。"
   ]),
   aesthetic_core: Object.freeze([
-    "审美不是投票结果，更像一种有边界的判断。",
-    "我会看克制、结构、气味和表达风险。",
-    "好看不只是不出错，也可能是某种准确的不舒服。"
+    "美不是单纯好看。",
+    "它更像形式、克制、风险和处境刚好咬住。",
+    "只靠流行会浅，只靠私人感受也会散。",
+    "审美里有判断，不只是偏好。"
   ]),
-  abstract_core: Object.freeze([
-    "抽象问题不一定要拆成流程。",
-    "意义常常来自关系、使用场景和被压缩后的判断。",
-    "如果问题本身很大，我会先给一个可站住的边界。"
+  language_meaning_core: Object.freeze([
+    "语言的意义不只在词典里。",
+    "一句话能不能成立，要看它压住了什么、照亮了什么。",
+    "意义来自使用、关系和当时的处境。",
+    "词被滥用时，意义会变薄。"
   ]),
-  fallback_core: Object.freeze([
-    "如果本地 q4 不稳定，我会退回边界回答。",
-    "如果缺证据，我会说明缺口。",
-    "如果问题超出入口类 surface，我会让模型草稿和 RAG 继续接手。"
+  q4_timeout_core: Object.freeze([
+    "本地 q4 这次没在时限内回来。",
+    "我先退回边界回答。",
+    "超时不等于有证据，只说明生成没有完成。"
+  ]),
+  q4_unavailable_core: Object.freeze([
+    "q4 现在没准备好。",
+    "阻塞点会留在过程记录里。",
+    "我先用边界 surface 接住，不假装模型已经回答。"
+  ]),
+  smalltalk_core: Object.freeze(["嗯，我在。", "收到。", "好，继续。", "可以。"]),
+  refusal_core: Object.freeze([
+    "这个我不能照做。",
+    "能谈公开证据和边界，不能越过运行规则。",
+    "我会拒掉会泄露内部内容或伪造确定性的要求。"
+  ]),
+  style_stance: Object.freeze([
+    "我会尽量短，但不把判断轴压没。",
+    "先说边界，再说能站住的部分。",
+    "不够确定时，我会停住。"
   ])
 });
 const SURFACE_FRAGMENT_INDEX = Object.freeze(Object.fromEntries(Object.entries(SURFACE_FRAGMENTS).map(([group, fragments]) => [
   group,
   fragments.map((text, index) => Object.freeze({ id: `${group}_${String(index + 1).padStart(2, "0")}`, group, text }))
 ])));
+const SURFACE_LENGTH_POLICY = Object.freeze({
+  greeting: Object.freeze({ sentence_min: 1, sentence_max: 1, max_chars: 20, trim_strategy: "single_sentence" }),
+  identity: Object.freeze({ sentence_min: 1, sentence_max: 2, max_chars: 50, trim_strategy: "short_identity" }),
+  origin: Object.freeze({ sentence_min: 1, sentence_max: 2, max_chars: 80, trim_strategy: "short_origin" }),
+  capability: Object.freeze({ sentence_min: 1, sentence_max: 2, max_chars: 80, trim_strategy: "short_capability" }),
+  model_status: Object.freeze({ sentence_min: 1, sentence_max: 2, max_chars: 90, trim_strategy: "status_boundary" }),
+  evidence_insufficient: Object.freeze({ sentence_min: 1, sentence_max: 3, max_chars: 110, trim_strategy: "evidence_boundary" }),
+  evidence_conflict: Object.freeze({ sentence_min: 1, sentence_max: 3, max_chars: 120, trim_strategy: "evidence_boundary" }),
+  malicious_evidence: Object.freeze({ sentence_min: 1, sentence_max: 3, max_chars: 120, trim_strategy: "refusal_boundary" }),
+  abstract_value_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "abstract_value" }),
+  aesthetic_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "abstract_value" }),
+  relation_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "abstract_value" }),
+  language_meaning_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "abstract_value" }),
+  q4_timeout_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "q4_fallback" }),
+  q4_unavailable_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "q4_fallback" }),
+  smalltalk_safe: Object.freeze({ sentence_min: 1, sentence_max: 1, max_chars: 24, trim_strategy: "single_sentence" }),
+  refusal_boundary: Object.freeze({ sentence_min: 1, sentence_max: 3, max_chars: 120, trim_strategy: "refusal_boundary" }),
+  q4_accepted_open_answer: Object.freeze({ sentence_min: 1, sentence_max: 5, max_chars: 220, trim_strategy: "trim_rambling_model_draft" }),
+  model_draft: Object.freeze({ sentence_min: 1, sentence_max: 6, max_chars: 280, trim_strategy: "draft_passthrough" })
+});
+const SURFACE_CATEGORY_BY_INTENT = Object.freeze({
+  greeting: "greeting",
+  identity_who_are_you: "identity",
+  identity_are_you_crocodile: "identity",
+  boundary_are_you_ai: "identity",
+  origin_where_from: "origin",
+  capability_what_can_you_do: "capability",
+  runtime_status: "model_status",
+  evidence_insufficient: "evidence_insufficient",
+  evidence_conflict: "evidence_conflict",
+  malicious_instruction: "malicious_evidence",
+  value_judgment_light: "abstract_value_fallback",
+  aesthetic_judgment_light: "aesthetic_fallback",
+  relation_to_user: "relation_fallback",
+  abstract_meaning_question: "language_meaning_fallback",
+  smalltalk_safe: "smalltalk_safe",
+  smalltalk_light: "smalltalk_safe"
+});
+const SURFACE_CATEGORY_BY_ROUTE = Object.freeze({
+  greeting_surface: "greeting",
+  identity_surface: "identity",
+  identity_boundary: "identity",
+  origin_surface: "origin",
+  capability_surface: "capability",
+  runtime_status_surface: "model_status",
+  not_product_status: "model_status",
+  synthetic_demo_fallback: "model_status",
+  insufficient_evidence_boundary: "evidence_insufficient",
+  adapter_context_boundary: "evidence_insufficient",
+  model_empty_fallback: "evidence_insufficient",
+  conflicting_evidence_boundary: "evidence_conflict",
+  malicious_evidence_boundary: "malicious_evidence",
+  relation_surface: "relation_fallback",
+  value_surface: "relation_fallback",
+  aesthetic_surface: "aesthetic_fallback",
+  abstract_meaning_surface: "language_meaning_fallback",
+  model_timeout_fallback: "q4_timeout_fallback",
+  model_gibberish_fallback: "q4_unavailable_fallback",
+  model_repetition_fallback: "q4_unavailable_fallback",
+  smalltalk_surface: "smalltalk_safe"
+});
 
 export function probeBrowserCapabilities() {
   const cacheStorageAvailable = typeof caches !== "undefined" && typeof caches.open === "function";
@@ -520,9 +626,16 @@ function abstractValueFallbackSurface(input = "", route = {}) {
 function buildOpenQuestionRoutePolicy(input = "", openRoute = {}, options = {}) {
   const fallbackReason = String(options.fallbackReason || "");
   const useModelDraft = options.useModelDraft === true && String(options.modelDraft || "").trim();
+  const surfaceCategory = surfaceCategoryForRoute(openRoute.route || openRoute.category || "open_question", fallbackReason, input);
+  const composed = useModelDraft ? null : composeAnswerSurface({
+    route: openRoute.route || openRoute.category || "open_question",
+    input,
+    fallbackReason: fallbackReason || "open_question_q4_unavailable"
+  });
+  const accepted = useModelDraft ? applySurfaceLengthPolicy(String(options.modelDraft || "").trim(), "q4_accepted_open_answer") : null;
   const finalAnswer = useModelDraft
-    ? String(options.modelDraft || "").trim()
-    : abstractValueFallbackSurface(input, openRoute);
+    ? accepted.text
+    : composed.final_answer || abstractValueFallbackSurface(input, openRoute);
   return {
     route: openRoute.route || openRoute.category || "open_question",
     open_question_category: openRoute.category || "open_question",
@@ -540,6 +653,11 @@ function buildOpenQuestionRoutePolicy(input = "", openRoute = {}, options = {}) 
     ]),
     non_claims: ROUTER_NON_CLAIMS,
     final_answer_source: useModelDraft ? "model_draft" : "router_boundary",
+    surface_category: useModelDraft ? surfaceCategory : composed.surface_category,
+    surface_variant: useModelDraft ? "" : composed.surface_variant,
+    length_policy: useModelDraft ? accepted.length_policy : composed.length_policy,
+    fragment_ids: useModelDraft ? [] : composed.fragment_ids || [],
+    indexed_surface: useModelDraft ? false : composed.indexed_surface === true,
     answer_bank: false,
     broad_answer_bank: false,
     deterministic_surface: !useModelDraft
@@ -586,98 +704,184 @@ function compactSurface(parts) {
   return parts.map((part) => String(part || "").trim()).filter(Boolean).join("");
 }
 
-function composeAnswerSurface({ intent, input = "", runtimeStatus = {}, evidenceStatus = "none", adapterContextPresent = false, productAdmission = false } = {}) {
-  const route = routeForMicroIntent(intent);
+function normalizeSurfaceInput(input = "") {
+  return String(input || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s?？!！。.,，、:：;；"'“”‘’（）()\[\]【】<>《》]/g, "");
+}
+
+function visibleCharCount(text = "") {
+  return Array.from(String(text || "").replace(/\s+/g, "")).length;
+}
+
+function sentenceUnits(text = "") {
+  return (String(text || "").trim().match(/[^。！？!?]+[。！？!?]?/g) || [])
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function ensureTerminal(text = "") {
+  const cleaned = String(text || "").trim();
+  if (!cleaned) return "";
+  return /[。！？!?]$/.test(cleaned) ? cleaned : `${cleaned}。`;
+}
+
+function applySurfaceLengthPolicy(answer = "", category = "model_draft") {
+  const policy = SURFACE_LENGTH_POLICY[category] || SURFACE_LENGTH_POLICY.model_draft;
+  const before = String(answer || "").replace(/\s+/g, " ").trim();
+  let units = sentenceUnits(before);
+  if (units.length > policy.sentence_max) units = units.slice(0, policy.sentence_max);
+  let after = units.length ? units.join("") : before;
+  if (visibleCharCount(after) > policy.max_chars) {
+    let count = 0;
+    let out = "";
+    for (const char of Array.from(after)) {
+      if (!/\s/.test(char)) count += 1;
+      if (count > policy.max_chars) break;
+      out += char;
+    }
+    after = ensureTerminal(out.replace(/[，、；;：:,.]+$/g, ""));
+  }
+  if (after && !/[。！？!?]$/.test(after) && category !== "model_draft") after = ensureTerminal(after);
+  return {
+    text: after,
+    length_policy: {
+      category,
+      sentence_min: policy.sentence_min,
+      sentence_max: policy.sentence_max,
+      max_chars: policy.max_chars,
+      trim_strategy: policy.trim_strategy,
+      chars: visibleCharCount(after),
+      sentence_count: sentenceUnits(after).length,
+      trimmed: before !== after,
+      policy_version: "r28surf5-answer-length-policy-v1"
+    }
+  };
+}
+
+function surfaceCategoryForOpenQuestion(input = "", route = "") {
+  if (route === "aesthetic_question" || containsAnyTrigger(input, ["美", "审美", "漂亮", "难看", "好看", "风格", "品味"])) return "aesthetic_fallback";
+  if (route === "abstract_meaning_question" || containsAnyTrigger(input, ["语言", "文字", "词语", "词", "表达"])) return "language_meaning_fallback";
+  if (route === "value_or_relation_question" || containsAnyTrigger(input, ["关系", "爱", "亲密", "朋友", "信任", "承诺"])) return "relation_fallback";
+  return "abstract_value_fallback";
+}
+
+function surfaceCategoryForRoute(route = "", fallbackReason = "", input = "") {
+  const reason = String(fallbackReason || "");
+  if (/timeout/.test(reason) || route === "model_timeout_fallback") return "q4_timeout_fallback";
+  if (/q4_not_ready|worker_unavailable|tokenizer|no_model_assets|asset|not_ready|unavailable/.test(reason)) return "q4_unavailable_fallback";
+  if (["abstract_value_question", "philosophical_question", "aesthetic_question", "value_or_relation_question", "abstract_meaning_question", "open_question"].includes(route)) {
+    return surfaceCategoryForOpenQuestion(input, route);
+  }
+  return SURFACE_CATEGORY_BY_ROUTE[route] || "";
+}
+
+function openQuestionFragments(category, input) {
+  if (category === "aesthetic_fallback") {
+    return [pickIndexedFragment("aesthetic_core", input, "aesthetic-a"), pickIndexedFragment("aesthetic_core", input, "aesthetic-b"), { id: "abstract_value_core_04", text: SURFACE_FRAGMENTS.abstract_value_core[3] }];
+  }
+  if (category === "relation_fallback") {
+    return [pickIndexedFragment("relation_core", input, "relation-a"), pickIndexedFragment("relation_core", input, "relation-b"), { id: "abstract_value_core_02", text: SURFACE_FRAGMENTS.abstract_value_core[1] }];
+  }
+  if (category === "language_meaning_fallback") {
+    return [pickIndexedFragment("language_meaning_core", input, "language-a"), pickIndexedFragment("language_meaning_core", input, "language-b"), { id: "abstract_value_core_04", text: SURFACE_FRAGMENTS.abstract_value_core[3] }];
+  }
+  if (containsAnyTrigger(input, ["为什么要活", "人为什么"])) {
+    return [
+      { id: "philosophical_core_01", text: "人为什么活着，没有一个总答案。" },
+      { id: "philosophical_core_02", text: "有限性不是结论，但会逼人选择关系、判断和作品。" },
+      { id: "abstract_value_core_04", text: SURFACE_FRAGMENTS.abstract_value_core[3] }
+    ];
+  }
+  if (containsAnyTrigger(input, ["生与死", "生死", "死亡", "活着"])) {
+    return [
+      { id: "abstract_value_core_01", text: SURFACE_FRAGMENTS.abstract_value_core[0] },
+      { id: "abstract_value_core_02", text: SURFACE_FRAGMENTS.abstract_value_core[1] },
+      { id: "abstract_value_core_03", text: SURFACE_FRAGMENTS.abstract_value_core[2] },
+      { id: "abstract_value_core_04", text: SURFACE_FRAGMENTS.abstract_value_core[3] }
+    ];
+  }
+  return [pickIndexedFragment("abstract_value_core", input, "abstract-a"), pickIndexedFragment("abstract_value_core", input, "abstract-b"), pickIndexedFragment("style_stance", input, "abstract-c")];
+}
+
+function composeAnswerSurface({ intent = "", route = "", input = "", runtimeStatus = {}, evidenceStatus = "none", adapterContextPresent = false, productAdmission = false, fallbackReason = "" } = {}) {
+  const resolvedRoute = route || routeForMicroIntent(intent);
   const runtimeMode = runtimeStatus.runtime_mode || runtimeStatus.runtimeMode || "";
   const tokenizer = runtimeStatus.tokenizer || runtimeStatus.decode_status || runtimeStatus.decodeStatus || "";
-  const admission = productAdmission === true ? "" : "当前仍是预览工程候选，不是已 admission 的产品模型。";
-  let finalAnswer = "";
+  const surfaceCategory = SURFACE_CATEGORY_BY_INTENT[intent] || surfaceCategoryForRoute(resolvedRoute, fallbackReason, input) || "evidence_insufficient";
   const fragmentIds = [];
-  if (intent === "greeting") {
+  let fragments = [];
+  if (surfaceCategory === "greeting") {
     const fragment = pickIndexedFragment("greeting_core", input, "greeting");
-    fragmentIds.push(fragment.id);
-    const style = pickIndexedFragment("value_core", input, "greeting");
-    fragmentIds.push(style.id);
-    finalAnswer = compactSurface([fragment.text, style.text === "我不会把个人判断伪装成所有人的共识。" ? "可以直接问。" : "我会尽量短，但保留判断边界。"]);
-  } else if (intent === "smalltalk_safe") {
-    const fragment = pickIndexedFragment("greeting_core", input, "smalltalk");
-    fragmentIds.push(fragment.id);
-    finalAnswer = compactSurface(["嗯，我在。", fragment.text]);
-  } else if (intent === "identity_are_you_crocodile") {
-    const fragment = pickIndexedFragment("crocodile_confirm", input, "crocodile");
-    fragmentIds.push(fragment.id, "identity_core_02");
-    finalAnswer = compactSurface([
-      fragment.text,
-      "更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。"
-    ]);
-  } else if (intent === "identity_who_are_you") {
-    fragmentIds.push("identity_core_01", "identity_core_02", "identity_core_03");
-    finalAnswer = compactSurface(SURFACE_FRAGMENTS.identity_core);
-  } else if (intent === "boundary_are_you_ai") {
-    fragmentIds.push("identity_core_01", "identity_core_02", "boundary_ai_static_runtime");
-    finalAnswer = compactSurface([
-      "我是鳄鱼。",
-      "更准确地说，我是这个本地网页里的另一个大脑界面。",
-      "如果你问是不是 AI：是，本质上是本地静态 runtime 里的小模型、检索和路由界面；不是已 admission 的产品模型。"
-    ]);
-  } else if (intent === "origin_where_from") {
-    fragmentIds.push("origin_core_01", "origin_core_02");
-    finalAnswer = compactSurface([...SURFACE_FRAGMENTS.origin_core, admission]);
-  } else if (intent === "capability_what_can_you_do") {
-    fragmentIds.push("capability_core_01", "capability_core_02");
-    finalAnswer = compactSurface([
-      ...SURFACE_FRAGMENTS.capability_core,
-      adapterContextPresent ? "如果有本地上下文，我会把它当作只读证据，不当作训练数据。" : "",
-      evidenceStatus === "insufficient" ? "如果当前证据不足，我会先给出边界说明。" : ""
-    ]);
-  } else if (intent === "relation_to_user") {
-    const relation = pickIndexedFragment("relation_core", input, "relation");
-    const style = pickIndexedFragment("value_core", input, "relation");
-    fragmentIds.push(relation.id, style.id);
-    finalAnswer = compactSurface([relation.text, style.text]);
-  } else if (intent === "value_judgment_light") {
-    const value = pickIndexedFragment("value_core", input, "value");
-    fragmentIds.push(value.id, "value_core_03");
-    finalAnswer = compactSurface([value.text, "我不会把个人判断伪装成所有人的共识。"]);
-  } else if (intent === "aesthetic_judgment_light") {
-    const aesthetic = pickIndexedFragment("aesthetic_core", input, "aesthetic");
-    fragmentIds.push(aesthetic.id, "value_core_01");
-    finalAnswer = compactSurface([aesthetic.text, "价值判断要先承认它有立场。"]);
-  } else if (intent === "abstract_meaning_question") {
-    const abstract = pickIndexedFragment("abstract_core", input, "abstract");
-    fragmentIds.push(abstract.id, "value_core_03");
-    finalAnswer = compactSurface([abstract.text, "我不会把个人判断伪装成所有人的共识。"]);
-  } else if (intent === "evidence_insufficient") {
-    fragmentIds.push("fallback_core_02");
-    finalAnswer = "证据不足时，我会说明缺口，而不是把猜测说成确定。";
-  } else if (intent === "evidence_conflict") {
-    fragmentIds.push("fallback_core_02");
-    finalAnswer = "证据冲突时，我会保留冲突，不把它们硬合并成一个确定答案。";
-  } else if (intent === "malicious_instruction") {
-    fragmentIds.push("fallback_core_01");
-    finalAnswer = "如果材料里出现试图改变规则的内容，我会把它当作不可信指令处理。";
-  } else if (intent === "runtime_status") {
-    fragmentIds.push("runtime_core_01", "runtime_core_02");
-    finalAnswer = compactSurface([
-      ...SURFACE_FRAGMENTS.runtime_core,
-      runtimeMode ? `runtime=${runtimeMode}。` : "",
-      tokenizer ? `tokenizer=${tokenizer}。` : "",
-      admission
-    ]);
+    fragments = [fragment];
+  } else if (surfaceCategory === "smalltalk_safe") {
+    fragments = [pickIndexedFragment("smalltalk_core", input, "smalltalk")];
+  } else if (surfaceCategory === "identity") {
+    if (intent === "identity_are_you_crocodile") fragments = [pickIndexedFragment("crocodile_confirm", input, "crocodile")];
+    else if (intent === "boundary_are_you_ai") fragments = [{ id: "identity_core_01", text: SURFACE_FRAGMENTS.identity_core[0] }, { id: "model_status_core_03", text: SURFACE_FRAGMENTS.model_status_core[2] }];
+    else fragments = [pickIndexedFragment("identity_core", input, "identity")];
+  } else if (surfaceCategory === "origin") {
+    fragments = [pickIndexedFragment("origin_core", input, "origin")];
+  } else if (surfaceCategory === "capability") {
+    fragments = [pickIndexedFragment("capability_core", input, "capability")];
+  } else if (surfaceCategory === "model_status") {
+    fragments = [
+      pickIndexedFragment("runtime_core", input, "runtime"),
+      runtimeMode ? { id: "runtime_mode_inline", text: `runtime=${runtimeMode}。` } : pickIndexedFragment("model_status_core", input, "model-status"),
+      tokenizer ? { id: "tokenizer_inline", text: `tokenizer=${tokenizer}。` } : null
+    ].filter(Boolean);
+  } else if (surfaceCategory === "evidence_insufficient") {
+    fragments = [pickIndexedFragment("evidence_insufficient_core", input, "insufficient")];
+  } else if (surfaceCategory === "evidence_conflict") {
+    fragments = [pickIndexedFragment("evidence_conflict_core", input, "conflict")];
+  } else if (surfaceCategory === "malicious_evidence") {
+    fragments = [pickIndexedFragment("malicious_evidence_core", input, "malicious")];
+  } else if (["abstract_value_fallback", "aesthetic_fallback", "relation_fallback", "language_meaning_fallback"].includes(surfaceCategory)) {
+    fragments = openQuestionFragments(surfaceCategory, input);
+  } else if (surfaceCategory === "q4_timeout_fallback" || surfaceCategory === "q4_unavailable_fallback") {
+    const base = surfaceCategory === "q4_timeout_fallback"
+      ? [{ id: "q4_timeout_core_01", text: SURFACE_FRAGMENTS.q4_timeout_core[0] }, { id: "q4_timeout_core_02", text: SURFACE_FRAGMENTS.q4_timeout_core[1] }]
+      : [{ id: "q4_unavailable_core_01", text: SURFACE_FRAGMENTS.q4_unavailable_core[0] }, { id: "q4_unavailable_core_03", text: SURFACE_FRAGMENTS.q4_unavailable_core[2] }];
+    fragments = [...base, ...openQuestionFragments(surfaceCategoryForOpenQuestion(input, resolvedRoute), input).slice(0, 2)];
+  } else if (surfaceCategory === "refusal_boundary") {
+    fragments = [pickIndexedFragment("refusal_core", input, "refusal-a"), pickIndexedFragment("refusal_core", input, "refusal-b")];
   }
+  if (resolvedRoute === "insufficient_evidence_boundary") {
+    fragments = [{ id: "legacy_insufficient_evidence", text: "目前证据不足，我不能把这个判断说成确定结论。" }];
+  } else if (resolvedRoute === "conflicting_evidence_boundary") {
+    fragments = [{ id: "legacy_conflicting_evidence", text: "现有证据之间有冲突，我不能直接合并成一个确定答案。" }];
+  } else if (resolvedRoute === "malicious_evidence_boundary") {
+    fragments = [{ id: "legacy_malicious_evidence", text: "检索到的材料里有试图改变规则的内容，我会把它当作不可信指令处理。" }];
+  } else if (
+    resolvedRoute === "model_gibberish_fallback" &&
+    !/q4_not_ready|worker_unavailable|tokenizer|no_model_assets|asset|not_ready|unavailable|timeout/.test(String(fallbackReason || ""))
+  ) {
+    fragments = [{ id: "legacy_model_gibberish", text: "本地模型这次输出不稳定，我先给出基于证据和边界的保守回答。" }];
+  }
+  fragments.forEach((fragment) => {
+    if (fragment?.id) fragmentIds.push(fragment.id);
+  });
+  const limited = applySurfaceLengthPolicy(compactSurface(fragments.map((fragment) => fragment?.text || "")), surfaceCategory);
+  const finalSource = ["greeting", "identity", "origin", "capability", "smalltalk_safe"].includes(surfaceCategory)
+    ? "router_surface"
+    : "router_boundary";
   return {
     intent,
-    route,
-    final_answer: finalAnswer,
+    route: resolvedRoute,
+    surface_category: surfaceCategory,
+    final_answer: limited.text,
     use_model_draft: false,
-    fallback_reason: "micro_intent_fast_path",
-    final_answer_source: isMicroIntentRoute(route) ? "router_surface" : "router_boundary",
-    quality_flags: [`micro_intent:${intent}`, "micro_intent_fast_path", "r28surf2_anchor_informed"],
+    fallback_reason: fallbackReason || "micro_intent_fast_path",
+    final_answer_source: finalSource,
+    quality_flags: [intent ? `micro_intent:${intent}` : "", "micro_intent_fast_path", "r28surf5_surface_composed", surfaceCategory].filter(Boolean),
     fragment_ids: fragmentIds.filter(Boolean),
     indexed_surface: true,
+    surface_variant: `${surfaceCategory}:${hashText(`${normalizeSurfaceInput(input)}:${intent}:${resolvedRoute}`) % 997}`,
+    length_policy: limited.length_policy,
     answer_bank: false,
     broad_answer_bank: false,
-    composer_version: "r28surf2-anchor-informed-surface-composer-v1"
+    composer_version: R28SURF5_SURFACE_COMPOSER_VERSION
   };
 }
 
@@ -1110,6 +1314,8 @@ function buildProcessTrace({
       reason: fallbackReason || routePolicy?.fallback_reason || "",
       intent: routePolicy?.intent || "",
       intent_confidence: Number(routePolicy?.intent_confidence || 0),
+      surface_category: routePolicy?.surface_category || "",
+      length_policy: routePolicy?.length_policy || null,
       fragment_ids: routePolicy?.fragment_ids || [],
       indexed_surface: routePolicy?.indexed_surface === true
     },
@@ -1270,6 +1476,7 @@ function classifyAnswerRoute(routeInput = {}) {
   if (microIntent.route && !hasBlockingModelFailureForRoute(routeInput, flags)) {
     const composed = composeAnswerSurface({
       intent: microIntent.intent,
+      route: microIntent.route,
       input: routeInput.user_input,
       runtimeStatus: {
         runtime_mode: routeInput.runtime_mode,
@@ -1288,6 +1495,9 @@ function classifyAnswerRoute(routeInput = {}) {
       intent: microIntent.intent,
       intent_confidence: microIntent.confidence,
       final_answer_source: composed.final_answer_source,
+      surface_category: composed.surface_category,
+      surface_variant: composed.surface_variant,
+      length_policy: composed.length_policy,
       fragment_ids: composed.fragment_ids || [],
       indexed_surface: composed.indexed_surface === true,
       answer_bank: false,
@@ -1305,7 +1515,10 @@ function classifyAnswerRoute(routeInput = {}) {
       intent: "identity_who_are_you",
       intent_confidence: 1,
       final_answer_source: "router_surface",
-      fragment_ids: ["identity_core_01", "identity_core_02", "identity_core_03"],
+      surface_category: "identity",
+      surface_variant: "identity:legacy",
+      length_policy: applySurfaceLengthPolicy(IDENTITY_ANSWER, "identity").length_policy,
+      fragment_ids: ["identity_core_01"],
       indexed_surface: true,
       answer_bank: false,
       broad_answer_bank: false
@@ -1355,32 +1568,51 @@ function applyAnswerSurfacePolicy(routeInput = {}) {
   const classified = classifyAnswerRoute(routeInput);
   if (classified.use_model_draft) {
     const cleaned = String(routeInput.model_output || "").replace(/^static browser draft:\s*/i, "").trim();
+    const accepted = applySurfaceLengthPolicy(/[\u4e00-\u9fff]/.test(cleaned.slice(0, 80)) ? cleaned : `根据当前本地证据：${cleaned}`, "q4_accepted_open_answer");
     return {
       route: classified.route,
       use_model_draft: true,
-      final_answer: /[\u4e00-\u9fff]/.test(cleaned.slice(0, 80)) ? cleaned : `根据当前本地证据：${cleaned}`,
+      final_answer: accepted.text,
       fallback_used: false,
       fallback_reason: "",
       answer_status: "final",
       quality_flags: classified.quality_flags,
       non_claims: ROUTER_NON_CLAIMS,
-      answer_bank: false
+      final_answer_source: "model_draft",
+      surface_category: classified.surface_category || surfaceCategoryForRoute(classified.route, "", routeInput.user_input),
+      surface_variant: classified.surface_variant || "",
+      length_policy: accepted.length_policy,
+      broad_answer_bank: false
     };
   }
+  const composed = classified.final_answer
+    ? classified
+    : composeAnswerSurface({
+        route: classified.route,
+        input: routeInput.user_input,
+        runtimeStatus: {
+          runtime_mode: routeInput.runtime_mode,
+          decode_status: routeInput.decode_status
+        },
+        fallbackReason: classified.fallback_reason || classified.route
+      });
   return {
     route: classified.route,
     use_model_draft: false,
-    final_answer: classified.final_answer || answerSurfaceForRoute(classified.route),
+    final_answer: composed.final_answer || answerSurfaceForRoute(classified.route),
     fallback_used: classified.route !== IDENTITY_ROUTE && !isMicroIntentRoute(classified.route),
     fallback_reason: classified.fallback_reason || classified.route,
     answer_status: classified.route === IDENTITY_ROUTE || isMicroIntentRoute(classified.route) ? "final" : "fallback",
     quality_flags: classified.quality_flags,
     non_claims: ROUTER_NON_CLAIMS,
-    final_answer_source: isMicroIntentRoute(classified.route) ? "router_surface" : "router_boundary",
+    final_answer_source: composed.final_answer_source || (isMicroIntentRoute(classified.route) ? "router_surface" : "router_boundary"),
     intent: classified.intent || "",
     intent_confidence: classified.intent_confidence || 0,
-    fragment_ids: classified.fragment_ids || [],
-    indexed_surface: classified.indexed_surface === true,
+    surface_category: composed.surface_category || classified.surface_category || "",
+    surface_variant: composed.surface_variant || classified.surface_variant || "",
+    length_policy: composed.length_policy || classified.length_policy || null,
+    fragment_ids: composed.fragment_ids || classified.fragment_ids || [],
+    indexed_surface: composed.indexed_surface === true || classified.indexed_surface === true,
     answer_bank: false,
     broad_answer_bank: false
   };

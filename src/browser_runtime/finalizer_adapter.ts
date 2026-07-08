@@ -59,6 +59,11 @@ export function buildDeterministicFallback(input, reason = "runtime_or_verifier_
     overlong_output: "model_gibberish_fallback",
     repetition_guard: "model_repetition_fallback",
     generation_timeout: "model_timeout_fallback",
+    q4_generation_timeout: "model_timeout_fallback",
+    runtime_timeout: "model_timeout_fallback",
+    q4_not_ready: "model_gibberish_fallback",
+    worker_unavailable: "model_gibberish_fallback",
+    tokenizer_unavailable: "model_gibberish_fallback",
     not_product_status: "not_product_status",
     synthetic_demo_fallback: "synthetic_demo_fallback"
   };

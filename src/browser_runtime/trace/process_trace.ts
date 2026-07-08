@@ -109,6 +109,8 @@ export function createProcessTrace(input = {}) {
       reason: safeString(input.router?.reason, ""),
       intent: safeString(input.router?.intent, ""),
       intent_confidence: Number.isFinite(Number(input.router?.intent_confidence)) ? Number(input.router.intent_confidence) : 0,
+      surface_category: safeString(input.router?.surface_category, ""),
+      length_policy: input.router?.length_policy || null,
       fragment_ids: Array.isArray(input.router?.fragment_ids) ? input.router.fragment_ids.map(String) : [],
       indexed_surface: bool(input.router?.indexed_surface)
     },
@@ -196,6 +198,8 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
       reason: packet.fallback_reason || routePolicy.fallback_reason || "",
       intent: routePolicy.intent || "",
       intent_confidence: routePolicy.intent_confidence || 0,
+      surface_category: routePolicy.surface_category || "",
+      length_policy: routePolicy.length_policy || null,
       fragment_ids: routePolicy.fragment_ids || [],
       indexed_surface: routePolicy.indexed_surface === true
     },

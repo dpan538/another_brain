@@ -1,0 +1,115 @@
+{
+  "approved_anchor_count": 98,
+  "eval_prompts_excluded": true,
+  "non_claims": {
+    "backend_inference": false,
+    "browser_admission": false,
+    "doubao": false,
+    "external_llm_api": false,
+    "hosted_vector_store": false,
+    "product_admission": false,
+    "product_model": false,
+    "release_checkpoint": false
+  },
+  "ok": true,
+  "old_pack_51_100_excluded": true,
+  "phase": "R28SURF5",
+  "private_raw_data_used": false,
+  "schema_version": 1,
+  "source_policy": {
+    "data_public_ingestion_parsed": false,
+    "eval_prompts_used": false,
+    "model_weights_changed": false,
+    "old_question_pack_001_rows_51_100_used": false,
+    "only_tracked_summaries_used": true,
+    "private_raw_data_saved": false,
+    "q4_assets_added": false,
+    "root_docx_pdf_parsed": false,
+    "training_ran": false
+  },
+  "style_basis": {
+    "answer_mode_counts": {
+      "abstract_reframe": 39,
+      "compressed_judgment": 27,
+      "direct_answer": 7,
+      "partial_answer": 6,
+      "pressure_resistance": 8,
+      "refuse": 11
+    },
+    "approved_summary_docs": [
+      "docs/R26E_USER_ANSWERED_CORPUS_SUMMARY.md",
+      "docs/R26G_FIX_AND_INTAKE_USER_ANSWERS.md",
+      "docs/R26G_REPLACEMENT_51_100_PARSE_SUMMARY.md",
+      "docs/R26G_USER_ANSWERED_CORPUS_SUMMARY.md",
+      "docs/R26H_USER_ANSWER_CORPUS_READINESS.md",
+      "docs/r28/R28ROUT1_COMPOSITIONAL_ANSWER_SURFACES.md",
+      "docs/r28/R28ROUT1_FUZZY_INTENT_ROUTER.md",
+      "docs/r28/R28ROUT1_NO_BROAD_ANSWER_BANK.md"
+    ],
+    "evidence_policy_counts": {
+      "no_evidence_needed": 31,
+      "private_boundary": 11,
+      "unsupported_challenge": 10,
+      "value_disagreement": 46
+    },
+    "module_counts": {
+      "不答与边界": 10,
+      "价值观": 10,
+      "关系语境": 9,
+      "审美": 9,
+      "审美 / 哲学": 1,
+      "怪问题": 10,
+      "怪问题抽象": 10,
+      "抽象判断": 10,
+      "无证据挑战": 10,
+      "朋友日常判断": 9,
+      "语言与意义": 10
+    },
+    "style_anchors": [
+      "compressed",
+      "bounded",
+      "answer-as-user",
+      "non-service voice",
+      "evidence-aware"
+    ],
+    "value_anchors": [
+      "boundary before helpfulness",
+      "evidence before correction",
+      "stance without universalizing",
+      "abstract relation over procedure"
+    ]
+  },
+  "style_traits": [
+    "concise",
+    "boundary_first",
+    "anti_customer_service",
+    "evidence_honest",
+    "allows_judgment",
+    "aesthetic_value_sensitive"
+  ],
+  "surface_categories": [
+    "greeting",
+    "identity",
+    "origin",
+    "capability",
+    "model_status",
+    "evidence_insufficient",
+    "evidence_conflict",
+    "malicious_evidence",
+    "abstract_value_fallback",
+    "aesthetic_fallback",
+    "relation_fallback",
+    "language_meaning_fallback",
+    "q4_timeout_fallback",
+    "q4_unavailable_fallback",
+    "smalltalk_safe",
+    "refusal_boundary"
+  ],
+  "surface_policy": {
+    "broad_answer_bank": false,
+    "compositional_fragments": true,
+    "deterministic_variation_by_normalized_input_hash": true,
+    "micro_intent_only_for_entry_surfaces": true,
+    "open_questions_still_attempt_q4_rag": true
+  }
+}
