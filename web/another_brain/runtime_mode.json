@@ -1,7 +1,7 @@
 {
   "adapter_status": "local_session_import_export_ready",
   "asset_cache_mode": "memory_fallback",
-  "asset_cache_version": "r28ship0-unified-q4-mount",
+  "asset_cache_version": "r28p0-q4-mount-timeout-fix",
   "asset_cache_policy": "same_origin_shards_only",
   "asset_cache_status": "same_origin_static_q4_assets_committed_checksum_required",
   "asset_loader_resilience": "checksum_retry_abort_partial_fallback",
@@ -31,7 +31,7 @@
   "non_product_warning": "R28TOK1 static q4 runtime uses an exact runtime tokenizer but remains experimental/non-product.",
   "offline_static_readiness": "static_q4_forward_exact_tokenizer_smoke_passed",
   "phase_4": false,
-  "prelaunch_stage": "r28ship0",
+  "prelaunch_stage": "r28p0",
   "product_admission": false,
   "product_model": false,
   "product_model_admission": false,
@@ -60,8 +60,8 @@
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
   "total_model_asset_bytes": 48267968,
-  "ui_build_marker": "R28SHIP0",
+  "ui_build_marker": "R28P0",
   "ui_build_timestamp": "2026-07-08T00:00:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28ship0-unified-q4-mount"
+  "ui_version": "r28p0-q4-mount-timeout-fix"
 }

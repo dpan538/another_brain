@@ -126,7 +126,13 @@ def run_gate(root: Path = ROOT) -> dict:
         check(quality_ok, "short_natural_identity_greeting"),
         check(no_product_claim, "no_product_claim"),
         check(release_blockers_visible, "release_blockers_visible"),
-        check("/another_brain_chat/app.js?v=r28merge3-final-premerge-gate" in index or "/another_brain_chat/app.js?v=r28merge3-final-premerge-gate" in root_index, "merge3_versioned_app"),
+        check(
+            "/another_brain_chat/app.js?v=r28merge3-final-premerge-gate" in index
+            or "/another_brain_chat/app.js?v=r28merge3-final-premerge-gate" in root_index
+            or "/another_brain_chat/app.js?v=r28p0-q4-mount-timeout-fix" in index
+            or "/another_brain_chat/app.js?v=r28p0-q4-mount-timeout-fix" in root_index,
+            "merge3_versioned_app",
+        ),
     ]
     failures = [item["name"] for item in checks if not item["ok"]]
     if not budget_ok:

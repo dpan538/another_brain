@@ -13,6 +13,8 @@ test("repeated sends are serialized and do not create a worker storm", async () 
   assert.ok(runtime.includes("this.worker = new Worker"));
   assert.ok(runtime.includes("if (!this.worker && this.capabilities.worker_available) await this.load()"));
   assert.ok(runtime.includes("this.worker.terminate()"));
-  assert.equal((runtime.match(/new Worker\(new URL\("\.\/runtime_worker\.js/g) || []).length, 1);
+  assert.equal((runtime.match(/new Worker\(new URL\("\.\/runtime_worker\.js/g) || []).length, 2);
+  assert.ok(runtime.includes("if (!this.worker && this.capabilities.worker_available) this.worker = this.createRuntimeWorker()"));
+  assert.ok(runtime.includes("failAndRestart(new Error(\"self_check_timeout\"))"));
   assert.equal((runtime.match(/new Worker\(new URL\("\.\/self_check_worker\.js/g) || []).length, 1);
 });

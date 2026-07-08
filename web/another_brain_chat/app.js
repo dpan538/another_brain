@@ -1,10 +1,11 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28merge3-final-premerge-gate";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28merge3-final-premerge-gate";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28p0-q4-mount-timeout-fix";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28p0-q4-mount-timeout-fix";
 
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
 const R28MERGE3_UI_VERSION = "r28merge3-final-premerge-gate";
+const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
-const R28HOTFIX3_BUILD_MARKER = "R28MERGE3";
+const R28HOTFIX3_BUILD_MARKER = "R28P0";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -14,7 +15,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28merge3",
+  prelaunch_stage: "r28p0",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -26,7 +27,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   adapter_status: "local_session_import_export_ready",
   release_blockers: ["product_admission_pending", "browser_admission_pending", "release_checkpoint_pending"],
   candidate_static_bundle: true,
-  candidate_warning: "Static q4 runtime is an engineering preview path only; this is not product, browser, or release admission.",
+  candidate_warning: "Static q4 runtime is an engineering preview path only; this P0 mount fix is not product, browser, or release admission.",
   asset_cache_mode: "memory_fallback",
   asset_cache_policy: "same_origin_shards_only",
   asset_loader_resilience: "checksum_retry_abort_partial_fallback",
@@ -54,6 +55,7 @@ const MODEL_LOADING_PROGRESS = {
   fallback: 100
 };
 const R28SHIP0_DEEP_SELFCHECK_METHOD = "deepSelfCheckModelPath";
+const R28P0_Q4_WARMUP_TIMEOUT_MS = 90000;
 
 const appShell = document.querySelector("#app-shell");
 const chatModeButton = document.querySelector("#chat-mode-button");
@@ -445,8 +447,9 @@ async function loadDeliveryConfig() {
   if (!globalThis.location?.href) return DEFAULT_DELIVERY_CONFIG;
   const base = new URL(globalThis.location.href);
   const url = new URL("/another_brain/runtime_mode.json", base);
+  url.searchParams.set("v", R28P0_Q4_MOUNT_FIX_VERSION);
   if (url.origin !== base.origin) throw new Error("non_same_origin_runtime_mode_rejected");
-  const response = await fetch(url.href);
+  const response = await fetch(url.href, { cache: "no-store" });
   if (!response.ok) throw new Error(`runtime_mode_fetch_failed:${response.status}`);
   const config = await response.json();
   return { ...DEFAULT_DELIVERY_CONFIG, ...config };
@@ -460,8 +463,8 @@ function renderDeliveryConfig(config) {
   setText(modelSourceBadge, config.model_mode || DEFAULT_DELIVERY_CONFIG.model_mode);
   setText(tokenizerStatusBadge, `tokenizer: ${config.tokenizer_decode_status || "not checked"}`);
   setText(routerStatusBadge, "router: enabled");
-  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${config.ui_version || R28HOTFIX1_UI_VERSION}`);
-  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28MERGE3_UI_VERSION} / base=${config.ui_version || R28HOTFIX1_UI_VERSION}`);
+  setText(uiVersionBadge, `${R28HOTFIX1_BUILD_MARKER} · ${R28P0_Q4_MOUNT_FIX_VERSION}`);
+  setText(uiBuildStatus, `${R28HOTFIX1_BUILD_MARKER} / ${R28P0_Q4_MOUNT_FIX_VERSION} / base=${config.ui_version || R28MERGE3_UI_VERSION}`);
   setText(q4StatusBadge, "q4 forward: not checked");
   const releaseBlockers = Array.isArray(config.release_blockers) ? config.release_blockers : DEFAULT_DELIVERY_CONFIG.release_blockers;
   setText(candidateRouteStatus, config.candidate_route || DEFAULT_DELIVERY_CONFIG.candidate_route);
@@ -550,7 +553,7 @@ async function boot() {
   const deliveryConfig = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   renderDeliveryConfig(deliveryConfig);
   renderAssetStatus(null, deliveryConfig);
-  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: deliveryConfig.ui_version || R28HOTFIX1_UI_VERSION });
+  runtime = new BrowserChatRuntime({ mode: deliveryConfig.model_mode, deliveryConfig, uiVersion: R28P0_Q4_MOUNT_FIX_VERSION });
   runtime.setContextPackets(contextBridge.getPackets());
   renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   const loadResult = await runtime.load();
@@ -588,7 +591,7 @@ async function boot() {
     renderSelfCheck(report);
     renderModelLoading({ report, retrying: true, attempt: 1, strategy: "primary" });
     const mountResult = await runtime.mountQ4WithRetry({
-      timeoutMs: 15000,
+      timeoutMs: R28P0_Q4_WARMUP_TIMEOUT_MS,
       shardTimeoutMs: 10000,
       signal: bootController.signal,
       onProgress: (progressReport) => {
@@ -740,7 +743,7 @@ on(modelSelfCheckButton, "click", async () => {
   renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   try {
     const mountResult = await runtime.mountQ4WithRetry({
-      timeoutMs: 15000,
+      timeoutMs: R28P0_Q4_WARMUP_TIMEOUT_MS,
       shardTimeoutMs: 10000,
       signal: controller.signal,
       onProgress: (progressReport) => {

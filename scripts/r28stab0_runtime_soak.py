@@ -233,7 +233,9 @@ def source_health_checks() -> dict:
     self_check_nonblocking = all(
         marker in app
         for marker in [
-            "runtime.quickSelfCheckModelPath({ jsonTimeoutMs: 1500, shardTimeoutMs: 8000 })",
+            "runtime.quickSelfCheckModelPath({",
+            "jsonTimeoutMs: 900",
+            "shardTimeoutMs: 900",
             "q4_forward: { status: \"skipped\"",
             "boot().catch",
         ]
@@ -241,7 +243,8 @@ def source_health_checks() -> dict:
     self_check_timeout_recovery = all(
         marker in app + runtime
         for marker in [
-            "timeoutMs: 15000",
+            "R28P0_Q4_WARMUP_TIMEOUT_MS",
+            "SELF_CHECK_MAX_TIMEOUT_MS = 120000",
             "self_check_timeout",
             "self_check_cancelled",
             "setDisabled(modelSelfCheckButton, false)",

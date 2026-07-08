@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28ship0-unified-q4-mount";
+import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28p0-q4-mount-timeout-fix";
 
 function tokensFor(prompt, maxTokens) {
   const parts = [

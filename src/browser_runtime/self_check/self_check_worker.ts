@@ -6,12 +6,12 @@ export const R28HOTFIX2_SELFCHECK_WORKER_PROTOCOL = Object.freeze({
   error: "error"
 });
 
-export function buildSelfCheckWorkerRequest({ prompt = "R28HOTFIX2 q4 path smoke", timeoutMs = 8000 } = {}) {
+export function buildSelfCheckWorkerRequest({ prompt = "R28P0 q4 path smoke", timeoutMs = 90000 } = {}) {
   return {
     type: R28HOTFIX2_SELFCHECK_WORKER_PROTOCOL.request,
     prompt,
     maxTokens: 1,
     contextLength: 32,
-    timeoutMs: Math.min(Math.max(Number(timeoutMs || 8000), 1000), 15000)
+    timeoutMs: Math.min(Math.max(Number(timeoutMs || 90000), 1000), 120000)
   };
 }

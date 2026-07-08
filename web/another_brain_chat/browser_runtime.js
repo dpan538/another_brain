@@ -33,6 +33,7 @@ const ROUTER_NON_CLAIMS = [
   "hard router is product-surface guard only"
 ];
 const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
+const R28P0_Q4_MOUNT_FIX_VERSION = "r28p0-q4-mount-timeout-fix";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -44,7 +45,8 @@ const R28SHIP0_Q4_RETRY_STRATEGIES = Object.freeze(["primary", "normalized_absol
 const R28SHIP0_RUNTIME_TRUTH_BLOCKERS = Object.freeze(["asset_missing", "tokenizer_fail", "forward_timeout", "worker_error", "q4_forward_not_confirmed", "q4_retry_plan_exhausted", "model_loading_cancelled"]);
 const SELF_CHECK_JSON_TIMEOUT_MS = 900;
 const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
-const SELF_CHECK_DEEP_TIMEOUT_MS = 15000;
+const SELF_CHECK_DEEP_TIMEOUT_MS = 90000;
+const SELF_CHECK_MAX_TIMEOUT_MS = 120000;
 const IDENTITY_ROUTE = "identity_boundary";
 const R28SURF4_NATURAL_SURFACE_VERSION = "r28surf4-natural-daily-surfaces-v1";
 const IDENTITY_ANSWER = "我是鳄鱼，另一个大脑界面。";
@@ -1026,6 +1028,10 @@ function timeoutSignal(timeoutMs = 1000, signal = null) {
   return { signal: controller.signal, clear: () => clearTimeout(timer) };
 }
 
+function clampQ4WarmupTimeout(timeoutMs = SELF_CHECK_DEEP_TIMEOUT_MS) {
+  return Math.min(Math.max(Number(timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS), 1000), SELF_CHECK_MAX_TIMEOUT_MS);
+}
+
 async function fetchJsonSameOrigin(path, options = {}) {
   const url = sameOriginAssetUrl(path, options);
   const timed = timeoutSignal(options.timeoutMs || 1000, options.signal);
@@ -1292,7 +1298,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28p0-q4-mount-timeout-fix", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -1338,7 +1344,7 @@ export class BrowserChatRuntime {
 
   createRuntimeWorker() {
     if (!this.capabilities.worker_available) return null;
-    return new Worker(new URL("./runtime_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
+    return new Worker(new URL("./runtime_worker.js?v=r28p0-q4-mount-timeout-fix", import.meta.url), { type: "module" });
   }
 
   async clearModelAssetCacheNamespace() {
@@ -1558,9 +1564,95 @@ export class BrowserChatRuntime {
 
   async runQ4SelfCheckSmoke(options = {}) {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
-    const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
+    const timeoutMs = clampQ4WarmupTimeout(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS);
+    if (options.useIsolatedSelfCheckWorker === true) {
+      return this.runQ4SelfCheckSmokeInIsolatedWorker({ ...options, timeoutMs });
+    }
+    return this.runQ4SelfCheckSmokeOnRuntimeWorker({ ...options, timeoutMs });
+  }
+
+  async runQ4SelfCheckSmokeOnRuntimeWorker(options = {}) {
+    const timeoutMs = clampQ4WarmupTimeout(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS);
+    if (!this.worker && this.capabilities.worker_available) this.worker = this.createRuntimeWorker();
+    if (!this.worker) throw new Error("runtime_worker_unavailable");
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
+      const worker = this.worker;
+      const tokens = [];
+      let settled = false;
+      let timeout = null;
+      const finish = (callback) => {
+        if (settled) return;
+        settled = true;
+        if (timeout) clearTimeout(timeout);
+        callback();
+      };
+      const failAndRestart = (error) => {
+        try {
+          worker.terminate();
+        } catch {
+        }
+        if (this.worker === worker) this.worker = this.createRuntimeWorker();
+        finish(() => reject(error));
+      };
+      timeout = setTimeout(() => {
+        this.lastFallbackReason = "self_check_timeout";
+        failAndRestart(new Error("self_check_timeout"));
+      }, timeoutMs);
+      if (options.signal) {
+        if (options.signal.aborted) {
+          failAndRestart(new Error("self_check_cancelled"));
+          return;
+        }
+        options.signal.addEventListener("abort", () => {
+          failAndRestart(new Error("self_check_cancelled"));
+        }, { once: true });
+      }
+      worker.onmessage = (event) => {
+        const message = event.data || {};
+        if (message.type === "state" && typeof options.onProgress === "function") {
+          options.onProgress({ type: "progress", stage: message.state });
+        }
+        if (message.type === "token") tokens.push(message.token);
+        if (message.type === "error") {
+          this.lastFallbackReason = message.fallback_reason || message.error || "self_check_worker_failed";
+          failAndRestart(new Error(message.error || "self_check_worker_failed"));
+        }
+        if (message.type === "final") {
+          this.lastRuntimeStats = message.stats || {
+            tokens_generated: Array.isArray(message.tokens) ? message.tokens.length : tokens.length,
+            runtime_mode: this.mode,
+            decoded_text_available: true,
+            decode_status: "exact_runtime_tokenizer",
+            fallback_used: false
+          };
+          this.lastFallbackReason = "";
+          finish(() => resolve({
+            type: "final",
+            draft: message.draft || tokens.join(""),
+            tokens: message.tokens || tokens,
+            stats: this.lastRuntimeStats,
+            worker_reused_for_chat: true
+          }));
+        }
+      };
+      worker.onerror = (error) => {
+        failAndRestart(new Error(error.message || "self_check_worker_error"));
+      };
+      worker.postMessage({
+        type: "generate",
+        prompt: options.prompt || "R28P0 q4 persistent runtime warmup",
+        mode: this.mode,
+        maxTokens: 1,
+        contextLength: 32,
+        timeoutMs
+      });
+    });
+  }
+
+  async runQ4SelfCheckSmokeInIsolatedWorker(options = {}) {
+    const timeoutMs = clampQ4WarmupTimeout(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS);
+    return new Promise((resolve, reject) => {
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28p0-q4-mount-timeout-fix", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
@@ -1601,7 +1693,7 @@ export class BrowserChatRuntime {
       };
       worker.postMessage({
         type: "q4_smoke",
-        prompt: "R28SHIP0 q4 path smoke",
+        prompt: options.prompt || "R28P0 q4 isolated path smoke",
         maxTokens: 1,
         contextLength: 32,
         timeoutMs
@@ -1619,7 +1711,7 @@ export class BrowserChatRuntime {
     const runDeep = options.runDeep === true;
     const jsonTimeoutMs = Math.min(Math.max(Number(options.jsonTimeoutMs || options.quickTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS), 500), 3000);
     const shardProbeTimeoutMs = Math.min(Math.max(Number(options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS), 100), 15000);
-    const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS), 1000), 15000);
+    const deepTimeoutMs = clampQ4WarmupTimeout(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS);
     const cacheBust = options.cacheBust ? `attempt_${options.attempt || 1}_${Date.now()}` : "";
     const blockers = [];
     let assetManifest = null;
@@ -1880,7 +1972,7 @@ export class BrowserChatRuntime {
         mode: this.mode,
         maxTokens: Math.min(options.maxTokens || 16, 32),
         contextLength: Math.min(options.contextLength || 256, 1024),
-        timeoutMs: Math.min(options.timeoutMs || 3000, 15000)
+        timeoutMs: Math.min(options.timeoutMs || 30000, 60000)
       });
     });
   }
@@ -1999,7 +2091,7 @@ export class BrowserChatRuntime {
     try {
       if (this.abortRequested) throw new Error("generation_aborted");
       const promptPacket = buildPromptPacket(input, evidencePacket, statePacket);
-      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), { maxTokens: 8, timeoutMs: 8000, contextLength: 64 });
+      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), { maxTokens: 8, timeoutMs: 30000, contextLength: 64 });
       setStatus("verifying");
       verifierResult = verifyDraft(decoderDraft, evidencePacket);
       const finalized = finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult, {

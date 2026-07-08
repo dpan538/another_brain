@@ -1,11 +1,11 @@
-import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28ship0-unified-q4-mount";
+import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28p0-q4-mount-timeout-fix";
 
 async function handleSelfCheck(message = {}) {
   if (message.type !== "q4_smoke") {
     self.postMessage({ type: "error", error: "unsupported_self_check_message" });
     return;
   }
-  const timeoutMs = Math.min(Math.max(Number(message.timeoutMs || 8000), 1000), 15000);
+  const timeoutMs = Math.min(Math.max(Number(message.timeoutMs || 90000), 1000), 120000);
   try {
     self.postMessage({ type: "progress", stage: "worker_loaded" });
     self.postMessage({ type: "progress", stage: "q4_forward_started" });

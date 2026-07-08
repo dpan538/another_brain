@@ -11,8 +11,8 @@ from urllib.parse import parse_qs, unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 WEB = ROOT / "web"
 REPORT_PATH = ROOT / "artifacts" / "r28stab0" / "reports" / "static_route_matrix.json"
-VERSION = "r28ux5-chat-dashboard-split"
-BUILD_MARKERS = ("R28UX5", "R28RAG3", "R28SURF2", "R28ROUT1", "R28HOTFIX3", "R28HOTFIX2", "R28HOTFIX1")
+VERSION = "r28p0-q4-mount-timeout-fix"
+BUILD_MARKERS = ("R28P0", "R28MERGE3", "R28SHIP0", "R28UX5", "R28RAG3", "R28SURF2", "R28ROUT1", "R28HOTFIX3", "R28HOTFIX2", "R28HOTFIX1")
 
 ROUTES = [
     "/",
@@ -39,7 +39,7 @@ REQUIRED_MARKERS = {
     "static_q4": "static_q4_experimental",
     "exact_tokenizer": "exact_runtime_tokenizer",
     "no_backend_badge": "No backend inference",
-    "non_product": "不是已 admission 的产品模型",
+    "non_product": "不是产品模型",
 }
 
 
