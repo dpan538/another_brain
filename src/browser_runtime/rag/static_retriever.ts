@@ -1,7 +1,14 @@
 import { createEvidencePacket } from "./evidence_packet.ts";
 import { rankEvidence } from "./evidence_ranker.ts";
+import {
+  cardToEvidenceRecord,
+  normalizeR28Rag3CardFixture,
+  R28RAG3_STATIC_PROFILE_ASSETS
+} from "./profile_retriever.ts";
 
 export const STATIC_RAG_DEMO_ASSET = "../another_brain/static_rag/demo_memory.json";
+export const STATIC_RAG_PROFILE_ASSETS = R28RAG3_STATIC_PROFILE_ASSETS;
+export const STATIC_RAG_DEFAULT_ASSETS = Object.freeze([STATIC_RAG_DEMO_ASSET, ...STATIC_RAG_PROFILE_ASSETS]);
 
 export const DEFAULT_DEMO_MEMORY = Object.freeze([
   {
@@ -25,6 +32,9 @@ function assertSameOriginAsset(assetUrl, baseUrl) {
 
 export function normalizeMemoryFixture(fixture) {
   const records = Array.isArray(fixture) ? fixture : fixture?.records;
+  if (!Array.isArray(records) && Array.isArray(fixture?.cards)) {
+    return normalizeR28Rag3CardFixture(fixture).map(cardToEvidenceRecord);
+  }
   if (!Array.isArray(records)) throw new Error("rag_fixture_records_missing");
   if (fixture?.fixture_policy?.answer_bank === true) throw new Error("answer_bank_fixture_rejected");
   return records.map((record, index) => {
@@ -53,6 +63,15 @@ export async function loadStaticRagAsset(options = {}) {
   return normalizeMemoryFixture(await response.json());
 }
 
+export async function loadStaticRagAssets(options = {}) {
+  const assets = options.assets || (options.assetUrl ? [options.assetUrl] : STATIC_RAG_DEFAULT_ASSETS);
+  const loaded = [];
+  for (const assetUrl of assets) {
+    loaded.push(...await loadStaticRagAsset({ ...options, assetUrl }));
+  }
+  return loaded;
+}
+
 export class StaticRetriever {
   constructor(options = {}) {
     this.records = normalizeMemoryFixture(options.fixture || { records: options.records || DEFAULT_DEMO_MEMORY });
@@ -70,7 +89,7 @@ export class StaticRetriever {
 }
 
 export async function createStaticRetrieverFromAsset(options = {}) {
-  const records = await loadStaticRagAsset(options);
+  const records = await loadStaticRagAssets(options);
   return new StaticRetriever({ records, topK: options.topK, minScore: options.minScore });
 }
 

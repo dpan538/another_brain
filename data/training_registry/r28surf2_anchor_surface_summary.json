@@ -1,0 +1,117 @@
+{
+  "answer_mode_counts": {
+    "abstract_reframe": 39,
+    "compressed_judgment": 27,
+    "direct_answer": 7,
+    "partial_answer": 6,
+    "pressure_resistance": 8,
+    "refuse": 11
+  },
+  "approved_summary_docs": [
+    "docs/R26E_USER_ANSWERED_CORPUS_SUMMARY.md",
+    "docs/R26G_FIX_AND_INTAKE_USER_ANSWERS.md",
+    "docs/R26G_REPLACEMENT_51_100_PARSE_SUMMARY.md",
+    "docs/R26G_USER_ANSWERED_CORPUS_SUMMARY.md",
+    "docs/R26H_USER_ANSWER_CORPUS_READINESS.md",
+    "docs/r28/R28ROUT1_COMPOSITIONAL_ANSWER_SURFACES.md",
+    "docs/r28/R28ROUT1_FUZZY_INTENT_ROUTER.md",
+    "docs/r28/R28ROUT1_NO_BROAD_ANSWER_BANK.md"
+  ],
+  "eval_holdout_excluded": true,
+  "evidence_policy_counts": {
+    "no_evidence_needed": 31,
+    "private_boundary": 11,
+    "unsupported_challenge": 10,
+    "value_disagreement": 46
+  },
+  "manifest_user_answered_split_counts": {
+    "dev": 5,
+    "heldout": 5,
+    "train": 35
+  },
+  "module_counts": {
+    "不答与边界": 10,
+    "价值观": 10,
+    "关系语境": 9,
+    "审美": 9,
+    "审美 / 哲学": 1,
+    "怪问题": 10,
+    "怪问题抽象": 10,
+    "抽象判断": 10,
+    "无证据挑战": 10,
+    "朋友日常判断": 9,
+    "语言与意义": 10
+  },
+  "non_claims": {
+    "backend_inference": false,
+    "browser_admission": false,
+    "doubao": false,
+    "external_llm_api": false,
+    "hosted_vector_store": false,
+    "product_admission": false,
+    "product_model": false,
+    "release_checkpoint": false
+  },
+  "old_pack_51_100_excluded": true,
+  "phase": "R28SURF2",
+  "private_raw_data_used": false,
+  "registry_inputs": [
+    "data/training_registry/r28m1_static_asset_commit_approval.json"
+  ],
+  "relation_index_anchor_count": 98,
+  "router_surface_candidate_count": 98,
+  "schema_version": 1,
+  "source_policy": {
+    "broad_answer_bank": false,
+    "data_public_ingestion_parsed": false,
+    "eval_prompts_used": false,
+    "model_weights_changed": false,
+    "old_question_pack_001_rows_51_100_used": false,
+    "only_tracked_summaries_used": true,
+    "root_docx_pdf_parsed": false,
+    "training_ran": false
+  },
+  "style_anchors": [
+    "compressed",
+    "bounded",
+    "answer-as-user",
+    "non-service voice",
+    "evidence-aware"
+  ],
+  "surface_categories": [
+    "greeting",
+    "identity_who_are_you",
+    "identity_are_you_crocodile",
+    "origin_where_from",
+    "capability_what_can_you_do",
+    "boundary_are_you_ai",
+    "relation_to_user",
+    "evidence_insufficient",
+    "evidence_conflict",
+    "malicious_instruction",
+    "value_judgment_light",
+    "aesthetic_judgment_light",
+    "abstract_meaning_question",
+    "smalltalk_safe",
+    "unknown_open_question"
+  ],
+  "train_anchor_count": 98,
+  "training_current_inputs": [
+    "training/current/corpus_manifest.json",
+    "training/current/question_pack_policy.r26c.json",
+    "training/current/r26e_first50_promotion_policy.json",
+    "training/current/relation_evidence_index.r27a.json",
+    "training/current/value_aesthetic_profile.r27a.json"
+  ],
+  "user_answered_split_counts": {
+    "dev": 10,
+    "heldout": 10,
+    "train": 78
+  },
+  "value_anchors": [
+    "boundary before helpfulness",
+    "evidence before correction",
+    "stance without universalizing",
+    "abstract relation over procedure"
+  ]
+}

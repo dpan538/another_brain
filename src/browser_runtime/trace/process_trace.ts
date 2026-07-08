@@ -10,6 +10,22 @@ export const PROCESS_TRACE_RUNTIME_MODES = Object.freeze([
 export const PROCESS_TRACE_ROUTES = Object.freeze([
   "direct_model_draft",
   "rag_grounded_answer",
+  "greeting_surface",
+  "identity_surface",
+  "origin_surface",
+  "capability_surface",
+  "relation_surface",
+  "value_surface",
+  "aesthetic_surface",
+  "abstract_meaning_surface",
+  "abstract_value_question",
+  "philosophical_question",
+  "aesthetic_question",
+  "value_or_relation_question",
+  "abstract_meaning_question",
+  "open_question",
+  "smalltalk_surface",
+  "runtime_status_surface",
   "insufficient_evidence_boundary",
   "conflicting_evidence_boundary",
   "malicious_evidence_boundary",
@@ -20,6 +36,7 @@ export const PROCESS_TRACE_ROUTES = Object.freeze([
 
 export const FINAL_ANSWER_SOURCES = Object.freeze([
   "model_draft",
+  "router_surface",
   "router_boundary",
   "fallback"
 ]);
@@ -37,12 +54,18 @@ function publicSourceSummary(item = {}) {
     source_id: safeString(item.source_id, safeString(item.id, "local")),
     title: safeString(item.title, "local evidence"),
     trust_level: safeString(item.trust_level, "local_static"),
-    retrieval_score: Number.isFinite(Number(item.retrieval_score)) ? Number(item.retrieval_score) : 0
+    retrieval_score: Number.isFinite(Number(item.retrieval_score)) ? Number(item.retrieval_score) : 0,
+    provenance: safeString(item.metadata?.provenance, safeString(item.provenance, safeString(item.license_or_origin, "local_static"))),
+    kind: safeString(item.metadata?.card_kind, safeString(item.kind, safeString(item.metadata?.kind, ""))),
+    tone_hints: Array.isArray(item.metadata?.tone_hints)
+      ? item.metadata.tone_hints.map(String).slice(0, 5)
+      : (Array.isArray(item.tone_hints) ? item.tone_hints.map(String).slice(0, 5) : [])
   };
 }
 
 export function inferFinalAnswerSource(trace = {}) {
   if (trace?.router?.used_model_draft === true && trace?.model?.q4_forward_ran === true) return "model_draft";
+  if (String(trace?.router?.route || "").endsWith("_surface")) return "router_surface";
   if (trace?.router?.replaced_model_draft === true || String(trace?.router?.route || "").includes("boundary")) return "router_boundary";
   return "fallback";
 }
@@ -67,7 +90,9 @@ export function createProcessTrace(input = {}) {
       retrieval_used: bool(input.rag?.retrieval_used),
       evidence_count: Math.max(0, Number(input.rag?.evidence_count || 0)),
       evidence_status: safeString(input.rag?.evidence_status, "none"),
-      top_sources: Array.isArray(input.rag?.top_sources) ? input.rag.top_sources.map(publicSourceSummary).slice(0, 3) : []
+      top_sources: Array.isArray(input.rag?.top_sources) ? input.rag.top_sources.map(publicSourceSummary).slice(0, 3) : [],
+      tone_hints: Array.isArray(input.rag?.tone_hints) ? input.rag.tone_hints.map(String).slice(0, 5) : [],
+      profile_pack: input.rag?.profile_pack || null
     },
     model: {
       asset_manifest_loaded: bool(input.model?.asset_manifest_loaded),
@@ -81,7 +106,13 @@ export function createProcessTrace(input = {}) {
       route: safeString(input.router?.route, "synthetic_demo_fallback"),
       used_model_draft: usedModelDraft,
       replaced_model_draft: replacedModelDraft,
-      reason: safeString(input.router?.reason, "")
+      reason: safeString(input.router?.reason, ""),
+      intent: safeString(input.router?.intent, ""),
+      intent_confidence: Number.isFinite(Number(input.router?.intent_confidence)) ? Number(input.router.intent_confidence) : 0,
+      surface_category: safeString(input.router?.surface_category, ""),
+      length_policy: input.router?.length_policy || null,
+      fragment_ids: Array.isArray(input.router?.fragment_ids) ? input.router.fragment_ids.map(String) : [],
+      indexed_surface: bool(input.router?.indexed_surface)
     },
     finalizer: {
       final_answer_source: FINAL_ANSWER_SOURCES.includes(input.finalizer?.final_answer_source)
@@ -121,7 +152,7 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
     createTraceEvent("q4_forward_started", { runtime_mode: runtimeStats.runtime_mode || packet.state_packet?.mode || "fallback" }),
     createTraceEvent("q4_forward_completed", { q4_forward_ran: q4ForwardRan, tokens_generated: runtimeStats.tokens_generated || 0 }),
     createTraceEvent("draft_generated", { draft_generated: draftGenerated }),
-    createTraceEvent("router_route_selected", { route: packet.answer_route || routePolicy.route || "synthetic_demo_fallback" }),
+    createTraceEvent("router_route_selected", { route: packet.answer_route || routePolicy.route || "synthetic_demo_fallback", intent_confidence: routePolicy.intent_confidence || 0 }),
     createTraceEvent("finalizer_applied", { used_model_draft: routePolicy.use_model_draft === true }),
     ...(packet.fallback_used ? [createTraceEvent("fallback_used", { reason: packet.fallback_reason || routePolicy.fallback_reason || "" })] : []),
     createTraceEvent("answer_completed", { final_answer_source: packet.use_model_draft ? "model_draft" : "fallback" })
@@ -139,7 +170,19 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
       retrieval_used: true,
       evidence_count: evidence.length,
       evidence_status: evidencePacket.evidence_status || "none",
-      top_sources: evidence
+      top_sources: evidence,
+      tone_hints: Array.isArray(evidencePacket.rag_profile_pack?.tone_hints)
+        ? evidencePacket.rag_profile_pack.tone_hints.map(String).slice(0, 5)
+        : [],
+      profile_pack: evidencePacket.rag_profile_pack
+        ? {
+            version: evidencePacket.rag_profile_pack.version || "",
+            runtime_hints_only: evidencePacket.rag_profile_pack.runtime_hints_only === true,
+            broad_answer_bank: evidencePacket.rag_profile_pack.broad_answer_bank === true,
+            private_raw_data: evidencePacket.rag_profile_pack.private_raw_data === true,
+            hosted_vector_store: evidencePacket.rag_profile_pack.hosted_vector_store === true
+          }
+        : null
     },
     model: {
       asset_manifest_loaded: packet.asset_status?.verification !== "no_model_assets",
@@ -152,7 +195,13 @@ export function buildProcessTraceFromPacket(packet = {}, options = {}) {
     router: {
       route: packet.answer_route || routePolicy.route || "synthetic_demo_fallback",
       used_model_draft: routePolicy.use_model_draft === true,
-      reason: packet.fallback_reason || routePolicy.fallback_reason || ""
+      reason: packet.fallback_reason || routePolicy.fallback_reason || "",
+      intent: routePolicy.intent || "",
+      intent_confidence: routePolicy.intent_confidence || 0,
+      surface_category: routePolicy.surface_category || "",
+      length_policy: routePolicy.length_policy || null,
+      fragment_ids: routePolicy.fragment_ids || [],
+      indexed_surface: routePolicy.indexed_surface === true
     },
     finalizer: {
       final_answer_source: packet.use_model_draft ? "model_draft" : "fallback",

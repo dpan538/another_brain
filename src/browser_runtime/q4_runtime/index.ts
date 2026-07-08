@@ -1,5 +1,6 @@
 import { buildFallbackAnswer } from "../fallback_adapter.ts";
 import { verifySha256 } from "../assets/checksum.ts";
+import { normalizeBrowserAssetPath, toSameOriginAssetUrl } from "../assets/asset_path_normalizer.ts";
 import { inspectModelArchitecture } from "./model_architecture.ts";
 import { matmulQ4Vector } from "./kernels.ts";
 import { q4SignedValue, unpackQ4Nibbles } from "./q4_dequant.ts";
@@ -33,12 +34,11 @@ export const R28RT0_REAL_INFERENCE_BLOCKER = "real_browser_inference_not_verifie
 export const R28RT0_FORWARD_BLOCKER = "q4_model_forward_not_implemented";
 
 export function isRelativeSameOriginAssetPath(path) {
-  const value = String(path || "");
-  if (!value || value.startsWith("/") || value.startsWith("//")) return false;
-  if (/^[a-z][a-z0-9+.-]*:/i.test(value)) return false;
-  if (value.split("/").some((part) => part === "..")) return false;
-  if (value.includes("/artifacts/") || value.startsWith("artifacts/")) return false;
-  return true;
+  try {
+    return normalizeBrowserAssetPath(path).startsWith("/another_brain/");
+  } catch {
+    return false;
+  }
 }
 
 function pathFromAssetManifest(assetManifest, role) {
@@ -46,14 +46,14 @@ function pathFromAssetManifest(assetManifest, role) {
 }
 
 async function fetchJson(fetcher, path, baseUrl) {
-  const url = new URL(path, baseUrl);
+  const url = toSameOriginAssetUrl(path, { origin: new URL(baseUrl).origin });
   const response = await fetcher(url.href);
   if (!response.ok) throw new Error(`fetch_json_failed:${path}:${response.status}`);
   return response.json();
 }
 
 async function fetchBytes(fetcher, path, baseUrl) {
-  const url = new URL(path, baseUrl);
+  const url = toSameOriginAssetUrl(path, { origin: new URL(baseUrl).origin });
   const response = await fetcher(url.href);
   if (!response.ok) throw new Error(`fetch_bytes_failed:${path}:${response.status}`);
   return new Uint8Array(await response.arrayBuffer());

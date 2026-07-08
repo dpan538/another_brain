@@ -102,8 +102,15 @@ export function summarizeEvidenceForProcessTrace(evidencePacket = {}) {
       source_id: item.source_id || "local",
       title: item.title || "local evidence",
       trust_level: item.trust_level || "local_static",
-      retrieval_score: Number(item.retrieval_score || 0)
-    }))
+      retrieval_score: Number(item.retrieval_score || 0),
+      provenance: item.metadata?.provenance || item.license_or_origin || "local_static",
+      kind: item.metadata?.card_kind || "",
+      tone_hints: Array.isArray(item.metadata?.tone_hints) ? item.metadata.tone_hints.map(String).slice(0, 5) : []
+    })),
+    tone_hints: Array.isArray(evidencePacket.rag_profile_pack?.tone_hints)
+      ? evidencePacket.rag_profile_pack.tone_hints.map(String).slice(0, 5)
+      : [],
+    profile_pack: evidencePacket.rag_profile_pack || null
   };
 }
 
