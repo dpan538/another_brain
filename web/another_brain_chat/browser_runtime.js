@@ -42,9 +42,15 @@ const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
 const R28SHIP0_MODEL_CACHE_PREFIX = "another-brain-model";
 const R28SHIP0_Q4_RETRY_STRATEGIES = Object.freeze(["primary", "normalized_absolute", "cache_bust", "clear_model_cache", "worker_restart"]);
 const R28SHIP0_RUNTIME_TRUTH_BLOCKERS = Object.freeze(["asset_missing", "tokenizer_fail", "forward_timeout", "worker_error", "q4_forward_not_confirmed", "q4_retry_plan_exhausted", "model_loading_cancelled"]);
+const R28HOTFIX4_UI_VERSION = "r28hotfix4-open-question-generation-sla";
 const SELF_CHECK_JSON_TIMEOUT_MS = 900;
 const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
 const SELF_CHECK_DEEP_TIMEOUT_MS = 15000;
+const GENERATION_START_TIMEOUT_MS = 1500;
+const DESKTOP_FIRST_TOKEN_TIMEOUT_MS = 6000;
+const MOBILE_FIRST_TOKEN_TIMEOUT_MS = 10000;
+const DESKTOP_TOTAL_GENERATION_TIMEOUT_MS = 12000;
+const MOBILE_TOTAL_GENERATION_TIMEOUT_MS = 20000;
 const IDENTITY_ROUTE = "identity_boundary";
 const IDENTITY_ANSWER = "我是鳄鱼。更准确地说，我是这个本地网页里的另一个大脑界面，会按鳄鱼的判断方式回答。";
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
@@ -65,6 +71,20 @@ const ANSWER_SURFACE_TEMPLATES = Object.freeze({
   model_gibberish: "本地模型这次输出不稳定，我先给出基于证据和边界的保守回答。",
   not_product_status: "当前是预览工程候选，不是已 admission 的产品模型。"
 });
+const ABSTRACT_VALUE_FALLBACKS = Object.freeze({
+  life_death: "我会把它看成边界问题。生不是纯粹的开始，死也不是纯粹的结论；人能做的，是在有限时间里留下判断、关系和作品。说得太漂亮就假，完全说成虚无也偷懒。",
+  philosophical_question: "我会先把它放回有限性里看。人为什么活着，没有一个总答案；但关系、判断和作品会让时间不只是消耗。把它说成使命太满，说成虚无又太轻。",
+  aesthetic_question: "美不是单纯好看。它更像一种准确的关系：形式、克制、风险和当时的处境刚好咬住。完全靠流行解释会浅，完全靠私人感受也会散。",
+  open_question: "这个问题太大，不能装成一句确定结论。我会先给一个边界判断：先看关系、代价和证据；证据不足时就停住，不把漂亮话当答案。",
+  unsafe_self_harm_or_crisis: "如果这和现实里的自伤或立即危险有关，先离开危险物，联系身边的人或当地紧急服务。这个页面不能替代危机支持。",
+  unknown: "我现在没有足够证据给确定结论。能给的是边界：别硬编，先把问题里的关系、代价和判断对象拆清楚。"
+});
+const ABSTRACT_VALUE_TRIGGERS = Object.freeze(["生与死", "活着", "死亡", "意义", "价值", "判断"]);
+const AESTHETIC_TRIGGERS = Object.freeze(["美", "审美", "好看", "风格", "品味"]);
+const PHILOSOPHICAL_TRIGGERS = Object.freeze(["为什么要活", "人为什么", "存在", "虚无", "有限"]);
+const OPEN_QUESTION_TRIGGERS = Object.freeze(["怎么看", "如何看待", "你觉得", "什么是", "关系", "语言", "爱"]);
+const SELF_HARM_TRIGGERS = Object.freeze(["自杀", "不想活", "结束生命", "伤害自己", "活不下去"]);
+const TERMINAL_GENERATION_STATUSES = Object.freeze(["completed", "timeout", "failed", "aborted", "fallback"]);
 const ROUTE_SURFACE_KEYS = Object.freeze({
   identity_boundary: "identity_boundary",
   identity_surface: "identity_surface",
@@ -357,6 +377,124 @@ function matchMicroIntent(input = "") {
   return { ...top, normalized_input: normalized, ambiguous: false };
 }
 
+function normalizeOpenQuestionText(input = "") {
+  return String(input || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s?？!！。.,，、:：;；"'“”‘’（）()\[\]【】<>《》]/g, "");
+}
+
+function containsAnyTrigger(input = "", triggers = []) {
+  const normalized = normalizeOpenQuestionText(input);
+  return triggers.some((trigger) => normalized.includes(normalizeOpenQuestionText(trigger)));
+}
+
+function classifyOpenQuestionRoute(input = "") {
+  const raw = String(input || "").trim();
+  const normalized = normalizeOpenQuestionText(raw);
+  if (!normalized) {
+    return { category: "unknown", route: "unknown", should_attempt_q4: false, reason: "empty_input" };
+  }
+  if (containsAnyTrigger(raw, SELF_HARM_TRIGGERS)) {
+    return {
+      category: "unsafe_self_harm_or_crisis",
+      route: "unsafe_self_harm_or_crisis",
+      should_attempt_q4: false,
+      reason: "safety_boundary"
+    };
+  }
+  if (containsAnyTrigger(raw, PHILOSOPHICAL_TRIGGERS)) {
+    return {
+      category: "philosophical_question",
+      route: "philosophical_question",
+      should_attempt_q4: true,
+      reason: "philosophical_trigger"
+    };
+  }
+  if (containsAnyTrigger(raw, ABSTRACT_VALUE_TRIGGERS)) {
+    return {
+      category: "abstract_value_question",
+      route: "abstract_value_question",
+      should_attempt_q4: true,
+      reason: "abstract_value_trigger"
+    };
+  }
+  if (containsAnyTrigger(raw, AESTHETIC_TRIGGERS)) {
+    return {
+      category: "aesthetic_question",
+      route: "aesthetic_question",
+      should_attempt_q4: true,
+      reason: "aesthetic_trigger"
+    };
+  }
+  if (containsAnyTrigger(raw, OPEN_QUESTION_TRIGGERS) || normalized.length > 18) {
+    return {
+      category: "open_question",
+      route: "open_question",
+      should_attempt_q4: true,
+      reason: "open_question_trigger"
+    };
+  }
+  return { category: "unknown", route: "unknown", should_attempt_q4: false, reason: "not_open_question" };
+}
+
+function abstractValueFallbackSurface(input = "", route = {}) {
+  const category = route.category || classifyOpenQuestionRoute(input).category || "unknown";
+  if (category === "unsafe_self_harm_or_crisis") return ABSTRACT_VALUE_FALLBACKS.unsafe_self_harm_or_crisis;
+  if (containsAnyTrigger(input, ["生与死", "死亡", "死", "生"])) return ABSTRACT_VALUE_FALLBACKS.life_death;
+  if (category === "aesthetic_question") return ABSTRACT_VALUE_FALLBACKS.aesthetic_question;
+  if (category === "philosophical_question" || containsAnyTrigger(input, ["活着", "存在", "虚无"])) {
+    return ABSTRACT_VALUE_FALLBACKS.philosophical_question;
+  }
+  if (category === "open_question" || category === "abstract_value_question") return ABSTRACT_VALUE_FALLBACKS.open_question;
+  return ABSTRACT_VALUE_FALLBACKS.unknown;
+}
+
+function buildOpenQuestionRoutePolicy(input = "", openRoute = {}, options = {}) {
+  const fallbackReason = String(options.fallbackReason || "");
+  const useModelDraft = options.useModelDraft === true && String(options.modelDraft || "").trim();
+  const finalAnswer = useModelDraft
+    ? String(options.modelDraft || "").trim()
+    : abstractValueFallbackSurface(input, openRoute);
+  return {
+    route: openRoute.route || openRoute.category || "open_question",
+    open_question_category: openRoute.category || "open_question",
+    use_model_draft: Boolean(useModelDraft),
+    final_answer: finalAnswer,
+    fallback_used: !useModelDraft,
+    fallback_reason: useModelDraft ? "" : fallbackReason || "open_question_q4_unavailable",
+    answer_status: useModelDraft ? "final" : "fallback",
+    quality_flags: uniqueFlags([
+      "open_question_route",
+      `open_question_category:${openRoute.category || "open_question"}`,
+      openRoute.reason || "",
+      ...(options.qualityFlags || []),
+      useModelDraft ? "model_draft_generated" : "abstract_value_fallback"
+    ]),
+    non_claims: ROUTER_NON_CLAIMS,
+    final_answer_source: useModelDraft ? "model_draft" : "router_boundary",
+    answer_bank: false,
+    broad_answer_bank: false,
+    deterministic_surface: !useModelDraft
+  };
+}
+
+function isMobileRuntime() {
+  const ua = typeof navigator === "undefined" ? "" : String(navigator.userAgent || "");
+  return /iphone|ipad|ipod|android|mobile|micromessenger|qqbrowser|mqqbrowser|edgios|edga/i.test(ua);
+}
+
+function generationWatchdogProfile() {
+  const mobile = isMobileRuntime();
+  return {
+    profile: mobile ? "mobile" : "desktop",
+    start_timeout_ms: GENERATION_START_TIMEOUT_MS,
+    first_token_timeout_ms: mobile ? MOBILE_FIRST_TOKEN_TIMEOUT_MS : DESKTOP_FIRST_TOKEN_TIMEOUT_MS,
+    max_total_generation_ms: mobile ? MOBILE_TOTAL_GENERATION_TIMEOUT_MS : DESKTOP_TOTAL_GENERATION_TIMEOUT_MS,
+    max_new_tokens: mobile ? 12 : 24
+  };
+}
+
 function hashText(text = "") {
   let hash = 2166136261;
   for (const char of String(text || "")) {
@@ -596,6 +734,7 @@ function hasBlockingModelFailureForRoute(routeInput, flags) {
     if (flag === "empty_output") return draftPresent || explicitFlags.has("empty_output");
     return [
       "generation_timeout",
+      "q4_generation_timeout",
       "model_timeout",
       "runtime_timeout",
       "bad_token_suppressed",
@@ -642,8 +781,12 @@ const TRACE_EVENT_TYPES = Object.freeze([
   "model_manifest_loaded",
   "q4_shards_verified",
   "tokenizer_ready",
+  "q4_generation_attempted",
   "q4_forward_started",
   "q4_forward_completed",
+  "q4_generation_timeout",
+  "q4_generation_failed",
+  "q4_generation_aborted",
   "draft_generated",
   "router_route_selected",
   "finalizer_applied",
@@ -783,6 +926,7 @@ function summarizeQ4RetryPlan(attempts = []) {
 
 function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, decoderDraft = "" } = {}) {
   if (q4Ran && routePolicy.use_model_draft === true) return "model_draft";
+  if (q4Ran && String(decoderDraft || "").trim() && routePolicy.use_model_draft !== true) return "router_after_model_draft";
   if (routePolicy.final_answer_source) return routePolicy.final_answer_source;
   if (String(routePolicy.route || "").endsWith("_surface")) return "router_surface";
   if (String(decoderDraft || "").trim() && routePolicy.use_model_draft !== true) return "router_boundary";
@@ -792,6 +936,7 @@ function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, deco
 
 function publicAnswerSourceLabel(trace = {}) {
   if (trace.model?.q4_forward_ran && trace.router?.used_model_draft) return "static_q4_experimental";
+  if (trace.model?.q4_forward_ran && trace.router?.replaced_model_draft) return "router_after_model_draft";
   if (String(trace.router?.route || "").endsWith("_surface")) return "router_surface";
   if (trace.router?.replaced_model_draft || String(trace.router?.route || "").includes("boundary")) return "hard_router_boundary";
   if (String(trace.runtime_mode || "").includes("synthetic")) return "synthetic_fallback";
@@ -820,6 +965,20 @@ function buildProcessTrace({
   const replacedModelDraft = draftGenerated && !usedModelDraft;
   const tokenizer = tokenizerStatusForTrace({ decode_status: runtimeStats?.decode_status, delivery_config: deliveryConfig }, runtimeStats);
   const route = routePolicy?.route || "synthetic_demo_fallback";
+  const tokensGenerated = Number(runtimeStats?.tokens_generated || 0);
+  const generationStatus = String(runtimeStats?.generation_status || (q4Ran ? "completed" : fallbackUsed ? "fallback" : "not_run"));
+  const generationAttempted = runtimeStats?.q4_attempted === true || generationStatus !== "not_run" || q4Ran;
+  const generationStarted = runtimeStats?.generation_started === true || q4Ran;
+  const generationFinished = runtimeStats?.generation_finished === true || q4Ran || TERMINAL_GENERATION_STATUSES.includes(generationStatus);
+  const generationFallbackReason = fallbackReason || routePolicy?.fallback_reason || runtimeStats?.fallback_reason || "";
+  const firstTokenMs = runtimeStats?.first_token_ms == null ? null : Math.max(0, Math.round(Number(runtimeStats.first_token_ms || 0)));
+  const totalGenerationMs = runtimeStats?.total_generation_ms == null
+    ? Math.max(0, Math.round(Number(runtimeStats?.elapsed_ms || 0)))
+    : Math.max(0, Math.round(Number(runtimeStats.total_generation_ms || 0)));
+  const shardsVerifiedForTrace = assetStatus?.verification === "q4_manifest_shards_tokenizer_forward_verified"
+    || assetStatus?.verification === "q4_manifest_shards_tokenizer_verified_forward_skipped"
+    || runtimeStats?.assets_verified === true
+    || q4Ran;
   const trace = {
     trace_id: makeTraceId(turnIndex),
     created_at: new Date().toISOString(),
@@ -849,11 +1008,33 @@ function buildProcessTrace({
     },
     model: {
       asset_manifest_loaded: assetStatus?.verification !== "no_model_assets",
-      shards_verified: q4Ran,
+      shards_verified: shardsVerifiedForTrace,
       tokenizer,
+      q4_attempted: generationAttempted,
+      generation_started: generationStarted,
+      generation_finished: generationFinished,
+      generation_status: generationStatus,
+      generation_timeout: generationStatus === "timeout",
+      first_token_ms: firstTokenMs,
+      total_generation_ms: totalGenerationMs,
       q4_forward_ran: q4Ran,
-      tokens_generated: Number(runtimeStats?.tokens_generated || 0),
+      tokens_generated: tokensGenerated,
       draft_generated: draftGenerated
+    },
+    generation: {
+      route: routePolicy?.open_question_category || route,
+      q4_attempted: generationAttempted,
+      generation_started: generationStarted,
+      generation_finished: generationFinished,
+      generation_status: generationStatus,
+      generation_timeout: generationStatus === "timeout",
+      generation_aborted: generationStatus === "aborted",
+      generation_failed: generationStatus === "failed",
+      tokens_generated: tokensGenerated,
+      first_token_ms: firstTokenMs,
+      total_generation_ms: totalGenerationMs,
+      fallback_reason: generationFallbackReason,
+      q4_ready_at_request: runtimeStats?.q4_ready_at_request === true
     },
     router: {
       route,
@@ -874,12 +1055,12 @@ function buildProcessTrace({
       runtime_mode: runtimeStats?.runtime_mode || statePacket?.mode || "fallback",
       assets: assetStatus?.verification === "q4_manifest_shards_tokenizer_forward_verified" || assetStatus?.verification === "q4_manifest_shards_tokenizer_verified_forward_skipped" ? "pass" : "fail",
       tokenizer: tokenizer === "exact_runtime_tokenizer" ? "pass" : "fail",
-      q4_forward: q4Ran ? "pass" : fallbackReason && String(fallbackReason).includes("timeout") ? "timeout" : "fail",
+      q4_forward: q4Ran ? "pass" : generationStatus === "timeout" || (fallbackReason && String(fallbackReason).includes("timeout")) ? "timeout" : generationAttempted ? "warming" : "fail",
       q4_forward_ran: q4Ran,
-      tokens_generated: Number(runtimeStats?.tokens_generated || 0),
+      tokens_generated: tokensGenerated,
       answer_source: finalAnswerSource({ q4Ran, routePolicy, fallbackUsed, decoderDraft }),
-      fallback_reason: fallbackReason || routePolicy?.fallback_reason || "",
-      blocker: fallbackReason || routePolicy?.fallback_reason || ""
+      fallback_reason: generationFallbackReason,
+      blocker: generationFallbackReason
     }),
     non_claims: {
       product_admission: false,
@@ -892,10 +1073,16 @@ function buildProcessTrace({
       traceEvent("rag_retrieval_started"),
       traceEvent("rag_retrieval_completed", { evidence_count: evidence.length, evidence_status: evidencePacket?.evidence_status || "none" }),
       traceEvent("model_manifest_loaded", { asset_manifest_loaded: assetStatus?.verification !== "no_model_assets" }),
-      traceEvent("q4_shards_verified", { shards_verified: q4Ran }),
+      traceEvent("q4_shards_verified", { shards_verified: shardsVerifiedForTrace }),
       traceEvent("tokenizer_ready", { tokenizer }),
-      traceEvent("q4_forward_started", { runtime_mode: runtimeStats?.runtime_mode || statePacket?.mode || "fallback" }),
-      traceEvent("q4_forward_completed", { q4_forward_ran: q4Ran, tokens_generated: Number(runtimeStats?.tokens_generated || 0) }),
+      traceEvent("q4_generation_attempted", { q4_attempted: generationAttempted, route }),
+      ...(generationStarted ? [traceEvent("q4_forward_started", { runtime_mode: runtimeStats?.runtime_mode || statePacket?.mode || "fallback" })] : []),
+      ...(generationStatus === "completed" || q4Ran
+        ? [traceEvent("q4_forward_completed", { q4_forward_ran: q4Ran, tokens_generated: tokensGenerated, total_generation_ms: totalGenerationMs })]
+        : []),
+      ...(generationStatus === "timeout" ? [traceEvent("q4_generation_timeout", { first_token_ms: firstTokenMs, total_generation_ms: totalGenerationMs })] : []),
+      ...(generationStatus === "failed" ? [traceEvent("q4_generation_failed", { reason: generationFallbackReason })] : []),
+      ...(generationStatus === "aborted" ? [traceEvent("q4_generation_aborted", { reason: generationFallbackReason || "generation_aborted" })] : []),
       traceEvent("draft_generated", { draft_generated: draftGenerated }),
       traceEvent("router_route_selected", { route, intent_confidence: Number(routePolicy?.intent_confidence || 0) }),
       traceEvent("finalizer_applied", { final_answer_source: finalAnswerSource({ q4Ran, routePolicy, fallbackUsed, decoderDraft }) }),
@@ -1069,11 +1256,11 @@ function classifyAnswerRoute(routeInput = {}) {
   if (routeInput.product_admission !== true && asksProductStatus(routeInput.user_input)) {
     return { route: "not_product_status", use_model_draft: false, fallback_reason: "not_product_status", quality_flags: uniqueFlags([...flags, "not_product_model"]) };
   }
-  if (evidenceStatus === "insufficient" || evidenceStatus === "none") {
-    return { route: "insufficient_evidence_boundary", use_model_draft: false, fallback_reason: "insufficient_evidence", quality_flags: uniqueFlags([...flags, "insufficient_evidence"]) };
-  }
   if (flags.includes("generation_timeout") || flags.includes("runtime_timeout")) {
     return { route: "model_timeout_fallback", use_model_draft: false, fallback_reason: flags.includes("generation_timeout") ? "generation_timeout" : "runtime_timeout", quality_flags: flags };
+  }
+  if (flags.includes("q4_generation_timeout")) {
+    return { route: "model_timeout_fallback", use_model_draft: false, fallback_reason: "q4_generation_timeout", quality_flags: flags };
   }
   if (flags.includes("empty_output")) {
     return { route: "model_empty_fallback", use_model_draft: false, fallback_reason: "empty_output", quality_flags: flags };
@@ -1087,6 +1274,9 @@ function classifyAnswerRoute(routeInput = {}) {
   }
   if (flags.includes("synthetic_demo_fallback")) {
     return { route: "synthetic_demo_fallback", use_model_draft: false, fallback_reason: "synthetic_demo_fallback", quality_flags: flags };
+  }
+  if (evidenceStatus === "insufficient" || evidenceStatus === "none") {
+    return { route: "insufficient_evidence_boundary", use_model_draft: false, fallback_reason: "insufficient_evidence", quality_flags: uniqueFlags([...flags, "insufficient_evidence"]) };
   }
   if (evidenceStatus === "sufficient" && (evidencePacket?.retrieved_evidence || []).length > 0) {
     return { route: "rag_grounded_answer", use_model_draft: true, fallback_reason: "", quality_flags: flags };
@@ -1189,6 +1379,7 @@ export class BrowserChatRuntime {
     this.lastRuntimeStats = null;
     this.lastFallbackReason = "";
     this.activeReject = null;
+    this.activeGenerationCancel = null;
     this.abortRequested = false;
     this.activeSelfCheckController = null;
     this.activeSelfCheckStartedAt = 0;
@@ -1266,8 +1457,17 @@ export class BrowserChatRuntime {
 
   abort() {
     this.abortRequested = true;
-    if (this.activeReject) {
+    if (this.activeGenerationCancel) {
+      this.activeGenerationCancel("generation_aborted");
+      this.activeGenerationCancel = null;
+    } else if (this.activeReject) {
       this.lastFallbackReason = "generation_aborted";
+      this.recordTerminalGenerationStats("aborted", {
+        fallback_reason: "generation_aborted",
+        decode_status: "generation_aborted",
+        q4_attempted: true,
+        generation_started: true
+      });
       this.activeReject(new Error("generation_aborted"));
       this.activeReject = null;
     }
@@ -1765,63 +1965,204 @@ export class BrowserChatRuntime {
     return report;
   }
 
+  isQ4ReadyForGeneration() {
+    if (this.deliveryConfig?.model_mode !== "static_q4_experimental" && this.mode !== "static_q4_experimental") return false;
+    if (!this.capabilities.worker_available || !this.worker) return false;
+    if (this.q4MountReport?.ok === true) return true;
+    return this.assetStatus?.verification === "q4_manifest_shards_tokenizer_forward_verified";
+  }
+
+  q4GenerationBlocker() {
+    if (!this.capabilities.worker_available || !this.worker) return "worker_unavailable";
+    const report = this.q4MountReport?.report || this.q4MountReport || {};
+    const blockers = Array.isArray(report.blockers) ? report.blockers.join(" / ") : "";
+    if (String(blockers).includes("tokenizer") || report.tokenizer?.exact_runtime_tokenizer === false) return "tokenizer_unavailable";
+    if (String(blockers).includes("asset") || String(blockers).includes("shard") || report.assets?.shards_verified === false) {
+      return "q4_assets_unavailable";
+    }
+    if (report.q4_forward?.status === "timeout" || String(blockers).includes("timeout")) return "q4_forward_timeout";
+    return "q4_forward_timeout";
+  }
+
+  recordTerminalGenerationStats(status, overrides = {}) {
+    const stats = {
+      tokens_generated: Number(overrides.tokens_generated || 0),
+      elapsed_ms: Math.max(0, Math.round(Number(overrides.elapsed_ms || overrides.total_generation_ms || 0))),
+      runtime_mode: overrides.runtime_mode || this.mode,
+      decoded_text_available: overrides.decoded_text_available === true,
+      decode_status: overrides.decode_status || status,
+      fallback_used: overrides.fallback_used !== false,
+      q4_attempted: overrides.q4_attempted === true,
+      q4_ready_at_request: overrides.q4_ready_at_request === true,
+      generation_started: overrides.generation_started === true,
+      generation_finished: overrides.generation_finished !== false,
+      generation_status: status,
+      first_token_ms: overrides.first_token_ms ?? null,
+      total_generation_ms: Math.max(0, Math.round(Number(overrides.total_generation_ms || overrides.elapsed_ms || 0))),
+      fallback_reason: overrides.fallback_reason || status
+    };
+    this.lastRuntimeStats = stats;
+    this.lastFallbackReason = stats.fallback_reason;
+    return stats;
+  }
+
   async draftWithWorker(input, options = {}) {
     if (this.abortRequested) throw new Error("generation_aborted");
     if (!this.worker) {
-      this.lastRuntimeStats = {
-        tokens_generated: 0,
-        elapsed_ms: 0,
-        runtime_mode: "fallback",
-        decoded_text_available: false,
+      this.recordTerminalGenerationStats("fallback", {
         decode_status: "no_worker",
-        fallback_used: true
-      };
-      this.lastFallbackReason = "worker_unavailable";
+        runtime_mode: "fallback",
+        fallback_reason: "worker_unavailable",
+        q4_attempted: false
+      });
       return syntheticDraft(input, options.maxTokens);
     }
     return new Promise((resolve, reject) => {
       const tokens = [];
-      this.activeReject = reject;
-      const finish = (callback) => {
-        clearTimeout(timeout);
-        this.activeReject = null;
-        callback();
+      const startedAt = typeof performance !== "undefined" ? performance.now() : Date.now();
+      const profile = generationWatchdogProfile();
+      const maxTokens = Math.min(options.maxTokens || profile.max_new_tokens, 32);
+      const startTimeoutMs = Math.max(250, Number(options.startTimeoutMs || profile.start_timeout_ms));
+      const firstTokenTimeoutMs = Math.max(1000, Number(options.firstTokenTimeoutMs || profile.first_token_timeout_ms));
+      const totalTimeoutMs = Math.max(firstTokenTimeoutMs + 250, Number(options.timeoutMs || profile.max_total_generation_ms));
+      let generationStarted = false;
+      let firstTokenMs = null;
+      let settled = false;
+      const elapsed = () => Math.max(0, Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt));
+      const emit = (event) => {
+        if (typeof options.onGenerationEvent === "function") {
+          options.onGenerationEvent({
+            ...event,
+            elapsed_ms: elapsed(),
+            tokens_generated: tokens.length,
+            q4_attempted: true,
+            generation_started: generationStarted,
+            first_token_ms: firstTokenMs
+          });
+        }
       };
-      const timeout = setTimeout(() => {
-        this.lastFallbackReason = "generation_timeout";
-        this.activeReject = null;
+      this.activeReject = reject;
+      const clearTimers = () => {
+        clearTimeout(startTimer);
+        clearTimeout(firstTokenTimer);
+        clearTimeout(totalTimer);
+      };
+      const terminateWorker = () => {
         if (this.worker) {
-          this.worker.terminate();
+          try {
+            this.worker.terminate();
+          } catch {
+          }
           this.worker = null;
         }
-        reject(new Error("generation_timeout"));
-      }, options.timeoutMs || 3000);
+      };
+      const finish = (status, callback, overrides = {}) => {
+        if (settled) return;
+        settled = true;
+        clearTimers();
+        this.activeReject = null;
+        this.activeGenerationCancel = null;
+        const total = elapsed();
+        if (status !== "completed") {
+          this.recordTerminalGenerationStats(status, {
+            ...overrides,
+            q4_attempted: true,
+            q4_ready_at_request: options.q4ReadyAtRequest === true,
+            generation_started: generationStarted || overrides.generation_started === true,
+            tokens_generated: tokens.length,
+            first_token_ms: firstTokenMs,
+            total_generation_ms: total,
+            elapsed_ms: total,
+            runtime_mode: this.mode
+          });
+        }
+        emit({ status, generation_status: status, fallback_reason: overrides.fallback_reason || "" });
+        callback();
+      };
+      const failTimeout = (reason) => {
+        terminateWorker();
+        finish("timeout", () => reject(new Error(reason)), {
+          fallback_reason: reason,
+          decode_status: reason
+        });
+      };
+      this.activeGenerationCancel = (reason = "generation_aborted") => {
+        terminateWorker();
+        finish("aborted", () => reject(new Error(reason)), {
+          fallback_reason: reason,
+          decode_status: reason,
+          generation_started: generationStarted
+        });
+      };
+      const startTimer = setTimeout(() => {
+        if (!generationStarted) failTimeout("q4_generation_start_failed");
+      }, startTimeoutMs);
+      const firstTokenTimer = setTimeout(() => {
+        if (firstTokenMs == null) failTimeout("q4_generation_timeout");
+      }, firstTokenTimeoutMs);
+      const totalTimer = setTimeout(() => {
+        failTimeout("q4_generation_timeout");
+      }, totalTimeoutMs);
       this.worker.onmessage = (event) => {
         const message = event.data || {};
-        if (message.type === "token") tokens.push(message.token);
+        if (message.type === "state") {
+          if (message.stage === "q4_forward_started" || message.stage === "loading_model") {
+            generationStarted = message.stage === "q4_forward_started" || generationStarted;
+            emit({ status: "running", generation_status: "started", stage: message.stage });
+          }
+        }
+        if (message.type === "token") {
+          generationStarted = true;
+          if (firstTokenMs == null) firstTokenMs = elapsed();
+          tokens.push(message.token);
+          emit({ status: "running", generation_status: "first_token", token: message.token });
+        }
         if (message.type === "error") {
           this.lastFallbackReason = message.fallback_reason || message.error || "worker_generation_failed";
-          finish(() => reject(new Error(message.error || "worker_generation_failed")));
+          finish("failed", () => reject(new Error(message.error || "worker_generation_failed")), {
+            fallback_reason: this.lastFallbackReason,
+            decode_status: message.error || "worker_generation_failed"
+          });
         }
         if (message.type === "final") {
-          this.lastRuntimeStats = message.stats || {
+          const totalGenerationMs = elapsed();
+          this.lastRuntimeStats = {
+            ...(message.stats || {}),
             tokens_generated: Array.isArray(message.tokens) ? message.tokens.length : tokens.length,
             runtime_mode: this.mode,
             decoded_text_available: true,
             decode_status: "synthetic_text",
-            fallback_used: false
+            fallback_used: false,
+            q4_attempted: true,
+            q4_ready_at_request: options.q4ReadyAtRequest === true,
+            generation_started: true,
+            generation_finished: true,
+            generation_status: "completed",
+            first_token_ms: firstTokenMs,
+            total_generation_ms: totalGenerationMs,
+            elapsed_ms: totalGenerationMs,
+            fallback_reason: ""
           };
           this.lastFallbackReason = "";
-          finish(() => resolve(message.draft || tokens.join(" ")));
+          finish("completed", () => resolve(message.draft || tokens.join(" ")));
         }
       };
+      this.worker.onerror = (error) => {
+        const reason = error.message || "worker_generation_error";
+        terminateWorker();
+        finish("failed", () => reject(new Error(reason)), {
+          fallback_reason: reason,
+          decode_status: reason
+        });
+      };
+      emit({ status: "attempted", generation_status: "attempted" });
       this.worker.postMessage({
         type: "generate",
         prompt: input,
         mode: this.mode,
-        maxTokens: Math.min(options.maxTokens || 16, 32),
+        maxTokens,
         contextLength: Math.min(options.contextLength || 256, 1024),
-        timeoutMs: Math.min(options.timeoutMs || 3000, 15000)
+        timeoutMs: Math.min(totalTimeoutMs, 20000)
       });
     });
   }
@@ -1849,8 +2190,9 @@ export class BrowserChatRuntime {
       contextPackets: this.contextPackets
     });
 
+    const openRoute = classifyOpenQuestionRoute(input);
     const microIntent = matchMicroIntent(input);
-    if (microIntent.route && isMicroIntentRoute(microIntent.route)) {
+    if (microIntent.route && isMicroIntentRoute(microIntent.route) && !openRoute.should_attempt_q4) {
       setStatus("verifying");
       const routePolicy = applyAnswerSurfacePolicy({
         user_input: input,
@@ -1926,8 +2268,76 @@ export class BrowserChatRuntime {
       return packet;
     }
 
-    setStatus("loading_model");
+    setStatus(openRoute.should_attempt_q4 ? "routing_open_question" : "loading_model");
     if (!this.worker && this.capabilities.worker_available) await this.load();
+    const q4ReadyAtRequest = this.isQ4ReadyForGeneration();
+    if (openRoute.category === "unsafe_self_harm_or_crisis" || (openRoute.should_attempt_q4 && !q4ReadyAtRequest)) {
+      const blocker = openRoute.category === "unsafe_self_harm_or_crisis" ? "safety_boundary" : this.q4GenerationBlocker();
+      const routePolicy = buildOpenQuestionRoutePolicy(input, openRoute, {
+        fallbackReason: blocker,
+        qualityFlags: [openRoute.category === "unsafe_self_harm_or_crisis" ? "safety_boundary_no_q4" : "q4_not_ready_fast_fallback"]
+      });
+      const runtimeStats = this.recordTerminalGenerationStats("fallback", {
+        runtime_mode: this.mode,
+        decode_status: openRoute.category === "unsafe_self_harm_or_crisis" ? "safety_boundary_no_generation" : "q4_not_ready",
+        fallback_reason: blocker,
+        q4_attempted: false,
+        q4_ready_at_request: false
+      });
+      const adapterContextSummary = buildAdapterContextSummary(this.contextPackets);
+      const packet = {
+        input,
+        state_packet: statePacket,
+        evidence_packet: evidencePacket,
+        retrieved_evidence: evidencePacket.retrieved_evidence,
+        decoder_draft: "",
+        verifier_result: { passed: openRoute.category !== "unsafe_self_harm_or_crisis", failures: [blocker], fallback_recommended: true },
+        final_answer: routePolicy.final_answer,
+        fallback_used: true,
+        fallback_reason: blocker,
+        answer_status: "fallback",
+        route: routePolicy.route,
+        answer_route: routePolicy.route,
+        use_model_draft: false,
+        quality_flags: routePolicy.quality_flags,
+        non_claims: routePolicy.non_claims,
+        route_policy: routePolicy,
+        runtime_stats: runtimeStats,
+        decode_status: runtimeStats.decode_status,
+        prompt_packet: buildPromptPacket(input, evidencePacket, statePacket),
+        no_answer_bank: true,
+        adapter_context_summary: adapterContextSummary,
+        answer_surface_request: answerSurfaceRequest,
+        answer_surface_response: buildAnswerSurfaceResponse({
+          finalAnswer: routePolicy.final_answer,
+          requestPacket: answerSurfaceRequest,
+          evidencePacket
+        }),
+        delivery_config: this.deliveryConfig,
+        capabilities: this.capabilities,
+        asset_status: this.assetStatus,
+        q4_retry_plan: summarizeQ4RetryPlan(this.q4RetryAttempts),
+        q4_mount_report: this.q4MountReport
+      };
+      packet.process_trace = buildProcessTrace({
+        input,
+        statePacket,
+        evidencePacket,
+        runtimeStats,
+        decoderDraft: "",
+        routePolicy,
+        fallbackUsed: true,
+        fallbackReason: blocker,
+        qualityFlags: packet.quality_flags,
+        adapterContextSummary,
+        assetStatus: this.assetStatus,
+        deliveryConfig: this.deliveryConfig,
+        turnIndex: this.turnIndex
+      });
+      packet.answer_source_label = packet.process_trace.answer_source_label;
+      setStatus("fallback");
+      return packet;
+    }
     setStatus("drafting");
 
     let decoderDraft = "";
@@ -1940,19 +2350,49 @@ export class BrowserChatRuntime {
     try {
       if (this.abortRequested) throw new Error("generation_aborted");
       const promptPacket = buildPromptPacket(input, evidencePacket, statePacket);
-      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), { maxTokens: 8, timeoutMs: 8000, contextLength: 64 });
+      if (openRoute.should_attempt_q4) setStatus("q4_generation_attempted");
+      const watchdogProfile = generationWatchdogProfile();
+      decoderDraft = await this.draftWithWorker(buildDecoderPrompt(input, evidencePacket, statePacket), {
+        maxTokens: openRoute.should_attempt_q4 ? watchdogProfile.max_new_tokens : 8,
+        timeoutMs: openRoute.should_attempt_q4 ? watchdogProfile.max_total_generation_ms : 8000,
+        firstTokenTimeoutMs: watchdogProfile.first_token_timeout_ms,
+        startTimeoutMs: watchdogProfile.start_timeout_ms,
+        contextLength: openRoute.should_attempt_q4 ? 96 : 64,
+        q4ReadyAtRequest,
+        onGenerationEvent: (event) => {
+          if (!openRoute.should_attempt_q4) return;
+          if (event.generation_status === "attempted") setStatus("q4_generation_attempted");
+          else if (event.generation_status === "started") setStatus("q4_generation_started");
+          else if (event.generation_status === "first_token") setStatus("q4_first_token");
+          else if (event.generation_status === "completed") setStatus("q4_generation_finished");
+          else if (event.generation_status === "timeout") setStatus("generation_timeout");
+        }
+      });
       setStatus("verifying");
       verifierResult = verifyDraft(decoderDraft, evidencePacket);
-      const finalized = finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult, {
-        runtimeMode: this.lastRuntimeStats?.runtime_mode || this.mode,
-        decodeStatus: this.lastRuntimeStats?.decode_status || "",
-        qualityStatus: this.lastRuntimeStats?.quality_status || "",
-        adapterContextPresent: this.contextPackets.length > 0
-      });
-      fallbackUsed = finalized.fallback_used;
-      fallbackReason = finalized.fallback_reason;
-      finalAnswer = finalized.final_answer;
-      routePolicy = finalized.route_policy;
+      if (openRoute.should_attempt_q4) {
+        const qualityFailure = verifierResult.passed ? "" : (verifierResult.failures || [])[0] || "quality_not_ready";
+        routePolicy = buildOpenQuestionRoutePolicy(input, openRoute, {
+          useModelDraft: verifierResult.passed,
+          modelDraft: decoderDraft,
+          fallbackReason: qualityFailure || "q4_output_not_accepted",
+          qualityFlags: verifierResult.failures || []
+        });
+        fallbackUsed = routePolicy.fallback_used;
+        fallbackReason = routePolicy.fallback_reason;
+        finalAnswer = routePolicy.final_answer;
+      } else {
+        const finalized = finalizeAnswer(input, decoderDraft, evidencePacket, verifierResult, {
+          runtimeMode: this.lastRuntimeStats?.runtime_mode || this.mode,
+          decodeStatus: this.lastRuntimeStats?.decode_status || "",
+          qualityStatus: this.lastRuntimeStats?.quality_status || "",
+          adapterContextPresent: this.contextPackets.length > 0
+        });
+        fallbackUsed = finalized.fallback_used;
+        fallbackReason = finalized.fallback_reason;
+        finalAnswer = finalized.final_answer;
+        routePolicy = finalized.route_policy;
+      }
       if (!fallbackUsed) {
         setStatus("final");
       } else {
@@ -1963,17 +2403,24 @@ export class BrowserChatRuntime {
       fallbackUsed = true;
       verifierResult = { passed: false, failures: [error.message], fallback_recommended: true };
       fallbackReason = this.lastFallbackReason || error.message || "runtime_failed";
-      routePolicy = applyAnswerSurfacePolicy({
-        user_input: input,
-        evidence_status: evidencePacket?.evidence_status || "none",
-        runtime_mode: this.mode,
-        model_output: "",
-        decode_status: "failed",
-        generation_flags: [fallbackReason],
-        adapter_context_present: this.contextPackets.length > 0,
-        product_admission: false,
-        evidence_packet: evidencePacket
-      });
+      if (openRoute.should_attempt_q4) {
+        routePolicy = buildOpenQuestionRoutePolicy(input, openRoute, {
+          fallbackReason,
+          qualityFlags: [fallbackReason, fallbackReason.includes("timeout") ? "q4_generation_timeout" : ""]
+        });
+      } else {
+        routePolicy = applyAnswerSurfacePolicy({
+          user_input: input,
+          evidence_status: evidencePacket?.evidence_status || "none",
+          runtime_mode: this.mode,
+          model_output: "",
+          decode_status: "failed",
+          generation_flags: [fallbackReason],
+          adapter_context_present: this.contextPackets.length > 0,
+          product_admission: false,
+          evidence_packet: evidencePacket
+        });
+      }
       finalAnswer = routePolicy.final_answer;
       fallbackReason = routePolicy.fallback_reason || fallbackReason;
       setStatus("fallback");

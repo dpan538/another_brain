@@ -1,9 +1,9 @@
-import { BrowserChatRuntime } from "./browser_runtime.js?v=r28ship0-unified-q4-mount";
-import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28ship0-unified-q4-mount";
+import { BrowserChatRuntime } from "./browser_runtime.js?v=r28hotfix4-open-question-generation-sla";
+import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28hotfix4-open-question-generation-sla";
 
-const R28SHIP0_UI_VERSION = "r28ship0-unified-q4-mount";
+const R28SHIP0_UI_VERSION = "r28hotfix4-open-question-generation-sla";
 const R28HOTFIX3_UI_VERSION = R28SHIP0_UI_VERSION;
-const R28HOTFIX3_BUILD_MARKER = "R28SHIP0";
+const R28HOTFIX3_BUILD_MARKER = "R28HOTFIX4";
 const R28HOTFIX2_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28HOTFIX2_BUILD_MARKER = R28HOTFIX3_BUILD_MARKER;
 const R28HOTFIX1_UI_VERSION = R28HOTFIX3_UI_VERSION;
@@ -13,7 +13,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   delivery_mode: "demo_static",
   model_mode: "static_q4_experimental",
   rag_mode: "static_profile_pack",
-  prelaunch_stage: "r28ship0",
+  prelaunch_stage: "r28hotfix4",
   backend_inference: false,
   external_llm_api: false,
   product_model: false,
@@ -25,7 +25,7 @@ const DEFAULT_DELIVERY_CONFIG = Object.freeze({
   adapter_status: "local_session_import_export_ready",
   release_blockers: ["product_admission_pending", "browser_admission_pending", "release_checkpoint_pending"],
   candidate_static_bundle: true,
-  candidate_warning: "Static q4 runtime is an engineering preview path only; this is not product, browser, or release admission.",
+  candidate_warning: "Static q4 runtime is an engineering preview path only; HOTFIX4 adds open-question SLA and no-hang fallback; this is not product, browser, or release admission.",
   asset_cache_mode: "memory_fallback",
   asset_cache_policy: "same_origin_shards_only",
   asset_loader_resilience: "checksum_retry_abort_partial_fallback",
@@ -85,6 +85,11 @@ const fallbackReasonStatus = document.querySelector("#fallback-reason-status");
 const answerSourceStatus = document.querySelector("#answer-source-status");
 const draftGeneratedStatus = document.querySelector("#draft-generated-status");
 const draftReplacedStatus = document.querySelector("#draft-replaced-status");
+const q4AttemptedStatus = document.querySelector("#q4-attempted-status");
+const generationStartedStatus = document.querySelector("#generation-started-status");
+const generationStatus = document.querySelector("#generation-status");
+const firstTokenStatus = document.querySelector("#first-token-status");
+const generationElapsedStatus = document.querySelector("#generation-elapsed-status");
 const modelSourceBadge = document.querySelector("#model-source-badge");
 const tokenizerStatusBadge = document.querySelector("#tokenizer-status-badge");
 const q4StatusBadge = document.querySelector("#q4-status-badge");
@@ -276,12 +281,13 @@ function completeModelLoading(report = {}) {
 function sourceLabel(trace = {}) {
   if (trace.answer_source_label) return trace.answer_source_label;
   if (trace.model?.q4_forward_ran && trace.router?.used_model_draft) return "static_q4_experimental";
+  if (trace.model?.q4_forward_ran && trace.router?.replaced_model_draft) return "router_after_model_draft";
   if (trace.router?.replaced_model_draft || String(trace.router?.route || "").includes("boundary")) return "hard_router_boundary";
   if (String(trace.runtime_mode || "").includes("synthetic")) return "synthetic_fallback";
   return "no_model_fallback";
 }
 
-function appendMessage(role, text) {
+function appendMessage(role, text, meta = {}) {
   if (!messageList) {
     warnMissing("message-list", "append_message");
     return;
@@ -297,6 +303,17 @@ function appendMessage(role, text) {
   body.textContent = text;
 
   article.append(roleNode, body);
+  if (role === "assistant" && (meta.source || meta.fallbackReason)) {
+    const footer = document.createElement("footer");
+    footer.className = "message-footer";
+    const timeoutCopy = String(meta.fallbackReason || "").includes("timeout")
+      ? "本地模型超时，已走边界回答"
+      : "";
+    footer.textContent = [meta.source ? `source: ${meta.source}` : "", timeoutCopy || (meta.fallbackReason ? `fallback: ${meta.fallbackReason}` : "")]
+      .filter(Boolean)
+      .join(" / ");
+    article.append(footer);
+  }
   messageList.append(article);
   messageList.scrollTop = messageList.scrollHeight;
 }
@@ -358,8 +375,10 @@ function renderDebug() {
 function updateStatus(packet) {
   const trace = packet.process_trace || {};
   const truth = trace.runtime_truth_table || {};
+  const generation = trace.generation || trace.model || {};
   const visibleFallbackReason = packet.fallback_reason
     || truth.blocker
+    || generation.fallback_reason
     || (!truth.ok && Array.isArray(truth.failures) ? truth.failures[0] : "")
     || (packet.fallback_used ? "runtime_or_verifier_fallback" : "none");
   const evidenceStatus = packet.evidence_packet?.evidence_status || "unknown";
@@ -374,6 +393,11 @@ function updateStatus(packet) {
   setText(answerSourceStatus, packet.answer_source_label || sourceLabel(trace));
   setText(draftGeneratedStatus, boolText(trace.model?.draft_generated));
   setText(draftReplacedStatus, boolText(trace.router?.replaced_model_draft));
+  setText(q4AttemptedStatus, boolText(generation.q4_attempted));
+  setText(generationStartedStatus, boolText(generation.generation_started));
+  setText(generationStatus, generation.generation_status || "not_run");
+  setText(firstTokenStatus, generation.first_token_ms == null ? "none" : `${generation.first_token_ms} ms`);
+  setText(generationElapsedStatus, generation.total_generation_ms == null ? "0 ms" : `${generation.total_generation_ms} ms`);
   setText(modelSourceBadge, packet.answer_source_label || sourceLabel(trace));
   setText(tokenizerStatusBadge, `tokenizer: ${trace.model?.tokenizer || packet.decode_status || "not checked"}`);
   setText(q4StatusBadge, `q4 forward: ${trace.model?.q4_forward_ran ? "true" : `false / ${visibleFallbackReason}`}`);
@@ -392,12 +416,18 @@ function renderTrace(trace = null) {
     setText(answerSourceStatus, "no_model_fallback");
     setText(draftGeneratedStatus, "false");
     setText(draftReplacedStatus, "false");
+    setText(q4AttemptedStatus, "false");
+    setText(generationStartedStatus, "false");
+    setText(generationStatus, "not_run");
+    setText(firstTokenStatus, "none");
+    setText(generationElapsedStatus, "0 ms");
     setText(q4StatusBadge, "q4 forward: false");
     return;
   }
   const input = trace.input_packet || {};
   const rag = trace.rag || {};
   const model = trace.model || {};
+  const generation = trace.generation || model;
   const router = trace.router || {};
   const finalizer = trace.finalizer || {};
   const truth = trace.runtime_truth_table || {};
@@ -410,7 +440,12 @@ function renderTrace(trace = null) {
   setText(traceInputSummary, `has_user_input=${boolText(input.has_user_input)} / adapter_context_present=${boolText(input.adapter_context_present)}`);
   setText(traceContextSummary, `has_local_context=${boolText(input.has_local_context)} / local-session-only / not saved`);
   setText(traceEvidenceSummary, `retrieval_used=${boolText(rag.retrieval_used)} / evidence_count=${rag.evidence_count || 0} / evidence_status=${rag.evidence_status || "none"} / sources=${topSources} / tone_hints=${toneHints}`);
-  setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / tokens=${model.tokens_generated || 0} / model_draft_generated=${boolText(model.draft_generated)}`);
+  setText(q4AttemptedStatus, boolText(generation.q4_attempted));
+  setText(generationStartedStatus, boolText(generation.generation_started));
+  setText(generationStatus, generation.generation_status || "not_run");
+  setText(firstTokenStatus, generation.first_token_ms == null ? "none" : `${generation.first_token_ms} ms`);
+  setText(generationElapsedStatus, generation.total_generation_ms == null ? "0 ms" : `${generation.total_generation_ms} ms`);
+  setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_attempted=${boolText(generation.q4_attempted)} / generation_started=${boolText(generation.generation_started)} / generation_status=${generation.generation_status || "not_run"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / tokens=${generation.tokens_generated || model.tokens_generated || 0} / first_token_ms=${generation.first_token_ms == null ? "none" : generation.first_token_ms} / total_generation_ms=${generation.total_generation_ms == null ? 0 : generation.total_generation_ms} / model_draft_generated=${boolText(model.draft_generated)}`);
   setText(traceRouterSummary, `route=${router.route || "not_run"} / used_model_draft=${boolText(router.used_model_draft)} / finalizer_replaced_draft=${boolText(router.replaced_model_draft)} / reason=${router.reason || "none"}`);
   setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / truth=${truth.ok === false ? (truth.failures || []).join(", ") : "pass"} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || truth.blocker || "none"}`);
 }
@@ -518,9 +553,15 @@ function renderSelfCheck(report = null) {
 
 function setPipelineStatus(status) {
   const labels = {
+    routing_open_question: ["Loaded", "Routing", "Pending", "Unused"],
     loading_model: ["Loading", "Pending", "Pending", "Unused"],
     retrieving_local_memory: ["Loaded", "Retrieving", "Pending", "Unused"],
     drafting: ["Loaded", "Ready", "Drafting", "Unused"],
+    q4_generation_attempted: ["Loaded", "Ready", "q4 attempted", "Unused"],
+    q4_generation_started: ["Loaded", "Ready", "q4 started", "Unused"],
+    q4_first_token: ["Loaded", "Ready", "first token", "Unused"],
+    q4_generation_finished: ["Loaded", "Ready", "q4 finished", "Unused"],
+    generation_timeout: ["Loaded", "Ready", "Timeout", "Used"],
     verifying: ["Loaded", "Ready", "Verifying", "Unused"],
     final: ["Loaded", "Ready", "Passed", "Unused"],
     fallback: ["Loaded", "Ready", "Blocked", "Used"]
@@ -683,7 +724,10 @@ on(form, "submit", async (event) => {
     const packet = await runtime.run(text, { onStatus: setPipelineStatus });
     lastPacket = packet;
     setDisabled(stateExportButton, false);
-    appendMessage("assistant", packet.final_answer);
+    appendMessage("assistant", packet.final_answer, {
+      source: packet.answer_source_label || sourceLabel(packet.process_trace || {}),
+      fallbackReason: packet.fallback_reason || packet.process_trace?.generation?.fallback_reason || ""
+    });
     updateStatus(packet);
     renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
     renderDebug();

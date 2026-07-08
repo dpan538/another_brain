@@ -463,6 +463,13 @@ strong {
   margin: 0;
 }
 
+.message-footer {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
 .message-role {
   margin-bottom: 5px;
   color: var(--muted);
