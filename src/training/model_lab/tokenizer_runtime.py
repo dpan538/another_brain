@@ -29,8 +29,12 @@ class BPETokenizerRuntime:
 
     @classmethod
     def from_file(cls, path):
-        from tokenizers import Tokenizer
-        return cls(Tokenizer.from_file(str(path)))
+        from tokenizers import Tokenizer, decoders
+
+        tokenizer = Tokenizer.from_file(str(path))
+        if tokenizer.decoder is None:
+            tokenizer.decoder = decoders.ByteLevel()
+        return cls(tokenizer)
 
     def encode(self, text):
         return self.tokenizer.encode(str(text)).ids
