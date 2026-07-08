@@ -436,6 +436,7 @@
     "test:r28hotfix2": "node scripts/r28hotfix2_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28hotfix2 -p 'test_*.py'",
     "test:r28hotfix3": "node scripts/r28hotfix3_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28hotfix3 -p 'test_*.py'",
     "test:r28hotfix4": "node scripts/r28hotfix4_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28hotfix4 -p 'test_*.py'",
+    "test:r28qa5": "python3 -m unittest discover -s tests/r28qa5 -p 'test_*.py'",
     "test:r28stab0": "node scripts/r28stab0_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28stab0 -p 'test_*.py'",
     "test:r28surf2": "node scripts/r28surf2_run_ts_tests.mjs && python3 -m unittest discover -s tests/r28surf2 -p 'test_*.py'",
     "test:r28rag3": "node scripts/r28rag3_run_ts_tests.mjs",
