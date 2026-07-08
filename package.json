@@ -445,6 +445,7 @@
     "test:r28pr0": "python3 -m unittest discover -s tests/r28pr0",
     "test:r28d8": "python3 -m unittest discover -s tests/r28d8",
     "test:r28qa2": "python3 -m unittest discover -s tests/r28qa2",
+    "test:r28qa6": "python3 -m unittest discover -s tests/r28qa6",
     "analyze:r25y-pilot": "node scripts/analyze_r25y_pilot_results.mjs",
     "eval:r25y-heldout-breakdown": "node scripts/eval_r25y_heldout_breakdown.mjs",
     "compare:r25y-data-regularization": "node scripts/compare_r25y_data_regularization.mjs",
