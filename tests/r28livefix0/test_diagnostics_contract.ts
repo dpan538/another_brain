@@ -167,7 +167,10 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
     "审美有判断",
     "可被信任的真实",
     "语言不是标签而已",
-    "停在证据边界上"
+    "停在证据边界上",
+    "文学不是把道理说漂亮",
+    "音乐先听动机和节奏",
+    "艺术先看形式有没有必要"
   ]) {
     assert.ok(app.includes(phrase), phrase);
   }
@@ -307,12 +310,14 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("OpenAI")));
   assert.ok(worldPack.cards.length >= 100);
   assert.ok(Buffer.byteLength(worldRaw) >= 64000);
-  assert.ok(reasoningPack.cards.length >= 340);
-  assert.ok(Buffer.byteLength(reasoningRaw) >= 240000);
+  assert.ok(reasoningPack.cards.length >= 410);
+  assert.ok(Buffer.byteLength(reasoningRaw) >= 300000);
   assert.equal(reasoningPack.fixture_policy.private_source_summary_only, true);
+  assert.equal(reasoningPack.fixture_policy.writing_example_summary_only, true);
   assert.equal(reasoningPack.fixture_policy.raw_question_pack_content, false);
-  for (const marker of ["反事实", "比较", "类比", "定义", "上下文追问", "评价输入", "重复提问", "RAG Fusion", "HyDE", "漂移", "领域优先", "范畴错误", "可行性", "程度判断", "证据阈值", "中文判断", "轻人格", "反模板", "反压力回答", "有口吻的逻辑", "会话节奏"]) {
-    assert.ok(reasoningPack.cards.some((card) => card.keywords.includes(marker) || card.text.includes(marker)), marker);
+  assert.equal(reasoningPack.fixture_policy.raw_writing_example_content, false);
+  for (const marker of ["反事实", "比较", "类比", "定义", "上下文追问", "评价输入", "重复提问", "RAG Fusion", "HyDE", "漂移", "领域优先", "范畴错误", "可行性", "程度判断", "证据阈值", "中文判断", "轻人格", "反模板", "反压力回答", "有口吻的逻辑", "会话节奏", "private_logic_summary_only", "poetic_style_summary_only", "direct_answer", "compressed_judgment", "not_x_but_y", "conditional_split", "文学", "诗歌", "意象", "流行乐", "古典音乐", "和声", "绘画", "艺术史"]) {
+    assert.ok(reasoningPack.cards.some((card) => JSON.stringify(card).includes(marker)), marker);
   }
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("BMW")));
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Skyline")));
@@ -356,6 +361,20 @@ test("query profile style derivation is documented without raw private source le
   assert.ok(doc.includes("Implemented Reasoning Model"));
   assert.ok(doc.includes("No raw prompt"));
   for (const forbidden of ["private_sources/", "another_brain_question_pack_001_answered", "another_brain_question_pack_002", "你的回答（必填）", "question_pack_001"]) {
+    assert.equal(doc.includes(forbidden), false, forbidden);
+  }
+});
+
+test("private voice reasoning analysis is documented as aggregate-only runtime mapping", async () => {
+  const doc = await readFile(new URL("../../docs/r28/R28POSTMERGE18_PRIVATE_LOGIC_STYLE_ANALYSIS.md", import.meta.url), "utf8");
+
+  for (const marker of ["Observable Derivation", "Aggregate Signals", "Reasoning Structure", "Private Voice Rules", "Literature And Art Derivation", "Runtime Mapping", "No raw private text"]) {
+    assert.ok(doc.includes(marker), marker);
+  }
+  for (const marker of ["direct answer", "negative pivot", "conditional split", "bounded judgment", "Literature lane", "Music lane", "Visual-art lane"]) {
+    assert.ok(doc.includes(marker), marker);
+  }
+  for (const forbidden of ["private_sources/", "question_pack_001", "question_pack_002", "你的回答（必填）", "Church.pdf", "Poetry_Collection.pdf", "raw rows"]) {
     assert.equal(doc.includes(forbidden), false, forbidden);
   }
 });
@@ -568,6 +587,56 @@ test("expanded world cards can retrieve practical brand and commonsense context 
   assert.equal(judgmentPacket.evidence_status, "sufficient");
   assert.equal(judgmentPacket.judgment_profile.judgment_mode, "mixed_truth_value_check");
   assert.equal(judgmentPacket.rag_profile_pack.judgment_profile.answer_policy_hint, "classify_before_answering");
+});
+
+test("culture query profiles keep literature music and visual art as independent retrieval lanes", () => {
+  const records = [
+    {
+      source_id: "culture-poetry-form",
+      title: "R28 culture literature card",
+      text: "诗歌判断要看说话者、停顿、意象移动、语序和读者位置，而不是只把诗翻译成道理。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["文学", "诗歌", "意象", "叙事", "文本", "声音"],
+      metadata: { r28rag3_profile_card: true, card_kind: "aesthetic" }
+    },
+    {
+      source_id: "culture-pop-structure",
+      title: "R28 culture music card",
+      text: "流行乐的抓人来自动机、节奏、旋律记忆、和声推进和传播语境。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["音乐", "流行乐", "旋律", "节奏", "和声", "专辑"],
+      metadata: { r28rag3_profile_card: true, card_kind: "aesthetic" }
+    },
+    {
+      source_id: "culture-visual-form",
+      title: "R28 culture visual art card",
+      text: "视觉艺术判断要看构图、材料、色彩、尺度、观看路径和艺术史语境。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["艺术", "绘画", "构图", "色彩", "材料", "艺术史"],
+      metadata: { r28rag3_profile_card: true, card_kind: "aesthetic" }
+    }
+  ];
+
+  const poetry = buildEvidencePacket("这首诗美在哪里，为什么读不懂也会有感觉？", {}, records);
+  assert.equal(poetry.query_profile.domain_hint, "literature");
+  assert.equal(poetry.judgment_profile.judgment_mode, "literary_form_judgment");
+  assert.equal(poetry.association_profile.association_mode, "literary_form_context");
+  assert.equal(poetry.retrieved_evidence[0].source_id, "culture-poetry-form");
+
+  const music = buildEvidencePacket("流行乐为什么抓人，和古典音乐的结构有什么不同？", {}, records);
+  assert.equal(music.query_profile.domain_hint, "music");
+  assert.equal(music.judgment_profile.judgment_mode, "music_structure_judgment");
+  assert.equal(music.association_profile.association_mode, "music_structure_context");
+  assert.equal(music.retrieved_evidence[0].source_id, "culture-pop-structure");
+
+  const art = buildEvidencePacket("抽象艺术为什么不是乱画，怎么判断一幅画是否成立？", {}, records);
+  assert.equal(art.query_profile.domain_hint, "art");
+  assert.equal(art.judgment_profile.judgment_mode, "visual_art_judgment");
+  assert.equal(art.association_profile.association_mode, "visual_form_context");
+  assert.equal(art.retrieved_evidence[0].source_id, "culture-visual-form");
 });
 
 test("query profile generalizes beyond named examples into counterfactual comparison analogy and definition routing", () => {

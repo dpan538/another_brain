@@ -53,6 +53,9 @@ const QUERY_EXPANSION_RULES = Object.freeze([
   { match: /可是|但是|难道不是|反而|我不同意|不一定/i, terms: ["反驳", "异议", "修正", "判断层", "边界"] },
   { match: /自由|公平|正义|责任|伦理|应该|不应该|值得|不值得/i, terms: ["价值判断", "理由", "代价", "一致性", "边界", "责任"] },
   { match: /语言|词语|文字|表达|语境|翻译|误解|意思/i, terms: ["语言", "意义", "语境", "表达", "误解", "关系"] },
+  { match: /文学|诗歌|诗|小说|叙事|文本|意象|隐喻|象征|现代主义|古典文学|读不懂/i, terms: ["文学", "诗歌", "叙事", "意象", "隐喻", "形式", "声音", "文本", "读者"] },
+  { match: /音乐|流行乐|古典音乐|爵士|旋律|节奏|和声|歌词|专辑|副歌|巴赫|歌剧|合成器|采样/i, terms: ["音乐", "流行乐", "古典音乐", "旋律", "节奏", "和声", "歌词", "声音", "结构"] },
+  { match: /艺术|绘画|雕塑|摄影|影像|构图|色彩|抽象艺术|现代艺术|博物馆|展览|策展|艺术史/i, terms: ["艺术", "视觉艺术", "构图", "材料", "色彩", "形式", "语境", "艺术史", "观看"] },
   { match: /算法|推荐|信息茧房|平台/i, terms: ["算法", "推荐系统", "激励", "分发", "注意力"] },
   { match: /排版|字体|杂志|bodoni|封面|视觉/i, terms: ["排版", "字体", "杂志", "层级", "留白", "对比"] }
 ]);
@@ -76,6 +79,9 @@ const TIME_DOMAIN_RE = /时间|线性|非线性|钟表|记忆|叙事|因果顺�
 const INFRA_DOMAIN_RE = /铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市|基础设施|港口|电网|水网|公路|机场/;
 const JUDGMENT_DOMAIN_RE = /对错|真假|真伪|标准|判断|事实|价值|审美|证据|成立|可证伪|定义|边界|反例/;
 const AESTHETIC_DOMAIN_RE = /美|审美|美学|好看|风格|设计|字体|排版|杂志|质感|比例/;
+const LITERATURE_DOMAIN_RE = /文学|诗歌|诗|小说|叙事|文本|意象|隐喻|象征|现代主义|古典文学|读者|读不懂/;
+const MUSIC_DOMAIN_RE = /音乐|流行乐|古典音乐|爵士|旋律|节奏|和声|歌词|专辑|副歌|巴赫|歌剧|合成器|采样/;
+const ART_DOMAIN_RE = /艺术|绘画|雕塑|摄影|影像|构图|色彩|抽象艺术|现代艺术|博物馆|展览|策展|艺术史/;
 const SOCIETY_DOMAIN_RE = /社会|平台|算法|隐私|教育|医疗|劳动|城市|房价|通胀|政策|品牌|公司|商业|供应链|历史|战争|革命/;
 const TECHNOLOGY_DOMAIN_RE = /技术|芯片|半导体|手机|互联网|算法|软件|硬件|电池|计算|AI|模型|网络/i;
 const NATURAL_DOMAIN_RE = /自然|太阳|月亮|天气|气候|植物|重力|引力|声音|雨|概率|随机|物理|生物/;
@@ -313,6 +319,9 @@ export function inferQuestionProfile(query = "") {
   if (hasFollowupCue && text.length <= 36 && profile.question_shape === "open") profile.question_shape = "short_followup";
   if (TIME_DOMAIN_RE.test(text)) profile.domain_hint = "time";
   else if (INFRA_DOMAIN_RE.test(text)) profile.domain_hint = "infrastructure";
+  else if (LITERATURE_DOMAIN_RE.test(text)) profile.domain_hint = "literature";
+  else if (MUSIC_DOMAIN_RE.test(text)) profile.domain_hint = "music";
+  else if (ART_DOMAIN_RE.test(text)) profile.domain_hint = "art";
   else if (TECHNOLOGY_DOMAIN_RE.test(text)) profile.domain_hint = "technology";
   else if (NATURAL_DOMAIN_RE.test(text)) profile.domain_hint = "natural";
   else if (AESTHETIC_DOMAIN_RE.test(text)) profile.domain_hint = "aesthetic";
@@ -495,6 +504,21 @@ function questionProfileBoost(profile = {}, record = {}, hasLexicalOverlap = fal
     if (/语言|词语|文字|表达|语境|翻译|误解|意义/.test(text)) boost += 0.13;
     if (["philosophy", "logic", "context"].includes(kind)) boost += 0.05;
   }
+  if (profile.domain_hint === "literature") {
+    if (/文学|诗歌|小说|叙事|意象|隐喻|文本|读者|现代主义|古典文学|声音|语序/.test(text)) boost += 0.15;
+    if (["aesthetic", "language", "logic", "context", "history", "philosophy"].includes(kind)) boost += 0.06;
+    if (["commonsense", "brand_literacy", "society"].includes(kind) && !hasLexicalOverlap) boost -= 0.09;
+  }
+  if (profile.domain_hint === "music") {
+    if (/音乐|流行乐|古典音乐|爵士|旋律|节奏|和声|歌词|专辑|副歌|声音|结构/.test(text)) boost += 0.15;
+    if (["aesthetic", "history", "society", "language", "context", "logic"].includes(kind)) boost += 0.06;
+    if (["commonsense", "brand_literacy"].includes(kind) && !hasLexicalOverlap) boost -= 0.08;
+  }
+  if (profile.domain_hint === "art") {
+    if (/艺术|视觉艺术|绘画|摄影|构图|色彩|材料|抽象艺术|博物馆|策展|艺术史|观看/.test(text)) boost += 0.15;
+    if (["aesthetic", "history", "society", "logic", "context"].includes(kind)) boost += 0.06;
+    if (["commonsense", "brand_literacy"].includes(kind) && !hasLexicalOverlap) boost -= 0.08;
+  }
   if (profile.domain_hint === "aesthetic") {
     if (kind === "aesthetic") boost += 0.16;
     if (kind === "logic") boost += 0.04;
@@ -520,7 +544,10 @@ function profileKindBoost(query = "", record = {}) {
   if (kind === "brand_literacy" && /apple|苹果|google|谷歌|microsoft|微软|tesla|特斯拉|nike|耐克|coca|可口可乐|mcdonald|麦当劳|starbucks|星巴克|huawei|华为|byd|比亚迪|openai|vercel|meta|facebook|instagram|amazon|亚马逊|toyota|丰田|leica|徕卡|品牌|公司|商业|产品|平台/.test(text)) return 0.13;
   if (kind === "history" && /工业革命|法国大革命|美国独立|一战|二战|世界大战|冷战|辛亥|五四|大萧条|改革开放|互联网|金融危机|疫情|covid|transformer|文艺复兴|启蒙|印刷术|古登堡|太空竞赛|全球化|历史|革命|战争|危机|modern|war|revolution|renaissance|enlightenment|globalization/.test(text)) return 0.13;
   if (kind === "society" && /通胀|物价|房价|住房|平台|隐私|气候|教育|医疗|劳动|工资|迁移|移民|信任|社会|经济|政策|现实|工作|数据|算法/.test(text)) return 0.12;
-  if (kind === "aesthetic" && /审美|好看|风格|aesthetic|taste|style/.test(text)) return 0.09;
+  if (kind === "aesthetic" && /审美|好看|风格|aesthetic|taste|style|文学|诗歌|音乐|绘画|艺术|构图|旋律|节奏|和声/.test(text)) return 0.12;
+  if (["language", "context", "philosophy"].includes(kind) && /文学|诗歌|小说|叙事|文本|意象|隐喻|读者|语序|声音/.test(text)) return 0.1;
+  if (["history", "society", "language"].includes(kind) && /音乐|流行乐|古典音乐|爵士|旋律|节奏|和声|歌词|专辑|采样/.test(text)) return 0.1;
+  if (["history", "society", "logic"].includes(kind) && /艺术|绘画|摄影|影像|构图|色彩|抽象艺术|博物馆|策展|艺术史/.test(text)) return 0.1;
   if (kind === "commonsense" && /太阳|日出|日落|东升西落|天气|气温|升温|降温|自然|常识|天空|蓝天|月亮|季节|时间|下雨|雨|沸腾|烧开|声音|振动|真空|why|原因/.test(text)) return 0.1;
   if (kind === "philosophy" && /生死|生与死|活着|存在|虚无|意义|哲学|自由|有限|死亡|孤独|记忆|正义|责任|真理|真实|事实/.test(text)) return 0.1;
   if (kind === "logic" && /为什么|如何看待|怎么看|判断|因果|证据|推理|逻辑|because|reason/.test(text)) return 0.09;
@@ -730,6 +757,30 @@ function inferJudgmentMode(query = "", evidence = []) {
       answer_policy_hint: "answer_relationship_with_boundary"
     };
   }
+  if (LITERATURE_DOMAIN_RE.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "literary_form_judgment",
+      correctness_axis: "形式、声音、意象、叙事视角和语境是否互相支撑",
+      answer_policy_hint: "judge_literature_by_form_context_and_image"
+    };
+  }
+  if (MUSIC_DOMAIN_RE.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "music_structure_judgment",
+      correctness_axis: "旋律、节奏、和声、声音质感和传播语境",
+      answer_policy_hint: "judge_music_by_motive_body_and_context"
+    };
+  }
+  if (ART_DOMAIN_RE.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "visual_art_judgment",
+      correctness_axis: "构图、材料、色彩、尺度和观看语境",
+      answer_policy_hint: "judge_art_by_form_material_and_context"
+    };
+  }
   if (VALUE_CONFLICT_RE.test(text)) {
     return {
       has_truth_condition: "mixed",
@@ -827,6 +878,30 @@ function inferAssociationProfile(query = "", evidence = []) {
       reasoning_axis: "能确认的部分、缺失证据和下一步验证",
       missing_link: false,
       answer_policy_hint: "say_known_unknown_without_engineering"
+    };
+  }
+  if (LITERATURE_DOMAIN_RE.test(text)) {
+    return {
+      association_mode: "literary_form_context",
+      reasoning_axis: "说话者、形式、意象、停顿和读者语境",
+      missing_link: false,
+      answer_policy_hint: "answer_literature_as_form_before_theme"
+    };
+  }
+  if (MUSIC_DOMAIN_RE.test(text)) {
+    return {
+      association_mode: "music_structure_context",
+      reasoning_axis: "动机、节奏、和声、声音质感和传播位置",
+      missing_link: false,
+      answer_policy_hint: "answer_music_as_structure_and_body"
+    };
+  }
+  if (ART_DOMAIN_RE.test(text)) {
+    return {
+      association_mode: "visual_form_context",
+      reasoning_axis: "构图、材料、色彩、尺度、观看路径和时代语境",
+      missing_link: false,
+      answer_policy_hint: "answer_art_as_form_material_context"
     };
   }
   if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(text)) {

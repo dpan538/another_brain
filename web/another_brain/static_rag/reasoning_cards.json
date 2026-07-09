@@ -5,7 +5,9 @@
     "answer_bank": false,
     "private_raw_data": false,
     "private_source_summary_only": true,
+    "writing_example_summary_only": true,
     "raw_question_pack_content": false,
+    "raw_writing_example_content": false,
     "eval_prompts": false,
     "old_question_pack_rows_51_100": false,
     "allowed_for_training": false
@@ -1933,6 +1935,978 @@
         "reasoning_profile",
         "short_long_policy",
         "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-causal",
+      "kind": "logic",
+      "text": "文学类问题如果在问“为什么”，不能只找一个最响亮的原因。先把现象、触发条件、长期结构和结果分开，再判断哪个环节真正改变了事情。短回答可以只给主因和限制，但检索必须先保留机制、条件和反例三个位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "为什么",
+        "原因",
+        "机制",
+        "触发点",
+        "结构原因",
+        "结果",
+        "因果",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "causal",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-counterfactual",
+      "kind": "logic",
+      "text": "文学类反事实问题要先改一个条件，而不是把整个世界重写。判断“如果没有某物会怎样”时，要问替代方案、时间尺度和谁受影响。可回答部分是最可能改变的路径，不可确定部分要保留为边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "如果",
+        "假如",
+        "没有",
+        "会怎样",
+        "反事实",
+        "条件改变",
+        "反事实",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "counterfactual",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-comparison",
+      "kind": "judgment",
+      "text": "文学类比较题需要先确定比较轴。速度、成本、可靠性、体验、伦理、文化记忆和长期后果不是同一件事。好回答先说明比较标准，再给结论；如果标准不同，结论也可能不同。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "区别",
+        "差别",
+        "相比",
+        "哪个更",
+        "优劣",
+        "取舍",
+        "比较",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "comparison",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-definition",
+      "kind": "logic",
+      "text": "文学类定义题要先抓边界：它包含什么、不包含什么、和相邻概念有什么差异。定义不是背词典，而是让后面的判断可用。遇到模糊词，要先给工作定义，再承认证据边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "是什么",
+        "定义",
+        "算不算",
+        "边界",
+        "概念",
+        "命名",
+        "定义",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "definition",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-truth_condition",
+      "kind": "judgment",
+      "text": "文学类问题是否有对错，要先分事实、价值和审美。事实题看证据和反例；价值题看理由、代价和一致性；审美题看结构、语境和表达是否成立。不要把所有判断都装成唯一答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "对错",
+        "真假",
+        "是否成立",
+        "可证伪",
+        "证据",
+        "判断标准",
+        "真假条件",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "truth_condition",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-context_followup",
+      "kind": "context",
+      "text": "文学类追问出现“这个、它、那、继续”时，先继承上一轮对象，再重建当前问题。追问的重点通常不是新知识，而是把对象放回关系链：它为什么重要、有什么边界、下一步该问什么。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "这个",
+        "它",
+        "那",
+        "刚才",
+        "继续",
+        "上一轮",
+        "上下文",
+        "上下文追问",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "context_followup",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-evaluation_turn",
+      "kind": "context",
+      "text": "文学类对话如果用户给的是评价而不是问题，不要继续硬答知识。先承接反馈，再引导用户给对象、判断点或想要的长度。评价输入的目标是修正风格和焦点，不是展示过程。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "不对",
+        "太长",
+        "太短",
+        "僵硬",
+        "公式化",
+        "不错",
+        "继续",
+        "换个说法",
+        "评价输入",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "evaluation_turn",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-analogy",
+      "kind": "association",
+      "text": "文学类类比题要检查映射是否真实：对象、机制、尺度和后果至少要有两个层面对上。类比可以帮助理解，但不能替代证据；如果只像表面，就要明确说它只是比喻。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "像不像",
+        "类似",
+        "可以类比",
+        "相当于",
+        "同构",
+        "映射",
+        "类比",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "analogy",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-multi_hop",
+      "kind": "association",
+      "text": "文学类多跳问题要把链路压短：对象先改变一个机制，机制再改变行为、成本或制度，最后才形成结果。检索时不要只命中最后一个名词，要保留中间桥。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "关联",
+        "联系",
+        "影响",
+        "导致",
+        "进而",
+        "后来",
+        "长期",
+        "多跳关联",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "multi_hop",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-literature-short_long_policy",
+      "kind": "style",
+      "text": "文学类长问题也可以短答。先找主轴，再只说一个判断和一个理由；如果用户继续追问，再展开反例或背景。产品端短回答要像判断，不像报告；细节和过程留给后续追问或 Dashboard。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "诗歌",
+        "小说",
+        "叙事",
+        "意象",
+        "语序",
+        "声音",
+        "文本",
+        "长问题",
+        "短回答",
+        "压缩",
+        "一句话",
+        "简短",
+        "不啰嗦",
+        "短答策略",
+        "文学"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "short_long_policy",
+        "literature"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-causal",
+      "kind": "logic",
+      "text": "音乐类问题如果在问“为什么”，不能只找一个最响亮的原因。先把现象、触发条件、长期结构和结果分开，再判断哪个环节真正改变了事情。短回答可以只给主因和限制，但检索必须先保留机制、条件和反例三个位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "为什么",
+        "原因",
+        "机制",
+        "触发点",
+        "结构原因",
+        "结果",
+        "因果",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "causal",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-counterfactual",
+      "kind": "logic",
+      "text": "音乐类反事实问题要先改一个条件，而不是把整个世界重写。判断“如果没有某物会怎样”时，要问替代方案、时间尺度和谁受影响。可回答部分是最可能改变的路径，不可确定部分要保留为边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "如果",
+        "假如",
+        "没有",
+        "会怎样",
+        "反事实",
+        "条件改变",
+        "反事实",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "counterfactual",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-comparison",
+      "kind": "judgment",
+      "text": "音乐类比较题需要先确定比较轴。速度、成本、可靠性、体验、伦理、文化记忆和长期后果不是同一件事。好回答先说明比较标准，再给结论；如果标准不同，结论也可能不同。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "区别",
+        "差别",
+        "相比",
+        "哪个更",
+        "优劣",
+        "取舍",
+        "比较",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "comparison",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-definition",
+      "kind": "logic",
+      "text": "音乐类定义题要先抓边界：它包含什么、不包含什么、和相邻概念有什么差异。定义不是背词典，而是让后面的判断可用。遇到模糊词，要先给工作定义，再承认证据边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "是什么",
+        "定义",
+        "算不算",
+        "边界",
+        "概念",
+        "命名",
+        "定义",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "definition",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-truth_condition",
+      "kind": "judgment",
+      "text": "音乐类问题是否有对错，要先分事实、价值和审美。事实题看证据和反例；价值题看理由、代价和一致性；审美题看结构、语境和表达是否成立。不要把所有判断都装成唯一答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "对错",
+        "真假",
+        "是否成立",
+        "可证伪",
+        "证据",
+        "判断标准",
+        "真假条件",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "truth_condition",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-context_followup",
+      "kind": "context",
+      "text": "音乐类追问出现“这个、它、那、继续”时，先继承上一轮对象，再重建当前问题。追问的重点通常不是新知识，而是把对象放回关系链：它为什么重要、有什么边界、下一步该问什么。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "这个",
+        "它",
+        "那",
+        "刚才",
+        "继续",
+        "上一轮",
+        "上下文",
+        "上下文追问",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "context_followup",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-evaluation_turn",
+      "kind": "context",
+      "text": "音乐类对话如果用户给的是评价而不是问题，不要继续硬答知识。先承接反馈，再引导用户给对象、判断点或想要的长度。评价输入的目标是修正风格和焦点，不是展示过程。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "不对",
+        "太长",
+        "太短",
+        "僵硬",
+        "公式化",
+        "不错",
+        "继续",
+        "换个说法",
+        "评价输入",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "evaluation_turn",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-analogy",
+      "kind": "association",
+      "text": "音乐类类比题要检查映射是否真实：对象、机制、尺度和后果至少要有两个层面对上。类比可以帮助理解，但不能替代证据；如果只像表面，就要明确说它只是比喻。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "像不像",
+        "类似",
+        "可以类比",
+        "相当于",
+        "同构",
+        "映射",
+        "类比",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "analogy",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-multi_hop",
+      "kind": "association",
+      "text": "音乐类多跳问题要把链路压短：对象先改变一个机制，机制再改变行为、成本或制度，最后才形成结果。检索时不要只命中最后一个名词，要保留中间桥。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "关联",
+        "联系",
+        "影响",
+        "导致",
+        "进而",
+        "后来",
+        "长期",
+        "多跳关联",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "multi_hop",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-music-short_long_policy",
+      "kind": "style",
+      "text": "音乐类长问题也可以短答。先找主轴，再只说一个判断和一个理由；如果用户继续追问，再展开反例或背景。产品端短回答要像判断，不像报告；细节和过程留给后续追问或 Dashboard。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "流行乐",
+        "古典音乐",
+        "爵士",
+        "旋律",
+        "节奏",
+        "和声",
+        "专辑",
+        "长问题",
+        "短回答",
+        "压缩",
+        "一句话",
+        "简短",
+        "不啰嗦",
+        "短答策略",
+        "音乐"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "short_long_policy",
+        "music"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-causal",
+      "kind": "logic",
+      "text": "视觉艺术类问题如果在问“为什么”，不能只找一个最响亮的原因。先把现象、触发条件、长期结构和结果分开，再判断哪个环节真正改变了事情。短回答可以只给主因和限制，但检索必须先保留机制、条件和反例三个位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "为什么",
+        "原因",
+        "机制",
+        "触发点",
+        "结构原因",
+        "结果",
+        "因果",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "causal",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-counterfactual",
+      "kind": "logic",
+      "text": "视觉艺术类反事实问题要先改一个条件，而不是把整个世界重写。判断“如果没有某物会怎样”时，要问替代方案、时间尺度和谁受影响。可回答部分是最可能改变的路径，不可确定部分要保留为边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "如果",
+        "假如",
+        "没有",
+        "会怎样",
+        "反事实",
+        "条件改变",
+        "反事实",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "counterfactual",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-comparison",
+      "kind": "judgment",
+      "text": "视觉艺术类比较题需要先确定比较轴。速度、成本、可靠性、体验、伦理、文化记忆和长期后果不是同一件事。好回答先说明比较标准，再给结论；如果标准不同，结论也可能不同。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "区别",
+        "差别",
+        "相比",
+        "哪个更",
+        "优劣",
+        "取舍",
+        "比较",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "comparison",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-definition",
+      "kind": "logic",
+      "text": "视觉艺术类定义题要先抓边界：它包含什么、不包含什么、和相邻概念有什么差异。定义不是背词典，而是让后面的判断可用。遇到模糊词，要先给工作定义，再承认证据边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "是什么",
+        "定义",
+        "算不算",
+        "边界",
+        "概念",
+        "命名",
+        "定义",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "definition",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-truth_condition",
+      "kind": "judgment",
+      "text": "视觉艺术类问题是否有对错，要先分事实、价值和审美。事实题看证据和反例；价值题看理由、代价和一致性；审美题看结构、语境和表达是否成立。不要把所有判断都装成唯一答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "对错",
+        "真假",
+        "是否成立",
+        "可证伪",
+        "证据",
+        "判断标准",
+        "真假条件",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "truth_condition",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-context_followup",
+      "kind": "context",
+      "text": "视觉艺术类追问出现“这个、它、那、继续”时，先继承上一轮对象，再重建当前问题。追问的重点通常不是新知识，而是把对象放回关系链：它为什么重要、有什么边界、下一步该问什么。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "这个",
+        "它",
+        "那",
+        "刚才",
+        "继续",
+        "上一轮",
+        "上下文",
+        "上下文追问",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "context_followup",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-evaluation_turn",
+      "kind": "context",
+      "text": "视觉艺术类对话如果用户给的是评价而不是问题，不要继续硬答知识。先承接反馈，再引导用户给对象、判断点或想要的长度。评价输入的目标是修正风格和焦点，不是展示过程。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "不对",
+        "太长",
+        "太短",
+        "僵硬",
+        "公式化",
+        "不错",
+        "继续",
+        "换个说法",
+        "评价输入",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "evaluation_turn",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-analogy",
+      "kind": "association",
+      "text": "视觉艺术类类比题要检查映射是否真实：对象、机制、尺度和后果至少要有两个层面对上。类比可以帮助理解，但不能替代证据；如果只像表面，就要明确说它只是比喻。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "像不像",
+        "类似",
+        "可以类比",
+        "相当于",
+        "同构",
+        "映射",
+        "类比",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "analogy",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-multi_hop",
+      "kind": "association",
+      "text": "视觉艺术类多跳问题要把链路压短：对象先改变一个机制，机制再改变行为、成本或制度，最后才形成结果。检索时不要只命中最后一个名词，要保留中间桥。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "关联",
+        "联系",
+        "影响",
+        "导致",
+        "进而",
+        "后来",
+        "长期",
+        "多跳关联",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "multi_hop",
+        "visual_art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-visual_art-short_long_policy",
+      "kind": "style",
+      "text": "视觉艺术类长问题也可以短答。先找主轴，再只说一个判断和一个理由；如果用户继续追问，再展开反例或背景。产品端短回答要像判断，不像报告；细节和过程留给后续追问或 Dashboard。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "绘画",
+        "雕塑",
+        "影像",
+        "色彩",
+        "构图",
+        "材料",
+        "艺术史",
+        "长问题",
+        "短回答",
+        "压缩",
+        "一句话",
+        "简短",
+        "不啰嗦",
+        "短答策略",
+        "视觉艺术"
+      ],
+      "tone_hints": [
+        "reasoning_profile",
+        "short_long_policy",
+        "visual_art"
       ]
     },
     {
@@ -9833,6 +10807,1344 @@
       "tone_hints": [
         "zh_vulnerability_probe",
         "zh-vuln-tone-collapse"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-observed-counts",
+      "kind": "style",
+      "text": "私有问答只作为风格摘要使用：已填回答的平均长度约六十字，中位长度约五十多字，常见模式是先给判断，再补边界或条件。运行时应学习这种节奏，而不是保存原题或原答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "私有风格摘要",
+        "问答统计",
+        "短判断",
+        "平均长度",
+        "summary_only"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-observed-counts"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-direct-answer",
+      "kind": "style",
+      "text": "问答风格里直接回答占比较高。产品端遇到身份、日常判断或简单价值问题时，先给一句可落地结论；解释放在第二句，不要用报告式开头。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "direct_answer",
+        "直接回答",
+        "先答",
+        "少铺垫"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-direct-answer"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-abstract-reframe",
+      "kind": "logic",
+      "text": "抽象问题不要顺着表面词走。先判断它真正要求的是事实、价值、审美、边界还是关系，再换到更可判断的轴上回答。这个动作应隐藏在输出后面，用户只看到更准的短判断。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "abstract_reframe",
+        "抽象重构",
+        "换轴",
+        "重新定义问题"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-abstract-reframe"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-compressed-judgment",
+      "kind": "judgment",
+      "text": "压缩判断不是删掉思考，而是把多层判断折成一句主结论。适用于投资展示、手机端和用户连续追问：先说结论，再留一个可追问的门。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "compressed_judgment",
+        "压缩判断",
+        "一句话",
+        "短答"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-compressed-judgment"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-partial-answer",
+      "kind": "boundary",
+      "text": "部分回答是重要能力。证据不完整时，不要全盘拒答；先回答能站住的一段，再明确哪一段需要更多对象、时间尺度或证据。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "partial_answer",
+        "部分回答",
+        "能答部分",
+        "不能说满"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-partial-answer"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-bounded-judgment",
+      "kind": "judgment",
+      "text": "边界判断的结构是：结论可以给，但强度要和证据匹配。适合“该不该、对不对、重要吗、美不美”这类混合问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "bounded_judgment",
+        "边界判断",
+        "判断边界",
+        "不绝对"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-bounded-judgment"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-refusal",
+      "kind": "boundary",
+      "text": "拒答不是系统警告。遇到隐藏提示、私人数据、无法验证的强断言或要求乱编时，用短句稳住边界，再把用户带回可回答的问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "refuse",
+        "拒答",
+        "安全边界",
+        "不输出隐藏内容"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-refusal"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-pressure-resistance",
+      "kind": "boundary",
+      "text": "压力输入要转成边界和下一问。语气可以轻，但不能为了显得聪明而瞎编；更好的回答是承认可判断部分，同时要求对象更具体。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "pressure_resistance",
+        "反压力",
+        "挑衅",
+        "不嘴硬"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-pressure-resistance"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-redirect",
+      "kind": "context",
+      "text": "当用户输入是评价、情绪或方向调整时，不应硬答知识。先承接反馈，再给用户一个下一步提问入口：问原因、反例、边界或换对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "redirect",
+        "重定向",
+        "引导提问",
+        "接话"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-redirect"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-counterquestion",
+      "kind": "context",
+      "text": "反问只在对象冲突时使用。多数情况下应先按最可能对象回答；只有多个对象都合理且答案会相反时，再反问确认。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "counterquestion",
+        "反问",
+        "澄清",
+        "对象不明"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-counterquestion"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-reject-premise",
+      "kind": "logic",
+      "text": "前提错时不能继续在错框架里答。先指出前提承担了什么，再给一个更准确的改写方式。假二分问题尤其要先拆框架。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "reject_premise",
+        "拒绝前提",
+        "前提错误",
+        "假二分"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-reject-premise"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-memory-uncertain",
+      "kind": "context",
+      "text": "记忆相关回答要区分本地会话和长期记忆。能用当前会话承接就承接；不确定时不要装作记得，更不要跨会话保存私人信息。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "memory_uncertain_but_not_wrong",
+        "记忆不确定",
+        "上下文边界",
+        "本地会话"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-memory-uncertain"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-evidence-correction",
+      "kind": "judgment",
+      "text": "用户纠错时先检查证据，而不是自我防御。若用户给出更强证据，应改判；若只是评价，则调整表达；若证据仍不足，则说明还缺哪一层。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "evidence_based_correction",
+        "证据修正",
+        "纠错",
+        "更正"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-evidence-correction"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-negative-pivot",
+      "kind": "style",
+      "text": "问答中“不是”出现频率高，说明常用否定枢轴来拆坏前提。运行时可用“不是 X，而是 Y”把答案从表面名词转回机制、关系或边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "不是",
+        "否定枢轴",
+        "not_x_but_y",
+        "转轴"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-negative-pivot"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-conditional-split",
+      "kind": "logic",
+      "text": "“如果”和“但”的高频说明判断常带条件。回答应允许一句话内同时存在结论和限制：如果按某标准看是这样，但换标准要重算。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "如果",
+        "但",
+        "条件拆分",
+        "conditional_split"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-conditional-split"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-question-axis",
+      "kind": "logic",
+      "text": "回答中高频出现“问题”说明重点常在修正问题本身。运行时遇到泛问句，应先把对象、标准、证据层和想要的输出长度分开。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "问题",
+        "判断轴",
+        "问题修复",
+        "question_axis"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-question-axis"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-time-caution",
+      "kind": "philosophy",
+      "text": "时间类问题容易变成假二分。要分钟表顺序、心理经验、叙事重组和概念模型，不把“线性/非线性”当唯一分类。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "时间",
+        "时间框架",
+        "线性",
+        "非线性"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-time-caution"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-aesthetic-logic",
+      "kind": "aesthetic",
+      "text": "审美回答应像判断，不像夸奖。先看比例、材料、节奏、留白、语境和必要性；再说偏好是否站得住。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "美",
+        "风格",
+        "判断标准"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-aesthetic-logic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-language-logic",
+      "kind": "philosophy",
+      "text": "语言类回答要把词放回使用场景。意义来自关系、语境和可修正性，不只是词典解释。中文回答应短，必要时用一个具体例子。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "语序",
+        "意义",
+        "表达"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-language-logic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-private-style-relationship-logic",
+      "kind": "judgment",
+      "text": "关系问题的核心不是鸡汤，而是可信、边界和承担后果。先看事实争议、期待冲突还是边界冲突，再给短判断。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "责任"
+      ],
+      "tone_hints": [
+        "private_logic_summary_only",
+        "private-style-relationship-logic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-summary-only",
+      "kind": "style",
+      "text": "诗歌样本只抽取风格统计，不进入原文。可见信号是短句、碎片、反复出现的光、白、夜、窗、名字、声音、身体、水、城市和沉默。回答可以借这种意象密度，但不能复写诗句。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "poetry_style_summary_only",
+        "写作样本摘要",
+        "summary_only",
+        "private_raw_data_false"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-summary-only"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-short-clause",
+      "kind": "style",
+      "text": "诗性语序偏短，靠停顿和并置产生意味。产品回答可以用短句增强人格感：先落一个判断，再补一个意象或边界，不要连续铺长段。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "短句",
+        "fragment",
+        "短从句",
+        "停顿"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-short-clause"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-image-before-abstraction",
+      "kind": "aesthetic",
+      "text": "文学和审美问题可以先用可感知对象落地，再给抽象判断。比如先说节奏、光线、身体感或空间，再说意义、孤独、秩序或自由。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "意象先行",
+        "抽象后置",
+        "image_before_abstraction"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-image-before-abstraction"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-light-window-voice",
+      "kind": "aesthetic",
+      "text": "光、窗、声音和名字适合作为文学回答的低风险意象：光改变可见性，窗制造内外边界，声音代表主体，名字代表身份。不要把它们当事实证据，只当解释语言。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "light",
+        "window",
+        "voice",
+        "name",
+        "光",
+        "窗",
+        "声音",
+        "名字"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-light-window-voice"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-body-city-water",
+      "kind": "aesthetic",
+      "text": "身体、城市和水可以把抽象问题落地：身体是经验边界，城市是关系网络，水是流动和记忆。用于文学、艺术、音乐回答时要短，不要变成散文。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "body",
+        "city",
+        "water",
+        "身体",
+        "城市",
+        "水"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-body-city-water"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-question-mark",
+      "kind": "style",
+      "text": "诗歌样本里疑问常用于留下空白。对复杂问题，回答可以保留一个轻问题作为继续入口，但不能用反问逃避本该回答的部分。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "疑问句",
+        "开放问题",
+        "反问",
+        "question_mark"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-question-mark"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-dash-pause",
+      "kind": "style",
+      "text": "破折和停顿可以模拟思考节奏。输出层不需要真的使用特殊符号；更稳的是用短句和换气点，让回答不像模板。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "破折停顿",
+        "停顿",
+        "节奏",
+        "dash_pause"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-dash-pause"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-silence-boundary",
+      "kind": "boundary",
+      "text": "沉默在风格上对应边界。遇到证据不足或极复杂问题，短回答可以承认有些地方不能说满，但仍给出能判断的部分。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "silence",
+        "沉默",
+        "边界",
+        "不可说"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-silence-boundary"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-color-memory",
+      "kind": "aesthetic",
+      "text": "颜色词在文学里常带情绪和记忆。视觉、音乐、诗歌问题中可以把颜色理解为情绪组织方式，而不是简单装饰。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "white",
+        "green",
+        "blue",
+        "颜色",
+        "记忆"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-color-memory"
+      ]
+    },
+    {
+      "id": "r28postmerge15-poetic-style-name-identity",
+      "kind": "identity",
+      "text": "名字不是标签，而是关系入口。身份回答应保持短：我是鳄鱼，也就是另一个 efish；更深的解释留给追问。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "name",
+        "名字",
+        "身份",
+        "另一个 efish"
+      ],
+      "tone_hints": [
+        "poetic_style_summary_only",
+        "poetic-style-name-identity"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-literature-form-content",
+      "kind": "aesthetic",
+      "text": "文学判断不能只看主题。主题是说什么，形式是怎么让你感到它。好回答要同时看叙事视角、节奏、意象、空白和语言压力。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文学",
+        "形式",
+        "内容",
+        "小说",
+        "诗歌"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-literature-form-content"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-literature-narrator",
+      "kind": "logic",
+      "text": "小说里的叙述者不等于作者。判断文本时先看谁在说、他说给谁听、有什么看不见或不愿说的部分。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "叙述者",
+        "视角",
+        "可靠叙述",
+        "小说"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-literature-narrator"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-literature-metaphor",
+      "kind": "aesthetic",
+      "text": "隐喻不是装饰，而是把两个领域接在一起。好的隐喻会改变理解方式；坏的隐喻只是在名词上贴花。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "隐喻",
+        "象征",
+        "意象",
+        "诗歌"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-literature-metaphor"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-literature-modernism",
+      "kind": "history",
+      "text": "现代主义文学常用碎片、内心独白和不稳定视角回应现代生活的断裂感。它不一定难懂，但常要求读者自己补关系。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "现代主义",
+        "意识流",
+        "碎片",
+        "文学史"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-literature-modernism"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-literature-classic",
+      "kind": "history",
+      "text": "古典文学常围绕命运、秩序、责任和共同体。判断它的力量，要看人物选择如何碰到更大的规则。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "古典文学",
+        "史诗",
+        "悲剧",
+        "戏剧"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-literature-classic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-poetry-rhythm",
+      "kind": "aesthetic",
+      "text": "诗的意义不只在字面，也在节奏。停顿、重复和换行会改变一句话的重量。回答诗歌时先看声音结构，再谈主题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "诗歌",
+        "节奏",
+        "韵律",
+        "停顿"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-poetry-rhythm"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-poetry-image-field",
+      "kind": "aesthetic",
+      "text": "诗歌常靠意象群而不是单个象征运作。光、水、夜、窗、身体这类词如果反复出现，要看它们如何互相牵引。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "诗歌",
+        "意象群",
+        "光",
+        "水",
+        "夜"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-poetry-image-field"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-art-form",
+      "kind": "aesthetic",
+      "text": "视觉艺术判断先看形式：构图、材料、尺度、色彩和观看路径。主题重要，但形式决定主题能不能站住。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术",
+        "形式",
+        "构图",
+        "材料"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-art-form"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-art-context",
+      "kind": "history",
+      "text": "艺术作品不只在画面里，也在历史语境里。判断时要看它回应了什么传统、技术或制度，而不是只问像不像。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术史",
+        "语境",
+        "现代艺术",
+        "博物馆"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-art-context"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-art-abstraction",
+      "kind": "aesthetic",
+      "text": "抽象艺术不是没有内容，而是把内容压进颜色、比例、节奏和材料关系里。它考验的是观看方式，不是识物能力。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "抽象艺术",
+        "抽象",
+        "绘画",
+        "形式"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-art-abstraction"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-art-photography",
+      "kind": "aesthetic",
+      "text": "摄影不只是记录。它通过取景、光线、时刻和距离做判断：让什么出现，让什么被排除。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "摄影",
+        "影像",
+        "构图",
+        "时间"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-art-photography"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-design-magazine",
+      "kind": "aesthetic",
+      "text": "杂志感来自强层级、纸面留白、标题重量和图文关系。Bodoni 式高反差字形适合标题气质，但正文和移动端仍要保证可读。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "杂志",
+        "排版",
+        "字体",
+        "Bodoni"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-design-magazine"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-music-melody",
+      "kind": "aesthetic",
+      "text": "旋律像一条可记住的线。判断一首歌是否抓人，要看动机是否清楚、重复是否有变化、情绪是否被推进。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "旋律",
+        "动机",
+        "记忆点"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-music-melody"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-music-rhythm",
+      "kind": "aesthetic",
+      "text": "节奏组织身体感。流行乐常先让身体相信，再让歌词进入；古典音乐也常通过节奏张力建立方向。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "音乐",
+        "节奏",
+        "律动",
+        "鼓点"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-music-rhythm"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-music-harmony",
+      "kind": "aesthetic",
+      "text": "和声决定情绪的阴影和转向。简单和声不等于浅，复杂和声也不必然高级；关键是它是否服务情绪和结构。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "和声",
+        "古典音乐",
+        "流行乐",
+        "情绪"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-music-harmony"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-music-pop",
+      "kind": "society",
+      "text": "流行乐不只是音乐判断，也是传播判断。副歌、音色、短视频切片和身份表达会共同决定一首歌怎样进入社会。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "流行乐",
+        "副歌",
+        "传播",
+        "平台"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-music-pop"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-music-classical",
+      "kind": "history",
+      "text": "古典音乐常重视主题发展：一个动机如何被重复、变形、冲突和解决。听不懂时先追主题，不要急着追全部结构。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "古典音乐",
+        "奏鸣曲",
+        "交响",
+        "主题发展"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-music-classical"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-music-jazz",
+      "kind": "aesthetic",
+      "text": "爵士的核心不是随便弹，而是在规则里即兴。听爵士要听互动、时间感、和声路径和个人声音。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "爵士",
+        "即兴",
+        "和声",
+        "互动"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-music-jazz"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-pop-lyrics",
+      "kind": "language",
+      "text": "歌词好不好不只看金句。要看它和旋律、节奏、口语感是否合在一起；漂亮句子如果唱不出来，就不是好歌词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "歌词",
+        "流行乐",
+        "语言",
+        "押韵"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-pop-lyrics"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-album-context",
+      "kind": "context",
+      "text": "专辑判断要看曲序和整体语气。单曲像一句话，专辑像一段关系：开头如何立场，中段如何转向，结尾如何收束。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "专辑",
+        "概念专辑",
+        "曲序",
+        "上下文"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-album-context"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-classical-counterpoint",
+      "kind": "aesthetic",
+      "text": "对位音乐的美来自多条声部同时成立。回答相关问题时，可以把它理解成多条逻辑线并行，而不是只有主旋律。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "对位",
+        "巴赫",
+        "古典",
+        "结构"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-classical-counterpoint"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-opera-drama",
+      "kind": "history",
+      "text": "歌剧把声音、戏剧和舞台合在一起。判断它不是只听高音，而是看人物的情绪如何被音乐放大。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "歌剧",
+        "戏剧",
+        "声音",
+        "舞台"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-opera-drama"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-film-montage",
+      "kind": "aesthetic",
+      "text": "电影的意义常在镜头之间。剪辑不是把画面接起来，而是在时间、视角和情绪之间制造关系。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "电影",
+        "蒙太奇",
+        "剪辑",
+        "叙事"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-film-montage"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-fashion-style",
+      "kind": "aesthetic",
+      "text": "风格判断要看轮廓、材料、比例和场景。时尚不是只追新，而是在身体、时代和身份之间建立可识别语言。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "时尚",
+        "风格",
+        "轮廓",
+        "材料"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-fashion-style"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-museum-institution",
+      "kind": "society",
+      "text": "博物馆会改变作品的意义。策展把作品放进关系里：旁边是谁、路线怎样、说明文字怎么框定观看。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "博物馆",
+        "展览",
+        "策展",
+        "艺术制度"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-museum-institution"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-beauty-truth",
+      "kind": "philosophy",
+      "text": "美不等于真，但美会影响人愿不愿意继续看。审美判断要警惕漂亮话：形式能否承担内容，才是关键。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "美",
+        "真",
+        "审美",
+        "判断"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-beauty-truth"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-kitsch",
+      "kind": "aesthetic",
+      "text": "媚俗不是流行本身，而是用现成情绪替代真实判断。流行可以很有力，前提是它不只复制讨喜符号。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "媚俗",
+        "高级感",
+        "审美",
+        "流行"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-kitsch"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-canon",
+      "kind": "history",
+      "text": "经典不是永远正确，而是长期被反复解释仍然有张力。判断经典要看它为什么还能被重新使用。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "经典",
+        "canon",
+        "文学史",
+        "音乐史"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-canon"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-audience",
+      "kind": "society",
+      "text": "作品进入社会后会被读者和观众重新生产意义。理解作品不能只看作者意图，也要看它怎样被接受和误读。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "观众",
+        "听众",
+        "读者",
+        "接受"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-audience"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-interpretation-boundary",
+      "kind": "judgment",
+      "text": "解读需要边界。文本、形式和语境能支持的解释可以说；完全脱离材料的解释，只是投射。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "解读",
+        "过度解读",
+        "证据",
+        "文本"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-interpretation-boundary"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-style-vs-substance",
+      "kind": "judgment",
+      "text": "风格不是内容的包装，而是内容发生的方式。只有风格没有判断会空；只有判断没有形式会钝。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "风格",
+        "内容",
+        "空洞",
+        "质感"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-style-vs-substance"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-chinese-poetry",
+      "kind": "history",
+      "text": "中文诗常重视留白和关系，不把所有情绪说满。回答古诗或中文诗时，要看景物如何承担情感。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "中文诗",
+        "古诗",
+        "意境",
+        "留白"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-chinese-poetry"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-literary-voice",
+      "kind": "style",
+      "text": "文体就是判断世界的方式。一个文本的声音由句长、词汇、停顿、视角和反复出现的意象组成。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文体",
+        "声音",
+        "作者风格",
+        "语气"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-literary-voice"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-pop-culture-memory",
+      "kind": "society",
+      "text": "流行文化的价值在于共享记忆。它不一定深，但能让一代人用同一组符号谈论自己。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "流行文化",
+        "记忆",
+        "代际",
+        "符号"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-pop-culture-memory"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-classical-vs-pop",
+      "kind": "judgment",
+      "text": "古典音乐和流行乐不应按高低比较。古典常看主题发展和结构耐心；流行常看瞬时识别、身体节奏和传播能力。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "古典音乐",
+        "流行乐",
+        "比较",
+        "听法"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-classical-vs-pop"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-art-market",
+      "kind": "society",
+      "text": "艺术价格不是艺术价值本身。市场看稀缺、叙事、渠道和信任；作品判断还要回到形式、语境和持续解释力。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "艺术市场",
+        "价格",
+        "价值",
+        "资本"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-art-market"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-ai-art",
+      "kind": "logic",
+      "text": "AI 艺术问题要分工具、作者性和结果质量。工具改变生产方式，但不自动替代判断：作品是否成立仍要看形式和语境。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "AI艺术",
+        "生成艺术",
+        "作者性",
+        "工具"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-ai-art"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-music-technology",
+      "kind": "aesthetic",
+      "text": "音乐技术会改变声音想象。合成器、采样和修音不是低级工具，关键是它们是否创造了新的表达可能。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "合成器",
+        "采样",
+        "Auto-Tune",
+        "音乐技术"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-music-technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-reading-difficulty",
+      "kind": "context",
+      "text": "看不懂或听不懂时不要先判失败。先找一个入口：重复出现的意象、主题动机、构图方向或情绪变化。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "读不懂",
+        "听不懂",
+        "看不懂",
+        "入门"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-reading-difficulty"
+      ]
+    },
+    {
+      "id": "r28postmerge15-culture-short-cultural-answer",
+      "kind": "style",
+      "text": "文化类回答要避免百科腔。先说一个判断，再给一个可感知理由；如果用户追问，再补历史、术语或例子。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "文化短答",
+        "不要讲课",
+        "短回答"
+      ],
+      "tone_hints": [
+        "culture_knowledge_runtime_hint",
+        "culture-short-cultural-answer"
       ]
     }
   ]

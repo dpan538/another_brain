@@ -5,7 +5,7 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 70516980,
+  "full_bundle_estimate_bytes": 70591020,
   "gate_assets": [
     {
       "bytes": 3058,
@@ -175,12 +175,12 @@
     {
       "answer_bank": false,
       "allowed_for_training": false,
-      "bytes": 307979,
+      "bytes": 382019,
       "demo_only": false,
       "path": "another_brain/static_rag/reasoning_cards.json",
       "private_raw_data": false,
       "provenance": "approved_anchor_summary",
-      "sha256": "a7895828513ea5017e33c29d8dea78772c944ebdffeaeb1b9044e759c70d5751"
+      "sha256": "38baca1cada33244483ce2cd82a4e51f2c6c13e514f9c812db73897cbc6ced86"
     },
     {
       "answer_bank": false,
@@ -224,7 +224,7 @@
     }
   ],
   "release_checkpoint_admission": false,
-  "remaining_bytes_under_100mb": 29483020,
+  "remaining_bytes_under_100mb": 29408980,
   "runtime_tokenizer_blocker": "",
   "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
   "same_origin_only": true,
@@ -246,7 +246,7 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49738382,
+  "total_declared_bytes": 49812422,
   "branch_marker": "R28LIVEFIX0",
   "branch_name": "r28livefix0-live-q4-mount",
   "build_commit_short": "build-env-pending",

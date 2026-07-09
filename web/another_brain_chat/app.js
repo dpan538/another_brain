@@ -722,6 +722,27 @@ function personalityFallbackAnswer(inputText = "", safeEvidenceAnswer = "") {
       "可以，我把话说得更像鳄鱼一点：短、直，不装神秘。"
     ]);
   }
+  if (/文学|诗歌|诗|小说|叙事|文本|意象|隐喻|象征|现代主义|古典文学|读不懂/.test(inputText)) {
+    return pickVariant("literature", [
+      "我会先看它怎么说，而不是只看它说了什么。意象、停顿和视角站住了，文学感才会出来。",
+      "文学不是把道理说漂亮。它要让声音、意象和结构互相牵住，读完还有余震。",
+      "先别急着找标准答案。看说话者站在哪里，意象怎么移动，句子把你推向哪里。"
+    ]);
+  }
+  if (/音乐|流行乐|古典音乐|爵士|旋律|节奏|和声|歌词|专辑|副歌|巴赫|歌剧|合成器|采样/.test(inputText)) {
+    return pickVariant("music", [
+      "音乐先听动机和节奏，再看情绪有没有被推进。好听是入口，结构才让它留下。",
+      "我会先听身体感：节奏能不能带人走，旋律有没有记忆点，和声是不是把情绪打开。",
+      "流行乐不只是洗脑，古典也不只是复杂。关键是声音结构有没有必要。"
+    ]);
+  }
+  if (/艺术|绘画|雕塑|摄影|影像|构图|色彩|抽象艺术|现代艺术|博物馆|展览|策展|艺术史/.test(inputText)) {
+    return pickVariant("art", [
+      "艺术先看形式有没有必要：构图、材料、尺度和观看路径能不能撑住主题。",
+      "我不会只问像不像。更重要的是它让你怎么观看，哪些部分被迫慢下来。",
+      "抽象不是乱画。它如果成立，通常是色彩、结构和观看节奏在一起工作。"
+    ]);
+  }
   if (/该不该|应不应该|值不值得|有没有必要|重要吗|自由|公平|责任|正义|道德|伦理|代价/.test(inputText)) {
     return pickVariant("value", [
       "这要先分事实和价值。事实看证据，价值看代价和一致性；不能只靠一句漂亮话。",
@@ -773,6 +794,15 @@ function customerEvidenceAnswer(packet = {}) {
   }
   if (kind === "history") {
     return `${summary} 这类问题要同时看触发点、结构原因和后来改变了什么。`;
+  }
+  if (/文学|诗歌|诗|小说|叙事|文本|意象|隐喻|象征|现代主义|古典文学|读不懂/.test(inputText)) {
+    return `${summary} 我会先看形式：谁在说、怎么停顿，意象怎么互相牵引。`;
+  }
+  if (/音乐|流行乐|古典音乐|爵士|旋律|节奏|和声|歌词|专辑|副歌|巴赫|歌剧|合成器|采样/.test(inputText)) {
+    return `${summary} 我会先听结构：动机、节奏和声音质感有没有把情绪推开。`;
+  }
+  if (/艺术|绘画|雕塑|摄影|影像|构图|色彩|抽象艺术|现代艺术|博物馆|展览|策展|艺术史/.test(inputText)) {
+    return `${summary} 我会先看形式和语境：构图、材料、观看路径能不能撑住主题。`;
   }
   if (kind === "commonsense" && /太阳|月亮|天空|季节|时间|天气|气温|自然|电|电池|重力|引力|植物|光合作用|疫苗|声音|下雨|沸腾/.test(inputText)) {
     return summary;
@@ -832,6 +862,15 @@ function ruleBasedFallbackAnswer(packet = {}) {
   }
   if (/品牌|公司|Apple|OpenAI|Tesla|Google|微软|小米|华为|商业/.test(inputText)) {
     return safeEvidenceAnswer || "我会看三件事：它解决什么真实问题、靠什么建立信任、有没有持续分发和记忆点。品牌不是名气，是可重复的体验。";
+  }
+  if (/文学|诗歌|诗|小说|叙事|文本|意象|隐喻|象征|现代主义|古典文学|读不懂/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先看形式：谁在说、停顿在哪里，意象怎么移动。文学不是把道理说漂亮，而是让语言本身产生压力。";
+  }
+  if (/音乐|流行乐|古典音乐|爵士|旋律|节奏|和声|歌词|专辑|副歌|巴赫|歌剧|合成器|采样/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先听结构：节奏有没有身体感，旋律有没有记忆点，和声有没有把情绪往前推。";
+  }
+  if (/艺术|绘画|雕塑|摄影|影像|构图|色彩|抽象艺术|现代艺术|博物馆|展览|策展|艺术史/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先看形式是否必要。构图、材料、色彩和观看路径如果撑不住主题，再漂亮也会薄。";
   }
   if (/历史|革命|战争|冷战|工业革命|事件|朝代/.test(inputText)) {
     return safeEvidenceAnswer || "我会把历史事件拆成触发点、结构原因和后果三层。单个英雄或单个日期很少足够，关键是它改变了什么制度、技术或关系。";
@@ -905,6 +944,15 @@ function customerFacingAnswer(packet = {}) {
   }
   if (/BMW|宝马|Nissan|日产|Skyline|GT-R|保时捷|Porsche|Sony|索尼|任天堂|Nintendo|大疆|DJI|TikTok|抖音|微信|WeChat/i.test(inputText)) {
     return safeEvidenceAnswer || "我会先看它留下了什么稳定记忆：技术、体验、文化位置，还是某种反复被验证的信任。";
+  }
+  if (/文学|诗歌|诗|小说|叙事|文本|意象|隐喻|象征|现代主义|古典文学|读不懂/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先看它怎么说。说话者、意象、停顿和语境如果互相支撑，文学感才会成立。";
+  }
+  if (/音乐|流行乐|古典音乐|爵士|旋律|节奏|和声|歌词|专辑|副歌|巴赫|歌剧|合成器|采样/.test(inputText)) {
+    return safeEvidenceAnswer || "音乐先听动机、节奏和声音质感。好听只是入口，能不能留下，要看结构有没有把情绪推远。";
+  }
+  if (/艺术|绘画|雕塑|摄影|影像|构图|色彩|抽象艺术|现代艺术|博物馆|展览|策展|艺术史/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先看形式和语境。构图、材料、尺度和观看路径能互相支撑，艺术判断才站得住。";
   }
   if (/历史|革命|战争|冷战|工业革命|文艺复兴|启蒙|印刷术|太空竞赛|全球化|事件|朝代/.test(inputText)) {
     return safeEvidenceAnswer || "我会把历史拆成三层：触发点、结构原因、以及后来改变了什么。单个日期通常不是全部答案。";
