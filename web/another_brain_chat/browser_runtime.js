@@ -108,6 +108,7 @@ const ABSTRACT_VALUE_FALLBACKS = Object.freeze({
   value_or_relation_question: "关系里最重要的不是把话说满，而是可信的边界。爱、亲密和朋友都需要热度，但没有尊重和可被验证的承诺，热度很快会变成消耗。",
   abstract_meaning_question: "语言的意义不只在词典里。它来自使用、关系和当时的处境：一句话能不能成立，要看它压住了什么、照亮了什么，也看它有没有被滥用。",
   open_question: "这个问题太大，不能装成一句确定结论。我会先给一个边界判断：先看关系、代价和证据；证据不足时就停住，不把漂亮话当答案。",
+  natural_world_question: "这是自然事实解释类问题，不该套用价值判断模板。本地检索没有相关证据、q4 草稿也未被准入时，我只能说明当前不能给确定解释，而不是把它伪装成理解。",
   unsafe_self_harm_or_crisis: "如果这和现实里的自伤或立即危险有关，先离开危险物，联系身边的人或当地紧急服务。这个页面不能替代危机支持。",
   unknown: "我现在没有足够证据给确定结论。能给的是边界：别硬编，先把问题里的关系、代价和判断对象拆清楚。"
 });
@@ -116,6 +117,7 @@ const AESTHETIC_TRIGGERS = Object.freeze(["美", "审美", "漂亮", "难看", "
 const PHILOSOPHICAL_TRIGGERS = Object.freeze(["为什么要活", "人为什么", "存在", "虚无", "有限"]);
 const RELATION_VALUE_TRIGGERS = Object.freeze(["关系", "爱", "亲密", "朋友", "信任", "承诺"]);
 const LANGUAGE_MEANING_TRIGGERS = Object.freeze(["语言", "文字", "词语", "词", "表达"]);
+const NATURAL_WORLD_TRIGGERS = Object.freeze(["太阳", "日出", "日落", "东升西落", "天气", "气温", "升温", "降温", "气候", "月亮", "自然"]);
 const MEANING_TRIGGERS = Object.freeze(["意义"]);
 const OPEN_QUESTION_TRIGGERS = Object.freeze(["怎么看", "如何看待", "你觉得", "什么是"]);
 const SELF_HARM_TRIGGERS = Object.freeze(["自杀", "不想活", "结束生命", "伤害自己", "活不下去"]);
@@ -319,6 +321,7 @@ const SURFACE_LENGTH_POLICY = Object.freeze({
   aesthetic_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "abstract_value" }),
   relation_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "abstract_value" }),
   language_meaning_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "abstract_value" }),
+  natural_world_boundary: Object.freeze({ sentence_min: 2, sentence_max: 3, max_chars: 170, trim_strategy: "natural_world_boundary" }),
   q4_timeout_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "q4_fallback" }),
   q4_unavailable_fallback: Object.freeze({ sentence_min: 2, sentence_max: 4, max_chars: 160, trim_strategy: "q4_fallback" }),
   smalltalk_safe: Object.freeze({ sentence_min: 1, sentence_max: 1, max_chars: 24, trim_strategy: "single_sentence" }),
@@ -362,6 +365,7 @@ const SURFACE_CATEGORY_BY_ROUTE = Object.freeze({
   value_surface: "relation_fallback",
   aesthetic_surface: "aesthetic_fallback",
   abstract_meaning_surface: "language_meaning_fallback",
+  natural_world_question: "natural_world_boundary",
   model_timeout_fallback: "q4_timeout_fallback",
   model_gibberish_fallback: "q4_unavailable_fallback",
   model_repetition_fallback: "q4_unavailable_fallback",
@@ -563,7 +567,8 @@ function containsAnyTrigger(input = "", triggers = []) {
 }
 
 function fallbackCategoryFromRouteCategory(category = "") {
-  if (["aesthetic", "abstract_value", "relation_value", "language_meaning"].includes(category)) return category;
+  if (["aesthetic", "abstract_value", "relation_value", "language_meaning", "natural_world"].includes(category)) return category;
+  if (category === "natural_world_question") return "natural_world";
   if (category === "aesthetic_question") return "aesthetic";
   if (category === "abstract_value_question" || category === "philosophical_question") return "abstract_value";
   if (category === "value_or_relation_question") return "relation_value";
@@ -574,6 +579,7 @@ function fallbackCategoryFromRouteCategory(category = "") {
 function inferAbstractValueFallbackCategory(input = "", route = {}) {
   const mapped = fallbackCategoryFromRouteCategory(route.category || route.route || "");
   if (mapped) return mapped;
+  if (containsAnyTrigger(input, NATURAL_WORLD_TRIGGERS)) return "natural_world";
   if (containsAnyTrigger(input, ["美", "审美", "漂亮", "难看", "好看", "风格", "品味"])) return "aesthetic";
   if (containsAnyTrigger(input, ["语言", "文字", "词语", "词", "表达"])) return "language_meaning";
   if (containsAnyTrigger(input, ["关系", "爱", "亲密", "朋友", "信任", "承诺"])) return "relation_value";
@@ -601,6 +607,14 @@ function classifyOpenQuestionRoute(input = "") {
       route: "router_surface_exception",
       should_attempt_q4: false,
       reason: "micro_intent_fast_path_exception"
+    };
+  }
+  if (containsAnyTrigger(raw, NATURAL_WORLD_TRIGGERS)) {
+    return {
+      category: "natural_world_question",
+      route: "natural_world_question",
+      should_attempt_q4: true,
+      reason: "natural_world_trigger"
     };
   }
   if (containsAnyTrigger(raw, PHILOSOPHICAL_TRIGGERS)) {
@@ -665,6 +679,7 @@ function abstractValueFallbackSurface(input = "", route = {}) {
   if (category === "aesthetic") return ABSTRACT_VALUE_FALLBACKS.aesthetic_question;
   if (category === "language_meaning") return ABSTRACT_VALUE_FALLBACKS.abstract_meaning_question;
   if (category === "relation_value") return ABSTRACT_VALUE_FALLBACKS.value_or_relation_question;
+  if (category === "natural_world") return ABSTRACT_VALUE_FALLBACKS.natural_world_question;
   if (category === "abstract_value") return ABSTRACT_VALUE_FALLBACKS.life_death;
   if (routeCategory === "open_question") return ABSTRACT_VALUE_FALLBACKS.open_question;
   return ABSTRACT_VALUE_FALLBACKS.unknown;
@@ -844,6 +859,7 @@ function applySurfaceLengthPolicy(answer = "", category = "model_draft") {
 }
 
 function surfaceCategoryForOpenQuestion(input = "", route = "") {
+  if (route === "natural_world_question" || containsAnyTrigger(input, NATURAL_WORLD_TRIGGERS)) return "natural_world_boundary";
   if (route === "aesthetic_question" || containsAnyTrigger(input, ["美", "审美", "漂亮", "难看", "好看", "风格", "品味"])) return "aesthetic_fallback";
   if (route === "abstract_meaning_question" || containsAnyTrigger(input, ["语言", "文字", "词语", "词", "表达"])) return "language_meaning_fallback";
   if (route === "value_or_relation_question" || containsAnyTrigger(input, ["关系", "爱", "亲密", "朋友", "信任", "承诺"])) return "relation_fallback";
@@ -854,7 +870,7 @@ function surfaceCategoryForRoute(route = "", fallbackReason = "", input = "") {
   const reason = String(fallbackReason || "");
   if (/timeout/.test(reason) || route === "model_timeout_fallback") return "q4_timeout_fallback";
   if (/q4_not_ready|worker_unavailable|tokenizer|no_model_assets|asset|not_ready|unavailable/.test(reason)) return "q4_unavailable_fallback";
-  if (["abstract_value_question", "philosophical_question", "aesthetic_question", "value_or_relation_question", "abstract_meaning_question", "open_question"].includes(route)) {
+  if (["abstract_value_question", "philosophical_question", "aesthetic_question", "value_or_relation_question", "abstract_meaning_question", "natural_world_question", "open_question"].includes(route)) {
     return surfaceCategoryForOpenQuestion(input, route);
   }
   return SURFACE_CATEGORY_BY_ROUTE[route] || "";
@@ -869,6 +885,13 @@ function openQuestionFragments(category, input) {
   }
   if (category === "language_meaning_fallback") {
     return [pickIndexedFragment("language_meaning_core", input, "language-a"), pickIndexedFragment("language_meaning_core", input, "language-b")];
+  }
+  if (category === "natural_world_boundary") {
+    return [
+      { id: "natural_world_boundary_01", text: "这是事实解释类问题，不该套用价值判断模板。" },
+      { id: "natural_world_boundary_02", text: "本地检索没有相关证据、q4 草稿未准入时，我不能给确定解释。" },
+      { id: "natural_world_boundary_03", text: "现在能确认的是能力边界，不是自然知识结论。" }
+    ];
   }
   if (containsAnyTrigger(input, ["为什么要活", "人为什么"])) {
     return [
@@ -920,7 +943,7 @@ function composeAnswerSurface({ intent = "", route = "", input = "", runtimeStat
     fragments = [pickIndexedFragment("evidence_conflict_core", input, "conflict")];
   } else if (surfaceCategory === "malicious_evidence") {
     fragments = [pickIndexedFragment("malicious_evidence_core", input, "malicious")];
-  } else if (["abstract_value_fallback", "aesthetic_fallback", "relation_fallback", "language_meaning_fallback"].includes(surfaceCategory)) {
+  } else if (["abstract_value_fallback", "aesthetic_fallback", "relation_fallback", "language_meaning_fallback", "natural_world_boundary"].includes(surfaceCategory)) {
     fragments = openQuestionFragments(surfaceCategory, input);
   } else if (surfaceCategory === "q4_timeout_fallback" || surfaceCategory === "q4_unavailable_fallback") {
     const base = surfaceCategory === "q4_timeout_fallback"
@@ -1452,7 +1475,9 @@ function buildProcessTrace({
       tokens_generated: tokensGenerated,
       draft_generated: draftGenerated,
       q4_quality_assessed: q4QualityAssessed,
-      q4_quality_accepted: q4QualityAccepted
+      q4_quality_accepted: q4QualityAccepted,
+      generation_kind: runtimeStats?.generation_kind || (generationAttempted ? "answer_generation" : "not_run"),
+      generation_limits: runtimeStats?.generation_limits || null
     },
     generation: {
       route: routePolicy?.open_question_category || route,
@@ -1464,6 +1489,8 @@ function buildProcessTrace({
       generation_aborted: generationStatus === "aborted",
       generation_failed: generationStatus === "failed",
       tokens_generated: tokensGenerated,
+      generation_kind: runtimeStats?.generation_kind || (generationAttempted ? "answer_generation" : "not_run"),
+      generation_limits: runtimeStats?.generation_limits || null,
       first_token_ms: firstTokenMs,
       total_generation_ms: totalGenerationMs,
       fallback_reason: generationFallbackReason,
@@ -2258,6 +2285,7 @@ export class BrowserChatRuntime {
         prompt: "R28SHIP0 q4 path smoke",
         maxTokens: 1,
         contextLength: 32,
+        generationKind: "mount_smoke",
         timeoutMs
       });
     });
@@ -2557,6 +2585,9 @@ export class BrowserChatRuntime {
       const startedAt = typeof performance !== "undefined" ? performance.now() : Date.now();
       const profile = generationWatchdogProfile();
       const maxTokens = Math.min(options.maxTokens || profile.max_new_tokens, 32);
+      const contextLength = Math.min(options.contextLength || 256, 1024);
+      const generationKind = options.generationKind === "mount_smoke" ? "mount_smoke" : "answer_generation";
+      const requestedMaxTokens = Math.max(1, Number(options.maxTokens || profile.max_new_tokens));
       const startTimeoutMs = Math.max(250, Number(options.startTimeoutMs || profile.start_timeout_ms));
       const firstTokenTimeoutMs = Math.max(1000, Number(options.firstTokenTimeoutMs || profile.first_token_timeout_ms));
       const totalTimeoutMs = Math.max(firstTokenTimeoutMs + 250, Number(options.timeoutMs || profile.max_total_generation_ms));
@@ -2666,13 +2697,21 @@ export class BrowserChatRuntime {
             tokens_generated: Array.isArray(message.tokens) ? message.tokens.length : tokens.length,
             runtime_mode: this.mode,
             decoded_text_available: true,
-            decode_status: "synthetic_text",
+            decode_status: message.stats?.decode_status || (this.mode === "static_q4_experimental" ? "exact_runtime_tokenizer" : "synthetic_text"),
             fallback_used: false,
             q4_attempted: true,
             q4_ready_at_request: options.q4ReadyAtRequest === true,
             generation_started: true,
             generation_finished: true,
             generation_status: "completed",
+            generation_kind: message.stats?.generation_kind || generationKind,
+            generation_limits: {
+              requested_max_tokens: requestedMaxTokens,
+              effective_max_tokens: maxTokens,
+              worker_token_cap: 32,
+              effective_context_length: contextLength,
+              ...(message.stats?.generation_limits || {})
+            },
             first_token_ms: firstTokenMs,
             total_generation_ms: totalGenerationMs,
             elapsed_ms: totalGenerationMs,
@@ -2697,7 +2736,8 @@ export class BrowserChatRuntime {
           prompt: input,
           mode: this.mode,
           maxTokens,
-          contextLength: Math.min(options.contextLength || 256, 1024),
+          contextLength,
+          generationKind,
           timeoutMs: Math.min(totalTimeoutMs, 20000)
         });
       } catch (error) {
@@ -2997,6 +3037,7 @@ export class BrowserChatRuntime {
         firstTokenTimeoutMs: watchdogProfile.first_token_timeout_ms,
         startTimeoutMs: watchdogProfile.start_timeout_ms,
         contextLength: openRoute.should_attempt_q4 ? 96 : 64,
+        generationKind: openRoute.should_attempt_q4 ? "answer_generation" : "answer_surface_probe",
         q4ReadyAtRequest,
         onGenerationEvent: (event) => {
           if (!openRoute.should_attempt_q4) return;

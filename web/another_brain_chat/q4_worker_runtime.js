@@ -1,6 +1,8 @@
 const R28HOTFIX2_Q4_RUNTIME_VERSION = "r28ship0-unified-q4-mount";
 const R28HOTFIX1_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
 const R28HOTFIX3_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
+const Q4_MOUNT_SMOKE_MAX_TOKENS = 1;
+const Q4_ANSWER_MAX_TOKENS = 32;
 const PAIR_SEPARATOR = "\u0001";
 const BYTE_ENCODER = new Map();
 const BYTE_DECODER = new Map();
@@ -460,7 +462,10 @@ export async function generateStaticQ4Draft(prompt, options = {}) {
   const pkg = await runtimePackage();
   const store = await tensorStore(pkg);
   const architecture = pkg.modelConfig.architecture || {};
-  const maxTokens = Math.max(1, Math.min(Number(options.maxTokens || 4), 8));
+  const generationKind = options.generationKind === "mount_smoke" ? "mount_smoke" : "answer_generation";
+  const workerTokenCap = generationKind === "mount_smoke" ? Q4_MOUNT_SMOKE_MAX_TOKENS : Q4_ANSWER_MAX_TOKENS;
+  const requestedMaxTokens = Math.max(1, Number(options.maxTokens || 4));
+  const maxTokens = Math.max(1, Math.min(requestedMaxTokens, workerTokenCap));
   const contextLength = Math.max(1, Math.min(Number(options.contextLength || 64), Number(architecture.context_length || 256)));
   const encoded = encodeExactRuntimeText(prompt, pkg.tokenizer, { contextLength, maxTokens: contextLength });
   if (!encoded.ok || encoded.input_ids.length === 0) throw new Error(encoded.blocker || "tokenizer_encode_failed");
@@ -496,7 +501,15 @@ export async function generateStaticQ4Draft(prompt, options = {}) {
       decode_status: decoded.decode_status || "exact_runtime_tokenizer",
       exact_decode: decoded.exact_decode === true,
       generated_token_ids: generatedTokenIds,
-      quality_status: "quality_weak_q4_forward_smoke",
+      quality_status: generationKind === "mount_smoke" ? "quality_weak_q4_forward_smoke" : "quality_unassessed_q4_answer_generation",
+      generation_kind: generationKind,
+      generation_limits: {
+        requested_max_tokens: requestedMaxTokens,
+        effective_max_tokens: maxTokens,
+        worker_token_cap: workerTokenCap,
+        effective_context_length: contextLength,
+        architecture_context_length: Number(architecture.context_length || 256)
+      },
       q4_forward_smoke: true,
       q4_forward_ran: true,
       fallback_used: false,

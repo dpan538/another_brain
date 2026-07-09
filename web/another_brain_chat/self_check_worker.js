@@ -12,6 +12,7 @@ async function handleSelfCheck(message = {}) {
     const generation = await generateStaticQ4Draft(message.prompt || "R28SHIP0 q4 path smoke", {
       maxTokens: Math.min(Number(message.maxTokens || 1), 1),
       contextLength: Math.min(Number(message.contextLength || 32), 32),
+      generationKind: "mount_smoke",
       timeoutMs,
       onToken: (token) => self.postMessage({ type: "progress", stage: "token", token })
     });

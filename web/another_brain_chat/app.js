@@ -685,6 +685,12 @@ function diagnosticsFromReport(config, manifestStatus, report) {
       tokens_generated: tokensGenerated,
       blocker: q4Forward.blocker || report?.fallback?.reason || ""
     },
+    q4_generation: {
+      last_answer_kind: lastPacket?.process_trace?.model?.generation_kind || "not_run",
+      last_answer_limits: lastPacket?.process_trace?.model?.generation_limits || null,
+      last_answer_status: lastPacket?.process_trace?.generation?.generation_status || "not_run",
+      last_answer_tokens_generated: Number(lastPacket?.process_trace?.generation?.tokens_generated || 0)
+    },
     q4_quality: {
       accepted: q4QualityAccepted,
       status: q4QualityStatus,

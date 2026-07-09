@@ -13,12 +13,30 @@ test("browser diagnostics exposes branch marker, shard probes, forward status, a
   assert.ok(app.includes("bytes_read"));
   assert.ok(app.includes("q4_forward"));
   assert.ok(app.includes("q4_quality"));
+  assert.ok(app.includes("q4_generation"));
   assert.ok(app.includes("mount_runtime_ready"));
   assert.ok(app.includes("merge_runtime_ready"));
   assert.ok(app.includes("capability_diagnosis"));
   assert.ok(app.includes("last_answer_capability_diagnosis"));
   assert.ok(app.includes("q4Shards.length === 5"));
   assert.ok(app.includes("assetsOk && tokenizerOk && forwardOk && q4QualityAccepted"));
+});
+
+test("answer q4 generation is no longer capped to the one-token mount smoke or eight-token worker draft", async () => {
+  const q4Worker = await readFile(new URL("../../web/another_brain_chat/q4_worker_runtime.js", import.meta.url), "utf8");
+  const browserRuntime = await readFile(new URL("../../web/another_brain_chat/browser_runtime.js", import.meta.url), "utf8");
+  const selfCheckWorker = await readFile(new URL("../../web/another_brain_chat/self_check_worker.js", import.meta.url), "utf8");
+
+  assert.ok(q4Worker.includes("Q4_MOUNT_SMOKE_MAX_TOKENS = 1"));
+  assert.ok(q4Worker.includes("Q4_ANSWER_MAX_TOKENS = 32"));
+  assert.ok(q4Worker.includes("generation_kind"));
+  assert.ok(q4Worker.includes("quality_unassessed_q4_answer_generation"));
+  assert.ok(q4Worker.includes("requested_max_tokens"));
+  assert.ok(q4Worker.includes("effective_max_tokens"));
+  assert.ok(!q4Worker.includes("Math.min(Number(options.maxTokens || 4), 8)"));
+  assert.ok(selfCheckWorker.includes('generationKind: "mount_smoke"'));
+  assert.ok(browserRuntime.includes('generationKind: openRoute.should_attempt_q4 ? "answer_generation"'));
+  assert.ok(browserRuntime.includes("generation_limits"));
 });
 
 test("UI and static entries expose R28LIVEFIX0 marker on root and chat routes", async () => {
@@ -156,4 +174,52 @@ test("unrelated high-trust profile cards do not masquerade as relevant local evi
   }]);
   assert.equal(relevant.evidence_status, "sufficient");
   assert.equal(relevant.retrieved_evidence.length, 1);
+});
+
+test("natural-world open questions do not collapse into abstract value fallback when q4 is not admitted", async () => {
+  const runtime = new BrowserChatRuntime({
+    mode: "static_q4_experimental",
+    deliveryConfig: { model_mode: "static_q4_experimental", delivery_mode: "demo_static", rag_mode: "static_profile_pack" }
+  });
+  runtime.memoryRecords = [];
+  runtime.worker = {};
+  runtime.isQ4ReadyForGeneration = () => true;
+  runtime.load = async () => ({ ok: true });
+  runtime.draftWithWorker = async () => {
+    runtime.lastRuntimeStats = {
+      tokens_generated: 12,
+      elapsed_ms: 30,
+      total_generation_ms: 30,
+      first_token_ms: 4,
+      runtime_mode: "static_q4_experimental",
+      decoded_text_available: true,
+      decode_status: "exact_runtime_tokenizer",
+      generation_status: "completed",
+      generation_kind: "answer_generation",
+      generation_limits: {
+        requested_max_tokens: 24,
+        effective_max_tokens: 24,
+        worker_token_cap: 32,
+        effective_context_length: 96
+      },
+      q4_attempted: true,
+      generation_started: true,
+      generation_finished: true,
+      q4_ready_at_request: true,
+      assets_verified: true,
+      fallback_used: false
+    };
+    return "� plant buy如果命题P� really•ания。";
+  };
+
+  const packet = await runtime.run("你怎么看待太阳东升西落的问题");
+
+  assert.equal(packet.process_trace.model.q4_forward_ran, true);
+  assert.equal(packet.process_trace.model.q4_quality_accepted, false);
+  assert.equal(packet.process_trace.model.generation_kind, "answer_generation");
+  assert.equal(packet.process_trace.model.generation_limits.worker_token_cap, 32);
+  assert.equal(packet.process_trace.capability_diagnosis.retrieval, "no_relevant_local_evidence");
+  assert.match(packet.final_answer, /自然事实解释类问题/);
+  assert.doesNotMatch(packet.final_answer, /关系、代价和证据/);
+  assert.doesNotMatch(packet.final_answer, /生不是纯粹的开始/);
 });

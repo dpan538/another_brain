@@ -58,6 +58,7 @@ async function handleMessage(message) {
       const generation = await generateStaticQ4Draft(message.prompt, {
         maxTokens: message.maxTokens || 4,
         contextLength: message.contextLength || 64,
+        generationKind: message.generationKind || "answer_generation",
         timeoutMs: message.timeoutMs || 30000,
         onToken: (token) => self.postMessage({ type: "token", token })
       });
