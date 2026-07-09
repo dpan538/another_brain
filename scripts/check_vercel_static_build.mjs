@@ -355,7 +355,7 @@ async function main() {
     if (/api\.openai\.com|openai\.com\/v1|anthropic\.com|replicate\.com|huggingface\.co/i.test(text) && /llm|model|weight|inference|static_llm|asset/i.test(text)) {
       failures.push(`external_model_host_reference_in_public_runtime:${rel}`);
     }
-    if (/Vercel Blob|AI Gateway|KV|Postgres|Redis|Upstash|Neon|hosted vector|vector store/i.test(text) && /llm|model|weight|asset|static_llm|loading/i.test(text)) {
+    if (/Vercel Blob|AI Gateway|\bKV\b|Postgres|Redis|Upstash|Neon|hosted vector|vector store/i.test(text) && /llm|model|weight|asset|static_llm|loading/i.test(text)) {
       failures.push(`external_storage_reference_for_model_loading:${rel}`);
     }
   }

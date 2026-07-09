@@ -16,7 +16,6 @@ function buildRuntimeVersionSource() {
   const commitShort = commit === "local" ? "local" : commit.slice(0, 12);
   const buildTime = new Date().toISOString();
   const branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.GITHUB_REF_NAME || "";
-  const deploymentId = process.env.VERCEL_DEPLOYMENT_ID || "";
   const vercelEnv = process.env.VERCEL_ENV || "";
 
   return `export const RUNTIME_VERSION = Object.freeze({
@@ -24,7 +23,7 @@ function buildRuntimeVersionSource() {
   commitShort: "${cleanString(commitShort)}",
   branch: "${cleanString(branch)}",
   buildTime: "${cleanString(buildTime)}",
-  deploymentId: "${cleanString(deploymentId)}",
+  deploymentIdAvailable: ${process.env.VERCEL_DEPLOYMENT_ID ? "true" : "false"},
   vercelEnv: "${cleanString(vercelEnv)}",
   p0FallbackFirewall: true,
   r19ConversationController: true,
