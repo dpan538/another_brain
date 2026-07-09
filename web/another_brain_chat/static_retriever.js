@@ -3,6 +3,7 @@ const PROFILE_CARD_ASSETS = Object.freeze([
   "../another_brain/static_rag/brand_cards.json",
   "../another_brain/static_rag/brand_literacy_cards.json",
   "../another_brain/static_rag/world_cards.json",
+  "../another_brain/static_rag/reasoning_cards.json",
   "../another_brain/static_rag/profile_cards.json",
   "../another_brain/static_rag/style_cards.json",
   "../another_brain/static_rag/boundary_cards.json",
@@ -38,8 +39,14 @@ const QUERY_EXPANSION_RULES = Object.freeze([
   { match: /时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/i, terms: ["时间", "线性", "钟表", "记忆", "叙事", "因果", "顺序", "经验"] },
   { match: /关联|联系|关系|上下文|刚才|前面|上面|这个|它|这类|继续|那/i, terms: ["上下文", "关联", "对象", "机制", "功能", "影响", "代价", "判断链"] },
   { match: /有什么用|为什么.*有用|为什么.*方便|意义|重要|值得/i, terms: ["效用", "机制", "功能", "代价", "收益", "网络", "判断链"] },
+  { match: /如果|假如|没有.*会|会怎样|反事实|条件改变/i, terms: ["反事实", "条件", "替代方案", "时间尺度", "路径", "不确定性"] },
+  { match: /区别|差别|相比|哪个更|优劣|取舍|更好|更坏/i, terms: ["比较", "比较轴", "标准", "优劣", "取舍", "条件"] },
+  { match: /像不像|类似|类比|相当于|同构|映射/i, terms: ["类比", "映射", "对象", "机制", "尺度", "边界"] },
+  { match: /是什么|定义|算不算|边界|概念|命名/i, terms: ["定义", "概念边界", "相邻概念", "工作定义", "判断"] },
   { match: /既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论|框架/i, terms: ["时间", "非二分", "概念框架", "模型", "线性", "非线性", "层面", "判断"] },
   { match: /不对|太长|太短|不准确|不是这个意思|没听懂|听不懂|僵硬|公式化|不错|很好|继续|换个说法|再简单/i, terms: ["评价", "反馈", "改写", "继续", "上下文", "对话控制"] },
+  { match: /自由|公平|正义|责任|伦理|应该|不应该|值得|不值得/i, terms: ["价值判断", "理由", "代价", "一致性", "边界", "责任"] },
+  { match: /语言|词语|文字|表达|语境|翻译|误解|意思/i, terms: ["语言", "意义", "语境", "表达", "误解", "关系"] },
   { match: /算法|推荐|信息茧房|平台/i, terms: ["算法", "推荐系统", "激励", "分发", "注意力"] },
   { match: /排版|字体|杂志|bodoni|封面|视觉/i, terms: ["排版", "字体", "杂志", "层级", "留白", "对比"] }
 ]);
@@ -52,6 +59,9 @@ const INFRA_DOMAIN_RE = /铁路|火车|高铁|轨道|交通|物流|通勤|标准
 const JUDGMENT_DOMAIN_RE = /对错|真假|真伪|标准|判断|事实|价值|审美|证据|成立|可证伪|定义|边界|反例/;
 const AESTHETIC_DOMAIN_RE = /美|审美|美学|好看|风格|设计|字体|排版|杂志|质感|比例/;
 const SOCIETY_DOMAIN_RE = /社会|平台|算法|隐私|教育|医疗|劳动|城市|房价|通胀|政策|品牌|公司|商业|供应链|历史|战争|革命/;
+const TECHNOLOGY_DOMAIN_RE = /技术|芯片|半导体|手机|互联网|算法|软件|硬件|电池|计算|AI|模型|网络/i;
+const NATURAL_DOMAIN_RE = /自然|太阳|月亮|天气|气候|植物|重力|引力|声音|雨|概率|随机|物理|生物/;
+const LANGUAGE_DOMAIN_RE = /语言|词语|文字|表达|语境|翻译|误解|意思|叙述/;
 const COMPLEX_CUE_RE = /既不是|也不是|无法定义|无限|绝对|本体|悖论|所有|永远|终极|不可判定|非二分/;
 const CJK_STOP_TERMS = new Set(["这个", "那个", "一种", "这种", "问题", "为什么", "怎么", "如何", "觉得", "认为", "是否", "是不是", "有没有", "什么"]);
 
@@ -158,6 +168,7 @@ export function inferQuestionProfile(query = "") {
     turn_type: hasEvaluationCue && !hasQuestionCue ? "evaluation" : hasQuestionCue ? "question" : "statement",
     question_shape: "open",
     domain_hint: "general",
+    reasoning_mode: "direct",
     answer_length_hint: isLong ? "short" : "micro",
     needs_context: hasFollowupCue,
     soft_redirect_allowed: COMPLEX_CUE_RE.test(text),
@@ -179,21 +190,35 @@ export function inferQuestionProfile(query = "") {
   if (/既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论/.test(text)) {
     profile.question_shape = "conceptual_paradox";
     profile.domain_hint = TIME_DOMAIN_RE.test(text) ? "time" : "logic";
+    profile.reasoning_mode = "frame_challenge";
     profile.answer_length_hint = "short";
     return profile;
   }
   if (/为什么|为何|原因|机制|怎么造成|如何发生/.test(text)) profile.question_shape = "causal";
+  if (/如果|假如|没有.*会|会怎样|反事实|条件改变/.test(text)) profile.question_shape = "counterfactual";
+  if (/区别|差别|相比|哪个更|优劣|取舍|更好|更坏/.test(text)) profile.question_shape = "comparison";
+  if (/像不像|类似|类比|相当于|同构|映射/.test(text)) profile.question_shape = "analogy";
   if (/是什么|什么是|定义/.test(text)) profile.question_shape = "definition";
   if (/是否|是不是|能不能|有没有|会不会/.test(text)) profile.question_shape = "binary_judgment";
   if (/对错|真假|标准|判断|成立|可证伪/.test(text)) profile.question_shape = "truth_condition";
   if (hasFollowupCue && text.length <= 36) profile.question_shape = "short_followup";
   if (TIME_DOMAIN_RE.test(text)) profile.domain_hint = "time";
   else if (INFRA_DOMAIN_RE.test(text)) profile.domain_hint = "infrastructure";
+  else if (TECHNOLOGY_DOMAIN_RE.test(text)) profile.domain_hint = "technology";
+  else if (NATURAL_DOMAIN_RE.test(text)) profile.domain_hint = "natural";
   else if (AESTHETIC_DOMAIN_RE.test(text)) profile.domain_hint = "aesthetic";
   else if (JUDGMENT_DOMAIN_RE.test(text)) profile.domain_hint = "judgment";
   else if (SOCIETY_DOMAIN_RE.test(text)) profile.domain_hint = "society";
+  else if (LANGUAGE_DOMAIN_RE.test(text)) profile.domain_hint = "language";
+  if (profile.question_shape === "causal") profile.reasoning_mode = "mechanism_chain";
+  if (profile.question_shape === "counterfactual") profile.reasoning_mode = "counterfactual_delta";
+  if (profile.question_shape === "comparison") profile.reasoning_mode = "compare_by_axis";
+  if (profile.question_shape === "analogy") profile.reasoning_mode = "analogy_mapping";
+  if (profile.question_shape === "definition") profile.reasoning_mode = "define_boundary";
+  if (profile.question_shape === "truth_condition" || profile.question_shape === "binary_judgment") profile.reasoning_mode = "truth_value_split";
+  if (profile.question_shape === "short_followup") profile.reasoning_mode = "context_rewrite";
   if (profile.question_shape === "short_followup") profile.answer_length_hint = "micro";
-  if (profile.question_shape === "causal" || profile.question_shape === "conceptual_paradox") profile.answer_length_hint = "short";
+  if (["causal", "counterfactual", "comparison", "analogy", "conceptual_paradox"].includes(profile.question_shape)) profile.answer_length_hint = "short";
   return profile;
 }
 
@@ -269,11 +294,27 @@ function questionProfileBoost(profile = {}, record = {}, hasLexicalOverlap = fal
   if (profile.domain_hint === "judgment") {
     if (kind === "judgment" || kind === "logic") boost += 0.14;
   }
+  if (profile.domain_hint === "technology") {
+    if (/技术|芯片|手机|互联网|算法|电池|软件|硬件|计算/.test(text)) boost += 0.13;
+    if (["history", "society", "commonsense", "logic"].includes(kind)) boost += 0.04;
+  }
+  if (profile.domain_hint === "natural") {
+    if (/自然|太阳|月亮|天气|气候|植物|重力|概率|物理|生物/.test(text)) boost += 0.13;
+    if (["commonsense", "logic"].includes(kind)) boost += 0.06;
+  }
+  if (profile.domain_hint === "language") {
+    if (/语言|词语|文字|表达|语境|翻译|误解|意义/.test(text)) boost += 0.13;
+    if (["philosophy", "logic", "context"].includes(kind)) boost += 0.05;
+  }
   if (profile.domain_hint === "aesthetic") {
     if (kind === "aesthetic") boost += 0.16;
     if (kind === "logic") boost += 0.04;
   }
   if (profile.question_shape === "causal" && ["logic", "association", "commonsense", "history", "society"].includes(kind)) boost += 0.06;
+  if (profile.question_shape === "counterfactual" && ["logic", "association", "history", "society"].includes(kind)) boost += 0.09;
+  if (profile.question_shape === "comparison" && ["judgment", "logic", "brand_literacy", "society"].includes(kind)) boost += 0.08;
+  if (profile.question_shape === "analogy" && ["association", "logic", "philosophy"].includes(kind)) boost += 0.08;
+  if (profile.question_shape === "definition" && ["logic", "judgment", "philosophy"].includes(kind)) boost += 0.07;
   return boost;
 }
 
@@ -289,7 +330,7 @@ function profileKindBoost(query = "", record = {}) {
   if (kind === "philosophy" && /生死|生与死|活着|存在|虚无|意义|哲学|自由|有限|死亡|孤独|记忆|正义|责任|真理|真实|事实/.test(text)) return 0.1;
   if (kind === "logic" && /为什么|如何看待|怎么看|判断|因果|证据|推理|逻辑|because|reason/.test(text)) return 0.09;
   if (kind === "judgment" && /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实|价值|审美|证据|判断|标准/.test(text)) return 0.14;
-  if (kind === "association" && /关联|联系|为什么|意义|方便|机制|影响|连接|因果|铁路|交通|物流|时间|线性/.test(text)) return 0.16;
+  if (kind === "association" && /关联|联系|为什么|意义|方便|机制|影响|连接|因果|铁路|交通|物流|时间|线性|类比|映射|多跳|长期/.test(text)) return 0.16;
   if (kind === "context" && /刚才|上面|前面|这个|它|这类|继续|上下文|为什么方便|有什么用|那/.test(text)) return 0.16;
   if (kind === "value" && /价值|对错|重要|承诺|信任|value/.test(text)) return 0.08;
   if (kind === "boundary" && /证据|不足|冲突|隐藏|系统提示|evidence|conflict|prompt/.test(text)) return 0.08;
@@ -491,6 +532,38 @@ function inferAssociationProfile(query = "", evidence = []) {
       reasoning_axis: "钟表顺序、心理经验、叙事结构和因果链",
       missing_link: false,
       answer_policy_hint: "split_time_frames_before_judgment"
+    };
+  }
+  if (/如果|假如|没有.*会|会怎样|反事实|条件改变/.test(text)) {
+    return {
+      association_mode: "counterfactual_delta",
+      reasoning_axis: "只改变一个条件，再比较替代路径、时间尺度和受影响对象",
+      missing_link: false,
+      answer_policy_hint: "name_changed_condition_then_likely_path"
+    };
+  }
+  if (/区别|差别|相比|哪个更|优劣|取舍|更好|更坏/.test(text)) {
+    return {
+      association_mode: "comparison_axis",
+      reasoning_axis: "先定比较标准，再给取舍，不把不同轴混成一个结论",
+      missing_link: false,
+      answer_policy_hint: "compare_by_named_axis"
+    };
+  }
+  if (/像不像|类似|类比|相当于|同构|映射/.test(text)) {
+    return {
+      association_mode: "analogy_mapping",
+      reasoning_axis: "检查对象、机制、尺度和后果是否真的能映射",
+      missing_link: false,
+      answer_policy_hint: "use_analogy_with_boundary"
+    };
+  }
+  if (/是什么|什么是|定义|算不算|边界|概念|命名/.test(text)) {
+    return {
+      association_mode: "definition_boundary",
+      reasoning_axis: "给工作定义，再说明相邻概念和排除边界",
+      missing_link: false,
+      answer_policy_hint: "define_before_judgment"
     };
   }
   if (/铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市/.test(text)) {

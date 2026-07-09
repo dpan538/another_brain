@@ -241,16 +241,19 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   const brandLiteracyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/brand_literacy_cards.json", import.meta.url), "utf8"));
   const worldRaw = await readFile(new URL("../../web/another_brain/static_rag/world_cards.json", import.meta.url), "utf8");
   const worldPack = JSON.parse(worldRaw);
+  const reasoningRaw = await readFile(new URL("../../web/another_brain/static_rag/reasoning_cards.json", import.meta.url), "utf8");
+  const reasoningPack = JSON.parse(reasoningRaw);
   const knowledgePack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/knowledge_cards.json", import.meta.url), "utf8"));
   const logicPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/logic_cards.json", import.meta.url), "utf8"));
   const historyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/history_cards.json", import.meta.url), "utf8"));
   const societyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/society_cards.json", import.meta.url), "utf8"));
-  const serialized = JSON.stringify({ logicPack, brandPack, brandLiteracyPack, worldPack, knowledgePack, historyPack, societyPack }).toLowerCase();
+  const serialized = JSON.stringify({ logicPack, brandPack, brandLiteracyPack, worldPack, reasoningPack, knowledgePack, historyPack, societyPack }).toLowerCase();
 
   assert.ok(retriever.includes("logic_cards.json"));
   assert.ok(retriever.includes("brand_cards.json"));
   assert.ok(retriever.includes("brand_literacy_cards.json"));
   assert.ok(retriever.includes("world_cards.json"));
+  assert.ok(retriever.includes("reasoning_cards.json"));
   assert.ok(retriever.includes("knowledge_cards.json"));
   assert.ok(retriever.includes("history_cards.json"));
   assert.ok(retriever.includes("society_cards.json"));
@@ -267,7 +270,7 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(retriever.includes("judgment_profile"));
   assert.ok(retriever.includes("association_profile"));
   assert.ok(retriever.includes("context_profile"));
-  for (const pack of [logicPack, brandPack, brandLiteracyPack, worldPack, knowledgePack, historyPack, societyPack]) {
+  for (const pack of [logicPack, brandPack, brandLiteracyPack, worldPack, reasoningPack, knowledgePack, historyPack, societyPack]) {
     assert.equal(pack.fixture_policy.answer_bank, false);
     assert.equal(pack.fixture_policy.allowed_for_training, false);
     assert.equal(pack.fixture_policy.private_raw_data, false);
@@ -293,6 +296,11 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("OpenAI")));
   assert.ok(worldPack.cards.length >= 100);
   assert.ok(Buffer.byteLength(worldRaw) >= 64000);
+  assert.ok(reasoningPack.cards.length >= 100);
+  assert.ok(Buffer.byteLength(reasoningRaw) >= 100000);
+  for (const marker of ["反事实", "比较", "类比", "定义", "上下文追问", "评价输入", "RAG Fusion", "HyDE", "漂移", "领域优先"]) {
+    assert.ok(reasoningPack.cards.some((card) => card.keywords.includes(marker) || card.text.includes(marker)), marker);
+  }
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("BMW")));
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Skyline")));
   assert.ok(worldPack.cards.some((card) => card.kind === "history" && card.keywords.includes("半导体")));
@@ -535,6 +543,71 @@ test("expanded world cards can retrieve practical brand and commonsense context 
   assert.equal(judgmentPacket.evidence_status, "sufficient");
   assert.equal(judgmentPacket.judgment_profile.judgment_mode, "mixed_truth_value_check");
   assert.equal(judgmentPacket.rag_profile_pack.judgment_profile.answer_policy_hint, "classify_before_answering");
+});
+
+test("query profile generalizes beyond named examples into counterfactual comparison analogy and definition routing", () => {
+  const records = [
+    {
+      source_id: "reasoning-counterfactual",
+      title: "R28 reasoning counterfactual card",
+      text: "反事实问题要只改变一个条件，再比较替代路径、时间尺度和受影响对象。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["反事实", "如果", "假如", "条件改变", "替代方案"],
+      metadata: { r28rag3_profile_card: true, card_kind: "logic" }
+    },
+    {
+      source_id: "reasoning-comparison",
+      title: "R28 reasoning comparison card",
+      text: "比较题需要先确定比较轴，速度、成本、体验、风险和长期影响不能混成一个结论。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["比较", "区别", "差别", "哪个更", "取舍", "比较轴"],
+      metadata: { r28rag3_profile_card: true, card_kind: "judgment" }
+    },
+    {
+      source_id: "reasoning-analogy",
+      title: "R28 reasoning analogy card",
+      text: "类比题要检查对象、机制、尺度和后果是否真的能映射。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["类比", "像不像", "相当于", "映射", "同构"],
+      metadata: { r28rag3_profile_card: true, card_kind: "association" }
+    },
+    {
+      source_id: "reasoning-definition",
+      title: "R28 reasoning definition card",
+      text: "定义题要先给工作定义，再说明相邻概念和排除边界。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["定义", "是什么", "算不算", "边界", "概念"],
+      metadata: { r28rag3_profile_card: true, card_kind: "logic" }
+    }
+  ];
+
+  const counter = buildEvidencePacket("如果没有智能手机，城市生活会怎样变化？", {}, records);
+  assert.equal(counter.query_profile.question_shape, "counterfactual");
+  assert.equal(counter.query_profile.reasoning_mode, "counterfactual_delta");
+  assert.equal(counter.association_profile.association_mode, "counterfactual_delta");
+  assert.equal(counter.retrieved_evidence[0].source_id, "reasoning-counterfactual");
+
+  const comparison = buildEvidencePacket("铁路和公路哪个更适合长距离物流？", {}, records);
+  assert.equal(comparison.query_profile.question_shape, "comparison");
+  assert.equal(comparison.query_profile.reasoning_mode, "compare_by_axis");
+  assert.equal(comparison.association_profile.association_mode, "comparison_axis");
+  assert.equal(comparison.retrieved_evidence[0].source_id, "reasoning-comparison");
+
+  const analogy = buildEvidencePacket("互联网像不像一种新的铁路？", {}, records);
+  assert.equal(analogy.query_profile.question_shape, "analogy");
+  assert.equal(analogy.query_profile.reasoning_mode, "analogy_mapping");
+  assert.equal(analogy.association_profile.association_mode, "analogy_mapping");
+  assert.equal(analogy.retrieved_evidence[0].source_id, "reasoning-analogy");
+
+  const definition = buildEvidencePacket("什么是基础设施，算法算不算？", {}, records);
+  assert.equal(definition.query_profile.question_shape, "definition");
+  assert.equal(definition.query_profile.reasoning_mode, "define_boundary");
+  assert.equal(definition.association_profile.association_mode, "definition_boundary");
+  assert.equal(definition.retrieved_evidence[0].source_id, "reasoning-definition");
 });
 
 test("natural-world open questions do not collapse into abstract value fallback when q4 is not admitted", async () => {

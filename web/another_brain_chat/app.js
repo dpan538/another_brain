@@ -730,6 +730,18 @@ function ruleBasedFallbackAnswer(packet = {}) {
   if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(inputText)) {
     return safeEvidenceAnswer || "要先分清时间类型：钟表时间通常按先后排序；记忆、叙事和历史理解却常常会回看、重组和跳跃。";
   }
+  if (/如果|假如|没有.*会|会怎样|反事实|条件改变/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先只改一个条件，再看替代路径。反事实不能说满，但可以判断哪些结果最可能改变。";
+  }
+  if (/区别|差别|相比|哪个更|优劣|取舍|更好|更坏/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先定比较标准。不同标准会得到不同结论：效率、成本、体验、风险和长期影响不能混在一起比。";
+  }
+  if (/像不像|类似|类比|相当于|同构|映射/.test(inputText)) {
+    return safeEvidenceAnswer || "这个可以类比，但要看机制是否也相似。只像表面不够，至少要对象、尺度或后果有一部分对得上。";
+  }
+  if (/是什么|什么是|定义|算不算|边界|概念|命名/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先给一个可用的定义，再说边界。概念不是为了好听，而是为了后面的判断不跑偏。";
+  }
   if (/关联|联系|上下文|刚才|前面|这个|它|这类|继续|那/.test(inputText)) {
     return safeEvidenceAnswer || "我会把它接回上一轮对象，再看功能、机制和影响，而不是把每句话都当成孤立问题。";
   }
@@ -791,6 +803,18 @@ function customerFacingAnswer(packet = {}) {
   }
   if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(inputText)) {
     return safeEvidenceAnswer || "钟表时间大多是线性排序；但人的记忆、叙事和历史理解不完全线性。先分清你问的是计时、体验还是因果。";
+  }
+  if (/如果|假如|没有.*会|会怎样|反事实|条件改变/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先固定其他条件，只改变你说的那一点。这样能看出最可能改变的路径，也避免把想象说成事实。";
+  }
+  if (/区别|差别|相比|哪个更|优劣|取舍|更好|更坏/.test(inputText)) {
+    return safeEvidenceAnswer || "这要先定比较轴。比效率、体验、风险、成本还是长期影响，结论可能不一样。";
+  }
+  if (/像不像|类似|类比|相当于|同构|映射/.test(inputText)) {
+    return safeEvidenceAnswer || "可以先当作类比看，但我会检查机制和尺度是否真的对应。对应不上，就只能算比喻。";
+  }
+  if (/是什么|什么是|定义|算不算|边界|概念|命名/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先给工作定义，再说它和相邻概念的边界。定义清楚，后面的判断才不会散。";
   }
   if (/关联|联系|上下文|刚才|前面|这个|它|这类|继续|那/.test(inputText)) {
     return safeEvidenceAnswer || "我会把它接回上一轮对象，再看它的功能、机制和影响。这样追问不会断成孤立句子。";
