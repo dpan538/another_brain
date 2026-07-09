@@ -203,20 +203,23 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   const retriever = await readFile(new URL("../../web/another_brain_chat/static_retriever.js", import.meta.url), "utf8");
   const brandPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/brand_cards.json", import.meta.url), "utf8"));
   const brandLiteracyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/brand_literacy_cards.json", import.meta.url), "utf8"));
+  const worldPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/world_cards.json", import.meta.url), "utf8"));
   const knowledgePack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/knowledge_cards.json", import.meta.url), "utf8"));
   const logicPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/logic_cards.json", import.meta.url), "utf8"));
   const historyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/history_cards.json", import.meta.url), "utf8"));
   const societyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/society_cards.json", import.meta.url), "utf8"));
-  const serialized = JSON.stringify({ logicPack, brandPack, brandLiteracyPack, knowledgePack, historyPack, societyPack }).toLowerCase();
+  const serialized = JSON.stringify({ logicPack, brandPack, brandLiteracyPack, worldPack, knowledgePack, historyPack, societyPack }).toLowerCase();
 
   assert.ok(retriever.includes("logic_cards.json"));
   assert.ok(retriever.includes("brand_cards.json"));
   assert.ok(retriever.includes("brand_literacy_cards.json"));
+  assert.ok(retriever.includes("world_cards.json"));
   assert.ok(retriever.includes("knowledge_cards.json"));
   assert.ok(retriever.includes("history_cards.json"));
   assert.ok(retriever.includes("society_cards.json"));
+  assert.ok(retriever.includes("QUERY_EXPANSION_RULES"));
   for (const kind of ["brand", "brand_literacy", "commonsense", "philosophy", "logic", "history", "society"]) assert.ok(retriever.includes(`"${kind}"`), kind);
-  for (const pack of [logicPack, brandPack, brandLiteracyPack, knowledgePack, historyPack, societyPack]) {
+  for (const pack of [logicPack, brandPack, brandLiteracyPack, worldPack, knowledgePack, historyPack, societyPack]) {
     assert.equal(pack.fixture_policy.answer_bank, false);
     assert.equal(pack.fixture_policy.allowed_for_training, false);
     assert.equal(pack.fixture_policy.private_raw_data, false);
@@ -240,6 +243,13 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(brandPack.cards.some((card) => card.kind === "brand" && card.keywords.includes("efishother.com")));
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Apple")));
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("OpenAI")));
+  assert.ok(worldPack.cards.length >= 20);
+  assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("BMW")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Skyline")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "history" && card.keywords.includes("半导体")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "commonsense" && card.keywords.includes("光合作用")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "society" && card.keywords.includes("推荐算法")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "aesthetic" && card.keywords.includes("杂志")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("天空")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("正义")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("记忆")));
@@ -417,6 +427,33 @@ test("unrelated high-trust profile cards do not masquerade as relevant local evi
   }]);
   assert.equal(relevant.evidence_status, "sufficient");
   assert.equal(relevant.retrieved_evidence.length, 1);
+});
+
+test("expanded world cards can retrieve practical brand and commonsense context without answer-bank fields", () => {
+  const bmwPacket = buildEvidencePacket("E30 M3 为什么经典", {}, [{
+    source_id: "world-bmw",
+    title: "R28 world brand card",
+    text: "宝马的品牌核心不是单纯豪华，而是驾驶感、工程纪律、运动轿车传统和机械反馈。",
+    trust_level: "high",
+    can_answer: true,
+    keywords: ["BMW", "宝马", "M3", "E30", "驾驶", "工程"],
+    metadata: { r28rag3_profile_card: true, card_kind: "brand_literacy" }
+  }]);
+  assert.equal(bmwPacket.evidence_status, "sufficient");
+  assert.equal(bmwPacket.retrieved_evidence[0].source_id, "world-bmw");
+  assert.ok(bmwPacket.rag_profile_pack.tone_hints.length >= 0);
+
+  const phonePacket = buildEvidencePacket("手机为什么改变世界", {}, [{
+    source_id: "world-smartphone",
+    title: "R28 world history card",
+    text: "智能手机改变触屏交互、移动网络、应用商店、随身相机和服务分发方式。",
+    trust_level: "high",
+    can_answer: true,
+    keywords: ["智能手机", "移动互联网", "触屏", "应用商店"],
+    metadata: { r28rag3_profile_card: true, card_kind: "history" }
+  }]);
+  assert.equal(phonePacket.evidence_status, "sufficient");
+  assert.equal(phonePacket.retrieved_evidence[0].source_id, "world-smartphone");
 });
 
 test("natural-world open questions do not collapse into abstract value fallback when q4 is not admitted", async () => {

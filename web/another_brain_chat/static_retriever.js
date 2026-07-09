@@ -2,6 +2,7 @@ const DEMO_MEMORY_ASSET = "../another_brain/static_rag/demo_memory.json";
 const PROFILE_CARD_ASSETS = Object.freeze([
   "../another_brain/static_rag/brand_cards.json",
   "../another_brain/static_rag/brand_literacy_cards.json",
+  "../another_brain/static_rag/world_cards.json",
   "../another_brain/static_rag/profile_cards.json",
   "../another_brain/static_rag/style_cards.json",
   "../another_brain/static_rag/boundary_cards.json",
@@ -13,6 +14,28 @@ const PROFILE_CARD_ASSETS = Object.freeze([
 const DEFAULT_RAG_ASSETS = Object.freeze([DEMO_MEMORY_ASSET, ...PROFILE_CARD_ASSETS]);
 const CARD_KINDS = Object.freeze(["brand", "brand_literacy", "identity", "style", "value", "aesthetic", "boundary", "capability", "commonsense", "philosophy", "logic", "history", "society"]);
 const CARD_PROVENANCE = Object.freeze(["approved_anchor_summary", "hand_authored_boundary", "demo_safe"]);
+const QUERY_EXPANSION_RULES = Object.freeze([
+  { match: /iphone|苹果手机|mac|ipad|ios/i, terms: ["apple", "苹果", "生态", "硬件", "软件"] },
+  { match: /bmw|宝马|m3|e30/i, terms: ["bmw", "宝马", "驾驶", "工程", "品牌"] },
+  { match: /nissan|skyline|gtr|gt-r|日产|尼桑/i, terms: ["nissan", "skyline", "gt-r", "性能", "汽车文化"] },
+  { match: /porsche|保时捷|911/i, terms: ["porsche", "保时捷", "跑车", "工程", "传统"] },
+  { match: /sony|索尼|walkman|playstation/i, terms: ["sony", "索尼", "消费电子", "影像", "娱乐"] },
+  { match: /nintendo|任天堂|switch|mario/i, terms: ["nintendo", "任天堂", "游戏", "玩法", "家庭娱乐"] },
+  { match: /dji|大疆|无人机/i, terms: ["dji", "大疆", "无人机", "影像", "硬件"] },
+  { match: /tiktok|抖音|短视频/i, terms: ["tiktok", "抖音", "推荐", "注意力", "平台"] },
+  { match: /微信|wechat/i, terms: ["微信", "wechat", "社交", "支付", "超级应用"] },
+  { match: /半导体|芯片|晶体管|gpu|算力/i, terms: ["半导体", "芯片", "晶体管", "供应链", "计算"] },
+  { match: /互联网|万维网|web|http|网页/i, terms: ["互联网", "万维网", "协议", "信息分发", "平台"] },
+  { match: /手机|智能手机|移动互联网/i, terms: ["智能手机", "移动互联网", "触屏", "应用生态"] },
+  { match: /电池|锂电|续航|充电/i, terms: ["电池", "锂离子", "能量密度", "充电", "安全"] },
+  { match: /电|电流|电压|电路/i, terms: ["电", "电流", "电压", "电路", "能量"] },
+  { match: /光合作用|植物|叶绿素/i, terms: ["光合作用", "植物", "太阳能", "二氧化碳", "氧气"] },
+  { match: /重力|引力|掉下|轨道|绕着/i, terms: ["重力", "引力", "轨道", "质量", "运动"] },
+  { match: /疫苗|免疫|病毒/i, terms: ["疫苗", "免疫", "抗体", "公共卫生", "风险"] },
+  { match: /概率|随机|运气|风险/i, terms: ["概率", "随机", "样本", "风险", "不确定性"] },
+  { match: /算法|推荐|信息茧房|平台/i, terms: ["算法", "推荐系统", "激励", "分发", "注意力"] },
+  { match: /排版|字体|杂志|bodoni|封面|视觉/i, terms: ["排版", "字体", "杂志", "层级", "留白", "对比"] }
+]);
 
 const FALLBACK_DEMO_RECORDS = [
   {
@@ -76,6 +99,17 @@ function tokenize(text) {
   return tokens;
 }
 
+function expandQueryTokens(query) {
+  const tokens = tokenize(query);
+  const expanded = [...tokens];
+  const text = String(query || "");
+  for (const rule of QUERY_EXPANSION_RULES) {
+    if (!rule.match.test(text)) continue;
+    expanded.push(...rule.terms.flatMap((term) => tokenize(term)));
+  }
+  return expanded;
+}
+
 function charNgrams(text, size = 3) {
   const clean = String(text || "").toLowerCase().replace(/\s+/g, " ").trim();
   const grams = new Set();
@@ -84,13 +118,21 @@ function charNgrams(text, size = 3) {
 }
 
 function scoreRecord(query, record) {
-  const queryTokens = tokenize(query);
+  const queryTokens = expandQueryTokens(query);
   if (queryTokens.length === 0) return 0;
-  const haystack = `${record.title || ""} ${record.text || ""} ${(record.keywords || []).join(" ")}`;
+  const keywordText = (record.keywords || []).join(" ");
+  const haystack = `${record.title || ""} ${record.text || ""} ${keywordText}`;
   const documentTokens = new Set(tokenize(haystack));
+  const keywordTokens = new Set(tokenize(keywordText));
+  const titleTokens = new Set(tokenize(record.title || ""));
   let overlap = 0;
+  let weightedOverlap = 0;
   for (const token of new Set(queryTokens)) {
-    if (documentTokens.has(token)) overlap += 1;
+    if (!documentTokens.has(token)) continue;
+    overlap += 1;
+    weightedOverlap += 1;
+    if (keywordTokens.has(token)) weightedOverlap += 0.5;
+    if (titleTokens.has(token)) weightedOverlap += 0.25;
   }
   const qgrams = charNgrams(query);
   const dgrams = charNgrams(haystack);
@@ -98,7 +140,7 @@ function scoreRecord(query, record) {
   for (const gram of qgrams) {
     if (dgrams.has(gram)) gramOverlap += 1;
   }
-  const keywordScore = overlap / Math.max(queryTokens.length, 1);
+  const keywordScore = weightedOverlap / Math.max(queryTokens.length, 1);
   const gramScore = qgrams.size ? gramOverlap / qgrams.size : 0;
   const hasLexicalOverlap = overlap > 0 || gramOverlap > 0;
   const kindBoost = profileKindBoost(query, record);

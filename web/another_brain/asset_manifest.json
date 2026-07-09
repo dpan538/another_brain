@@ -5,7 +5,7 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 70152827,
+  "full_bundle_estimate_bytes": 70166138,
   "gate_assets": [
     {
       "bytes": 3058,
@@ -141,10 +141,80 @@
       "private_raw_data": false,
       "provenance": "hand_authored_boundary",
       "sha256": "3bd19b4c65b34a78ae954e661c17fa5cbe01511bc15f9a9d93650309151d410d"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 3897,
+      "demo_only": false,
+      "path": "another_brain/static_rag/brand_cards.json",
+      "private_raw_data": false,
+      "provenance": "hand_authored_boundary",
+      "sha256": "39c7610f653015bca4c87c5b8a0eafc6fb2ff60293fb77e5d386b8ec19390c30"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 9833,
+      "demo_only": false,
+      "path": "another_brain/static_rag/brand_literacy_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "428d43167aee72a3b2db27cd46b6e16cec95c3464c2cc3b4be33a6f6787b165b"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 13311,
+      "demo_only": false,
+      "path": "another_brain/static_rag/world_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "1f1a009f76c01d444a0534fee22f4f3e8cc98e720b93a73e3369ffeec8977a32"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 7855,
+      "demo_only": false,
+      "path": "another_brain/static_rag/logic_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "f4e92bf9ad9b0a6cdb3de1ffa38830d328743d07d79b486a2da754b55fa2997b"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 8782,
+      "demo_only": false,
+      "path": "another_brain/static_rag/knowledge_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "530b8659b29932ea95ce4e7a5193741a540a711dd7e70a8ea03ca348e6d83cb2"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 11869,
+      "demo_only": false,
+      "path": "another_brain/static_rag/history_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "1068d4fbc49142372aafa1db8131619a33ccac5fa85f6bc14404415b548e3a25"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 6263,
+      "demo_only": false,
+      "path": "another_brain/static_rag/society_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "be9201e1d8f34fc4237e1e47a3f6169f54d0b1907e2f6e36f1df7de99e5f31cb"
     }
   ],
   "release_checkpoint_admission": false,
-  "remaining_bytes_under_100mb": 29847173,
+  "remaining_bytes_under_100mb": 29833862,
   "runtime_tokenizer_blocker": "",
   "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
   "same_origin_only": true,
@@ -166,7 +236,7 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49317084,
+  "total_declared_bytes": 49378894,
   "branch_marker": "R28LIVEFIX0",
   "branch_name": "r28livefix0-live-q4-mount",
   "build_commit_short": "build-env-pending",

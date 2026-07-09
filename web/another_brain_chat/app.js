@@ -607,13 +607,16 @@ function customerEvidenceAnswer(packet = {}) {
   const summary = compactEvidenceText(top.text, kind === "history" ? 110 : 96);
   if (!summary) return "";
   if (kind === "brand_literacy") {
-    return `${summary} 我会看它靠什么建立信任、分发和记忆点，而不是只看名气。`;
+    return `${summary} 品牌判断要看它把什么能力稳定地留在用户心里，而不是只看名气。`;
   }
   if (kind === "history") {
     return `${summary} 这类问题要同时看触发点、结构原因和后来改变了什么。`;
   }
-  if (kind === "commonsense" && /太阳|月亮|天空|季节|时间|天气|气温|自然/.test(inputText)) {
+  if (kind === "commonsense" && /太阳|月亮|天空|季节|时间|天气|气温|自然|电|电池|重力|引力|植物|光合作用|疫苗|声音|下雨|沸腾/.test(inputText)) {
     return summary;
+  }
+  if (kind === "society") {
+    return `${summary} 我会看结构和代价，不把复杂问题压成一个原因。`;
   }
   if (kind === "philosophy" || kind === "logic" || kind === "aesthetic") {
     return `${summary} 我会先给判断，再留下证据边界。`;
@@ -637,8 +640,14 @@ function ruleBasedFallbackAnswer(packet = {}) {
   if (/历史|革命|战争|冷战|工业革命|事件|朝代/.test(inputText)) {
     return safeEvidenceAnswer || "我会把历史事件拆成触发点、结构原因和后果三层。单个英雄或单个日期很少足够，关键是它改变了什么制度、技术或关系。";
   }
+  if (/算法|推荐|平台|隐私|供应链|城市|通胀|房价|教育|医疗|劳动|移民|社会/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先看结构：谁获得便利，谁承担代价，激励怎样改变行为。现实问题通常不是一个原因就能解释。";
+  }
+  if (/电池|重力|引力|电流|光合作用|疫苗|概率|随机|半导体|芯片|智能手机|铁路|汽车/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先讲机制，再讲限制：是什么在起作用，哪些条件改变后结论也会变。";
+  }
   if (/美|审美|美学|好看|风格/.test(inputText)) {
-    return "我会先看它有没有结构。美不是单纯漂亮，而是形式、分寸、风险和情绪在同一刻站住；只有讨喜，没有必要性，就会很薄。";
+    return safeEvidenceAnswer || "我会先看它有没有结构。美不是单纯漂亮，而是形式、分寸、风险和情绪在同一刻站住；只有讨喜，没有必要性，就会很薄。";
   }
   if (/生死|生与死|死亡|活着|为什么.*活/.test(inputText)) {
     return "我会把它看成有限性问题。死让时间有边界，生让选择还有发生的机会；很多意义不是先想明白，而是在关系和行动里做出来。";
@@ -670,8 +679,14 @@ function customerFacingAnswer(packet = {}) {
   if (/品牌|公司|Apple|苹果|Google|谷歌|Microsoft|微软|Tesla|特斯拉|Meta|Amazon|亚马逊|Toyota|丰田|Leica|徕卡|OpenAI|Vercel|商业|产品/i.test(inputText)) {
     return safeEvidenceAnswer || "我会看它解决什么问题、靠什么建立信任、怎样被反复使用。品牌不是名气，是可重复的体验。";
   }
+  if (/BMW|宝马|Nissan|日产|Skyline|GT-R|保时捷|Porsche|Sony|索尼|任天堂|Nintendo|大疆|DJI|TikTok|抖音|微信|WeChat/i.test(inputText)) {
+    return safeEvidenceAnswer || "我会先看它留下了什么稳定记忆：技术、体验、文化位置，还是某种反复被验证的信任。";
+  }
   if (/历史|革命|战争|冷战|工业革命|文艺复兴|启蒙|印刷术|太空竞赛|全球化|事件|朝代/.test(inputText)) {
     return safeEvidenceAnswer || "我会把历史拆成三层：触发点、结构原因、以及后来改变了什么。单个日期通常不是全部答案。";
+  }
+  if (/半导体|芯片|智能手机|铁路|汽车史|供应链|城市化|推荐算法|平台|隐私|通胀|房价|劳动|教育|医疗|概率|随机/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先拆结构：机制是什么、谁被影响、代价在哪里。这样比一句价值判断更接近现实。";
   }
   if (route === "natural_world_question") {
     if (/太阳|日出|日落|东升西落/.test(inputText)) {

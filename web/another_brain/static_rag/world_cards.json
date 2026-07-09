@@ -1,0 +1,266 @@
+{
+  "schema_version": "r28postmerge11.world_cards.v1",
+  "fixture_policy": {
+    "runtime_hints_only": true,
+    "answer_bank": false,
+    "private_raw_data": false,
+    "eval_prompts": false,
+    "old_question_pack_rows_51_100": false,
+    "allowed_for_training": false
+  },
+  "cards": [
+    {
+      "id": "r28postmerge11-brand-literacy-bmw",
+      "kind": "brand_literacy",
+      "text": "宝马的品牌核心不是单纯豪华，而是驾驶感、工程纪律、运动轿车传统和可被反复感知的机械反馈。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["BMW", "宝马", "M3", "E30", "驾驶", "工程", "运动轿车", "品牌"],
+      "tone_hints": ["car_culture", "engineering", "brand_memory"]
+    },
+    {
+      "id": "r28postmerge11-brand-literacy-nissan-gtr",
+      "kind": "brand_literacy",
+      "text": "GT-R 的记忆点来自日产工程、四驱性能、赛道神话、改装文化和普通品牌制造高性能机器的反差。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Nissan", "日产", "Skyline", "GT-R", "R32", "汽车文化", "性能", "改装"],
+      "tone_hints": ["performance", "culture", "engineering_myth"]
+    },
+    {
+      "id": "r28postmerge11-brand-literacy-porsche",
+      "kind": "brand_literacy",
+      "text": "保时捷的强度来自连续性：911 的形态、工程迭代、赛道信誉和日常可用性一起构成长期信任。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Porsche", "保时捷", "911", "跑车", "工程", "赛道", "传统", "品牌"],
+      "tone_hints": ["continuity", "sports_car", "trust"]
+    },
+    {
+      "id": "r28postmerge11-brand-literacy-sony",
+      "kind": "brand_literacy",
+      "text": "索尼可以从影像、音乐、游戏、消费电子和工业设计看，它的品牌感更像技术与娱乐之间的精密接口。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Sony", "索尼", "Walkman", "PlayStation", "影像", "音乐", "消费电子", "工业设计"],
+      "tone_hints": ["consumer_electronics", "entertainment", "design"]
+    },
+    {
+      "id": "r28postmerge11-brand-literacy-nintendo",
+      "kind": "brand_literacy",
+      "text": "任天堂的价值不只在硬件性能，而在玩法设计、家庭娱乐、角色记忆和把复杂技术变成轻松体验的能力。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Nintendo", "任天堂", "Switch", "Mario", "游戏", "玩法", "家庭娱乐", "体验"],
+      "tone_hints": ["play", "interface", "family"]
+    },
+    {
+      "id": "r28postmerge11-brand-literacy-dji",
+      "kind": "brand_literacy",
+      "text": "大疆的品牌建立在无人机硬件、稳定影像、飞控系统、创作者工具和把专业拍摄带入日常场景。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["DJI", "大疆", "无人机", "影像", "飞控", "稳定器", "创作者", "硬件"],
+      "tone_hints": ["hardware", "creator_tool", "imaging"]
+    },
+    {
+      "id": "r28postmerge11-brand-literacy-tiktok",
+      "kind": "brand_literacy",
+      "text": "TikTok/抖音的核心是推荐分发、短视频表达、创作者激励和对注意力节奏的重新组织。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["TikTok", "抖音", "短视频", "推荐算法", "创作者", "注意力", "平台"],
+      "tone_hints": ["platform", "attention", "creator"]
+    },
+    {
+      "id": "r28postmerge11-brand-literacy-wechat",
+      "kind": "brand_literacy",
+      "text": "微信不是单一聊天工具，它把社交、支付、小程序、身份关系和日常服务压缩成一个高频入口。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["微信", "WeChat", "社交", "支付", "小程序", "超级应用", "日常服务"],
+      "tone_hints": ["super_app", "social", "daily_life"]
+    },
+    {
+      "id": "r28postmerge11-history-semiconductor",
+      "kind": "history",
+      "text": "半导体史要看晶体管、集成电路、制造工艺、全球供应链、计算成本下降和数字社会的底层基础。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["半导体", "芯片", "晶体管", "集成电路", "供应链", "计算", "摩尔定律"],
+      "tone_hints": ["technology_history", "infrastructure", "supply_chain"]
+    },
+    {
+      "id": "r28postmerge11-history-smartphone",
+      "kind": "history",
+      "text": "智能手机改变的不只是通讯，而是触屏交互、移动网络、应用商店、随身相机和服务分发方式。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["智能手机", "iPhone", "Android", "触屏", "移动互联网", "应用商店", "相机"],
+      "tone_hints": ["mobile", "interface", "distribution"]
+    },
+    {
+      "id": "r28postmerge11-history-railway",
+      "kind": "history",
+      "text": "铁路的意义在于速度、标准时间、物流、城市扩张、资本组织和国家空间被重新连接。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["铁路", "火车", "物流", "标准时间", "城市", "工业化", "交通"],
+      "tone_hints": ["infrastructure", "modernity", "space"]
+    },
+    {
+      "id": "r28postmerge11-history-automobile",
+      "kind": "history",
+      "text": "汽车史要同时看流水线生产、石油体系、郊区化、个人自由想象、交通风险和城市空间代价。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["汽车", "流水线", "福特", "石油", "郊区", "交通", "城市"],
+      "tone_hints": ["mobility", "industry", "urban_cost"]
+    },
+    {
+      "id": "r28postmerge11-commonsense-electricity",
+      "kind": "commonsense",
+      "text": "电的问题先分清电压、电流、电阻和能量转化；很多现象不是神秘的电，而是电荷运动和电路条件。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["电", "电流", "电压", "电阻", "电路", "能量", "短路", "充电"],
+      "tone_hints": ["plain_science", "mechanism", "distinction"]
+    },
+    {
+      "id": "r28postmerge11-commonsense-photosynthesis",
+      "kind": "commonsense",
+      "text": "光合作用可以简单理解为植物用光能把二氧化碳和水转成有机物，并释放氧气。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["光合作用", "植物", "叶绿素", "二氧化碳", "氧气", "太阳", "能量"],
+      "tone_hints": ["biology", "simple", "mechanism"]
+    },
+    {
+      "id": "r28postmerge11-commonsense-gravity",
+      "kind": "commonsense",
+      "text": "重力问题要把质量、距离、运动和轨道分开；掉落和绕行都是引力与初速度共同作用的结果。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["重力", "引力", "掉下", "轨道", "绕地球", "质量", "速度"],
+      "tone_hints": ["physics", "orbit", "not_magic"]
+    },
+    {
+      "id": "r28postmerge11-commonsense-battery",
+      "kind": "commonsense",
+      "text": "电池问题要看能量密度、化学反应、充放电速度、寿命、安全和温度，而不是只看容量数字。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["电池", "锂电", "充电", "续航", "能量密度", "安全", "温度"],
+      "tone_hints": ["energy", "tradeoff", "practical"]
+    },
+    {
+      "id": "r28postmerge11-commonsense-vaccine",
+      "kind": "commonsense",
+      "text": "疫苗的基本逻辑是让免疫系统提前识别风险；讨论时要分清个体保护、群体保护、副作用和证据质量。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["疫苗", "免疫", "病毒", "抗体", "公共卫生", "副作用", "证据"],
+      "tone_hints": ["health", "evidence", "careful"]
+    },
+    {
+      "id": "r28postmerge11-logic-probability-risk",
+      "kind": "logic",
+      "text": "概率问题不要只看单次结果；要看样本、基准率、重复次数、损失大小和人是否把运气误读成能力。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["概率", "随机", "运气", "风险", "样本", "基准率", "损失", "判断"],
+      "tone_hints": ["risk", "base_rate", "not_overconfident"]
+    },
+    {
+      "id": "r28postmerge11-society-recommendation-algorithm",
+      "kind": "society",
+      "text": "推荐算法不是中立货架，它会重排注意力、改变创作激励，并把平台目标嵌入用户看到的世界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["推荐算法", "算法", "信息茧房", "平台", "注意力", "创作者", "分发"],
+      "tone_hints": ["platform_power", "attention", "incentives"]
+    },
+    {
+      "id": "r28postmerge11-society-supply-chain",
+      "kind": "society",
+      "text": "供应链问题要看成本、库存、地缘政治、物流、替代供应商和效率与韧性之间的取舍。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["供应链", "物流", "库存", "地缘政治", "成本", "韧性", "制造"],
+      "tone_hints": ["systems", "tradeoff", "resilience"]
+    },
+    {
+      "id": "r28postmerge11-society-urbanization",
+      "kind": "society",
+      "text": "城市化不是人变多这么简单，它牵动住房、通勤、教育、产业机会、公共空间和人的归属感。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["城市化", "城市", "通勤", "住房", "教育", "产业", "公共空间"],
+      "tone_hints": ["urban", "belonging", "systems"]
+    },
+    {
+      "id": "r28postmerge11-aesthetic-magazine-typography",
+      "kind": "aesthetic",
+      "text": "杂志感排版依赖大字重心、窄而稳定的文本块、留白、纸张质地和少量高对比色；科技感可以来自克制而不是发光。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["杂志", "排版", "字体", "Bodoni", "大字", "留白", "纸质", "科技感"],
+      "tone_hints": ["visual_design", "editorial", "restraint"]
+    },
+    {
+      "id": "r28postmerge11-aesthetic-product-minimalism",
+      "kind": "aesthetic",
+      "text": "极简不是把东西变小，而是让层级、对比、空间和动作都更明确；看不清的极简不是高级，是信息失败。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["极简", "产品设计", "可读性", "层级", "对比", "空间", "信息"],
+      "tone_hints": ["accessibility", "minimalism", "clarity"]
+    }
+  ]
+}
