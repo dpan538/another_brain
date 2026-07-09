@@ -3,9 +3,10 @@
 ## Summary
 
 R28M1 is the committed static q4 browser model package used by efishother's
-local preview runtime. It is packaged for same-origin static delivery and loaded
-inside the browser with an exact runtime tokenizer, manifest checks, shard
-checks, and q4 forward warmup diagnostics.
+local preview runtime. Its training lineage is a 96M-parameter project model,
+packaged for same-origin static delivery and loaded inside the browser with an
+exact runtime tokenizer, manifest checks, shard checks, and q4 forward warmup
+diagnostics.
 
 ## Intended Use
 
@@ -26,6 +27,7 @@ checks, and q4 forward warmup diagnostics.
 ## Runtime Package
 
 - Public path: `web/another_brain/model_assets/r28m1/`
+- Training lineage: 96M-parameter project model
 - Quantization: q4 static browser package
 - Shards: 5
 - q4 shard bytes: 48,267,968

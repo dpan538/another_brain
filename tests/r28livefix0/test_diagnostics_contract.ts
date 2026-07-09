@@ -33,7 +33,8 @@ test("license and model docs expose the committed R28M1 q4 package as MIT-scoped
 
   assert.ok(license.includes("MIT License"));
   assert.ok(readme.includes("efishother"));
-  assert.ok(readme.includes("engineering codename"));
+  assert.ok(readme.includes("96M-parameter local Chinese answer"));
+  assert.equal(readme.includes("engineering codename"), false);
   assert.ok(readme.includes("48,267,968"));
   assert.ok(readme.includes("MODEL_LICENSE.md"));
   assert.ok(modelLicense.includes("web/another_brain/model_assets/r28m1/**"));
@@ -170,8 +171,9 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(css.includes(".chat-signal-strip"));
   assert.ok(css.includes(".chat-signal-strip div.is-warn"));
   assert.ok(css.includes('body[data-ui-mode="chat"]'));
-  assert.ok(css.includes("background: #070b0c"));
-  assert.ok(css.includes("--paper: #f1ead6"));
+  assert.ok(css.includes("background: #dce5de"));
+  assert.ok(css.includes("--cover-green: #1f5138"));
+  assert.ok(css.includes("--ivory: #eee5c9"));
   assert.ok(css.includes(".app-shell[data-ui-mode=\"chat\"] h1"));
   assert.ok(css.includes("display: none !important"));
   assert.ok(css.includes(".chat-loading-note"));
@@ -255,6 +257,7 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
     "MODEL_WARMUP_TIMEOUT_MS = 300000",
     "MODEL_SHARD_PROBE_TIMEOUT_MS = 30000",
     "runtime.activeQ4MountPromise",
+    "runtime.mountQ4WithRetry",
     "preflightReport: report",
     "完成 100%",
     "模型前向未确认",
@@ -277,6 +280,10 @@ test("q4 mount uses persistent runtime worker, five attempts, and does not admit
   assert.ok(browserRuntime.includes("for (let index = 0; index < R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS; index += 1)"));
   assert.ok(browserRuntime.includes("this.worker.postMessage({"));
   assert.ok(browserRuntime.includes('generationKind: "mount_smoke"'));
+  assert.ok(browserRuntime.includes("activeQ4SmokePromise"));
+  assert.ok(browserRuntime.includes("lastQ4SmokeResult"));
+  assert.ok(browserRuntime.includes("lastQ4ForwardStats"));
+  assert.ok(browserRuntime.includes("normalizeQ4SmokeMessage"));
   assert.ok(browserRuntime.includes('const reportRuntimeMode = q4ForwardPassed ? "static_q4_experimental" : "synthetic_fallback";'));
   assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MS = 300000"));
   assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 360000"));

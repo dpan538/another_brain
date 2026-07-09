@@ -551,9 +551,42 @@ async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
   try {
     const url = assetUrl(shardPath);
     let loaded = 0;
-    if (expectedBytes > Q4_RANGE_CHUNK_BYTES) {
-      let rangeSupported = true;
-      for (let start = 0; start < expectedBytes && rangeSupported; start += Q4_RANGE_CHUNK_BYTES) {
+    const loadWholeShard = async () => {
+      const response = await fetch(url, {
+        cache: "force-cache",
+        signal: controller?.signal
+      });
+      if (!response.ok) throw new Error(`fetch_bytes_failed:${shardPath}:${response.status}`);
+      if (response.body && typeof response.body.getReader === "function") {
+        const reader = response.body.getReader();
+        while (true) {
+          if (nowMs() - state.startedAt > totalTimeoutMs) {
+            abortReason = "q4_model_download_timeout";
+            controller?.abort(abortReason);
+            throw new Error(abortReason);
+          }
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (!value || value.byteLength === 0) continue;
+          if (loaded + value.byteLength > expectedBytes) throw new Error(`shard_size_overflow:${shardPath}`);
+          weights.set(value, offset + loaded);
+          loaded += value.byteLength;
+          state.loadedBytes += value.byteLength;
+          resetStallTimer();
+          report(loaded);
+        }
+      } else {
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        if (bytes.byteLength > expectedBytes) throw new Error(`shard_size_overflow:${shardPath}`);
+        weights.set(bytes, offset);
+        loaded = bytes.byteLength;
+        state.loadedBytes += bytes.byteLength;
+        report(loaded);
+      }
+    };
+    const loadRangeChunks = async () => {
+      if (expectedBytes <= Q4_RANGE_CHUNK_BYTES) throw new Error(`fetch_bytes_failed:${shardPath}:range_not_needed`);
+      for (let start = 0; start < expectedBytes; start += Q4_RANGE_CHUNK_BYTES) {
         if (nowMs() - state.startedAt > totalTimeoutMs) {
           abortReason = "q4_model_download_timeout";
           controller?.abort(abortReason);
@@ -562,12 +595,7 @@ async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
         const end = Math.min(expectedBytes - 1, start + Q4_RANGE_CHUNK_BYTES - 1);
         const range = await fetchShardRange(url, shardPath, start, end, controller?.signal);
         if (!range.ranged) {
-          try {
-            await range.response?.body?.cancel?.();
-          } catch {
-          }
-          rangeSupported = false;
-          break;
+          throw new Error(`range_not_supported:${shardPath}:${start}-${end}`);
         }
         const chunk = range.bytes;
         const expectedChunkBytes = end - start + 1;
@@ -580,50 +608,14 @@ async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
         resetStallTimer();
         report(loaded);
       }
-      if (rangeSupported) {
-        clearStallTimer();
-        if (loaded !== expectedBytes) throw new Error(`shard_size_mismatch:${shardPath}:${loaded}/${expectedBytes}`);
-        const expected = String(shard.sha256 || "").toLowerCase();
-        if (expected && crypto?.subtle?.digest) {
-          const actual = await sha256Hex(weights.subarray(offset, offset + expectedBytes));
-          if (actual !== expected) throw new Error(`shard_sha256_mismatch:${shardPath}`);
-        }
-        state.loadedShards += 1;
-        report(loaded, "verified");
-        return;
-      }
+    };
+    try {
+      await loadWholeShard();
+    } catch (error) {
+      if (loaded > 0) throw error;
       loaded = 0;
-    }
-    const response = await fetch(url, {
-      cache: "force-cache",
-      signal: controller?.signal
-    });
-    if (!response.ok) throw new Error(`fetch_bytes_failed:${shardPath}:${response.status}`);
-    if (response.body && typeof response.body.getReader === "function") {
-      const reader = response.body.getReader();
-      while (true) {
-        if (nowMs() - state.startedAt > totalTimeoutMs) {
-          abortReason = "q4_model_download_timeout";
-          controller?.abort(abortReason);
-          throw new Error(abortReason);
-        }
-        const { done, value } = await reader.read();
-        if (done) break;
-        if (!value || value.byteLength === 0) continue;
-        if (loaded + value.byteLength > expectedBytes) throw new Error(`shard_size_overflow:${shardPath}`);
-        weights.set(value, offset + loaded);
-        loaded += value.byteLength;
-        state.loadedBytes += value.byteLength;
-        resetStallTimer();
-        report(loaded);
-      }
-    } else {
-      const bytes = new Uint8Array(await response.arrayBuffer());
-      if (bytes.byteLength > expectedBytes) throw new Error(`shard_size_overflow:${shardPath}`);
-      weights.set(bytes, offset);
-      loaded = bytes.byteLength;
-      state.loadedBytes += bytes.byteLength;
-      report(loaded);
+      if (expectedBytes <= Q4_RANGE_CHUNK_BYTES) throw error;
+      await loadRangeChunks();
     }
     clearStallTimer();
     if (loaded !== expectedBytes) throw new Error(`shard_size_mismatch:${shardPath}:${loaded}/${expectedBytes}`);
@@ -631,7 +623,7 @@ async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
     if (expected && crypto?.subtle?.digest) {
       const actual = await sha256Hex(weights.subarray(offset, offset + expectedBytes));
       if (actual !== expected) throw new Error(`shard_sha256_mismatch:${shardPath}`);
-    }
+      }
     state.loadedShards += 1;
     report(loaded, "verified");
   } catch (error) {

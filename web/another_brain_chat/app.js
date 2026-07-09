@@ -989,13 +989,14 @@ async function anotherBrainDiagnostics() {
     report = mountResult?.report || mountResult || report;
   }
   if (!report) {
-    report = await runtime.deepSelfCheckModelPath({
+    const mountResult = await runtime.mountQ4WithRetry({
       timeoutMs: MODEL_WARMUP_TIMEOUT_MS,
       shardTimeoutMs: MODEL_SHARD_PROBE_TIMEOUT_MS,
       jsonTimeoutMs: 1200,
       cacheBust: "r28livefix0-diagnostics",
       onProgress: (progressReport) => renderSelfCheck(progressReport)
     });
+    report = mountResult?.report || mountResult || report;
   }
   renderSelfCheck(report);
   return diagnosticsFromReport(config, manifestStatus, report);

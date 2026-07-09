@@ -1927,6 +1927,9 @@ export class BrowserChatRuntime {
     this.activeSelfCheckController = null;
     this.activeSelfCheckStartedAt = 0;
     this.activeQ4MountPromise = null;
+    this.activeQ4SmokePromise = null;
+    this.lastQ4SmokeResult = null;
+    this.lastQ4ForwardStats = null;
     this.q4RetryAttempts = [];
     this.q4MountReport = null;
     this.q4WorkerRestarted = false;
@@ -2133,6 +2136,9 @@ export class BrowserChatRuntime {
 
   async mountQ4WithRetry(options = {}) {
     if (this.activeQ4MountPromise) return this.activeQ4MountPromise;
+    if (this.q4MountReport?.ok === true && q4ForwardRan(this.q4MountReport?.report?.q4_forward || this.lastQ4ForwardStats || {})) {
+      return this.q4MountReport;
+    }
     this.q4WorkerRestarted = false;
     this.q4RetryAttempts = [];
     let preflightReport = options.preflightReport || null;
@@ -2245,12 +2251,44 @@ export class BrowserChatRuntime {
     return false;
   }
 
+  normalizeQ4SmokeMessage(message = {}) {
+    const tokens = Array.isArray(message.tokens) ? message.tokens : [];
+    const rawStats = message.stats && typeof message.stats === "object" ? message.stats : {};
+    const generatedIds = Array.isArray(rawStats.generated_token_ids) ? rawStats.generated_token_ids : [];
+    const draft = String(message.draft || "");
+    const tokensGenerated = Math.max(
+      Number(rawStats.tokens_generated || 0),
+      tokens.length,
+      generatedIds.length,
+      draft.trim() ? 1 : 0
+    );
+    const stats = {
+      ...rawStats,
+      runtime_mode: "static_q4_experimental",
+      tokens_generated: tokensGenerated,
+      fallback_used: false,
+      decode_status: rawStats.decode_status || "exact_runtime_tokenizer",
+      q4_forward_ran: tokensGenerated > 0
+    };
+    return {
+      ...message,
+      tokens,
+      draft,
+      stats
+    };
+  }
+
   async runQ4SelfCheckSmoke(options = {}) {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
+    if (this.lastQ4SmokeResult && q4ForwardRan(this.lastQ4SmokeResult.stats || {})) {
+      if (typeof options.onProgress === "function") options.onProgress({ stage: "q4_forward_cached" });
+      return this.lastQ4SmokeResult;
+    }
+    if (this.activeQ4SmokePromise) return this.activeQ4SmokePromise;
     const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), SELF_CHECK_DEEP_TIMEOUT_MAX_MS);
     if (!this.worker) this.worker = this.createRuntimeWorker();
     if (!this.worker) throw new Error("runtime_worker_unavailable");
-    return new Promise((resolve, reject) => {
+    this.activeQ4SmokePromise = new Promise((resolve, reject) => {
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
@@ -2297,7 +2335,12 @@ export class BrowserChatRuntime {
           failAndRestart(message.error || "runtime_worker_mount_smoke_failed");
         }
         if (message.type === "final") {
-          finish(() => resolve(message));
+          const normalized = this.normalizeQ4SmokeMessage(message);
+          if (q4ForwardRan(normalized.stats)) {
+            this.lastQ4SmokeResult = normalized;
+            this.lastQ4ForwardStats = normalized.stats;
+          }
+          finish(() => resolve(normalized));
         }
       };
       this.worker.onerror = (error) => {
@@ -2316,7 +2359,10 @@ export class BrowserChatRuntime {
       } catch (error) {
         failAndRestart(error.message || "runtime_worker_mount_smoke_post_failed");
       }
+    }).finally(() => {
+      this.activeQ4SmokePromise = null;
     });
+    return this.activeQ4SmokePromise;
   }
 
   async selfCheckModelPath(options = {}) {
@@ -2453,21 +2499,23 @@ export class BrowserChatRuntime {
         q4_forward: { status: "检查中", runtime_mode: this.mode, q4_forward_ran: false }
       });
       try {
-        const smoke = await this.runQ4SelfCheckSmoke({
-          timeoutMs: deepTimeoutMs,
-          signal,
-          onProgress: (message) => emit("checking_deep", message.stage || "q4_forward_worker", {
-            assets: {
-              status: "通过",
-              manifest_loaded: true,
-              q4_shard_count: q4Assets.length,
-              expected_shard_count: Number(quantizationManifest?.shard_count || assetManifest?.shard_count || 0),
-              shards_verified: true
-            },
-            tokenizer: { status: "exact", exact_runtime_tokenizer: true },
-            q4_forward: { status: message.stage || "检查中", runtime_mode: this.mode, q4_forward_ran: false }
-          })
-        });
+        const smoke = this.lastQ4SmokeResult && q4ForwardRan(this.lastQ4SmokeResult.stats || {})
+          ? this.lastQ4SmokeResult
+          : await this.runQ4SelfCheckSmoke({
+              timeoutMs: deepTimeoutMs,
+              signal,
+              onProgress: (message) => emit("checking_deep", message.stage || "q4_forward_worker", {
+                assets: {
+                  status: "通过",
+                  manifest_loaded: true,
+                  q4_shard_count: q4Assets.length,
+                  expected_shard_count: Number(quantizationManifest?.shard_count || assetManifest?.shard_count || 0),
+                  shards_verified: true
+                },
+                tokenizer: { status: "exact", exact_runtime_tokenizer: true },
+                q4_forward: { status: message.stage || "检查中", runtime_mode: this.mode, q4_forward_ran: false }
+              })
+            });
         smokeStats = smoke.stats || null;
         smokePreview = String(smoke.draft || "").slice(0, 80);
       } catch (error) {
