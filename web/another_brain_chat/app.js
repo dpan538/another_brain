@@ -144,6 +144,20 @@ const modelLoadingSummary = document.querySelector("#model-loading-summary");
 const loadingCancelButton = document.querySelector("#loading-cancel-button");
 const loadingSkeleton = document.querySelector(".loading-skeleton");
 const q4RetryStatus = document.querySelector("#q4-retry-status");
+const chatLoadingNote = document.querySelector("#chat-loading-note");
+const vizCapabilityLabel = document.querySelector("#viz-capability-label");
+const vizRetrieval = document.querySelector("#viz-retrieval");
+const vizRetrievalFill = document.querySelector("#viz-retrieval-fill");
+const vizRetrievalValue = document.querySelector("#viz-retrieval-value");
+const vizQ4Forward = document.querySelector("#viz-q4-forward");
+const vizQ4Fill = document.querySelector("#viz-q4-fill");
+const vizQ4Value = document.querySelector("#viz-q4-value");
+const vizVerifier = document.querySelector("#viz-verifier");
+const vizVerifierFill = document.querySelector("#viz-verifier-fill");
+const vizVerifierValue = document.querySelector("#viz-verifier-value");
+const vizFinalizer = document.querySelector("#viz-finalizer");
+const vizFinalizerFill = document.querySelector("#viz-finalizer-fill");
+const vizFinalizerValue = document.querySelector("#viz-finalizer-value");
 
 let lastPacket = null;
 let lastSelfCheckReport = null;
@@ -201,6 +215,7 @@ function boolText(value) {
 function setUiMode(mode) {
   const nextMode = mode === "dashboard" ? "dashboard" : "chat";
   if (appShell) appShell.dataset.uiMode = nextMode;
+  if (document.body) document.body.dataset.uiMode = nextMode;
   chatModeButton?.classList.toggle("active", nextMode === "chat");
   dashboardModeButton?.classList.toggle("active", nextMode === "dashboard");
   chatModeButton?.setAttribute("aria-pressed", boolText(nextMode === "chat"));
@@ -251,6 +266,75 @@ function renderQ4RetryStatus(input = {}) {
     return;
   }
   setText(q4RetryStatus, `Plan B：第 ${currentAttempt} 次尝试 / 当前策略 ${currentStrategy}${lastBlocker ? ` / 失败原因 ${lastBlocker}` : ""}`);
+}
+
+function loadingNoteForStage(report = {}, status = "checking", stage = "manifest") {
+  const blocker = report.q4_forward?.blocker || report.fallback?.reason || (report.blockers || [])[0] || "";
+  if (status === "passed" || report.ok) return "加载完成：本地记忆、分词器和 q4 路径已就绪。";
+  if (status === "cancelled") return "加载已停止；仍可用本地检索给出保守回答。";
+  if (status === "failed" || status === "timeout") return `本地模型暂未稳定参与；${blocker || "Dashboard 可查看原因"}。`;
+  if (stage === "shards") return "正在读取本地 q4 分片；不会连接外部模型。";
+  if (stage === "tokenizer") return "正在对齐分词器，让中文输入进入同一套本地路径。";
+  if (stage === "q4-warmup") return "正在做一次短前向，确认模型不是只显示为可用。";
+  if (stage === "fallback") return "可以开始对话；证据不足时会停在边界。";
+  return "本地记忆正在对齐；很快就能开始。";
+}
+
+function setVizMetric({ row, fill, valueNode, pct, value, state = "" }) {
+  if (fill) fill.style.width = `${Math.max(4, Math.min(100, Number(pct || 0)))}%`;
+  setText(valueNode, value);
+  row?.classList.toggle("is-warn", state === "warn");
+  row?.classList.toggle("is-blue", state === "blue");
+}
+
+function renderReasoningViz(input = {}) {
+  const trace = input.process_trace || input.trace || input || {};
+  const rag = trace.rag || {};
+  const model = trace.model || {};
+  const generation = trace.generation || model || {};
+  const finalizer = trace.finalizer || {};
+  const capability = trace.capability_diagnosis || {};
+  const evidenceCount = Number(rag.evidence_count || input.evidence_count || 0);
+  const q4Ran = model.q4_forward_ran === true || input.q4_forward?.q4_forward_ran === true;
+  const q4Status = input.q4_forward?.status;
+  const q4Attempted = generation.q4_attempted === true || model.q4_attempted === true || Boolean(q4Status && q4Status !== "skipped");
+  const tokens = Number(generation.tokens_generated || model.tokens_generated || input.q4_forward?.tokens_generated || 0);
+  const verifierBlocked = Array.isArray(finalizer.quality_flags) && finalizer.quality_flags.length > 0 && model.q4_quality_accepted === false;
+  const fallbackReason = finalizer.fallback_reason || generation.fallback_reason || input.fallback?.reason || input.q4_forward?.blocker || "";
+  const finalSource = finalizer.final_answer_source || input.answer_source_label || "waiting";
+  setText(vizCapabilityLabel, capability.conclusion || (q4Ran ? "q4 forward confirmed" : fallbackReason ? "fallback boundary" : "等待输入"));
+  setVizMetric({
+    row: vizRetrieval,
+    fill: vizRetrievalFill,
+    valueNode: vizRetrievalValue,
+    pct: evidenceCount ? Math.min(100, 28 + evidenceCount * 18) : 8,
+    value: evidenceCount ? `${evidenceCount} hit${evidenceCount > 1 ? "s" : ""}` : "idle",
+    state: evidenceCount ? "blue" : ""
+  });
+  setVizMetric({
+    row: vizQ4Forward,
+    fill: vizQ4Fill,
+    valueNode: vizQ4Value,
+    pct: q4Ran ? 100 : q4Attempted ? 62 : 8,
+    value: q4Ran ? `${tokens} token${tokens === 1 ? "" : "s"}` : q4Attempted ? "attempted" : "not run",
+    state: q4Ran ? "blue" : q4Attempted ? "warn" : ""
+  });
+  setVizMetric({
+    row: vizVerifier,
+    fill: vizVerifierFill,
+    valueNode: vizVerifierValue,
+    pct: verifierBlocked ? 56 : q4Ran || evidenceCount ? 82 : 18,
+    value: verifierBlocked ? "blocked" : "ready",
+    state: verifierBlocked ? "warn" : ""
+  });
+  setVizMetric({
+    row: vizFinalizer,
+    fill: vizFinalizerFill,
+    valueNode: vizFinalizerValue,
+    pct: finalSource === "waiting" ? 12 : 88,
+    value: fallbackReason ? "boundary" : finalSource,
+    state: fallbackReason ? "warn" : "blue"
+  });
 }
 
 function summarizeLoadingProgress(report = {}, progress = 8, status = "checking", stage = "manifest") {
@@ -312,6 +396,7 @@ function renderModelLoading(input = {}) {
       : `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback 已可用${fallbackReason ? ` / ${fallbackReason}` : ""}`
   );
   setText(modelLoadingSummary, summarizeLoadingProgress(report, progress, status, stage));
+  setText(chatLoadingNote, loadingNoteForStage(report, status, stage));
   modelLoadingSummary?.classList.toggle("done", done);
   modelLoadingSummary?.classList.toggle("warn", cancelled || failed);
   loadingSkeleton?.classList.toggle("is-complete", done || cancelled || failed);
@@ -390,12 +475,49 @@ function shortEvidenceHint(packet = {}) {
   return "";
 }
 
+function customerEvidenceCard(packet = {}) {
+  const evidence = packet.evidence_packet?.retrieved_evidence || packet.retrieved_evidence || [];
+  return evidence.find((item) => item?.metadata?.card_kind) || evidence[0] || null;
+}
+
+function compactEvidenceText(text = "", maxChars = 92) {
+  const clean = String(text || "")
+    .replace(/\([^)]*\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const firstSentence = clean.match(/[^。！？!?]+[。！？!?]?/)?.[0] || clean;
+  return firstSentence.slice(0, maxChars).trim();
+}
+
+function customerEvidenceAnswer(packet = {}) {
+  const top = customerEvidenceCard(packet);
+  if (!top) return "";
+  const kind = top.metadata?.card_kind || "";
+  const inputText = String(packet.input || "");
+  const summary = compactEvidenceText(top.text, kind === "history" ? 110 : 96);
+  if (!summary) return "";
+  if (kind === "brand_literacy") {
+    return `${summary} 我会看它靠什么建立信任、分发和记忆点，而不是只看名气。`;
+  }
+  if (kind === "history") {
+    return `${summary} 这类问题要同时看触发点、结构原因和后来改变了什么。`;
+  }
+  if (kind === "commonsense" && /太阳|月亮|天空|季节|时间|天气|气温|自然/.test(inputText)) {
+    return summary;
+  }
+  if (kind === "philosophy" || kind === "logic" || kind === "aesthetic") {
+    return `${summary} 我会先给判断，再留下证据边界。`;
+  }
+  return "";
+}
+
 function customerFacingAnswer(packet = {}) {
   const raw = String(packet.final_answer || "").replace(/\s+/g, " ").trim();
   const inputText = String(packet.input || "");
   const route = packet.route_policy?.open_question_category || packet.answer_route || packet.route || "";
   const fallbackReason = String(packet.fallback_reason || "");
   const evidenceHint = shortEvidenceHint(packet);
+  const evidenceAnswer = customerEvidenceAnswer(packet);
   if (/你是谁|你是.*谁|你是鳄鱼|鳄鱼|efish|efishother/i.test(inputText)) {
     return "我是 efishother。efish 是鳄鱼旧昵称，another_brain 只是工程代号；我在这里用本地检索和小模型回答。";
   }
@@ -433,7 +555,7 @@ function customerFacingAnswer(packet = {}) {
     return "我会停在证据边界上：先说能确认的，再说缺什么，不把漂亮话当答案。";
   }
   if (fallbackReason || packet.fallback_used) {
-    return evidenceHint || "这个问题我会先给边界判断：能确定的说清楚，证据不够的地方不硬编。";
+    return evidenceAnswer || evidenceHint || "这个问题我会先给边界判断：能确定的说清楚，证据不够的地方不硬编。";
   }
   const sentences = raw.match(/[^。！？!?]+[。！？!?]?/g) || [raw];
   return sentences.slice(0, 2).join("").slice(0, 120).trim() || "我在。";
@@ -526,6 +648,7 @@ function updateStatus(packet) {
   setText(q4StatusBadge, `q4 forward: ${trace.model?.q4_forward_ran ? `true / ${qualityAccepted}` : `false / ${visibleFallbackReason}`}`);
   renderQ4RetryStatus(packet);
   renderTrace(trace);
+  renderReasoningViz(trace);
 }
 
 function renderTrace(trace = null) {
@@ -545,6 +668,7 @@ function renderTrace(trace = null) {
     setText(firstTokenStatus, "none");
     setText(generationElapsedStatus, "0 ms");
     setText(q4StatusBadge, "q4 forward: false");
+    renderReasoningViz({});
     return;
   }
   const input = trace.input_packet || {};
@@ -572,6 +696,7 @@ function renderTrace(trace = null) {
   setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_attempted=${boolText(generation.q4_attempted)} / generation_started=${boolText(generation.generation_started)} / generation_status=${generation.generation_status || "not_run"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / q4_quality_accepted=${boolText(model.q4_quality_accepted)} / tokens=${generation.tokens_generated || model.tokens_generated || 0} / first_token_ms=${generation.first_token_ms == null ? "none" : generation.first_token_ms} / total_generation_ms=${generation.total_generation_ms == null ? 0 : generation.total_generation_ms} / model_draft_generated=${boolText(model.draft_generated)}`);
   setText(traceRouterSummary, `route=${router.route || "not_run"} / intent=${router.intent || "none"} / surface=${router.surface_category || "none"} / length=${router.length_policy?.trim_strategy || "none"} / used_model_draft=${boolText(router.used_model_draft)} / finalizer_replaced_draft=${boolText(router.replaced_model_draft)} / reason=${router.reason || "none"}`);
   setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / capability=${capability.conclusion || "not_assessed"} / invocation=${capability.invocation || "unknown"} / retrieval=${capability.retrieval || "unknown"} / truth=${truth.ok === false ? (truth.failures || []).join(", ") : "pass"} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || truth.blocker || "none"}`);
+  renderReasoningViz(trace);
 }
 
 function renderContextBridge(result = null) {
@@ -682,6 +807,7 @@ function renderSelfCheck(report = null) {
   setText(selfCheckBlockers, `blocker：${(report.blockers || []).join(" / ") || "none"}`);
   setText(q4StatusBadge, `q4 forward: ${report.q4_forward?.q4_forward_ran ? "true" : report.q4_forward?.status || "false"}`);
   renderModelLoading({ report });
+  renderReasoningViz(report);
 }
 
 async function fetchAssetManifestStatus() {

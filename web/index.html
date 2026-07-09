@@ -19,6 +19,12 @@
           <h1 id="chat-title">efishother</h1>
           <p class="chat-subtitle">efish 是旧昵称；another_brain 是工程代号。Dashboard 保留 runtime、RAG 和 q4 诊断。</p>
           <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
+          <div class="brand-linework chat-only" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
         <div class="header-side">
           <nav class="mode-toggle" aria-label="view mode">
@@ -79,6 +85,21 @@
 
       <section class="workspace-grid">
         <section class="conversation-pane" aria-labelledby="chat-title">
+          <section class="chat-signal-strip chat-only" aria-label="chat signal notes">
+            <div>
+              <span>01</span>
+              <strong>local memory</strong>
+            </div>
+            <div>
+              <span>02</span>
+              <strong>q4 warmup</strong>
+            </div>
+            <div>
+              <span>03</span>
+              <strong>short answer</strong>
+            </div>
+          </section>
+
           <section class="chat-intro dashboard-only" aria-label="chat mode summary">
             <p>Chat 端只显示简短回答；工程诊断、RAG 命中、q4 质量和 fallback reason 仅在 Dashboard 显示。</p>
             <div class="chat-badges" aria-label="chat badges">
@@ -100,6 +121,7 @@
             <div class="loading-progress" aria-label="loading progress">
               <span id="model-loading-progress-bar" class="loading-progress-bar" style="width: 8%"></span>
             </div>
+            <p class="chat-loading-note chat-only" id="chat-loading-note">本地记忆正在对齐；很快就能开始。</p>
             <ol class="loading-stages" id="model-loading-stages" aria-label="model loading stages">
               <li data-loading-stage="manifest" data-loading-step="checking_manifest" class="active"><span></span>读取 manifest</li>
               <li data-loading-stage="shards" data-loading-step="checking_shards"><span></span>校验 shards</li>
@@ -217,6 +239,45 @@
             <div><span>fallback reason</span><strong id="self-check-fallback-reason">none</strong></div>
             <p id="self-check-output">输出：未检查</p>
             <p id="self-check-blockers">blocker：none</p>
+          </section>
+
+          <section class="reasoning-viz" aria-label="model reasoning visualization">
+            <div class="reasoning-viz-head">
+              <div>
+                <p class="eyebrow">runtime graph</p>
+                <h3>模型推理可视化</h3>
+              </div>
+              <strong id="viz-capability-label">等待输入</strong>
+            </div>
+            <div class="viz-bars" aria-label="reasoning route bars">
+              <div class="viz-row" id="viz-retrieval">
+                <span>检索</span>
+                <div class="viz-track"><i id="viz-retrieval-fill" style="width: 8%"></i></div>
+                <strong id="viz-retrieval-value">idle</strong>
+              </div>
+              <div class="viz-row" id="viz-q4-forward">
+                <span>q4</span>
+                <div class="viz-track"><i id="viz-q4-fill" style="width: 8%"></i></div>
+                <strong id="viz-q4-value">not run</strong>
+              </div>
+              <div class="viz-row" id="viz-verifier">
+                <span>校验</span>
+                <div class="viz-track"><i id="viz-verifier-fill" style="width: 18%"></i></div>
+                <strong id="viz-verifier-value">ready</strong>
+              </div>
+              <div class="viz-row" id="viz-finalizer">
+                <span>输出</span>
+                <div class="viz-track"><i id="viz-finalizer-fill" style="width: 12%"></i></div>
+                <strong id="viz-finalizer-value">waiting</strong>
+              </div>
+            </div>
+            <div class="viz-flow" aria-label="reasoning route flow">
+              <span>input</span>
+              <span>rag</span>
+              <span>draft</span>
+              <span>verify</span>
+              <span>answer</span>
+            </div>
           </section>
 
           <ol class="trace-steps" aria-label="six stage process trace">

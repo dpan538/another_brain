@@ -60,13 +60,25 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(html.includes("efishother.com"));
   assert.ok(html.includes(">efishother<"));
   assert.ok(html.includes("efish 是旧昵称"));
+  assert.ok(html.includes("brand-linework"));
+  assert.ok(html.includes("chat-signal-strip"));
+  assert.ok(html.includes("chat-loading-note"));
+  assert.ok(html.includes("local memory"));
+  assert.ok(html.includes("q4 warmup"));
   assert.ok(html.includes("Chat 端只显示简短回答"));
+  assert.ok(html.includes("reasoning-viz"));
+  assert.ok(html.includes("模型推理可视化"));
+  assert.ok(html.includes("viz-q4-forward"));
   assert.ok(html.includes('class="chat-intro dashboard-only"'));
   assert.ok(html.includes("你好，我是 efishother。直接问就好。"));
   assert.match(html, /id="abort-button"[^>]*hidden/);
   assert.match(html, /id="clear-chat-button"[^>]*hidden/);
   assert.ok(app.includes("customerFacingAnswer"));
   assert.ok(app.includes("customerFacingAnswer(packet)"));
+  assert.ok(app.includes("customerEvidenceAnswer"));
+  assert.ok(app.includes("loadingNoteForStage"));
+  assert.ok(app.includes("renderReasoningViz"));
+  assert.ok(app.includes("document.body.dataset.uiMode"));
   assert.ok(app.includes("role === \"user\" ? \"you\" : \"efish\""));
   assert.ok(app.includes("another_brain 只是工程代号"));
   for (const phrase of [
@@ -83,7 +95,13 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.match(app, /appendMessage\("assistant",\s*packet\.final_answer/);
   assert.ok(css.includes("height: 100dvh"));
   assert.ok(css.includes("overflow: hidden"));
+  assert.ok(css.includes('body[data-ui-mode="dashboard"]'));
+  assert.ok(css.includes("overflow-y: auto"));
   assert.ok(css.includes('width: min(1360px, 100%)'));
+  assert.ok(css.includes(".chat-signal-strip"));
+  assert.ok(css.includes(".chat-loading-note"));
+  assert.ok(css.includes(".reasoning-viz"));
+  assert.ok(css.includes(".viz-track"));
   assert.ok(css.includes(".composer-actions [hidden]"));
   assert.ok(css.includes("#send-button"));
   assert.ok(css.includes('grid-template-rows: auto minmax(0, 2.5fr) minmax(118px, 1fr)'));
@@ -96,15 +114,21 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
 test("static RAG expands safe commonsense philosophy and aesthetic logic without answer-bank fields", async () => {
   const retriever = await readFile(new URL("../../web/another_brain_chat/static_retriever.js", import.meta.url), "utf8");
   const brandPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/brand_cards.json", import.meta.url), "utf8"));
+  const brandLiteracyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/brand_literacy_cards.json", import.meta.url), "utf8"));
   const knowledgePack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/knowledge_cards.json", import.meta.url), "utf8"));
   const logicPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/logic_cards.json", import.meta.url), "utf8"));
-  const serialized = JSON.stringify({ logicPack, brandPack, knowledgePack }).toLowerCase();
+  const historyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/history_cards.json", import.meta.url), "utf8"));
+  const societyPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/society_cards.json", import.meta.url), "utf8"));
+  const serialized = JSON.stringify({ logicPack, brandPack, brandLiteracyPack, knowledgePack, historyPack, societyPack }).toLowerCase();
 
   assert.ok(retriever.includes("logic_cards.json"));
   assert.ok(retriever.includes("brand_cards.json"));
+  assert.ok(retriever.includes("brand_literacy_cards.json"));
   assert.ok(retriever.includes("knowledge_cards.json"));
-  for (const kind of ["brand", "commonsense", "philosophy", "logic"]) assert.ok(retriever.includes(`"${kind}"`), kind);
-  for (const pack of [logicPack, brandPack, knowledgePack]) {
+  assert.ok(retriever.includes("history_cards.json"));
+  assert.ok(retriever.includes("society_cards.json"));
+  for (const kind of ["brand", "brand_literacy", "commonsense", "philosophy", "logic", "history", "society"]) assert.ok(retriever.includes(`"${kind}"`), kind);
+  for (const pack of [logicPack, brandPack, brandLiteracyPack, knowledgePack, historyPack, societyPack]) {
     assert.equal(pack.fixture_policy.answer_bank, false);
     assert.equal(pack.fixture_policy.allowed_for_training, false);
     assert.equal(pack.fixture_policy.private_raw_data, false);
@@ -112,7 +136,10 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.equal(/"answer"\s*:|"final_answer"\s*:|"answer_text"\s*:/.test(serialized), false);
   assert.ok(logicPack.cards.length >= 12);
   assert.ok(brandPack.cards.length >= 3);
+  assert.ok(brandLiteracyPack.cards.length >= 12);
   assert.ok(knowledgePack.cards.length >= 8);
+  assert.ok(historyPack.cards.length >= 14);
+  assert.ok(societyPack.cards.length >= 10);
   for (const marker of ["question_pack_001", "rows 51-100", "hidden prompt", "chain-of-thought", "data/public_ingestion"]) {
     assert.equal(serialized.includes(marker), false, marker);
   }
@@ -123,9 +150,15 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(logicPack.cards.some((card) => card.keywords.includes("关系")));
   assert.ok(logicPack.cards.some((card) => card.keywords.includes("自由")));
   assert.ok(brandPack.cards.some((card) => card.kind === "brand" && card.keywords.includes("efishother.com")));
+  assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Apple")));
+  assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("OpenAI")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("天空")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("正义")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("记忆")));
+  assert.ok(historyPack.cards.some((card) => card.kind === "history" && card.keywords.includes("工业革命")));
+  assert.ok(historyPack.cards.some((card) => card.kind === "history" && card.keywords.includes("冷战")));
+  assert.ok(societyPack.cards.some((card) => card.kind === "society" && card.keywords.includes("房价")));
+  assert.ok(societyPack.cards.some((card) => card.kind === "society" && card.keywords.includes("隐私")));
 });
 
 test("loading panel exposes unambiguous completed q4 progress instead of skeleton-only pass state", async () => {
@@ -134,9 +167,11 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
   const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
 
   assert.ok(html.includes("model-loading-summary"));
+  assert.ok(html.includes("chat-loading-note"));
   assert.ok(css.includes(".loading-skeleton.is-complete"));
   for (const expected of [
     "summarizeLoadingProgress",
+    "loadingNoteForStage",
     "完成 100%",
     "q4 forward=",
     "tokens=",

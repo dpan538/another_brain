@@ -1,0 +1,145 @@
+{
+  "schema_version": "r28livefix0.brand_literacy_cards.v1",
+  "fixture_policy": {
+    "runtime_hints_only": true,
+    "answer_bank": false,
+    "private_raw_data": false,
+    "eval_prompts": false,
+    "old_question_pack_rows_51_100": false,
+    "allowed_for_training": false
+  },
+  "cards": [
+    {
+      "id": "r28livefix0-brand-literacy-apple",
+      "kind": "brand_literacy",
+      "text": "Apple is best understood through integrated hardware, software, services, retail trust, design control, and a premium ecosystem rather than one isolated product.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Apple", "苹果", "iPhone", "Mac", "ecosystem", "设计", "硬件", "软件", "品牌"],
+      "tone_hints": ["brand_literacy", "ecosystem", "concise"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-google",
+      "kind": "brand_literacy",
+      "text": "Google is anchored in search, advertising, Android, maps, cloud, and organizing access to information at internet scale.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Google", "谷歌", "搜索", "广告", "Android", "地图", "cloud", "information"],
+      "tone_hints": ["information_access", "platform"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-microsoft",
+      "kind": "brand_literacy",
+      "text": "Microsoft is strongest as an enterprise and developer platform: Windows, Office, Azure, GitHub, security, and long-term business workflow integration.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Microsoft", "微软", "Windows", "Office", "Azure", "GitHub", "企业", "开发者"],
+      "tone_hints": ["enterprise", "workflow", "platform"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-tesla",
+      "kind": "brand_literacy",
+      "text": "Tesla combines electric vehicles, batteries, charging, software updates, manufacturing narrative, and market belief in future mobility.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Tesla", "特斯拉", "电动车", "电池", "充电", "软件", "制造", "汽车"],
+      "tone_hints": ["mobility", "energy", "market_belief"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-nike",
+      "kind": "brand_literacy",
+      "text": "Nike is not only shoes and apparel; its brand memory comes from athletic aspiration, visual simplicity, endorsement culture, and repeatable performance storytelling.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Nike", "耐克", "运动", "球鞋", "swoosh", "代言", "品牌叙事", "performance"],
+      "tone_hints": ["aspiration", "storytelling", "consumer_brand"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-coca-cola",
+      "kind": "brand_literacy",
+      "text": "Coca-Cola is a global beverage brand built around distribution, ritual, recognizable visual identity, and everyday emotional availability.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Coca-Cola", "可口可乐", "饮料", "分销", "红色", "消费品牌", "ritual"],
+      "tone_hints": ["distribution", "ritual", "mass_brand"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-mcdonalds",
+      "kind": "brand_literacy",
+      "text": "McDonald's is a franchise and operations brand: standardization, speed, location, supply chain, and familiar low-friction food rituals matter more than any single menu item.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["McDonald's", "麦当劳", "快餐", "加盟", "标准化", "供应链", "location"],
+      "tone_hints": ["operations", "standardization", "franchise"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-starbucks",
+      "kind": "brand_literacy",
+      "text": "Starbucks is a coffee retail brand shaped by store atmosphere, convenience, habit, customization, and the idea of a third place between home and work.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Starbucks", "星巴克", "咖啡", "第三空间", "门店", "习惯", "customization"],
+      "tone_hints": ["retail", "habit", "third_place"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-huawei",
+      "kind": "brand_literacy",
+      "text": "Huawei should be read through telecom infrastructure, consumer devices, chips, supply-chain pressure, and the politics of technology sovereignty.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Huawei", "华为", "通信", "手机", "芯片", "供应链", "技术主权", "telecom"],
+      "tone_hints": ["technology", "supply_chain", "geopolitics"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-byd",
+      "kind": "brand_literacy",
+      "text": "BYD is shaped by batteries, electric vehicles, vertical manufacturing, cost discipline, and the transition from components to consumer mobility.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["BYD", "比亚迪", "电池", "新能源汽车", "制造", "垂直整合", "汽车"],
+      "tone_hints": ["manufacturing", "battery", "mobility"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-openai",
+      "kind": "brand_literacy",
+      "text": "OpenAI is associated with large language models, ChatGPT, APIs, developer adoption, safety debates, and the shift from research demos to widely used AI products.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["OpenAI", "ChatGPT", "AI", "大模型", "API", "安全", "产品化"],
+      "tone_hints": ["ai", "developer", "safety"]
+    },
+    {
+      "id": "r28livefix0-brand-literacy-vercel",
+      "kind": "brand_literacy",
+      "text": "Vercel is a frontend cloud and deployment workflow brand: previews, Git integration, Next.js, edge delivery, and fast iteration are central to its product meaning.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Vercel", "部署", "preview", "Next.js", "frontend", "Git", "edge"],
+      "tone_hints": ["deployment", "preview", "frontend"]
+    }
+  ]
+}
