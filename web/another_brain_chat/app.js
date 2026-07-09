@@ -174,6 +174,7 @@ let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode,
 const SESSION_CONTEXT_MAX_TURNS = 6;
 const SESSION_CONTEXT_MAX_CHARS = 220;
 let conversationTurns = [];
+const localAnswerVariantSeed = Math.floor(Math.random() * 9973);
 
 const INITIAL_ASSISTANT_MESSAGE = [
   "你好，我是鳄鱼，也就是另一个 efish。直接问就好。"
@@ -683,6 +684,68 @@ function evaluationTurnReply(text = "") {
   return "收到。你可以继续给我问题，我会尽量把判断说短、说清楚。";
 }
 
+function variantIndex(key = "", count = 1) {
+  const source = `${key}:${localAnswerVariantSeed}:${conversationTurns.length}`;
+  let hash = 0;
+  for (let index = 0; index < source.length; index += 1) {
+    hash = (hash * 31 + source.charCodeAt(index)) >>> 0;
+  }
+  return count ? hash % count : 0;
+}
+
+function pickVariant(key = "", variants = []) {
+  const clean = variants.filter(Boolean);
+  if (!clean.length) return "";
+  return clean[variantIndex(key, clean.length)];
+}
+
+function personalityFallbackAnswer(inputText = "", safeEvidenceAnswer = "") {
+  if (safeEvidenceAnswer) return safeEvidenceAnswer;
+  if (/你是谁|你是.*谁|你是鳄鱼|鳄鱼|efish|efishother|an other efish|名字|自我介绍/i.test(inputText)) {
+    return pickVariant("identity", [
+      "我是鳄鱼，也可以理解成另一个 efish。你直接问，我直接答。",
+      "我是鳄鱼，另一个 efish。别绕，给我一个问题就行。",
+      "我是鳄鱼，不是百科全书外壳。你问判断，我尽量给你短答案。"
+    ]);
+  }
+  if (/没用|不聪明|太蠢|别装|必须回答|快点|你行不行|是不是不会|别糊弄|没有能力/.test(inputText)) {
+    return pickVariant("pressure", [
+      "别急着给我判死刑。能判断的我会说，不能装懂的地方我也不会硬编。",
+      "你可以凶一点，但问题还是要具体一点。给对象，我给判断。",
+      "我不靠嘴硬显得聪明。能拆的我拆，拆不动的我会让你换个问法。"
+    ]);
+  }
+  if (/换个口吻|像你一点|更有性格|别那么工程|别那么官方|更自然|更短|更锋利|别公式化/.test(inputText)) {
+    return pickVariant("tone", [
+      "收到。我会少讲框架，多给判断。你继续问，我直接一点。",
+      "懂了，少一点说明书味。下个问题我先给结论，再留边界。",
+      "可以，我把话说得更像鳄鱼一点：短、直，不装神秘。"
+    ]);
+  }
+  if (/该不该|应不应该|值不值得|有没有必要|重要吗|自由|公平|责任|正义|道德|伦理|代价/.test(inputText)) {
+    return pickVariant("value", [
+      "这要先分事实和价值。事实看证据，价值看代价和一致性；不能只靠一句漂亮话。",
+      "我会先问：它保护了什么，又牺牲了什么。价值判断没有这个代价表，就容易变口号。",
+      "可以判断，但别装成唯一答案。先看理由能不能自洽，再看代价谁来承担。"
+    ]);
+  }
+  if (/关系|朋友|亲密|喜欢|爱|信任|分手|沟通|边界|相处|怎么办/.test(inputText)) {
+    return pickVariant("relationship", [
+      "关系先看可信不可信。能靠近，也能承认边界，才不容易互相消耗。",
+      "我会先看你们在争什么：事实、期待，还是边界。分清这个，话才不会绕成情绪。",
+      "亲近不是没有边界。好的关系能说真话，也能承担说完之后的后果。"
+    ]);
+  }
+  if (/不知道|不了解|信息不足|缺少信息|没资料|没有证据|证据不足|无法判断|不确定/.test(inputText)) {
+    return pickVariant("unknown", [
+      "证据不够时我不会硬编。能确定的先说清，缺的部分就留出来。",
+      "这里要降一档判断：先说可能性，不说定论。聪明不是把空白填满。",
+      "我会停在边界上。没有足够证据，就只给能站住的那一小段。"
+    ]);
+  }
+  return "";
+}
+
 function isConceptualTimeParadox(text = "") {
   return /时间/.test(text) && /既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论/.test(text);
 }
@@ -736,6 +799,8 @@ function ruleBasedFallbackAnswer(packet = {}) {
   const inputText = String(packet.input || "");
   const evidenceAnswer = customerEvidenceAnswer(packet);
   const safeEvidenceAnswer = containsEngineeringMarker(evidenceAnswer) ? "" : evidenceAnswer;
+  const personalityAnswer = personalityFallbackAnswer(inputText, safeEvidenceAnswer);
+  if (personalityAnswer) return personalityAnswer;
   if (isEvaluationTurn(inputText)) return evaluationTurnReply(inputText);
   if (isVeryHardQuestion(inputText, packet)) return tooHardSoftRedirect();
   if (isConceptualTimeParadox(inputText)) {
@@ -827,6 +892,8 @@ function customerFacingAnswer(packet = {}) {
   const evidenceHint = shortEvidenceHint(packet);
   const evidenceAnswer = customerEvidenceAnswer(packet);
   const safeEvidenceAnswer = containsEngineeringMarker(evidenceAnswer) ? "" : evidenceAnswer;
+  const personalityAnswer = personalityFallbackAnswer(inputText, safeEvidenceAnswer);
+  if (personalityAnswer) return cleanCustomerAnswer(personalityAnswer, packet);
   if (isEvaluationTurn(inputText)) return evaluationTurnReply(inputText);
   if (isVeryHardQuestion(inputText, packet)) return tooHardSoftRedirect();
   if (/你是谁|你是.*谁|你是鳄鱼|鳄鱼|efish|efishother/i.test(inputText)) {

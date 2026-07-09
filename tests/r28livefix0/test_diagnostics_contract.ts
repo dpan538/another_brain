@@ -227,9 +227,15 @@ test("chat supports enter-to-send and local session context without exposing eng
   assert.ok(app.includes("rememberConversationTurn"));
   assert.ok(app.includes("repeatedUserQuestionState"));
   assert.ok(app.includes("repeatedQuestionReply"));
+  assert.ok(app.includes("personalityFallbackAnswer"));
+  assert.ok(app.includes("pickVariant"));
+  assert.ok(app.includes("localAnswerVariantSeed"));
   assert.ok(app.includes("你已经问过了"));
   assert.ok(app.includes("别以为我记不住哦"));
   assert.ok(app.includes("没有的话我就去睡觉咯"));
+  assert.ok(app.includes("能判断的我会说，不能装懂的地方我也不会硬编"));
+  assert.ok(app.includes("少一点说明书味"));
+  assert.ok(app.includes("价值判断没有这个代价表"));
   assert.ok(app.includes("isEvaluationTurn"));
   assert.ok(app.includes("evaluationTurnReply"));
   assert.ok(app.includes("isConceptualTimeParadox"));
@@ -301,9 +307,11 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("OpenAI")));
   assert.ok(worldPack.cards.length >= 100);
   assert.ok(Buffer.byteLength(worldRaw) >= 64000);
-  assert.ok(reasoningPack.cards.length >= 190);
-  assert.ok(Buffer.byteLength(reasoningRaw) >= 170000);
-  for (const marker of ["反事实", "比较", "类比", "定义", "上下文追问", "评价输入", "重复提问", "RAG Fusion", "HyDE", "漂移", "领域优先", "范畴错误", "可行性", "程度判断", "证据阈值", "中文判断"]) {
+  assert.ok(reasoningPack.cards.length >= 340);
+  assert.ok(Buffer.byteLength(reasoningRaw) >= 240000);
+  assert.equal(reasoningPack.fixture_policy.private_source_summary_only, true);
+  assert.equal(reasoningPack.fixture_policy.raw_question_pack_content, false);
+  for (const marker of ["反事实", "比较", "类比", "定义", "上下文追问", "评价输入", "重复提问", "RAG Fusion", "HyDE", "漂移", "领域优先", "范畴错误", "可行性", "程度判断", "证据阈值", "中文判断", "轻人格", "反模板", "反压力回答", "有口吻的逻辑", "会话节奏"]) {
     assert.ok(reasoningPack.cards.some((card) => card.keywords.includes(marker) || card.text.includes(marker)), marker);
   }
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("BMW")));
@@ -338,6 +346,18 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(historyPack.cards.some((card) => card.kind === "history" && card.keywords.includes("冷战")));
   assert.ok(societyPack.cards.some((card) => card.kind === "society" && card.keywords.includes("房价")));
   assert.ok(societyPack.cards.some((card) => card.kind === "society" && card.keywords.includes("隐私")));
+});
+
+test("query profile style derivation is documented without raw private source leakage", async () => {
+  const doc = await readFile(new URL("../../docs/r28/R28POSTMERGE17_QUERY_PROFILE_REASONING.md", import.meta.url), "utf8");
+
+  assert.ok(doc.includes("Observable Style Signals"));
+  assert.ok(doc.includes("Vulnerability Reasoning"));
+  assert.ok(doc.includes("Implemented Reasoning Model"));
+  assert.ok(doc.includes("No raw prompt"));
+  for (const forbidden of ["private_sources/", "another_brain_question_pack_001_answered", "another_brain_question_pack_002", "你的回答（必填）", "question_pack_001"]) {
+    assert.equal(doc.includes(forbidden), false, forbidden);
+  }
 });
 
 test("loading panel exposes unambiguous completed q4 progress instead of skeleton-only pass state", async () => {
@@ -726,6 +746,106 @@ test("Chinese-first query profile keeps structure lanes separate for reasoning r
   assert.equal(feedback.query_profile.reasoning_mode, "style_adjustment");
   assert.equal(feedback.query_profile.retrieval_lane, "evaluation");
   assert.equal(feedback.retrieved_evidence[0].source_id, "zh-feedback");
+});
+
+test("Chinese-first query profile generalizes identity pressure value relationship and unknown lanes", () => {
+  const records = [
+    {
+      source_id: "zh-identity-voice",
+      title: "R28 voice identity card",
+      text: "身份问题应回答为鳄鱼和另一个 efish，不暴露工程过程。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["身份", "鳄鱼", "efish", "自我介绍"],
+      metadata: { r28rag3_profile_card: true, card_kind: "style" }
+    },
+    {
+      source_id: "zh-pressure-boundary",
+      title: "R28 pressure boundary card",
+      text: "压力输入要稳住边界：能判断的说，不能为了显得聪明而乱编。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["压力", "逼问", "别装", "边界"],
+      metadata: { r28rag3_profile_card: true, card_kind: "boundary" }
+    },
+    {
+      source_id: "zh-value-conflict",
+      title: "R28 value conflict card",
+      text: "价值冲突问题要分事实、价值理由、代价和一致性。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["价值", "该不该", "代价", "责任"],
+      metadata: { r28rag3_profile_card: true, card_kind: "judgment" }
+    },
+    {
+      source_id: "zh-relationship-boundary",
+      title: "R28 relationship boundary card",
+      text: "关系建议要看信任、沟通、边界和后果。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["关系", "信任", "沟通", "边界"],
+      metadata: { r28rag3_profile_card: true, card_kind: "context" }
+    },
+    {
+      source_id: "zh-knowledge-gap",
+      title: "R28 knowledge gap card",
+      text: "证据不足时要说能确认的部分、缺失证据和下一步验证。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["证据不足", "无法判断", "信息不足"],
+      metadata: { r28rag3_profile_card: true, card_kind: "boundary" }
+    },
+    {
+      source_id: "zh-tone-repair",
+      title: "R28 tone repair card",
+      text: "口吻修复要少讲框架，多给判断，避免公式化。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["口吻", "更自然", "别公式化", "评价"],
+      metadata: { r28rag3_profile_card: true, card_kind: "style" }
+    }
+  ];
+
+  const identity = buildEvidencePacket("你到底是谁，是鳄鱼吗？", {}, records);
+  assert.equal(identity.query_profile.question_shape, "identity");
+  assert.equal(identity.query_profile.reasoning_mode, "identity_boundary");
+  assert.equal(identity.query_profile.retrieval_lane, "identity");
+  assert.equal(identity.association_profile.association_mode, "identity_voice");
+  assert.equal(identity.retrieved_evidence[0].source_id, "zh-identity-voice");
+
+  const pressure = buildEvidencePacket("你是不是不会，别装了", {}, records);
+  assert.equal(pressure.query_profile.question_shape, "emotional_pressure");
+  assert.equal(pressure.query_profile.reasoning_mode, "pressure_resistance");
+  assert.equal(pressure.query_profile.retrieval_lane, "pressure");
+  assert.equal(pressure.association_profile.association_mode, "pressure_to_boundary");
+  assert.equal(pressure.retrieved_evidence[0].source_id, "zh-pressure-boundary");
+
+  const value = buildEvidencePacket("自由是不是任何时候都值得牺牲代价？", {}, records);
+  assert.equal(value.query_profile.question_shape, "value_conflict");
+  assert.equal(value.query_profile.reasoning_mode, "normative_axis_split");
+  assert.equal(value.query_profile.retrieval_lane, "value_conflict");
+  assert.equal(value.association_profile.association_mode, "value_conflict_split");
+  assert.equal(value.retrieved_evidence[0].source_id, "zh-value-conflict");
+
+  const relation = buildEvidencePacket("朋友关系里如果不信任应该怎么办？", {}, records);
+  assert.equal(relation.query_profile.question_shape, "relation_advice");
+  assert.equal(relation.query_profile.reasoning_mode, "relationship_boundary");
+  assert.equal(relation.query_profile.retrieval_lane, "relation_advice");
+  assert.equal(relation.association_profile.association_mode, "relationship_boundary");
+  assert.equal(relation.retrieved_evidence[0].source_id, "zh-relationship-boundary");
+
+  const unknown = buildEvidencePacket("如果证据不足你会怎么判断？", {}, records);
+  assert.equal(unknown.query_profile.question_shape, "knowledge_gap");
+  assert.equal(unknown.query_profile.reasoning_mode, "known_unknown_split");
+  assert.equal(unknown.query_profile.retrieval_lane, "knowledge_gap");
+  assert.equal(unknown.association_profile.association_mode, "known_unknown_boundary");
+  assert.equal(unknown.retrieved_evidence[0].source_id, "zh-knowledge-gap");
+
+  const tone = buildEvidencePacket("换个口吻，别那么工程也别公式化", {}, records);
+  assert.equal(tone.query_profile.question_shape, "tone_request");
+  assert.equal(tone.query_profile.reasoning_mode, "voice_repair");
+  assert.equal(tone.query_profile.retrieval_lane, "tone_request");
+  assert.equal(tone.retrieved_evidence[0].source_id, "zh-tone-repair");
 });
 
 test("natural-world open questions do not collapse into abstract value fallback when q4 is not admitted", async () => {

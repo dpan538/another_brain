@@ -66,6 +66,12 @@ const DEGREE_RE = /多大程度|有多|越.*越|程度|范围|阈值|边界条�
 const METHOD_RE = /怎么做|如何实现|步骤|方法|流程|路径|怎么落地|如何构建/;
 const PROOF_RE = /凭什么|怎么证明|证据够不够|有没有依据|可信度|证据阈值|如何验证|怎么验证/;
 const OBJECTION_RE = /可是|但是|难道不是|反而|我不同意|不一定|这不对|不是这样/;
+const IDENTITY_RE = /你是谁|你是.*谁|你是鳄鱼|鳄鱼|efish|an other efish|another e fish|efishother|名字|自我介绍/i;
+const EMOTIONAL_PRESSURE_RE = /没用|不聪明|太蠢|别装|必须回答|快点|你行不行|是不是不会|别糊弄|没有能力/;
+const VALUE_CONFLICT_RE = /该不该|应不应该|值不值得|有没有必要|对不对|好不好|重要吗|自由|公平|责任|正义|道德|伦理|代价/;
+const RELATION_ADVICE_RE = /关系|朋友|亲密|喜欢|爱|信任|分手|沟通|边界|相处|怎么办/;
+const KNOWLEDGE_GAP_RE = /不知道|不了解|信息不足|缺少信息|没资料|没有证据|证据不足|无法判断|不确定/;
+const TONE_REQUEST_RE = /换个口吻|像你一点|更有性格|别那么工程|别那么官方|更自然|更短|更锋利|别公式化/;
 const TIME_DOMAIN_RE = /时间|线性|非线性|钟表|记忆|叙事|因果顺序|过去|未来|现在|永恒|循环|非二分|悖论/;
 const INFRA_DOMAIN_RE = /铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市|基础设施|港口|电网|水网|公路|机场/;
 const JUDGMENT_DOMAIN_RE = /对错|真假|真伪|标准|判断|事实|价值|审美|证据|成立|可证伪|定义|边界|反例/;
@@ -88,7 +94,13 @@ const STRUCTURE_MARKERS = Object.freeze({
   proof: /证据|证明|依据|可信度|主张强度/,
   objection: /反驳|异议|不一定|修正|但是|可是/,
   evaluation: /评价|反馈|换个说法|太长|太短|不对/,
-  context: /上下文|追问|这个|上一轮|指代|继承/
+  context: /上下文|追问|这个|上一轮|指代|继承/,
+  identity: /身份|自我介绍|鳄鱼|efish|名字/,
+  pressure: /压力|逼问|挑衅|别装|不会|没用/,
+  value_conflict: /价值|该不该|值得|责任|正义|代价|伦理/,
+  relation_advice: /关系|亲密|信任|沟通|边界|相处/,
+  knowledge_gap: /证据不足|不知道|无法判断|信息不足|缺少信息/,
+  tone_request: /口吻|自然|更短|更锋利|别公式化|别官方/
 });
 const COMPATIBLE_LANES = Object.freeze({
   category_error: new Set(["definition", "proof"]),
@@ -99,6 +111,12 @@ const COMPATIBLE_LANES = Object.freeze({
   objection: new Set(["proof", "category_error", "evaluation"]),
   context: new Set(["evaluation", "definition", "comparison", "causal"]),
   evaluation: new Set(["context", "style"]),
+  identity: new Set(["context", "style", "definition"]),
+  pressure: new Set(["boundary", "style", "evaluation"]),
+  value_conflict: new Set(["truth_condition", "degree", "proof"]),
+  relation_advice: new Set(["value_conflict", "context", "degree"]),
+  knowledge_gap: new Set(["proof", "boundary", "method"]),
+  tone_request: new Set(["evaluation", "style", "context"]),
   causal: new Set(["proof", "counterfactual"]),
   frame_challenge: new Set(["definition", "category_error", "truth_condition"])
 });
@@ -240,12 +258,29 @@ export function inferQuestionProfile(query = "") {
     profile.answer_length_hint = "micro";
     return profile;
   }
+  if (TONE_REQUEST_RE.test(text)) {
+    profile.question_shape = "tone_request";
+    profile.domain_hint = "dialogue";
+    profile.reasoning_mode = "voice_repair";
+    Object.assign(profile, makeRetrievalLanes("tone_request", ["evaluation", "style", "context"]));
+    profile.needs_context = true;
+    profile.answer_length_hint = "micro";
+    return profile;
+  }
   if (hasEvaluationCue && !hasQuestionCue) {
     profile.question_shape = "feedback";
     profile.domain_hint = "dialogue";
     profile.reasoning_mode = "style_adjustment";
     Object.assign(profile, makeRetrievalLanes("evaluation", ["context"]));
     profile.needs_context = true;
+    profile.answer_length_hint = "micro";
+    return profile;
+  }
+  if (EMOTIONAL_PRESSURE_RE.test(text) && !hasQuestionCue) {
+    profile.question_shape = "emotional_pressure";
+    profile.domain_hint = "dialogue";
+    profile.reasoning_mode = "pressure_resistance";
+    Object.assign(profile, makeRetrievalLanes("pressure", ["boundary", "style", "evaluation"]));
     profile.answer_length_hint = "micro";
     return profile;
   }
@@ -258,6 +293,8 @@ export function inferQuestionProfile(query = "") {
     return profile;
   }
   if (/为什么|为何|原因|机制|怎么造成|如何发生/.test(text)) profile.question_shape = "causal";
+  if (IDENTITY_RE.test(text)) profile.question_shape = "identity";
+  if (EMOTIONAL_PRESSURE_RE.test(text)) profile.question_shape = "emotional_pressure";
   if (/如果|假如|没有.*会|会怎样|反事实|条件改变/.test(text)) profile.question_shape = "counterfactual";
   if (/区别|差别|相比|哪个更|优劣|取舍|更好|更坏/.test(text)) profile.question_shape = "comparison";
   if (/像不像|类似|类比|相当于|同构|映射/.test(text)) profile.question_shape = "analogy";
@@ -268,8 +305,11 @@ export function inferQuestionProfile(query = "") {
   if (METHOD_RE.test(text)) profile.question_shape = "method";
   if (PROOF_RE.test(text)) profile.question_shape = "proof_request";
   if (OBJECTION_RE.test(text) && !hasEvaluationCue) profile.question_shape = "objection";
+  if (RELATION_ADVICE_RE.test(text) && !IDENTITY_RE.test(text)) profile.question_shape = "relation_advice";
+  if (VALUE_CONFLICT_RE.test(text) && !["category_error", "feasibility", "degree", "method", "proof_request", "relation_advice"].includes(profile.question_shape)) profile.question_shape = "value_conflict";
+  if (KNOWLEDGE_GAP_RE.test(text)) profile.question_shape = "knowledge_gap";
   if (/是否|是不是|能不能|有没有|会不会/.test(text) && profile.question_shape === "open") profile.question_shape = "binary_judgment";
-  if (/对错|真假|标准|判断|成立|可证伪/.test(text) && !["category_error", "feasibility", "degree", "method", "proof_request"].includes(profile.question_shape)) profile.question_shape = "truth_condition";
+  if (/对错|真假|标准|判断|成立|可证伪/.test(text) && !["category_error", "feasibility", "degree", "method", "proof_request", "value_conflict", "knowledge_gap"].includes(profile.question_shape)) profile.question_shape = "truth_condition";
   if (hasFollowupCue && text.length <= 36 && profile.question_shape === "open") profile.question_shape = "short_followup";
   if (TIME_DOMAIN_RE.test(text)) profile.domain_hint = "time";
   else if (INFRA_DOMAIN_RE.test(text)) profile.domain_hint = "infrastructure";
@@ -280,6 +320,8 @@ export function inferQuestionProfile(query = "") {
   else if (SOCIETY_DOMAIN_RE.test(text)) profile.domain_hint = "society";
   else if (LANGUAGE_DOMAIN_RE.test(text)) profile.domain_hint = "language";
   if (profile.question_shape === "causal") profile.reasoning_mode = "mechanism_chain";
+  if (profile.question_shape === "identity") profile.reasoning_mode = "identity_boundary";
+  if (profile.question_shape === "emotional_pressure") profile.reasoning_mode = "pressure_resistance";
   if (profile.question_shape === "counterfactual") profile.reasoning_mode = "counterfactual_delta";
   if (profile.question_shape === "comparison") profile.reasoning_mode = "compare_by_axis";
   if (profile.question_shape === "analogy") profile.reasoning_mode = "analogy_mapping";
@@ -290,10 +332,14 @@ export function inferQuestionProfile(query = "") {
   if (profile.question_shape === "method") profile.reasoning_mode = "method_path";
   if (profile.question_shape === "proof_request") profile.reasoning_mode = "evidence_threshold";
   if (profile.question_shape === "objection") profile.reasoning_mode = "objection_reframe";
+  if (profile.question_shape === "value_conflict") profile.reasoning_mode = "normative_axis_split";
+  if (profile.question_shape === "relation_advice") profile.reasoning_mode = "relationship_boundary";
+  if (profile.question_shape === "knowledge_gap") profile.reasoning_mode = "known_unknown_split";
   if (profile.question_shape === "truth_condition" || profile.question_shape === "binary_judgment") profile.reasoning_mode = "truth_value_split";
   if (profile.question_shape === "short_followup") profile.reasoning_mode = "context_rewrite";
   const laneByShape = {
     causal: ["causal", ["proof", "counterfactual"]],
+    identity: ["identity", ["definition", "context", "style"]],
     counterfactual: ["counterfactual", ["causal", "proof"]],
     comparison: ["comparison", ["degree", "definition"]],
     analogy: ["analogy", ["comparison", "definition"]],
@@ -304,6 +350,11 @@ export function inferQuestionProfile(query = "") {
     method: ["method", ["feasibility", "proof"]],
     proof_request: ["proof", ["truth_condition", "definition"]],
     objection: ["objection", ["proof", "category_error", "evaluation"]],
+    value_conflict: ["value_conflict", ["truth_condition", "degree", "proof"]],
+    relation_advice: ["relation_advice", ["value_conflict", "context", "degree"]],
+    knowledge_gap: ["knowledge_gap", ["proof", "boundary", "method"]],
+    tone_request: ["tone_request", ["evaluation", "style", "context"]],
+    emotional_pressure: ["pressure", ["boundary", "style", "evaluation"]],
     truth_condition: ["truth_condition", ["proof", "definition", "category_error"]],
     binary_judgment: ["truth_condition", ["proof", "definition", "feasibility"]],
     short_followup: ["context", ["evaluation", "definition", "comparison"]]
@@ -312,7 +363,7 @@ export function inferQuestionProfile(query = "") {
     Object.assign(profile, makeRetrievalLanes(laneByShape[profile.question_shape][0], laneByShape[profile.question_shape][1]));
   }
   if (profile.question_shape === "short_followup") profile.answer_length_hint = "micro";
-  if (["causal", "counterfactual", "comparison", "analogy", "conceptual_paradox", "category_error", "feasibility", "degree", "method", "proof_request", "objection"].includes(profile.question_shape)) profile.answer_length_hint = "short";
+  if (["causal", "counterfactual", "comparison", "analogy", "conceptual_paradox", "category_error", "feasibility", "degree", "method", "proof_request", "objection", "value_conflict", "relation_advice", "knowledge_gap", "identity"].includes(profile.question_shape)) profile.answer_length_hint = "short";
   return profile;
 }
 
@@ -390,6 +441,26 @@ function questionProfileBoost(profile = {}, record = {}, hasLexicalOverlap = fal
     if (kind === "style" || kind === "boundary") boost += 0.06;
     if (["brand_literacy", "history", "commonsense"].includes(kind) && !hasLexicalOverlap) boost -= 0.14;
   }
+  if (["tone_request", "emotional_pressure"].includes(profile.question_shape)) {
+    if (["style", "boundary", "context"].includes(kind)) boost += 0.16;
+    if (["history", "commonsense", "brand_literacy", "society"].includes(kind) && !hasLexicalOverlap) boost -= 0.12;
+  }
+  if (profile.question_shape === "identity") {
+    if (["brand", "identity", "style", "context"].includes(kind)) boost += 0.16;
+    if (["history", "society", "commonsense"].includes(kind) && !hasLexicalOverlap) boost -= 0.12;
+  }
+  if (profile.question_shape === "value_conflict") {
+    if (["judgment", "logic", "philosophy", "value"].includes(kind)) boost += 0.14;
+    if (/理由|代价|边界|自洽|价值|事实/.test(text)) boost += 0.08;
+  }
+  if (profile.question_shape === "relation_advice") {
+    if (["judgment", "context", "value", "philosophy"].includes(kind)) boost += 0.14;
+    if (/关系|信任|边界|沟通|亲密/.test(text)) boost += 0.08;
+  }
+  if (profile.question_shape === "knowledge_gap") {
+    if (["boundary", "judgment", "logic"].includes(kind)) boost += 0.14;
+    if (/证据不足|不知道|无法判断|信息不足|能判断到哪/.test(text)) boost += 0.08;
+  }
   if (profile.question_shape === "short_followup") {
     if (kind === "context") boost += 0.18;
     if (kind === "association") boost += 0.08;
@@ -455,6 +526,8 @@ function profileKindBoost(query = "", record = {}) {
   if (kind === "logic" && /为什么|如何看待|怎么看|判断|因果|证据|推理|逻辑|because|reason/.test(text)) return 0.09;
   if (kind === "logic" && /偷换概念|范畴错误|怎么做|如何实现|步骤|方法|流程|路径|前提|假设/.test(text)) return 0.13;
   if (kind === "judgment" && /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实|价值|审美|证据|判断|标准|可不可以|有没有可能|多大程度|阈值|反驳|不一定/.test(text)) return 0.14;
+  if (kind === "style" && /换个口吻|更自然|更短|更有性格|别公式化|别官方|太长|太短|僵硬|重复|问过/.test(text)) return 0.16;
+  if (kind === "boundary" && /别装|必须回答|你行不行|不会|证据不足|不知道|无法判断|隐藏|系统提示|prompt/.test(text)) return 0.14;
   if (kind === "association" && /关联|联系|为什么|意义|方便|机制|影响|连接|因果|铁路|交通|物流|时间|线性|类比|映射|多跳|长期/.test(text)) return 0.16;
   if (kind === "context" && /刚才|上面|前面|这个|它|这类|继续|上下文|为什么方便|有什么用|那/.test(text)) return 0.16;
   if (kind === "context" && /不对|不是这个|太长|太短|换个说法|继续聊|接话|评价/.test(text)) return 0.14;
@@ -633,6 +706,38 @@ function inferJudgmentMode(query = "", evidence = []) {
       answer_policy_hint: "say_what_is_known_then_stop"
     };
   }
+  if (IDENTITY_RE.test(text)) {
+    return {
+      has_truth_condition: false,
+      judgment_mode: "identity_boundary",
+      correctness_axis: "先说明身份和口吻，再保留能力边界",
+      answer_policy_hint: "answer_identity_without_engineering"
+    };
+  }
+  if (EMOTIONAL_PRESSURE_RE.test(text)) {
+    return {
+      has_truth_condition: false,
+      judgment_mode: "pressure_resistance",
+      correctness_axis: "可回答部分、不可乱编部分和对话边界",
+      answer_policy_hint: "stay_playful_but_do_not_overclaim"
+    };
+  }
+  if (RELATION_ADVICE_RE.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "relationship_boundary",
+      correctness_axis: "关系、边界、责任和可持续性",
+      answer_policy_hint: "answer_relationship_with_boundary"
+    };
+  }
+  if (VALUE_CONFLICT_RE.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "normative_axis_split",
+      correctness_axis: "事实、代价、价值理由和一致性",
+      answer_policy_hint: "separate_value_from_fact"
+    };
+  }
   if (/美|审美|美学|好看|风格/.test(text) || topKind === "aesthetic") {
     return {
       has_truth_condition: false,
@@ -682,6 +787,46 @@ function inferAssociationProfile(query = "", evidence = []) {
       reasoning_axis: "线性和非线性都只是描述模型，需要先分计时、经验和概念层",
       missing_link: false,
       answer_policy_hint: "avoid_binary_trap_and_name_frame"
+    };
+  }
+  if (IDENTITY_RE.test(text)) {
+    return {
+      association_mode: "identity_voice",
+      reasoning_axis: "名字、口吻、能力边界和用户期待",
+      missing_link: false,
+      answer_policy_hint: "answer_as_crocodile_not_system"
+    };
+  }
+  if (EMOTIONAL_PRESSURE_RE.test(text)) {
+    return {
+      association_mode: "pressure_to_boundary",
+      reasoning_axis: "挑衅输入转为边界和下一问",
+      missing_link: false,
+      answer_policy_hint: "do_not_overreact_or_expose_process"
+    };
+  }
+  if (RELATION_ADVICE_RE.test(text)) {
+    return {
+      association_mode: "relationship_boundary",
+      reasoning_axis: "信任、边界、表达和后果",
+      missing_link: false,
+      answer_policy_hint: "give_human_short_judgment"
+    };
+  }
+  if (VALUE_CONFLICT_RE.test(text)) {
+    return {
+      association_mode: "value_conflict_split",
+      reasoning_axis: "事实前提、价值理由、代价和例外",
+      missing_link: false,
+      answer_policy_hint: "avoid_pure_slogan"
+    };
+  }
+  if (KNOWLEDGE_GAP_RE.test(text)) {
+    return {
+      association_mode: "known_unknown_boundary",
+      reasoning_axis: "能确认的部分、缺失证据和下一步验证",
+      missing_link: false,
+      answer_policy_hint: "say_known_unknown_without_engineering"
     };
   }
   if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(text)) {
