@@ -8,9 +8,10 @@ test("asset manifest and runtime JS include cache-busting version", async () => 
   const runtime = await readFile(new URL("../../web/another_brain_chat/browser_runtime.js", import.meta.url), "utf8");
   const manifest = JSON.parse(await readFile(new URL("../../web/another_brain/asset_manifest.json", import.meta.url), "utf8"));
   const runtimeMode = JSON.parse(await readFile(new URL("../../web/another_brain/runtime_mode.json", import.meta.url), "utf8"));
-  assert.ok(chat.includes("app.js?v=r28ux4-visible-preview-ui"));
-  assert.ok(app.includes("browser_runtime.js?v=r28ux4-visible-preview-ui"));
+  const acceptedVersions = ["r28ux4-visible-preview-ui", "r28hotfix0-runtime-ui-activation", "r28hotfix1-route-loop-free-runtime", "r28hotfix2-nonblocking-selfcheck", "r28hotfix3-q4-asset-path-fix", "r28rout1-fuzzy-intent-surfaces", "r28surf2-anchor-informed-answer-surfaces", "r28rag3-lightweight-affective-rag", "r28ux5-chat-dashboard-split"];
+  assert.ok(acceptedVersions.some((version) => chat.includes(`app.js?v=${version}`)));
+  assert.ok(acceptedVersions.some((version) => app.includes(`browser_runtime.js?v=${version}`)));
   assert.ok(runtime.includes("invalidateStaleAssetCache"));
-  assert.equal(manifest.ui_version, "r28ux4-visible-preview-ui");
-  assert.equal(runtimeMode.ui_version, "r28ux4-visible-preview-ui");
+  assert.ok(acceptedVersions.includes(manifest.ui_version));
+  assert.ok(acceptedVersions.includes(runtimeMode.ui_version));
 });

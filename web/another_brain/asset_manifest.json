@@ -5,14 +5,14 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 69982911,
+  "full_bundle_estimate_bytes": 70152827,
   "gate_assets": [
     {
-      "bytes": 2843,
+      "bytes": 3058,
       "delivery_config": true,
       "path": "another_brain/runtime_mode.json",
       "product_model": false,
-      "sha256": "1405e15c9b972eae1f783d47b31c5b91e091e14a2e5d861e9ac5f59bb252a6b6"
+      "sha256": "cad90a959cb27bfaea65befbe4da546f4da6cf1328d07f27fb51aa9b8c618435"
     }
   ],
   "hosted_vector_store": false,
@@ -99,20 +99,52 @@
     "release_checkpoint_admission": false,
     "training_corpus_committed": false
   },
-  "prelaunch_stage": "r28tok1",
+  "prelaunch_stage": "r28livefix0",
   "product_model_admission": false,
   "quantization": "q4",
   "rag_assets": [
     {
       "answer_bank": false,
+      "allowed_for_training": false,
       "bytes": 2065,
       "demo_only": true,
       "path": "another_brain/static_rag/demo_memory.json",
+      "private_raw_data": false,
       "sha256": "b581a77428613b622bcd62df06b61783a2120cc6a3a2326b06de763a2aef5a18"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 2075,
+      "demo_only": false,
+      "path": "another_brain/static_rag/profile_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "931bfdaf846842be0ecf9793b80f11fd4675d83bc4347f2896ecfd2c3f97d319"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 2461,
+      "demo_only": false,
+      "path": "another_brain/static_rag/style_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "bd6295963f20718f28a6d61ff2ce472ca3356188ac4f1f1e90a0546626250681"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 2444,
+      "demo_only": false,
+      "path": "another_brain/static_rag/boundary_cards.json",
+      "private_raw_data": false,
+      "provenance": "hand_authored_boundary",
+      "sha256": "3bd19b4c65b34a78ae954e661c17fa5cbe01511bc15f9a9d93650309151d410d"
     }
   ],
   "release_checkpoint_admission": false,
-  "remaining_bytes_under_100mb": 30017089,
+  "remaining_bytes_under_100mb": 29847173,
   "runtime_tokenizer_blocker": "",
   "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
   "same_origin_only": true,
@@ -134,10 +166,13 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49309889,
-  "ui_build_marker": "R28UX4",
-  "ui_build_timestamp": "2026-07-07T18:10:00+08:00",
+  "total_declared_bytes": 49317084,
+  "branch_marker": "R28LIVEFIX0",
+  "branch_name": "r28livefix0-live-q4-mount",
+  "build_commit_short": "build-env-pending",
+  "ui_build_marker": "R28LIVEFIX0",
+  "ui_build_timestamp": "2026-07-09T00:00:00+08:00",
   "ui_root_route": "/",
-  "ui_version": "r28ux4-visible-preview-ui",
+  "ui_version": "r28livefix0-live-q4-mount",
   "total_model_asset_bytes": 48267968
 }

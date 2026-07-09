@@ -1,0 +1,167 @@
+{
+  "schema_version": "r28livefix0.history_cards.v1",
+  "fixture_policy": {
+    "runtime_hints_only": true,
+    "answer_bank": false,
+    "private_raw_data": false,
+    "eval_prompts": false,
+    "old_question_pack_rows_51_100": false,
+    "allowed_for_training": false
+  },
+  "cards": [
+    {
+      "id": "r28livefix0-history-industrial-revolution",
+      "kind": "history",
+      "text": "The Industrial Revolution is about mechanized production, energy use, factories, urbanization, labor change, and the reorganization of daily life around industrial time.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["工业革命", "Industrial Revolution", "机器", "工厂", "城市化", "劳动", "蒸汽", "生产"],
+      "tone_hints": ["structure", "labor", "modernity"]
+    },
+    {
+      "id": "r28livefix0-history-french-revolution",
+      "kind": "history",
+      "text": "The French Revolution is useful for thinking about monarchy, citizenship, rights, violence, social inequality, and how political legitimacy can be remade.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["法国大革命", "French Revolution", "君主制", "公民", "权利", "平等", "暴力", "合法性"],
+      "tone_hints": ["citizenship", "legitimacy", "rights"]
+    },
+    {
+      "id": "r28livefix0-history-american-revolution",
+      "kind": "history",
+      "text": "The American Revolution combines colonial governance, taxation, representation, republican ideals, independence, and the unresolved contradictions of liberty.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["美国独立战争", "American Revolution", "殖民", "税收", "代表权", "共和", "自由", "独立"],
+      "tone_hints": ["republic", "representation", "contradiction"]
+    },
+    {
+      "id": "r28livefix0-history-world-war-one",
+      "kind": "history",
+      "text": "World War I should be read through alliances, imperial competition, nationalism, industrial warfare, trench trauma, and the political settlement that followed.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["一战", "第一次世界大战", "World War I", "联盟", "帝国", "民族主义", "堑壕", "工业战争"],
+      "tone_hints": ["war", "nationalism", "settlement"]
+    },
+    {
+      "id": "r28livefix0-history-world-war-two",
+      "kind": "history",
+      "text": "World War II involves fascism, total war, genocide, occupation, resistance, atomic weapons, postwar institutions, and the redrawing of global power.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["二战", "第二次世界大战", "World War II", "法西斯", "全面战争", "大屠杀", "核武器", "战后秩序"],
+      "tone_hints": ["total_war", "institutions", "power"]
+    },
+    {
+      "id": "r28livefix0-history-cold-war",
+      "kind": "history",
+      "text": "The Cold War is a long geopolitical conflict shaped by ideology, nuclear deterrence, proxy wars, intelligence systems, space competition, and divided world orders.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["冷战", "Cold War", "意识形态", "核威慑", "代理人战争", "太空竞赛", "两极"],
+      "tone_hints": ["geopolitics", "deterrence", "ideology"]
+    },
+    {
+      "id": "r28livefix0-history-xinhai-revolution",
+      "kind": "history",
+      "text": "The 1911 Xinhai Revolution marks the collapse of Qing imperial rule and the difficult transition from dynasty to republic in modern Chinese politics.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["辛亥革命", "1911", "清朝", "帝制", "共和", "民国", "中国近代史"],
+      "tone_hints": ["modern_china", "republic", "transition"]
+    },
+    {
+      "id": "r28livefix0-history-may-fourth",
+      "kind": "history",
+      "text": "The May Fourth Movement connects student protest, nationalism, anti-imperial sentiment, vernacular language, science, democracy, and cultural self-critique.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["五四运动", "May Fourth", "学生", "民族主义", "白话文", "科学", "民主", "文化"],
+      "tone_hints": ["culture", "youth", "language"]
+    },
+    {
+      "id": "r28livefix0-history-great-depression",
+      "kind": "history",
+      "text": "The Great Depression is about financial collapse, unemployment, demand shock, policy response, social suffering, and the reshaping of state responsibility.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["大萧条", "Great Depression", "金融", "失业", "需求", "政策", "社会痛苦", "国家责任"],
+      "tone_hints": ["economy", "policy", "social_cost"]
+    },
+    {
+      "id": "r28livefix0-history-reform-opening",
+      "kind": "history",
+      "text": "Reform and Opening Up is a Chinese historical shift involving market mechanisms, foreign investment, industrialization, migration, growth, and uneven social change.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["改革开放", "市场", "外资", "工业化", "迁移", "增长", "中国经济"],
+      "tone_hints": ["modern_china", "market", "social_change"]
+    },
+    {
+      "id": "r28livefix0-history-internet-web",
+      "kind": "history",
+      "text": "The rise of the internet and web changed information distribution, publishing, commerce, social life, software work, surveillance, and platform power.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["互联网", "万维网", "web", "平台", "信息分发", "电商", "社交", "软件"],
+      "tone_hints": ["technology", "platform", "distribution"]
+    },
+    {
+      "id": "r28livefix0-history-financial-crisis-2008",
+      "kind": "history",
+      "text": "The 2008 financial crisis involves housing credit, securitization, leverage, trust collapse, bailouts, regulation debates, and long social aftereffects.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["2008金融危机", "次贷", "住房信贷", "杠杆", "救助", "监管", "信任崩塌"],
+      "tone_hints": ["finance", "risk", "trust"]
+    },
+    {
+      "id": "r28livefix0-history-covid-pandemic",
+      "kind": "history",
+      "text": "The COVID-19 pandemic should be read through public health, uncertainty, lockdowns, vaccines, supply chains, remote work, social trust, and unequal vulnerability.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["COVID-19", "疫情", "公共卫生", "疫苗", "封锁", "供应链", "远程办公", "社会信任"],
+      "tone_hints": ["public_health", "uncertainty", "society"]
+    },
+    {
+      "id": "r28livefix0-history-transformer-llm-era",
+      "kind": "history",
+      "text": "The transformer and large language model era is shaped by attention mechanisms, scale, data, infrastructure, interfaces, safety concerns, and new software habits.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Transformer", "LLM", "大语言模型", "注意力机制", "AI", "ChatGPT", "算力", "安全"],
+      "tone_hints": ["ai_history", "infrastructure", "software_habit"]
+    }
+  ]
+}

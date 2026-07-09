@@ -1,0 +1,123 @@
+{
+  "schema_version": "r28livefix0.society_cards.v1",
+  "fixture_policy": {
+    "runtime_hints_only": true,
+    "answer_bank": false,
+    "private_raw_data": false,
+    "eval_prompts": false,
+    "old_question_pack_rows_51_100": false,
+    "allowed_for_training": false
+  },
+  "cards": [
+    {
+      "id": "r28livefix0-society-inflation",
+      "kind": "society",
+      "text": "Inflation questions need price level, wages, supply shocks, demand, monetary policy, expectations, and who bears the cost separated instead of reduced to one culprit.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["通胀", "物价", "工资", "供应冲击", "需求", "货币政策", "inflation", "cost"],
+      "tone_hints": ["economy", "distribution", "mechanism"]
+    },
+    {
+      "id": "r28livefix0-society-housing",
+      "kind": "society",
+      "text": "Housing questions involve land, credit, income, migration, regulation, supply, speculation, family expectations, and whether housing is treated as shelter or asset.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["房价", "住房", "土地", "信贷", "迁移", "投机", "资产", "居住"],
+      "tone_hints": ["asset_vs_shelter", "urban", "policy"]
+    },
+    {
+      "id": "r28livefix0-society-platforms",
+      "kind": "society",
+      "text": "Platform questions should look at network effects, recommendation systems, creator incentives, moderation, lock-in, data power, and who controls distribution.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["平台", "社交媒体", "推荐算法", "创作者", "流量", "数据", "分发", "network effects"],
+      "tone_hints": ["platform_power", "incentives", "distribution"]
+    },
+    {
+      "id": "r28livefix0-society-privacy",
+      "kind": "society",
+      "text": "Privacy is not only hiding secrets. It is about consent, context, power asymmetry, secondary use, surveillance, memory, and the right to keep parts of life unoptimized.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["隐私", "数据", "同意", "监控", "权力不对称", "二次使用", "privacy"],
+      "tone_hints": ["rights", "consent", "power"]
+    },
+    {
+      "id": "r28livefix0-society-climate",
+      "kind": "society",
+      "text": "Climate questions need weather separated from long-term climate, emissions, energy systems, adaptation, distributional cost, and the difference between uncertainty and inaction.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["气候", "天气", "排放", "能源", "适应", "不确定性", "climate", "warming"],
+      "tone_hints": ["climate", "uncertainty", "policy"]
+    },
+    {
+      "id": "r28livefix0-society-education",
+      "kind": "society",
+      "text": "Education questions involve selection, capability building, credentials, family resources, opportunity, discipline, curiosity, and the tension between learning and screening.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["教育", "学校", "考试", "学历", "机会", "家庭资源", "学习", "筛选"],
+      "tone_hints": ["opportunity", "credential", "learning"]
+    },
+    {
+      "id": "r28livefix0-society-healthcare",
+      "kind": "society",
+      "text": "Healthcare questions should distinguish treatment, prevention, insurance, access, trust, professional judgment, cost, and the vulnerability of patients under uncertainty.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["医疗", "健康", "保险", "预防", "信任", "成本", "病人", "不确定性"],
+      "tone_hints": ["care", "access", "uncertainty"]
+    },
+    {
+      "id": "r28livefix0-society-labor",
+      "kind": "society",
+      "text": "Labor questions require wages, dignity, bargaining power, automation, skill, exhaustion, management, and the difference between productivity and human flourishing.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["劳动", "工资", "工作", "尊严", "自动化", "技能", "管理", "生产率"],
+      "tone_hints": ["labor", "dignity", "automation"]
+    },
+    {
+      "id": "r28livefix0-society-migration",
+      "kind": "society",
+      "text": "Migration questions involve opportunity, identity, labor markets, housing, language, belonging, law, remittances, and the cost of leaving one social world for another.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["迁移", "移民", "城市化", "身份", "归属", "语言", "劳动力", "migration"],
+      "tone_hints": ["belonging", "identity", "urban"]
+    },
+    {
+      "id": "r28livefix0-society-trust",
+      "kind": "society",
+      "text": "Trust questions should separate personal trust, institutional trust, repeated behavior, transparency, accountability, incentives, and what happens after betrayal.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["信任", "制度", "透明", "问责", "背叛", "激励", "trust", "accountability"],
+      "tone_hints": ["trust", "institution", "repair"]
+    }
+  ]
+}

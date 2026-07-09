@@ -16,7 +16,6 @@ function buildRuntimeVersionSource() {
   const commitShort = commit === "local" ? "local" : commit.slice(0, 12);
   const buildTime = new Date().toISOString();
   const branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.GITHUB_REF_NAME || "";
-  const deploymentId = process.env.VERCEL_DEPLOYMENT_ID || "";
   const vercelEnv = process.env.VERCEL_ENV || "";
 
   return `export const RUNTIME_VERSION = Object.freeze({
@@ -24,7 +23,7 @@ function buildRuntimeVersionSource() {
   commitShort: "${cleanString(commitShort)}",
   branch: "${cleanString(branch)}",
   buildTime: "${cleanString(buildTime)}",
-  deploymentId: "${cleanString(deploymentId)}",
+  deploymentIdAvailable: ${process.env.VERCEL_DEPLOYMENT_ID ? "true" : "false"},
   vercelEnv: "${cleanString(vercelEnv)}",
   p0FallbackFirewall: true,
   r19ConversationController: true,
@@ -57,6 +56,31 @@ async function updateTextFile(path, transform) {
   return before !== after;
 }
 
+async function updateJsonFile(path, transform) {
+  const before = await readFile(path, "utf8");
+  const data = JSON.parse(before);
+  const afterData = transform(data);
+  const after = `${JSON.stringify(afterData, null, 2)}\n`;
+  if (after !== before) await writeFile(path, after, "utf8");
+  return before !== after;
+}
+
+function patchR28livefix0Html(text, commitShort, buildTime) {
+  return text
+    .replace(
+      /(<meta name="another-brain-commit-short" content=")[^"]+(" \/>)/,
+      `$1${cleanString(commitShort)}$2`
+    )
+    .replace(
+      /(R28LIVEFIX0 · r28livefix0-live-q4-mount · )[^<]+/g,
+      `$1${cleanString(commitShort)}`
+    )
+    .replace(
+      /(R28LIVEFIX0 \/ r28livefix0-live-q4-mount \/ )[^/]+( \/ )[^<]+/g,
+      `$1${cleanString(commitShort)}$2${cleanString(buildTime)}`
+    );
+}
+
 async function main() {
   if (!isVercelBuild()) {
     console.log(JSON.stringify({ skipped: true, reason: "not_vercel_build" }, null, 2));
@@ -65,27 +89,70 @@ async function main() {
 
   const commit = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GITHUB_SHA || "local";
   const versionToken = commit === "local" ? String(Date.now()) : commit.slice(0, 12);
+  const commitShort = commit === "local" ? "local" : commit.slice(0, 7);
+  const buildTime = new Date().toISOString();
   const runtimePath = resolve(ROOT, "web/runtime_version.js");
   const indexPath = resolve(ROOT, "web/index.html");
   const appPath = resolve(ROOT, "web/app.js");
+  const chatIndexPath = resolve(ROOT, "web/another_brain_chat/index.html");
+  const chatFlatPath = resolve(ROOT, "web/another_brain_chat.html");
+  const chatAppPath = resolve(ROOT, "web/another_brain_chat/app.js");
+  const runtimeModePath = resolve(ROOT, "web/another_brain/runtime_mode.json");
+  const assetManifestPath = resolve(ROOT, "web/another_brain/asset_manifest.json");
 
   await writeFile(runtimePath, buildRuntimeVersionSource(), "utf8");
   const indexChanged = await updateTextFile(indexPath, (text) =>
-    text.replace(/\.\/app\.js\?v=[^"']+/g, `./app.js?v=${versionToken}`)
+    patchR28livefix0Html(
+      text
+        .replace(/\.\/app\.js\?v=[^"']+/g, `./app.js?v=${versionToken}`)
+        .replace(/\/another_brain_chat\/app\.js\?v=[^"']+/g, `/another_brain_chat/app.js?v=${versionToken}`),
+      commitShort,
+      buildTime
+    )
+  );
+  const chatIndexChanged = await updateTextFile(chatIndexPath, (text) =>
+    patchR28livefix0Html(text, commitShort, buildTime)
+      .replace(/\/another_brain_chat\/app\.js\?v=[^"']+/g, `/another_brain_chat/app.js?v=${versionToken}`)
+  );
+  const chatFlatChanged = await updateTextFile(chatFlatPath, (text) =>
+    patchR28livefix0Html(text, commitShort, buildTime)
+      .replace(/\/another_brain_chat\/app\.js\?v=[^"']+/g, `/another_brain_chat/app.js?v=${versionToken}`)
   );
   const appChanged = await updateTextFile(appPath, (text) =>
     text.replace(/\.\/runtime_version\.js\?v=[^"']+/g, `./runtime_version.js?v=${versionToken}`)
   );
+  const chatAppChanged = await updateTextFile(chatAppPath, (text) =>
+    text
+      .replace(/const R28LIVEFIX0_SOURCE_COMMIT = "[^"]+";/, `const R28LIVEFIX0_SOURCE_COMMIT = "${cleanString(commitShort)}";`)
+      .replace(/ui_build_timestamp: "[^"]+"/, `ui_build_timestamp: "${cleanString(buildTime)}"`)
+  );
+  const runtimeModeChanged = await updateJsonFile(runtimeModePath, (data) => ({
+    ...data,
+    build_commit_short: commitShort,
+    ui_build_timestamp: buildTime
+  }));
+  const assetManifestChanged = await updateJsonFile(assetManifestPath, (data) => ({
+    ...data,
+    build_commit_short: commitShort,
+    ui_build_timestamp: buildTime
+  }));
 
   console.log(
     JSON.stringify(
       {
         skipped: false,
         commit,
+        commitShort,
         versionToken,
+        buildTime,
         runtimeVersionWritten: true,
         indexChanged,
-        appChanged
+        appChanged,
+        chatIndexChanged,
+        chatFlatChanged,
+        chatAppChanged,
+        runtimeModeChanged,
+        assetManifestChanged
       },
       null,
       2

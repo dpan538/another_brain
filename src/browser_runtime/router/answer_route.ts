@@ -3,6 +3,23 @@ export const R28ROUT0_ROUTE_SCHEMA_VERSION = "r28rout0-answer-route-schema-v1";
 export const ANSWER_ROUTES = Object.freeze([
   "direct_model_draft",
   "rag_grounded_answer",
+  "greeting_surface",
+  "identity_surface",
+  "origin_surface",
+  "capability_surface",
+  "relation_surface",
+  "value_surface",
+  "aesthetic_surface",
+  "abstract_meaning_surface",
+  "abstract_value_question",
+  "philosophical_question",
+  "aesthetic_question",
+  "value_or_relation_question",
+  "abstract_meaning_question",
+  "open_question",
+  "smalltalk_surface",
+  "runtime_status_surface",
+  "identity_boundary",
   "insufficient_evidence_boundary",
   "conflicting_evidence_boundary",
   "malicious_evidence_boundary",
@@ -44,6 +61,7 @@ export const ROUTER_NON_CLAIMS = Object.freeze([
   "no backend inference",
   "no external LLM API",
   "no Doubao",
+  "no broad answer bank",
   "hard router is product-surface guard only"
 ]);
 
