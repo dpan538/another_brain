@@ -542,6 +542,63 @@ function compactEvidenceText(text = "", maxChars = 92) {
   return firstSentence.slice(0, maxChars).trim();
 }
 
+const CUSTOMER_ENGINEERING_MARKERS = [
+  "q4",
+  "fallback",
+  "rag",
+  "runtime",
+  "tokenizer",
+  "manifest",
+  "shard",
+  "router",
+  "source:",
+  "answer_source",
+  "fallback_reason",
+  "static_q4",
+  "no_model",
+  "process_trace",
+  "dashboard",
+  "empty_evidence",
+  "mojibake",
+  "quality_blocker",
+  "forward",
+  "工程",
+  "模型前向",
+  "分词器"
+];
+
+function containsEngineeringMarker(text = "") {
+  const lower = String(text || "").toLowerCase();
+  return CUSTOMER_ENGINEERING_MARKERS.some((marker) => lower.includes(marker));
+}
+
+function softLimitCustomerText(text = "", maxChars = 82) {
+  const clean = String(text || "")
+    .replace(/\([^)]*\)/g, "")
+    .replace(/\[[^\]]*\]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!clean) return "";
+  const sentences = clean.match(/[^。！？!?]+[。！？!?]?/g) || [clean];
+  let limited = "";
+  for (const sentence of sentences) {
+    const next = `${limited}${sentence}`.trim();
+    if (next.length > maxChars && limited) break;
+    limited = next.slice(0, maxChars);
+    if (limited.length >= maxChars) break;
+    if (sentences.indexOf(sentence) >= 1) break;
+  }
+  return limited.trim();
+}
+
+function cleanCustomerAnswer(text = "", packet = {}) {
+  const clean = softLimitCustomerText(text, 92);
+  if (!clean || containsEngineeringMarker(clean)) {
+    return ruleBasedFallbackAnswer({ ...packet, final_answer: "" });
+  }
+  return clean;
+}
+
 function customerEvidenceAnswer(packet = {}) {
   const top = customerEvidenceCard(packet);
   if (!top) return "";
@@ -567,6 +624,7 @@ function customerEvidenceAnswer(packet = {}) {
 function ruleBasedFallbackAnswer(packet = {}) {
   const inputText = String(packet.input || "");
   const evidenceAnswer = customerEvidenceAnswer(packet);
+  const safeEvidenceAnswer = containsEngineeringMarker(evidenceAnswer) ? "" : evidenceAnswer;
   if (/太阳|日出|日落|东升西落/.test(inputText)) {
     return "我先按常识判断：太阳不是每天绕着我们走，而是地球自转造成视运动。我们随地球向东转，所以会看到它东升西落。";
   }
@@ -574,10 +632,10 @@ function ruleBasedFallbackAnswer(packet = {}) {
     return "我会分三层看：短期是天气和季节，中期看城市、地表和海洋蓄热，长期才看气候趋势。不能把一次体感说成唯一原因。";
   }
   if (/品牌|公司|Apple|OpenAI|Tesla|Google|微软|小米|华为|商业/.test(inputText)) {
-    return evidenceAnswer || "我会看三件事：它解决什么真实问题、靠什么建立信任、有没有持续分发和记忆点。品牌不是名气，是可重复的体验。";
+    return safeEvidenceAnswer || "我会看三件事：它解决什么真实问题、靠什么建立信任、有没有持续分发和记忆点。品牌不是名气，是可重复的体验。";
   }
   if (/历史|革命|战争|冷战|工业革命|事件|朝代/.test(inputText)) {
-    return evidenceAnswer || "我会把历史事件拆成触发点、结构原因和后果三层。单个英雄或单个日期很少足够，关键是它改变了什么制度、技术或关系。";
+    return safeEvidenceAnswer || "我会把历史事件拆成触发点、结构原因和后果三层。单个英雄或单个日期很少足够，关键是它改变了什么制度、技术或关系。";
   }
   if (/美|审美|美学|好看|风格/.test(inputText)) {
     return "我会先看它有没有结构。美不是单纯漂亮，而是形式、分寸、风险和情绪在同一刻站住；只有讨喜，没有必要性，就会很薄。";
@@ -594,7 +652,7 @@ function ruleBasedFallbackAnswer(packet = {}) {
   if (/证据不足|证据不够|不确定|无法判断/.test(inputText)) {
     return "我会先停住，不把判断说满。能确定的说清楚，缺证据的地方标出来；真正聪明不是硬答，而是知道哪里不能装懂。";
   }
-  return evidenceAnswer || "我会先做一个稳的判断：分清事实、关系和代价，再决定能说到哪一步。模型如果没给出可采纳输出，我不会假装它思考了，但回答仍要尽量有结构。";
+  return safeEvidenceAnswer || "我会先给一个稳的判断：分清事实、关系和代价；证据不够时不装懂，但仍给你可继续追问的方向。";
 }
 
 function customerFacingAnswer(packet = {}) {
@@ -604,15 +662,16 @@ function customerFacingAnswer(packet = {}) {
   const fallbackReason = String(packet.fallback_reason || "");
   const evidenceHint = shortEvidenceHint(packet);
   const evidenceAnswer = customerEvidenceAnswer(packet);
+  const safeEvidenceAnswer = containsEngineeringMarker(evidenceAnswer) ? "" : evidenceAnswer;
   if (/你是谁|你是.*谁|你是鳄鱼|鳄鱼|efish|efishother/i.test(inputText)) {
-    return "我是鳄鱼，也可以理解成另一个 efish。efishother 是给这个鳄鱼接口的名字，another_brain 只是工程代号。";
+    return "我是鳄鱼，也可以理解成另一个 efish。直接问就好。";
   }
-  if (/你好|在吗|hello|hi/i.test(inputText) && raw.length <= 24) return raw;
+  if (/你好|在吗|hello|hi/i.test(inputText) && raw.length <= 24) return cleanCustomerAnswer(raw, packet);
   if (/品牌|公司|Apple|苹果|Google|谷歌|Microsoft|微软|Tesla|特斯拉|Meta|Amazon|亚马逊|Toyota|丰田|Leica|徕卡|OpenAI|Vercel|商业|产品/i.test(inputText)) {
-    return evidenceAnswer || "我会看它解决什么问题、靠什么建立信任、怎样被反复使用。品牌不是名气，是可重复的体验。";
+    return safeEvidenceAnswer || "我会看它解决什么问题、靠什么建立信任、怎样被反复使用。品牌不是名气，是可重复的体验。";
   }
   if (/历史|革命|战争|冷战|工业革命|文艺复兴|启蒙|印刷术|太空竞赛|全球化|事件|朝代/.test(inputText)) {
-    return evidenceAnswer || "我会把历史拆成三层：触发点、结构原因、以及后来改变了什么。单个日期通常不是全部答案。";
+    return safeEvidenceAnswer || "我会把历史拆成三层：触发点、结构原因、以及后来改变了什么。单个日期通常不是全部答案。";
   }
   if (route === "natural_world_question") {
     if (/太阳|日出|日落|东升西落/.test(inputText)) {
@@ -621,7 +680,7 @@ function customerFacingAnswer(packet = {}) {
     if (/气温|升温|天气|气候/.test(inputText)) {
       return "要分开看：天气、季节、地表蓄热、人类活动和长期气候趋势都可能参与，不能只归因给一个原因。";
     }
-    if (evidenceAnswer) return evidenceAnswer;
+    if (safeEvidenceAnswer) return safeEvidenceAnswer;
     return evidenceHint || "这是事实解释类问题，我会先看机制和证据，不套用价值判断模板。";
   }
   if (route === "aesthetic_question" || /美|审美|美学|好看|风格/.test(inputText)) {
@@ -648,10 +707,10 @@ function customerFacingAnswer(packet = {}) {
     return "我会停在证据边界上：先说能确认的，再说缺什么，不把漂亮话当答案。";
   }
   if (fallbackReason || packet.fallback_used) {
-    return ruleBasedFallbackAnswer(packet) || evidenceAnswer || evidenceHint || "这个问题我会先给边界判断：能确定的说清楚，证据不够的地方不硬编。";
+    return cleanCustomerAnswer(ruleBasedFallbackAnswer(packet) || safeEvidenceAnswer || evidenceHint || "这个问题我会先给边界判断：能确定的说清楚，证据不够的地方不硬编。", packet);
   }
   const sentences = raw.match(/[^。！？!?]+[。！？!?]?/g) || [raw];
-  return sentences.slice(0, 2).join("").slice(0, 120).trim() || "我在。";
+  return cleanCustomerAnswer(sentences.slice(0, 2).join(""), packet) || "我在。";
 }
 
 function clearConversation() {

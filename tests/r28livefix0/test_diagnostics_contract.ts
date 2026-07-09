@@ -152,7 +152,10 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(app.includes("renderReasoningViz"));
   assert.ok(app.includes("document.body.dataset.uiMode"));
   assert.ok(app.includes("role === \"user\" ? \"you\" : \"efish\""));
-  assert.ok(app.includes("another_brain 只是工程代号"));
+  assert.ok(app.includes("CUSTOMER_ENGINEERING_MARKERS"));
+  assert.ok(app.includes("cleanCustomerAnswer"));
+  assert.ok(app.includes("containsEngineeringMarker"));
+  assert.ok(app.includes("我是鳄鱼，也可以理解成另一个 efish。直接问就好。"));
   for (const phrase of [
     "死让时间变得有限",
     "意义是在关系、行动和承担后",
@@ -185,7 +188,11 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(css.includes(".composer-actions [hidden]"));
   assert.ok(css.includes("#send-button"));
   assert.ok(css.includes('grid-template-rows: auto auto minmax(0, 2fr) minmax(0, 0.9fr)'));
-  assert.ok(css.includes("position: absolute"));
+  assert.ok(css.includes("R28POSTMERGE10"));
+  assert.ok(css.includes("width: fit-content"));
+  assert.ok(css.includes("max-width: min(72ch, 76%)"));
+  assert.ok(css.includes("grid-template-columns: minmax(0, 1fr) auto"));
+  assert.ok(css.includes("position: static"));
   assert.ok(css.includes('@media (max-width: 720px)'));
   assert.ok(css.includes(".header-side"));
   assert.ok(css.includes("display: none"));
