@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { BrowserChatRuntime, verifyDraft } from "../../web/another_brain_chat/browser_runtime.js";
+import { buildEvidencePacket } from "../../web/another_brain_chat/static_retriever.js";
 
 test("browser diagnostics exposes branch marker, shard probes, forward status, and merge runtime readiness", async () => {
   const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
@@ -14,6 +15,8 @@ test("browser diagnostics exposes branch marker, shard probes, forward status, a
   assert.ok(app.includes("q4_quality"));
   assert.ok(app.includes("mount_runtime_ready"));
   assert.ok(app.includes("merge_runtime_ready"));
+  assert.ok(app.includes("capability_diagnosis"));
+  assert.ok(app.includes("last_answer_capability_diagnosis"));
   assert.ok(app.includes("q4Shards.length === 5"));
   assert.ok(app.includes("assetsOk && tokenizerOk && forwardOk && q4QualityAccepted"));
 });
@@ -115,4 +118,42 @@ test("q4 forward with rejected mojibake is quality-blocked and uses visible RAG-
   assert.match(packet.final_answer, /q4 草稿未被采纳|不能把这次输出说成模型思考/);
   assert.match(packet.final_answer, /本地检索实际命中/);
   assert.match(packet.final_answer, /Local aesthetic boundary/);
+});
+
+test("unrelated high-trust profile cards do not masquerade as relevant local evidence", () => {
+  const records = [
+    {
+      source_id: "identity-card",
+      title: "R28RAG3 identity card",
+      text: "Identity questions should answer as the local another_brain surface.",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["identity", "你是谁", "another_brain"],
+      metadata: { r28rag3_profile_card: true, card_kind: "identity" }
+    },
+    {
+      source_id: "capability-card",
+      title: "R28RAG3 capability card",
+      text: "The runtime is useful for boundary judgment and evidence organization.",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["capability", "能做什么", "evidence"],
+      metadata: { r28rag3_profile_card: true, card_kind: "capability" }
+    }
+  ];
+  const packet = buildEvidencePacket("你怎么看到太阳会升起，日落会朝西", {}, records);
+  assert.equal(packet.evidence_status, "insufficient");
+  assert.equal(packet.retrieved_evidence.length, 0);
+
+  const relevant = buildEvidencePacket("你怎么看待美学", {}, [{
+    source_id: "aesthetic-card",
+    title: "R28RAG3 aesthetic card",
+    text: "Aesthetic judgment should look at structure, restraint, risk, and expressive accuracy.",
+    trust_level: "high",
+    can_answer: true,
+    keywords: ["审美", "美学", "aesthetic"],
+    metadata: { r28rag3_profile_card: true, card_kind: "aesthetic" }
+  }]);
+  assert.equal(relevant.evidence_status, "sufficient");
+  assert.equal(relevant.retrieved_evidence.length, 1);
 });

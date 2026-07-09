@@ -420,6 +420,7 @@ function publicDebugPacket(packet = null) {
       evidence_status: packet.process_trace?.rag?.evidence_status || packet.evidence_packet?.evidence_status || "none",
       top_sources: packet.process_trace?.rag?.top_sources || []
     },
+    capability_diagnosis: packet.process_trace?.capability_diagnosis || null,
     non_claims: packet.process_trace?.non_claims || {
       product_admission: false,
       browser_admission: false,
@@ -462,7 +463,8 @@ function updateStatus(packet) {
   setText(generationElapsedStatus, generation.total_generation_ms == null ? "0 ms" : `${generation.total_generation_ms} ms`);
   setText(modelSourceBadge, packet.answer_source_label || sourceLabel(trace));
   setText(tokenizerStatusBadge, `tokenizer: ${trace.model?.tokenizer || packet.decode_status || "not checked"}`);
-  setText(q4StatusBadge, `q4 forward: ${trace.model?.q4_forward_ran ? "true" : `false / ${visibleFallbackReason}`}`);
+  const qualityAccepted = trace.model?.q4_quality_accepted === true ? "quality=true" : trace.model?.q4_quality_assessed ? "quality=false" : "quality=unknown";
+  setText(q4StatusBadge, `q4 forward: ${trace.model?.q4_forward_ran ? `true / ${qualityAccepted}` : `false / ${visibleFallbackReason}`}`);
   renderQ4RetryStatus(packet);
   renderTrace(trace);
 }
@@ -493,6 +495,7 @@ function renderTrace(trace = null) {
   const router = trace.router || {};
   const finalizer = trace.finalizer || {};
   const truth = trace.runtime_truth_table || {};
+  const capability = trace.capability_diagnosis || {};
   const topSources = (rag.top_sources || []).map((item) => {
     const provenance = item.provenance ? `:${item.provenance}` : "";
     const kind = item.kind ? `:${item.kind}` : "";
@@ -507,9 +510,9 @@ function renderTrace(trace = null) {
   setText(generationStatus, generation.generation_status || "not_run");
   setText(firstTokenStatus, generation.first_token_ms == null ? "none" : `${generation.first_token_ms} ms`);
   setText(generationElapsedStatus, generation.total_generation_ms == null ? "0 ms" : `${generation.total_generation_ms} ms`);
-  setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_attempted=${boolText(generation.q4_attempted)} / generation_started=${boolText(generation.generation_started)} / generation_status=${generation.generation_status || "not_run"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / tokens=${generation.tokens_generated || model.tokens_generated || 0} / first_token_ms=${generation.first_token_ms == null ? "none" : generation.first_token_ms} / total_generation_ms=${generation.total_generation_ms == null ? 0 : generation.total_generation_ms} / model_draft_generated=${boolText(model.draft_generated)}`);
+  setText(traceDraftSummary, `asset_manifest_loaded=${boolText(model.asset_manifest_loaded)} / shards_verified=${boolText(model.shards_verified)} / tokenizer=${model.tokenizer || "none"} / q4_attempted=${boolText(generation.q4_attempted)} / generation_started=${boolText(generation.generation_started)} / generation_status=${generation.generation_status || "not_run"} / q4_forward_ran=${boolText(model.q4_forward_ran)} / q4_quality_accepted=${boolText(model.q4_quality_accepted)} / tokens=${generation.tokens_generated || model.tokens_generated || 0} / first_token_ms=${generation.first_token_ms == null ? "none" : generation.first_token_ms} / total_generation_ms=${generation.total_generation_ms == null ? 0 : generation.total_generation_ms} / model_draft_generated=${boolText(model.draft_generated)}`);
   setText(traceRouterSummary, `route=${router.route || "not_run"} / intent=${router.intent || "none"} / surface=${router.surface_category || "none"} / length=${router.length_policy?.trim_strategy || "none"} / used_model_draft=${boolText(router.used_model_draft)} / finalizer_replaced_draft=${boolText(router.replaced_model_draft)} / reason=${router.reason || "none"}`);
-  setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / truth=${truth.ok === false ? (truth.failures || []).join(", ") : "pass"} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || truth.blocker || "none"}`);
+  setText(traceFinalSummary, `final_answer_source=${sourceLabel(trace)} / capability=${capability.conclusion || "not_assessed"} / invocation=${capability.invocation || "unknown"} / retrieval=${capability.retrieval || "unknown"} / truth=${truth.ok === false ? (truth.failures || []).join(", ") : "pass"} / quality_flags=${(finalizer.quality_flags || []).join(", ") || "none"} / fallback_reason=${finalizer.fallback_reason || truth.blocker || "none"}`);
 }
 
 function renderContextBridge(result = null) {
@@ -648,8 +651,10 @@ function diagnosticsFromReport(config, manifestStatus, report) {
   const forwardOk = q4Forward.q4_forward_ran === true && tokensGenerated > 0;
   const assetsOk = manifestStatus.ok === true && q4Shards.length === 5 && q4Shards.every((item) => item.ok === true && Number(item.bytes_read || 0) > 0);
   const tokenizerOk = tokenizer.exact_runtime_tokenizer === true;
-  const q4QualityAccepted = report?.q4_quality?.accepted === true;
-  const q4QualityStatus = q4QualityAccepted ? "accepted" : "not_assessed_by_live_answer";
+  const lastCapability = lastPacket?.process_trace?.capability_diagnosis || null;
+  const liveAnswerQualityAccepted = lastPacket?.process_trace?.model?.q4_quality_accepted === true;
+  const q4QualityAccepted = report?.q4_quality?.accepted === true || liveAnswerQualityAccepted;
+  const q4QualityStatus = q4QualityAccepted ? "accepted" : lastCapability ? "rejected_or_not_admitted_by_last_answer" : "not_assessed_by_live_answer";
   return {
     branch_marker: config.branch_marker || config.ui_build_marker || R28LIVEFIX0_BRANCH_MARKER,
     branch_name: config.branch_name || config.ui_version || R28LIVEFIX0_BRANCH_NAME,
@@ -683,7 +688,8 @@ function diagnosticsFromReport(config, manifestStatus, report) {
     q4_quality: {
       accepted: q4QualityAccepted,
       status: q4QualityStatus,
-      note: q4QualityAccepted ? "" : "mount probe cannot prove answer quality; send a live open question and inspect finalizer quality_flags"
+      note: q4QualityAccepted ? "" : "mount probe cannot prove answer quality; send a live open question and inspect finalizer quality_flags",
+      last_answer_capability_diagnosis: lastCapability
     },
     answer_source: forwardOk && q4QualityAccepted ? "static_q4_experimental" : forwardOk ? "q4_forward_quality_unadmitted" : "no_model_fallback",
     mount_runtime_ready: assetsOk && tokenizerOk && forwardOk,

@@ -1309,6 +1309,58 @@ function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, deco
   return fallbackUsed ? "fallback" : "fallback";
 }
 
+function runtimeCapabilityDiagnosis({
+  generationAttempted,
+  generationStarted,
+  q4Ran,
+  q4QualityAssessed,
+  q4QualityAccepted,
+  evidencePacket,
+  qualityFlags,
+  routePolicy,
+  fallbackReason
+} = {}) {
+  const evidenceCount = (evidencePacket?.retrieved_evidence || []).length;
+  const evidenceStatus = evidencePacket?.evidence_status || "none";
+  let invocation = "q4_not_called";
+  if (generationAttempted && q4Ran) invocation = "q4_called_forward_ran";
+  else if (generationAttempted || generationStarted) invocation = "q4_called_no_forward";
+
+  let retrieval = "retrieval_not_run";
+  if (evidenceStatus === "sufficient" && evidenceCount > 0) retrieval = "relevant_local_evidence_available";
+  else if (evidenceStatus === "conflicting") retrieval = "conflicting_local_evidence";
+  else if (evidenceStatus === "malicious") retrieval = "untrusted_local_evidence";
+  else retrieval = "no_relevant_local_evidence";
+
+  let modelCapability = "not_assessed";
+  if (!generationAttempted) modelCapability = "not_called";
+  else if (!q4Ran) modelCapability = "called_but_forward_not_confirmed";
+  else if (q4QualityAccepted) modelCapability = "quality_accepted_for_this_turn";
+  else if (q4QualityAssessed) modelCapability = "called_but_output_rejected";
+
+  let conclusion = modelCapability;
+  if (modelCapability === "called_but_output_rejected" && (qualityFlags || []).some((flag) => Q4_QUALITY_BLOCKING_FLAGS.includes(flag))) {
+    conclusion = "type_capability_not_admitted_for_this_prompt";
+  } else if (modelCapability === "not_called") {
+    conclusion = "capability_may_exist_but_was_not_invoked";
+  } else if (retrieval === "no_relevant_local_evidence" && !q4QualityAccepted) {
+    conclusion = "retrieval_absent_and_model_not_quality_admitted";
+  }
+
+  return {
+    invocation,
+    retrieval,
+    model_capability: modelCapability,
+    conclusion,
+    evidence_status: evidenceStatus,
+    evidence_count: evidenceCount,
+    q4_quality_assessed: q4QualityAssessed === true,
+    q4_quality_accepted: q4QualityAccepted === true,
+    quality_flags: uniqueFlags(qualityFlags || []),
+    fallback_reason: fallbackReason || routePolicy?.fallback_reason || ""
+  };
+}
+
 function publicAnswerSourceLabel(trace = {}) {
   if (trace.model?.q4_forward_ran && trace.router?.used_model_draft) return "static_q4_experimental";
   if (trace.model?.q4_forward_ran && trace.model?.q4_quality_accepted === false) return "q4_forward_rejected_quality_blocker";
@@ -1447,6 +1499,17 @@ function buildProcessTrace({
       q4_quality_assessed: q4QualityAssessed,
       q4_quality_accepted: q4QualityAccepted,
       quality_flags: finalQualityFlags
+    }),
+    capability_diagnosis: runtimeCapabilityDiagnosis({
+      generationAttempted,
+      generationStarted,
+      q4Ran,
+      q4QualityAssessed,
+      q4QualityAccepted,
+      evidencePacket,
+      qualityFlags: finalQualityFlags,
+      routePolicy,
+      fallbackReason: generationFallbackReason
     }),
     non_claims: {
       product_admission: false,

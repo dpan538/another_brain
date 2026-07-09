@@ -55,7 +55,19 @@ function cleanList(value) {
 }
 
 function tokenize(text) {
-  return String(text || "").toLowerCase().match(/[a-z0-9_]+|[\u4e00-\u9fff]/g) || [];
+  const raw = String(text || "").toLowerCase();
+  const tokens = raw.match(/[a-z0-9_]+/g) || [];
+  const cjkRuns = raw.match(/[\u4e00-\u9fff]+/g) || [];
+  for (const run of cjkRuns) {
+    if (run.length === 1) {
+      if ("美死生爱词".includes(run)) tokens.push(run);
+      continue;
+    }
+    if (run.length === 2) tokens.push(run);
+    for (let index = 0; index <= run.length - 2; index += 1) tokens.push(run.slice(index, index + 2));
+    for (let index = 0; index <= run.length - 3; index += 1) tokens.push(run.slice(index, index + 3));
+  }
+  return tokens;
 }
 
 function charNgrams(text, size = 3) {
@@ -82,9 +94,12 @@ function scoreRecord(query, record) {
   }
   const keywordScore = overlap / Math.max(queryTokens.length, 1);
   const gramScore = qgrams.size ? gramOverlap / qgrams.size : 0;
-  const trustBoost = record.trust_level === "high" ? 0.08 : record.trust_level === "medium" ? 0.04 : 0;
-  const profileBoost = record.metadata?.r28rag3_profile_card ? 0.025 : 0;
-  return Number((keywordScore * 0.72 + gramScore * 0.2 + trustBoost + profileBoost + profileKindBoost(query, record)).toFixed(6));
+  const hasLexicalOverlap = overlap > 0 || gramOverlap > 0;
+  const kindBoost = profileKindBoost(query, record);
+  if (!hasLexicalOverlap && kindBoost <= 0) return 0;
+  const trustBoost = hasLexicalOverlap ? (record.trust_level === "high" ? 0.08 : record.trust_level === "medium" ? 0.04 : 0) : 0;
+  const profileBoost = hasLexicalOverlap && record.metadata?.r28rag3_profile_card ? 0.025 : 0;
+  return Number((keywordScore * 0.72 + gramScore * 0.2 + trustBoost + profileBoost + kindBoost).toFixed(6));
 }
 
 function profileKindBoost(query = "", record = {}) {
