@@ -258,6 +258,10 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
     "MODEL_SHARD_PROBE_TIMEOUT_MS = 30000",
     "runtime.activeQ4MountPromise",
     "runtime.mountQ4WithRetry",
+    "scheduleBackgroundQ4Mount",
+    "requestIdleCallback",
+    "window.addEventListener(\"load\", afterFirstPaint",
+    "pagehide_cleanup",
     "preflightReport: report",
     "完成 100%",
     "模型前向未确认",
@@ -271,7 +275,7 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
   }
 });
 
-test("q4 mount uses persistent runtime worker, five attempts, and does not admit q4 mode without forward tokens", async () => {
+test("q4 mount uses persistent runtime worker, five attempts, stable shard loading, and does not admit q4 mode without forward tokens", async () => {
   const browserRuntime = await readFile(new URL("../../web/another_brain_chat/browser_runtime.js", import.meta.url), "utf8");
   const q4Worker = await readFile(new URL("../../web/another_brain_chat/q4_worker_runtime.js", import.meta.url), "utf8");
 
@@ -284,6 +288,7 @@ test("q4 mount uses persistent runtime worker, five attempts, and does not admit
   assert.ok(browserRuntime.includes("lastQ4SmokeResult"));
   assert.ok(browserRuntime.includes("lastQ4ForwardStats"));
   assert.ok(browserRuntime.includes("normalizeQ4SmokeMessage"));
+  assert.ok(browserRuntime.includes("asset_probe_byte_budget_met"));
   assert.ok(browserRuntime.includes('const reportRuntimeMode = q4ForwardPassed ? "static_q4_experimental" : "synthetic_fallback";'));
   assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MS = 300000"));
   assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 360000"));
@@ -292,7 +297,7 @@ test("q4 mount uses persistent runtime worker, five attempts, and does not admit
   assert.ok(browserRuntime.includes("preflightReport = report"));
   assert.ok(browserRuntime.includes("shard_probe_reused"));
   assert.ok(browserRuntime.includes("_reused"));
-  assert.ok(q4Worker.includes("Q4_SHARD_DOWNLOAD_CONCURRENCY = 5"));
+  assert.ok(q4Worker.includes("Q4_SHARD_DOWNLOAD_CONCURRENCY = 1"));
   assert.ok(q4Worker.includes("Q4_RANGE_CHUNK_BYTES"));
   assert.ok(q4Worker.includes("stream_into_preallocated_tensor_store"));
   assert.ok(q4Worker.includes("fetchShardRange"));

@@ -1656,11 +1656,10 @@ async function probeSameOriginAsset(path, options = {}) {
         const chunk = await reader.read();
         return Math.min(Number(chunk?.value?.byteLength || chunk?.value?.length || 0), 16);
       } finally {
-        await reader.cancel().catch(() => {});
+        await reader.cancel("asset_probe_byte_budget_met").catch(() => {});
       }
     }
-    const buffer = await response.arrayBuffer();
-    return Math.min(Number(buffer?.byteLength || 0), 16);
+    return 0;
   };
   const contentLengthHeader = (response) => {
     const value = response?.headers?.get?.("content-length");

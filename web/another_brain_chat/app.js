@@ -167,6 +167,8 @@ let lastSelfCheckReport = null;
 let running = false;
 let activeSelfCheckController = null;
 let activeLoadingController = null;
+let backgroundQ4MountScheduled = false;
+let backgroundQ4MountStarted = false;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
@@ -1041,6 +1043,81 @@ async function boot() {
   renderAssetStatus(loadResult.asset_status, deliveryConfig);
   renderContextBridge();
   renderTrace(null);
+  const initialReport = {
+    status: "checking_quick",
+    check_level: "quick",
+    stage: "boot_quick_check",
+    elapsed_ms: 0,
+    assets: { manifest_loaded: false, shards_verified: false, q4_shard_count: 0, expected_shard_count: Number(deliveryConfig.shard_count || 0) },
+    tokenizer: { exact_runtime_tokenizer: false },
+    q4_forward: { status: "skipped", q4_forward_ran: false, tokens_generated: 0 },
+    fallback: { status: "可用" },
+    output: { text_preview: "" },
+    blockers: []
+  };
+  renderSelfCheck(initialReport);
+  scheduleBackgroundQ4Mount(deliveryConfig);
+}
+
+function handleBackgroundQ4Failure(error, deliveryConfig) {
+  console.warn("[another_brain] q4_background_mount_warning", error);
+  const failureReport = {
+    status: "failed",
+    check_level: "deep",
+    stage: "background_q4_mount_failed",
+    elapsed_ms: 0,
+    assets: { manifest_loaded: false, shards_verified: false, q4_shard_count: 0, expected_shard_count: Number(deliveryConfig.shard_count || 0) },
+    tokenizer: { exact_runtime_tokenizer: false },
+    q4_forward: { status: "失败", q4_forward_ran: false, tokens_generated: 0, blocker: error.message || "q4_background_mount_failed" },
+    fallback: { status: "可用", reason: error.message || "q4_background_mount_failed" },
+    output: { text_preview: "" },
+    blockers: [error.message || "q4_background_mount_failed"]
+  };
+  renderSelfCheck(failureReport);
+  completeModelLoading(failureReport);
+  setText(modelStatus, "q4_blocked");
+  setText(runtimeModeStatus, "synthetic_fallback");
+  setText(answerSourceStatus, "no_model_fallback");
+  setText(fallbackReasonStatus, error.message || "q4_background_mount_failed");
+}
+
+function scheduleBackgroundQ4Mount(deliveryConfig) {
+  if (backgroundQ4MountScheduled || backgroundQ4MountStarted) return;
+  backgroundQ4MountScheduled = true;
+
+  const startMount = () => {
+    if (backgroundQ4MountStarted) return;
+    if (document.visibilityState === "hidden") {
+      backgroundQ4MountScheduled = false;
+      return;
+    }
+    backgroundQ4MountStarted = true;
+    runBackgroundQ4Mount(deliveryConfig).catch((error) => handleBackgroundQ4Failure(error, deliveryConfig));
+  };
+
+  const afterFirstPaint = () => {
+    const startWhenIdle = () => {
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(startMount, { timeout: 1800 });
+      } else {
+        window.setTimeout(startMount, 900);
+      }
+    };
+    if (typeof window.requestAnimationFrame === "function") {
+      window.requestAnimationFrame(() => window.requestAnimationFrame(startWhenIdle));
+    } else {
+      window.setTimeout(startWhenIdle, 600);
+    }
+  };
+
+  if (document.readyState === "complete") {
+    afterFirstPaint();
+  } else {
+    window.addEventListener("load", afterFirstPaint, { once: true });
+  }
+}
+
+async function runBackgroundQ4Mount(deliveryConfig) {
   renderSelfCheck({
     status: "checking_quick",
     check_level: "quick",
@@ -1285,6 +1362,22 @@ on(modelSelfCheckStopButton, "click", () => {
   };
   renderSelfCheck(cancelledReport);
   completeModelLoading(cancelledReport);
+});
+on(window, "pagehide", () => {
+  backgroundQ4MountScheduled = false;
+  backgroundQ4MountStarted = false;
+  if (activeLoadingController) activeLoadingController.abort();
+  if (activeSelfCheckController) activeSelfCheckController.abort();
+  runtime.cancelSelfCheck("pagehide_cleanup");
+  runtime.abort();
+});
+on(window, "beforeunload", () => {
+  backgroundQ4MountScheduled = false;
+  backgroundQ4MountStarted = false;
+  if (activeLoadingController) activeLoadingController.abort();
+  if (activeSelfCheckController) activeSelfCheckController.abort();
+  runtime.cancelSelfCheck("page_unload_cleanup");
+  runtime.abort();
 });
 }
 

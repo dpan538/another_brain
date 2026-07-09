@@ -38,9 +38,39 @@ test("live asset probe accepts 200 Range fallback when content-length is zero bu
   assert.equal(result.method, "GET_RANGE_AS_200");
 });
 
+test("live asset probe reads one stream chunk and cancels instead of full-buffering a shard", async () => {
+  let readCount = 0;
+  let cancelReason = "";
+  const result = await liveProbeSameOriginAsset("/another_brain/model_assets/r28m1/shards/model-q4-00003.bin", {
+    origin: "https://preview.example",
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => "" },
+      body: {
+        getReader: () => ({
+          read: async () => {
+            readCount += 1;
+            return { done: false, value: new Uint8Array([1, 2, 3, 4, 5, 6]) };
+          },
+          cancel: async (reason) => {
+            cancelReason = String(reason || "");
+          }
+        })
+      }
+    })
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.bytes_read, 6);
+  assert.equal(readCount, 1);
+  assert.equal(cancelReason, "asset_probe_byte_budget_met");
+});
+
 test("live asset probe source does not use HEAD as proof", async () => {
   const source = await readFile(new URL("../../src/browser_runtime/assets/live_asset_probe.ts", import.meta.url), "utf8");
   assert.equal(source.includes('method: "HEAD"'), false);
+  assert.equal(source.includes("arrayBuffer()"), false);
+  assert.ok(source.includes('reader.cancel("asset_probe_byte_budget_met")'));
   assert.ok(source.includes("bytes_read"));
   assert.ok(source.includes("content_length_header"));
 });

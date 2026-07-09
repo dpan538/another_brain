@@ -11,11 +11,10 @@ async function readProbeBytes(response, limit = 16) {
       const bytes = chunk?.value?.byteLength || chunk?.value?.length || 0;
       return Math.min(bytes, capped);
     } finally {
-      await reader.cancel().catch(() => {});
+      await reader.cancel("asset_probe_byte_budget_met").catch(() => {});
     }
   }
-  const buffer = await response.arrayBuffer();
-  return Math.min(buffer.byteLength || 0, capped);
+  return 0;
 }
 
 function contentLengthHeader(response) {
