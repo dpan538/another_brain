@@ -76,8 +76,8 @@ const R28HOTFIX4_UI_VERSION = "r28hotfix4-open-question-generation-sla";
 const R28SURF5_SURFACE_COMPOSER_VERSION = "r28surf5-wide-surface-composer-v1";
 const SELF_CHECK_JSON_TIMEOUT_MS = 900;
 const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
-const SELF_CHECK_DEEP_TIMEOUT_MS = 45000;
-const SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 90000;
+const SELF_CHECK_DEEP_TIMEOUT_MS = 120000;
+const SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 180000;
 const GENERATION_START_TIMEOUT_MS = 1500;
 const DESKTOP_FIRST_TOKEN_TIMEOUT_MS = 6000;
 const MOBILE_FIRST_TOKEN_TIMEOUT_MS = 10000;
@@ -2135,6 +2135,7 @@ export class BrowserChatRuntime {
     if (this.activeQ4MountPromise) return this.activeQ4MountPromise;
     this.q4WorkerRestarted = false;
     this.q4RetryAttempts = [];
+    let preflightReport = options.preflightReport || null;
     const startedAt = typeof performance !== "undefined" ? performance.now() : Date.now();
     const emit = (partial = {}) => {
       if (typeof options.onProgress === "function") {
@@ -2164,6 +2165,7 @@ export class BrowserChatRuntime {
             forceNormalizedAbsolutePaths: strategy === "normalized_absolute",
             timeoutMs: options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS,
             shardTimeoutMs: options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS,
+            preflightReport,
             onProgress: (progressReport) => {
               progressReport.attempt = attempt;
               progressReport.strategy = strategy;
@@ -2186,6 +2188,9 @@ export class BrowserChatRuntime {
           };
         }
         lastReport = report;
+        if (report?.assets?.shards_verified === true && report?.tokenizer?.exact_runtime_tokenizer === true) {
+          preflightReport = report;
+        }
         const retryAttempt = buildQ4RetryAttempt({
           attempt,
           strategy,
@@ -2254,6 +2259,7 @@ export class BrowserChatRuntime {
         callback();
       };
       const failAndRestart = (reason) => {
+        if (settled) return;
         try {
           this.worker?.terminate();
         } catch {
@@ -2261,8 +2267,11 @@ export class BrowserChatRuntime {
         this.worker = null;
         finish(() => reject(new Error(reason)));
       };
+      const softTimeout = (reason) => {
+        finish(() => reject(new Error(reason)));
+      };
       const timeout = setTimeout(() => {
-        failAndRestart("self_check_timeout");
+        softTimeout("self_check_timeout");
       }, timeoutMs);
       if (options.signal) {
         if (options.signal.aborted) {
@@ -2360,45 +2369,59 @@ export class BrowserChatRuntime {
       } catch (error) {
         blockers.push(signal.aborted ? "self_check_cancelled" : error.message || "runtime_tokenizer_fetch_failed");
       }
-      emit("checking_quick", "shard_probe", {
+      const reusableShardProbeResults = Array.isArray(options.preflightReport?.assets?.shard_probe_results)
+        ? options.preflightReport.assets.shard_probe_results
+        : [];
+      const canReuseShardProbe = options.preflightReport?.assets?.shards_verified === true
+        && reusableShardProbeResults.length === q4Assets.length
+        && reusableShardProbeResults.every((item) => item?.ok === true && Number(item.bytes_read || 0) > 0);
+      emit("checking_quick", canReuseShardProbe ? "shard_probe_reused" : "shard_probe", {
         assets: {
           manifest_loaded: true,
           q4_shard_count: q4Assets.length,
           expected_shard_count: Number(quantizationManifest?.shard_count || assetManifest?.shard_count || 0)
         }
       });
-      shardResults = await Promise.all(q4Assets.map(async (item) => {
-        try {
-          const probe = await probeSameOriginAsset(item.path, {
-            timeoutMs: shardProbeTimeoutMs,
-            signal,
-            cache: "no-store",
-            preferRangeGet: true,
-            cacheBust
-          });
-          return { path: item.path, ok: probe.ok === true && Number(probe.bytes_read || 0) > 0, bytes: Number(item.bytes || 0), ...probe };
-        } catch (error) {
-          let normalizedPath = "";
-          try {
-            normalizedPath = sameOriginAssetUrl(item.path).pathname;
-          } catch {
-            normalizedPath = item.path;
-          }
-          return {
-            path: item.path,
-            normalized_path: normalizedPath,
-            ok: false,
-            blocker: signal.aborted ? "self_check_cancelled" : error.message || `asset_probe_failed:${normalizedPath}:0:0`,
-            failure_reason: signal.aborted ? "self_check_cancelled" : error.message || `asset_probe_failed:${normalizedPath}:0:0`,
-            method: "GET_RANGE_THEN_GET_BODY",
-            status: 0,
-            content_length_header: "",
-            bytes_read: 0,
-            probe_strategy: "get_range_then_get_body",
-            bytes: Number(item.bytes || 0)
-          };
-        }
-      }));
+      shardResults = canReuseShardProbe
+        ? reusableShardProbeResults.map((probe, index) => ({
+            ...probe,
+            path: probe.path || probe.requested_path || q4Assets[index]?.path || "",
+            bytes: Number(probe.bytes || q4Assets[index]?.bytes || 0),
+            ok: true,
+            probe_strategy: `${probe.probe_strategy || "get_range_then_get_body"}_reused`
+          }))
+        : await Promise.all(q4Assets.map(async (item) => {
+            try {
+              const probe = await probeSameOriginAsset(item.path, {
+                timeoutMs: shardProbeTimeoutMs,
+                signal,
+                cache: "no-store",
+                preferRangeGet: true,
+                cacheBust
+              });
+              return { path: item.path, ok: probe.ok === true && Number(probe.bytes_read || 0) > 0, bytes: Number(item.bytes || 0), ...probe };
+            } catch (error) {
+              let normalizedPath = "";
+              try {
+                normalizedPath = sameOriginAssetUrl(item.path).pathname;
+              } catch {
+                normalizedPath = item.path;
+              }
+              return {
+                path: item.path,
+                normalized_path: normalizedPath,
+                ok: false,
+                blocker: signal.aborted ? "self_check_cancelled" : error.message || `asset_probe_failed:${normalizedPath}:0:0`,
+                failure_reason: signal.aborted ? "self_check_cancelled" : error.message || `asset_probe_failed:${normalizedPath}:0:0`,
+                method: "GET_RANGE_THEN_GET_BODY",
+                status: 0,
+                content_length_header: "",
+                bytes_read: 0,
+                probe_strategy: "get_range_then_get_body",
+                bytes: Number(item.bytes || 0)
+              };
+            }
+          }));
       for (const result of shardResults.filter((item) => !item.ok).slice(0, 3)) {
         blockers.push(result.failure_reason || result.blocker);
       }

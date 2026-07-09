@@ -61,8 +61,8 @@ const MODEL_LOADING_PROGRESS = {
   "q4-warmup": 86,
   fallback: 100
 };
-const MODEL_WARMUP_TIMEOUT_MS = 45000;
-const MODEL_SHARD_PROBE_TIMEOUT_MS = 10000;
+const MODEL_WARMUP_TIMEOUT_MS = 120000;
+const MODEL_SHARD_PROBE_TIMEOUT_MS = 30000;
 const R28SHIP0_DEEP_SELFCHECK_METHOD = "deepSelfCheckModelPath";
 
 const appShell = document.querySelector("#app-shell");
@@ -961,13 +961,20 @@ function diagnosticsFromReport(config, manifestStatus, report) {
 async function anotherBrainDiagnostics() {
   const config = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   const manifestStatus = await fetchAssetManifestStatus();
-  const report = await runtime.deepSelfCheckModelPath({
-    timeoutMs: MODEL_WARMUP_TIMEOUT_MS,
-    shardTimeoutMs: MODEL_SHARD_PROBE_TIMEOUT_MS,
-    jsonTimeoutMs: 1200,
-    cacheBust: "r28livefix0-diagnostics",
-    onProgress: (progressReport) => renderSelfCheck(progressReport)
-  });
+  let report = runtime.q4MountReport?.report || runtime.q4MountReport || null;
+  if (runtime.activeQ4MountPromise) {
+    const mountResult = await runtime.activeQ4MountPromise;
+    report = mountResult?.report || mountResult || report;
+  }
+  if (!report) {
+    report = await runtime.deepSelfCheckModelPath({
+      timeoutMs: MODEL_WARMUP_TIMEOUT_MS,
+      shardTimeoutMs: MODEL_SHARD_PROBE_TIMEOUT_MS,
+      jsonTimeoutMs: 1200,
+      cacheBust: "r28livefix0-diagnostics",
+      onProgress: (progressReport) => renderSelfCheck(progressReport)
+    });
+  }
   renderSelfCheck(report);
   return diagnosticsFromReport(config, manifestStatus, report);
 }
@@ -1030,7 +1037,7 @@ async function boot() {
   try {
     report = await runtime.quickSelfCheckModelPath({
       jsonTimeoutMs: 900,
-      shardTimeoutMs: 900,
+      shardTimeoutMs: MODEL_SHARD_PROBE_TIMEOUT_MS,
       signal: bootController.signal,
       onProgress: (progressReport) => {
         renderSelfCheck(progressReport);
@@ -1042,6 +1049,7 @@ async function boot() {
     const mountResult = await runtime.mountQ4WithRetry({
       timeoutMs: MODEL_WARMUP_TIMEOUT_MS,
       shardTimeoutMs: MODEL_SHARD_PROBE_TIMEOUT_MS,
+      preflightReport: report,
       signal: bootController.signal,
       onProgress: (progressReport) => {
         renderSelfCheck(progressReport.report || progressReport);

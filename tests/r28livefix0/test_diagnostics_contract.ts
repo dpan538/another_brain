@@ -218,7 +218,10 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
     "loadingNoteForStage",
     "q4ForwardConfirmed",
     "updateChatSignalStatus",
-    "MODEL_WARMUP_TIMEOUT_MS = 45000",
+    "MODEL_WARMUP_TIMEOUT_MS = 120000",
+    "MODEL_SHARD_PROBE_TIMEOUT_MS = 30000",
+    "runtime.activeQ4MountPromise",
+    "preflightReport: report",
     "完成 100%",
     "模型前向未确认",
     "q4 forward=",
@@ -241,8 +244,12 @@ test("q4 mount uses persistent runtime worker, five attempts, and does not admit
   assert.ok(browserRuntime.includes("this.worker.postMessage({"));
   assert.ok(browserRuntime.includes('generationKind: "mount_smoke"'));
   assert.ok(browserRuntime.includes('const reportRuntimeMode = q4ForwardPassed ? "static_q4_experimental" : "synthetic_fallback";'));
-  assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MS = 45000"));
-  assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 90000"));
+  assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MS = 120000"));
+  assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 180000"));
+  assert.ok(browserRuntime.includes('softTimeout("self_check_timeout")'));
+  assert.ok(browserRuntime.includes("preflightReport = report"));
+  assert.ok(browserRuntime.includes("shard_probe_reused"));
+  assert.ok(browserRuntime.includes("_reused"));
   assert.ok(q4Worker.includes("mapWithConcurrency(shards, 2"));
 });
 
