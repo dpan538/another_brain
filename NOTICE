@@ -1,20 +1,17 @@
 # Notice
 
-Another Brain is a local-first browser-side dialog and memory experiment.
+efishother is a static, local-first browser answer experiment. `another_brain`
+is the engineering codename for the repository.
 
-Copyright (c) 2026 Dai Pan / dpan538. All rights reserved.
+The public runtime is designed to run without backend inference, Vercel
+Functions, Edge inference, external LLM APIs, Doubao, or a hosted vector store.
 
-The public runtime may include generated static knowledge cards and a generated
-tiny-router model artifact. These artifacts are generated for this project only
-and do not grant permission to reuse private source material, local memory
-artifacts, personal calibration data, model training data, or generated runtime
-artifacts outside this repository.
+The committed R28M1 q4 browser model package and project source are distributed
+under the MIT License. Training and corpus development used project-local
+approved materials plus public-source/public-library style material summarized
+by the repository documentation and manifests. Raw corpora, private material,
+checkpoints, tokenizer training artifacts, and local training artifacts are not
+distributed in this repository.
 
-The checked-in tiny router is a route-and-answer browser artifact. It is not a
-general-purpose generative language model.
-
-Third-party dependencies, if added later, remain subject to their own licenses.
-Any future use of WebLLM, Transformers.js, ONNX Runtime Web, MLC-LLM, Hugging
-Face models, or other model families must include the
-corresponding license, model card, attribution, and notice files required by
-those projects.
+Third-party dependencies and source materials remain subject to their own
+licenses and terms.

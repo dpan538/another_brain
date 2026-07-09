@@ -60,7 +60,8 @@ async function handleMessage(message) {
         contextLength: message.contextLength || 64,
         generationKind: message.generationKind || "answer_generation",
         timeoutMs: message.timeoutMs || 30000,
-        onToken: (token) => self.postMessage({ type: "token", token })
+        onToken: (token) => self.postMessage({ type: "token", token }),
+        onProgress: (progress) => self.postMessage({ type: "progress", ...progress })
       });
       self.postMessage({
         type: "final",

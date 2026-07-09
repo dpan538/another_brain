@@ -1,63 +1,61 @@
-# Model Card: Another Brain Tiny Router Web SLM
+# Model Card: R28M1 q4 Browser Model
+
+## Summary
+
+R28M1 is the committed static q4 browser model package used by efishother's
+local preview runtime. It is packaged for same-origin static delivery and loaded
+inside the browser with an exact runtime tokenizer, manifest checks, shard
+checks, and q4 forward warmup diagnostics.
 
 ## Intended Use
 
-Browser-side route-and-answer auxiliary for a bounded dialog copy. It helps
-choose response strategies and return compact calibrated answers inside the
-public static runtime.
+- local browser-side answer drafting experiments
+- retrieval-grounded short answer demos
+- dashboard-visible runtime verification
+- static q4 loading and tokenizer compatibility testing
 
 ## Not Intended Use
 
-This artifact is not intended for general-purpose generation, legal, medical, or
-financial advice, identity inference, private file reconstruction, open-ended
-factual answering without retrieval, or autonomous decision-making.
+- product model admission
+- browser admission
+- release checkpoint admission
+- legal, medical, financial, or safety-critical advice
+- private data reconstruction
+- claims of general reasoning competence without live evidence
 
-## Architecture
+## Runtime Package
 
-Character n-gram classifier plus conservative answer index. It is a
-route-and-answer Web SLM artifact, not a generative language model.
+- Public path: `web/another_brain/model_assets/r28m1/`
+- Quantization: q4 static browser package
+- Shards: 5
+- q4 shard bytes: 48,267,968
+- Deployment profile: under 100 MB static q4 candidate
+- Tokenizer: exact runtime tokenizer
+- Inference surface: browser only, no backend or external API
 
-The runtime path is:
+The original training architecture lineage is larger than the committed q4
+bytes. The repository intentionally ships only the admitted static browser
+runtime package, not raw checkpoints or training artifacts.
 
-```text
-deterministic dialog rules
-  -> static knowledge lookup
-  -> tiny router route-and-answer artifact
-  -> structured route/evidence/verifier fallback
-  -> controlled fallback
-```
+## Training And Data
 
-## Training Data
-
-The artifact is built from deterministic teacher cases, public dialog cases,
-model-gate cases, correction pairs, common-knowledge cards, reasoning and
-counterquestion calibration, context-window calibration, surface-identity
-calibration, relationship-repetition calibration, and persona alignment.
-
-## Privacy
-
-No raw personal memory cards are shipped in the public runtime. Private local
-artifacts, drive inventories, source materials, model checkpoints, and LoRA
-adapters are ignored by git and are not licensed for distribution.
+Training and corpus development used approved project-local materials and
+public-source/public-library style material summarized by repository training
+docs and manifests. The repository does not distribute raw private materials,
+raw/clean/processed corpus dumps, tokenizer training artifacts, raw checkpoints,
+LoRA adapters, or hidden prompts.
 
 ## Known Limitations
 
-- Not a generative model.
-- Not an omniscient assistant or generic chatbot.
-- Relies on deterministic rules and knowledge lookup.
-- Weak open-domain reasoning outside calibrated routes.
-- Weak paraphrase generalization compared with true language models.
-- Exact-answer bias from the answer index.
-- No independent factual authority without retrieval.
-- Mobile memory and first-load performance still require device profiling.
+- The model can load and run q4 forward, but quality remains experimental.
+- Some generated drafts can be mojibake or low-value and must be rejected by the
+  verifier.
+- Retrieval evidence and rule-based boundaries are still required for useful
+  customer-facing answers.
+- The dashboard must distinguish asset loading, q4 forward, answer quality, and
+  fallback behavior.
 
-## Current Snapshot
+## License
 
-- Web artifact: 1,871,095 bytes.
-- Feature weights: 18,000.
-- Answer index: 787.
-- Family-holdout accuracy: 0.9467 across 6,833 held-out examples from unseen source/tag/id families.
-- Route accuracy: 0.9372.
-- Public model-gate usage: 37/805 cases.
-- Synthetic casepack capability eval: 10 casepacks, 160 questions, 0 failures.
-- Knowledge shard validation: 43 shards, 55,151 cards, max shard size 179,996 bytes, full round-trip against the monolithic public artifact.
+The committed R28M1 q4 browser model package is licensed under the MIT License.
+See `MODEL_LICENSE.md` for scope and exclusions.

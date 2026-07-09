@@ -3,6 +3,11 @@ const R28HOTFIX1_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
 const R28HOTFIX3_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
 const Q4_MOUNT_SMOKE_MAX_TOKENS = 1;
 const Q4_ANSWER_MAX_TOKENS = 32;
+const Q4_SHARD_DOWNLOAD_CONCURRENCY = 5;
+const Q4_RANGE_CHUNK_BYTES = 1_048_576;
+const Q4_TOTAL_DOWNLOAD_TIMEOUT_MS = 180_000;
+const Q4_SHARD_STALL_TIMEOUT_MS = 45_000;
+const Q4_PROGRESS_EMIT_INTERVAL_MS = 250;
 const PAIR_SEPARATOR = "\u0001";
 const BYTE_ENCODER = new Map();
 const BYTE_DECODER = new Map();
@@ -60,6 +65,22 @@ async function fetchBytes(path) {
   const response = await fetch(assetUrl(path), { cache: "force-cache" });
   if (!response.ok) throw new Error(`fetch_bytes_failed:${path}:${response.status}`);
   return new Uint8Array(await response.arrayBuffer());
+}
+
+function emitQ4Progress(options, detail = {}) {
+  if (typeof options.onProgress !== "function") return;
+  options.onProgress({
+    type: "progress",
+    stage: detail.stage || "q4_model_download",
+    ...detail
+  });
+}
+
+function formatBytes(bytes) {
+  const value = Number(bytes || 0);
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}MB`;
+  if (value >= 1_000) return `${(value / 1_000).toFixed(1)}KB`;
+  return `${value}B`;
 }
 
 async function sha256Hex(bytes) {
@@ -422,7 +443,7 @@ async function runtimePackage() {
   return runtimePackagePromise;
 }
 
-async function tensorStore(pkg) {
+async function tensorStore(pkg, options = {}) {
   if (tensorStorePromise) return tensorStorePromise;
   tensorStorePromise = (async () => {
     const shards = pkg.quantizationManifest.shards || pkg.summary.shardAssets;
@@ -430,19 +451,204 @@ async function tensorStore(pkg) {
     if (totalBytes <= 0) throw new Error("q4_tensor_store_empty");
     if (totalBytes > 100_000_000) throw new Error("q4_tensor_store_over_budget");
     const weights = new Uint8Array(totalBytes);
-    await mapWithConcurrency(shards, 2, async (shard) => {
-      const bytes = await fetchBytes(shard.path);
-      if (bytes.byteLength !== Number(shard.bytes || 0)) throw new Error(`shard_size_mismatch:${shard.path}`);
-      const expected = String(shard.sha256 || "").toLowerCase();
-      if (expected && crypto?.subtle?.digest) {
-        const actual = await sha256Hex(bytes);
-        if (actual !== expected) throw new Error(`shard_sha256_mismatch:${shard.path}`);
-      }
-      weights.set(bytes, Number(shard.offset || 0));
+    const state = {
+      startedAt: nowMs(),
+      loadedBytes: 0,
+      totalBytes,
+      lastEmitAt: 0,
+      loadedShards: 0
+    };
+    emitQ4Progress(options, {
+      stage: "q4_model_download",
+      loaded_bytes: 0,
+      total_bytes: totalBytes,
+      loaded_label: `0/${formatBytes(totalBytes)}`,
+      progress: 68,
+      q4_download_strategy: "stream_into_preallocated_tensor_store"
+    });
+    await mapWithConcurrency(shards, Q4_SHARD_DOWNLOAD_CONCURRENCY, async (shard) => {
+      await loadShardIntoWeights({ shard, weights, state, options });
+    });
+    emitQ4Progress(options, {
+      stage: "q4_model_download_complete",
+      loaded_bytes: state.loadedBytes,
+      total_bytes: totalBytes,
+      loaded_shards: state.loadedShards,
+      shard_count: shards.length,
+      loaded_label: `${formatBytes(state.loadedBytes)}/${formatBytes(totalBytes)}`,
+      progress: 90,
+      q4_download_strategy: "stream_into_preallocated_tensor_store"
     });
     return new Q4TensorStore(pkg.modelConfig, weights);
   })();
   return tensorStorePromise;
+}
+
+async function fetchShardRange(url, shardPath, start, end, signal) {
+  const response = await fetch(url, {
+    cache: "force-cache",
+    signal,
+    headers: { Range: `bytes=${start}-${end}` }
+  });
+  if (response.status === 206) return { ranged: true, bytes: new Uint8Array(await response.arrayBuffer()) };
+  if (response.ok && start === 0) return { ranged: false, response };
+  throw new Error(`fetch_range_failed:${shardPath}:${response.status}:${start}-${end}`);
+}
+
+async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
+  const expectedBytes = Number(shard.bytes || 0);
+  const offset = Number(shard.offset || 0);
+  const shardPath = shard.path;
+  if (expectedBytes <= 0) throw new Error(`shard_size_missing:${shardPath}`);
+  if (offset < 0 || offset + expectedBytes > weights.byteLength) throw new Error(`shard_span_out_of_bounds:${shardPath}`);
+  const totalTimeoutMs = Math.min(
+    Math.max(Number(options.downloadTimeoutMs || Q4_TOTAL_DOWNLOAD_TIMEOUT_MS), 30_000),
+    Math.max(Number(options.timeoutMs || Q4_TOTAL_DOWNLOAD_TIMEOUT_MS), 30_000)
+  );
+  const stallTimeoutMs = Math.min(
+    Math.max(Number(options.stallTimeoutMs || Q4_SHARD_STALL_TIMEOUT_MS), 15_000),
+    90_000
+  );
+  let abortReason = "";
+  const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+  let stallTimer = null;
+  const clearStallTimer = () => {
+    if (stallTimer) clearTimeout(stallTimer);
+    stallTimer = null;
+  };
+  const resetStallTimer = () => {
+    if (!controller) return;
+    clearStallTimer();
+    stallTimer = setTimeout(() => {
+      abortReason = `q4_shard_download_stalled:${shardPath}`;
+      controller.abort(abortReason);
+    }, stallTimeoutMs);
+  };
+  const report = (loaded, status = "downloading") => {
+    const elapsed = Math.max(1, nowMs() - state.startedAt);
+    const pct = state.totalBytes ? state.loadedBytes / state.totalBytes : 0;
+    const speed = Math.round(state.loadedBytes / Math.max(elapsed / 1000, 0.001));
+    const now = nowMs();
+    if (status === "downloading" && now - state.lastEmitAt < Q4_PROGRESS_EMIT_INTERVAL_MS) return;
+    state.lastEmitAt = now;
+    emitQ4Progress(options, {
+      stage: "q4_model_download",
+      shard_path: shardPath,
+      shard_loaded_bytes: loaded,
+      shard_total_bytes: expectedBytes,
+      loaded_bytes: state.loadedBytes,
+      total_bytes: state.totalBytes,
+      loaded_shards: state.loadedShards,
+      loaded_label: `${formatBytes(state.loadedBytes)}/${formatBytes(state.totalBytes)}`,
+      transfer_bps: speed,
+      progress: Math.min(90, 68 + pct * 22),
+      q4_download_strategy: "stream_into_preallocated_tensor_store",
+      status
+    });
+  };
+
+  resetStallTimer();
+  try {
+    const url = assetUrl(shardPath);
+    let loaded = 0;
+    if (expectedBytes > Q4_RANGE_CHUNK_BYTES) {
+      let rangeSupported = true;
+      for (let start = 0; start < expectedBytes && rangeSupported; start += Q4_RANGE_CHUNK_BYTES) {
+        if (nowMs() - state.startedAt > totalTimeoutMs) {
+          abortReason = "q4_model_download_timeout";
+          controller?.abort(abortReason);
+          throw new Error(abortReason);
+        }
+        const end = Math.min(expectedBytes - 1, start + Q4_RANGE_CHUNK_BYTES - 1);
+        const range = await fetchShardRange(url, shardPath, start, end, controller?.signal);
+        if (!range.ranged) {
+          try {
+            await range.response?.body?.cancel?.();
+          } catch {
+          }
+          rangeSupported = false;
+          break;
+        }
+        const chunk = range.bytes;
+        const expectedChunkBytes = end - start + 1;
+        if (chunk.byteLength !== expectedChunkBytes) {
+          throw new Error(`shard_range_size_mismatch:${shardPath}:${chunk.byteLength}/${expectedChunkBytes}`);
+        }
+        weights.set(chunk, offset + start);
+        loaded += chunk.byteLength;
+        state.loadedBytes += chunk.byteLength;
+        resetStallTimer();
+        report(loaded);
+      }
+      if (rangeSupported) {
+        clearStallTimer();
+        if (loaded !== expectedBytes) throw new Error(`shard_size_mismatch:${shardPath}:${loaded}/${expectedBytes}`);
+        const expected = String(shard.sha256 || "").toLowerCase();
+        if (expected && crypto?.subtle?.digest) {
+          const actual = await sha256Hex(weights.subarray(offset, offset + expectedBytes));
+          if (actual !== expected) throw new Error(`shard_sha256_mismatch:${shardPath}`);
+        }
+        state.loadedShards += 1;
+        report(loaded, "verified");
+        return;
+      }
+      loaded = 0;
+    }
+    const response = await fetch(url, {
+      cache: "force-cache",
+      signal: controller?.signal
+    });
+    if (!response.ok) throw new Error(`fetch_bytes_failed:${shardPath}:${response.status}`);
+    if (response.body && typeof response.body.getReader === "function") {
+      const reader = response.body.getReader();
+      while (true) {
+        if (nowMs() - state.startedAt > totalTimeoutMs) {
+          abortReason = "q4_model_download_timeout";
+          controller?.abort(abortReason);
+          throw new Error(abortReason);
+        }
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (!value || value.byteLength === 0) continue;
+        if (loaded + value.byteLength > expectedBytes) throw new Error(`shard_size_overflow:${shardPath}`);
+        weights.set(value, offset + loaded);
+        loaded += value.byteLength;
+        state.loadedBytes += value.byteLength;
+        resetStallTimer();
+        report(loaded);
+      }
+    } else {
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      if (bytes.byteLength > expectedBytes) throw new Error(`shard_size_overflow:${shardPath}`);
+      weights.set(bytes, offset);
+      loaded = bytes.byteLength;
+      state.loadedBytes += bytes.byteLength;
+      report(loaded);
+    }
+    clearStallTimer();
+    if (loaded !== expectedBytes) throw new Error(`shard_size_mismatch:${shardPath}:${loaded}/${expectedBytes}`);
+    const expected = String(shard.sha256 || "").toLowerCase();
+    if (expected && crypto?.subtle?.digest) {
+      const actual = await sha256Hex(weights.subarray(offset, offset + expectedBytes));
+      if (actual !== expected) throw new Error(`shard_sha256_mismatch:${shardPath}`);
+    }
+    state.loadedShards += 1;
+    report(loaded, "verified");
+  } catch (error) {
+    clearStallTimer();
+    const reason = abortReason || error.message || `q4_shard_download_failed:${shardPath}`;
+    emitQ4Progress(options, {
+      stage: "q4_model_download_failed",
+      shard_path: shardPath,
+      loaded_bytes: state.loadedBytes,
+      total_bytes: state.totalBytes,
+      loaded_label: `${formatBytes(state.loadedBytes)}/${formatBytes(state.totalBytes)}`,
+      progress: Math.min(88, 68 + (state.loadedBytes / Math.max(state.totalBytes, 1)) * 20),
+      q4_download_strategy: "stream_into_preallocated_tensor_store",
+      failure_reason: reason
+    });
+    throw new Error(reason);
+  }
 }
 
 function pickNextToken(candidates, tokenizer) {
@@ -477,7 +683,7 @@ export async function staticQ4Capability() {
 export async function generateStaticQ4Draft(prompt, options = {}) {
   const started = nowMs();
   const pkg = await runtimePackage();
-  const store = await tensorStore(pkg);
+  const store = await tensorStore(pkg, options);
   const architecture = pkg.modelConfig.architecture || {};
   const generationKind = options.generationKind === "mount_smoke" ? "mount_smoke" : "answer_generation";
   const workerTokenCap = generationKind === "mount_smoke" ? Q4_MOUNT_SMOKE_MAX_TOKENS : Q4_ANSWER_MAX_TOKENS;

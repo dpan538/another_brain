@@ -1,15 +1,23 @@
 # Local Runtime Models
 
-This directory tracks metadata for local runtime models.
+The current public runtime model is the R28M1 q4 browser package committed under:
 
-The public app uses the tiny router Web SLM generated into `web/tiny_router_model.generated.js`. It does not require model weights, WebGPU, or cloud inference APIs.
+```text
+web/another_brain/model_assets/r28m1/
+```
 
-Tracked files:
+It is loaded from same-origin static assets in the browser. The runtime uses the
+committed manifest, five q4 shards, exact runtime tokenizer, checksum checks,
+and q4 forward warmup diagnostics.
 
-- `manifest.json`: tiny-router runtime metadata and public policy.
+The committed R28M1 q4 browser model package is licensed under MIT; see
+`MODEL_LICENSE.md`.
 
-Ignored files:
+Ignored model-related files remain outside the public runtime and outside the
+model license scope:
 
-- local training checkpoints
-- local LoRA adapters
-- any experimental model snapshots
+- raw checkpoints
+- LoRA adapters
+- tokenizer training artifacts
+- raw/clean/processed corpus files
+- private local memory or private source material

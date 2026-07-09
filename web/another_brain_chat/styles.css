@@ -17,6 +17,239 @@
   --shadow: 0 8px 0 rgba(7, 29, 42, 0.08);
 }
 
+/* R28POSTMERGE4: reduced magazine-like product surface. Dashboard keeps diagnostics. */
+body[data-ui-mode="chat"] {
+  background: #070b0c;
+}
+
+.app-shell[data-ui-mode="chat"] {
+  --paper: #f1ead6;
+  --paper-soft: #fbf6e8;
+  --paper-line: #d8d1bc;
+  --ink: #142021;
+  --muted: #66716b;
+  --line: #e8e2d2;
+  --accent: #78ef63;
+  --accent-strong: #274f35;
+  --amber: #9b6b25;
+  --amber-bg: #f2ddb0;
+  --blue: #3e665d;
+  --assistant: #fbf6e8;
+  --user: #ebe1ca;
+  width: min(1320px, 100%);
+  padding: clamp(10px, 2.2vw, 28px);
+  gap: 10px;
+  color: var(--ink);
+}
+
+.app-shell[data-ui-mode="chat"] .app-header,
+.app-shell[data-ui-mode="chat"] .conversation-pane {
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.app-shell[data-ui-mode="chat"] .app-header {
+  min-height: auto;
+  padding: 12px 16px;
+}
+
+.app-shell[data-ui-mode="chat"] .header-copy {
+  display: block;
+}
+
+.app-shell[data-ui-mode="chat"] .brand-lockup {
+  gap: 0;
+}
+
+.app-shell[data-ui-mode="chat"] .croc-logo,
+.app-shell[data-ui-mode="chat"] h1,
+.app-shell[data-ui-mode="chat"] .brand-linework {
+  display: none !important;
+}
+
+.app-shell[data-ui-mode="chat"] .eyebrow {
+  margin: 0;
+  color: #285640;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: lowercase;
+}
+
+.app-shell[data-ui-mode="chat"] .mode-toggle {
+  width: 176px;
+  padding: 2px;
+  background: var(--paper-soft);
+  border: 1px solid #172326;
+}
+
+.app-shell[data-ui-mode="chat"] .mode-button {
+  min-height: 28px;
+  color: #285640;
+  font-size: 0.72rem;
+}
+
+.app-shell[data-ui-mode="chat"] .mode-button.active,
+.app-shell[data-ui-mode="chat"] .mode-button:hover,
+.app-shell[data-ui-mode="chat"] .mode-button:focus-visible {
+  color: #f7f1df;
+  background: #172326;
+}
+
+.app-shell[data-ui-mode="chat"] .conversation-pane {
+  grid-template-rows: auto auto minmax(0, 2fr) minmax(0, 0.9fr);
+  overflow: hidden;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip {
+  padding: 12px 14px 0;
+  gap: 8px;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip div {
+  min-height: 30px;
+  padding: 6px 9px;
+  color: #263535;
+  background: var(--paper-soft);
+  border: 1px solid #c4bda8;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip div.is-pass {
+  color: #173620;
+  background: #e1f4d4;
+  border-color: #86c678;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip div.is-warn {
+  color: #78511b;
+  background: #f2ddb0;
+  border-color: #c49c50;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip span,
+.app-shell[data-ui-mode="chat"] .chat-signal-strip strong {
+  font-size: 0.68rem;
+}
+
+.app-shell[data-ui-mode="chat"] .model-loading-panel {
+  padding: 7px 14px 10px;
+  background: var(--paper);
+  border-color: var(--paper-line);
+}
+
+.app-shell[data-ui-mode="chat"] .model-loading-panel .loading-progress {
+  height: 5px;
+  background: #e6dec9;
+  border: 1px solid #c9c0a9;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-loading-note {
+  color: #6d746d;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.app-shell[data-ui-mode="chat"] .message-list {
+  width: min(100%, 940px);
+  padding: clamp(18px, 4vw, 42px) clamp(16px, 4vw, 44px) 18px;
+}
+
+.app-shell[data-ui-mode="chat"] .message {
+  width: min(74%, 660px);
+  border: 1px solid #243034;
+  color: #172224;
+  background: var(--assistant);
+  box-shadow: -4px 4px 0 rgba(40, 86, 64, 0.18);
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-size: clamp(1rem, 1.35vw, 1.18rem);
+  font-weight: 700;
+}
+
+.app-shell[data-ui-mode="chat"] .message-user {
+  color: #1d2628;
+  background: var(--user);
+  box-shadow: 4px 4px 0 rgba(20, 32, 33, 0.12);
+}
+
+.app-shell[data-ui-mode="chat"] .message-role {
+  color: #315c46;
+  font-family: "Arial Narrow", "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+  font-size: 0.67rem;
+}
+
+.app-shell[data-ui-mode="chat"] .composer {
+  width: min(100%, 940px);
+  padding: 14px clamp(16px, 4vw, 44px) clamp(14px, 3vw, 28px);
+  border-top: 1px solid #cfc8b4;
+  background: var(--paper);
+}
+
+.app-shell[data-ui-mode="chat"] textarea {
+  color: #172224;
+  background: #fbf7ec;
+  border: 1px solid #243034;
+  font-family: Georgia, "Times New Roman", "Songti SC", serif;
+  font-weight: 700;
+}
+
+.app-shell[data-ui-mode="chat"] textarea::placeholder {
+  color: #8b8a80;
+}
+
+.app-shell[data-ui-mode="chat"] textarea:focus {
+  border-color: #285640;
+  box-shadow: 3px 3px 0 rgba(40, 86, 64, 0.2);
+}
+
+.app-shell[data-ui-mode="chat"] #send-button {
+  min-height: 48px;
+  color: #07120b;
+  background: #78ef63;
+  border-color: #243034;
+}
+
+.app-shell[data-ui-mode="dashboard"] {
+  background: #f1ead6;
+}
+
+.app-shell[data-ui-mode="dashboard"] .app-header,
+.app-shell[data-ui-mode="dashboard"] .status-grid,
+.app-shell[data-ui-mode="dashboard"] .conversation-pane,
+.app-shell[data-ui-mode="dashboard"] .process-panel {
+  box-shadow: none;
+}
+
+@media (max-width: 720px) {
+  .app-shell[data-ui-mode="chat"] {
+    padding: 0;
+  }
+
+  .app-shell[data-ui-mode="chat"] .app-header {
+    padding: 10px 12px;
+    border-top: 0;
+  }
+
+  .app-shell[data-ui-mode="chat"] .conversation-pane {
+    grid-template-rows: auto auto minmax(0, 2fr) minmax(0, 0.9fr);
+  }
+
+  .app-shell[data-ui-mode="chat"] .message-list,
+  .app-shell[data-ui-mode="chat"] .composer {
+    width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .app-shell[data-ui-mode="chat"] .message {
+    width: min(86%, 520px);
+  }
+
+  .app-shell[data-ui-mode="chat"] .composer-actions {
+    right: 24px;
+    bottom: 24px;
+  }
+}
+
 * {
   box-sizing: border-box;
 }

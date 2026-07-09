@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { BrowserChatRuntime, verifyDraft } from "../../web/another_brain_chat/browser_runtime.js";
 import { buildEvidencePacket } from "../../web/another_brain_chat/static_retriever.js";
 
@@ -20,6 +21,32 @@ test("browser diagnostics exposes branch marker, shard probes, forward status, a
   assert.ok(app.includes("last_answer_capability_diagnosis"));
   assert.ok(app.includes("q4Shards.length === 5"));
   assert.ok(app.includes("assetsOk && tokenizerOk && forwardOk && q4QualityAccepted"));
+});
+
+test("license and model docs expose the committed R28M1 q4 package as MIT-scoped public runtime", async () => {
+  const readRoot = (path) => readFile(join(process.cwd(), path), "utf8");
+  const readme = await readRoot("README.md");
+  const license = await readRoot("LICENSE");
+  const modelLicense = await readRoot("MODEL_LICENSE.md");
+  const modelCard = await readRoot("MODEL_CARD.md");
+  const notice = await readRoot("NOTICE");
+
+  assert.ok(license.includes("MIT License"));
+  assert.ok(readme.includes("efishother"));
+  assert.ok(readme.includes("engineering codename"));
+  assert.ok(readme.includes("48,267,968"));
+  assert.ok(readme.includes("MODEL_LICENSE.md"));
+  assert.ok(modelLicense.includes("web/another_brain/model_assets/r28m1/**"));
+  assert.ok(modelLicense.includes("raw"));
+  assert.ok(modelLicense.includes("checkpoints"));
+  assert.ok(modelLicense.includes("data/public_ingestion/**"));
+  assert.ok(modelCard.includes("R28M1 q4 Browser Model"));
+  assert.ok(modelCard.includes("q4 shard bytes: 48,267,968"));
+  assert.ok(modelCard.includes("public-source/public-library"));
+  assert.ok(notice.includes("public-source/public-library"));
+  assert.ok(notice.includes("without backend inference"));
+  assert.equal(/All rights reserved/i.test(license), false);
+  assert.equal(/source-available only/i.test(readme + notice), false);
 });
 
 test("Vercel build metadata does not create false external storage failures", async () => {
@@ -95,11 +122,10 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
 
   assert.ok(html.includes("efishother.com"));
-  assert.ok(html.includes("<title>efishother | local answer machine</title>"));
-  assert.ok(html.includes(">efishother<"));
-  assert.ok(html.includes("croc-logo"));
-  assert.ok(html.includes("efishother crocodile logo"));
-  assert.ok(html.includes("efish 是旧昵称"));
+  assert.ok(html.includes("<title>efishother | local answer</title>"));
+  assert.ok(html.includes('href="/favicon.png"'));
+  assert.equal(html.includes("croc-logo"), false);
+  assert.equal(html.includes("efishother crocodile logo"), false);
   assert.ok(html.includes("brand-linework"));
   assert.ok(html.includes("chat-signal-strip"));
   assert.ok(html.includes('data-chat-signal="q4"'));
@@ -143,9 +169,11 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(css.includes('width: min(1360px, 100%)'));
   assert.ok(css.includes(".chat-signal-strip"));
   assert.ok(css.includes(".chat-signal-strip div.is-warn"));
-  assert.ok(css.includes(".croc-logo"));
   assert.ok(css.includes('body[data-ui-mode="chat"]'));
-  assert.ok(css.includes("background: #0c1013"));
+  assert.ok(css.includes("background: #070b0c"));
+  assert.ok(css.includes("--paper: #f1ead6"));
+  assert.ok(css.includes(".app-shell[data-ui-mode=\"chat\"] h1"));
+  assert.ok(css.includes("display: none !important"));
   assert.ok(css.includes(".chat-loading-note"));
   assert.ok(css.includes('grid-template-rows: auto minmax(0, 1fr)'));
   assert.ok(css.includes(".reasoning-viz"));
@@ -257,7 +285,13 @@ test("q4 mount uses persistent runtime worker, five attempts, and does not admit
   assert.ok(browserRuntime.includes("preflightReport = report"));
   assert.ok(browserRuntime.includes("shard_probe_reused"));
   assert.ok(browserRuntime.includes("_reused"));
-  assert.ok(q4Worker.includes("mapWithConcurrency(shards, 2"));
+  assert.ok(q4Worker.includes("Q4_SHARD_DOWNLOAD_CONCURRENCY = 5"));
+  assert.ok(q4Worker.includes("Q4_RANGE_CHUNK_BYTES"));
+  assert.ok(q4Worker.includes("stream_into_preallocated_tensor_store"));
+  assert.ok(q4Worker.includes("fetchShardRange"));
+  assert.ok(q4Worker.includes("q4_shard_download_stalled"));
+  assert.ok(q4Worker.includes("q4_model_download_timeout"));
+  assert.ok(q4Worker.includes("response.body.getReader"));
 });
 
 test("mojibake q4 drafts are rejected before reaching the chat surface", async () => {

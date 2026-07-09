@@ -273,6 +273,11 @@ function renderQ4RetryStatus(input = {}) {
 
 function loadingNoteForStage(report = {}, status = "checking", stage = "manifest") {
   const blocker = report.q4_forward?.blocker || report.fallback?.reason || (report.blockers || [])[0] || "";
+  if (report.loaded_label || report.transfer_bps) {
+    const speed = Number(report.transfer_bps || 0);
+    const speedLabel = speed > 0 ? `，约 ${Math.max(1, Math.round(speed / 1000))} KB/s` : "";
+    return `正在读取本地模型分片：${report.loaded_label || "等待字节进度"}${speedLabel}。`;
+  }
   if (q4ForwardConfirmed(report)) return "加载完成：本地记忆、分词器和 q4 前向都已确认。";
   if (status === "passed" || report.ok) return `本地资产已读；q4 forward 仍需确认${blocker ? `：${blocker}` : ""}。`;
   if (status === "cancelled") return "加载已停止；仍可用本地检索给出保守回答。";
@@ -352,6 +357,16 @@ function summarizeLoadingProgress(report = {}, progress = 8, status = "checking"
   const elapsedMs = report.elapsed_ms == null ? null : Number(report.elapsed_ms);
   const forwardRan = q4Forward.q4_forward_ran === true;
   const blocker = q4Forward.blocker || report.retry_plan?.fallback_reason || (report.blockers || [])[0] || "";
+  if (report.loaded_label || report.q4_download_strategy) {
+    const speed = Number(report.transfer_bps || 0);
+    return [
+      `进度 ${Math.round(progress)}%`,
+      report.loaded_label ? `model=${report.loaded_label}` : "",
+      speed > 0 ? `speed=${Math.max(1, Math.round(speed / 1000))}KB/s` : "",
+      report.status ? `status=${report.status}` : "",
+      report.failure_reason ? `blocker=${report.failure_reason}` : ""
+    ].filter(Boolean).join(" · ");
+  }
   if (status === "passed" && forwardRan && tokensGenerated > 0) {
     return [
       "完成 100%",

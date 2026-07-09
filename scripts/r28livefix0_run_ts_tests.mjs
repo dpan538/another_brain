@@ -32,6 +32,9 @@ await cp(join(root, "scripts"), join(out, "scripts"), { recursive: true });
 await cp(join(root, "package.json"), join(out, "package.json"));
 await cp(join(root, "vercel.json"), join(out, "vercel.json"));
 await cp(join(root, ".vercelignore"), join(out, ".vercelignore"));
+for (const file of ["README.md", "LICENSE", "MODEL_LICENSE.md", "MODEL_CARD.md", "NOTICE"]) {
+  await cp(join(root, file), join(out, file));
+}
 
 const result = spawnSync("node", ["--test", join(out, "tests/r28livefix0/*.mjs")], {
   cwd: out,
