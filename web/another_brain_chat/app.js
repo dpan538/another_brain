@@ -154,7 +154,7 @@ const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 const INITIAL_ASSISTANT_MESSAGE = [
-  "你好，我在。直接问就好。"
+  "你好，我是 efishother。直接问就好。"
 ].join(" ");
 
 function setText(node, value) {
@@ -358,7 +358,7 @@ function appendMessage(role, text, meta = {}) {
 
   const roleNode = document.createElement("div");
   roleNode.className = "message-role";
-  roleNode.textContent = role === "user" ? "you" : "another_brain";
+  roleNode.textContent = role === "user" ? "you" : "efish";
 
   const body = document.createElement("p");
   body.textContent = text;
@@ -396,6 +396,9 @@ function customerFacingAnswer(packet = {}) {
   const route = packet.route_policy?.open_question_category || packet.answer_route || packet.route || "";
   const fallbackReason = String(packet.fallback_reason || "");
   const evidenceHint = shortEvidenceHint(packet);
+  if (/你是谁|你是.*谁|你是鳄鱼|鳄鱼|efish|efishother/i.test(inputText)) {
+    return "我是 efishother。efish 是鳄鱼旧昵称，another_brain 只是工程代号；我在这里用本地检索和小模型回答。";
+  }
   if (/你好|在吗|hello|hi/i.test(inputText) && raw.length <= 24) return raw;
   if (route === "natural_world_question") {
     if (/太阳|日出|日落|东升西落/.test(inputText)) {

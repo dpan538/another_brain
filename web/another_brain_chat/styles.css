@@ -244,7 +244,7 @@ strong {
 }
 
 .app-shell[data-ui-mode="chat"] {
-  width: min(1180px, 100%);
+  width: min(1360px, 100%);
 }
 
 .app-shell[data-ui-mode="chat"] .dashboard-only {
@@ -264,7 +264,7 @@ strong {
 }
 
 .app-shell[data-ui-mode="chat"] .conversation-pane {
-  width: min(1040px, 100%);
+  width: 100%;
   height: 100%;
   min-height: 0;
   margin: 0 auto;
@@ -545,19 +545,35 @@ strong {
 
 .composer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 148px;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 10px;
   padding: 14px;
   border-top: 2px solid var(--line);
   background: var(--panel);
   min-height: 118px;
 }
 
-.composer-actions,
+.composer-actions {
+  display: grid;
+  grid-template-columns: auto;
+  justify-content: end;
+  gap: 8px;
+}
+
 .context-actions {
   display: grid;
   grid-template-columns: 1fr;
   gap: 8px;
+}
+
+.composer-actions [hidden] {
+  display: none !important;
+}
+
+#send-button {
+  width: 180px;
+  min-height: 52px;
 }
 
 textarea {
@@ -945,7 +961,8 @@ summary {
   }
 
   .composer {
-    grid-template-columns: minmax(0, 1fr) 86px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
     gap: 8px;
     min-height: 112px;
     padding: 10px;
@@ -953,11 +970,7 @@ summary {
 
   .composer-actions {
     grid-template-columns: 1fr;
-  }
-
-  .composer-actions #abort-button,
-  .composer-actions #clear-chat-button {
-    display: none;
+    justify-content: stretch;
   }
 
   textarea {
@@ -967,8 +980,12 @@ summary {
 
   button {
     min-width: 0;
-    min-height: 92px;
+    min-height: 52px;
     padding: 0 8px;
+  }
+
+  #send-button {
+    width: 100%;
   }
 
   .self-check {

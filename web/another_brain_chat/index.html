@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>R28LIVEFIX0 another_brain preview | Live q4 mount</title>
+    <title>efishother preview | R28LIVEFIX0 live q4 mount</title>
     <meta name="another-brain-ui-version" content="r28livefix0-live-q4-mount" />
     <meta name="another-brain-branch-marker" content="R28LIVEFIX0" />
     <meta name="another-brain-branch-name" content="r28livefix0-live-q4-mount" />
@@ -12,12 +12,12 @@
     <link rel="stylesheet" href="/another_brain_chat/styles.css?v=r28livefix0-live-q4-mount" />
   </head>
   <body>
-    <main class="app-shell" id="app-shell" data-ui-mode="chat" aria-label="another_brain chat preview">
+    <main class="app-shell" id="app-shell" data-ui-mode="chat" aria-label="efishother chat preview">
       <header class="app-header">
         <div class="header-copy">
-          <p class="eyebrow">another_brain</p>
-          <h1 id="chat-title">another_brain</h1>
-          <p class="chat-subtitle">Chat 是客户体验端；Dashboard 保留 runtime、RAG 和 q4 诊断。</p>
+          <p class="eyebrow">efishother.com</p>
+          <h1 id="chat-title">efishother</h1>
+          <p class="chat-subtitle">efish 是旧昵称；another_brain 是工程代号。Dashboard 保留 runtime、RAG 和 q4 诊断。</p>
           <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
         </div>
         <div class="header-side">
@@ -137,8 +137,8 @@
 
           <section class="message-list" id="message-list" aria-live="polite" aria-label="messages">
             <article class="message message-assistant">
-              <div class="message-role">another_brain</div>
-              <p>你好，我在。直接问就好。</p>
+              <div class="message-role">efish</div>
+              <p>你好，我是 efishother。直接问就好。</p>
             </article>
           </section>
 
@@ -186,8 +186,8 @@
             <textarea id="chat-input" name="message" rows="2" placeholder="输入中文问题，或试试：你好" required></textarea>
             <div class="composer-actions">
               <button type="submit" id="send-button">发送</button>
-              <button type="button" class="button-secondary" id="abort-button" disabled>停止</button>
-              <button type="button" class="button-secondary" id="clear-chat-button">清空</button>
+              <button type="button" class="button-secondary" id="abort-button" disabled hidden aria-hidden="true" tabindex="-1">停止</button>
+              <button type="button" class="button-secondary" id="clear-chat-button" hidden aria-hidden="true" tabindex="-1">清空</button>
             </div>
           </form>
         </section>

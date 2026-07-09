@@ -4,6 +4,8 @@
 
 This extension keeps the R28LIVEFIX0 runtime branch static-only while separating the customer Chat surface from Dashboard diagnostics.
 
+The public-facing package is now `efishother` / `efishother.com`. `efish` is the user-facing nickname layer, while `another_brain` remains an internal engineering codename used by routes, static assets, and diagnostics.
+
 Chat now shows concise user-facing answers and the model loading progress bar only. Runtime source labels, fallback reasons, q4 quality blockers, shard URLs, tokenizer status, and process traces remain Dashboard concerns.
 
 ## UI Contract
@@ -11,6 +13,8 @@ Chat now shows concise user-facing answers and the model loading progress bar on
 - Desktop Chat is a fixed one-page surface with no body scroll.
 - Desktop keeps the Chat/Dashboard switch.
 - Mobile defaults to Chat and hides the Dashboard switch.
+- Chat uses `efishother` branding; Dashboard keeps engineering markers.
+- Chat composer shows one full-width input and only one visible action: Send.
 - Chat uses a flat linework visual style with cream paper, deep navy lines, bright green and blue accents, and no gradients.
 - The conversation region and composer are constrained near a 2.5:1 height ratio.
 
@@ -30,9 +34,13 @@ Covered short-answer branches include:
 
 ## Static RAG Extension
 
+`web/another_brain/static_rag/brand_cards.json` adds runtime hints for efishother branding, efish nickname identity, and Chat/Dashboard layer separation.
+
 `web/another_brain/static_rag/logic_cards.json` adds runtime hints for commonsense, logic, philosophy, relation, language, and aesthetics.
 
-The pack is not an answer bank. It contains no `answer`, `final_answer`, or `answer_text` fields, is not allowed for training, and contains no private raw data, eval prompts, old question-pack rows, corpus artifacts, or hidden prompts.
+`web/another_brain/static_rag/knowledge_cards.json` adds more runtime hints for natural commonsense, correlation/causation, justice, loneliness, memory, and color/material judgment.
+
+These packs are not answer banks. They contain no `answer`, `final_answer`, or `answer_text` fields, are not allowed for training, and contain no private raw data, eval prompts, old question-pack rows, corpus artifacts, or hidden prompts.
 
 ## Non-Claims
 

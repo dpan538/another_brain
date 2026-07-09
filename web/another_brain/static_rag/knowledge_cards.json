@@ -1,0 +1,101 @@
+{
+  "schema_version": "r28livefix0.knowledge_cards.v1",
+  "fixture_policy": {
+    "runtime_hints_only": true,
+    "answer_bank": false,
+    "private_raw_data": false,
+    "eval_prompts": false,
+    "old_question_pack_rows_51_100": false,
+    "allowed_for_training": false
+  },
+  "cards": [
+    {
+      "id": "r28livefix0-commonsense-sky-blue",
+      "kind": "commonsense",
+      "text": "For why-the-sky-is-blue questions, the stable explanation axis is light scattering: shorter blue wavelengths scatter more strongly through the atmosphere. Keep it short and concrete.",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["天空", "蓝天", "为什么天是蓝色", "散射", "光", "atmosphere", "sky blue"],
+      "tone_hints": ["mechanism", "short", "concrete"]
+    },
+    {
+      "id": "r28livefix0-commonsense-seasons",
+      "kind": "commonsense",
+      "text": "For seasons, separate Earth tilt from distance to the Sun. Seasonal change is mainly about sunlight angle and day length, not simply being closer or farther.",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["四季", "季节", "地轴", "太阳角度", "昼夜", "seasons", "earth tilt"],
+      "tone_hints": ["distinction", "commonsense", "no_overclaim"]
+    },
+    {
+      "id": "r28livefix0-commonsense-moon-phases",
+      "kind": "commonsense",
+      "text": "For Moon phase questions, distinguish the Moon's shape from illumination. The visible phase changes because we see different sunlit portions as the Moon orbits Earth.",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["月亮", "月相", "月缺", "月圆", "绕地球", "moon phase", "illumination"],
+      "tone_hints": ["visual", "mechanism", "plain"]
+    },
+    {
+      "id": "r28livefix0-logic-correlation-causation",
+      "kind": "logic",
+      "text": "When two things move together, do not immediately claim causation. Check timing, mechanism, alternative causes, and whether the relation survives counterexamples.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["相关", "因果", "机制", "反例", "时间顺序", "correlation", "causation"],
+      "tone_hints": ["causal_discipline", "counterexample", "compact"]
+    },
+    {
+      "id": "r28livefix0-philosophy-justice-fairness",
+      "kind": "philosophy",
+      "text": "For justice and fairness questions, separate equal treatment, deserved treatment, repair of harm, and power imbalance. A useful answer names the tension instead of flattening it.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["正义", "公平", "平等", "伤害", "权力", "justice", "fairness"],
+      "tone_hints": ["tension", "not_slogan", "ethical"]
+    },
+    {
+      "id": "r28livefix0-philosophy-loneliness",
+      "kind": "philosophy",
+      "text": "For loneliness questions, avoid treating loneliness only as lack of people. It can also be a mismatch between being seen, being understood, and having a place to act.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["孤独", "孤单", "理解", "被看见", "关系", "loneliness"],
+      "tone_hints": ["human", "precise", "not_preachy"]
+    },
+    {
+      "id": "r28livefix0-philosophy-memory-identity",
+      "kind": "philosophy",
+      "text": "For memory and identity questions, memory is not a full archive. It selects, distorts, preserves, and gives continuity, so identity should be treated as a living pattern.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["记忆", "身份", "自我", "连续性", "遗忘", "memory", "identity"],
+      "tone_hints": ["nuanced", "pattern", "compressed"]
+    },
+    {
+      "id": "r28livefix0-aesthetic-color-material",
+      "kind": "aesthetic",
+      "text": "For color and material questions, useful judgment looks at contrast, rhythm, legibility, tactility, and whether the palette supports the intended emotional temperature.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["颜色", "配色", "材质", "质感", "对比", "节奏", "可读性", "palette", "material"],
+      "tone_hints": ["visual", "material", "legibility"]
+    }
+  ]
+}
