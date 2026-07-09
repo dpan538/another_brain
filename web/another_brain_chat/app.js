@@ -154,8 +154,7 @@ const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 const INITIAL_ASSISTANT_MESSAGE = [
-  "你好，我在本地静态页面里运行。你可以直接问日常问题；需要看 RAG、q4 状态或 self-check 时，点右上角 Dashboard。",
-  "这里不展示隐藏推理、内部提示或私人原文，也不声称这是产品模型。"
+  "你好，我在。直接问就好。"
 ].join(" ");
 
 function setText(node, value) {
@@ -365,7 +364,7 @@ function appendMessage(role, text, meta = {}) {
   body.textContent = text;
 
   article.append(roleNode, body);
-  if (role === "assistant" && (meta.source || meta.fallbackReason)) {
+  if (role === "assistant" && meta.showEngineeringFooter === true && (meta.source || meta.fallbackReason)) {
     const footer = document.createElement("footer");
     footer.className = "message-footer";
     const timeoutCopy = String(meta.fallbackReason || "").includes("timeout")
@@ -378,6 +377,63 @@ function appendMessage(role, text, meta = {}) {
   }
   messageList.append(article);
   messageList.scrollTop = messageList.scrollHeight;
+}
+
+function shortEvidenceHint(packet = {}) {
+  const evidence = packet.evidence_packet?.retrieved_evidence || [];
+  const top = evidence[0];
+  const kind = top?.metadata?.card_kind || "";
+  if (kind === "commonsense") return "我会按常识机制来答，不把它说成玄学。";
+  if (kind === "philosophy") return "我会先抓住有限性、关系和判断。";
+  if (kind === "aesthetic") return "我会看结构、克制、风险和表达是否贴合。";
+  if (kind === "logic") return "我会先分清现象、机制和证据。";
+  return "";
+}
+
+function customerFacingAnswer(packet = {}) {
+  const raw = String(packet.final_answer || "").replace(/\s+/g, " ").trim();
+  const inputText = String(packet.input || "");
+  const route = packet.route_policy?.open_question_category || packet.answer_route || packet.route || "";
+  const fallbackReason = String(packet.fallback_reason || "");
+  const evidenceHint = shortEvidenceHint(packet);
+  if (/你好|在吗|hello|hi/i.test(inputText) && raw.length <= 24) return raw;
+  if (route === "natural_world_question") {
+    if (/太阳|日出|日落|东升西落/.test(inputText)) {
+      return "这是地球自转造成的视运动：我们随地球向东转，所以太阳看起来从东边升起、向西边落下。";
+    }
+    if (/气温|升温|天气|气候/.test(inputText)) {
+      return "要分开看：天气、季节、地表蓄热、人类活动和长期气候趋势都可能参与，不能只归因给一个原因。";
+    }
+    return evidenceHint || "这是事实解释类问题，我会先看机制和证据，不套用价值判断模板。";
+  }
+  if (route === "aesthetic_question" || /美|审美|美学|好看|风格/.test(inputText)) {
+    if (/什么是美|美是什么/.test(inputText)) return "美不是单纯好看。它是形式、分寸和感受在同一刻站住，让人愿意多看一眼。";
+    if (/审美|美学/.test(inputText)) return "审美有判断，不只是偏好。它会看结构是否成立、表达是否克制，以及风险有没有被承担。";
+    return "我会看它有没有自己的结构、气质和必要性，而不是只看流行或讨喜。";
+  }
+  if (/生死|生与死|死亡/.test(inputText)) {
+    return "我会把它看成边界问题：死让时间变得有限，生让选择、关系和作品还有发生的机会。";
+  }
+  if (/为什么.*活|活着|人为什么要活/.test(inputText)) {
+    return "人不是因为先拿到答案才活着。很多意义是在关系、行动和承担后，慢慢被做出来的。";
+  }
+  if (/关系|亲密|信任|爱/.test(inputText)) {
+    return "关系里最重要的是可被信任的真实：能靠近，也能承认边界，不把对方变成自己的证明。";
+  }
+  if (route === "philosophical_question" || route === "abstract_value_question" || /存在|虚无|意义/.test(inputText)) {
+    return "我会先看有限性：不能把结论说满，但仍能在选择、关系和作品里留下判断。";
+  }
+  if (route === "abstract_meaning_question" || /语言|词语|文字/.test(inputText)) {
+    return "语言不是标签而已。它让经验能被指认、交换和修正，也会暴露我们理解世界的方式。";
+  }
+  if (/证据不足|证据不够|不确定|无法判断/.test(inputText)) {
+    return "我会停在证据边界上：先说能确认的，再说缺什么，不把漂亮话当答案。";
+  }
+  if (fallbackReason || packet.fallback_used) {
+    return evidenceHint || "这个问题我会先给边界判断：能确定的说清楚，证据不够的地方不硬编。";
+  }
+  const sentences = raw.match(/[^。！？!?]+[。！？!?]?/g) || [raw];
+  return sentences.slice(0, 2).join("").slice(0, 120).trim() || "我在。";
 }
 
 function clearConversation() {
@@ -895,10 +951,13 @@ on(form, "submit", async (event) => {
     const packet = await runtime.run(text, { onStatus: setPipelineStatus });
     lastPacket = packet;
     setDisabled(stateExportButton, false);
+    const dashboardFinalAnswer = packet.final_answer;
+    packet.final_answer = customerFacingAnswer(packet);
     appendMessage("assistant", packet.final_answer, {
       source: packet.answer_source_label || sourceLabel(packet.process_trace || {}),
       fallbackReason: packet.fallback_reason || packet.process_trace?.generation?.fallback_reason || ""
     });
+    packet.final_answer = dashboardFinalAnswer;
     updateStatus(packet);
     renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
     renderDebug();

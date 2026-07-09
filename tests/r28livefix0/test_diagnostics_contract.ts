@@ -52,6 +52,60 @@ test("UI and static entries expose R28LIVEFIX0 marker on root and chat routes", 
   }
 });
 
+test("customer Chat surface is short, fixed-screen, and hides engineering diagnostics", async () => {
+  const html = await readFile(new URL("../../web/another_brain_chat/index.html", import.meta.url), "utf8");
+  const css = await readFile(new URL("../../web/another_brain_chat/styles.css", import.meta.url), "utf8");
+  const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
+
+  assert.ok(html.includes("Chat 端只显示简短回答"));
+  assert.ok(html.includes('class="chat-intro dashboard-only"'));
+  assert.ok(html.includes("你好，我在。直接问就好。"));
+  assert.ok(app.includes("customerFacingAnswer"));
+  assert.ok(app.includes("customerFacingAnswer(packet)"));
+  for (const phrase of [
+    "死让时间变得有限",
+    "意义是在关系、行动和承担后",
+    "审美有判断",
+    "可被信任的真实",
+    "语言不是标签而已",
+    "停在证据边界上"
+  ]) {
+    assert.ok(app.includes(phrase), phrase);
+  }
+  assert.ok(app.includes("showEngineeringFooter === true"));
+  assert.match(app, /appendMessage\("assistant",\s*packet\.final_answer/);
+  assert.ok(css.includes("height: 100dvh"));
+  assert.ok(css.includes("overflow: hidden"));
+  assert.ok(css.includes('grid-template-rows: auto minmax(0, 2.5fr) minmax(118px, 1fr)'));
+  assert.ok(css.includes('@media (max-width: 720px)'));
+  assert.ok(css.includes(".header-side"));
+  assert.ok(css.includes("display: none"));
+  assert.equal(/gradient/i.test(css), false);
+});
+
+test("static RAG expands safe commonsense philosophy and aesthetic logic without answer-bank fields", async () => {
+  const retriever = await readFile(new URL("../../web/another_brain_chat/static_retriever.js", import.meta.url), "utf8");
+  const logicPack = JSON.parse(await readFile(new URL("../../web/another_brain/static_rag/logic_cards.json", import.meta.url), "utf8"));
+  const serialized = JSON.stringify(logicPack).toLowerCase();
+
+  assert.ok(retriever.includes("logic_cards.json"));
+  for (const kind of ["commonsense", "philosophy", "logic"]) assert.ok(retriever.includes(`"${kind}"`), kind);
+  assert.equal(logicPack.fixture_policy.answer_bank, false);
+  assert.equal(logicPack.fixture_policy.allowed_for_training, false);
+  assert.equal(logicPack.fixture_policy.private_raw_data, false);
+  assert.equal(/"answer"\s*:|"final_answer"\s*:|"answer_text"\s*:/.test(serialized), false);
+  assert.ok(logicPack.cards.length >= 12);
+  for (const marker of ["question_pack_001", "rows 51-100", "hidden prompt", "chain-of-thought", "data/public_ingestion"]) {
+    assert.equal(serialized.includes(marker), false, marker);
+  }
+  assert.ok(logicPack.cards.some((card) => card.kind === "commonsense" && card.keywords.includes("东升西落")));
+  assert.ok(logicPack.cards.some((card) => card.kind === "philosophy" && card.keywords.includes("生与死")));
+  assert.ok(logicPack.cards.some((card) => card.kind === "aesthetic" && card.keywords.includes("审美")));
+  assert.ok(logicPack.cards.some((card) => card.keywords.includes("证据不足")));
+  assert.ok(logicPack.cards.some((card) => card.keywords.includes("关系")));
+  assert.ok(logicPack.cards.some((card) => card.keywords.includes("自由")));
+});
+
 test("loading panel exposes unambiguous completed q4 progress instead of skeleton-only pass state", async () => {
   const html = await readFile(new URL("../../web/another_brain_chat/index.html", import.meta.url), "utf8");
   const css = await readFile(new URL("../../web/another_brain_chat/styles.css", import.meta.url), "utf8");

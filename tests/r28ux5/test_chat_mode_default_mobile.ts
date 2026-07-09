@@ -12,6 +12,11 @@ test("Chat Mode is the default shell and mobile keeps the compact chat surface",
   assert.ok(html.includes("id=\"dashboard-mode-button\""));
   assert.ok(css.includes("@media (max-width: 720px)"));
   assert.ok(css.includes('.app-shell[data-ui-mode="chat"] .dashboard-only'));
+  assert.ok(css.includes("height: 100dvh"));
+  assert.ok(css.includes("overflow: hidden"));
+  assert.ok(css.includes(".header-side"));
+  assert.ok(css.includes("display: none"));
+  assert.equal(/gradient/i.test(css), false);
   assert.ok(app.includes("function inferInitialMode()"));
   assert.ok(app.includes('return "chat";'));
 });

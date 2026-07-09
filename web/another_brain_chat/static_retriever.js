@@ -2,10 +2,11 @@ const DEMO_MEMORY_ASSET = "../another_brain/static_rag/demo_memory.json";
 const PROFILE_CARD_ASSETS = Object.freeze([
   "../another_brain/static_rag/profile_cards.json",
   "../another_brain/static_rag/style_cards.json",
-  "../another_brain/static_rag/boundary_cards.json"
+  "../another_brain/static_rag/boundary_cards.json",
+  "../another_brain/static_rag/logic_cards.json"
 ]);
 const DEFAULT_RAG_ASSETS = Object.freeze([DEMO_MEMORY_ASSET, ...PROFILE_CARD_ASSETS]);
-const CARD_KINDS = Object.freeze(["identity", "style", "value", "aesthetic", "boundary", "capability"]);
+const CARD_KINDS = Object.freeze(["identity", "style", "value", "aesthetic", "boundary", "capability", "commonsense", "philosophy", "logic"]);
 const CARD_PROVENANCE = Object.freeze(["approved_anchor_summary", "hand_authored_boundary", "demo_safe"]);
 
 const FALLBACK_DEMO_RECORDS = [
@@ -106,6 +107,9 @@ function profileKindBoost(query = "", record = {}) {
   const text = String(query || "").toLowerCase();
   const kind = record.metadata?.card_kind || "";
   if (kind === "aesthetic" && /审美|好看|风格|aesthetic|taste|style/.test(text)) return 0.09;
+  if (kind === "commonsense" && /太阳|日出|日落|东升西落|天气|气温|升温|降温|自然|常识|why|原因/.test(text)) return 0.1;
+  if (kind === "philosophy" && /生死|生与死|活着|存在|虚无|意义|哲学|自由|有限|死亡/.test(text)) return 0.1;
+  if (kind === "logic" && /为什么|如何看待|怎么看|判断|因果|证据|推理|逻辑|because|reason/.test(text)) return 0.09;
   if (kind === "value" && /价值|对错|重要|承诺|信任|value/.test(text)) return 0.08;
   if (kind === "boundary" && /证据|不足|冲突|隐藏|系统提示|evidence|conflict|prompt/.test(text)) return 0.08;
   if (kind === "identity" && /你是谁|鳄鱼|关系|identity|who are you/.test(text)) return 0.06;

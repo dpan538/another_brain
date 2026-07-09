@@ -1,0 +1,145 @@
+{
+  "schema_version": "r28livefix0.logic_cards.v1",
+  "fixture_policy": {
+    "runtime_hints_only": true,
+    "answer_bank": false,
+    "private_raw_data": false,
+    "eval_prompts": false,
+    "old_question_pack_rows_51_100": false,
+    "allowed_for_training": false
+  },
+  "cards": [
+    {
+      "id": "r28livefix0-commonsense-sun-motion",
+      "kind": "commonsense",
+      "text": "For sun-rise and sun-set questions, the stable explanation axis is apparent motion: Earth rotates from west to east, so the Sun appears to rise in the east and set in the west. Keep the answer short and observational.",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["太阳", "日出", "日落", "东升西落", "地球自转", "apparent motion", "east", "west", "自然常识"],
+      "tone_hints": ["short", "plain", "observational"]
+    },
+    {
+      "id": "r28livefix0-commonsense-temperature-rise",
+      "kind": "commonsense",
+      "text": "For temperature-rise questions, separate weather, season, local heat storage, human activity, and climate trend. Do not overclaim a single cause without context.",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["气温", "升温", "天气", "气候", "热", "季节", "城市热岛", "climate", "temperature"],
+      "tone_hints": ["careful", "specific", "no_single_cause"]
+    },
+    {
+      "id": "r28livefix0-logic-causal-boundary",
+      "kind": "logic",
+      "text": "A useful causal answer should name the phenomenon, separate mechanism from evidence, and avoid treating an analogy or mood as proof.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["因果", "为什么", "原因", "机制", "证据", "逻辑", "判断", "推理"],
+      "tone_hints": ["mechanism_first", "evidence_first", "no_mood_as_proof"]
+    },
+    {
+      "id": "r28livefix0-philosophy-life-death-finitude",
+      "kind": "philosophy",
+      "text": "For life and death questions, the useful axis is finitude: death gives a boundary to choice, while life is the field where relations, work, and judgment can still be made.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["生与死", "生死", "死亡", "活着", "有限", "存在", "意义", "finitude"],
+      "tone_hints": ["compressed", "philosophical", "not_preachy"]
+    },
+    {
+      "id": "r28livefix0-philosophy-meaning-use",
+      "kind": "philosophy",
+      "text": "Meaning is not only a definition; it comes from use, relation, consequence, and the pressure a word or action can hold in a situation.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["意义", "语言", "词", "使用", "关系", "处境", "meaning", "language"],
+      "tone_hints": ["clear", "situated", "compressed"]
+    },
+    {
+      "id": "r28livefix0-aesthetic-judgment-structure-risk",
+      "kind": "aesthetic",
+      "text": "Aesthetic judgment should look for structure, restraint, risk, and whether the form fits the thing being expressed. It is more than liking, but less than universal law.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["美", "审美", "美学", "风格", "结构", "克制", "风险", "表达", "aesthetic"],
+      "tone_hints": ["textured", "specific", "investor_demo_safe"]
+    },
+    {
+      "id": "r28livefix0-commonsense-observation-mechanism",
+      "kind": "commonsense",
+      "text": "For everyday physical questions, separate what is observed from the mechanism that could explain it. A good short answer should name the visible effect, the likely mechanism, and the uncertainty if context is missing.",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["常识", "观察", "机制", "现象", "自然", "为什么", "怎么回事", "物理", "原因"],
+      "tone_hints": ["observed_effect_first", "mechanism_second", "uncertainty_if_needed"]
+    },
+    {
+      "id": "r28livefix0-logic-uncertainty-discipline",
+      "kind": "logic",
+      "text": "When evidence is insufficient, the disciplined move is to state what is known, what is missing, and which conclusion would be premature. This should sound calm, not apologetic.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["证据不足", "不确定", "无法判断", "边界", "缺少证据", "premature conclusion", "unknown"],
+      "tone_hints": ["known_missing_premature", "calm", "not_apologetic"]
+    },
+    {
+      "id": "r28livefix0-philosophy-relation-trust-boundary",
+      "kind": "philosophy",
+      "text": "For relation questions, avoid slogans. Useful judgment distinguishes trust, freedom, responsibility, and boundary: closeness is not possession, and honesty without care can become violence.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["关系", "亲密", "信任", "边界", "自由", "责任", "爱", "承诺", "真实"],
+      "tone_hints": ["relational", "not_slogan", "boundary_sensitive"]
+    },
+    {
+      "id": "r28livefix0-philosophy-freedom-responsibility",
+      "kind": "philosophy",
+      "text": "Freedom is not only doing whatever one wants; it also includes seeing consequences and accepting responsibility for a choice. Keep this distinction compact.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["自由", "责任", "选择", "后果", "伦理", "价值", "承担"],
+      "tone_hints": ["distinction", "compact", "responsibility"]
+    },
+    {
+      "id": "r28livefix0-philosophy-language-world",
+      "kind": "philosophy",
+      "text": "For language questions, meaning comes from naming, use, relation, correction, and shared context. Language can reveal thought, but it can also hide confusion.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["语言", "文字", "词语", "表达", "命名", "使用", "语境", "意义", "理解"],
+      "tone_hints": ["naming_use_context", "clear", "not_dictionary_only"]
+    },
+    {
+      "id": "r28livefix0-aesthetic-flat-linear-style",
+      "kind": "aesthetic",
+      "text": "For visual style questions, flat linear design can feel serious when contrast, spacing, edge discipline, and a small number of accents carry the composition. Avoid ornamental excess.",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["设计", "视觉", "配色", "字体", "扁平", "线性", "质感", "留白", "contrast", "spacing"],
+      "tone_hints": ["visual", "flat_linear", "restrained"]
+    }
+  ]
+}

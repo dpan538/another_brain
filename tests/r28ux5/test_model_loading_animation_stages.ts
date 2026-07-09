@@ -14,6 +14,7 @@ test("model loading panel exposes manifest, shard, tokenizer, q4 warmup, fallbac
     assert.ok(html.includes(id), id);
   }
   assert.ok(css.includes("@keyframes loading-sheen"));
+  assert.equal(/gradient/i.test(css), false);
   assert.ok(app.includes("MODEL_LOADING_STAGES"));
   assert.ok(app.includes("renderModelLoading"));
 });

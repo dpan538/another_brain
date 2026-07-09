@@ -15,9 +15,9 @@
     <main class="app-shell" id="app-shell" data-ui-mode="chat" aria-label="another_brain chat preview">
       <header class="app-header">
         <div class="header-copy">
-          <p class="eyebrow">another_brain preview</p>
-          <h1 id="chat-title">轻量本地聊天</h1>
-          <p class="chat-subtitle">日常问答优先走轻量路由和本地 profile pack；需要过程细节时再打开 Dashboard。</p>
+          <p class="eyebrow">another_brain</p>
+          <h1 id="chat-title">another_brain</h1>
+          <p class="chat-subtitle">Chat 是客户体验端；Dashboard 保留 runtime、RAG 和 q4 诊断。</p>
           <p id="non-product-warning" class="header-warning">当前是预览工程候选，不是已 admission 的产品模型。</p>
         </div>
         <div class="header-side">
@@ -79,8 +79,8 @@
 
       <section class="workspace-grid">
         <section class="conversation-pane" aria-labelledby="chat-title">
-          <section class="chat-intro" aria-label="chat mode summary">
-            <p>直接提问就好。短问候、身份、来源和边界类问题会快速返回；开放问题会使用本地 static RAG、q4 experimental path 和可用 fallback。</p>
+          <section class="chat-intro dashboard-only" aria-label="chat mode summary">
+            <p>Chat 端只显示简短回答；工程诊断、RAG 命中、q4 质量和 fallback reason 仅在 Dashboard 显示。</p>
             <div class="chat-badges" aria-label="chat badges">
               <span class="badge badge-local">local/static</span>
               <span class="badge">q4 experimental</span>
@@ -92,8 +92,8 @@
             <div class="loading-head">
               <div>
                 <span class="status-label">模型加载</span>
-                <strong id="model-loading-title">模型资产检查中</strong>
-                <p id="model-loading-detail">读取 manifest，fallback 已可用。</p>
+                <strong id="model-loading-title">加载中</strong>
+                <p id="model-loading-detail">正在准备本地模型。</p>
               </div>
               <button type="button" class="button-secondary small-button" id="loading-cancel-button">取消加载</button>
             </div>
@@ -138,9 +138,7 @@
           <section class="message-list" id="message-list" aria-live="polite" aria-label="messages">
             <article class="message message-assistant">
               <div class="message-role">another_brain</div>
-              <p>
-                我会显示公开过程摘要：输入包、本地上下文、检索证据、模型草稿、路由判断和最终回答。若 q4 没有真正参与，会明确标出。
-              </p>
+              <p>你好，我在。直接问就好。</p>
             </article>
           </section>
 
