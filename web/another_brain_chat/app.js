@@ -61,6 +61,8 @@ const MODEL_LOADING_PROGRESS = {
   "q4-warmup": 86,
   fallback: 100
 };
+const MODEL_WARMUP_TIMEOUT_MS = 45000;
+const MODEL_SHARD_PROBE_TIMEOUT_MS = 10000;
 const R28SHIP0_DEEP_SELFCHECK_METHOD = "deepSelfCheckModelPath";
 
 const appShell = document.querySelector("#app-shell");
@@ -169,7 +171,7 @@ const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
 
 const INITIAL_ASSISTANT_MESSAGE = [
-  "你好，我是 efishother。直接问就好。"
+  "你好，我是鳄鱼，也就是另一个 efish。直接问就好。"
 ].join(" ");
 
 function setText(node, value) {
@@ -545,6 +547,39 @@ function customerEvidenceAnswer(packet = {}) {
   return "";
 }
 
+function ruleBasedFallbackAnswer(packet = {}) {
+  const inputText = String(packet.input || "");
+  const evidenceAnswer = customerEvidenceAnswer(packet);
+  if (/太阳|日出|日落|东升西落/.test(inputText)) {
+    return "我先按常识判断：太阳不是每天绕着我们走，而是地球自转造成视运动。我们随地球向东转，所以会看到它东升西落。";
+  }
+  if (/气温|升温|变热|气候|天气/.test(inputText)) {
+    return "我会分三层看：短期是天气和季节，中期看城市、地表和海洋蓄热，长期才看气候趋势。不能把一次体感说成唯一原因。";
+  }
+  if (/品牌|公司|Apple|OpenAI|Tesla|Google|微软|小米|华为|商业/.test(inputText)) {
+    return evidenceAnswer || "我会看三件事：它解决什么真实问题、靠什么建立信任、有没有持续分发和记忆点。品牌不是名气，是可重复的体验。";
+  }
+  if (/历史|革命|战争|冷战|工业革命|事件|朝代/.test(inputText)) {
+    return evidenceAnswer || "我会把历史事件拆成触发点、结构原因和后果三层。单个英雄或单个日期很少足够，关键是它改变了什么制度、技术或关系。";
+  }
+  if (/美|审美|美学|好看|风格/.test(inputText)) {
+    return "我会先看它有没有结构。美不是单纯漂亮，而是形式、分寸、风险和情绪在同一刻站住；只有讨喜，没有必要性，就会很薄。";
+  }
+  if (/生死|生与死|死亡|活着|为什么.*活/.test(inputText)) {
+    return "我会把它看成有限性问题。死让时间有边界，生让选择还有发生的机会；很多意义不是先想明白，而是在关系和行动里做出来。";
+  }
+  if (/关系|亲密|信任|爱|朋友/.test(inputText)) {
+    return "关系最重要的是可信的真实：能靠近，也承认边界；能表达热度，也能承担后果。没有边界的亲密，最后常常会变成消耗。";
+  }
+  if (/语言|词语|文字|意义/.test(inputText)) {
+    return "语言不是标签而已。它把经验变成可交换、可修正的东西，也会暴露一个人怎么理解世界；一句话的意义，要看它在什么关系里被使用。";
+  }
+  if (/证据不足|证据不够|不确定|无法判断/.test(inputText)) {
+    return "我会先停住，不把判断说满。能确定的说清楚，缺证据的地方标出来；真正聪明不是硬答，而是知道哪里不能装懂。";
+  }
+  return evidenceAnswer || "我会先做一个稳的判断：分清事实、关系和代价，再决定能说到哪一步。模型如果没给出可采纳输出，我不会假装它思考了，但回答仍要尽量有结构。";
+}
+
 function customerFacingAnswer(packet = {}) {
   const raw = String(packet.final_answer || "").replace(/\s+/g, " ").trim();
   const inputText = String(packet.input || "");
@@ -553,7 +588,7 @@ function customerFacingAnswer(packet = {}) {
   const evidenceHint = shortEvidenceHint(packet);
   const evidenceAnswer = customerEvidenceAnswer(packet);
   if (/你是谁|你是.*谁|你是鳄鱼|鳄鱼|efish|efishother/i.test(inputText)) {
-    return "我是 efishother。efish 是鳄鱼旧昵称，another_brain 只是工程代号；我在这里用本地检索和小模型回答。";
+    return "我是鳄鱼，也可以理解成另一个 efish。efishother 是给这个鳄鱼接口的名字，another_brain 只是工程代号。";
   }
   if (/你好|在吗|hello|hi/i.test(inputText) && raw.length <= 24) return raw;
   if (route === "natural_world_question") {
@@ -589,7 +624,7 @@ function customerFacingAnswer(packet = {}) {
     return "我会停在证据边界上：先说能确认的，再说缺什么，不把漂亮话当答案。";
   }
   if (fallbackReason || packet.fallback_used) {
-    return evidenceAnswer || evidenceHint || "这个问题我会先给边界判断：能确定的说清楚，证据不够的地方不硬编。";
+    return ruleBasedFallbackAnswer(packet) || evidenceAnswer || evidenceHint || "这个问题我会先给边界判断：能确定的说清楚，证据不够的地方不硬编。";
   }
   const sentences = raw.match(/[^。！？!?]+[。！？!?]?/g) || [raw];
   return sentences.slice(0, 2).join("").slice(0, 120).trim() || "我在。";
@@ -927,8 +962,8 @@ async function anotherBrainDiagnostics() {
   const config = await loadDeliveryConfig().catch(() => DEFAULT_DELIVERY_CONFIG);
   const manifestStatus = await fetchAssetManifestStatus();
   const report = await runtime.deepSelfCheckModelPath({
-    timeoutMs: 15000,
-    shardTimeoutMs: 10000,
+    timeoutMs: MODEL_WARMUP_TIMEOUT_MS,
+    shardTimeoutMs: MODEL_SHARD_PROBE_TIMEOUT_MS,
     jsonTimeoutMs: 1200,
     cacheBust: "r28livefix0-diagnostics",
     onProgress: (progressReport) => renderSelfCheck(progressReport)
@@ -1005,8 +1040,8 @@ async function boot() {
     renderSelfCheck(report);
     renderModelLoading({ report, retrying: true, attempt: 1, strategy: "primary" });
     const mountResult = await runtime.mountQ4WithRetry({
-      timeoutMs: 15000,
-      shardTimeoutMs: 10000,
+      timeoutMs: MODEL_WARMUP_TIMEOUT_MS,
+      shardTimeoutMs: MODEL_SHARD_PROBE_TIMEOUT_MS,
       signal: bootController.signal,
       onProgress: (progressReport) => {
         renderSelfCheck(progressReport.report || progressReport);
@@ -1156,8 +1191,8 @@ on(modelSelfCheckButton, "click", async () => {
   renderModelLoading({ stage: "manifest", status: "checking", progress: 8 });
   try {
     const mountResult = await runtime.mountQ4WithRetry({
-      timeoutMs: 15000,
-      shardTimeoutMs: 10000,
+      timeoutMs: MODEL_WARMUP_TIMEOUT_MS,
+      shardTimeoutMs: MODEL_SHARD_PROBE_TIMEOUT_MS,
       signal: controller.signal,
       onProgress: (progressReport) => {
         renderSelfCheck(progressReport.report || progressReport);

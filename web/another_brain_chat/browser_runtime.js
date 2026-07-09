@@ -70,19 +70,21 @@ const R28UX4_ASSET_CACHE_KEY = "another_brain_r28rout1_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
 const R28SHIP0_MODEL_CACHE_PREFIX = "another-brain-model";
 const R28SHIP0_Q4_RETRY_STRATEGIES = Object.freeze(["primary", "normalized_absolute", "cache_bust", "clear_model_cache", "worker_restart"]);
+const R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS = R28SHIP0_Q4_RETRY_STRATEGIES.length;
 const R28SHIP0_RUNTIME_TRUTH_BLOCKERS = Object.freeze(["asset_missing", "tokenizer_fail", "forward_timeout", "q4_forward_timeout", "worker_error", "q4_forward_not_confirmed", "q4_retry_plan_exhausted", "model_loading_cancelled"]);
 const R28HOTFIX4_UI_VERSION = "r28hotfix4-open-question-generation-sla";
 const R28SURF5_SURFACE_COMPOSER_VERSION = "r28surf5-wide-surface-composer-v1";
 const SELF_CHECK_JSON_TIMEOUT_MS = 900;
 const SELF_CHECK_SHARD_PROBE_TIMEOUT_MS = 8000;
-const SELF_CHECK_DEEP_TIMEOUT_MS = 15000;
+const SELF_CHECK_DEEP_TIMEOUT_MS = 45000;
+const SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 90000;
 const GENERATION_START_TIMEOUT_MS = 1500;
 const DESKTOP_FIRST_TOKEN_TIMEOUT_MS = 6000;
 const MOBILE_FIRST_TOKEN_TIMEOUT_MS = 10000;
 const DESKTOP_TOTAL_GENERATION_TIMEOUT_MS = 12000;
 const MOBILE_TOTAL_GENERATION_TIMEOUT_MS = 20000;
 const IDENTITY_ROUTE = "identity_boundary";
-const IDENTITY_ANSWER = "你可以叫我鳄鱼。";
+const IDENTITY_ANSWER = "我是鳄鱼，也可以理解成另一个 efish。";
 const ANSWER_SURFACE_TEMPLATES = Object.freeze({
   identity_boundary: IDENTITY_ANSWER,
   identity_surface: IDENTITY_ANSWER,
@@ -1310,14 +1312,15 @@ function summarizeQ4RetryPlan(attempts = []) {
   const normalized = attempts.map((attempt, index) => buildQ4RetryAttempt({ attempt: index + 1, ...attempt }));
   const passed = normalized.find((attempt) => q4RetryAttemptPassed(attempt));
   const last = normalized[normalized.length - 1] || null;
-  const exhausted = normalized.length >= R28SHIP0_Q4_RETRY_STRATEGIES.length && normalized.every((attempt) => !q4RetryAttemptPassed(attempt));
+  const exhausted = normalized.length >= R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS && normalized.every((attempt) => !q4RetryAttemptPassed(attempt));
   return {
     status: passed ? "q4_ready" : exhausted ? "fallback_ready" : "retrying",
     attempts: normalized,
     passed_attempt: passed || null,
     final_strategy: passed?.strategy || last?.strategy || "primary",
     fallback_reason: passed ? "" : last?.blocker || "q4_retry_plan_not_complete",
-    exhausted
+    exhausted,
+    max_attempts: R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS
   };
 }
 
@@ -2145,7 +2148,7 @@ export class BrowserChatRuntime {
     };
     const run = async () => {
       let lastReport = null;
-      for (let index = 0; index < R28SHIP0_Q4_RETRY_STRATEGIES.length; index += 1) {
+      for (let index = 0; index < R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS; index += 1) {
         const attempt = index + 1;
         const strategy = R28SHIP0_Q4_RETRY_STRATEGIES[index];
         emit({ status: "retrying", state: "warming_q4", attempt, strategy, retrying: attempt > 1 });
@@ -2239,55 +2242,71 @@ export class BrowserChatRuntime {
 
   async runQ4SelfCheckSmoke(options = {}) {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
-    const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
+    const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), SELF_CHECK_DEEP_TIMEOUT_MAX_MS);
+    if (!this.worker) this.worker = this.createRuntimeWorker();
+    if (!this.worker) throw new Error("runtime_worker_unavailable");
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28livefix0-live-q4-mount", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;
         settled = true;
         clearTimeout(timeout);
-        try {
-          worker.terminate();
-        } catch {
-        }
         callback();
       };
+      const failAndRestart = (reason) => {
+        try {
+          this.worker?.terminate();
+        } catch {
+        }
+        this.worker = null;
+        finish(() => reject(new Error(reason)));
+      };
       const timeout = setTimeout(() => {
-        finish(() => reject(new Error("self_check_timeout")));
+        failAndRestart("self_check_timeout");
       }, timeoutMs);
       if (options.signal) {
         if (options.signal.aborted) {
-          finish(() => reject(new Error("self_check_cancelled")));
+          failAndRestart("self_check_cancelled");
           return;
         }
         options.signal.addEventListener("abort", () => {
-          finish(() => reject(new Error("self_check_cancelled")));
+          failAndRestart("self_check_cancelled");
         }, { once: true });
       }
-      worker.onmessage = (event) => {
+      this.worker.onmessage = (event) => {
         const message = event.data || {};
+        if (message.type === "state" && typeof options.onProgress === "function") {
+          options.onProgress({ stage: message.state || "runtime_worker" });
+        }
+        if (message.type === "token" && typeof options.onProgress === "function") {
+          options.onProgress({ stage: "token", token: message.token });
+        }
         if (message.type === "progress" && typeof options.onProgress === "function") {
           options.onProgress(message);
         }
         if (message.type === "error") {
-          finish(() => reject(new Error(message.error || "self_check_worker_failed")));
+          failAndRestart(message.error || "runtime_worker_mount_smoke_failed");
         }
         if (message.type === "final") {
           finish(() => resolve(message));
         }
       };
-      worker.onerror = (error) => {
-        finish(() => reject(new Error(error.message || "self_check_worker_error")));
+      this.worker.onerror = (error) => {
+        failAndRestart(error.message || "runtime_worker_mount_smoke_error");
       };
-      worker.postMessage({
-        type: "q4_smoke",
-        prompt: "R28SHIP0 q4 path smoke",
-        maxTokens: 1,
-        contextLength: 32,
-        generationKind: "mount_smoke",
-        timeoutMs
-      });
+      try {
+        this.worker.postMessage({
+          type: "generate",
+          prompt: "R28SHIP0 q4 path smoke",
+          mode: "static_q4_experimental",
+          maxTokens: 1,
+          contextLength: 32,
+          generationKind: "mount_smoke",
+          timeoutMs
+        });
+      } catch (error) {
+        failAndRestart(error.message || "runtime_worker_mount_smoke_post_failed");
+      }
     });
   }
 
@@ -2301,7 +2320,7 @@ export class BrowserChatRuntime {
     const runDeep = options.runDeep === true;
     const jsonTimeoutMs = Math.min(Math.max(Number(options.jsonTimeoutMs || options.quickTimeoutMs || SELF_CHECK_JSON_TIMEOUT_MS), 500), 3000);
     const shardProbeTimeoutMs = Math.min(Math.max(Number(options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS), 100), 15000);
-    const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS), 1000), 15000);
+    const deepTimeoutMs = Math.min(Math.max(Number(options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS), 1000), SELF_CHECK_DEEP_TIMEOUT_MAX_MS);
     const cacheBust = options.cacheBust ? `attempt_${options.attempt || 1}_${Date.now()}` : "";
     const blockers = [];
     let assetManifest = null;
@@ -2451,7 +2470,7 @@ export class BrowserChatRuntime {
     const cancelled = signal.aborted || blockers.includes("self_check_cancelled");
     const quickOrDeepOk = runDeep ? quickPassed && q4ForwardPassed : quickPassed;
     const forwardBlocker = q4ForwardPassed ? "" : (timedOut ? "q4_forward_timeout" : runDeep ? "q4_forward_not_confirmed" : "q4_forward_skipped_quick_check");
-    const reportRuntimeMode = q4ForwardPassed || (runDeep && timedOut && quickPassed) || (!runDeep && quickPassed) ? "static_q4_experimental" : "synthetic_fallback";
+    const reportRuntimeMode = q4ForwardPassed ? "static_q4_experimental" : "synthetic_fallback";
     const report = {
       status: cancelled ? "cancelled" : timedOut ? "timeout" : quickOrDeepOk ? "passed" : "failed",
       check_level: runDeep ? "deep" : "quick",
@@ -2948,7 +2967,15 @@ export class BrowserChatRuntime {
 
     setStatus(openRoute.should_attempt_q4 ? "routing_open_question" : "loading_model");
     if (!this.worker && this.capabilities.worker_available) await this.load();
-    const q4ReadyAtRequest = this.isQ4ReadyForGeneration();
+    let q4ReadyAtRequest = this.isQ4ReadyForGeneration();
+    if (openRoute.should_attempt_q4 && openRoute.category !== "unsafe_self_harm_or_crisis" && !q4ReadyAtRequest) {
+      setStatus("loading_model");
+      await this.mountQ4WithRetry({
+        timeoutMs: SELF_CHECK_DEEP_TIMEOUT_MS,
+        shardTimeoutMs: SELF_CHECK_SHARD_PROBE_TIMEOUT_MS
+      }).catch(() => null);
+      q4ReadyAtRequest = this.isQ4ReadyForGeneration();
+    }
     if (openRoute.category === "unsafe_self_harm_or_crisis" || (openRoute.should_attempt_q4 && !q4ReadyAtRequest)) {
       const blocker = openRoute.category === "unsafe_self_harm_or_crisis" ? "safety_boundary" : this.q4GenerationBlocker();
       const routePolicy = buildOpenQuestionRoutePolicy(input, openRoute, {

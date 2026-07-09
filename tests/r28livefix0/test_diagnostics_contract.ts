@@ -46,7 +46,8 @@ test("answer q4 generation is no longer capped to the one-token mount smoke or e
   assert.ok(q4Worker.includes("effective_max_tokens"));
   assert.ok(!q4Worker.includes("Math.min(Number(options.maxTokens || 4), 8)"));
   assert.ok(selfCheckWorker.includes('generationKind: "mount_smoke"'));
-  assert.ok(browserRuntime.includes("self_check_worker.js?v=r28livefix0-live-q4-mount"));
+  assert.equal(browserRuntime.includes("self_check_worker.js?v=r28livefix0-live-q4-mount"), false);
+  assert.ok(browserRuntime.includes("runtime_worker.js?v=r28livefix0-live-q4-mount"));
   assert.ok(browserRuntime.includes("runtime_worker.js?v=r28livefix0-live-q4-mount"));
   assert.ok(selfCheckWorker.includes("q4_worker_runtime.js?v=r28livefix0-live-q4-mount"));
   assert.ok(runtimeWorker.includes("q4_worker_runtime.js?v=r28livefix0-live-q4-mount"));
@@ -86,12 +87,14 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(html.includes("模型推理可视化"));
   assert.ok(html.includes("viz-q4-forward"));
   assert.ok(html.includes('class="chat-intro dashboard-only"'));
-  assert.ok(html.includes("你好，我是 efishother。直接问就好。"));
+  assert.ok(html.includes("你好，我是鳄鱼，也就是另一个 efish。直接问就好。"));
   assert.match(html, /id="abort-button"[^>]*hidden/);
   assert.match(html, /id="clear-chat-button"[^>]*hidden/);
   assert.ok(app.includes("customerFacingAnswer"));
   assert.ok(app.includes("customerFacingAnswer(packet)"));
   assert.ok(app.includes("customerEvidenceAnswer"));
+  assert.ok(app.includes("ruleBasedFallbackAnswer"));
+  assert.ok(app.includes("我是鳄鱼，也可以理解成另一个 efish"));
   assert.ok(app.includes("loadingNoteForStage"));
   assert.ok(app.includes("renderReasoningViz"));
   assert.ok(app.includes("document.body.dataset.uiMode"));
@@ -194,6 +197,7 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
     "loadingNoteForStage",
     "q4ForwardConfirmed",
     "updateChatSignalStatus",
+    "MODEL_WARMUP_TIMEOUT_MS = 45000",
     "完成 100%",
     "模型前向未确认",
     "q4 forward=",
@@ -204,6 +208,21 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
   ]) {
     assert.ok(app.includes(expected), expected);
   }
+});
+
+test("q4 mount uses persistent runtime worker, five attempts, and does not admit q4 mode without forward tokens", async () => {
+  const browserRuntime = await readFile(new URL("../../web/another_brain_chat/browser_runtime.js", import.meta.url), "utf8");
+  const q4Worker = await readFile(new URL("../../web/another_brain_chat/q4_worker_runtime.js", import.meta.url), "utf8");
+
+  assert.ok(browserRuntime.includes("R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS = R28SHIP0_Q4_RETRY_STRATEGIES.length"));
+  assert.ok(browserRuntime.includes("max_attempts: R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS"));
+  assert.ok(browserRuntime.includes("for (let index = 0; index < R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS; index += 1)"));
+  assert.ok(browserRuntime.includes("this.worker.postMessage({"));
+  assert.ok(browserRuntime.includes('generationKind: "mount_smoke"'));
+  assert.ok(browserRuntime.includes('const reportRuntimeMode = q4ForwardPassed ? "static_q4_experimental" : "synthetic_fallback";'));
+  assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MS = 45000"));
+  assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 90000"));
+  assert.ok(q4Worker.includes("mapWithConcurrency(shards, 2"));
 });
 
 test("mojibake q4 drafts are rejected before reaching the chat surface", async () => {

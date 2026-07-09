@@ -68,6 +68,23 @@ async function sha256Hex(bytes) {
   return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+async function mapWithConcurrency(items, limit, mapper) {
+  const queue = Array.isArray(items) ? items : [];
+  const workers = [];
+  let index = 0;
+  const workerCount = Math.max(1, Math.min(Number(limit || 1), queue.length || 1));
+  for (let workerIndex = 0; workerIndex < workerCount; workerIndex += 1) {
+    workers.push((async () => {
+      while (index < queue.length) {
+        const currentIndex = index;
+        index += 1;
+        await mapper(queue[currentIndex], currentIndex);
+      }
+    })());
+  }
+  await Promise.all(workers);
+}
+
 function buildByteMaps() {
   if (BYTE_ENCODER.size > 0) return;
   const bs = [];
@@ -413,7 +430,7 @@ async function tensorStore(pkg) {
     if (totalBytes <= 0) throw new Error("q4_tensor_store_empty");
     if (totalBytes > 100_000_000) throw new Error("q4_tensor_store_over_budget");
     const weights = new Uint8Array(totalBytes);
-    for (const shard of shards) {
+    await mapWithConcurrency(shards, 2, async (shard) => {
       const bytes = await fetchBytes(shard.path);
       if (bytes.byteLength !== Number(shard.bytes || 0)) throw new Error(`shard_size_mismatch:${shard.path}`);
       const expected = String(shard.sha256 || "").toLowerCase();
@@ -422,7 +439,7 @@ async function tensorStore(pkg) {
         if (actual !== expected) throw new Error(`shard_sha256_mismatch:${shard.path}`);
       }
       weights.set(bytes, Number(shard.offset || 0));
-    }
+    });
     return new Q4TensorStore(pkg.modelConfig, weights);
   })();
   return tensorStorePromise;
