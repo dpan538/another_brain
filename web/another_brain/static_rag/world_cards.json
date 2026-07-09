@@ -261,6 +261,248 @@
       "review_status": "approved_for_runtime",
       "keywords": ["极简", "产品设计", "可读性", "层级", "对比", "空间", "信息"],
       "tone_hints": ["accessibility", "minimalism", "clarity"]
+    },
+    {
+      "id": "r28postmerge12-judgment-fact-value-aesthetic",
+      "kind": "judgment",
+      "text": "判断一个问题有没有对错，先分事实、价值和审美。事实看证据，价值看理由和代价，审美看结构和语境。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["对错", "真假", "事实判断", "价值判断", "审美判断", "证据", "标准"],
+      "tone_hints": ["judgment", "classification", "concise"]
+    },
+    {
+      "id": "r28postmerge12-judgment-empirical-verifiable",
+      "kind": "judgment",
+      "text": "经验事实类问题通常可以判对错，但要看可观察证据、测量条件、反例和是否把相关性误当成因果。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["事实", "经验", "可验证", "证据", "反例", "因果", "相关性"],
+      "tone_hints": ["empirical", "evidence", "causal"]
+    },
+    {
+      "id": "r28postmerge12-judgment-normative-reasoned",
+      "kind": "judgment",
+      "text": "价值问题不一定有唯一答案，但仍能判断好坏：看理由是否自洽、谁承担代价、边界是否被承认。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["价值", "应该", "好坏", "代价", "边界", "自洽", "责任"],
+      "tone_hints": ["normative", "responsibility", "tradeoff"]
+    },
+    {
+      "id": "r28postmerge12-judgment-aesthetic-criteria",
+      "kind": "judgment",
+      "text": "审美不是纯偏好。它可以看比例、节奏、材料、语境和表达是否必要；只是这种判断通常不是数学式唯一答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["审美", "美学", "比例", "节奏", "材料", "语境", "必要性"],
+      "tone_hints": ["aesthetic", "criteria", "not_just_preference"]
+    },
+    {
+      "id": "r28postmerge12-judgment-category-error",
+      "kind": "judgment",
+      "text": "有些问题看似在问事实，实际混入价值或身份。先拆清问题类型，才能避免把世界压成一句对错。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["范畴错误", "问题类型", "事实", "价值", "身份", "判断", "混合问题"],
+      "tone_hints": ["category", "careful", "boundary"]
+    },
+    {
+      "id": "r28postmerge12-judgment-insufficient-evidence",
+      "kind": "judgment",
+      "text": "证据不足时，最好的判断不是硬答，而是说清哪些部分可确认、哪些缺条件、下一步要看什么证据。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["证据不足", "不确定", "无法判断", "缺条件", "边界", "下一步"],
+      "tone_hints": ["uncertainty", "honest", "actionable"]
+    },
+    {
+      "id": "r28postmerge12-judgment-identity-contract",
+      "kind": "judgment",
+      "text": "身份和名字的问题要看公开约定、语境和自我描述。名字不是全部事实，但会决定用户如何理解一个界面。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["身份", "名字", "efish", "鳄鱼", "界面", "公开约定", "语境"],
+      "tone_hints": ["identity", "naming", "product"]
+    },
+    {
+      "id": "r28postmerge12-judgment-historical-interpretation",
+      "kind": "judgment",
+      "text": "历史问题里，日期和事件可以判真伪；解释则要看证据链、结构原因和是否过度依赖单一人物。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["历史判断", "解释", "证据链", "结构原因", "人物", "真伪", "事件"],
+      "tone_hints": ["history", "interpretation", "evidence"]
+    },
+    {
+      "id": "r28postmerge12-philosophy-fact-inference-unknown",
+      "kind": "philosophy",
+      "text": "清醒的回答会把事实、推断和未知分开。事实给地基，推断给方向，未知提醒人不要把漂亮句子当真理。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["事实", "推断", "未知", "真理", "判断", "边界", "清醒"],
+      "tone_hints": ["epistemic", "concise", "boundary"]
+    },
+    {
+      "id": "r28postmerge12-philosophy-reason-not-excuse",
+      "kind": "philosophy",
+      "text": "理由不是借口。理解一个行为的原因，可以帮助判断责任，但不能自动取消后果。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["理由", "借口", "责任", "后果", "理解", "判断"],
+      "tone_hints": ["ethics", "responsibility", "clear"]
+    },
+    {
+      "id": "r28postmerge12-philosophy-language-meaning-shift",
+      "kind": "philosophy",
+      "text": "语言的意义不只在词典里，也在关系、场景和使用方式里。一个词能指向事实，也能改变人之间的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["语言", "意义", "语境", "关系", "词语", "翻译", "使用"],
+      "tone_hints": ["language", "context", "meaning"]
+    },
+    {
+      "id": "r28postmerge12-philosophy-finitude-choice",
+      "kind": "philosophy",
+      "text": "有限性让选择有重量。人不能拥有无限时间，所以关系、作品和承诺才会变得真实。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["有限性", "选择", "时间", "关系", "作品", "承诺", "生死"],
+      "tone_hints": ["finitude", "value", "quiet"]
+    },
+    {
+      "id": "r28postmerge12-aesthetic-bodoni-contrast",
+      "kind": "aesthetic",
+      "text": "粗重衬线字体的力量来自高对比、稳定节奏和纸面空间；字号大不等于吵，关键是让字有重心。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Bodoni", "衬线", "字号", "对比", "纸面", "杂志", "重心"],
+      "tone_hints": ["typography", "editorial", "contrast"]
+    },
+    {
+      "id": "r28postmerge12-aesthetic-accessible-minimalism",
+      "kind": "aesthetic",
+      "text": "有质感的极简必须可读。象牙白、深绿和黑色可以高级，但文字对比、行距和触控面积必须先成立。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["可读性", "WCAG", "象牙白", "深绿", "黑色", "行距", "触控"],
+      "tone_hints": ["accessibility", "minimalism", "contrast"]
+    },
+    {
+      "id": "r28postmerge12-history-renaissance-printing",
+      "kind": "history",
+      "text": "文艺复兴和印刷术的意义不只是艺术复兴，也在于知识复制成本下降，让思想传播速度和公共讨论结构发生改变。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["文艺复兴", "印刷术", "古登堡", "知识传播", "公共讨论", "艺术"],
+      "tone_hints": ["history", "media", "knowledge"]
+    },
+    {
+      "id": "r28postmerge12-history-enlightenment-reason",
+      "kind": "history",
+      "text": "启蒙运动把理性、公共讨论、科学方法和个人权利推到前台，但也留下技术理性与现实权力之间的张力。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["启蒙", "理性", "科学方法", "公共讨论", "个人权利", "权力"],
+      "tone_hints": ["history", "reason", "tension"]
+    },
+    {
+      "id": "r28postmerge12-society-ai-automation-work",
+      "kind": "society",
+      "text": "AI 和自动化的问题不能只问会不会替代人，还要问谁获得杠杆、谁被重新定价、哪些判断仍需要责任。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["AI", "自动化", "工作", "替代", "杠杆", "责任", "劳动"],
+      "tone_hints": ["technology", "labor", "responsibility"]
+    },
+    {
+      "id": "r28postmerge12-society-public-trust",
+      "kind": "society",
+      "text": "公共信任不是靠口号建立的，它来自透明规则、可追责机制、稳定兑现和人们重复经历后的判断。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["公共信任", "规则", "追责", "兑现", "制度", "社会", "判断"],
+      "tone_hints": ["trust", "institution", "practical"]
+    },
+    {
+      "id": "r28postmerge12-commonsense-water-boiling",
+      "kind": "commonsense",
+      "text": "水沸腾不是固定神秘温度，而是蒸气压和外界气压达到平衡；海拔变化会改变沸点。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["水", "沸腾", "沸点", "蒸气压", "气压", "海拔", "温度"],
+      "tone_hints": ["science", "mechanism", "condition"]
+    },
+    {
+      "id": "r28postmerge12-commonsense-sound-vibration",
+      "kind": "commonsense",
+      "text": "声音来自振动，需要介质传播；在真空中没有空气分子传递振动，所以声音无法像在空气中那样传播。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["声音", "振动", "介质", "空气", "真空", "传播", "物理"],
+      "tone_hints": ["physics", "plain", "mechanism"]
+    },
+    {
+      "id": "r28postmerge12-brand-product-memory",
+      "kind": "brand_literacy",
+      "text": "一个产品被记住，通常不是因为解释很多，而是因为名字、动作、视觉和第一次成功体验能连成一个稳定记忆。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["产品", "品牌", "名字", "视觉", "体验", "记忆", "第一次成功"],
+      "tone_hints": ["brand", "product", "memory"]
+    },
+    {
+      "id": "r28postmerge12-logic-base-rate",
+      "kind": "logic",
+      "text": "判断概率时，基准率很重要。一个故事再生动，也不能替代总体比例、样本来源和失败案例。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["基准率", "概率", "样本", "失败案例", "故事", "判断", "风险"],
+      "tone_hints": ["base_rate", "logic", "risk"]
     }
   ]
 }

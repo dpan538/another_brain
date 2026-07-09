@@ -5,7 +5,7 @@
   "doubao": false,
   "external_llm_api": false,
   "external_runtime_dependency": false,
-  "full_bundle_estimate_bytes": 70166138,
+  "full_bundle_estimate_bytes": 70178547,
   "gate_assets": [
     {
       "bytes": 3058,
@@ -165,12 +165,12 @@
     {
       "answer_bank": false,
       "allowed_for_training": false,
-      "bytes": 13311,
+      "bytes": 25720,
       "demo_only": false,
       "path": "another_brain/static_rag/world_cards.json",
       "private_raw_data": false,
       "provenance": "approved_anchor_summary",
-      "sha256": "1f1a009f76c01d444a0534fee22f4f3e8cc98e720b93a73e3369ffeec8977a32"
+      "sha256": "c09bda98e773615ebd408e2a3d758a74c12172fcb9ad06612e1e34a9a34a0bfc"
     },
     {
       "answer_bank": false,
@@ -214,7 +214,7 @@
     }
   ],
   "release_checkpoint_admission": false,
-  "remaining_bytes_under_100mb": 29833862,
+  "remaining_bytes_under_100mb": 29821453,
   "runtime_tokenizer_blocker": "",
   "runtime_version": "r28tok1-exact-tokenizer-runtime-v1",
   "same_origin_only": true,
@@ -236,7 +236,7 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49378894,
+  "total_declared_bytes": 49391303,
   "branch_marker": "R28LIVEFIX0",
   "branch_name": "r28livefix0-live-q4-mount",
   "build_commit_short": "build-env-pending",

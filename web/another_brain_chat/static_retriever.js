@@ -12,7 +12,7 @@ const PROFILE_CARD_ASSETS = Object.freeze([
   "../another_brain/static_rag/society_cards.json"
 ]);
 const DEFAULT_RAG_ASSETS = Object.freeze([DEMO_MEMORY_ASSET, ...PROFILE_CARD_ASSETS]);
-const CARD_KINDS = Object.freeze(["brand", "brand_literacy", "identity", "style", "value", "aesthetic", "boundary", "capability", "commonsense", "philosophy", "logic", "history", "society"]);
+const CARD_KINDS = Object.freeze(["brand", "brand_literacy", "identity", "style", "value", "aesthetic", "boundary", "capability", "commonsense", "philosophy", "logic", "judgment", "history", "society"]);
 const CARD_PROVENANCE = Object.freeze(["approved_anchor_summary", "hand_authored_boundary", "demo_safe"]);
 const QUERY_EXPANSION_RULES = Object.freeze([
   { match: /iphone|苹果手机|mac|ipad|ios/i, terms: ["apple", "苹果", "生态", "硬件", "软件"] },
@@ -33,6 +33,7 @@ const QUERY_EXPANSION_RULES = Object.freeze([
   { match: /重力|引力|掉下|轨道|绕着/i, terms: ["重力", "引力", "轨道", "质量", "运动"] },
   { match: /疫苗|免疫|病毒/i, terms: ["疫苗", "免疫", "抗体", "公共卫生", "风险"] },
   { match: /概率|随机|运气|风险/i, terms: ["概率", "随机", "样本", "风险", "不确定性"] },
+  { match: /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实判断|价值判断|审美判断/i, terms: ["对错判定", "事实", "价值", "审美", "证据", "标准", "可验证", "判断"] },
   { match: /算法|推荐|信息茧房|平台/i, terms: ["算法", "推荐系统", "激励", "分发", "注意力"] },
   { match: /排版|字体|杂志|bodoni|封面|视觉/i, terms: ["排版", "字体", "杂志", "层级", "留白", "对比"] }
 ]);
@@ -161,6 +162,7 @@ function profileKindBoost(query = "", record = {}) {
   if (kind === "commonsense" && /太阳|日出|日落|东升西落|天气|气温|升温|降温|自然|常识|天空|蓝天|月亮|季节|时间|下雨|雨|沸腾|烧开|声音|振动|真空|why|原因/.test(text)) return 0.1;
   if (kind === "philosophy" && /生死|生与死|活着|存在|虚无|意义|哲学|自由|有限|死亡|孤独|记忆|正义|责任|真理|真实|事实/.test(text)) return 0.1;
   if (kind === "logic" && /为什么|如何看待|怎么看|判断|因果|证据|推理|逻辑|because|reason/.test(text)) return 0.09;
+  if (kind === "judgment" && /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实|价值|审美|证据|判断|标准/.test(text)) return 0.14;
   if (kind === "value" && /价值|对错|重要|承诺|信任|value/.test(text)) return 0.08;
   if (kind === "boundary" && /证据|不足|冲突|隐藏|系统提示|evidence|conflict|prompt/.test(text)) return 0.08;
   if (kind === "identity" && /你是谁|鳄鱼|关系|identity|who are you/.test(text)) return 0.06;
@@ -284,6 +286,58 @@ function collectToneHints(evidence = []) {
   return hints;
 }
 
+function inferJudgmentMode(query = "", evidence = []) {
+  const text = String(query || "");
+  const topKind = evidence[0]?.metadata?.card_kind || "";
+  const hasJudgmentCard = evidence.some((item) => item.metadata?.card_kind === "judgment");
+  if (/证据不足|证据不够|不知道|无法判断|不确定|信息不足/.test(text)) {
+    return {
+      has_truth_condition: false,
+      judgment_mode: "insufficient_evidence",
+      correctness_axis: "需要先补证据",
+      answer_policy_hint: "say_what_is_known_then_stop"
+    };
+  }
+  if (/美|审美|美学|好看|风格/.test(text) || topKind === "aesthetic") {
+    return {
+      has_truth_condition: false,
+      judgment_mode: "aesthetic_criteria",
+      correctness_axis: "结构、比例、语境和表达是否成立",
+      answer_policy_hint: "judge_with_criteria_not_totalizing"
+    };
+  }
+  if (/应该|值得|重要|关系|爱|意义|活着|生死|自由|责任|正义|价值/.test(text) || topKind === "philosophy" || topKind === "value") {
+    return {
+      has_truth_condition: false,
+      judgment_mode: "normative_reasoned",
+      correctness_axis: "理由、代价、边界和是否自洽",
+      answer_policy_hint: "give_reasoned_position_with_limits"
+    };
+  }
+  if (/对错|真假|真伪|对不对|是否成立|可证伪|能不能判断|有没有标准/.test(text) || hasJudgmentCard) {
+    return {
+      has_truth_condition: true,
+      judgment_mode: "mixed_truth_value_check",
+      correctness_axis: "先分事实、价值、审美和定义",
+      answer_policy_hint: "classify_before_answering"
+    };
+  }
+  if (/为什么|原因|机制|怎么发生|是否|是不是|有没有|哪里|多少|什么时候|历史|科学|电|重力|太阳|天气|芯片|算法/.test(text) || ["commonsense", "history", "society"].includes(topKind)) {
+    return {
+      has_truth_condition: true,
+      judgment_mode: "empirical_or_structural",
+      correctness_axis: "事实证据、机制和反例",
+      answer_policy_hint: "answer_with_mechanism_and_evidence"
+    };
+  }
+  return {
+    has_truth_condition: "unknown",
+    judgment_mode: "open_classification_needed",
+    correctness_axis: "需要先确认问题类型",
+    answer_policy_hint: "classify_question_first"
+  };
+}
+
 export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_RECORDS, options = {}) {
   const topK = Number(options.topK || 4);
   const ranked = records
@@ -302,12 +356,14 @@ export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_
       metadata: record.metadata || {}
     }));
   const classification = classifyEvidence(input, ranked);
+  const judgmentProfile = inferJudgmentMode(input, ranked);
   return {
     query: String(input || ""),
     state_packet: statePacket,
     retrieved_evidence: ranked,
     evidence_status: classification.evidence_status,
     answer_policy_hint: classification.answer_policy_hint,
+    judgment_profile: judgmentProfile,
     local_only: true,
     same_origin_only: true,
     backend_retrieval: false,
@@ -320,6 +376,7 @@ export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_
       broad_answer_bank: false,
       private_raw_data: false,
       hosted_vector_store: false,
+      judgment_profile: judgmentProfile,
       tone_hints: collectToneHints(ranked),
       source_display: ranked.map((item) => ({
         source_id: item.source_id,

@@ -618,6 +618,9 @@ function customerEvidenceAnswer(packet = {}) {
   if (kind === "society") {
     return `${summary} 我会看结构和代价，不把复杂问题压成一个原因。`;
   }
+  if (kind === "judgment") {
+    return `${summary} 我会先判断它是事实、价值还是审美问题，再决定能不能说对错。`;
+  }
   if (kind === "philosophy" || kind === "logic" || kind === "aesthetic") {
     return `${summary} 我会先给判断，再留下证据边界。`;
   }
@@ -642,6 +645,9 @@ function ruleBasedFallbackAnswer(packet = {}) {
   }
   if (/算法|推荐|平台|隐私|供应链|城市|通胀|房价|教育|医疗|劳动|移民|社会/.test(inputText)) {
     return safeEvidenceAnswer || "我会先看结构：谁获得便利，谁承担代价，激励怎样改变行为。现实问题通常不是一个原因就能解释。";
+  }
+  if (/对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实判断|价值判断|审美判断/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先分型：事实题看证据，价值题看理由和代价，审美题看结构。不是所有问题都有唯一对错，但很多问题仍然能被判断。";
   }
   if (/电池|重力|引力|电流|光合作用|疫苗|概率|随机|半导体|芯片|智能手机|铁路|汽车/.test(inputText)) {
     return safeEvidenceAnswer || "我会先讲机制，再讲限制：是什么在起作用，哪些条件改变后结论也会变。";
@@ -687,6 +693,9 @@ function customerFacingAnswer(packet = {}) {
   }
   if (/半导体|芯片|智能手机|铁路|汽车史|供应链|城市化|推荐算法|平台|隐私|通胀|房价|劳动|教育|医疗|概率|随机/.test(inputText)) {
     return safeEvidenceAnswer || "我会先拆结构：机制是什么、谁被影响、代价在哪里。这样比一句价值判断更接近现实。";
+  }
+  if (/对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实判断|价值判断|审美判断/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先把问题分成事实、价值和审美。事实可以靠证据判定；价值和审美不一定唯一，但仍要看理由、结构和边界。";
   }
   if (route === "natural_world_question") {
     if (/太阳|日出|日落|东升西落/.test(inputText)) {

@@ -124,8 +124,13 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   const css = await readFile(new URL("../../web/another_brain_chat/styles.css", import.meta.url), "utf8");
   const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
 
-  assert.ok(html.includes("another e fish"));
-  assert.ok(html.includes("<title>another e fish | local answer</title>"));
+  assert.ok(html.includes("an other efish"));
+  assert.ok(html.includes("<title>an other efish | local answer</title>"));
+  assert.ok(html.includes("interactive-widget=resizes-content"));
+  assert.ok(html.includes('property="og:title" content="an other efish | local answer"'));
+  assert.ok(html.includes('name="twitter:card" content="summary"'));
+  assert.equal(html.includes("https://"), false);
+  assert.equal(html.includes("http://"), false);
   assert.ok(html.includes('href="/favicon.png"'));
   assert.equal(html.includes("croc-logo"), false);
   assert.equal(html.includes("efishother crocodile logo"), false);
@@ -193,6 +198,12 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(css.includes("max-width: min(72ch, 76%)"));
   assert.ok(css.includes("grid-template-columns: minmax(0, 1fr) auto"));
   assert.ok(css.includes("position: static"));
+  assert.ok(css.includes("R28POSTMERGE12"));
+  assert.ok(css.includes("@supports (-webkit-touch-callout: none)"));
+  assert.ok(css.includes("position: sticky"));
+  assert.ok(css.includes("100svh"));
+  assert.ok(css.includes("env(safe-area-inset-bottom)"));
+  assert.ok(css.includes("overflow-wrap: anywhere"));
   assert.ok(css.includes('@media (max-width: 720px)'));
   assert.ok(css.includes(".header-side"));
   assert.ok(css.includes("display: none"));
@@ -218,7 +229,9 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(retriever.includes("history_cards.json"));
   assert.ok(retriever.includes("society_cards.json"));
   assert.ok(retriever.includes("QUERY_EXPANSION_RULES"));
-  for (const kind of ["brand", "brand_literacy", "commonsense", "philosophy", "logic", "history", "society"]) assert.ok(retriever.includes(`"${kind}"`), kind);
+  for (const kind of ["brand", "brand_literacy", "commonsense", "philosophy", "logic", "judgment", "history", "society"]) assert.ok(retriever.includes(`"${kind}"`), kind);
+  assert.ok(retriever.includes("inferJudgmentMode"));
+  assert.ok(retriever.includes("judgment_profile"));
   for (const pack of [logicPack, brandPack, brandLiteracyPack, worldPack, knowledgePack, historyPack, societyPack]) {
     assert.equal(pack.fixture_policy.answer_bank, false);
     assert.equal(pack.fixture_policy.allowed_for_training, false);
@@ -243,13 +256,17 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(brandPack.cards.some((card) => card.kind === "brand" && card.keywords.includes("efishother.com")));
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Apple")));
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("OpenAI")));
-  assert.ok(worldPack.cards.length >= 20);
+  assert.ok(worldPack.cards.length >= 45);
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("BMW")));
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Skyline")));
   assert.ok(worldPack.cards.some((card) => card.kind === "history" && card.keywords.includes("半导体")));
   assert.ok(worldPack.cards.some((card) => card.kind === "commonsense" && card.keywords.includes("光合作用")));
   assert.ok(worldPack.cards.some((card) => card.kind === "society" && card.keywords.includes("推荐算法")));
   assert.ok(worldPack.cards.some((card) => card.kind === "aesthetic" && card.keywords.includes("杂志")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "judgment" && card.keywords.includes("对错")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "judgment" && card.keywords.includes("事实判断")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "philosophy" && card.keywords.includes("有限性")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "aesthetic" && card.keywords.includes("WCAG")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("天空")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("正义")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("记忆")));
@@ -454,6 +471,19 @@ test("expanded world cards can retrieve practical brand and commonsense context 
   }]);
   assert.equal(phonePacket.evidence_status, "sufficient");
   assert.equal(phonePacket.retrieved_evidence[0].source_id, "world-smartphone");
+
+  const judgmentPacket = buildEvidencePacket("这个问题有没有对错标准", {}, [{
+    source_id: "world-judgment",
+    title: "R28 world judgment card",
+    text: "判断一个问题有没有对错，先分事实、价值和审美。",
+    trust_level: "high",
+    can_answer: true,
+    keywords: ["对错", "事实判断", "价值判断", "审美判断", "标准"],
+    metadata: { r28rag3_profile_card: true, card_kind: "judgment" }
+  }]);
+  assert.equal(judgmentPacket.evidence_status, "sufficient");
+  assert.equal(judgmentPacket.judgment_profile.judgment_mode, "mixed_truth_value_check");
+  assert.equal(judgmentPacket.rag_profile_pack.judgment_profile.answer_policy_hint, "classify_before_answering");
 });
 
 test("natural-world open questions do not collapse into abstract value fallback when q4 is not admitted", async () => {
