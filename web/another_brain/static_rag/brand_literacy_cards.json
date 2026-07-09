@@ -140,6 +140,50 @@
       "review_status": "approved_for_runtime",
       "keywords": ["Vercel", "部署", "preview", "Next.js", "frontend", "Git", "edge"],
       "tone_hints": ["deployment", "preview", "frontend"]
+    },
+    {
+      "id": "r28postmerge3-brand-literacy-meta",
+      "kind": "brand_literacy",
+      "text": "Meta is shaped by social graphs, advertising infrastructure, messaging, creator attention, virtual reality bets, and the tension between connection and platform control.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Meta", "Facebook", "Instagram", "社交", "广告", "平台", "VR", "注意力"],
+      "tone_hints": ["social_graph", "platform_power", "attention"]
+    },
+    {
+      "id": "r28postmerge3-brand-literacy-amazon",
+      "kind": "brand_literacy",
+      "text": "Amazon is best read through logistics, marketplace trust, Prime habit, AWS infrastructure, price discipline, and the operational conversion of convenience into loyalty.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Amazon", "亚马逊", "电商", "物流", "AWS", "Prime", "市场", "便利"],
+      "tone_hints": ["logistics", "infrastructure", "habit"]
+    },
+    {
+      "id": "r28postmerge3-brand-literacy-toyota",
+      "kind": "brand_literacy",
+      "text": "Toyota is associated with manufacturing reliability, lean production, hybrids, supply discipline, global scale, and practical trust rather than only automotive style.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Toyota", "丰田", "制造", "精益生产", "混动", "可靠", "供应链", "汽车"],
+      "tone_hints": ["manufacturing", "reliability", "practical_trust"]
+    },
+    {
+      "id": "r28postmerge3-brand-literacy-leica",
+      "kind": "brand_literacy",
+      "text": "Leica is an imaging brand whose meaning comes from optics, rangefinder heritage, restrained industrial design, documentary memory, and a high-price aura.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["Leica", "徕卡", "相机", "镜头", "旁轴", "摄影", "工业设计", "影像"],
+      "tone_hints": ["imaging", "heritage", "design_aura"]
     }
   ]
 }

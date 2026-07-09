@@ -95,7 +95,10 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
 
   assert.ok(html.includes("efishother.com"));
+  assert.ok(html.includes("<title>efishother | local answer machine</title>"));
   assert.ok(html.includes(">efishother<"));
+  assert.ok(html.includes("croc-logo"));
+  assert.ok(html.includes("efishother crocodile logo"));
   assert.ok(html.includes("efish 是旧昵称"));
   assert.ok(html.includes("brand-linework"));
   assert.ok(html.includes("chat-signal-strip"));
@@ -140,13 +143,16 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(css.includes('width: min(1360px, 100%)'));
   assert.ok(css.includes(".chat-signal-strip"));
   assert.ok(css.includes(".chat-signal-strip div.is-warn"));
+  assert.ok(css.includes(".croc-logo"));
+  assert.ok(css.includes('body[data-ui-mode="chat"]'));
+  assert.ok(css.includes("background: #0c1013"));
   assert.ok(css.includes(".chat-loading-note"));
   assert.ok(css.includes('grid-template-rows: auto minmax(0, 1fr)'));
   assert.ok(css.includes(".reasoning-viz"));
   assert.ok(css.includes(".viz-track"));
   assert.ok(css.includes(".composer-actions [hidden]"));
   assert.ok(css.includes("#send-button"));
-  assert.ok(css.includes('grid-template-rows: auto auto minmax(0, 2.5fr) minmax(0, 1fr)'));
+  assert.ok(css.includes('grid-template-rows: auto auto minmax(0, 2fr) minmax(0, 0.9fr)'));
   assert.ok(css.includes("position: absolute"));
   assert.ok(css.includes('@media (max-width: 720px)'));
   assert.ok(css.includes(".header-side"));

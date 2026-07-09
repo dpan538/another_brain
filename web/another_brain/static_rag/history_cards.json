@@ -162,6 +162,61 @@
       "review_status": "approved_for_runtime",
       "keywords": ["Transformer", "LLM", "大语言模型", "注意力机制", "AI", "ChatGPT", "算力", "安全"],
       "tone_hints": ["ai_history", "infrastructure", "software_habit"]
+    },
+    {
+      "id": "r28postmerge3-history-renaissance",
+      "kind": "history",
+      "text": "The Renaissance is useful as a frame for humanism, classical revival, patronage, city wealth, art technique, scientific observation, and new confidence in worldly life.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["文艺复兴", "Renaissance", "人文主义", "艺术", "赞助", "城市", "科学观察"],
+      "tone_hints": ["humanism", "art_history", "city_culture"]
+    },
+    {
+      "id": "r28postmerge3-history-enlightenment",
+      "kind": "history",
+      "text": "The Enlightenment is tied to reason, public debate, science, rights, skepticism toward inherited authority, and the political imagination of modern institutions.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["启蒙运动", "Enlightenment", "理性", "权利", "科学", "公共讨论", "制度"],
+      "tone_hints": ["reason", "rights", "modern_institutions"]
+    },
+    {
+      "id": "r28postmerge3-history-printing-press",
+      "kind": "history",
+      "text": "Printing press history is about reproduction of text, lower copying cost, religious and scientific circulation, literacy, censorship, and changed public authority.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["印刷术", "古登堡", "printing press", "文本复制", "识字", "审查", "传播"],
+      "tone_hints": ["media_history", "circulation", "authority"]
+    },
+    {
+      "id": "r28postmerge3-history-space-race",
+      "kind": "history",
+      "text": "The Space Race combined Cold War prestige, military technology, scientific ambition, public spectacle, satellites, human spaceflight, and infrastructure investment.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["太空竞赛", "Space Race", "冷战", "卫星", "航天", "科技", "国家竞争"],
+      "tone_hints": ["science_policy", "prestige", "infrastructure"]
+    },
+    {
+      "id": "r28postmerge3-history-globalization",
+      "kind": "history",
+      "text": "Globalization is not only trade. It includes supply chains, finance, migration, standards, cultural circulation, vulnerability, and backlash against uneven benefits.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["全球化", "Globalization", "供应链", "金融", "迁移", "文化流通", "不平衡"],
+      "tone_hints": ["systems", "supply_chain", "uneven_change"]
     }
   ]
 }

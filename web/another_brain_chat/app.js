@@ -591,6 +591,12 @@ function customerFacingAnswer(packet = {}) {
     return "我是鳄鱼，也可以理解成另一个 efish。efishother 是给这个鳄鱼接口的名字，another_brain 只是工程代号。";
   }
   if (/你好|在吗|hello|hi/i.test(inputText) && raw.length <= 24) return raw;
+  if (/品牌|公司|Apple|苹果|Google|谷歌|Microsoft|微软|Tesla|特斯拉|Meta|Amazon|亚马逊|Toyota|丰田|Leica|徕卡|OpenAI|Vercel|商业|产品/i.test(inputText)) {
+    return evidenceAnswer || "我会看它解决什么问题、靠什么建立信任、怎样被反复使用。品牌不是名气，是可重复的体验。";
+  }
+  if (/历史|革命|战争|冷战|工业革命|文艺复兴|启蒙|印刷术|太空竞赛|全球化|事件|朝代/.test(inputText)) {
+    return evidenceAnswer || "我会把历史拆成三层：触发点、结构原因、以及后来改变了什么。单个日期通常不是全部答案。";
+  }
   if (route === "natural_world_question") {
     if (/太阳|日出|日落|东升西落/.test(inputText)) {
       return "这是地球自转造成的视运动：我们随地球向东转，所以太阳看起来从东边升起、向西边落下。";
@@ -598,6 +604,7 @@ function customerFacingAnswer(packet = {}) {
     if (/气温|升温|天气|气候/.test(inputText)) {
       return "要分开看：天气、季节、地表蓄热、人类活动和长期气候趋势都可能参与，不能只归因给一个原因。";
     }
+    if (evidenceAnswer) return evidenceAnswer;
     return evidenceHint || "这是事实解释类问题，我会先看机制和证据，不套用价值判断模板。";
   }
   if (route === "aesthetic_question" || /美|审美|美学|好看|风格/.test(inputText)) {

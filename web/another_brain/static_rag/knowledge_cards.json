@@ -96,6 +96,72 @@
       "review_status": "approved_for_runtime",
       "keywords": ["颜色", "配色", "材质", "质感", "对比", "节奏", "可读性", "palette", "material"],
       "tone_hints": ["visual", "material", "legibility"]
+    },
+    {
+      "id": "r28postmerge3-commonsense-water-boiling",
+      "kind": "commonsense",
+      "text": "For water boiling questions, keep the mechanism concrete: heating raises molecular motion until vapor pressure can overcome surrounding pressure; altitude changes the boiling point.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["水", "沸腾", "烧开", "蒸汽", "压力", "海拔", "boiling", "temperature"],
+      "tone_hints": ["mechanism", "plain_science", "compact"]
+    },
+    {
+      "id": "r28postmerge3-commonsense-why-rain",
+      "kind": "commonsense",
+      "text": "For rain questions, separate evaporation, cooling, condensation, cloud droplets, and gravity. Rain is a phase-change and atmosphere-circulation event, not a mysterious sign.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["下雨", "雨", "蒸发", "冷却", "凝结", "云", "水循环", "rain"],
+      "tone_hints": ["natural_mechanism", "stepwise", "short"]
+    },
+    {
+      "id": "r28postmerge3-commonsense-sound",
+      "kind": "commonsense",
+      "text": "For sound questions, the useful axis is vibration moving through a medium. Frequency relates to pitch, amplitude to loudness, and no medium means ordinary sound cannot travel.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["声音", "振动", "频率", "响度", "介质", "真空", "sound", "pitch"],
+      "tone_hints": ["physics", "distinction", "concrete"]
+    },
+    {
+      "id": "r28postmerge3-philosophy-truth",
+      "kind": "philosophy",
+      "text": "For truth questions, distinguish factual accuracy, coherence, usefulness, and honesty about uncertainty. Truth is not the same as a sentence sounding confident.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["真理", "真实", "事实", "一致性", "不确定", "truth", "honesty"],
+      "tone_hints": ["epistemic", "confidence_boundary", "not_slogan"]
+    },
+    {
+      "id": "r28postmerge3-philosophy-freedom",
+      "kind": "philosophy",
+      "text": "For freedom questions, avoid treating freedom as doing anything. Useful judgment separates choice, constraint, responsibility, capacity, and the effect one choice has on others.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["自由", "选择", "限制", "责任", "能力", "他人", "freedom"],
+      "tone_hints": ["ethical", "constraint", "responsibility"]
+    },
+    {
+      "id": "r28postmerge3-aesthetic-technology-product",
+      "kind": "aesthetic",
+      "text": "For technology product design, judgment should weigh clarity, restraint, contrast, information hierarchy, latency feel, trust cues, and whether the interface hides complexity at the right layer.",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["科技产品", "界面", "层级", "延迟", "信任", "克制", "深色", "UI"],
+      "tone_hints": ["product_design", "hierarchy", "trust"]
     }
   ]
 }
