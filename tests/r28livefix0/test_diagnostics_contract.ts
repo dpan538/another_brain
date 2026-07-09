@@ -27,3 +27,23 @@ test("UI and static entries expose R28LIVEFIX0 marker on root and chat routes", 
     assert.ok(html.includes("another-brain-commit-short"), path);
   }
 });
+
+test("loading panel exposes unambiguous completed q4 progress instead of skeleton-only pass state", async () => {
+  const html = await readFile(new URL("../../web/another_brain_chat/index.html", import.meta.url), "utf8");
+  const css = await readFile(new URL("../../web/another_brain_chat/styles.css", import.meta.url), "utf8");
+  const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
+
+  assert.ok(html.includes("model-loading-summary"));
+  assert.ok(css.includes(".loading-skeleton.is-complete"));
+  for (const expected of [
+    "summarizeLoadingProgress",
+    "完成 100%",
+    "q4 forward=",
+    "tokens=",
+    "shards=",
+    "加载完成：q4 已可用",
+    "loadingSkeleton?.classList.toggle"
+  ]) {
+    assert.ok(app.includes(expected), expected);
+  }
+});

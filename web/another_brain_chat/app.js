@@ -140,7 +140,9 @@ const modelLoadingTitle = document.querySelector("#model-loading-title");
 const modelLoadingDetail = document.querySelector("#model-loading-detail");
 const modelLoadingProgressBar = document.querySelector("#model-loading-progress-bar");
 const modelLoadingStages = document.querySelector("#model-loading-stages");
+const modelLoadingSummary = document.querySelector("#model-loading-summary");
 const loadingCancelButton = document.querySelector("#loading-cancel-button");
+const loadingSkeleton = document.querySelector(".loading-skeleton");
 const q4RetryStatus = document.querySelector("#q4-retry-status");
 
 let lastPacket = null;
@@ -252,6 +254,46 @@ function renderQ4RetryStatus(input = {}) {
   setText(q4RetryStatus, `Plan B：第 ${currentAttempt} 次尝试 / 当前策略 ${currentStrategy}${lastBlocker ? ` / 失败原因 ${lastBlocker}` : ""}`);
 }
 
+function summarizeLoadingProgress(report = {}, progress = 8, status = "checking", stage = "manifest") {
+  const assets = report.assets || {};
+  const tokenizer = report.tokenizer || {};
+  const q4Forward = report.q4_forward || {};
+  const expectedShards = Number(assets.expected_shard_count || assets.q4_shard_count || 5);
+  const shardCount = Number(assets.q4_shard_count || 0);
+  const tokenizerStatus = tokenizer.status || report.tokenizer_status || "not_checked";
+  const tokensGenerated = Number(q4Forward.tokens_generated || 0);
+  const elapsedMs = report.elapsed_ms == null ? null : Number(report.elapsed_ms);
+  const forwardRan = q4Forward.q4_forward_ran === true;
+  const blocker = q4Forward.blocker || report.retry_plan?.fallback_reason || (report.blockers || [])[0] || "";
+  if (status === "passed") {
+    return [
+      "完成 100%",
+      `q4 forward=${forwardRan ? "true" : "false"}`,
+      `tokens=${tokensGenerated}`,
+      `shards=${shardCount}/${expectedShards}`,
+      `tokenizer=${tokenizerStatus}`,
+      elapsedMs == null ? "" : `elapsed=${elapsedMs}ms`
+    ].filter(Boolean).join(" · ");
+  }
+  if (status === "failed" || status === "timeout") {
+    return [
+      "未完成",
+      `进度 ${Math.round(progress)}%`,
+      `stage=${stage}`,
+      blocker ? `blocker=${blocker}` : ""
+    ].filter(Boolean).join(" · ");
+  }
+  if (status === "cancelled") {
+    return `已取消 · 进度 ${Math.round(progress)}% · fallback 可用`;
+  }
+  return [
+    `进度 ${Math.round(progress)}%`,
+    MODEL_LOADING_LABELS[stage] || stage,
+    shardCount ? `shards=${shardCount}/${expectedShards}` : "",
+    tokenizerStatus !== "not_checked" ? `tokenizer=${tokenizerStatus}` : ""
+  ].filter(Boolean).join(" · ");
+}
+
 function renderModelLoading(input = {}) {
   if (!modelLoadingPanel) return;
   const report = input.report || input;
@@ -263,8 +305,18 @@ function renderModelLoading(input = {}) {
   const failed = status === "failed" || status === "timeout";
   const progress = Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 8);
   setHidden(modelLoadingPanel, input.hidden === true);
-  setText(modelLoadingTitle, done ? "模型资产检查完成" : cancelled ? "模型资产检查已取消" : failed ? "模型资产检查未完成" : "模型资产检查中");
-  setText(modelLoadingDetail, `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback available${fallbackReason ? ` / ${fallbackReason}` : ""}`);
+  setText(modelLoadingTitle, done ? "加载完成：q4 已可用" : cancelled ? "模型资产检查已取消" : failed ? "模型资产检查未完成" : "模型资产检查中");
+  setText(
+    modelLoadingDetail,
+    done
+      ? "本地 q4 shards、exact tokenizer 和 warmup 已完成；Dashboard 可查看 URL/status/bytes 细节。"
+      : `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback 已可用${fallbackReason ? ` / ${fallbackReason}` : ""}`
+  );
+  setText(modelLoadingSummary, summarizeLoadingProgress(report, progress, status, stage));
+  modelLoadingSummary?.classList.toggle("done", done);
+  modelLoadingSummary?.classList.toggle("warn", cancelled || failed);
+  loadingSkeleton?.classList.toggle("is-complete", done || cancelled || failed);
+  if (loadingCancelButton) loadingCancelButton.textContent = done ? "已完成" : cancelled ? "已取消" : failed ? "查看 Dashboard" : "取消加载";
   renderQ4RetryStatus(input);
   if (modelLoadingProgressBar) modelLoadingProgressBar.style.width = `${Math.max(8, Math.min(100, progress))}%`;
   const stageNodes = modelLoadingStages?.querySelectorAll?.("[data-loading-stage]") || [];

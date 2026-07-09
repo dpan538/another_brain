@@ -402,10 +402,31 @@ strong {
   overflow-wrap: anywhere;
 }
 
+.loading-completion-summary {
+  margin: 0;
+  color: var(--blue);
+  font-size: 0.82rem;
+  font-weight: 850;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.loading-completion-summary.warn {
+  color: var(--amber);
+}
+
+.loading-completion-summary.done {
+  color: var(--accent-strong);
+}
+
 .loading-skeleton {
   display: grid;
   gap: 7px;
   width: min(420px, 100%);
+}
+
+.loading-skeleton.is-complete {
+  display: none;
 }
 
 .loading-skeleton span {
