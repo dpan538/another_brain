@@ -20,6 +20,12 @@ const EVIDENCE_INJECTION_MARKERS = [
   "隐藏提示"
 ];
 const BAD_TOKEN_MARKERS = ["token_id:", "<hidden", "system prompt", "developer message", "chain-of-thought", "思维链", "隐藏提示"];
+const REPLACEMENT_CHAR_RE = /\uFFFD|�/u;
+const CONTROL_CHAR_RE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/u;
+const CJK_CHAR_RE = /[\u3400-\u9fff]/u;
+const LATIN_CHAR_RE = /[A-Za-z]/u;
+const CYRILLIC_CHAR_RE = /[\u0400-\u04FF]/u;
+const SUSPICIOUS_SYMBOL_RE = /[�•]{2,}|[�][^\s]|[^\s][�]/u;
 
 function containsEvidenceInjectionMarker(text = "") {
   const lowered = String(text || "").toLowerCase();
@@ -383,6 +389,23 @@ export function buildRetrievalPacket(input, statePacket, records) {
   return buildEvidencePacket(input, statePacket, records);
 }
 
+function outputTextQualityFailures(text) {
+  const draft = String(text || "").trim();
+  if (!draft) return [];
+  const failures = [];
+  if (REPLACEMENT_CHAR_RE.test(draft)) failures.push("mojibake_output");
+  if (CONTROL_CHAR_RE.test(draft)) failures.push("control_char_output");
+  if (SUSPICIOUS_SYMBOL_RE.test(draft)) failures.push("mojibake_symbol_mix");
+  const hasCjk = CJK_CHAR_RE.test(draft);
+  const hasLatin = LATIN_CHAR_RE.test(draft);
+  const hasCyrillic = CYRILLIC_CHAR_RE.test(draft);
+  if (hasCyrillic && (hasCjk || hasLatin)) failures.push("mixed_script_mojibake");
+  if (hasCjk && hasLatin && /[A-Za-z]{5,}\s+[A-Za-z]{3,}/u.test(draft) && draft.length <= 160) {
+    failures.push("low_confidence_gibberish");
+  }
+  return uniqueFlags(failures);
+}
+
 export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
   const text = String(draft || "");
   const lowered = text.toLowerCase();
@@ -401,6 +424,7 @@ export function verifyDraft(draft, evidencePacket = null, maxChars = 1200) {
   if (text.length > maxChars) failures.push("overlong_output");
   if (HIDDEN_MARKERS.some((marker) => lowered.includes(marker))) failures.push("hidden_prompt_disclosure_marker");
   if (GENERIC_MARKERS.some((marker) => lowered.includes(marker))) failures.push("generic_fallback_marker");
+  failures.push(...outputTextQualityFailures(text));
   return { passed: failures.length === 0, failures, fallback_recommended: failures.length > 0 };
 }
 
@@ -984,6 +1008,8 @@ function outputQualityFailure(text) {
   if (draft.length > 900) return "overlong_output";
   if (/^(token_id:\d+\s*)+$/i.test(draft)) return "token_id_only_output";
   if (BAD_TOKEN_MARKERS.some((marker) => lowered.includes(marker))) return "bad_token_suppressed";
+  const qualityFailures = outputTextQualityFailures(draft);
+  if (qualityFailures.length > 0) return qualityFailures[0];
   if (/(.)\1{7,}/u.test(draft)) return "repetition_guard";
   return "";
 }
@@ -1020,6 +1046,10 @@ function hasBlockingModelFailureForRoute(routeInput, flags) {
       "bad_token_suppressed",
       "token_id_only_output",
       "low_confidence_gibberish",
+      "mojibake_output",
+      "mojibake_symbol_mix",
+      "mixed_script_mojibake",
+      "control_char_output",
       "hidden_prompt_or_cot_marker",
       "hidden_prompt_disclosure_marker",
       "generic_fallback_marker",
@@ -1595,8 +1625,8 @@ function classifyAnswerRoute(routeInput = {}) {
   if (flags.includes("repetition_guard")) {
     return { route: "model_repetition_fallback", use_model_draft: false, fallback_reason: "repetition_guard", quality_flags: flags };
   }
-  if (flags.some((flag) => ["bad_token_suppressed", "token_id_only_output", "low_confidence_gibberish", "hidden_prompt_disclosure_marker", "generic_fallback_marker", "overlong_output"].includes(flag))) {
-    const fallbackReason = ["bad_token_suppressed", "token_id_only_output", "low_confidence_gibberish", "hidden_prompt_disclosure_marker", "generic_fallback_marker", "overlong_output"].find((flag) => flags.includes(flag));
+  if (flags.some((flag) => ["bad_token_suppressed", "token_id_only_output", "low_confidence_gibberish", "mojibake_output", "mojibake_symbol_mix", "mixed_script_mojibake", "control_char_output", "hidden_prompt_disclosure_marker", "generic_fallback_marker", "overlong_output"].includes(flag))) {
+    const fallbackReason = ["bad_token_suppressed", "token_id_only_output", "mojibake_output", "mojibake_symbol_mix", "mixed_script_mojibake", "control_char_output", "low_confidence_gibberish", "hidden_prompt_disclosure_marker", "generic_fallback_marker", "overlong_output"].find((flag) => flags.includes(flag));
     return { route: "model_gibberish_fallback", use_model_draft: false, fallback_reason: fallbackReason, quality_flags: flags };
   }
   if (flags.includes("synthetic_demo_fallback")) {

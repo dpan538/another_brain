@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { verifyDraft } from "../../web/another_brain_chat/browser_runtime.js";
 
 test("browser diagnostics exposes branch marker, shard probes, forward status, and merge runtime readiness", async () => {
   const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
@@ -46,4 +47,19 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
   ]) {
     assert.ok(app.includes(expected), expected);
   }
+});
+
+test("mojibake q4 drafts are rejected before reaching the chat surface", async () => {
+  const app = await readFile(new URL("../../web/another_brain_chat/browser_runtime.js", import.meta.url), "utf8");
+  const draft = "� plant buy如果命题P� really•ания。";
+  const verifier = verifyDraft(draft, {
+    evidence_status: "sufficient",
+    retrieved_evidence: [{ title: "local", text: "生与死问题的本地证据", source_id: "local" }]
+  });
+
+  assert.equal(verifier.passed, false);
+  assert.ok(verifier.failures.includes("mojibake_output"));
+  assert.ok(verifier.fallback_recommended);
+  assert.ok(app.includes("model_gibberish_fallback"));
+  assert.ok(app.includes("mojibake_output"));
 });
