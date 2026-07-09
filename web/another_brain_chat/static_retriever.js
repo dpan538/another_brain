@@ -36,10 +36,24 @@ const QUERY_EXPANSION_RULES = Object.freeze([
   { match: /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实判断|价值判断|审美判断/i, terms: ["对错判定", "事实", "价值", "审美", "证据", "标准", "可验证", "判断"] },
   { match: /铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市扩张|铁路为什么方便|铁路.*方便/i, terms: ["铁路", "轨道", "标准时间", "物流", "通勤", "城市", "网络", "成本", "可预期", "基础设施"] },
   { match: /时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/i, terms: ["时间", "线性", "钟表", "记忆", "叙事", "因果", "顺序", "经验"] },
-  { match: /关联|联系|关系|上下文|刚才|前面|上面|这个|它|这类|继续|为什么.*方便|有什么用|意义/i, terms: ["上下文", "关联", "对象", "机制", "功能", "影响", "代价", "判断链"] },
+  { match: /关联|联系|关系|上下文|刚才|前面|上面|这个|它|这类|继续|那/i, terms: ["上下文", "关联", "对象", "机制", "功能", "影响", "代价", "判断链"] },
+  { match: /有什么用|为什么.*有用|为什么.*方便|意义|重要|值得/i, terms: ["效用", "机制", "功能", "代价", "收益", "网络", "判断链"] },
+  { match: /既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论|框架/i, terms: ["时间", "非二分", "概念框架", "模型", "线性", "非线性", "层面", "判断"] },
+  { match: /不对|太长|太短|不准确|不是这个意思|没听懂|听不懂|僵硬|公式化|不错|很好|继续|换个说法|再简单/i, terms: ["评价", "反馈", "改写", "继续", "上下文", "对话控制"] },
   { match: /算法|推荐|信息茧房|平台/i, terms: ["算法", "推荐系统", "激励", "分发", "注意力"] },
   { match: /排版|字体|杂志|bodoni|封面|视觉/i, terms: ["排版", "字体", "杂志", "层级", "留白", "对比"] }
 ]);
+
+const QUESTION_CUE_RE = /[?？]|为什么|为何|怎么|如何|什么|谁|哪里|哪|是否|是不是|能不能|有没有|会不会|应不应该|值不值得|意义|原因|机制|怎么看|如何看待|你觉得|你认为/;
+const FOLLOWUP_CUE_RE = /\[local session context:|刚才|前面|上面|这个|它|这类|这种|继续|那|刚刚|上一/;
+const EVALUATION_CUE_RE = /不对|不准确|不是这个意思|太长|太短|太硬|太僵硬|公式化|没听懂|听不懂|很好|不错|可以|继续|换个说法|再简单|更具体|更短|更自然|更聪明/;
+const TIME_DOMAIN_RE = /时间|线性|非线性|钟表|记忆|叙事|因果顺序|过去|未来|现在|永恒|循环|非二分|悖论/;
+const INFRA_DOMAIN_RE = /铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市|基础设施|港口|电网|水网|公路|机场/;
+const JUDGMENT_DOMAIN_RE = /对错|真假|真伪|标准|判断|事实|价值|审美|证据|成立|可证伪|定义|边界|反例/;
+const AESTHETIC_DOMAIN_RE = /美|审美|美学|好看|风格|设计|字体|排版|杂志|质感|比例/;
+const SOCIETY_DOMAIN_RE = /社会|平台|算法|隐私|教育|医疗|劳动|城市|房价|通胀|政策|品牌|公司|商业|供应链|历史|战争|革命/;
+const COMPLEX_CUE_RE = /既不是|也不是|无法定义|无限|绝对|本体|悖论|所有|永远|终极|不可判定|非二分/;
+const CJK_STOP_TERMS = new Set(["这个", "那个", "一种", "这种", "问题", "为什么", "怎么", "如何", "觉得", "认为", "是否", "是不是", "有没有", "什么"]);
 
 const FALLBACK_DEMO_RECORDS = [
   {
@@ -114,6 +128,75 @@ function expandQueryTokens(query) {
   return expanded;
 }
 
+export function extractQueryKeywords(query = "", limit = 16) {
+  const raw = String(query || "");
+  const keywords = [];
+  const push = (term) => {
+    const clean = String(term || "").trim();
+    if (!clean || CJK_STOP_TERMS.has(clean) || keywords.includes(clean)) return;
+    keywords.push(clean);
+  };
+  for (const rule of QUERY_EXPANSION_RULES) {
+    if (!rule.match.test(raw)) continue;
+    for (const term of rule.terms) push(term);
+  }
+  for (const run of raw.match(/[\u4e00-\u9fff]{2,8}/g) || []) {
+    if (CJK_STOP_TERMS.has(run)) continue;
+    push(run);
+  }
+  for (const token of raw.toLowerCase().match(/[a-z0-9_]{3,}/g) || []) push(token);
+  return keywords.slice(0, limit);
+}
+
+export function inferQuestionProfile(query = "") {
+  const text = String(query || "").trim();
+  const hasQuestionCue = QUESTION_CUE_RE.test(text);
+  const hasFollowupCue = FOLLOWUP_CUE_RE.test(text);
+  const hasEvaluationCue = EVALUATION_CUE_RE.test(text);
+  const isLong = text.length >= 56;
+  const profile = {
+    turn_type: hasEvaluationCue && !hasQuestionCue ? "evaluation" : hasQuestionCue ? "question" : "statement",
+    question_shape: "open",
+    domain_hint: "general",
+    answer_length_hint: isLong ? "short" : "micro",
+    needs_context: hasFollowupCue,
+    soft_redirect_allowed: COMPLEX_CUE_RE.test(text),
+    keyword_candidates: extractQueryKeywords(text)
+  };
+  if (!text) {
+    profile.turn_type = "empty";
+    profile.question_shape = "empty";
+    profile.answer_length_hint = "micro";
+    return profile;
+  }
+  if (hasEvaluationCue && !hasQuestionCue) {
+    profile.question_shape = "feedback";
+    profile.domain_hint = "dialogue";
+    profile.needs_context = true;
+    profile.answer_length_hint = "micro";
+    return profile;
+  }
+  if (/既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论/.test(text)) {
+    profile.question_shape = "conceptual_paradox";
+    profile.domain_hint = TIME_DOMAIN_RE.test(text) ? "time" : "logic";
+    profile.answer_length_hint = "short";
+    return profile;
+  }
+  if (/为什么|为何|原因|机制|怎么造成|如何发生/.test(text)) profile.question_shape = "causal";
+  if (/是什么|什么是|定义/.test(text)) profile.question_shape = "definition";
+  if (/是否|是不是|能不能|有没有|会不会/.test(text)) profile.question_shape = "binary_judgment";
+  if (/对错|真假|标准|判断|成立|可证伪/.test(text)) profile.question_shape = "truth_condition";
+  if (hasFollowupCue && text.length <= 36) profile.question_shape = "short_followup";
+  if (TIME_DOMAIN_RE.test(text)) profile.domain_hint = "time";
+  else if (INFRA_DOMAIN_RE.test(text)) profile.domain_hint = "infrastructure";
+  else if (AESTHETIC_DOMAIN_RE.test(text)) profile.domain_hint = "aesthetic";
+  else if (JUDGMENT_DOMAIN_RE.test(text)) profile.domain_hint = "judgment";
+  else if (SOCIETY_DOMAIN_RE.test(text)) profile.domain_hint = "society";
+  if (profile.question_shape === "short_followup") profile.answer_length_hint = "micro";
+  if (profile.question_shape === "causal" || profile.question_shape === "conceptual_paradox") profile.answer_length_hint = "short";
+  return profile;
+}
+
 function charNgrams(text, size = 3) {
   const clean = String(text || "").toLowerCase().replace(/\s+/g, " ").trim();
   const grams = new Set();
@@ -148,10 +231,50 @@ function scoreRecord(query, record) {
   const gramScore = qgrams.size ? gramOverlap / qgrams.size : 0;
   const hasLexicalOverlap = overlap > 0 || gramOverlap > 0;
   const kindBoost = profileKindBoost(query, record);
-  if (!hasLexicalOverlap && kindBoost <= 0) return 0;
+  const intentBoost = questionProfileBoost(inferQuestionProfile(query), record, hasLexicalOverlap);
+  if (!hasLexicalOverlap && kindBoost + intentBoost <= 0) return 0;
   const trustBoost = hasLexicalOverlap ? (record.trust_level === "high" ? 0.08 : record.trust_level === "medium" ? 0.04 : 0) : 0;
   const profileBoost = hasLexicalOverlap && record.metadata?.r28rag3_profile_card ? 0.025 : 0;
-  return Number((keywordScore * 0.72 + gramScore * 0.2 + trustBoost + profileBoost + kindBoost).toFixed(6));
+  return Number(Math.max(0, keywordScore * 0.72 + gramScore * 0.2 + trustBoost + profileBoost + kindBoost + intentBoost).toFixed(6));
+}
+
+function questionProfileBoost(profile = {}, record = {}, hasLexicalOverlap = false) {
+  const kind = record.metadata?.card_kind || "";
+  const text = `${record.title || ""} ${record.text || ""} ${(record.keywords || []).join(" ")}`;
+  let boost = 0;
+  if (profile.turn_type === "evaluation") {
+    if (kind === "context") boost += 0.18;
+    if (kind === "style" || kind === "boundary") boost += 0.06;
+    if (["brand_literacy", "history", "commonsense"].includes(kind) && !hasLexicalOverlap) boost -= 0.14;
+  }
+  if (profile.question_shape === "short_followup") {
+    if (kind === "context") boost += 0.18;
+    if (kind === "association") boost += 0.08;
+  }
+  if (profile.question_shape === "conceptual_paradox") {
+    if (["logic", "philosophy", "judgment", "association"].includes(kind)) boost += 0.12;
+    if (/非二分|框架|模型|线性|非线性|时间/.test(text)) boost += 0.12;
+    if (kind === "history" || kind === "brand_literacy") boost -= 0.08;
+  }
+  if (profile.domain_hint === "time") {
+    if (/时间|钟表|记忆|叙事|线性|非线性|因果/.test(text)) boost += 0.14;
+    if (kind === "association" || kind === "logic" || kind === "philosophy") boost += 0.06;
+    if (/铁路|轨道|物流|通勤|基础设施|城市|市场|供给/.test(text) && !/铁路|火车|高铁|轨道|标准时间/.test(String(profile.keyword_candidates || ""))) boost -= 0.28;
+  }
+  if (profile.domain_hint === "infrastructure") {
+    if (/铁路|轨道|交通|物流|标准时间|城市|基础设施/.test(text)) boost += 0.16;
+    if (kind === "association" || kind === "history" || kind === "society") boost += 0.06;
+    if (/时间|线性|非线性/.test(text) && !/时间|标准时间/.test(text)) boost -= 0.08;
+  }
+  if (profile.domain_hint === "judgment") {
+    if (kind === "judgment" || kind === "logic") boost += 0.14;
+  }
+  if (profile.domain_hint === "aesthetic") {
+    if (kind === "aesthetic") boost += 0.16;
+    if (kind === "logic") boost += 0.04;
+  }
+  if (profile.question_shape === "causal" && ["logic", "association", "commonsense", "history", "society"].includes(kind)) boost += 0.06;
+  return boost;
 }
 
 function profileKindBoost(query = "", record = {}) {
@@ -295,6 +418,14 @@ function inferJudgmentMode(query = "", evidence = []) {
   const text = String(query || "");
   const topKind = evidence[0]?.metadata?.card_kind || "";
   const hasJudgmentCard = evidence.some((item) => item.metadata?.card_kind === "judgment");
+  if (/既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论/.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "conceptual_frame_challenge",
+      correctness_axis: "先判断分类框架是否合适，再讨论事实或经验层面",
+      answer_policy_hint: "reject_false_binary_then_split_frames"
+    };
+  }
   if (/证据不足|证据不够|不知道|无法判断|不确定|信息不足/.test(text)) {
     return {
       has_truth_condition: false,
@@ -346,6 +477,14 @@ function inferJudgmentMode(query = "", evidence = []) {
 function inferAssociationProfile(query = "", evidence = []) {
   const text = String(query || "");
   const hasAssociationCard = evidence.some((item) => item.metadata?.card_kind === "association");
+  if (/既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论/.test(text)) {
+    return {
+      association_mode: "temporal_model_paradox",
+      reasoning_axis: "线性和非线性都只是描述模型，需要先分计时、经验和概念层",
+      missing_link: false,
+      answer_policy_hint: "avoid_binary_trap_and_name_frame"
+    };
+  }
   if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(text)) {
     return {
       association_mode: "temporal_frame_split",
@@ -396,7 +535,7 @@ function inferAssociationProfile(query = "", evidence = []) {
 
 function inferContextProfile(query = "", evidence = []) {
   const text = String(query || "");
-  const contextAware = /\[local session context:|刚才|前面|上面|这个|它|这类|继续|那/.test(text);
+  const contextAware = /\[local session context:|刚才|前面|上面|这个|它|这类|继续|那|不对|不是这个意思|太长|太短|换个说法/.test(text);
   return {
     context_mode: contextAware ? "session_followup" : "single_turn",
     carry_allowed: true,
@@ -407,6 +546,7 @@ function inferContextProfile(query = "", evidence = []) {
 
 export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_RECORDS, options = {}) {
   const topK = Number(options.topK || 4);
+  const queryProfile = inferQuestionProfile(input);
   const ranked = records
     .map((record, index) => ({ ...record, retrieval_score: scoreRecord(input, record), _index: index }))
     .filter((record) => record.retrieval_score >= Number(options.minScore ?? 0.025))
@@ -432,6 +572,8 @@ export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_
     retrieved_evidence: ranked,
     evidence_status: classification.evidence_status,
     answer_policy_hint: classification.answer_policy_hint,
+    query_profile: queryProfile,
+    keyword_candidates: queryProfile.keyword_candidates,
     judgment_profile: judgmentProfile,
     association_profile: associationProfile,
     context_profile: contextProfile,
@@ -448,6 +590,8 @@ export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_
       private_raw_data: false,
       hosted_vector_store: false,
       judgment_profile: judgmentProfile,
+      query_profile: queryProfile,
+      keyword_candidates: queryProfile.keyword_candidates,
       association_profile: associationProfile,
       context_profile: contextProfile,
       tone_hints: collectToneHints(ranked),

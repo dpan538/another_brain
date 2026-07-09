@@ -588,7 +588,7 @@ function compactConversationContext(turns = conversationTurns) {
 function shouldUseConversationContext(text = "") {
   const query = String(text || "").trim();
   if (!query || conversationTurns.length === 0) return false;
-  return query.length <= 26 || /刚才|前面|上面|这个|它|这类|继续|那|为什么|原因|意义|方便|关系|关联|联系|怎么看|怎么理解/.test(query);
+  return query.length <= 8 || /刚才|前面|上面|这个|它|这类|这种|继续|那|关系|关联|联系|不对|不是这个意思|太长|太短|换个说法|再简单/.test(query);
 }
 
 function contextualizeUserInput(text = "") {
@@ -633,6 +633,42 @@ function cleanCustomerAnswer(text = "", packet = {}) {
   return clean;
 }
 
+function isEvaluationTurn(text = "") {
+  const query = String(text || "").trim();
+  if (!query) return false;
+  const hasQuestionCue = /[?？]|为什么|为何|怎么|如何|什么|谁|哪里|哪|是否|是不是|能不能|有没有|会不会/.test(query);
+  return !hasQuestionCue && /不对|不准确|不是这个意思|太长|太短|太硬|太僵硬|公式化|没听懂|听不懂|很好|不错|可以|继续|换个说法|再简单|更具体|更短|更自然|更聪明/.test(query);
+}
+
+function evaluationTurnReply(text = "") {
+  const query = String(text || "");
+  if (/很好|不错|可以|对了|可以了/.test(query)) {
+    return "收到。你可以继续追问原因、反例，或者换一个对象让我判断。";
+  }
+  if (/太长|更短|再简单/.test(query)) {
+    return "收到，我会压短。你给我一个对象或判断点，我直接给结论和一个理由。";
+  }
+  if (/不对|不准确|不是这个意思|没听懂|听不懂|太僵硬|公式化|更自然|更聪明/.test(query)) {
+    return "收到，我换个角度。你可以直接指出对象或判断点，我会少套模板，多讲为什么。";
+  }
+  return "收到。你可以继续给我问题，我会尽量把判断说短、说清楚。";
+}
+
+function isConceptualTimeParadox(text = "") {
+  return /时间/.test(text) && /既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论/.test(text);
+}
+
+function isVeryHardQuestion(text = "", packet = {}) {
+  const query = String(text || "");
+  if (query.length < 42) return false;
+  if ((packet.retrieved_evidence || []).length > 0) return false;
+  return /终极|本体|绝对|所有|永远|无限|不可判定|既不是|也不是|无法定义/.test(query);
+}
+
+function tooHardSoftRedirect() {
+  return "这个问题太绕了，我只是个对话框。先给我一个对象或判断点，我再慢慢拆。";
+}
+
 function customerEvidenceAnswer(packet = {}) {
   const top = customerEvidenceCard(packet);
   if (!top) return "";
@@ -671,6 +707,11 @@ function ruleBasedFallbackAnswer(packet = {}) {
   const inputText = String(packet.input || "");
   const evidenceAnswer = customerEvidenceAnswer(packet);
   const safeEvidenceAnswer = containsEngineeringMarker(evidenceAnswer) ? "" : evidenceAnswer;
+  if (isEvaluationTurn(inputText)) return evaluationTurnReply(inputText);
+  if (isVeryHardQuestion(inputText, packet)) return tooHardSoftRedirect();
+  if (isConceptualTimeParadox(inputText)) {
+    return "这像是在拒绝二分。线性和非线性都只是描述模型：计时有先后，经验会折叠，概念上还可以换框架。";
+  }
   if (/太阳|日出|日落|东升西落/.test(inputText)) {
     return "我先按常识判断：太阳不是每天绕着我们走，而是地球自转造成视运动。我们随地球向东转，所以会看到它东升西落。";
   }
@@ -727,6 +768,8 @@ function customerFacingAnswer(packet = {}) {
   const evidenceHint = shortEvidenceHint(packet);
   const evidenceAnswer = customerEvidenceAnswer(packet);
   const safeEvidenceAnswer = containsEngineeringMarker(evidenceAnswer) ? "" : evidenceAnswer;
+  if (isEvaluationTurn(inputText)) return evaluationTurnReply(inputText);
+  if (isVeryHardQuestion(inputText, packet)) return tooHardSoftRedirect();
   if (/你是谁|你是.*谁|你是鳄鱼|鳄鱼|efish|efishother/i.test(inputText)) {
     return "我是鳄鱼，也可以理解成另一个 efish。直接问就好。";
   }
@@ -742,6 +785,9 @@ function customerFacingAnswer(packet = {}) {
   }
   if (/铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市/.test(inputText)) {
     return safeEvidenceAnswer || "铁路方便，是因为它把速度、时间表、物流和城市连接成稳定网络。它不只是更快，而是让远处也能协作。";
+  }
+  if (isConceptualTimeParadox(inputText)) {
+    return safeEvidenceAnswer || "这像是在拒绝二分。线性和非线性都只是描述模型：计时有先后，经验会折叠，概念上还可以换框架。";
   }
   if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(inputText)) {
     return safeEvidenceAnswer || "钟表时间大多是线性排序；但人的记忆、叙事和历史理解不完全线性。先分清你问的是计时、体验还是因果。";
