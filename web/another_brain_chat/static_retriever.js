@@ -12,7 +12,7 @@ const PROFILE_CARD_ASSETS = Object.freeze([
   "../another_brain/static_rag/society_cards.json"
 ]);
 const DEFAULT_RAG_ASSETS = Object.freeze([DEMO_MEMORY_ASSET, ...PROFILE_CARD_ASSETS]);
-const CARD_KINDS = Object.freeze(["brand", "brand_literacy", "identity", "style", "value", "aesthetic", "boundary", "capability", "commonsense", "philosophy", "logic", "judgment", "history", "society"]);
+const CARD_KINDS = Object.freeze(["brand", "brand_literacy", "identity", "style", "value", "aesthetic", "boundary", "capability", "commonsense", "philosophy", "logic", "judgment", "history", "society", "association", "context"]);
 const CARD_PROVENANCE = Object.freeze(["approved_anchor_summary", "hand_authored_boundary", "demo_safe"]);
 const QUERY_EXPANSION_RULES = Object.freeze([
   { match: /iphone|苹果手机|mac|ipad|ios/i, terms: ["apple", "苹果", "生态", "硬件", "软件"] },
@@ -34,6 +34,9 @@ const QUERY_EXPANSION_RULES = Object.freeze([
   { match: /疫苗|免疫|病毒/i, terms: ["疫苗", "免疫", "抗体", "公共卫生", "风险"] },
   { match: /概率|随机|运气|风险/i, terms: ["概率", "随机", "样本", "风险", "不确定性"] },
   { match: /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实判断|价值判断|审美判断/i, terms: ["对错判定", "事实", "价值", "审美", "证据", "标准", "可验证", "判断"] },
+  { match: /铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市扩张|铁路为什么方便|铁路.*方便/i, terms: ["铁路", "轨道", "标准时间", "物流", "通勤", "城市", "网络", "成本", "可预期", "基础设施"] },
+  { match: /时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/i, terms: ["时间", "线性", "钟表", "记忆", "叙事", "因果", "顺序", "经验"] },
+  { match: /关联|联系|关系|上下文|刚才|前面|上面|这个|它|这类|继续|为什么.*方便|有什么用|意义/i, terms: ["上下文", "关联", "对象", "机制", "功能", "影响", "代价", "判断链"] },
   { match: /算法|推荐|信息茧房|平台/i, terms: ["算法", "推荐系统", "激励", "分发", "注意力"] },
   { match: /排版|字体|杂志|bodoni|封面|视觉/i, terms: ["排版", "字体", "杂志", "层级", "留白", "对比"] }
 ]);
@@ -163,6 +166,8 @@ function profileKindBoost(query = "", record = {}) {
   if (kind === "philosophy" && /生死|生与死|活着|存在|虚无|意义|哲学|自由|有限|死亡|孤独|记忆|正义|责任|真理|真实|事实/.test(text)) return 0.1;
   if (kind === "logic" && /为什么|如何看待|怎么看|判断|因果|证据|推理|逻辑|because|reason/.test(text)) return 0.09;
   if (kind === "judgment" && /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实|价值|审美|证据|判断|标准/.test(text)) return 0.14;
+  if (kind === "association" && /关联|联系|为什么|意义|方便|机制|影响|连接|因果|铁路|交通|物流|时间|线性/.test(text)) return 0.16;
+  if (kind === "context" && /刚才|上面|前面|这个|它|这类|继续|上下文|为什么方便|有什么用|那/.test(text)) return 0.16;
   if (kind === "value" && /价值|对错|重要|承诺|信任|value/.test(text)) return 0.08;
   if (kind === "boundary" && /证据|不足|冲突|隐藏|系统提示|evidence|conflict|prompt/.test(text)) return 0.08;
   if (kind === "identity" && /你是谁|鳄鱼|关系|identity|who are you/.test(text)) return 0.06;
@@ -338,6 +343,68 @@ function inferJudgmentMode(query = "", evidence = []) {
   };
 }
 
+function inferAssociationProfile(query = "", evidence = []) {
+  const text = String(query || "");
+  const hasAssociationCard = evidence.some((item) => item.metadata?.card_kind === "association");
+  if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(text)) {
+    return {
+      association_mode: "temporal_frame_split",
+      reasoning_axis: "钟表顺序、心理经验、叙事结构和因果链",
+      missing_link: false,
+      answer_policy_hint: "split_time_frames_before_judgment"
+    };
+  }
+  if (/铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市/.test(text)) {
+    return {
+      association_mode: "infrastructure_network",
+      reasoning_axis: "速度、标准时间、物流、城市和协作成本",
+      missing_link: false,
+      answer_policy_hint: "connect_object_to_network_effect"
+    };
+  }
+  if (/\[local session context:|关联|联系|上下文|刚才|前面|这个|它|这类|继续|那/.test(text)) {
+    return {
+      association_mode: "context_carry",
+      reasoning_axis: "继承上一轮对象，再重建功能、机制和影响",
+      missing_link: "needs_recent_dialogue",
+      answer_policy_hint: "carry_context_without_exposing_trace"
+    };
+  }
+  if (/为什么|原因|意义|有什么用|方便|重要/.test(text)) {
+    return {
+      association_mode: "mechanism_to_value",
+      reasoning_axis: "先说明机制，再说明它改变了什么价值或成本",
+      missing_link: false,
+      answer_policy_hint: "explain_function_then_consequence"
+    };
+  }
+  if (hasAssociationCard) {
+    return {
+      association_mode: "relation_mapping",
+      reasoning_axis: "对象、机制、证据和影响",
+      missing_link: false,
+      answer_policy_hint: "map_relation_before_answering"
+    };
+  }
+  return {
+    association_mode: "relation_mapping",
+    reasoning_axis: "对象、机制、证据和影响",
+    missing_link: evidence.length === 0,
+    answer_policy_hint: "map_relation_before_answering"
+  };
+}
+
+function inferContextProfile(query = "", evidence = []) {
+  const text = String(query || "");
+  const contextAware = /\[local session context:|刚才|前面|上面|这个|它|这类|继续|那/.test(text);
+  return {
+    context_mode: contextAware ? "session_followup" : "single_turn",
+    carry_allowed: true,
+    persistence: "local_session_only",
+    answer_policy_hint: contextAware ? "use_recent_turns_silently" : "answer_current_question_directly"
+  };
+}
+
 export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_RECORDS, options = {}) {
   const topK = Number(options.topK || 4);
   const ranked = records
@@ -357,6 +424,8 @@ export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_
     }));
   const classification = classifyEvidence(input, ranked);
   const judgmentProfile = inferJudgmentMode(input, ranked);
+  const associationProfile = inferAssociationProfile(input, ranked);
+  const contextProfile = inferContextProfile(input, ranked);
   return {
     query: String(input || ""),
     state_packet: statePacket,
@@ -364,6 +433,8 @@ export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_
     evidence_status: classification.evidence_status,
     answer_policy_hint: classification.answer_policy_hint,
     judgment_profile: judgmentProfile,
+    association_profile: associationProfile,
+    context_profile: contextProfile,
     local_only: true,
     same_origin_only: true,
     backend_retrieval: false,
@@ -377,6 +448,8 @@ export function buildEvidencePacket(input, statePacket, records = FALLBACK_DEMO_
       private_raw_data: false,
       hosted_vector_store: false,
       judgment_profile: judgmentProfile,
+      association_profile: associationProfile,
+      context_profile: contextProfile,
       tone_hints: collectToneHints(ranked),
       source_display: ranked.map((item) => ({
         source_id: item.source_id,

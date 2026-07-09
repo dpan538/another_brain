@@ -171,6 +171,9 @@ let backgroundQ4MountScheduled = false;
 let backgroundQ4MountStarted = false;
 const contextBridge = createLocalContextBridge();
 let runtime = new BrowserChatRuntime({ mode: DEFAULT_DELIVERY_CONFIG.model_mode, deliveryConfig: DEFAULT_DELIVERY_CONFIG });
+const SESSION_CONTEXT_MAX_TURNS = 6;
+const SESSION_CONTEXT_MAX_CHARS = 220;
+let conversationTurns = [];
 
 const INITIAL_ASSISTANT_MESSAGE = [
   "你好，我是鳄鱼，也就是另一个 efish。直接问就好。"
@@ -572,6 +575,37 @@ function containsEngineeringMarker(text = "") {
   return CUSTOMER_ENGINEERING_MARKERS.some((marker) => lower.includes(marker));
 }
 
+function compactConversationContext(turns = conversationTurns) {
+  const recent = turns.slice(-4).map((turn) => {
+    const role = turn.role === "assistant" ? "assistant" : "user";
+    const text = softLimitCustomerText(turn.text || "", role === "assistant" ? 72 : 54);
+    if (!text || containsEngineeringMarker(text)) return "";
+    return `${role}: ${text}`;
+  }).filter(Boolean);
+  return recent.join(" | ").slice(0, SESSION_CONTEXT_MAX_CHARS);
+}
+
+function shouldUseConversationContext(text = "") {
+  const query = String(text || "").trim();
+  if (!query || conversationTurns.length === 0) return false;
+  return query.length <= 26 || /刚才|前面|上面|这个|它|这类|继续|那|为什么|原因|意义|方便|关系|关联|联系|怎么看|怎么理解/.test(query);
+}
+
+function contextualizeUserInput(text = "") {
+  const query = String(text || "").trim();
+  if (!shouldUseConversationContext(query)) return query;
+  const context = compactConversationContext();
+  if (!context) return query;
+  return `${query}\n\n[local session context: ${context}]`;
+}
+
+function rememberConversationTurn(role, text) {
+  const safeText = softLimitCustomerText(text || "", role === "assistant" ? 96 : 72);
+  if (!safeText || containsEngineeringMarker(safeText)) return;
+  conversationTurns.push({ role, text: safeText });
+  if (conversationTurns.length > SESSION_CONTEXT_MAX_TURNS) conversationTurns = conversationTurns.slice(-SESSION_CONTEXT_MAX_TURNS);
+}
+
 function softLimitCustomerText(text = "", maxChars = 82) {
   const clean = String(text || "")
     .replace(/\([^)]*\)/g, "")
@@ -621,6 +655,12 @@ function customerEvidenceAnswer(packet = {}) {
   if (kind === "judgment") {
     return `${summary} 我会先判断它是事实、价值还是审美问题，再决定能不能说对错。`;
   }
+  if (kind === "association") {
+    return `${summary} 我会先把对象放回网络里，看它改变了哪些连接、成本和行动。`;
+  }
+  if (kind === "context") {
+    return `${summary} 我会接住上一轮对象，但不把过程说明摆到回答里。`;
+  }
   if (kind === "philosophy" || kind === "logic" || kind === "aesthetic") {
     return `${summary} 我会先给判断，再留下证据边界。`;
   }
@@ -642,6 +682,15 @@ function ruleBasedFallbackAnswer(packet = {}) {
   }
   if (/历史|革命|战争|冷战|工业革命|事件|朝代/.test(inputText)) {
     return safeEvidenceAnswer || "我会把历史事件拆成触发点、结构原因和后果三层。单个英雄或单个日期很少足够，关键是它改变了什么制度、技术或关系。";
+  }
+  if (/铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市/.test(inputText)) {
+    return safeEvidenceAnswer || "铁路方便，不只是因为快。它把人、货、时间表和城市接成稳定网络，让距离、成本和协作变得可预期。";
+  }
+  if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(inputText)) {
+    return safeEvidenceAnswer || "要先分清时间类型：钟表时间通常按先后排序；记忆、叙事和历史理解却常常会回看、重组和跳跃。";
+  }
+  if (/关联|联系|上下文|刚才|前面|这个|它|这类|继续|那/.test(inputText)) {
+    return safeEvidenceAnswer || "我会把它接回上一轮对象，再看功能、机制和影响，而不是把每句话都当成孤立问题。";
   }
   if (/算法|推荐|平台|隐私|供应链|城市|通胀|房价|教育|医疗|劳动|移民|社会/.test(inputText)) {
     return safeEvidenceAnswer || "我会先看结构：谁获得便利，谁承担代价，激励怎样改变行为。现实问题通常不是一个原因就能解释。";
@@ -690,6 +739,15 @@ function customerFacingAnswer(packet = {}) {
   }
   if (/历史|革命|战争|冷战|工业革命|文艺复兴|启蒙|印刷术|太空竞赛|全球化|事件|朝代/.test(inputText)) {
     return safeEvidenceAnswer || "我会把历史拆成三层：触发点、结构原因、以及后来改变了什么。单个日期通常不是全部答案。";
+  }
+  if (/铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市/.test(inputText)) {
+    return safeEvidenceAnswer || "铁路方便，是因为它把速度、时间表、物流和城市连接成稳定网络。它不只是更快，而是让远处也能协作。";
+  }
+  if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(inputText)) {
+    return safeEvidenceAnswer || "钟表时间大多是线性排序；但人的记忆、叙事和历史理解不完全线性。先分清你问的是计时、体验还是因果。";
+  }
+  if (/关联|联系|上下文|刚才|前面|这个|它|这类|继续|那/.test(inputText)) {
+    return safeEvidenceAnswer || "我会把它接回上一轮对象，再看它的功能、机制和影响。这样追问不会断成孤立句子。";
   }
   if (/半导体|芯片|智能手机|铁路|汽车史|供应链|城市化|推荐算法|平台|隐私|通胀|房价|劳动|教育|医疗|概率|随机/.test(inputText)) {
     return safeEvidenceAnswer || "我会先拆结构：机制是什么、谁被影响、代价在哪里。这样比一句价值判断更接近现实。";
@@ -743,6 +801,7 @@ function clearConversation() {
     return;
   }
   messageList.textContent = "";
+  conversationTurns = [];
   appendMessage("assistant", INITIAL_ASSISTANT_MESSAGE);
   lastPacket = null;
   setDisabled(stateExportButton, true);
@@ -1310,6 +1369,7 @@ on(contextImportButton, "click", () => {
 on(contextClearButton, "click", () => {
   contextBridge.clear();
   runtime.setContextPackets([]);
+  conversationTurns = [];
   setValue(contextImport, "");
   renderContextBridge();
 });
@@ -1329,15 +1389,21 @@ on(form, "submit", async (event) => {
   if (running) return;
   const text = getValue(input).trim();
   if (!text) return;
+  const runtimeInput = contextualizeUserInput(text);
 
   appendMessage("user", text);
+  rememberConversationTurn("user", text);
   setValue(input, "");
   focusNode(input);
 
   running = true;
   setDisabled(abortButton, false);
   try {
-    const packet = await runtime.run(text, { onStatus: setPipelineStatus });
+    const packet = await runtime.run(runtimeInput, { onStatus: setPipelineStatus });
+    packet.display_input = text;
+    packet.contextual_input_used = runtimeInput !== text;
+    packet.conversation_context = compactConversationContext();
+    packet.input = text;
     lastPacket = packet;
     setDisabled(stateExportButton, false);
     const dashboardFinalAnswer = packet.final_answer;
@@ -1346,6 +1412,7 @@ on(form, "submit", async (event) => {
       source: packet.answer_source_label || sourceLabel(packet.process_trace || {}),
       fallbackReason: packet.fallback_reason || packet.process_trace?.generation?.fallback_reason || ""
     });
+    rememberConversationTurn("assistant", packet.final_answer);
     packet.final_answer = dashboardFinalAnswer;
     updateStatus(packet);
     renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
@@ -1353,6 +1420,17 @@ on(form, "submit", async (event) => {
   } finally {
     running = false;
     setDisabled(abortButton, true);
+  }
+});
+
+on(input, "keydown", (event) => {
+  if (event.key !== "Enter" || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey || event.isComposing) return;
+  event.preventDefault();
+  if (running || !getValue(input).trim()) return;
+  if (typeof form?.requestSubmit === "function") {
+    form.requestSubmit();
+  } else if (sendButton && typeof sendButton.click === "function") {
+    sendButton.click();
   }
 });
 

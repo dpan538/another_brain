@@ -165,12 +165,12 @@
     {
       "answer_bank": false,
       "allowed_for_training": false,
-      "bytes": 25720,
+      "bytes": 34366,
       "demo_only": false,
       "path": "another_brain/static_rag/world_cards.json",
       "private_raw_data": false,
       "provenance": "approved_anchor_summary",
-      "sha256": "c09bda98e773615ebd408e2a3d758a74c12172fcb9ad06612e1e34a9a34a0bfc"
+      "sha256": "45e86bed0866ef1163e9b9a6da949e4e60091873656ea05f7cafbf992d62e407"
     },
     {
       "answer_bank": false,
@@ -236,7 +236,7 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49391303,
+  "total_declared_bytes": 49399949,
   "branch_marker": "R28LIVEFIX0",
   "branch_name": "r28livefix0-live-q4-mount",
   "build_commit_short": "build-env-pending",

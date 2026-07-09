@@ -204,10 +204,30 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(css.includes("100svh"));
   assert.ok(css.includes("env(safe-area-inset-bottom)"));
   assert.ok(css.includes("overflow-wrap: anywhere"));
+  assert.ok(css.includes("R28POSTMERGE13"));
+  assert.ok(css.includes("letter-spacing: 0.035em"));
+  assert.ok(css.includes("word-spacing: 0.26em"));
   assert.ok(css.includes('@media (max-width: 720px)'));
   assert.ok(css.includes(".header-side"));
   assert.ok(css.includes("display: none"));
   assert.equal(/gradient/i.test(css), false);
+});
+
+test("chat supports enter-to-send and local session context without exposing engineering trace", async () => {
+  const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
+
+  assert.ok(app.includes('on(input, "keydown"'));
+  assert.ok(app.includes('event.key !== "Enter"'));
+  assert.ok(app.includes("event.isComposing"));
+  assert.ok(app.includes("event.shiftKey"));
+  assert.ok(app.includes("form.requestSubmit"));
+  assert.ok(app.includes("conversationTurns"));
+  assert.ok(app.includes("contextualizeUserInput"));
+  assert.ok(app.includes("compactConversationContext"));
+  assert.ok(app.includes("rememberConversationTurn"));
+  assert.ok(app.includes("contextual_input_used"));
+  assert.ok(app.includes("铁路方便"));
+  assert.ok(app.includes("钟表时间"));
 });
 
 test("static RAG expands safe commonsense philosophy and aesthetic logic without answer-bank fields", async () => {
@@ -229,9 +249,13 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(retriever.includes("history_cards.json"));
   assert.ok(retriever.includes("society_cards.json"));
   assert.ok(retriever.includes("QUERY_EXPANSION_RULES"));
-  for (const kind of ["brand", "brand_literacy", "commonsense", "philosophy", "logic", "judgment", "history", "society"]) assert.ok(retriever.includes(`"${kind}"`), kind);
+  for (const kind of ["brand", "brand_literacy", "commonsense", "philosophy", "logic", "judgment", "history", "society", "association", "context"]) assert.ok(retriever.includes(`"${kind}"`), kind);
   assert.ok(retriever.includes("inferJudgmentMode"));
+  assert.ok(retriever.includes("inferAssociationProfile"));
+  assert.ok(retriever.includes("inferContextProfile"));
   assert.ok(retriever.includes("judgment_profile"));
+  assert.ok(retriever.includes("association_profile"));
+  assert.ok(retriever.includes("context_profile"));
   for (const pack of [logicPack, brandPack, brandLiteracyPack, worldPack, knowledgePack, historyPack, societyPack]) {
     assert.equal(pack.fixture_policy.answer_bank, false);
     assert.equal(pack.fixture_policy.allowed_for_training, false);
@@ -256,7 +280,7 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(brandPack.cards.some((card) => card.kind === "brand" && card.keywords.includes("efishother.com")));
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Apple")));
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("OpenAI")));
-  assert.ok(worldPack.cards.length >= 45);
+  assert.ok(worldPack.cards.length >= 60);
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("BMW")));
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("Skyline")));
   assert.ok(worldPack.cards.some((card) => card.kind === "history" && card.keywords.includes("半导体")));
@@ -267,6 +291,10 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(worldPack.cards.some((card) => card.kind === "judgment" && card.keywords.includes("事实判断")));
   assert.ok(worldPack.cards.some((card) => card.kind === "philosophy" && card.keywords.includes("有限性")));
   assert.ok(worldPack.cards.some((card) => card.kind === "aesthetic" && card.keywords.includes("WCAG")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "association" && card.keywords.includes("铁路")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "association" && card.keywords.includes("标准时间")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "context" && card.keywords.includes("上下文")));
+  assert.ok(worldPack.cards.some((card) => card.kind === "logic" && card.keywords.includes("因果")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("天空")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("正义")));
   assert.ok(knowledgePack.cards.some((card) => card.keywords.includes("记忆")));

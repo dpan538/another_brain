@@ -503,6 +503,171 @@
       "review_status": "approved_for_runtime",
       "keywords": ["基准率", "概率", "样本", "失败案例", "故事", "判断", "风险"],
       "tone_hints": ["base_rate", "logic", "risk"]
+    },
+    {
+      "id": "r28postmerge13-association-railway-network",
+      "kind": "association",
+      "text": "铁路的方便来自网络效应：速度、标准时间、站点、物流和城市扩张被接成稳定系统，使远距离协作变得可预期。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["铁路", "火车", "高铁", "交通", "物流", "标准时间", "城市", "网络效应", "方便"],
+      "tone_hints": ["association", "infrastructure", "network"]
+    },
+    {
+      "id": "r28postmerge13-association-time-frames",
+      "kind": "association",
+      "text": "时间是否线性要先分框架：钟表时间强调先后顺序，心理时间会被记忆拉伸，叙事时间常按意义重新排列。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["时间", "线性", "钟表时间", "心理时间", "叙事时间", "记忆", "因果顺序"],
+      "tone_hints": ["time", "classification", "philosophy"]
+    },
+    {
+      "id": "r28postmerge13-context-followup-carry",
+      "kind": "context",
+      "text": "追问常常省略对象。遇到“它”“这个”“为什么方便”时，应优先承接最近一轮主题，再判断功能、机制和影响。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["上下文", "追问", "它", "这个", "为什么方便", "关联", "承接", "会话"],
+      "tone_hints": ["context", "followup", "local_session"]
+    },
+    {
+      "id": "r28postmerge13-logic-causal-answer",
+      "kind": "logic",
+      "text": "好的因果回答要分清现象、机制、证据和反例。先说明什么发生了，再说明为什么可能发生，最后留下边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["因果", "现象", "机制", "证据", "反例", "为什么", "推理"],
+      "tone_hints": ["causal", "reasoning", "boundary"]
+    },
+    {
+      "id": "r28postmerge13-judgment-fact-value-aesthetic",
+      "kind": "judgment",
+      "text": "判断一个问题是否有对错，先看它属于事实、价值还是审美。事实题看证据，价值题看理由，审美题看结构和语境。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["对错", "事实判断", "价值判断", "审美判断", "证据", "理由", "结构", "语境"],
+      "tone_hints": ["judgment", "classification", "truth"]
+    },
+    {
+      "id": "r28postmerge13-commonsense-infrastructure",
+      "kind": "commonsense",
+      "text": "基础设施的价值通常不在单个物件，而在连接：道路、铁路、电网和网络把分散行动变成可协调的生活。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["基础设施", "道路", "铁路", "电网", "网络", "连接", "协调", "生活"],
+      "tone_hints": ["commonsense", "society", "network"]
+    },
+    {
+      "id": "r28postmerge13-society-standard-time",
+      "kind": "society",
+      "text": "标准时间的普及和铁路、电报、工业调度有关；它让陌生城市之间可以按同一张时间表协作。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["标准时间", "铁路", "电报", "工业", "调度", "城市", "协作"],
+      "tone_hints": ["history", "time", "coordination"]
+    },
+    {
+      "id": "r28postmerge13-philosophy-meaning-action",
+      "kind": "philosophy",
+      "text": "意义不总是先被发现，也常在行动后形成。人会通过选择、关系、作品和承担，把抽象问题变成可生活的方向。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["意义", "行动", "选择", "关系", "作品", "承担", "生活", "哲学"],
+      "tone_hints": ["meaning", "action", "plain"]
+    },
+    {
+      "id": "r28postmerge13-aesthetic-judgment-not-preference",
+      "kind": "aesthetic",
+      "text": "审美不是单纯喜欢。更强的审美判断会解释比例、材料、节奏、语境和风险为什么让一个形式站住。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["审美", "美学", "比例", "材料", "节奏", "语境", "风险", "判断"],
+      "tone_hints": ["aesthetic", "criteria", "form"]
+    },
+    {
+      "id": "r28postmerge13-context-topic-bridge",
+      "kind": "context",
+      "text": "连续对话需要主题桥。新问题如果短、含代词或只问“为什么”，应把最近的用户问题和上一条回答作为局部语境。",
+      "provenance": "hand_authored_boundary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["连续对话", "主题桥", "代词", "为什么", "上一条", "局部语境", "上下文"],
+      "tone_hints": ["context", "dialogue", "bridge"]
+    },
+    {
+      "id": "r28postmerge13-association-cost-benefit",
+      "kind": "association",
+      "text": "解释“为什么有用”时，可以先看它降低了什么成本、放大了什么能力、让哪些关系变得更稳定。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["有用", "方便", "意义", "成本", "能力", "关系", "稳定", "功能"],
+      "tone_hints": ["utility", "association", "practical"]
+    },
+    {
+      "id": "r28postmerge13-commonsense-money-coordination",
+      "kind": "commonsense",
+      "text": "货币的作用不只是买东西。它把价值比较、延期支付和陌生人协作压缩成一个共同符号。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["货币", "钱", "价值", "支付", "陌生人", "协作", "符号"],
+      "tone_hints": ["commonsense", "economy", "coordination"]
+    },
+    {
+      "id": "r28postmerge13-society-map-territory",
+      "kind": "logic",
+      "text": "地图不是领土。模型、概念和指标都能帮助理解现实，但不能替代现实本身；要随反馈修正。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["地图", "领土", "模型", "概念", "指标", "现实", "反馈", "修正"],
+      "tone_hints": ["logic", "model", "reality"]
+    },
+    {
+      "id": "r28postmerge13-philosophy-freedom-constraint",
+      "kind": "philosophy",
+      "text": "自由不是没有限制，而是在限制中仍能做出选择并承担后果。没有边界的自由很容易变成任性。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["自由", "限制", "选择", "承担", "后果", "边界", "价值"],
+      "tone_hints": ["freedom", "boundary", "value"]
+    },
+    {
+      "id": "r28postmerge13-history-printing-internet-analogy",
+      "kind": "association",
+      "text": "印刷术和互联网都改变了复制、分发和讨论成本。类比时要看共同机制，也要保留技术时代差异。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": ["印刷术", "互联网", "类比", "复制", "分发", "讨论成本", "技术差异"],
+      "tone_hints": ["history", "analogy", "media"]
     }
   ]
 }
