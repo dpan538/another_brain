@@ -10,6 +10,21 @@ export const RUNTIME_TRUTH_BLOCKERS = Object.freeze([
   "model_loading_cancelled"
 ]);
 
+export const Q4_QUALITY_BLOCKING_FLAGS = Object.freeze([
+  "bad_token_suppressed",
+  "token_id_only_output",
+  "low_confidence_gibberish",
+  "mojibake_output",
+  "mojibake_symbol_mix",
+  "mixed_script_mojibake",
+  "control_char_output",
+  "hidden_prompt_disclosure_marker",
+  "generic_fallback_marker",
+  "overlong_output",
+  "repetition_guard",
+  "quality_not_ready"
+]);
+
 function normalizeStatus(value) {
   if (value === true || value === "pass" || value === "passed" || value === "通过") return "pass";
   if (value === "warming" || value === "pending" || value === "检查中") return "warming";
@@ -31,6 +46,9 @@ export function evaluateRuntimeTruth(input = {}) {
   const q4Forward = normalizeStatus(input.q4_forward);
   const q4ForwardBoolean = input.q4_forward === true || input.q4_forward_ran === true;
   const tokensGenerated = Math.max(0, Number(input.tokens_generated || 0));
+  const qualityFlags = Array.isArray(input.quality_flags) ? input.quality_flags.map(String) : [];
+  const q4QualityAccepted = input.q4_quality_accepted === true;
+  const q4QualityAssessed = input.q4_quality_assessed === true || qualityFlags.some((flag) => Q4_QUALITY_BLOCKING_FLAGS.includes(flag));
   const failures = [];
 
   if (runtimeMode === "static_q4_experimental") {
@@ -52,6 +70,7 @@ export function evaluateRuntimeTruth(input = {}) {
     if (!["model_draft", "router_after_model_draft", "static_q4_experimental", "self_check_static_q4_experimental"].includes(answerSource)) {
       failures.push("q4_forward_true_answer_source_mismatch");
     }
+    if (q4QualityAssessed && !q4QualityAccepted) failures.push("q4_forward_quality_not_admitted");
   }
 
   return {
@@ -62,6 +81,8 @@ export function evaluateRuntimeTruth(input = {}) {
     tokens_generated: tokensGenerated,
     answer_source: answerSource,
     blocker,
+    q4_quality_accepted: q4QualityAccepted,
+    quality_flags: qualityFlags,
     version: R28SHIP0_RUNTIME_TRUTH_TABLE_VERSION
   };
 }

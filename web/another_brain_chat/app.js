@@ -648,6 +648,8 @@ function diagnosticsFromReport(config, manifestStatus, report) {
   const forwardOk = q4Forward.q4_forward_ran === true && tokensGenerated > 0;
   const assetsOk = manifestStatus.ok === true && q4Shards.length === 5 && q4Shards.every((item) => item.ok === true && Number(item.bytes_read || 0) > 0);
   const tokenizerOk = tokenizer.exact_runtime_tokenizer === true;
+  const q4QualityAccepted = report?.q4_quality?.accepted === true;
+  const q4QualityStatus = q4QualityAccepted ? "accepted" : "not_assessed_by_live_answer";
   return {
     branch_marker: config.branch_marker || config.ui_build_marker || R28LIVEFIX0_BRANCH_MARKER,
     branch_name: config.branch_name || config.ui_version || R28LIVEFIX0_BRANCH_NAME,
@@ -678,8 +680,14 @@ function diagnosticsFromReport(config, manifestStatus, report) {
       tokens_generated: tokensGenerated,
       blocker: q4Forward.blocker || report?.fallback?.reason || ""
     },
-    answer_source: forwardOk ? "static_q4_experimental" : "no_model_fallback",
-    merge_runtime_ready: assetsOk && tokenizerOk && forwardOk,
+    q4_quality: {
+      accepted: q4QualityAccepted,
+      status: q4QualityStatus,
+      note: q4QualityAccepted ? "" : "mount probe cannot prove answer quality; send a live open question and inspect finalizer quality_flags"
+    },
+    answer_source: forwardOk && q4QualityAccepted ? "static_q4_experimental" : forwardOk ? "q4_forward_quality_unadmitted" : "no_model_fallback",
+    mount_runtime_ready: assetsOk && tokenizerOk && forwardOk,
+    merge_runtime_ready: assetsOk && tokenizerOk && forwardOk && q4QualityAccepted,
     blockers: report?.blockers || []
   };
 }

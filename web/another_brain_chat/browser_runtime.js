@@ -26,6 +26,20 @@ const CJK_CHAR_RE = /[\u3400-\u9fff]/u;
 const LATIN_CHAR_RE = /[A-Za-z]/u;
 const CYRILLIC_CHAR_RE = /[\u0400-\u04FF]/u;
 const SUSPICIOUS_SYMBOL_RE = /[�•]{2,}|[�][^\s]|[^\s][�]/u;
+const Q4_QUALITY_BLOCKING_FLAGS = Object.freeze([
+  "bad_token_suppressed",
+  "token_id_only_output",
+  "low_confidence_gibberish",
+  "mojibake_output",
+  "mojibake_symbol_mix",
+  "mixed_script_mojibake",
+  "control_char_output",
+  "hidden_prompt_disclosure_marker",
+  "generic_fallback_marker",
+  "overlong_output",
+  "repetition_guard",
+  "quality_not_ready"
+]);
 
 function containsEvidenceInjectionMarker(text = "") {
   const lowered = String(text || "").toLowerCase();
@@ -656,6 +670,42 @@ function abstractValueFallbackSurface(input = "", route = {}) {
   return ABSTRACT_VALUE_FALLBACKS.unknown;
 }
 
+function readableEvidenceText(text = "", maxChars = 120) {
+  return String(text || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxChars);
+}
+
+function evidenceGroundedFallbackSurface(input = "", openRoute = {}, evidencePacket = null, fallbackReason = "") {
+  const evidence = (evidencePacket?.retrieved_evidence || []).slice(0, 2);
+  const fallback = abstractValueFallbackSurface(input, openRoute);
+  const reason = fallbackReason || "quality_not_ready";
+  const q4Statement = reason.includes("mojibake")
+    || reason.includes("gibberish")
+    || reason.includes("bad_token")
+    || reason.includes("token_id")
+    || reason.includes("quality")
+    || reason.includes("overlong")
+    || reason.includes("repetition")
+    ? `q4 草稿未被采纳（${reason}），所以不能把这次输出说成模型思考。`
+    : `q4 没有形成可采纳回答（${reason}），所以不能把这次回答说成模型思考。`;
+  if (!evidence.length) {
+    return `${q4Statement}本地检索也没有足够证据支撑更具体的回答。${fallback}`;
+  }
+  const sourceParts = evidence.map((item) => {
+    const kind = item.metadata?.card_kind || item.kind || "local";
+    const title = item.title || item.source_id || "local evidence";
+    const snippet = readableEvidenceText(item.text);
+    return `${title}(${kind})：${snippet}`;
+  });
+  return [
+    q4Statement,
+    `本地检索实际命中：${sourceParts.join("；")}`,
+    `基于这些证据只能给保守回答：${fallback}`
+  ].join("");
+}
+
 function buildOpenQuestionRoutePolicy(input = "", openRoute = {}, options = {}) {
   const fallbackReason = String(options.fallbackReason || "");
   const useModelDraft = options.useModelDraft === true && String(options.modelDraft || "").trim();
@@ -668,7 +718,7 @@ function buildOpenQuestionRoutePolicy(input = "", openRoute = {}, options = {}) 
   const accepted = useModelDraft ? applySurfaceLengthPolicy(String(options.modelDraft || "").trim(), "q4_accepted_open_answer") : null;
   const finalAnswer = useModelDraft
     ? accepted.text
-    : composed.final_answer || abstractValueFallbackSurface(input, openRoute);
+    : evidenceGroundedFallbackSurface(input, openRoute, options.evidencePacket, fallbackReason) || composed.final_answer || abstractValueFallbackSurface(input, openRoute);
   return {
     route: openRoute.route || openRoute.category || "open_question",
     open_question_category: openRoute.category || "open_question",
@@ -685,7 +735,7 @@ function buildOpenQuestionRoutePolicy(input = "", openRoute = {}, options = {}) 
       useModelDraft ? "model_draft_generated" : (composed.surface_category || surfaceCategory || "abstract_value_fallback")
     ]),
     non_claims: ROUTER_NON_CLAIMS,
-    final_answer_source: useModelDraft ? "model_draft" : "router_boundary",
+    final_answer_source: useModelDraft ? "model_draft" : "rag_grounded_router_fallback",
     surface_category: useModelDraft ? surfaceCategory : composed.surface_category,
     surface_variant: useModelDraft ? "" : composed.surface_variant,
     length_policy: useModelDraft ? accepted.length_policy : composed.length_policy,
@@ -1162,6 +1212,9 @@ function evaluateRuntimeTruth(input = {}) {
   const q4Forward = normalizeRuntimeTruthStatus(input.q4_forward);
   const q4ForwardBoolean = input.q4_forward === true || input.q4_forward_ran === true;
   const tokensGenerated = Math.max(0, Number(input.tokens_generated || 0));
+  const qualityFlags = Array.isArray(input.quality_flags) ? input.quality_flags.map(String) : [];
+  const q4QualityAccepted = input.q4_quality_accepted === true;
+  const q4QualityAssessed = input.q4_quality_assessed === true || qualityFlags.length > 0;
   const failures = [];
   if (runtimeMode === "static_q4_experimental") {
     if (assets !== "pass") failures.push("static_q4_requires_assets_pass");
@@ -1186,8 +1239,19 @@ function evaluateRuntimeTruth(input = {}) {
     if (!["model_draft", "router_after_model_draft", "static_q4_experimental", "self_check_static_q4_experimental"].includes(answerSource)) {
       failures.push("q4_forward_true_answer_source_mismatch");
     }
+    if (q4QualityAssessed && !q4QualityAccepted) failures.push("q4_forward_quality_not_admitted");
   }
-  return { ok: failures.length === 0, failures, runtime_mode: runtimeMode, q4_forward: q4Forward, tokens_generated: tokensGenerated, answer_source: answerSource, blocker };
+  return {
+    ok: failures.length === 0,
+    failures,
+    runtime_mode: runtimeMode,
+    q4_forward: q4Forward,
+    tokens_generated: tokensGenerated,
+    answer_source: answerSource,
+    blocker,
+    q4_quality_accepted: q4QualityAccepted,
+    quality_flags: qualityFlags
+  };
 }
 
 function retryStrategyForAttempt(attempt) {
@@ -1236,6 +1300,7 @@ function summarizeQ4RetryPlan(attempts = []) {
 
 function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, decoderDraft = "" } = {}) {
   if (q4Ran && routePolicy.use_model_draft === true) return "model_draft";
+  if (q4Ran && routePolicy.final_answer_source === "rag_grounded_router_fallback") return "router_after_model_draft";
   if (q4Ran && String(decoderDraft || "").trim() && routePolicy.use_model_draft !== true) return "router_after_model_draft";
   if (routePolicy.final_answer_source) return routePolicy.final_answer_source;
   if (String(routePolicy.route || "").endsWith("_surface")) return "router_surface";
@@ -1246,6 +1311,7 @@ function finalAnswerSource({ q4Ran, routePolicy = {}, fallbackUsed = false, deco
 
 function publicAnswerSourceLabel(trace = {}) {
   if (trace.model?.q4_forward_ran && trace.router?.used_model_draft) return "static_q4_experimental";
+  if (trace.model?.q4_forward_ran && trace.model?.q4_quality_accepted === false) return "q4_forward_rejected_quality_blocker";
   if (trace.model?.q4_forward_ran && trace.router?.replaced_model_draft) return "router_after_model_draft";
   if (String(trace.router?.route || "").endsWith("_surface")) return "router_surface";
   if (trace.router?.replaced_model_draft || String(trace.router?.route || "").includes("boundary")) return "hard_router_boundary";
@@ -1273,6 +1339,9 @@ function buildProcessTrace({
   const draftGenerated = String(decoderDraft || "").trim().length > 0;
   const usedModelDraft = routePolicy?.use_model_draft === true;
   const replacedModelDraft = draftGenerated && !usedModelDraft;
+  const finalQualityFlags = uniqueFlags(qualityFlags || routePolicy?.quality_flags || []);
+  const q4QualityAssessed = q4Ran && draftGenerated;
+  const q4QualityAccepted = q4Ran && usedModelDraft && !finalQualityFlags.some((flag) => Q4_QUALITY_BLOCKING_FLAGS.includes(flag));
   const tokenizer = tokenizerStatusForTrace({ decode_status: runtimeStats?.decode_status, delivery_config: deliveryConfig }, runtimeStats);
   const route = routePolicy?.route || "synthetic_demo_fallback";
   const tokensGenerated = Number(runtimeStats?.tokens_generated || 0);
@@ -1329,7 +1398,9 @@ function buildProcessTrace({
       total_generation_ms: totalGenerationMs,
       q4_forward_ran: q4Ran,
       tokens_generated: tokensGenerated,
-      draft_generated: draftGenerated
+      draft_generated: draftGenerated,
+      q4_quality_assessed: q4QualityAssessed,
+      q4_quality_accepted: q4QualityAccepted
     },
     generation: {
       route: routePolicy?.open_question_category || route,
@@ -1360,7 +1431,7 @@ function buildProcessTrace({
     },
     finalizer: {
       final_answer_source: finalAnswerSource({ q4Ran, routePolicy, fallbackUsed, decoderDraft }),
-      quality_flags: uniqueFlags(qualityFlags || routePolicy?.quality_flags || []),
+      quality_flags: finalQualityFlags,
       fallback_reason: fallbackReason || routePolicy?.fallback_reason || ""
     },
     runtime_truth_table: evaluateRuntimeTruth({
@@ -1372,7 +1443,10 @@ function buildProcessTrace({
       tokens_generated: tokensGenerated,
       answer_source: finalAnswerSource({ q4Ran, routePolicy, fallbackUsed, decoderDraft }),
       fallback_reason: generationFallbackReason,
-      blocker: generationFallbackReason
+      blocker: generationFallbackReason,
+      q4_quality_assessed: q4QualityAssessed,
+      q4_quality_accepted: q4QualityAccepted,
+      quality_flags: finalQualityFlags
     }),
     non_claims: {
       product_admission: false,
@@ -2776,7 +2850,8 @@ export class BrowserChatRuntime {
       const blocker = openRoute.category === "unsafe_self_harm_or_crisis" ? "safety_boundary" : this.q4GenerationBlocker();
       const routePolicy = buildOpenQuestionRoutePolicy(input, openRoute, {
         fallbackReason: blocker,
-        qualityFlags: [openRoute.category === "unsafe_self_harm_or_crisis" ? "safety_boundary_no_q4" : "q4_not_ready_fast_fallback"]
+        qualityFlags: [openRoute.category === "unsafe_self_harm_or_crisis" ? "safety_boundary_no_q4" : "q4_not_ready_fast_fallback"],
+        evidencePacket
       });
       const runtimeStats = this.recordTerminalGenerationStats("fallback", {
         runtime_mode: this.mode,
@@ -2877,7 +2952,8 @@ export class BrowserChatRuntime {
           useModelDraft: verifierResult.passed,
           modelDraft: decoderDraft,
           fallbackReason: qualityFailure || "q4_output_not_accepted",
-          qualityFlags: verifierResult.failures || []
+          qualityFlags: verifierResult.failures || [],
+          evidencePacket
         });
         fallbackUsed = routePolicy.fallback_used;
         fallbackReason = routePolicy.fallback_reason;
@@ -2907,7 +2983,8 @@ export class BrowserChatRuntime {
       if (openRoute.should_attempt_q4) {
         routePolicy = buildOpenQuestionRoutePolicy(input, openRoute, {
           fallbackReason,
-          qualityFlags: [fallbackReason, fallbackReason.includes("timeout") ? "q4_generation_timeout" : ""]
+          qualityFlags: [fallbackReason, fallbackReason.includes("timeout") ? "q4_generation_timeout" : ""],
+          evidencePacket
         });
       } else {
         routePolicy = applyAnswerSurfacePolicy({
