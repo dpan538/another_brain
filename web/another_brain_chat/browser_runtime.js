@@ -1964,7 +1964,7 @@ export class BrowserChatRuntime {
       error: error.message || "cache_version_check_failed"
     }));
     if (this.capabilities.worker_available) {
-      this.worker = new Worker(new URL("./runtime_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
+      this.worker = new Worker(new URL("./runtime_worker.js?v=r28livefix0-live-q4-mount", import.meta.url), { type: "module" });
     }
     this.memoryRecords = await loadStaticMemoryRecords().catch(() => null);
     if (this.deliveryConfig?.model_mode === "static_q4_experimental") {
@@ -2019,7 +2019,7 @@ export class BrowserChatRuntime {
 
   createRuntimeWorker() {
     if (!this.capabilities.worker_available) return null;
-    return new Worker(new URL("./runtime_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
+    return new Worker(new URL("./runtime_worker.js?v=r28livefix0-live-q4-mount", import.meta.url), { type: "module" });
   }
 
   async clearModelAssetCacheNamespace() {
@@ -2241,7 +2241,7 @@ export class BrowserChatRuntime {
     if (!this.capabilities.worker_available) throw new Error("self_check_worker_unavailable");
     const timeoutMs = Math.min(Math.max(Number(options.timeoutMs || 8000), 1000), 15000);
     return new Promise((resolve, reject) => {
-      const worker = new Worker(new URL("./self_check_worker.js?v=r28ship0-unified-q4-mount", import.meta.url), { type: "module" });
+      const worker = new Worker(new URL("./self_check_worker.js?v=r28livefix0-live-q4-mount", import.meta.url), { type: "module" });
       let settled = false;
       const finish = (callback) => {
         if (settled) return;

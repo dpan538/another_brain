@@ -145,6 +145,7 @@ const loadingCancelButton = document.querySelector("#loading-cancel-button");
 const loadingSkeleton = document.querySelector(".loading-skeleton");
 const q4RetryStatus = document.querySelector("#q4-retry-status");
 const chatLoadingNote = document.querySelector("#chat-loading-note");
+const chatSignalStrip = document.querySelector("#chat-signal-strip");
 const vizCapabilityLabel = document.querySelector("#viz-capability-label");
 const vizRetrieval = document.querySelector("#viz-retrieval");
 const vizRetrievalFill = document.querySelector("#viz-retrieval-fill");
@@ -270,7 +271,8 @@ function renderQ4RetryStatus(input = {}) {
 
 function loadingNoteForStage(report = {}, status = "checking", stage = "manifest") {
   const blocker = report.q4_forward?.blocker || report.fallback?.reason || (report.blockers || [])[0] || "";
-  if (status === "passed" || report.ok) return "加载完成：本地记忆、分词器和 q4 路径已就绪。";
+  if (q4ForwardConfirmed(report)) return "加载完成：本地记忆、分词器和 q4 前向都已确认。";
+  if (status === "passed" || report.ok) return `本地资产已读；q4 forward 仍需确认${blocker ? `：${blocker}` : ""}。`;
   if (status === "cancelled") return "加载已停止；仍可用本地检索给出保守回答。";
   if (status === "failed" || status === "timeout") return `本地模型暂未稳定参与；${blocker || "Dashboard 可查看原因"}。`;
   if (stage === "shards") return "正在读取本地 q4 分片；不会连接外部模型。";
@@ -348,7 +350,7 @@ function summarizeLoadingProgress(report = {}, progress = 8, status = "checking"
   const elapsedMs = report.elapsed_ms == null ? null : Number(report.elapsed_ms);
   const forwardRan = q4Forward.q4_forward_ran === true;
   const blocker = q4Forward.blocker || report.retry_plan?.fallback_reason || (report.blockers || [])[0] || "";
-  if (status === "passed") {
+  if (status === "passed" && forwardRan && tokensGenerated > 0) {
     return [
       "完成 100%",
       `q4 forward=${forwardRan ? "true" : "false"}`,
@@ -356,6 +358,15 @@ function summarizeLoadingProgress(report = {}, progress = 8, status = "checking"
       `shards=${shardCount}/${expectedShards}`,
       `tokenizer=${tokenizerStatus}`,
       elapsedMs == null ? "" : `elapsed=${elapsedMs}ms`
+    ].filter(Boolean).join(" · ");
+  }
+  if (status === "passed") {
+    return [
+      "未完成",
+      `进度 ${Math.round(progress)}%`,
+      "q4 forward=false",
+      `tokens=${tokensGenerated}`,
+      blocker ? `blocker=${blocker}` : "blocker=q4_forward_not_confirmed"
     ].filter(Boolean).join(" · ");
   }
   if (status === "failed" || status === "timeout") {
@@ -377,23 +388,45 @@ function summarizeLoadingProgress(report = {}, progress = 8, status = "checking"
   ].filter(Boolean).join(" · ");
 }
 
+function q4ForwardConfirmed(report = {}) {
+  const q4Forward = report.q4_forward || {};
+  return report.ok === true
+    && q4Forward.q4_forward_ran === true
+    && Number(q4Forward.tokens_generated || 0) > 0;
+}
+
+function updateChatSignalStatus(report = {}, status = "checking") {
+  if (!chatSignalStrip) return;
+  const q4Confirmed = q4ForwardConfirmed(report);
+  const failed = status === "failed" || status === "timeout" || status === "cancelled" || (report.ok === false && report.status);
+  for (const node of chatSignalStrip.querySelectorAll("[data-chat-signal]")) {
+    const signal = node.getAttribute("data-chat-signal");
+    node.classList.toggle("is-pass", signal === "memory" || signal === "answer" || (signal === "q4" && q4Confirmed));
+    node.classList.toggle("is-warn", signal === "q4" && failed && !q4Confirmed);
+  }
+}
+
 function renderModelLoading(input = {}) {
   if (!modelLoadingPanel) return;
   const report = input.report || input;
   const stage = input.stage || loadingStageFromReport(report);
   const status = String(input.status || report.status || "checking");
   const fallbackReason = report.fallback?.reason || report.q4_forward?.blocker || (report.blockers || [])[0] || "";
-  const done = status === "passed";
+  const q4Confirmed = q4ForwardConfirmed(report);
+  const done = status === "passed" && q4Confirmed;
   const cancelled = status === "cancelled";
-  const failed = status === "failed" || status === "timeout";
-  const progress = Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 8);
+  const failed = status === "failed" || status === "timeout" || (status === "passed" && !q4Confirmed);
+  const progress = done ? 100 : failed ? Math.min(88, Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 72)) : Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 8);
   setHidden(modelLoadingPanel, input.hidden === true);
-  setText(modelLoadingTitle, done ? "加载完成：q4 已可用" : cancelled ? "模型资产检查已取消" : failed ? "模型资产检查未完成" : "模型资产检查中");
+  modelLoadingPanel.dataset.loadingResult = done ? "passed" : failed ? "blocked" : cancelled ? "failed" : "checking";
+  setText(modelLoadingTitle, done ? "加载完成：q4 已可用" : cancelled ? "模型资产检查已取消" : failed ? "模型前向未确认" : "模型资产检查中");
   setText(
     modelLoadingDetail,
     done
       ? "本地 q4 shards、exact tokenizer 和 warmup 已完成；Dashboard 可查看 URL/status/bytes 细节。"
-      : `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback 已可用${fallbackReason ? ` / ${fallbackReason}` : ""}`
+      : failed
+        ? `资产可读不等于模型可用；q4 forward 尚未确认${fallbackReason ? ` / ${fallbackReason}` : ""}。`
+        : `${MODEL_LOADING_LABELS[stage] || "读取 manifest"}；fallback 已可用${fallbackReason ? ` / ${fallbackReason}` : ""}`
   );
   setText(modelLoadingSummary, summarizeLoadingProgress(report, progress, status, stage));
   setText(chatLoadingNote, loadingNoteForStage(report, status, stage));
@@ -412,6 +445,7 @@ function renderModelLoading(input = {}) {
     node.classList.toggle("done", done || (activeIndex >= 0 && nodeIndex >= 0 && nodeIndex < activeIndex));
     node.classList.toggle("warn", (cancelled || failed) && nodeStage === "fallback");
   });
+  updateChatSignalStatus(report, status);
   setDisabled(loadingCancelButton, done || cancelled || failed || !activeLoadingController);
 }
 
@@ -419,8 +453,8 @@ function completeModelLoading(report = {}) {
   renderModelLoading({
     report,
     stage: "fallback",
-    status: report.status || (report.ok ? "passed" : "failed"),
-    progress: 100
+    status: report.ok ? "passed" : "failed",
+    progress: report.ok ? 100 : 88
   });
 }
 

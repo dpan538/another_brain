@@ -36,6 +36,7 @@ test("answer q4 generation is no longer capped to the one-token mount smoke or e
   const q4Worker = await readFile(new URL("../../web/another_brain_chat/q4_worker_runtime.js", import.meta.url), "utf8");
   const browserRuntime = await readFile(new URL("../../web/another_brain_chat/browser_runtime.js", import.meta.url), "utf8");
   const selfCheckWorker = await readFile(new URL("../../web/another_brain_chat/self_check_worker.js", import.meta.url), "utf8");
+  const runtimeWorker = await readFile(new URL("../../web/another_brain_chat/runtime_worker.js", import.meta.url), "utf8");
 
   assert.ok(q4Worker.includes("Q4_MOUNT_SMOKE_MAX_TOKENS = 1"));
   assert.ok(q4Worker.includes("Q4_ANSWER_MAX_TOKENS = 32"));
@@ -45,6 +46,10 @@ test("answer q4 generation is no longer capped to the one-token mount smoke or e
   assert.ok(q4Worker.includes("effective_max_tokens"));
   assert.ok(!q4Worker.includes("Math.min(Number(options.maxTokens || 4), 8)"));
   assert.ok(selfCheckWorker.includes('generationKind: "mount_smoke"'));
+  assert.ok(browserRuntime.includes("self_check_worker.js?v=r28livefix0-live-q4-mount"));
+  assert.ok(browserRuntime.includes("runtime_worker.js?v=r28livefix0-live-q4-mount"));
+  assert.ok(selfCheckWorker.includes("q4_worker_runtime.js?v=r28livefix0-live-q4-mount"));
+  assert.ok(runtimeWorker.includes("q4_worker_runtime.js?v=r28livefix0-live-q4-mount"));
   assert.ok(browserRuntime.includes('generationKind: openRoute.should_attempt_q4 ? "answer_generation"'));
   assert.ok(browserRuntime.includes("generation_limits"));
 });
@@ -72,6 +77,7 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(html.includes("efish 是旧昵称"));
   assert.ok(html.includes("brand-linework"));
   assert.ok(html.includes("chat-signal-strip"));
+  assert.ok(html.includes('data-chat-signal="q4"'));
   assert.ok(html.includes("chat-loading-note"));
   assert.ok(html.includes("local memory"));
   assert.ok(html.includes("q4 warmup"));
@@ -109,12 +115,15 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   assert.ok(css.includes("overflow-y: auto"));
   assert.ok(css.includes('width: min(1360px, 100%)'));
   assert.ok(css.includes(".chat-signal-strip"));
+  assert.ok(css.includes(".chat-signal-strip div.is-warn"));
   assert.ok(css.includes(".chat-loading-note"));
+  assert.ok(css.includes('grid-template-rows: auto minmax(0, 1fr)'));
   assert.ok(css.includes(".reasoning-viz"));
   assert.ok(css.includes(".viz-track"));
   assert.ok(css.includes(".composer-actions [hidden]"));
   assert.ok(css.includes("#send-button"));
-  assert.ok(css.includes('grid-template-rows: auto minmax(0, 2.5fr) minmax(118px, 1fr)'));
+  assert.ok(css.includes('grid-template-rows: auto auto minmax(0, 2.5fr) minmax(0, 1fr)'));
+  assert.ok(css.includes("position: absolute"));
   assert.ok(css.includes('@media (max-width: 720px)'));
   assert.ok(css.includes(".header-side"));
   assert.ok(css.includes("display: none"));
@@ -179,10 +188,14 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
   assert.ok(html.includes("model-loading-summary"));
   assert.ok(html.includes("chat-loading-note"));
   assert.ok(css.includes(".loading-skeleton.is-complete"));
+  assert.ok(css.includes('[data-loading-result="blocked"]'));
   for (const expected of [
     "summarizeLoadingProgress",
     "loadingNoteForStage",
+    "q4ForwardConfirmed",
+    "updateChatSignalStatus",
     "完成 100%",
+    "模型前向未确认",
     "q4 forward=",
     "tokens=",
     "shards=",

@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28ship0-unified-q4-mount";
+import { generateStaticQ4Draft } from "./q4_worker_runtime.js?v=r28livefix0-live-q4-mount";
 
 async function handleSelfCheck(message = {}) {
   if (message.type !== "q4_smoke") {

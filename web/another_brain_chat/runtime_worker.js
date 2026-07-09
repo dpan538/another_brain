@@ -1,4 +1,4 @@
-import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28ship0-unified-q4-mount";
+import { generateStaticQ4Draft, staticQ4Capability } from "./q4_worker_runtime.js?v=r28livefix0-live-q4-mount";
 
 function tokensFor(prompt, maxTokens) {
   const parts = [
