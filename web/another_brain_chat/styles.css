@@ -2327,3 +2327,141 @@ body[data-ui-mode="chat"] {
     font-size: clamp(1.24rem, 5.4vw, 1.56rem);
   }
 }
+
+/* R28POSTMERGE9: visual balance pass for the product chat surface. */
+.app-shell[data-ui-mode="chat"] .eyebrow {
+  text-transform: none;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip {
+  padding: clamp(14px, 1.8vw, 22px) clamp(22px, 3.5vw, 44px) clamp(14px, 1.8vw, 22px);
+  align-items: stretch;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(16px, 2.6vw, 34px);
+  min-height: clamp(48px, 4.2vw, 58px);
+  padding: 0 clamp(14px, 1.8vw, 22px);
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip span,
+.app-shell[data-ui-mode="chat"] .chat-signal-strip strong {
+  display: block;
+  line-height: 1;
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip strong {
+  text-align: right;
+  font-size: clamp(0.92rem, 1vw, 1.18rem);
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip span {
+  font-size: clamp(0.82rem, 0.9vw, 1.04rem);
+}
+
+.app-shell[data-ui-mode="chat"] .chat-signal-strip span {
+  display: block !important;
+}
+
+.app-shell[data-ui-mode="chat"] .model-loading-panel {
+  padding: clamp(8px, 1.2vw, 12px) clamp(22px, 3.5vw, 44px) clamp(12px, 1.4vw, 18px);
+}
+
+.app-shell[data-ui-mode="chat"] .chat-loading-note {
+  margin-top: clamp(8px, 1vw, 12px);
+  color: rgba(240, 237, 229, 0.76);
+  font-family: "Arial Narrow", "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+  font-size: clamp(0.92rem, 0.95vw, 1.08rem);
+  font-weight: 800;
+  line-height: 1.28;
+}
+
+.app-shell[data-ui-mode="chat"] .message-list {
+  padding-top: clamp(22px, 3.2vw, 44px);
+  padding-bottom: clamp(16px, 2.2vw, 28px);
+  gap: clamp(18px, 2.6vw, 34px);
+}
+
+.app-shell[data-ui-mode="chat"] .message {
+  min-height: clamp(86px, 7vw, 108px);
+  padding: clamp(18px, 1.9vw, 30px) clamp(22px, 2.4vw, 38px);
+  font-size: clamp(1.35rem, 1.58vw, 1.95rem);
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.app-shell[data-ui-mode="chat"] .message-role {
+  margin-bottom: clamp(8px, 0.9vw, 12px);
+  font-size: clamp(0.8rem, 0.85vw, 1rem);
+  line-height: 1;
+}
+
+.app-shell[data-ui-mode="chat"] textarea {
+  font-size: clamp(1.12rem, 1.28vw, 1.48rem);
+  line-height: 1.3;
+}
+
+.app-shell[data-ui-mode="chat"] textarea::placeholder {
+  color: rgba(240, 237, 229, 0.58);
+  font-size: 0.92em;
+}
+
+@media (max-width: 720px) {
+  .app-shell[data-ui-mode="chat"] .chat-signal-strip {
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .app-shell[data-ui-mode="chat"] .chat-signal-strip div {
+    min-height: 48px;
+    padding: 0 10px;
+    column-gap: 8px;
+  }
+
+  .app-shell[data-ui-mode="chat"] .chat-signal-strip strong {
+    font-size: clamp(0.74rem, 3.5vw, 0.96rem);
+  }
+
+  .app-shell[data-ui-mode="chat"] .chat-signal-strip span {
+    font-size: clamp(0.72rem, 3.2vw, 0.9rem);
+  }
+
+  .app-shell[data-ui-mode="chat"] .model-loading-panel {
+    padding: 8px 14px 12px;
+  }
+
+  .app-shell[data-ui-mode="chat"] .chat-loading-note {
+    margin-top: 8px;
+    font-size: clamp(0.86rem, 3.8vw, 1.02rem);
+  }
+
+  .app-shell[data-ui-mode="chat"] .message-list {
+    padding: 20px 22px 14px;
+    gap: 18px;
+  }
+
+  .app-shell[data-ui-mode="chat"] .message {
+    width: min(88%, 100%);
+    min-height: 92px;
+    padding: 18px 20px;
+    font-size: clamp(1.28rem, 5.5vw, 1.58rem);
+    line-height: 1.3;
+  }
+
+  .app-shell[data-ui-mode="chat"] .message-role {
+    font-size: clamp(0.76rem, 3.4vw, 0.95rem);
+  }
+
+  .app-shell[data-ui-mode="chat"] textarea {
+    padding: 20px 126px 20px 20px;
+    font-size: clamp(1.02rem, 4.5vw, 1.26rem);
+  }
+
+  .app-shell[data-ui-mode="chat"] textarea::placeholder {
+    font-size: 0.88em;
+  }
+}

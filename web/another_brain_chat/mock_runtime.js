@@ -31,7 +31,7 @@ export class MockLocalRetrievalRuntime extends LocalRetrievalRuntime {
         id: "r27b0-non-claims",
         source: "static manifest",
         score: 0.92,
-        text: "No product model, tokenizer artifact, backend inference, external LLM API, Doubao, or release claim."
+        text: "No product-model admission, backend inference, external LLM API, or release claim."
       }
     ].map((item) => ({ ...item, turn_index: statePacket.turn_index }));
   }

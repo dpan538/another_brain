@@ -33,7 +33,9 @@ test("license and model docs expose the committed R28M1 q4 package as MIT-scoped
 
   assert.ok(license.includes("MIT License"));
   assert.ok(readme.includes("efishother"));
-  assert.ok(readme.includes("96M-parameter local Chinese answer"));
+  assert.ok(readme.includes("efishv1"));
+  assert.ok(readme.includes("96M-parameter local"));
+  assert.ok(readme.includes("Chinese answer model"));
   assert.equal(readme.includes("engineering codename"), false);
   assert.ok(readme.includes("48,267,968"));
   assert.ok(readme.includes("MODEL_LICENSE.md"));
@@ -122,8 +124,8 @@ test("customer Chat surface is short, fixed-screen, and hides engineering diagno
   const css = await readFile(new URL("../../web/another_brain_chat/styles.css", import.meta.url), "utf8");
   const app = await readFile(new URL("../../web/another_brain_chat/app.js", import.meta.url), "utf8");
 
-  assert.ok(html.includes("efishother.com"));
-  assert.ok(html.includes("<title>efishother | local answer</title>"));
+  assert.ok(html.includes("another e fish"));
+  assert.ok(html.includes("<title>another e fish | local answer</title>"));
   assert.ok(html.includes('href="/favicon.png"'));
   assert.equal(html.includes("croc-logo"), false);
   assert.equal(html.includes("efishother crocodile logo"), false);
@@ -268,7 +270,7 @@ test("loading panel exposes unambiguous completed q4 progress instead of skeleto
     "q4 forward=",
     "tokens=",
     "shards=",
-    "加载完成：q4 已可用",
+    "加载完成",
     "loadingSkeleton?.classList.toggle"
   ]) {
     assert.ok(app.includes(expected), expected);

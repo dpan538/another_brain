@@ -54,7 +54,6 @@ const ROUTER_NON_CLAIMS = [
   "no training",
   "no backend inference",
   "no external LLM API",
-  "no Doubao",
   "no broad answer bank",
   "hard router is product-surface guard only"
 ];

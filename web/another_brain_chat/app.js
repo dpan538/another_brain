@@ -438,7 +438,7 @@ function renderModelLoading(input = {}) {
   const progress = done ? 100 : failed ? Math.min(88, Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 72)) : Number(input.progress || MODEL_LOADING_PROGRESS[stage] || 8);
   setHidden(modelLoadingPanel, input.hidden === true);
   modelLoadingPanel.dataset.loadingResult = done ? "passed" : failed ? "blocked" : cancelled ? "failed" : "checking";
-  setText(modelLoadingTitle, done ? "加载完成：q4 已可用" : cancelled ? "模型资产检查已取消" : failed ? "模型前向未确认" : "模型资产检查中");
+  setText(modelLoadingTitle, done ? "加载完成" : cancelled ? "模型资产检查已取消" : failed ? "模型前向未确认" : "模型资产检查中");
   setText(
     modelLoadingDetail,
     done
