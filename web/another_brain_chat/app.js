@@ -585,6 +585,35 @@ function compactConversationContext(turns = conversationTurns) {
   return recent.join(" | ").slice(0, SESSION_CONTEXT_MAX_CHARS);
 }
 
+function normalizeRepeatText(text = "") {
+  return String(text || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[\s\u3000]+/g, "")
+    .replace(/[?？!！。.,，、;；:："“”'‘’()（）[\]【】{}<>《》]/g, "")
+    .trim();
+}
+
+function repeatedUserQuestionState(text = "") {
+  const normalized = normalizeRepeatText(text);
+  if (normalized.length < 2) return null;
+  const previousUserTurns = conversationTurns.filter((turn) => turn.role === "user");
+  const sameCount = previousUserTurns.filter((turn) => normalizeRepeatText(turn.text) === normalized).length;
+  if (sameCount <= 0) return null;
+  return {
+    normalized,
+    same_count: sameCount,
+    reply_level: sameCount >= 2 ? "boundary" : "reminder"
+  };
+}
+
+function repeatedQuestionReply(state = {}) {
+  if (state.reply_level === "boundary") {
+    return "你已经问过了，别以为我记不住哦。还有别的想问吗？没有的话我就去睡觉咯。";
+  }
+  return "你刚刚问过这个了，我记得。换个角度问，我可以继续接。";
+}
+
 function shouldUseConversationContext(text = "") {
   const query = String(text || "").trim();
   if (!query || conversationTurns.length === 0) return false;
@@ -718,6 +747,24 @@ function ruleBasedFallbackAnswer(packet = {}) {
   if (/气温|升温|变热|气候|天气/.test(inputText)) {
     return "我会分三层看：短期是天气和季节，中期看城市、地表和海洋蓄热，长期才看气候趋势。不能把一次体感说成唯一原因。";
   }
+  if (/偷换概念|范畴错误|不是一类|混为一谈|概念错位|判断轴不一样/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先看两个概念是不是共用同一套标准。标准不同，就不能直接互换；要先把对象、尺度和判断轴分开。";
+  }
+  if (/可不可以|能不能|有没有可能|现实吗|可行|不可行|做得到|能做到/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先分理论可行和现实可行。能不能做，不只看想法成立，还要看成本、约束和风险。";
+  }
+  if (/多大程度|有多|越.*越|程度|范围|阈值|边界条件|失效点/.test(inputText)) {
+    return safeEvidenceAnswer || "这不是简单是非题，要看范围和阈值。到某个程度之前成立，超过边界可能反而失效。";
+  }
+  if (/怎么做|如何实现|步骤|方法|流程|路径|怎么落地|如何构建/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先定目标和约束，再给最短路径。方法题不需要先讲大道理，先把可执行的下一步说清。";
+  }
+  if (/凭什么|怎么证明|证据够不够|有没有依据|可信度|证据阈值|如何验证|怎么验证/.test(inputText)) {
+    return safeEvidenceAnswer || "要看主张有多强。强结论需要强证据；证据不够时，只能给可能性和需要补的验证点。";
+  }
+  if (/可是|但是|难道不是|反而|我不同意|不一定|这不对|不是这样/.test(inputText)) {
+    return safeEvidenceAnswer || "你的反驳可能成立。我会先看你反对的是事实、标准还是结论，再把判断改窄一点。";
+  }
   if (/品牌|公司|Apple|OpenAI|Tesla|Google|微软|小米|华为|商业/.test(inputText)) {
     return safeEvidenceAnswer || "我会看三件事：它解决什么真实问题、靠什么建立信任、有没有持续分发和记忆点。品牌不是名气，是可重复的体验。";
   }
@@ -800,6 +847,24 @@ function customerFacingAnswer(packet = {}) {
   }
   if (isConceptualTimeParadox(inputText)) {
     return safeEvidenceAnswer || "这像是在拒绝二分。线性和非线性都只是描述模型：计时有先后，经验会折叠，概念上还可以换框架。";
+  }
+  if (/偷换概念|范畴错误|不是一类|混为一谈|概念错位|判断轴不一样/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先看两个概念是不是共用同一套标准。标准不同，就不能直接互换；要先把对象、尺度和判断轴分开。";
+  }
+  if (/可不可以|能不能|有没有可能|现实吗|可行|不可行|做得到|能做到/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先分理论可行和现实可行。能不能做，不只看想法成立，还要看成本、约束和风险。";
+  }
+  if (/多大程度|有多|越.*越|程度|范围|阈值|边界条件|失效点/.test(inputText)) {
+    return safeEvidenceAnswer || "这不是简单是非题，要看范围和阈值。到某个程度之前成立，超过边界可能反而失效。";
+  }
+  if (/怎么做|如何实现|步骤|方法|流程|路径|怎么落地|如何构建/.test(inputText)) {
+    return safeEvidenceAnswer || "我会先定目标和约束，再给最短路径。方法题不需要先讲大道理，先把可执行的下一步说清。";
+  }
+  if (/凭什么|怎么证明|证据够不够|有没有依据|可信度|证据阈值|如何验证|怎么验证/.test(inputText)) {
+    return safeEvidenceAnswer || "要看主张有多强。强结论需要强证据；证据不够时，只能给可能性和需要补的验证点。";
+  }
+  if (/可是|但是|难道不是|反而|我不同意|不一定|这不对|不是这样/.test(inputText)) {
+    return safeEvidenceAnswer || "你的反驳可能成立。我会先看你反对的是事实、标准还是结论，再把判断改窄一点。";
   }
   if (/时间.*线性|线性.*时间|时间观|钟表时间|心理时间|叙事时间|因果顺序/.test(inputText)) {
     return safeEvidenceAnswer || "钟表时间大多是线性排序；但人的记忆、叙事和历史理解不完全线性。先分清你问的是计时、体验还是因果。";
@@ -1459,12 +1524,21 @@ on(form, "submit", async (event) => {
   if (running) return;
   const text = getValue(input).trim();
   if (!text) return;
+  const repeatedQuestionState = repeatedUserQuestionState(text);
   const runtimeInput = contextualizeUserInput(text);
 
   appendMessage("user", text);
   rememberConversationTurn("user", text);
   setValue(input, "");
   focusNode(input);
+
+  if (repeatedQuestionState) {
+    const repeatedReply = repeatedQuestionReply(repeatedQuestionState);
+    appendMessage("assistant", repeatedReply);
+    rememberConversationTurn("assistant", repeatedReply);
+    renderDebug();
+    return;
+  }
 
   running = true;
   setDisabled(abortButton, false);

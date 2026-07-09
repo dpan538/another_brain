@@ -3388,6 +3388,2303 @@
         "retrieval_design",
         "soft-fallback-rare"
       ]
+    },
+    {
+      "id": "r28postmerge15-zh-fact-value-aesthetic-split",
+      "kind": "judgment",
+      "text": "中文里“对不对、好不好、该不该、美不美”经常混在一句话里。检索前要先分层：事实层看证据，价值层看理由和代价，审美层看结构和语境。回答时只说当前层，不把不同层面的判断互相冒充。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "事实判断",
+        "价值判断",
+        "审美判断",
+        "中文判断",
+        "有没有对错"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-fact-value-aesthetic-split"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-premise-check",
+      "kind": "logic",
+      "text": "用户问“如果前提不成立呢”时，重点不是继续回答原问题，而是检查前提。先说前提承担了什么，再说它一旦改变，原结论哪些部分还保留、哪些部分要重算。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "前提",
+        "假设",
+        "如果前提错了",
+        "是否成立",
+        "先看前提"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-premise-check"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-category-error",
+      "kind": "logic",
+      "text": "中文追问里常见“这是不是偷换概念”。这类问题需要比较两个概念的判断轴是否一致：对象、尺度、标准和用途是否相同。如果标准不同，要先指出范畴错位，再给可比的改写方式。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "范畴错误",
+        "偷换概念",
+        "不是一类",
+        "算不算",
+        "概念错位"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-category-error"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-feasibility",
+      "kind": "judgment",
+      "text": "“能不能、可不可以、有没有可能”不是单纯真假题，而是可行性判断。先分理论可行、现实可行、成本可行和伦理可行，再给最短结论。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "可不可以",
+        "能不能",
+        "有没有可能",
+        "现实吗",
+        "可行性"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-feasibility"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-degree-range",
+      "kind": "judgment",
+      "text": "“有多重要、多大程度、是不是越多越好”要走程度判断。不要只答是或不是，要给范围、阈值和边界：什么时候成立，什么时候反而失效。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "多大程度",
+        "有多",
+        "越",
+        "程度",
+        "范围",
+        "边界"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-degree-range"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-method-procedure",
+      "kind": "logic",
+      "text": "方法类问题要先分目标、约束、步骤和验收标准。中文用户常省略目标，回答可以先给三步短路径；如果约束不明，再提示用户补充场景。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "怎么做",
+        "如何实现",
+        "步骤",
+        "方法",
+        "流程",
+        "路径"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-method-procedure"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-cause-vs-purpose",
+      "kind": "logic",
+      "text": "“为什么”可能在问原因，也可能在问目的。原因解释过去如何发生，目的解释行动者想达成什么。检索时要把因果机制和目的动机分开，避免把动机当结构原因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "为什么",
+        "为了什么",
+        "原因",
+        "目的",
+        "动机"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-cause-vs-purpose"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-object-resolution",
+      "kind": "context",
+      "text": "中文短追问常省略对象。“这个、那个、它”需要先回到最近一轮明确对象；如果上一轮有多个对象，要用最可能对象回答，并保持答案短，必要时反问确认。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "这个",
+        "那个",
+        "它",
+        "这件事",
+        "上一个",
+        "指代"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-object-resolution"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-evaluation-turn",
+      "kind": "context",
+      "text": "评价型输入不是新问题。用户说不对、太长、太硬时，应该调整焦点和语气：先承接，再用更短、更具体或更自然的方式重答，不暴露检索或运行细节。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "不对",
+        "不是这个",
+        "太硬",
+        "太长",
+        "像模板",
+        "换个说法"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-evaluation-turn"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-objection-turn",
+      "kind": "judgment",
+      "text": "反驳型输入需要保留用户立场。不要马上防御；先识别用户反对的是事实、标准还是结论，再用一句话改判或补边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "可是",
+        "但是",
+        "难道不是",
+        "反而",
+        "我不同意"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-objection-turn"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-analogy-limit",
+      "kind": "association",
+      "text": "中文类比常用来逼近概念，但类比不是证据。要分别看对象、机制、尺度和后果；两项以上对上才说“可以类比”，否则说“只是比喻”。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "类比边界",
+        "像不像",
+        "相似",
+        "不一样",
+        "映射失败"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-analogy-limit"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-comparison-axis",
+      "kind": "judgment",
+      "text": "比较题必须先定轴。中文问题经常只问“哪个好”，但好可能是效率好、成本好、体验好、长期好或风险低。检索应该优先找比较轴，而不是直接找品牌或对象名。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "哪个更",
+        "区别",
+        "差别",
+        "更适合",
+        "怎么选"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-comparison-axis"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-temporal-scale",
+      "kind": "association",
+      "text": "时间尺度会改变结论。短期看触发和直接结果，长期看制度、习惯和路径依赖。中文问题里出现“后来、长期、现在”时，要把同一对象放到不同时间层。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "短期",
+        "长期",
+        "后来",
+        "当时",
+        "现在",
+        "时间尺度"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-temporal-scale"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-counterfactual-discipline",
+      "kind": "logic",
+      "text": "反事实问题要有纪律：一次只改一个条件，再问替代物、受影响对象和时间尺度。不要把反事实写成幻想故事；它只是用来比较机制。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "如果没有",
+        "假如",
+        "反事实",
+        "会不会变",
+        "替代路径"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-counterfactual-discipline"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-definition-boundary",
+      "kind": "logic",
+      "text": "定义题要先给工作定义。中文里的“算不算”通常是在问边界，不是在求唯一权威答案。回答时要说纳入条件和排除条件。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "到底是什么",
+        "算不算",
+        "边界在哪里",
+        "怎么定义",
+        "属于"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-definition-boundary"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-evidence-threshold",
+      "kind": "boundary",
+      "text": "证据阈值问题要看主张强度。强结论需要强证据；弱判断可以给可能性。证据不足时，应该说还能判断什么，而不是完全停摆。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "证据够不够",
+        "凭什么",
+        "怎么证明",
+        "有没有依据",
+        "可信度"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-evidence-threshold"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-social-causal-chain",
+      "kind": "association",
+      "text": "社会类中文问题容易被道德化。更稳的链路是：制度安排改变激励，激励改变行为，行为积累成结果。先找结构原因，再说个人选择的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会问题",
+        "制度",
+        "激励",
+        "利益",
+        "结构原因"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-social-causal-chain"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-adoption",
+      "kind": "association",
+      "text": "技术普及不是因为单点先进。要看成本下降、基础设施、用户习惯、分发渠道和互补生态。检索时技术词不应压过采用机制。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术为什么流行",
+        "普及",
+        "采用",
+        "生态",
+        "成本下降"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-technology-adoption"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-brand-meaning",
+      "kind": "brand_literacy",
+      "text": "品牌问题不是只问 logo 或名字。品牌价值来自可重复体验、信任、文化记忆和分发效率。回答要落到产品感和用户记忆，而不是空泛夸奖。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "品牌为什么有价值",
+        "记忆点",
+        "信任",
+        "产品感",
+        "文化"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-brand-meaning"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-judgment",
+      "kind": "aesthetic",
+      "text": "审美不是纯主观，也不是唯一标准。可以判断比例、层级、留白、材料感、语境一致性和可读性。回答应避免把偏好说成绝对真理。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美有没有标准",
+        "高级感",
+        "质感",
+        "不好看",
+        "设计判断"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-aesthetic-judgment"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-meaning",
+      "kind": "philosophy",
+      "text": "语言问题要看语境。词语不是孤立标签，意义来自使用场景、关系和共同约定。中文短句如果含糊，先给最可能解释，再说明另一种解释。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "词语是什么意思",
+        "语言意义",
+        "语境",
+        "误解",
+        "表达"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-language-meaning"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-hard-question-soft-exit",
+      "kind": "style",
+      "text": "极复杂问题可以软退出，但要少用。更好的做法是先给一个很短的边界判断，再邀请用户缩小对象。软兜底要像对话，不像系统报错。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "太难",
+        "过于抽象",
+        "无法稳定判断",
+        "软兜底",
+        "继续问"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-hard-question-soft-exit"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-long-question-compression",
+      "kind": "style",
+      "text": "长中文问题通常有多个条件和情绪。先压成主轴：对象是什么、用户要判断什么、限制条件是什么。回答只先给主判断和一个理由。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "长问题",
+        "很多条件",
+        "压缩",
+        "主轴",
+        "短回答"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-long-question-compression"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-repeat-question-rhythm",
+      "kind": "context",
+      "text": "同一会话里反复问完全相同的问题，不应每次重新检索或假装没发生。第一次重复可以轻提醒，继续重复要切换到对话管理：说明已经问过，引导换角度或换问题。这个判断只使用本地会话上下文，不跨会话保存。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "重复提问",
+        "同一句",
+        "恶意重复",
+        "对话节律",
+        "记得"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-repeat-question-rhythm"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-context-after-answer",
+      "kind": "context",
+      "text": "如果用户在回答后只是评价，比如“正常”“不对”“这不够聪明”，系统应把它当对话控制：简短承接、调整风格，然后引导用户给下一个问题或指出要改的部分。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "评价回答",
+        "接话",
+        "继续聊",
+        "引导提问",
+        "不是问题"
+      ],
+      "tone_hints": [
+        "zh_reasoning_profile",
+        "zh-context-after-answer"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-daily-axis-split",
+      "kind": "logic",
+      "text": "日常常识问题先不要急着答结论。中文问句经常把对象、标准和情绪合在一起，检索前要拆出判断轴：它在问事实是否成立、价值是否值得、审美是否站得住，还是方法是否可行。拆轴以后再选证据，能减少把无关知识卡误当答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "日常",
+        "常识",
+        "生活",
+        "经验",
+        "解释",
+        "判断轴",
+        "分类",
+        "对象",
+        "标准",
+        "边界",
+        "判断轴拆分",
+        "日常常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "axis-split",
+        "daily"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-daily-entity-action-effect",
+      "kind": "association",
+      "text": "日常常识问题如果出现多个名词，不应只抓最高频词。先找真正被提问的对象，再找它执行了什么动作，最后看这个动作改变了什么后果。这个顺序比简单关键词匹配更适合中文，因为中文常省略主语和连接词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "日常",
+        "常识",
+        "生活",
+        "经验",
+        "解释",
+        "对象",
+        "动作",
+        "后果",
+        "影响",
+        "连接",
+        "对象动作后果",
+        "日常常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "entity-action-effect",
+        "daily"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-daily-premise-result",
+      "kind": "logic",
+      "text": "日常常识问题里如果有“如果、是否、会不会、能不能”，要先分前提和结果。前提是回答能成立的条件，结果是用户要判断的部分。检索时前提卡和结果卡可以分开召回，最终回答只给用户一个压缩判断和一个边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "日常",
+        "常识",
+        "生活",
+        "经验",
+        "解释",
+        "前提",
+        "结果",
+        "成立条件",
+        "限制",
+        "反例",
+        "前提结果分离",
+        "日常常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "premise-result",
+        "daily"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-daily-causal-layering",
+      "kind": "logic",
+      "text": "日常常识类因果题要分触发原因、结构原因和维持原因。触发原因解释为什么现在发生，结构原因解释为什么容易发生，维持原因解释为什么持续存在。短答只讲最关键一层，但检索要保留三层，避免把热闹原因当根因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "日常",
+        "常识",
+        "生活",
+        "经验",
+        "解释",
+        "原因",
+        "机制",
+        "触发",
+        "结构",
+        "长期",
+        "因果分层",
+        "日常常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "causal-layering",
+        "daily"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-daily-answerability",
+      "kind": "judgment",
+      "text": "日常常识问题要先判断能不能回答。能回答时给短结论；证据不足时不要装成确定答案，而是说目前能判断到哪一层。可回答性不是拒答，而是把主张强度降到证据能支撑的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "日常",
+        "常识",
+        "生活",
+        "经验",
+        "解释",
+        "可回答性",
+        "证据不足",
+        "能否判断",
+        "不确定",
+        "主张强度",
+        "可回答性判断",
+        "日常常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "answerability",
+        "daily"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-daily-context-carry",
+      "kind": "context",
+      "text": "日常常识追问如果只说“这个、它、那为什么”，要继承上一轮对象，但不能继承上一轮所有解释。只保留对象、用户关注的判断轴和最近的回答结论，再重新检索补证据。这样可以保持连续性，也避免把旧领域污染新问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "日常",
+        "常识",
+        "生活",
+        "经验",
+        "解释",
+        "上下文",
+        "这个",
+        "它",
+        "承接",
+        "追问",
+        "上下文承接",
+        "日常常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "context-carry",
+        "daily"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-daily-feedback-repair",
+      "kind": "context",
+      "text": "日常常识对话中，用户说“太硬、太长、不对、继续”通常是在评价上一轮，而不是提出新知识题。系统应先修复回答形态：缩短、换角度、补对象或承认误命中。不要把评价句强行送进知识检索。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "日常",
+        "常识",
+        "生活",
+        "经验",
+        "解释",
+        "评价",
+        "不对",
+        "太长",
+        "换个说法",
+        "继续",
+        "评价修复",
+        "日常常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "feedback-repair",
+        "daily"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-daily-abstraction-grounding",
+      "kind": "judgment",
+      "text": "日常常识抽象问题容易回答得空。更好的方式是先给一句框架判断，再落到一个可观察的机制：谁改变了什么、代价在哪里、边界是什么。只有当问题过于宽泛时，才轻轻提示用户缩小对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "日常",
+        "常识",
+        "生活",
+        "经验",
+        "解释",
+        "抽象问题",
+        "落地",
+        "例子",
+        "边界",
+        "不要空泛",
+        "抽象落地",
+        "日常常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "abstraction-grounding",
+        "daily"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-science-axis-split",
+      "kind": "logic",
+      "text": "科学常识问题先不要急着答结论。中文问句经常把对象、标准和情绪合在一起，检索前要拆出判断轴：它在问事实是否成立、价值是否值得、审美是否站得住，还是方法是否可行。拆轴以后再选证据，能减少把无关知识卡误当答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "科学",
+        "自然",
+        "机制",
+        "验证",
+        "条件",
+        "判断轴",
+        "分类",
+        "对象",
+        "标准",
+        "边界",
+        "判断轴拆分",
+        "科学常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "axis-split",
+        "science"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-science-entity-action-effect",
+      "kind": "association",
+      "text": "科学常识问题如果出现多个名词，不应只抓最高频词。先找真正被提问的对象，再找它执行了什么动作，最后看这个动作改变了什么后果。这个顺序比简单关键词匹配更适合中文，因为中文常省略主语和连接词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "科学",
+        "自然",
+        "机制",
+        "验证",
+        "条件",
+        "对象",
+        "动作",
+        "后果",
+        "影响",
+        "连接",
+        "对象动作后果",
+        "科学常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "entity-action-effect",
+        "science"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-science-premise-result",
+      "kind": "logic",
+      "text": "科学常识问题里如果有“如果、是否、会不会、能不能”，要先分前提和结果。前提是回答能成立的条件，结果是用户要判断的部分。检索时前提卡和结果卡可以分开召回，最终回答只给用户一个压缩判断和一个边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "科学",
+        "自然",
+        "机制",
+        "验证",
+        "条件",
+        "前提",
+        "结果",
+        "成立条件",
+        "限制",
+        "反例",
+        "前提结果分离",
+        "科学常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "premise-result",
+        "science"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-science-causal-layering",
+      "kind": "logic",
+      "text": "科学常识类因果题要分触发原因、结构原因和维持原因。触发原因解释为什么现在发生，结构原因解释为什么容易发生，维持原因解释为什么持续存在。短答只讲最关键一层，但检索要保留三层，避免把热闹原因当根因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "科学",
+        "自然",
+        "机制",
+        "验证",
+        "条件",
+        "原因",
+        "机制",
+        "触发",
+        "结构",
+        "长期",
+        "因果分层",
+        "科学常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "causal-layering",
+        "science"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-science-answerability",
+      "kind": "judgment",
+      "text": "科学常识问题要先判断能不能回答。能回答时给短结论；证据不足时不要装成确定答案，而是说目前能判断到哪一层。可回答性不是拒答，而是把主张强度降到证据能支撑的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "科学",
+        "自然",
+        "机制",
+        "验证",
+        "条件",
+        "可回答性",
+        "证据不足",
+        "能否判断",
+        "不确定",
+        "主张强度",
+        "可回答性判断",
+        "科学常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "answerability",
+        "science"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-science-context-carry",
+      "kind": "context",
+      "text": "科学常识追问如果只说“这个、它、那为什么”，要继承上一轮对象，但不能继承上一轮所有解释。只保留对象、用户关注的判断轴和最近的回答结论，再重新检索补证据。这样可以保持连续性，也避免把旧领域污染新问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "科学",
+        "自然",
+        "机制",
+        "验证",
+        "条件",
+        "上下文",
+        "这个",
+        "它",
+        "承接",
+        "追问",
+        "上下文承接",
+        "科学常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "context-carry",
+        "science"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-science-feedback-repair",
+      "kind": "context",
+      "text": "科学常识对话中，用户说“太硬、太长、不对、继续”通常是在评价上一轮，而不是提出新知识题。系统应先修复回答形态：缩短、换角度、补对象或承认误命中。不要把评价句强行送进知识检索。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "科学",
+        "自然",
+        "机制",
+        "验证",
+        "条件",
+        "评价",
+        "不对",
+        "太长",
+        "换个说法",
+        "继续",
+        "评价修复",
+        "科学常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "feedback-repair",
+        "science"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-science-abstraction-grounding",
+      "kind": "judgment",
+      "text": "科学常识抽象问题容易回答得空。更好的方式是先给一句框架判断，再落到一个可观察的机制：谁改变了什么、代价在哪里、边界是什么。只有当问题过于宽泛时，才轻轻提示用户缩小对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "科学",
+        "自然",
+        "机制",
+        "验证",
+        "条件",
+        "抽象问题",
+        "落地",
+        "例子",
+        "边界",
+        "不要空泛",
+        "抽象落地",
+        "科学常识"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "abstraction-grounding",
+        "science"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-society-axis-split",
+      "kind": "logic",
+      "text": "社会现实问题先不要急着答结论。中文问句经常把对象、标准和情绪合在一起，检索前要拆出判断轴：它在问事实是否成立、价值是否值得、审美是否站得住，还是方法是否可行。拆轴以后再选证据，能减少把无关知识卡误当答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会",
+        "制度",
+        "激励",
+        "成本",
+        "群体",
+        "判断轴",
+        "分类",
+        "对象",
+        "标准",
+        "边界",
+        "判断轴拆分",
+        "社会现实"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "axis-split",
+        "society"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-society-entity-action-effect",
+      "kind": "association",
+      "text": "社会现实问题如果出现多个名词，不应只抓最高频词。先找真正被提问的对象，再找它执行了什么动作，最后看这个动作改变了什么后果。这个顺序比简单关键词匹配更适合中文，因为中文常省略主语和连接词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会",
+        "制度",
+        "激励",
+        "成本",
+        "群体",
+        "对象",
+        "动作",
+        "后果",
+        "影响",
+        "连接",
+        "对象动作后果",
+        "社会现实"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "entity-action-effect",
+        "society"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-society-premise-result",
+      "kind": "logic",
+      "text": "社会现实问题里如果有“如果、是否、会不会、能不能”，要先分前提和结果。前提是回答能成立的条件，结果是用户要判断的部分。检索时前提卡和结果卡可以分开召回，最终回答只给用户一个压缩判断和一个边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会",
+        "制度",
+        "激励",
+        "成本",
+        "群体",
+        "前提",
+        "结果",
+        "成立条件",
+        "限制",
+        "反例",
+        "前提结果分离",
+        "社会现实"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "premise-result",
+        "society"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-society-causal-layering",
+      "kind": "logic",
+      "text": "社会现实类因果题要分触发原因、结构原因和维持原因。触发原因解释为什么现在发生，结构原因解释为什么容易发生，维持原因解释为什么持续存在。短答只讲最关键一层，但检索要保留三层，避免把热闹原因当根因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会",
+        "制度",
+        "激励",
+        "成本",
+        "群体",
+        "原因",
+        "机制",
+        "触发",
+        "结构",
+        "长期",
+        "因果分层",
+        "社会现实"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "causal-layering",
+        "society"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-society-answerability",
+      "kind": "judgment",
+      "text": "社会现实问题要先判断能不能回答。能回答时给短结论；证据不足时不要装成确定答案，而是说目前能判断到哪一层。可回答性不是拒答，而是把主张强度降到证据能支撑的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会",
+        "制度",
+        "激励",
+        "成本",
+        "群体",
+        "可回答性",
+        "证据不足",
+        "能否判断",
+        "不确定",
+        "主张强度",
+        "可回答性判断",
+        "社会现实"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "answerability",
+        "society"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-society-context-carry",
+      "kind": "context",
+      "text": "社会现实追问如果只说“这个、它、那为什么”，要继承上一轮对象，但不能继承上一轮所有解释。只保留对象、用户关注的判断轴和最近的回答结论，再重新检索补证据。这样可以保持连续性，也避免把旧领域污染新问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会",
+        "制度",
+        "激励",
+        "成本",
+        "群体",
+        "上下文",
+        "这个",
+        "它",
+        "承接",
+        "追问",
+        "上下文承接",
+        "社会现实"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "context-carry",
+        "society"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-society-feedback-repair",
+      "kind": "context",
+      "text": "社会现实对话中，用户说“太硬、太长、不对、继续”通常是在评价上一轮，而不是提出新知识题。系统应先修复回答形态：缩短、换角度、补对象或承认误命中。不要把评价句强行送进知识检索。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会",
+        "制度",
+        "激励",
+        "成本",
+        "群体",
+        "评价",
+        "不对",
+        "太长",
+        "换个说法",
+        "继续",
+        "评价修复",
+        "社会现实"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "feedback-repair",
+        "society"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-society-abstraction-grounding",
+      "kind": "judgment",
+      "text": "社会现实抽象问题容易回答得空。更好的方式是先给一句框架判断，再落到一个可观察的机制：谁改变了什么、代价在哪里、边界是什么。只有当问题过于宽泛时，才轻轻提示用户缩小对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "社会",
+        "制度",
+        "激励",
+        "成本",
+        "群体",
+        "抽象问题",
+        "落地",
+        "例子",
+        "边界",
+        "不要空泛",
+        "抽象落地",
+        "社会现实"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "abstraction-grounding",
+        "society"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-axis-split",
+      "kind": "logic",
+      "text": "技术产品问题先不要急着答结论。中文问句经常把对象、标准和情绪合在一起，检索前要拆出判断轴：它在问事实是否成立、价值是否值得、审美是否站得住，还是方法是否可行。拆轴以后再选证据，能减少把无关知识卡误当答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术",
+        "产品",
+        "系统",
+        "生态",
+        "采用",
+        "判断轴",
+        "分类",
+        "对象",
+        "标准",
+        "边界",
+        "判断轴拆分",
+        "技术产品"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "axis-split",
+        "technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-entity-action-effect",
+      "kind": "association",
+      "text": "技术产品问题如果出现多个名词，不应只抓最高频词。先找真正被提问的对象，再找它执行了什么动作，最后看这个动作改变了什么后果。这个顺序比简单关键词匹配更适合中文，因为中文常省略主语和连接词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术",
+        "产品",
+        "系统",
+        "生态",
+        "采用",
+        "对象",
+        "动作",
+        "后果",
+        "影响",
+        "连接",
+        "对象动作后果",
+        "技术产品"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "entity-action-effect",
+        "technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-premise-result",
+      "kind": "logic",
+      "text": "技术产品问题里如果有“如果、是否、会不会、能不能”，要先分前提和结果。前提是回答能成立的条件，结果是用户要判断的部分。检索时前提卡和结果卡可以分开召回，最终回答只给用户一个压缩判断和一个边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术",
+        "产品",
+        "系统",
+        "生态",
+        "采用",
+        "前提",
+        "结果",
+        "成立条件",
+        "限制",
+        "反例",
+        "前提结果分离",
+        "技术产品"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "premise-result",
+        "technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-causal-layering",
+      "kind": "logic",
+      "text": "技术产品类因果题要分触发原因、结构原因和维持原因。触发原因解释为什么现在发生，结构原因解释为什么容易发生，维持原因解释为什么持续存在。短答只讲最关键一层，但检索要保留三层，避免把热闹原因当根因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术",
+        "产品",
+        "系统",
+        "生态",
+        "采用",
+        "原因",
+        "机制",
+        "触发",
+        "结构",
+        "长期",
+        "因果分层",
+        "技术产品"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "causal-layering",
+        "technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-answerability",
+      "kind": "judgment",
+      "text": "技术产品问题要先判断能不能回答。能回答时给短结论；证据不足时不要装成确定答案，而是说目前能判断到哪一层。可回答性不是拒答，而是把主张强度降到证据能支撑的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术",
+        "产品",
+        "系统",
+        "生态",
+        "采用",
+        "可回答性",
+        "证据不足",
+        "能否判断",
+        "不确定",
+        "主张强度",
+        "可回答性判断",
+        "技术产品"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "answerability",
+        "technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-context-carry",
+      "kind": "context",
+      "text": "技术产品追问如果只说“这个、它、那为什么”，要继承上一轮对象，但不能继承上一轮所有解释。只保留对象、用户关注的判断轴和最近的回答结论，再重新检索补证据。这样可以保持连续性，也避免把旧领域污染新问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术",
+        "产品",
+        "系统",
+        "生态",
+        "采用",
+        "上下文",
+        "这个",
+        "它",
+        "承接",
+        "追问",
+        "上下文承接",
+        "技术产品"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "context-carry",
+        "technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-feedback-repair",
+      "kind": "context",
+      "text": "技术产品对话中，用户说“太硬、太长、不对、继续”通常是在评价上一轮，而不是提出新知识题。系统应先修复回答形态：缩短、换角度、补对象或承认误命中。不要把评价句强行送进知识检索。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术",
+        "产品",
+        "系统",
+        "生态",
+        "采用",
+        "评价",
+        "不对",
+        "太长",
+        "换个说法",
+        "继续",
+        "评价修复",
+        "技术产品"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "feedback-repair",
+        "technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-technology-abstraction-grounding",
+      "kind": "judgment",
+      "text": "技术产品抽象问题容易回答得空。更好的方式是先给一句框架判断，再落到一个可观察的机制：谁改变了什么、代价在哪里、边界是什么。只有当问题过于宽泛时，才轻轻提示用户缩小对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "技术",
+        "产品",
+        "系统",
+        "生态",
+        "采用",
+        "抽象问题",
+        "落地",
+        "例子",
+        "边界",
+        "不要空泛",
+        "抽象落地",
+        "技术产品"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "abstraction-grounding",
+        "technology"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-history-axis-split",
+      "kind": "logic",
+      "text": "历史变化问题先不要急着答结论。中文问句经常把对象、标准和情绪合在一起，检索前要拆出判断轴：它在问事实是否成立、价值是否值得、审美是否站得住，还是方法是否可行。拆轴以后再选证据，能减少把无关知识卡误当答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "历史",
+        "时期",
+        "事件",
+        "长期",
+        "结构",
+        "判断轴",
+        "分类",
+        "对象",
+        "标准",
+        "边界",
+        "判断轴拆分",
+        "历史变化"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "axis-split",
+        "history"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-history-entity-action-effect",
+      "kind": "association",
+      "text": "历史变化问题如果出现多个名词，不应只抓最高频词。先找真正被提问的对象，再找它执行了什么动作，最后看这个动作改变了什么后果。这个顺序比简单关键词匹配更适合中文，因为中文常省略主语和连接词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "历史",
+        "时期",
+        "事件",
+        "长期",
+        "结构",
+        "对象",
+        "动作",
+        "后果",
+        "影响",
+        "连接",
+        "对象动作后果",
+        "历史变化"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "entity-action-effect",
+        "history"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-history-premise-result",
+      "kind": "logic",
+      "text": "历史变化问题里如果有“如果、是否、会不会、能不能”，要先分前提和结果。前提是回答能成立的条件，结果是用户要判断的部分。检索时前提卡和结果卡可以分开召回，最终回答只给用户一个压缩判断和一个边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "历史",
+        "时期",
+        "事件",
+        "长期",
+        "结构",
+        "前提",
+        "结果",
+        "成立条件",
+        "限制",
+        "反例",
+        "前提结果分离",
+        "历史变化"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "premise-result",
+        "history"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-history-causal-layering",
+      "kind": "logic",
+      "text": "历史变化类因果题要分触发原因、结构原因和维持原因。触发原因解释为什么现在发生，结构原因解释为什么容易发生，维持原因解释为什么持续存在。短答只讲最关键一层，但检索要保留三层，避免把热闹原因当根因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "历史",
+        "时期",
+        "事件",
+        "长期",
+        "结构",
+        "原因",
+        "机制",
+        "触发",
+        "结构",
+        "长期",
+        "因果分层",
+        "历史变化"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "causal-layering",
+        "history"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-history-answerability",
+      "kind": "judgment",
+      "text": "历史变化问题要先判断能不能回答。能回答时给短结论；证据不足时不要装成确定答案，而是说目前能判断到哪一层。可回答性不是拒答，而是把主张强度降到证据能支撑的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "历史",
+        "时期",
+        "事件",
+        "长期",
+        "结构",
+        "可回答性",
+        "证据不足",
+        "能否判断",
+        "不确定",
+        "主张强度",
+        "可回答性判断",
+        "历史变化"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "answerability",
+        "history"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-history-context-carry",
+      "kind": "context",
+      "text": "历史变化追问如果只说“这个、它、那为什么”，要继承上一轮对象，但不能继承上一轮所有解释。只保留对象、用户关注的判断轴和最近的回答结论，再重新检索补证据。这样可以保持连续性，也避免把旧领域污染新问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "历史",
+        "时期",
+        "事件",
+        "长期",
+        "结构",
+        "上下文",
+        "这个",
+        "它",
+        "承接",
+        "追问",
+        "上下文承接",
+        "历史变化"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "context-carry",
+        "history"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-history-feedback-repair",
+      "kind": "context",
+      "text": "历史变化对话中，用户说“太硬、太长、不对、继续”通常是在评价上一轮，而不是提出新知识题。系统应先修复回答形态：缩短、换角度、补对象或承认误命中。不要把评价句强行送进知识检索。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "历史",
+        "时期",
+        "事件",
+        "长期",
+        "结构",
+        "评价",
+        "不对",
+        "太长",
+        "换个说法",
+        "继续",
+        "评价修复",
+        "历史变化"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "feedback-repair",
+        "history"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-history-abstraction-grounding",
+      "kind": "judgment",
+      "text": "历史变化抽象问题容易回答得空。更好的方式是先给一句框架判断，再落到一个可观察的机制：谁改变了什么、代价在哪里、边界是什么。只有当问题过于宽泛时，才轻轻提示用户缩小对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "历史",
+        "时期",
+        "事件",
+        "长期",
+        "结构",
+        "抽象问题",
+        "落地",
+        "例子",
+        "边界",
+        "不要空泛",
+        "抽象落地",
+        "历史变化"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "abstraction-grounding",
+        "history"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-axis-split",
+      "kind": "logic",
+      "text": "审美设计问题先不要急着答结论。中文问句经常把对象、标准和情绪合在一起，检索前要拆出判断轴：它在问事实是否成立、价值是否值得、审美是否站得住，还是方法是否可行。拆轴以后再选证据，能减少把无关知识卡误当答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "设计",
+        "风格",
+        "比例",
+        "语境",
+        "判断轴",
+        "分类",
+        "对象",
+        "标准",
+        "边界",
+        "判断轴拆分",
+        "审美设计"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "axis-split",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-entity-action-effect",
+      "kind": "association",
+      "text": "审美设计问题如果出现多个名词，不应只抓最高频词。先找真正被提问的对象，再找它执行了什么动作，最后看这个动作改变了什么后果。这个顺序比简单关键词匹配更适合中文，因为中文常省略主语和连接词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "设计",
+        "风格",
+        "比例",
+        "语境",
+        "对象",
+        "动作",
+        "后果",
+        "影响",
+        "连接",
+        "对象动作后果",
+        "审美设计"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "entity-action-effect",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-premise-result",
+      "kind": "logic",
+      "text": "审美设计问题里如果有“如果、是否、会不会、能不能”，要先分前提和结果。前提是回答能成立的条件，结果是用户要判断的部分。检索时前提卡和结果卡可以分开召回，最终回答只给用户一个压缩判断和一个边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "设计",
+        "风格",
+        "比例",
+        "语境",
+        "前提",
+        "结果",
+        "成立条件",
+        "限制",
+        "反例",
+        "前提结果分离",
+        "审美设计"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "premise-result",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-causal-layering",
+      "kind": "logic",
+      "text": "审美设计类因果题要分触发原因、结构原因和维持原因。触发原因解释为什么现在发生，结构原因解释为什么容易发生，维持原因解释为什么持续存在。短答只讲最关键一层，但检索要保留三层，避免把热闹原因当根因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "设计",
+        "风格",
+        "比例",
+        "语境",
+        "原因",
+        "机制",
+        "触发",
+        "结构",
+        "长期",
+        "因果分层",
+        "审美设计"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "causal-layering",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-answerability",
+      "kind": "judgment",
+      "text": "审美设计问题要先判断能不能回答。能回答时给短结论；证据不足时不要装成确定答案，而是说目前能判断到哪一层。可回答性不是拒答，而是把主张强度降到证据能支撑的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "设计",
+        "风格",
+        "比例",
+        "语境",
+        "可回答性",
+        "证据不足",
+        "能否判断",
+        "不确定",
+        "主张强度",
+        "可回答性判断",
+        "审美设计"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "answerability",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-context-carry",
+      "kind": "context",
+      "text": "审美设计追问如果只说“这个、它、那为什么”，要继承上一轮对象，但不能继承上一轮所有解释。只保留对象、用户关注的判断轴和最近的回答结论，再重新检索补证据。这样可以保持连续性，也避免把旧领域污染新问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "设计",
+        "风格",
+        "比例",
+        "语境",
+        "上下文",
+        "这个",
+        "它",
+        "承接",
+        "追问",
+        "上下文承接",
+        "审美设计"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "context-carry",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-feedback-repair",
+      "kind": "context",
+      "text": "审美设计对话中，用户说“太硬、太长、不对、继续”通常是在评价上一轮，而不是提出新知识题。系统应先修复回答形态：缩短、换角度、补对象或承认误命中。不要把评价句强行送进知识检索。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "设计",
+        "风格",
+        "比例",
+        "语境",
+        "评价",
+        "不对",
+        "太长",
+        "换个说法",
+        "继续",
+        "评价修复",
+        "审美设计"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "feedback-repair",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-aesthetic-abstraction-grounding",
+      "kind": "judgment",
+      "text": "审美设计抽象问题容易回答得空。更好的方式是先给一句框架判断，再落到一个可观察的机制：谁改变了什么、代价在哪里、边界是什么。只有当问题过于宽泛时，才轻轻提示用户缩小对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "审美",
+        "设计",
+        "风格",
+        "比例",
+        "语境",
+        "抽象问题",
+        "落地",
+        "例子",
+        "边界",
+        "不要空泛",
+        "抽象落地",
+        "审美设计"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "abstraction-grounding",
+        "aesthetic"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-relationship-axis-split",
+      "kind": "logic",
+      "text": "关系沟通问题先不要急着答结论。中文问句经常把对象、标准和情绪合在一起，检索前要拆出判断轴：它在问事实是否成立、价值是否值得、审美是否站得住，还是方法是否可行。拆轴以后再选证据，能减少把无关知识卡误当答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "表达",
+        "责任",
+        "判断轴",
+        "分类",
+        "对象",
+        "标准",
+        "边界",
+        "判断轴拆分",
+        "关系沟通"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "axis-split",
+        "relationship"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-relationship-entity-action-effect",
+      "kind": "association",
+      "text": "关系沟通问题如果出现多个名词，不应只抓最高频词。先找真正被提问的对象，再找它执行了什么动作，最后看这个动作改变了什么后果。这个顺序比简单关键词匹配更适合中文，因为中文常省略主语和连接词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "表达",
+        "责任",
+        "对象",
+        "动作",
+        "后果",
+        "影响",
+        "连接",
+        "对象动作后果",
+        "关系沟通"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "entity-action-effect",
+        "relationship"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-relationship-premise-result",
+      "kind": "logic",
+      "text": "关系沟通问题里如果有“如果、是否、会不会、能不能”，要先分前提和结果。前提是回答能成立的条件，结果是用户要判断的部分。检索时前提卡和结果卡可以分开召回，最终回答只给用户一个压缩判断和一个边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "表达",
+        "责任",
+        "前提",
+        "结果",
+        "成立条件",
+        "限制",
+        "反例",
+        "前提结果分离",
+        "关系沟通"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "premise-result",
+        "relationship"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-relationship-causal-layering",
+      "kind": "logic",
+      "text": "关系沟通类因果题要分触发原因、结构原因和维持原因。触发原因解释为什么现在发生，结构原因解释为什么容易发生，维持原因解释为什么持续存在。短答只讲最关键一层，但检索要保留三层，避免把热闹原因当根因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "表达",
+        "责任",
+        "原因",
+        "机制",
+        "触发",
+        "结构",
+        "长期",
+        "因果分层",
+        "关系沟通"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "causal-layering",
+        "relationship"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-relationship-answerability",
+      "kind": "judgment",
+      "text": "关系沟通问题要先判断能不能回答。能回答时给短结论；证据不足时不要装成确定答案，而是说目前能判断到哪一层。可回答性不是拒答，而是把主张强度降到证据能支撑的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "表达",
+        "责任",
+        "可回答性",
+        "证据不足",
+        "能否判断",
+        "不确定",
+        "主张强度",
+        "可回答性判断",
+        "关系沟通"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "answerability",
+        "relationship"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-relationship-context-carry",
+      "kind": "context",
+      "text": "关系沟通追问如果只说“这个、它、那为什么”，要继承上一轮对象，但不能继承上一轮所有解释。只保留对象、用户关注的判断轴和最近的回答结论，再重新检索补证据。这样可以保持连续性，也避免把旧领域污染新问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "表达",
+        "责任",
+        "上下文",
+        "这个",
+        "它",
+        "承接",
+        "追问",
+        "上下文承接",
+        "关系沟通"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "context-carry",
+        "relationship"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-relationship-feedback-repair",
+      "kind": "context",
+      "text": "关系沟通对话中，用户说“太硬、太长、不对、继续”通常是在评价上一轮，而不是提出新知识题。系统应先修复回答形态：缩短、换角度、补对象或承认误命中。不要把评价句强行送进知识检索。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "表达",
+        "责任",
+        "评价",
+        "不对",
+        "太长",
+        "换个说法",
+        "继续",
+        "评价修复",
+        "关系沟通"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "feedback-repair",
+        "relationship"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-relationship-abstraction-grounding",
+      "kind": "judgment",
+      "text": "关系沟通抽象问题容易回答得空。更好的方式是先给一句框架判断，再落到一个可观察的机制：谁改变了什么、代价在哪里、边界是什么。只有当问题过于宽泛时，才轻轻提示用户缩小对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "关系",
+        "信任",
+        "边界",
+        "表达",
+        "责任",
+        "抽象问题",
+        "落地",
+        "例子",
+        "边界",
+        "不要空泛",
+        "抽象落地",
+        "关系沟通"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "abstraction-grounding",
+        "relationship"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-axis-split",
+      "kind": "logic",
+      "text": "语言概念问题先不要急着答结论。中文问句经常把对象、标准和情绪合在一起，检索前要拆出判断轴：它在问事实是否成立、价值是否值得、审美是否站得住，还是方法是否可行。拆轴以后再选证据，能减少把无关知识卡误当答案。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "概念",
+        "语境",
+        "意义",
+        "误解",
+        "判断轴",
+        "分类",
+        "对象",
+        "标准",
+        "边界",
+        "判断轴拆分",
+        "语言概念"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "axis-split",
+        "language"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-entity-action-effect",
+      "kind": "association",
+      "text": "语言概念问题如果出现多个名词，不应只抓最高频词。先找真正被提问的对象，再找它执行了什么动作，最后看这个动作改变了什么后果。这个顺序比简单关键词匹配更适合中文，因为中文常省略主语和连接词。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "概念",
+        "语境",
+        "意义",
+        "误解",
+        "对象",
+        "动作",
+        "后果",
+        "影响",
+        "连接",
+        "对象动作后果",
+        "语言概念"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "entity-action-effect",
+        "language"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-premise-result",
+      "kind": "logic",
+      "text": "语言概念问题里如果有“如果、是否、会不会、能不能”，要先分前提和结果。前提是回答能成立的条件，结果是用户要判断的部分。检索时前提卡和结果卡可以分开召回，最终回答只给用户一个压缩判断和一个边界。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "概念",
+        "语境",
+        "意义",
+        "误解",
+        "前提",
+        "结果",
+        "成立条件",
+        "限制",
+        "反例",
+        "前提结果分离",
+        "语言概念"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "premise-result",
+        "language"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-causal-layering",
+      "kind": "logic",
+      "text": "语言概念类因果题要分触发原因、结构原因和维持原因。触发原因解释为什么现在发生，结构原因解释为什么容易发生，维持原因解释为什么持续存在。短答只讲最关键一层，但检索要保留三层，避免把热闹原因当根因。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "概念",
+        "语境",
+        "意义",
+        "误解",
+        "原因",
+        "机制",
+        "触发",
+        "结构",
+        "长期",
+        "因果分层",
+        "语言概念"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "causal-layering",
+        "language"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-answerability",
+      "kind": "judgment",
+      "text": "语言概念问题要先判断能不能回答。能回答时给短结论；证据不足时不要装成确定答案，而是说目前能判断到哪一层。可回答性不是拒答，而是把主张强度降到证据能支撑的位置。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "概念",
+        "语境",
+        "意义",
+        "误解",
+        "可回答性",
+        "证据不足",
+        "能否判断",
+        "不确定",
+        "主张强度",
+        "可回答性判断",
+        "语言概念"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "answerability",
+        "language"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-context-carry",
+      "kind": "context",
+      "text": "语言概念追问如果只说“这个、它、那为什么”，要继承上一轮对象，但不能继承上一轮所有解释。只保留对象、用户关注的判断轴和最近的回答结论，再重新检索补证据。这样可以保持连续性，也避免把旧领域污染新问题。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "概念",
+        "语境",
+        "意义",
+        "误解",
+        "上下文",
+        "这个",
+        "它",
+        "承接",
+        "追问",
+        "上下文承接",
+        "语言概念"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "context-carry",
+        "language"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-feedback-repair",
+      "kind": "context",
+      "text": "语言概念对话中，用户说“太硬、太长、不对、继续”通常是在评价上一轮，而不是提出新知识题。系统应先修复回答形态：缩短、换角度、补对象或承认误命中。不要把评价句强行送进知识检索。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "概念",
+        "语境",
+        "意义",
+        "误解",
+        "评价",
+        "不对",
+        "太长",
+        "换个说法",
+        "继续",
+        "评价修复",
+        "语言概念"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "feedback-repair",
+        "language"
+      ]
+    },
+    {
+      "id": "r28postmerge15-zh-language-abstraction-grounding",
+      "kind": "judgment",
+      "text": "语言概念抽象问题容易回答得空。更好的方式是先给一句框架判断，再落到一个可观察的机制：谁改变了什么、代价在哪里、边界是什么。只有当问题过于宽泛时，才轻轻提示用户缩小对象。",
+      "provenance": "approved_anchor_summary",
+      "allowed_for_training": false,
+      "private_raw_data": false,
+      "review_status": "approved_for_runtime",
+      "keywords": [
+        "语言",
+        "概念",
+        "语境",
+        "意义",
+        "误解",
+        "抽象问题",
+        "落地",
+        "例子",
+        "边界",
+        "不要空泛",
+        "抽象落地",
+        "语言概念"
+      ],
+      "tone_hints": [
+        "zh_generalization_profile",
+        "abstraction-grounding",
+        "language"
+      ]
     }
   ]
 }

@@ -225,6 +225,11 @@ test("chat supports enter-to-send and local session context without exposing eng
   assert.ok(app.includes("contextualizeUserInput"));
   assert.ok(app.includes("compactConversationContext"));
   assert.ok(app.includes("rememberConversationTurn"));
+  assert.ok(app.includes("repeatedUserQuestionState"));
+  assert.ok(app.includes("repeatedQuestionReply"));
+  assert.ok(app.includes("你已经问过了"));
+  assert.ok(app.includes("别以为我记不住哦"));
+  assert.ok(app.includes("没有的话我就去睡觉咯"));
   assert.ok(app.includes("isEvaluationTurn"));
   assert.ok(app.includes("evaluationTurnReply"));
   assert.ok(app.includes("isConceptualTimeParadox"));
@@ -296,9 +301,9 @@ test("static RAG expands safe commonsense philosophy and aesthetic logic without
   assert.ok(brandLiteracyPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("OpenAI")));
   assert.ok(worldPack.cards.length >= 100);
   assert.ok(Buffer.byteLength(worldRaw) >= 64000);
-  assert.ok(reasoningPack.cards.length >= 100);
-  assert.ok(Buffer.byteLength(reasoningRaw) >= 100000);
-  for (const marker of ["反事实", "比较", "类比", "定义", "上下文追问", "评价输入", "RAG Fusion", "HyDE", "漂移", "领域优先"]) {
+  assert.ok(reasoningPack.cards.length >= 190);
+  assert.ok(Buffer.byteLength(reasoningRaw) >= 170000);
+  for (const marker of ["反事实", "比较", "类比", "定义", "上下文追问", "评价输入", "重复提问", "RAG Fusion", "HyDE", "漂移", "领域优先", "范畴错误", "可行性", "程度判断", "证据阈值", "中文判断"]) {
     assert.ok(reasoningPack.cards.some((card) => card.keywords.includes(marker) || card.text.includes(marker)), marker);
   }
   assert.ok(worldPack.cards.some((card) => card.kind === "brand_literacy" && card.keywords.includes("BMW")));
@@ -608,6 +613,119 @@ test("query profile generalizes beyond named examples into counterfactual compar
   assert.equal(definition.query_profile.reasoning_mode, "define_boundary");
   assert.equal(definition.association_profile.association_mode, "definition_boundary");
   assert.equal(definition.retrieved_evidence[0].source_id, "reasoning-definition");
+});
+
+test("Chinese-first query profile keeps structure lanes separate for reasoning retrieval", () => {
+  const records = [
+    {
+      source_id: "zh-category",
+      title: "R28 chinese structure card",
+      text: "范畴错误问题要检查对象、尺度和判断轴，不把不同标准直接互换。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["范畴错误", "偷换概念", "判断轴"],
+      metadata: { r28rag3_profile_card: true, card_kind: "logic" }
+    },
+    {
+      source_id: "zh-feasible",
+      title: "R28 chinese structure card",
+      text: "可行性问题要分理论可行、现实可行、成本、约束和风险。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["可行性", "现实可行", "成本"],
+      metadata: { r28rag3_profile_card: true, card_kind: "judgment" }
+    },
+    {
+      source_id: "zh-degree",
+      title: "R28 chinese structure card",
+      text: "程度判断要看范围、阈值、边界条件和失效点。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["程度判断", "阈值", "范围"],
+      metadata: { r28rag3_profile_card: true, card_kind: "judgment" }
+    },
+    {
+      source_id: "zh-method",
+      title: "R28 chinese structure card",
+      text: "方法问题要先定目标、约束、步骤和验收标准。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["方法", "步骤", "验收标准"],
+      metadata: { r28rag3_profile_card: true, card_kind: "logic" }
+    },
+    {
+      source_id: "zh-proof",
+      title: "R28 chinese structure card",
+      text: "证据阈值问题要分主张强度、证明方式和可信度。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["证据阈值", "证明", "可信度"],
+      metadata: { r28rag3_profile_card: true, card_kind: "boundary" }
+    },
+    {
+      source_id: "zh-objection",
+      title: "R28 chinese structure card",
+      text: "反驳型输入要先看反对的是事实、标准还是结论，再修正判断。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["反驳", "不一定", "修正"],
+      metadata: { r28rag3_profile_card: true, card_kind: "judgment" }
+    },
+    {
+      source_id: "zh-feedback",
+      title: "R28 chinese structure card",
+      text: "评价输入不是新问题，应先接住反馈，再引导用户继续提问。",
+      trust_level: "high",
+      can_answer: true,
+      keywords: ["评价", "反馈", "换个说法"],
+      metadata: { r28rag3_profile_card: true, card_kind: "context" }
+    }
+  ];
+
+  const category = buildEvidencePacket("这是不是偷换概念？", {}, records);
+  assert.equal(category.query_profile.question_shape, "category_error");
+  assert.equal(category.query_profile.reasoning_mode, "category_axis_check");
+  assert.equal(category.query_profile.retrieval_lane, "category_error");
+  assert.equal(category.judgment_profile.judgment_mode, "category_axis_check");
+  assert.equal(category.association_profile.association_mode, "category_axis_check");
+  assert.equal(category.retrieved_evidence[0].source_id, "zh-category");
+
+  const feasible = buildEvidencePacket("这个方案现实中可不可以做？", {}, records);
+  assert.equal(feasible.query_profile.question_shape, "feasibility");
+  assert.equal(feasible.query_profile.reasoning_mode, "feasibility_split");
+  assert.equal(feasible.query_profile.retrieval_lane, "feasibility");
+  assert.equal(feasible.judgment_profile.judgment_mode, "feasibility_split");
+  assert.equal(feasible.retrieved_evidence[0].source_id, "zh-feasible");
+
+  const degree = buildEvidencePacket("自由到底有多重要？", {}, records);
+  assert.equal(degree.query_profile.question_shape, "degree");
+  assert.equal(degree.query_profile.reasoning_mode, "degree_boundary");
+  assert.equal(degree.query_profile.retrieval_lane, "degree");
+  assert.equal(degree.retrieved_evidence[0].source_id, "zh-degree");
+
+  const method = buildEvidencePacket("如果我要做一个本地检索层，应该怎么做？", {}, records);
+  assert.equal(method.query_profile.question_shape, "method");
+  assert.equal(method.query_profile.reasoning_mode, "method_path");
+  assert.equal(method.query_profile.retrieval_lane, "method");
+  assert.equal(method.retrieved_evidence[0].source_id, "zh-method");
+
+  const proof = buildEvidencePacket("这个判断凭什么成立？", {}, records);
+  assert.equal(proof.query_profile.question_shape, "proof_request");
+  assert.equal(proof.query_profile.reasoning_mode, "evidence_threshold");
+  assert.equal(proof.query_profile.retrieval_lane, "proof");
+  assert.equal(proof.retrieved_evidence[0].source_id, "zh-proof");
+
+  const objection = buildEvidencePacket("可是我觉得这不一定对", {}, records);
+  assert.equal(objection.query_profile.question_shape, "objection");
+  assert.equal(objection.query_profile.reasoning_mode, "objection_reframe");
+  assert.equal(objection.query_profile.retrieval_lane, "objection");
+  assert.equal(objection.retrieved_evidence[0].source_id, "zh-objection");
+
+  const feedback = buildEvidencePacket("太长了，换短一点", {}, records);
+  assert.equal(feedback.query_profile.question_shape, "feedback");
+  assert.equal(feedback.query_profile.reasoning_mode, "style_adjustment");
+  assert.equal(feedback.query_profile.retrieval_lane, "evaluation");
+  assert.equal(feedback.retrieved_evidence[0].source_id, "zh-feedback");
 });
 
 test("natural-world open questions do not collapse into abstract value fallback when q4 is not admitted", async () => {

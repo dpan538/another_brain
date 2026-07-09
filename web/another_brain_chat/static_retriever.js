@@ -43,8 +43,14 @@ const QUERY_EXPANSION_RULES = Object.freeze([
   { match: /区别|差别|相比|哪个更|优劣|取舍|更好|更坏/i, terms: ["比较", "比较轴", "标准", "优劣", "取舍", "条件"] },
   { match: /像不像|类似|类比|相当于|同构|映射/i, terms: ["类比", "映射", "对象", "机制", "尺度", "边界"] },
   { match: /是什么|定义|算不算|边界|概念|命名/i, terms: ["定义", "概念边界", "相邻概念", "工作定义", "判断"] },
+  { match: /偷换概念|范畴错误|不是一类|混为一谈|概念错位/i, terms: ["范畴错误", "概念错位", "判断轴", "边界", "标准"] },
+  { match: /可不可以|能不能|有没有可能|现实吗|可行|不可行/i, terms: ["可行性", "理论可行", "现实可行", "成本", "约束"] },
+  { match: /多大程度|有多|越.*越|程度|范围|阈值/i, terms: ["程度判断", "范围", "阈值", "边界条件", "失效点"] },
+  { match: /怎么做|如何实现|步骤|方法|流程|路径/i, terms: ["方法", "步骤", "目标", "约束", "验收标准"] },
+  { match: /凭什么|怎么证明|证据够不够|有没有依据|可信度|证据阈值/i, terms: ["证据阈值", "证明", "依据", "主张强度", "可信度"] },
   { match: /既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论|框架/i, terms: ["时间", "非二分", "概念框架", "模型", "线性", "非线性", "层面", "判断"] },
   { match: /不对|太长|太短|不准确|不是这个意思|没听懂|听不懂|僵硬|公式化|不错|很好|继续|换个说法|再简单/i, terms: ["评价", "反馈", "改写", "继续", "上下文", "对话控制"] },
+  { match: /可是|但是|难道不是|反而|我不同意|不一定/i, terms: ["反驳", "异议", "修正", "判断层", "边界"] },
   { match: /自由|公平|正义|责任|伦理|应该|不应该|值得|不值得/i, terms: ["价值判断", "理由", "代价", "一致性", "边界", "责任"] },
   { match: /语言|词语|文字|表达|语境|翻译|误解|意思/i, terms: ["语言", "意义", "语境", "表达", "误解", "关系"] },
   { match: /算法|推荐|信息茧房|平台/i, terms: ["算法", "推荐系统", "激励", "分发", "注意力"] },
@@ -54,6 +60,12 @@ const QUERY_EXPANSION_RULES = Object.freeze([
 const QUESTION_CUE_RE = /[?？]|为什么|为何|怎么|如何|什么|谁|哪里|哪|是否|是不是|能不能|有没有|会不会|应不应该|值不值得|意义|原因|机制|怎么看|如何看待|你觉得|你认为/;
 const FOLLOWUP_CUE_RE = /\[local session context:|刚才|前面|上面|这个|它|这类|这种|继续|那|刚刚|上一/;
 const EVALUATION_CUE_RE = /不对|不准确|不是这个意思|太长|太短|太硬|太僵硬|公式化|没听懂|听不懂|很好|不错|可以|继续|换个说法|再简单|更具体|更短|更自然|更聪明/;
+const CATEGORY_ERROR_RE = /偷换概念|范畴错误|不是一类|混为一谈|概念错位|判断轴不一样/;
+const FEASIBILITY_RE = /可不可以|能不能|有没有可能|现实吗|可行|不可行|做得到|能做到/;
+const DEGREE_RE = /多大程度|有多|越.*越|程度|范围|阈值|边界条件|失效点/;
+const METHOD_RE = /怎么做|如何实现|步骤|方法|流程|路径|怎么落地|如何构建/;
+const PROOF_RE = /凭什么|怎么证明|证据够不够|有没有依据|可信度|证据阈值|如何验证|怎么验证/;
+const OBJECTION_RE = /可是|但是|难道不是|反而|我不同意|不一定|这不对|不是这样/;
 const TIME_DOMAIN_RE = /时间|线性|非线性|钟表|记忆|叙事|因果顺序|过去|未来|现在|永恒|循环|非二分|悖论/;
 const INFRA_DOMAIN_RE = /铁路|火车|高铁|轨道|交通|物流|通勤|标准时间|城市|基础设施|港口|电网|水网|公路|机场/;
 const JUDGMENT_DOMAIN_RE = /对错|真假|真伪|标准|判断|事实|价值|审美|证据|成立|可证伪|定义|边界|反例/;
@@ -64,6 +76,32 @@ const NATURAL_DOMAIN_RE = /自然|太阳|月亮|天气|气候|植物|重力|引�
 const LANGUAGE_DOMAIN_RE = /语言|词语|文字|表达|语境|翻译|误解|意思|叙述/;
 const COMPLEX_CUE_RE = /既不是|也不是|无法定义|无限|绝对|本体|悖论|所有|永远|终极|不可判定|非二分/;
 const CJK_STOP_TERMS = new Set(["这个", "那个", "一种", "这种", "问题", "为什么", "怎么", "如何", "觉得", "认为", "是否", "是不是", "有没有", "什么"]);
+const STRUCTURE_MARKERS = Object.freeze({
+  counterfactual: /反事实|如果|假如|条件改变|替代路径/,
+  comparison: /比较|差别|区别|哪个更|比较轴|取舍/,
+  analogy: /类比|映射|像不像|同构|相当于/,
+  definition: /定义|边界|算不算|概念|工作定义/,
+  category_error: /范畴错误|偷换概念|概念错位|判断轴|不是一类/,
+  feasibility: /可行性|理论可行|现实可行|可不可以|能不能/,
+  degree: /程度|范围|阈值|边界条件|失效点/,
+  method: /方法|步骤|流程|路径|验收标准/,
+  proof: /证据|证明|依据|可信度|主张强度/,
+  objection: /反驳|异议|不一定|修正|但是|可是/,
+  evaluation: /评价|反馈|换个说法|太长|太短|不对/,
+  context: /上下文|追问|这个|上一轮|指代|继承/
+});
+const COMPATIBLE_LANES = Object.freeze({
+  category_error: new Set(["definition", "proof"]),
+  truth_condition: new Set(["proof", "definition", "category_error"]),
+  feasibility: new Set(["proof", "method", "degree"]),
+  degree: new Set(["comparison", "proof"]),
+  method: new Set(["feasibility", "proof"]),
+  objection: new Set(["proof", "category_error", "evaluation"]),
+  context: new Set(["evaluation", "definition", "comparison", "causal"]),
+  evaluation: new Set(["context", "style"]),
+  causal: new Set(["proof", "counterfactual"]),
+  frame_challenge: new Set(["definition", "category_error", "truth_condition"])
+});
 
 const FALLBACK_DEMO_RECORDS = [
   {
@@ -158,6 +196,24 @@ export function extractQueryKeywords(query = "", limit = 16) {
   return keywords.slice(0, limit);
 }
 
+function inferJudgmentLayer(text = "") {
+  if (CATEGORY_ERROR_RE.test(text) || /是什么|什么是|定义|算不算|边界|概念|命名/.test(text)) return "definition";
+  if (/美|审美|美学|好看|风格|设计|质感/.test(text)) return "aesthetic";
+  if (/应该|不应该|值得|不值得|自由|公平|正义|责任|伦理|关系|重要|意义|价值/.test(text)) return "normative";
+  if (/对错|真假|真伪|事实|证据|证明|是否成立|可证伪|凭什么/.test(text)) return "factual";
+  if (/有没有标准|怎么判断|如何判断/.test(text)) return "mixed";
+  return "unknown";
+}
+
+function makeRetrievalLanes(primary, compatible = []) {
+  const exclusions = Object.keys(STRUCTURE_MARKERS).filter((lane) => lane !== primary && !compatible.includes(lane));
+  return {
+    retrieval_lane: primary,
+    compatible_lanes: compatible,
+    excluded_lanes: exclusions
+  };
+}
+
 export function inferQuestionProfile(query = "") {
   const text = String(query || "").trim();
   const hasQuestionCue = QUESTION_CUE_RE.test(text);
@@ -169,6 +225,10 @@ export function inferQuestionProfile(query = "") {
     question_shape: "open",
     domain_hint: "general",
     reasoning_mode: "direct",
+    retrieval_lane: "open",
+    compatible_lanes: [],
+    excluded_lanes: [],
+    judgment_layer: inferJudgmentLayer(text),
     answer_length_hint: isLong ? "short" : "micro",
     needs_context: hasFollowupCue,
     soft_redirect_allowed: COMPLEX_CUE_RE.test(text),
@@ -183,6 +243,8 @@ export function inferQuestionProfile(query = "") {
   if (hasEvaluationCue && !hasQuestionCue) {
     profile.question_shape = "feedback";
     profile.domain_hint = "dialogue";
+    profile.reasoning_mode = "style_adjustment";
+    Object.assign(profile, makeRetrievalLanes("evaluation", ["context"]));
     profile.needs_context = true;
     profile.answer_length_hint = "micro";
     return profile;
@@ -191,6 +253,7 @@ export function inferQuestionProfile(query = "") {
     profile.question_shape = "conceptual_paradox";
     profile.domain_hint = TIME_DOMAIN_RE.test(text) ? "time" : "logic";
     profile.reasoning_mode = "frame_challenge";
+    Object.assign(profile, makeRetrievalLanes("frame_challenge", ["definition", "category_error", "proof"]));
     profile.answer_length_hint = "short";
     return profile;
   }
@@ -199,9 +262,15 @@ export function inferQuestionProfile(query = "") {
   if (/区别|差别|相比|哪个更|优劣|取舍|更好|更坏/.test(text)) profile.question_shape = "comparison";
   if (/像不像|类似|类比|相当于|同构|映射/.test(text)) profile.question_shape = "analogy";
   if (/是什么|什么是|定义/.test(text)) profile.question_shape = "definition";
-  if (/是否|是不是|能不能|有没有|会不会/.test(text)) profile.question_shape = "binary_judgment";
-  if (/对错|真假|标准|判断|成立|可证伪/.test(text)) profile.question_shape = "truth_condition";
-  if (hasFollowupCue && text.length <= 36) profile.question_shape = "short_followup";
+  if (CATEGORY_ERROR_RE.test(text)) profile.question_shape = "category_error";
+  if (FEASIBILITY_RE.test(text)) profile.question_shape = "feasibility";
+  if (DEGREE_RE.test(text)) profile.question_shape = "degree";
+  if (METHOD_RE.test(text)) profile.question_shape = "method";
+  if (PROOF_RE.test(text)) profile.question_shape = "proof_request";
+  if (OBJECTION_RE.test(text) && !hasEvaluationCue) profile.question_shape = "objection";
+  if (/是否|是不是|能不能|有没有|会不会/.test(text) && profile.question_shape === "open") profile.question_shape = "binary_judgment";
+  if (/对错|真假|标准|判断|成立|可证伪/.test(text) && !["category_error", "feasibility", "degree", "method", "proof_request"].includes(profile.question_shape)) profile.question_shape = "truth_condition";
+  if (hasFollowupCue && text.length <= 36 && profile.question_shape === "open") profile.question_shape = "short_followup";
   if (TIME_DOMAIN_RE.test(text)) profile.domain_hint = "time";
   else if (INFRA_DOMAIN_RE.test(text)) profile.domain_hint = "infrastructure";
   else if (TECHNOLOGY_DOMAIN_RE.test(text)) profile.domain_hint = "technology";
@@ -215,10 +284,35 @@ export function inferQuestionProfile(query = "") {
   if (profile.question_shape === "comparison") profile.reasoning_mode = "compare_by_axis";
   if (profile.question_shape === "analogy") profile.reasoning_mode = "analogy_mapping";
   if (profile.question_shape === "definition") profile.reasoning_mode = "define_boundary";
+  if (profile.question_shape === "category_error") profile.reasoning_mode = "category_axis_check";
+  if (profile.question_shape === "feasibility") profile.reasoning_mode = "feasibility_split";
+  if (profile.question_shape === "degree") profile.reasoning_mode = "degree_boundary";
+  if (profile.question_shape === "method") profile.reasoning_mode = "method_path";
+  if (profile.question_shape === "proof_request") profile.reasoning_mode = "evidence_threshold";
+  if (profile.question_shape === "objection") profile.reasoning_mode = "objection_reframe";
   if (profile.question_shape === "truth_condition" || profile.question_shape === "binary_judgment") profile.reasoning_mode = "truth_value_split";
   if (profile.question_shape === "short_followup") profile.reasoning_mode = "context_rewrite";
+  const laneByShape = {
+    causal: ["causal", ["proof", "counterfactual"]],
+    counterfactual: ["counterfactual", ["causal", "proof"]],
+    comparison: ["comparison", ["degree", "definition"]],
+    analogy: ["analogy", ["comparison", "definition"]],
+    definition: ["definition", ["category_error", "proof"]],
+    category_error: ["category_error", ["definition", "proof"]],
+    feasibility: ["feasibility", ["method", "proof", "degree"]],
+    degree: ["degree", ["comparison", "proof"]],
+    method: ["method", ["feasibility", "proof"]],
+    proof_request: ["proof", ["truth_condition", "definition"]],
+    objection: ["objection", ["proof", "category_error", "evaluation"]],
+    truth_condition: ["truth_condition", ["proof", "definition", "category_error"]],
+    binary_judgment: ["truth_condition", ["proof", "definition", "feasibility"]],
+    short_followup: ["context", ["evaluation", "definition", "comparison"]]
+  };
+  if (laneByShape[profile.question_shape]) {
+    Object.assign(profile, makeRetrievalLanes(laneByShape[profile.question_shape][0], laneByShape[profile.question_shape][1]));
+  }
   if (profile.question_shape === "short_followup") profile.answer_length_hint = "micro";
-  if (["causal", "counterfactual", "comparison", "analogy", "conceptual_paradox"].includes(profile.question_shape)) profile.answer_length_hint = "short";
+  if (["causal", "counterfactual", "comparison", "analogy", "conceptual_paradox", "category_error", "feasibility", "degree", "method", "proof_request", "objection"].includes(profile.question_shape)) profile.answer_length_hint = "short";
   return profile;
 }
 
@@ -263,10 +357,34 @@ function scoreRecord(query, record) {
   return Number(Math.max(0, keywordScore * 0.72 + gramScore * 0.2 + trustBoost + profileBoost + kindBoost + intentBoost).toFixed(6));
 }
 
+function recordStructureLanes(record = {}) {
+  const text = `${record.title || ""} ${record.text || ""} ${(record.keywords || []).join(" ")} ${(record.metadata?.tone_hints || []).join(" ")}`;
+  const lanes = [];
+  for (const [lane, marker] of Object.entries(STRUCTURE_MARKERS)) {
+    if (marker.test(text)) lanes.push(lane);
+  }
+  const kind = record.metadata?.card_kind || "";
+  if (kind === "context" && !lanes.includes("context")) lanes.push("context");
+  if (kind === "style" && !lanes.includes("evaluation")) lanes.push("evaluation");
+  if (kind === "boundary" && !lanes.includes("proof")) lanes.push("proof");
+  return lanes;
+}
+
+function structureCompatibilityBoost(profile = {}, record = {}) {
+  const primary = profile.retrieval_lane;
+  if (!primary || primary === "open") return 0;
+  const lanes = recordStructureLanes(record);
+  if (lanes.length === 0) return 0;
+  const compatible = new Set([primary, ...(profile.compatible_lanes || []), ...(COMPATIBLE_LANES[primary] || [])]);
+  if (lanes.includes(primary)) return 0.14;
+  if (lanes.some((lane) => compatible.has(lane))) return 0.05;
+  return -0.12;
+}
+
 function questionProfileBoost(profile = {}, record = {}, hasLexicalOverlap = false) {
   const kind = record.metadata?.card_kind || "";
   const text = `${record.title || ""} ${record.text || ""} ${(record.keywords || []).join(" ")}`;
-  let boost = 0;
+  let boost = structureCompatibilityBoost(profile, record);
   if (profile.turn_type === "evaluation") {
     if (kind === "context") boost += 0.18;
     if (kind === "style" || kind === "boundary") boost += 0.06;
@@ -315,6 +433,12 @@ function questionProfileBoost(profile = {}, record = {}, hasLexicalOverlap = fal
   if (profile.question_shape === "comparison" && ["judgment", "logic", "brand_literacy", "society"].includes(kind)) boost += 0.08;
   if (profile.question_shape === "analogy" && ["association", "logic", "philosophy"].includes(kind)) boost += 0.08;
   if (profile.question_shape === "definition" && ["logic", "judgment", "philosophy"].includes(kind)) boost += 0.07;
+  if (profile.question_shape === "category_error" && ["logic", "judgment"].includes(kind)) boost += 0.11;
+  if (profile.question_shape === "feasibility" && ["judgment", "logic", "society", "commonsense"].includes(kind)) boost += 0.1;
+  if (profile.question_shape === "degree" && ["judgment", "logic", "association"].includes(kind)) boost += 0.09;
+  if (profile.question_shape === "method" && ["logic", "capability", "society"].includes(kind)) boost += 0.08;
+  if (profile.question_shape === "proof_request" && ["boundary", "judgment", "logic"].includes(kind)) boost += 0.11;
+  if (profile.question_shape === "objection" && ["judgment", "context", "logic"].includes(kind)) boost += 0.09;
   return boost;
 }
 
@@ -329,9 +453,11 @@ function profileKindBoost(query = "", record = {}) {
   if (kind === "commonsense" && /太阳|日出|日落|东升西落|天气|气温|升温|降温|自然|常识|天空|蓝天|月亮|季节|时间|下雨|雨|沸腾|烧开|声音|振动|真空|why|原因/.test(text)) return 0.1;
   if (kind === "philosophy" && /生死|生与死|活着|存在|虚无|意义|哲学|自由|有限|死亡|孤独|记忆|正义|责任|真理|真实|事实/.test(text)) return 0.1;
   if (kind === "logic" && /为什么|如何看待|怎么看|判断|因果|证据|推理|逻辑|because|reason/.test(text)) return 0.09;
-  if (kind === "judgment" && /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实|价值|审美|证据|判断|标准/.test(text)) return 0.14;
+  if (kind === "logic" && /偷换概念|范畴错误|怎么做|如何实现|步骤|方法|流程|路径|前提|假设/.test(text)) return 0.13;
+  if (kind === "judgment" && /对错|真假|真伪|对不对|有没有标准|能不能判断|是否成立|可证伪|事实|价值|审美|证据|判断|标准|可不可以|有没有可能|多大程度|阈值|反驳|不一定/.test(text)) return 0.14;
   if (kind === "association" && /关联|联系|为什么|意义|方便|机制|影响|连接|因果|铁路|交通|物流|时间|线性|类比|映射|多跳|长期/.test(text)) return 0.16;
   if (kind === "context" && /刚才|上面|前面|这个|它|这类|继续|上下文|为什么方便|有什么用|那/.test(text)) return 0.16;
+  if (kind === "context" && /不对|不是这个|太长|太短|换个说法|继续聊|接话|评价/.test(text)) return 0.14;
   if (kind === "value" && /价值|对错|重要|承诺|信任|value/.test(text)) return 0.08;
   if (kind === "boundary" && /证据|不足|冲突|隐藏|系统提示|evidence|conflict|prompt/.test(text)) return 0.08;
   if (kind === "identity" && /你是谁|鳄鱼|关系|identity|who are you/.test(text)) return 0.06;
@@ -459,6 +585,38 @@ function inferJudgmentMode(query = "", evidence = []) {
   const text = String(query || "");
   const topKind = evidence[0]?.metadata?.card_kind || "";
   const hasJudgmentCard = evidence.some((item) => item.metadata?.card_kind === "judgment");
+  if (CATEGORY_ERROR_RE.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "category_axis_check",
+      correctness_axis: "先看两个概念是否共用同一判断轴",
+      answer_policy_hint: "separate_category_before_judgment"
+    };
+  }
+  if (FEASIBILITY_RE.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "feasibility_split",
+      correctness_axis: "理论可行、现实可行、成本可行和伦理可行要分开",
+      answer_policy_hint: "split_feasibility_before_yes_no"
+    };
+  }
+  if (DEGREE_RE.test(text)) {
+    return {
+      has_truth_condition: "mixed",
+      judgment_mode: "degree_boundary",
+      correctness_axis: "范围、阈值和失效条件",
+      answer_policy_hint: "answer_with_range_not_binary"
+    };
+  }
+  if (PROOF_RE.test(text)) {
+    return {
+      has_truth_condition: true,
+      judgment_mode: "evidence_threshold",
+      correctness_axis: "主张强度、证据强度和可验证性",
+      answer_policy_hint: "match_claim_strength_to_evidence"
+    };
+  }
   if (/既不是.*线性.*也不是.*非线性|不是线性.*不是非线性|非二分|二分|悖论/.test(text)) {
     return {
       has_truth_condition: "mixed",
@@ -532,6 +690,54 @@ function inferAssociationProfile(query = "", evidence = []) {
       reasoning_axis: "钟表顺序、心理经验、叙事结构和因果链",
       missing_link: false,
       answer_policy_hint: "split_time_frames_before_judgment"
+    };
+  }
+  if (CATEGORY_ERROR_RE.test(text)) {
+    return {
+      association_mode: "category_axis_check",
+      reasoning_axis: "对象、尺度、标准和用途是否属于同一判断轴",
+      missing_link: false,
+      answer_policy_hint: "separate_categories_before_answering"
+    };
+  }
+  if (FEASIBILITY_RE.test(text)) {
+    return {
+      association_mode: "feasibility_split",
+      reasoning_axis: "理论可行、现实约束、成本和伦理边界",
+      missing_link: false,
+      answer_policy_hint: "split_feasibility_dimensions"
+    };
+  }
+  if (DEGREE_RE.test(text)) {
+    return {
+      association_mode: "degree_boundary",
+      reasoning_axis: "程度、阈值、范围和失效条件",
+      missing_link: false,
+      answer_policy_hint: "avoid_binary_when_degree_question"
+    };
+  }
+  if (METHOD_RE.test(text)) {
+    return {
+      association_mode: "method_path",
+      reasoning_axis: "目标、约束、步骤和验收标准",
+      missing_link: false,
+      answer_policy_hint: "give_short_path_with_constraints"
+    };
+  }
+  if (PROOF_RE.test(text)) {
+    return {
+      association_mode: "evidence_threshold",
+      reasoning_axis: "主张强度、证据强度和可验证性",
+      missing_link: false,
+      answer_policy_hint: "name_evidence_threshold"
+    };
+  }
+  if (OBJECTION_RE.test(text)) {
+    return {
+      association_mode: "objection_reframe",
+      reasoning_axis: "用户反对的是事实、标准还是结论",
+      missing_link: false,
+      answer_policy_hint: "accept_objection_then_reframe"
     };
   }
   if (/如果|假如|没有.*会|会怎样|反事实|条件改变/.test(text)) {
