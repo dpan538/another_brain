@@ -81,6 +81,22 @@ function patchR28livefix0Html(text, commitShort, buildTime) {
     );
 }
 
+function patchChatHtmlAssetTokens(text, versionToken) {
+  return text
+    .replace(/\.\/app\.js\?v=[^"']+/g, `./app.js?v=${versionToken}`)
+    .replace(/\/another_brain_chat\/app\.js\?v=[^"']+/g, `/another_brain_chat/app.js?v=${versionToken}`)
+    .replace(/\/another_brain_chat\/styles\.css\?v=[^"']+/g, `/another_brain_chat/styles.css?v=${versionToken}`);
+}
+
+function patchChatModuleAssetTokens(text, versionToken) {
+  return text
+    .replace(/\.\/browser_runtime\.js\?v=[^"')]+/g, `./browser_runtime.js?v=${versionToken}`)
+    .replace(/\.\/context_bridge\.js\?v=[^"')]+/g, `./context_bridge.js?v=${versionToken}`)
+    .replace(/\.\/runtime_worker\.js\?v=[^"')]+/g, `./runtime_worker.js?v=${versionToken}`)
+    .replace(/\.\/self_check_worker\.js\?v=[^"')]+/g, `./self_check_worker.js?v=${versionToken}`)
+    .replace(/\.\/q4_worker_runtime\.js\?v=[^"')]+/g, `./q4_worker_runtime.js?v=${versionToken}`);
+}
+
 async function main() {
   if (!isVercelBuild()) {
     console.log(JSON.stringify({ skipped: true, reason: "not_vercel_build" }, null, 2));
@@ -97,34 +113,42 @@ async function main() {
   const chatIndexPath = resolve(ROOT, "web/another_brain_chat/index.html");
   const chatFlatPath = resolve(ROOT, "web/another_brain_chat.html");
   const chatAppPath = resolve(ROOT, "web/another_brain_chat/app.js");
+  const chatBrowserRuntimePath = resolve(ROOT, "web/another_brain_chat/browser_runtime.js");
+  const chatRuntimeWorkerPath = resolve(ROOT, "web/another_brain_chat/runtime_worker.js");
+  const chatSelfCheckWorkerPath = resolve(ROOT, "web/another_brain_chat/self_check_worker.js");
   const runtimeModePath = resolve(ROOT, "web/another_brain/runtime_mode.json");
   const assetManifestPath = resolve(ROOT, "web/another_brain/asset_manifest.json");
 
   await writeFile(runtimePath, buildRuntimeVersionSource(), "utf8");
   const indexChanged = await updateTextFile(indexPath, (text) =>
     patchR28livefix0Html(
-      text
-        .replace(/\.\/app\.js\?v=[^"']+/g, `./app.js?v=${versionToken}`)
-        .replace(/\/another_brain_chat\/app\.js\?v=[^"']+/g, `/another_brain_chat/app.js?v=${versionToken}`),
+      patchChatHtmlAssetTokens(text, versionToken),
       commitShort,
       buildTime
     )
   );
   const chatIndexChanged = await updateTextFile(chatIndexPath, (text) =>
-    patchR28livefix0Html(text, commitShort, buildTime)
-      .replace(/\/another_brain_chat\/app\.js\?v=[^"']+/g, `/another_brain_chat/app.js?v=${versionToken}`)
+    patchChatHtmlAssetTokens(patchR28livefix0Html(text, commitShort, buildTime), versionToken)
   );
   const chatFlatChanged = await updateTextFile(chatFlatPath, (text) =>
-    patchR28livefix0Html(text, commitShort, buildTime)
-      .replace(/\/another_brain_chat\/app\.js\?v=[^"']+/g, `/another_brain_chat/app.js?v=${versionToken}`)
+    patchChatHtmlAssetTokens(patchR28livefix0Html(text, commitShort, buildTime), versionToken)
   );
   const appChanged = await updateTextFile(appPath, (text) =>
     text.replace(/\.\/runtime_version\.js\?v=[^"']+/g, `./runtime_version.js?v=${versionToken}`)
   );
   const chatAppChanged = await updateTextFile(chatAppPath, (text) =>
-    text
+    patchChatModuleAssetTokens(text, versionToken)
       .replace(/const R28LIVEFIX0_SOURCE_COMMIT = "[^"]+";/, `const R28LIVEFIX0_SOURCE_COMMIT = "${cleanString(commitShort)}";`)
       .replace(/ui_build_timestamp: "[^"]+"/, `ui_build_timestamp: "${cleanString(buildTime)}"`)
+  );
+  const chatBrowserRuntimeChanged = await updateTextFile(chatBrowserRuntimePath, (text) =>
+    patchChatModuleAssetTokens(text, versionToken)
+  );
+  const chatRuntimeWorkerChanged = await updateTextFile(chatRuntimeWorkerPath, (text) =>
+    patchChatModuleAssetTokens(text, versionToken)
+  );
+  const chatSelfCheckWorkerChanged = await updateTextFile(chatSelfCheckWorkerPath, (text) =>
+    patchChatModuleAssetTokens(text, versionToken)
   );
   const runtimeModeChanged = await updateJsonFile(runtimeModePath, (data) => ({
     ...data,
@@ -151,6 +175,9 @@ async function main() {
         chatIndexChanged,
         chatFlatChanged,
         chatAppChanged,
+        chatBrowserRuntimeChanged,
+        chatRuntimeWorkerChanged,
+        chatSelfCheckWorkerChanged,
         runtimeModeChanged,
         assetManifestChanged
       },

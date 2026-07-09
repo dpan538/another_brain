@@ -32,6 +32,27 @@ test("Vercel build metadata does not create false external storage failures", as
   assert.equal(gate.includes("AI Gateway|KV|Postgres"), false);
 });
 
+test("Vercel build cache-busts the full chat runtime and q4 worker import chain", async () => {
+  const prepare = await readFile(new URL("../../scripts/prepare_vercel_static_build.mjs", import.meta.url), "utf8");
+
+  assert.ok(prepare.includes("patchChatHtmlAssetTokens"));
+  assert.ok(prepare.includes("patchChatModuleAssetTokens"));
+  for (const expected of [
+    "styles.css?v=${versionToken}",
+    "app.js?v=${versionToken}",
+    "browser_runtime.js?v=${versionToken}",
+    "context_bridge.js?v=${versionToken}",
+    "runtime_worker.js?v=${versionToken}",
+    "self_check_worker.js?v=${versionToken}",
+    "q4_worker_runtime.js?v=${versionToken}",
+    "chatBrowserRuntimeChanged",
+    "chatRuntimeWorkerChanged",
+    "chatSelfCheckWorkerChanged"
+  ]) {
+    assert.ok(prepare.includes(expected), expected);
+  }
+});
+
 test("answer q4 generation is no longer capped to the one-token mount smoke or eight-token worker draft", async () => {
   const q4Worker = await readFile(new URL("../../web/another_brain_chat/q4_worker_runtime.js", import.meta.url), "utf8");
   const browserRuntime = await readFile(new URL("../../web/another_brain_chat/browser_runtime.js", import.meta.url), "utf8");
