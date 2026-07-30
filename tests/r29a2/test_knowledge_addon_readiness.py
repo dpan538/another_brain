@@ -12,9 +12,11 @@ class R29A2KnowledgeAddonReadinessTests(unittest.TestCase):
         ])
         self.assertEqual(KNOWLEDGE_ADDON_FORMS[1]["training_use"], "never included in training without a separate explicit approval")
 
-    def test_150m_is_not_static_product_eligible_until_forward_gate_exists(self):
+    def test_150m_is_not_static_product_eligible_while_contextual_forward_is_missing(self):
         report = evaluate_readiness()
         self.assertFalse(report["scale_candidate"]["static_product_eligible"])
         self.assertLess(report["scale_candidate"]["remaining_bytes_under_100mb"], 0)
         self.assertIn("150m_architecture_not_selected", report["blockers"])
-        self.assertIn("q4_transformer_forward_not_implemented", report["blockers"])
+        self.assertTrue(report["q4_forward_status"]["transformer_blocks_executed"])
+        self.assertTrue(report["q4_forward_status"]["single_token_transformer_only"])
+        self.assertIn("q4_contextual_transformer_forward_not_implemented", report["blockers"])

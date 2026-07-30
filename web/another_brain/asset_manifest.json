@@ -221,6 +221,16 @@
       "private_raw_data": false,
       "provenance": "approved_anchor_summary",
       "sha256": "be9201e1d8f34fc4237e1e47a3f6169f54d0b1907e2f6e36f1df7de99e5f31cb"
+    },
+    {
+      "answer_bank": false,
+      "allowed_for_training": false,
+      "bytes": 7710,
+      "demo_only": false,
+      "path": "another_brain/static_rag/decision_cards.json",
+      "private_raw_data": false,
+      "provenance": "approved_anchor_summary",
+      "sha256": "59e5611a316d242fdae2676e40b8bde9de72eb09bed1a0cd7de30d9a77fdb864"
     }
   ],
   "release_checkpoint_admission": false,

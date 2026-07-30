@@ -5,14 +5,16 @@ async function handleSelfCheck(message = {}) {
     self.postMessage({ type: "error", error: "unsupported_self_check_message" });
     return;
   }
-  const timeoutMs = Math.min(Math.max(Number(message.timeoutMs || 8000), 1000), 15000);
+  const transformerEvaluation = message.forwardMode === "transformer_single_token";
+  const timeoutMs = Math.min(Math.max(Number(message.timeoutMs || (transformerEvaluation ? 60_000 : 8000)), 1000), transformerEvaluation ? 120_000 : 15000);
   try {
     self.postMessage({ type: "progress", stage: "worker_loaded" });
     self.postMessage({ type: "progress", stage: "q4_forward_started" });
     const generation = await generateStaticQ4Draft(message.prompt || "R28SHIP0 q4 path smoke", {
       maxTokens: Math.min(Number(message.maxTokens || 1), 1),
       contextLength: Math.min(Number(message.contextLength || 32), 32),
-      generationKind: "mount_smoke",
+      generationKind: transformerEvaluation ? "transformer_eval" : "mount_smoke",
+      forwardMode: transformerEvaluation ? "transformer_single_token" : undefined,
       timeoutMs,
       onToken: (token) => self.postMessage({ type: "progress", stage: "token", token })
     });

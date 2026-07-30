@@ -10,7 +10,8 @@ const PROFILE_CARD_ASSETS = Object.freeze([
   "../another_brain/static_rag/logic_cards.json",
   "../another_brain/static_rag/knowledge_cards.json",
   "../another_brain/static_rag/history_cards.json",
-  "../another_brain/static_rag/society_cards.json"
+  "../another_brain/static_rag/society_cards.json",
+  "../another_brain/static_rag/decision_cards.json"
 ]);
 const DEFAULT_RAG_ASSETS = Object.freeze([DEMO_MEMORY_ASSET, ...PROFILE_CARD_ASSETS]);
 const CARD_KINDS = Object.freeze(["brand", "brand_literacy", "identity", "style", "value", "aesthetic", "boundary", "capability", "commonsense", "philosophy", "logic", "judgment", "history", "society", "association", "context"]);

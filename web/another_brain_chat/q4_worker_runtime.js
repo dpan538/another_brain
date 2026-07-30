@@ -4,6 +4,7 @@ const R28HOTFIX3_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
 const Q4_MOUNT_SMOKE_MAX_TOKENS = 1;
 const Q4_ANSWER_MAX_TOKENS = 32;
 const Q4_SHARD_DOWNLOAD_CONCURRENCY = 1;
+const Q4_FAST_NETWORK_SHARD_DOWNLOAD_CONCURRENCY = 2;
 const Q4_RANGE_CHUNK_BYTES = 1_048_576;
 const Q4_TOTAL_DOWNLOAD_TIMEOUT_MS = 285_000;
 const Q4_MAX_DOWNLOAD_TIMEOUT_MS = 345_000;
@@ -327,6 +328,96 @@ function addInPlace(target, value) {
   return target;
 }
 
+function gelu(value) {
+  return 0.5 * value * (1 + Math.tanh(Math.sqrt(2 / Math.PI) * (value + 0.044715 * value ** 3)));
+}
+
+function applyGeluInPlace(values) {
+  for (let index = 0; index < values.length; index += 1) values[index] = gelu(values[index]);
+  return values;
+}
+
+function layerNormQ4(input, weightTensor, biasTensor, epsilon = 1e-5) {
+  let mean = 0;
+  for (let index = 0; index < input.length; index += 1) mean += input[index];
+  mean /= Math.max(input.length, 1);
+  let variance = 0;
+  for (let index = 0; index < input.length; index += 1) {
+    const delta = input[index] - mean;
+    variance += delta * delta;
+  }
+  const inverseStd = 1 / Math.sqrt(variance / Math.max(input.length, 1) + epsilon);
+  const output = new Float32Array(input.length);
+  for (let index = 0; index < input.length; index += 1) {
+    output[index] = (input[index] - mean) * inverseStd * weightTensor.valueAt(index) + biasTensor.valueAt(index);
+  }
+  return output;
+}
+
+function linearQ4(input, weightTensor, biasTensor = null, startRow = 0, rowCount = weightTensor.rows - startRow) {
+  const cols = weightTensor.cols;
+  if (input.length < cols) throw new Error(`linear_input_too_small:${weightTensor.name}`);
+  const output = new Float32Array(rowCount);
+  for (let localRow = 0; localRow < rowCount; localRow += 1) {
+    const row = startRow + localRow;
+    let sum = biasTensor ? biasTensor.valueAt(row) : 0;
+    const base = row * cols;
+    for (let col = 0; col < cols; col += 1) sum += weightTensor.valueAt(base + col) * input[col];
+    output[localRow] = sum;
+  }
+  return output;
+}
+
+// This is a genuine decoder pass for one causal token. With one token, causal
+// attention has a single key and its softmax is exactly 1, so Q/K are evaluated
+// for diagnostic parity while V is the attention output. It intentionally does
+// not claim multi-token contextual-state support.
+function transformerForwardOneToken(store, architecture, tokenId, position) {
+  const nEmbd = Number(architecture.n_embd || 0);
+  const nLayer = Number(architecture.n_layer || 0);
+  const nHead = Number(architecture.n_head || 0);
+  if (!nEmbd || !nLayer || !nHead || nEmbd % nHead !== 0) throw new Error("invalid_transformer_architecture");
+  const tokenEmbedding = store.tensor("token_emb.weight");
+  const posEmbedding = store.tensor("pos_emb.weight");
+  let hidden = addInPlace(tokenEmbedding.dequantizeRow(tokenId), posEmbedding.dequantizeRow(position));
+  const attentionScores = [];
+  for (let layer = 0; layer < nLayer; layer += 1) {
+    const norm1 = layerNormQ4(hidden, store.tensor(`blocks.${layer}.ln1.weight`), store.tensor(`blocks.${layer}.ln1.bias`));
+    const inProjWeight = store.tensor(`blocks.${layer}.attn.attn.in_proj_weight`);
+    const inProjBias = store.tensor(`blocks.${layer}.attn.attn.in_proj_bias`);
+    const qkv = linearQ4(norm1, inProjWeight, inProjBias);
+    let score = 0;
+    for (let index = 0; index < nEmbd; index += 1) score += qkv[index] * qkv[nEmbd + index];
+    attentionScores.push(score / Math.sqrt(nEmbd / nHead));
+    const value = qkv.subarray(2 * nEmbd, 3 * nEmbd);
+    const attention = linearQ4(
+      value,
+      store.tensor(`blocks.${layer}.attn.attn.out_proj.weight`),
+      store.tensor(`blocks.${layer}.attn.attn.out_proj.bias`)
+    );
+    hidden = addInPlace(hidden, attention);
+    const norm2 = layerNormQ4(hidden, store.tensor(`blocks.${layer}.ln2.weight`), store.tensor(`blocks.${layer}.ln2.bias`));
+    const mlpHidden = applyGeluInPlace(linearQ4(
+      norm2,
+      store.tensor(`blocks.${layer}.mlp.0.weight`),
+      store.tensor(`blocks.${layer}.mlp.0.bias`)
+    ));
+    const mlp = linearQ4(mlpHidden, store.tensor(`blocks.${layer}.mlp.2.weight`), store.tensor(`blocks.${layer}.mlp.2.bias`));
+    hidden = addInPlace(hidden, mlp);
+  }
+  const finalHidden = layerNormQ4(hidden, store.tensor("ln_f.weight"), store.tensor("ln_f.bias"));
+  return {
+    hidden: finalHidden,
+    diagnostics: {
+      transformer_blocks_executed: nLayer,
+      attention_mode: "single_token_causal_qkv",
+      context_attention_tokens: 1,
+      context_attention_supported: false,
+      attention_score_samples: attentionScores
+    }
+  };
+}
+
 class Q4Tensor {
   constructor(metadata, bytes) {
     this.metadata = metadata;
@@ -470,7 +561,8 @@ async function tensorStore(pkg, options = {}) {
       download_timeout_ms: state.downloadTimeoutMs,
       q4_download_strategy: "stream_into_preallocated_tensor_store"
     });
-    await mapWithConcurrency(shards, Q4_SHARD_DOWNLOAD_CONCURRENCY, async (shard) => {
+    const downloadConcurrency = resolveQ4ShardDownloadConcurrency(options, shards.length);
+    await mapWithConcurrency(shards, downloadConcurrency, async (shard) => {
       await loadShardIntoWeights({ shard, weights, state, options });
     });
     emitQ4Progress(options, {
@@ -482,7 +574,8 @@ async function tensorStore(pkg, options = {}) {
       loaded_label: `${formatBytes(state.loadedBytes)}/${formatBytes(totalBytes)}`,
       progress: 90,
       download_timeout_ms: state.downloadTimeoutMs,
-      q4_download_strategy: "stream_into_preallocated_tensor_store"
+      q4_download_strategy: "stream_into_preallocated_tensor_store",
+      q4_download_concurrency: downloadConcurrency
     });
     return new Q4TensorStore(pkg.modelConfig, weights);
   })();
@@ -505,6 +598,14 @@ export function resolveQ4DownloadTimeout(options = {}) {
     Q4_MAX_DOWNLOAD_TIMEOUT_MS,
     Math.max(Q4_TOTAL_DOWNLOAD_TIMEOUT_MS, requestedOuterTimeout - Q4_FORWARD_RESERVE_MS)
   );
+}
+
+export function resolveQ4ShardDownloadConcurrency(options = {}, shardCount = Infinity) {
+  const requested = Number(options.downloadConcurrency || 0);
+  if (requested > 0) return Math.max(1, Math.min(Q4_FAST_NETWORK_SHARD_DOWNLOAD_CONCURRENCY, Math.floor(requested), shardCount));
+  const effectiveType = typeof navigator !== "undefined" ? String(navigator.connection?.effectiveType || "") : "";
+  const fastNetwork = effectiveType === "4g";
+  return Math.max(1, Math.min(fastNetwork ? Q4_FAST_NETWORK_SHARD_DOWNLOAD_CONCURRENCY : Q4_SHARD_DOWNLOAD_CONCURRENCY, shardCount));
 }
 
 async function fetchShardRange(url, shardPath, start, end, signal) {
@@ -695,6 +796,8 @@ export async function staticQ4Capability() {
     q4_shard_count: (pkg.quantizationManifest.shards || []).length || pkg.summary.shardAssets.length,
     exact_runtime_tokenizer: pkg.tokenizerInspection.ok,
     tokenizer_decode_status: pkg.tokenizerInspection.decode_status,
+    transformer_single_token_forward: true,
+    contextual_transformer_forward: false,
     product_model: false,
     browser_admission: false,
     release_checkpoint_admission: false,
@@ -710,8 +813,9 @@ export async function generateStaticQ4Draft(prompt, options = {}) {
   const pkg = await runtimePackage();
   const store = await tensorStore(pkg, options);
   const architecture = pkg.modelConfig.architecture || {};
-  const generationKind = options.generationKind === "mount_smoke" ? "mount_smoke" : "answer_generation";
-  const workerTokenCap = generationKind === "mount_smoke" ? Q4_MOUNT_SMOKE_MAX_TOKENS : Q4_ANSWER_MAX_TOKENS;
+  const transformerEvaluation = options.forwardMode === "transformer_single_token" || options.generationKind === "transformer_eval";
+  const generationKind = transformerEvaluation ? "transformer_eval" : (options.generationKind === "mount_smoke" ? "mount_smoke" : "answer_generation");
+  const workerTokenCap = transformerEvaluation || generationKind === "mount_smoke" ? Q4_MOUNT_SMOKE_MAX_TOKENS : Q4_ANSWER_MAX_TOKENS;
   const requestedMaxTokens = Math.max(1, Number(options.maxTokens || 4));
   const maxTokens = Math.max(1, Math.min(requestedMaxTokens, workerTokenCap));
   const contextLength = Math.max(1, Math.min(Number(options.contextLength || 64), Number(architecture.context_length || 256)));
@@ -720,13 +824,16 @@ export async function generateStaticQ4Draft(prompt, options = {}) {
   const generatedTokenIds = [];
   const tokenTexts = [];
   let tokenId = encoded.input_ids[encoded.input_ids.length - 1] || 0;
-  const tokenEmbedding = store.tensor("token_emb.weight");
-  const posEmbedding = store.tensor("pos_emb.weight");
+  const tokenEmbedding = transformerEvaluation ? null : store.tensor("token_emb.weight");
+  const posEmbedding = transformerEvaluation ? null : store.tensor("pos_emb.weight");
   const lmHead = store.tensor("lm_head.weight");
+  let transformerDiagnostics = null;
   for (let index = 0; index < maxTokens; index += 1) {
     if (nowMs() - started > Number(options.timeoutMs || 30_000)) throw new Error("generation_timeout");
     const position = Math.min(encoded.input_ids.length + index - 1, Number(architecture.context_length || 256) - 1);
-    const hidden = addInPlace(tokenEmbedding.dequantizeRow(tokenId), posEmbedding.dequantizeRow(position));
+    const forward = transformerEvaluation ? transformerForwardOneToken(store, architecture, tokenId, position) : null;
+    const hidden = forward ? forward.hidden : addInPlace(tokenEmbedding.dequantizeRow(tokenId), posEmbedding.dequantizeRow(position));
+    if (forward) transformerDiagnostics = forward.diagnostics;
     const picked = pickNextToken(topCandidatesForLinear(hidden, lmHead, 48), pkg.tokenizer);
     tokenId = picked.id;
     generatedTokenIds.push(tokenId);
@@ -749,7 +856,7 @@ export async function generateStaticQ4Draft(prompt, options = {}) {
       decode_status: decoded.decode_status || "exact_runtime_tokenizer",
       exact_decode: decoded.exact_decode === true,
       generated_token_ids: generatedTokenIds,
-      quality_status: generationKind === "mount_smoke" ? "quality_weak_q4_forward_smoke" : "quality_unassessed_q4_answer_generation",
+      quality_status: transformerEvaluation ? "quality_unassessed_transformer_single_token" : (generationKind === "mount_smoke" ? "quality_weak_q4_forward_smoke" : "quality_unassessed_q4_answer_generation"),
       generation_kind: generationKind,
       generation_limits: {
         requested_max_tokens: requestedMaxTokens,
@@ -758,8 +865,10 @@ export async function generateStaticQ4Draft(prompt, options = {}) {
         effective_context_length: contextLength,
         architecture_context_length: Number(architecture.context_length || 256)
       },
-      q4_forward_smoke: true,
+      q4_forward_smoke: !transformerEvaluation,
       q4_forward_ran: true,
+      transformer_single_token_forward: transformerEvaluation,
+      transformer_evaluation: transformerDiagnostics,
       fallback_used: false,
       route_layer: "r28rout0_deferred_to_answer_surface_policy",
       router_input_available: false,

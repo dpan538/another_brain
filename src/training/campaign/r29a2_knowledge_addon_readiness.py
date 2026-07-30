@@ -43,11 +43,14 @@ def _q4_forward_status(path: Path = Q4_RUNTIME_PATH) -> dict[str, Any]:
     text = path.read_text(encoding="utf-8") if path.exists() else ""
     start = text.find("export async function generateStaticQ4Draft")
     body = text[start : start + 6000] if start >= 0 else ""
-    has_transformer_execution = any(token in body for token in ("transformerBlock", "attentionForward", "mlpForward", "blocks."))
+    has_transformer_execution = "transformerForwardOneToken(store, architecture" in text and "single_token_causal_qkv" in text
+    contextual_attention = "context_attention_supported: true" in text
     return {
         "runtime_found": bool(body),
         "uses_embedding_head_shortcut": all(token in body for token in ("token_emb.weight", "pos_emb.weight", "lm_head.weight", "topCandidatesForLinear")),
         "transformer_blocks_executed": has_transformer_execution,
+        "single_token_transformer_only": has_transformer_execution and not contextual_attention,
+        "contextual_attention_supported": contextual_attention,
         "ready_for_scale_comparison": bool(body) and has_transformer_execution,
     }
 
@@ -66,6 +69,8 @@ def evaluate_readiness(root: Path = ROOT) -> dict[str, Any]:
         blockers.append("150m_exceeds_full_static_100mb_budget")
     if not q4["ready_for_scale_comparison"]:
         blockers.append("q4_transformer_forward_not_implemented")
+    if not q4["contextual_attention_supported"]:
+        blockers.append("q4_contextual_transformer_forward_not_implemented")
     if source_policy.get("review_required_before_training") is not True:
         blockers.append("knowledge_source_review_policy_missing")
     report = {
