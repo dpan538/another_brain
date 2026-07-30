@@ -1,0 +1,31 @@
+{
+  "source_set_id": "r29a2_knowledge_addon_source_policy_v1",
+  "review_required_before_training": true,
+  "raw_external_text_committed": false,
+  "processed_corpus_committed": false,
+  "allowed_source_forms": [
+    {
+      "id": "project_authored_concept_cards",
+      "use": "structured knowledge-and-countermeasure curriculum",
+      "requirements": ["split-separated", "no private data", "observable answer targets", "independent heldout cards"]
+    },
+    {
+      "id": "reviewed_open_license_summary_cards",
+      "use": "same-origin static retrieval pack and later curriculum candidates",
+      "requirements": ["record source URL and license", "write a new summary rather than copy raw prose", "human or deterministic review", "exclude medical, legal, and financial directives unless separately approved"]
+    },
+    {
+      "id": "user_local_session_context",
+      "use": "current browser session retrieval only",
+      "requirements": ["manual import", "memory-only", "not used for training", "clear control available"]
+    }
+  ],
+  "blocked_source_forms": [
+    "unreviewed web scrape",
+    "copyrighted paper full text without a compatible license",
+    "private document or chat history",
+    "heldout evaluation text",
+    "external model output presented as an approved source"
+  ],
+  "notes": "This is policy metadata only, not a corpus or a model admission record."
+}
