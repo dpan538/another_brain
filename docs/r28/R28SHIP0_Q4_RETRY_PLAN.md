@@ -3,7 +3,7 @@
 If q4 initial mount fails, R28SHIP0 runs Plan B before fallback:
 
 1. `primary`
-2. `normalized_absolute`
+2. `reuse_http_cache`
 3. `cache_bust`
 4. `clear_model_cache`
 5. `worker_restart`

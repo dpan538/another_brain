@@ -25,6 +25,6 @@ test("mount controller does not fallback after the first failed q4 check", async
   });
   const result = await controller.run();
   assert.equal(result.ok, true);
-  assert.deepEqual(seen, ["primary", "normalized_absolute", "cache_bust"]);
+  assert.deepEqual(seen, ["primary", "reuse_http_cache", "cache_bust"]);
   assert.equal(result.retry_plan.status, "q4_ready");
 });

@@ -432,7 +432,7 @@ test("q4 mount uses persistent runtime worker, five attempts, stable shard loadi
   assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MS = 300000"));
   assert.ok(browserRuntime.includes("SELF_CHECK_DEEP_TIMEOUT_MAX_MS = 360000"));
   assert.ok(browserRuntime.includes("), 30000);"));
-  assert.ok(browserRuntime.includes('softTimeout("self_check_timeout")'));
+  assert.ok(browserRuntime.includes('failAndRestart("self_check_timeout")'));
   assert.ok(browserRuntime.includes("preflightReport = report"));
   assert.ok(browserRuntime.includes("shard_probe_reused"));
   assert.ok(browserRuntime.includes("_reused"));

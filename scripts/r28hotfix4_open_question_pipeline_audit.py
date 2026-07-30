@@ -46,7 +46,7 @@ def main() -> int:
     result = sources["generation_result"]
 
     checks = {
-        "send_button_handler_triggers": "on(form, \"submit\"" in app and "runtime.run(text" in app,
+        "send_button_handler_triggers": "on(form, \"submit\"" in app and "runtime.run(runtimeInput" in app,
         "input_enters_route_classifier": "classifyOpenQuestionRoute(input)" in runtime and "matchMicroIntent(input)" in runtime,
         "open_question_not_micro_intent_noop": "&& !openRoute.should_attempt_q4" in runtime,
         "q4_runtime_ready_checked": "isQ4ReadyForGeneration()" in runtime and "q4ReadyAtRequest" in runtime,

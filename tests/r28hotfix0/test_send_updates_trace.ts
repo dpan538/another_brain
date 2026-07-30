@@ -11,5 +11,5 @@ test("send path updates all six public process trace stages", async () => {
   for (const renderer of ["traceInputSummary", "traceContextSummary", "traceEvidenceSummary", "traceDraftSummary", "traceRouterSummary", "traceFinalSummary"]) {
     assert.ok(app.includes(renderer));
   }
-  assert.ok(app.includes("runtime.run(text"));
+  assert.ok(app.includes("runtime.run(runtimeInput"));
 });

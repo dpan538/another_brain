@@ -13,7 +13,7 @@ test("public UI submit path sends open question through runtime and renders fina
   assert.match(html, /id="q4-attempted-status"/);
   assert.match(html, /id="generation-status"/);
   assert.match(app, /on\(form,\s*"submit"/);
-  assert.match(app, /runtime\.run\(text,\s*{\s*onStatus:\s*setPipelineStatus\s*}\)/);
+  assert.match(app, /runtime\.run\(runtimeInput,\s*{\s*onStatus:\s*setPipelineStatus\s*}\)/);
   assert.match(app, /appendMessage\("assistant",\s*packet\.final_answer/);
   assert.match(app, /updateStatus\(packet\)/);
 });

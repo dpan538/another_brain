@@ -2,7 +2,7 @@ export const R28SHIP0_Q4_RETRY_PLAN_VERSION = "r28ship0-q4-retry-plan-v1";
 
 export const Q4_RETRY_STRATEGIES = Object.freeze([
   "primary",
-  "normalized_absolute",
+  "reuse_http_cache",
   "cache_bust",
   "clear_model_cache",
   "worker_restart"

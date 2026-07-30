@@ -100,7 +100,7 @@ export class Q4MountController {
           ...options,
           attempt: attemptNumber,
           strategy,
-          forceNormalizedAbsolutePaths: strategy === "normalized_absolute",
+          reuseHttpCache: strategy === "reuse_http_cache",
           cacheBust: strategy === "cache_bust",
           clearModelCache: strategy === "clear_model_cache",
           workerRestart: strategy === "worker_restart"

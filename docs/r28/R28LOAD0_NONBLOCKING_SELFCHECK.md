@@ -14,7 +14,7 @@ R28LOAD0 keeps chat usable while model checks run.
 - Progress reports include `loading_state`.
 - Repeated loading requests reuse or cancel the active check path instead of allowing multiple heavy checks to accumulate.
 - User cancellation aborts the active self-check controller and returns the UI to fallback mode.
-- Self-check failure never disables chat; sends call `runtime.run(text)` and do not wait for quick/deep self-check completion.
+- Self-check failure never disables chat; sends call `runtime.run(runtimeInput)` and do not wait for quick/deep self-check completion.
 
 ## Recovery
 

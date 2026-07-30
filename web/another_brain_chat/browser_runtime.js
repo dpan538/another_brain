@@ -68,7 +68,7 @@ const R28UX4_UI_VERSION = R28HOTFIX3_UI_VERSION;
 const R28UX4_ASSET_CACHE_KEY = "another_brain_r28rout1_asset_cache_version";
 const R28UX4_CACHE_NAMES = Object.freeze(["another-brain-model-shards"]);
 const R28SHIP0_MODEL_CACHE_PREFIX = "another-brain-model";
-const R28SHIP0_Q4_RETRY_STRATEGIES = Object.freeze(["primary", "normalized_absolute", "cache_bust", "clear_model_cache", "worker_restart"]);
+const R28SHIP0_Q4_RETRY_STRATEGIES = Object.freeze(["primary", "reuse_http_cache", "cache_bust", "clear_model_cache", "worker_restart"]);
 const R28LIVEFIX0_Q4_MOUNT_MAX_ATTEMPTS = R28SHIP0_Q4_RETRY_STRATEGIES.length;
 const R28SHIP0_RUNTIME_TRUTH_BLOCKERS = Object.freeze(["asset_missing", "tokenizer_fail", "forward_timeout", "q4_forward_timeout", "worker_error", "q4_forward_not_confirmed", "q4_retry_plan_exhausted", "model_loading_cancelled"]);
 const R28HOTFIX4_UI_VERSION = "r28hotfix4-open-question-generation-sla";
@@ -2099,6 +2099,18 @@ export class BrowserChatRuntime {
         decode_status: partial.q4_forward?.decode_status || "not_run",
         blocker: partial.q4_forward?.blocker || ""
       },
+      progress: Number(partial.progress || 0),
+      loaded_bytes: Number(partial.loaded_bytes || 0),
+      total_bytes: Number(partial.total_bytes || 0),
+      loaded_shards: Number(partial.loaded_shards || 0),
+      loaded_label: partial.loaded_label || "",
+      transfer_bps: Number(partial.transfer_bps || 0),
+      shard_path: partial.shard_path || "",
+      shard_loaded_bytes: Number(partial.shard_loaded_bytes || 0),
+      shard_total_bytes: Number(partial.shard_total_bytes || 0),
+      download_timeout_ms: Number(partial.download_timeout_ms || 0),
+      q4_download_strategy: partial.q4_download_strategy || "",
+      failure_reason: partial.failure_reason || "",
       fallback: { status: "可用", reason: partial.fallback?.reason || "" },
       output: { text_preview: partial.output?.text_preview || "" },
       blockers: uniqueFlags(partial.blockers || []),
@@ -2166,7 +2178,7 @@ export class BrowserChatRuntime {
             attempt,
             strategy,
             cacheBust: strategy === "cache_bust",
-            forceNormalizedAbsolutePaths: strategy === "normalized_absolute",
+            reuseHttpCache: strategy === "reuse_http_cache",
             timeoutMs: options.timeoutMs || SELF_CHECK_DEEP_TIMEOUT_MS,
             shardTimeoutMs: options.shardTimeoutMs || SELF_CHECK_SHARD_PROBE_TIMEOUT_MS,
             preflightReport,
@@ -2303,11 +2315,8 @@ export class BrowserChatRuntime {
         this.worker = null;
         finish(() => reject(new Error(reason)));
       };
-      const softTimeout = (reason) => {
-        finish(() => reject(new Error(reason)));
-      };
       const timeout = setTimeout(() => {
-        softTimeout("self_check_timeout");
+        failAndRestart("self_check_timeout");
       }, timeoutMs);
       if (options.signal) {
         if (options.signal.aborted) {
@@ -2622,6 +2631,7 @@ export class BrowserChatRuntime {
 
   q4GenerationBlocker() {
     if (!this.capabilities.worker_available || !this.worker) return "worker_unavailable";
+    if (this.activeQ4MountPromise) return "q4_mount_in_progress";
     const report = this.q4MountReport?.report || this.q4MountReport || {};
     const blockers = Array.isArray(report.blockers) ? report.blockers.join(" / ") : "";
     if (String(blockers).includes("tokenizer") || report.tokenizer?.exact_runtime_tokenizer === false) return "tokenizer_unavailable";
@@ -3039,7 +3049,7 @@ export class BrowserChatRuntime {
     let q4ReadyAtRequest = this.isQ4ReadyForGeneration();
     if (openRoute.should_attempt_q4 && openRoute.category !== "unsafe_self_harm_or_crisis" && !q4ReadyAtRequest) {
       setStatus("loading_model");
-      await this.mountQ4WithRetry({
+      void this.mountQ4WithRetry({
         timeoutMs: SELF_CHECK_DEEP_TIMEOUT_MS,
         shardTimeoutMs: SELF_CHECK_SHARD_PROBE_TIMEOUT_MS
       }).catch(() => null);

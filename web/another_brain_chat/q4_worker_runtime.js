@@ -5,7 +5,9 @@ const Q4_MOUNT_SMOKE_MAX_TOKENS = 1;
 const Q4_ANSWER_MAX_TOKENS = 32;
 const Q4_SHARD_DOWNLOAD_CONCURRENCY = 1;
 const Q4_RANGE_CHUNK_BYTES = 1_048_576;
-const Q4_TOTAL_DOWNLOAD_TIMEOUT_MS = 180_000;
+const Q4_TOTAL_DOWNLOAD_TIMEOUT_MS = 285_000;
+const Q4_MAX_DOWNLOAD_TIMEOUT_MS = 345_000;
+const Q4_FORWARD_RESERVE_MS = 15_000;
 const Q4_SHARD_STALL_TIMEOUT_MS = 45_000;
 const Q4_PROGRESS_EMIT_INTERVAL_MS = 250;
 const PAIR_SEPARATOR = "\u0001";
@@ -456,7 +458,8 @@ async function tensorStore(pkg, options = {}) {
       loadedBytes: 0,
       totalBytes,
       lastEmitAt: 0,
-      loadedShards: 0
+      loadedShards: 0,
+      downloadTimeoutMs: resolveQ4DownloadTimeout(options)
     };
     emitQ4Progress(options, {
       stage: "q4_model_download",
@@ -464,6 +467,7 @@ async function tensorStore(pkg, options = {}) {
       total_bytes: totalBytes,
       loaded_label: `0/${formatBytes(totalBytes)}`,
       progress: 68,
+      download_timeout_ms: state.downloadTimeoutMs,
       q4_download_strategy: "stream_into_preallocated_tensor_store"
     });
     await mapWithConcurrency(shards, Q4_SHARD_DOWNLOAD_CONCURRENCY, async (shard) => {
@@ -477,11 +481,30 @@ async function tensorStore(pkg, options = {}) {
       shard_count: shards.length,
       loaded_label: `${formatBytes(state.loadedBytes)}/${formatBytes(totalBytes)}`,
       progress: 90,
+      download_timeout_ms: state.downloadTimeoutMs,
       q4_download_strategy: "stream_into_preallocated_tensor_store"
     });
     return new Q4TensorStore(pkg.modelConfig, weights);
   })();
   return tensorStorePromise;
+}
+
+export function resolveQ4DownloadTimeout(options = {}) {
+  const requestedOuterTimeout = Math.max(
+    30_000,
+    Number(options.timeoutMs || Q4_TOTAL_DOWNLOAD_TIMEOUT_MS + Q4_FORWARD_RESERVE_MS)
+  );
+  const requestedDownloadTimeout = Number(options.downloadTimeoutMs || 0);
+  if (requestedDownloadTimeout > 0) {
+    return Math.min(
+      Q4_MAX_DOWNLOAD_TIMEOUT_MS,
+      Math.max(30_000, requestedDownloadTimeout)
+    );
+  }
+  return Math.min(
+    Q4_MAX_DOWNLOAD_TIMEOUT_MS,
+    Math.max(Q4_TOTAL_DOWNLOAD_TIMEOUT_MS, requestedOuterTimeout - Q4_FORWARD_RESERVE_MS)
+  );
 }
 
 async function fetchShardRange(url, shardPath, start, end, signal) {
@@ -495,22 +518,19 @@ async function fetchShardRange(url, shardPath, start, end, signal) {
   throw new Error(`fetch_range_failed:${shardPath}:${response.status}:${start}-${end}`);
 }
 
-async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
+export async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
   const expectedBytes = Number(shard.bytes || 0);
   const offset = Number(shard.offset || 0);
   const shardPath = shard.path;
   if (expectedBytes <= 0) throw new Error(`shard_size_missing:${shardPath}`);
   if (offset < 0 || offset + expectedBytes > weights.byteLength) throw new Error(`shard_span_out_of_bounds:${shardPath}`);
-  const totalTimeoutMs = Math.min(
-    Math.max(Number(options.downloadTimeoutMs || Q4_TOTAL_DOWNLOAD_TIMEOUT_MS), 30_000),
-    Math.max(Number(options.timeoutMs || Q4_TOTAL_DOWNLOAD_TIMEOUT_MS), 30_000)
-  );
+  const totalTimeoutMs = Number(state.downloadTimeoutMs || resolveQ4DownloadTimeout(options));
   const stallTimeoutMs = Math.min(
     Math.max(Number(options.stallTimeoutMs || Q4_SHARD_STALL_TIMEOUT_MS), 15_000),
     90_000
   );
   let abortReason = "";
-  const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+  let controller = typeof AbortController !== "undefined" ? new AbortController() : null;
   let stallTimer = null;
   const clearStallTimer = () => {
     if (stallTimer) clearTimeout(stallTimer);
@@ -542,9 +562,16 @@ async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
       loaded_label: `${formatBytes(state.loadedBytes)}/${formatBytes(state.totalBytes)}`,
       transfer_bps: speed,
       progress: Math.min(90, 68 + pct * 22),
+      download_timeout_ms: totalTimeoutMs,
       q4_download_strategy: "stream_into_preallocated_tensor_store",
       status
     });
+  };
+  const renewController = () => {
+    clearStallTimer();
+    controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    abortReason = "";
+    resetStallTimer();
   };
 
   resetStallTimer();
@@ -584,9 +611,9 @@ async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
         report(loaded);
       }
     };
-    const loadRangeChunks = async () => {
+    const loadRangeChunks = async (startAt = 0) => {
       if (expectedBytes <= Q4_RANGE_CHUNK_BYTES) throw new Error(`fetch_bytes_failed:${shardPath}:range_not_needed`);
-      for (let start = 0; start < expectedBytes; start += Q4_RANGE_CHUNK_BYTES) {
+      for (let start = startAt; start < expectedBytes; start += Q4_RANGE_CHUNK_BYTES) {
         if (nowMs() - state.startedAt > totalTimeoutMs) {
           abortReason = "q4_model_download_timeout";
           controller?.abort(abortReason);
@@ -612,10 +639,15 @@ async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
     try {
       await loadWholeShard();
     } catch (error) {
-      if (loaded > 0) throw error;
-      loaded = 0;
-      if (expectedBytes <= Q4_RANGE_CHUNK_BYTES) throw error;
-      await loadRangeChunks();
+      const failureReason = abortReason || error.message || "q4_shard_download_failed";
+      if (failureReason === "q4_model_download_timeout") throw error;
+      if (loaded === 0 && expectedBytes <= Q4_RANGE_CHUNK_BYTES) {
+        renewController();
+        await loadWholeShard();
+      } else {
+        renewController();
+        await loadRangeChunks(loaded);
+      }
     }
     clearStallTimer();
     if (loaded !== expectedBytes) throw new Error(`shard_size_mismatch:${shardPath}:${loaded}/${expectedBytes}`);
@@ -636,6 +668,7 @@ async function loadShardIntoWeights({ shard, weights, state, options = {} }) {
       total_bytes: state.totalBytes,
       loaded_label: `${formatBytes(state.loadedBytes)}/${formatBytes(state.totalBytes)}`,
       progress: Math.min(88, 68 + (state.loadedBytes / Math.max(state.totalBytes, 1)) * 20),
+      download_timeout_ms: totalTimeoutMs,
       q4_download_strategy: "stream_into_preallocated_tensor_store",
       failure_reason: reason
     });

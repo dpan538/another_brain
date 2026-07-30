@@ -8,7 +8,7 @@ test("chat send path is independent from model loading self-check", async () => 
   const submitEnd = app.indexOf('on(debugToggle, "change"', submitStart);
   const submitHandler = app.slice(submitStart, submitEnd);
 
-  assert.ok(submitHandler.includes("runtime.run(text"));
+  assert.ok(submitHandler.includes("runtime.run(runtimeInput"));
   assert.equal(submitHandler.includes("quickSelfCheckModelPath"), false);
   assert.equal(submitHandler.includes("deepSelfCheckModelPath"), false);
   assert.equal(submitHandler.includes("activeSelfCheckController"), false);
