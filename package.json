@@ -781,6 +781,9 @@
     "r29a0:create-campaign-marker": "python3 scripts/r29a0_create_campaign_marker.py",
     "r29a0:run-masked-debug": "python3 scripts/r29a0_run_masked_debug.py",
     "r29a0:launch-masked-debug": "zsh scripts/r29a0_launch_masked_debug.sh",
-    "test:r29a0": "python3 -m unittest discover -s tests/r29a0"
+    "test:r29a0": "python3 -m unittest discover -s tests/r29a0",
+    "r29a1:create-campaign-marker": "python3 scripts/r29a1_create_campaign_marker.py",
+    "r29a1:run-knowledge-countermeasure": "python3 scripts/r29a1_run_knowledge_countermeasure.py",
+    "test:r29a1": "python3 -m unittest discover -s tests/r29a1"
   }
 }
