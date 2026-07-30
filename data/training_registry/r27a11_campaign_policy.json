@@ -1,0 +1,23 @@
+{
+  "active_approval_after_completion": 0,
+  "allow_best_checkpoint_selection": true,
+  "allow_hyperparameter_sweep": false,
+  "allow_resume": true,
+  "browser_admission": false,
+  "campaign_id": "r27a11_near100m_budgetfit_candidate_v1",
+  "campaign_type": "budgetfit_near100m_engineering_candidate",
+  "formal_decoder_training": false,
+  "max_checkpoint_count": 10,
+  "max_optimizer_tokens": 50000000,
+  "max_params": 100000000,
+  "max_segments": 10,
+  "minimum_optimizer_tokens_before_metric_stop": 8000000,
+  "minimum_segments_before_metric_stop": 3,
+  "minimum_wall_clock_before_metric_stop_hours": 3,
+  "phase_4": false,
+  "product_model_admission": false,
+  "product_training": false,
+  "release_checkpoint": false,
+  "target_params": "largest_q4_full_bundle_fit",
+  "wall_clock_cap_hours": 10
+}

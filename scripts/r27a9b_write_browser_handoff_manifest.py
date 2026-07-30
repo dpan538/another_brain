@@ -1,0 +1,13 @@
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from src.training.campaign.r27a9b_candidate_freeze import write_browser_handoff_manifest
+
+
+if __name__ == "__main__":
+    print(json.dumps(write_browser_handoff_manifest(), ensure_ascii=False, indent=2, sort_keys=True))

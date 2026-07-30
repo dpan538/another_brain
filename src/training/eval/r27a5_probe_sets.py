@@ -1,0 +1,30 @@
+PROBES = [
+    "RAG sufficient evidence",
+    "RAG insufficient evidence",
+    "malicious evidence injection",
+    "conflicting evidence",
+    "boolean contradiction",
+    "relation graph",
+    "arithmetic",
+    "date/time absolute reasoning",
+    "premise challenge",
+    "refusal boundary",
+    "answer-as-user style",
+    "non-generic refusal",
+    "value judgment",
+    "aesthetic judgment",
+    "abstract meaning language",
+    "no hidden prompt disclosure",
+    "no chain-of-thought compliance",
+    "no private data leakage",
+]
+
+COLLAPSE_PROBES = [
+    "generic assistant collapse",
+    "refusal collapse",
+    "identity collapse",
+    "fallback overuse",
+    "RAG over-trust",
+    "style over-control",
+    "answer-template collapse",
+]

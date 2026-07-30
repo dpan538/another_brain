@@ -1,0 +1,123 @@
+{
+  "entries": [
+    {
+      "dataset_id": "baai_industry_corpus",
+      "license_name": "apache-2.0",
+      "license_obligations": [
+        "attribution",
+        "non_endorsement"
+      ],
+      "sample_bytes": 399962882,
+      "sample_rows": 64253,
+      "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryCorpus"
+    },
+    {
+      "dataset_id": "baai_industry_corpus2",
+      "license_name": "apache-2.0",
+      "license_obligations": [],
+      "sample_bytes": 0,
+      "sample_rows": 0,
+      "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryCorpus2"
+    },
+    {
+      "dataset_id": "fineweb_2",
+      "license_name": "odc-by",
+      "license_obligations": [
+        "attribution",
+        "common_crawl_terms",
+        "citation_required"
+      ],
+      "sample_bytes": 347439926,
+      "sample_rows": 100000,
+      "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2"
+    },
+    {
+      "dataset_id": "fineweb",
+      "license_name": "odc-by",
+      "license_obligations": [
+        "attribution",
+        "common_crawl_terms",
+        "citation_required"
+      ],
+      "sample_bytes": 309203678,
+      "sample_rows": 100000,
+      "upstream_url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb"
+    },
+    {
+      "dataset_id": "wikipedia_zh",
+      "license_name": "cc-by-sa-3.0,gfdl",
+      "license_obligations": [
+        "attribution",
+        "share_alike",
+        "citation_required"
+      ],
+      "sample_bytes": 399994813,
+      "sample_rows": 63804,
+      "upstream_url": "https://huggingface.co/datasets/wikimedia/wikipedia"
+    },
+    {
+      "dataset_id": "oasst1",
+      "license_name": "apache-2.0",
+      "license_obligations": [
+        "attribution",
+        "non_endorsement"
+      ],
+      "sample_bytes": 45707781,
+      "sample_rows": 84437,
+      "upstream_url": "https://huggingface.co/datasets/OpenAssistant/oasst1"
+    },
+    {
+      "dataset_id": "baai_coig",
+      "license_name": "apache-2.0",
+      "license_obligations": [
+        "attribution",
+        "subset_specific_terms",
+        "citation_required"
+      ],
+      "sample_bytes": 0,
+      "sample_rows": 0,
+      "upstream_url": "https://huggingface.co/datasets/BAAI/COIG"
+    },
+    {
+      "dataset_id": "baai_coig_pc",
+      "license_name": "unknown",
+      "license_obligations": [
+        "attribution",
+        "subset_specific_terms",
+        "citation_required"
+      ],
+      "sample_bytes": 0,
+      "sample_rows": 0,
+      "upstream_url": "https://huggingface.co/datasets/BAAI/COIG-PC"
+    },
+    {
+      "dataset_id": "baai_industry_instruction",
+      "license_name": "apache-2.0",
+      "license_obligations": [],
+      "sample_bytes": 0,
+      "sample_rows": 0,
+      "upstream_url": "https://huggingface.co/datasets/BAAI/IndustryInstruction"
+    },
+    {
+      "dataset_id": "coig_cqia",
+      "license_name": "unknown",
+      "license_obligations": [],
+      "sample_bytes": 0,
+      "sample_rows": 0,
+      "upstream_url": "https://huggingface.co/datasets/m-a-p/COIG-CQIA"
+    },
+    {
+      "dataset_id": "infinity_instruct",
+      "license_name": "cc-by-sa-4.0",
+      "license_obligations": [
+        "attribution",
+        "share_alike",
+        "subset_specific_terms"
+      ],
+      "sample_bytes": 0,
+      "sample_rows": 0,
+      "upstream_url": "https://huggingface.co/datasets/BAAI/Infinity-Instruct"
+    }
+  ],
+  "generated_at_utc": "2026-07-05T14:10:49Z"
+}

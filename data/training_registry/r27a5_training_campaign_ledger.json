@@ -1,0 +1,61 @@
+{
+  "browser_admission": false,
+  "campaign_id": "r27a5_sustained_pilot_distillation_v1",
+  "formal_decoder_training": false,
+  "phase": "phase_3_engineering_model_lab",
+  "phase_4": false,
+  "product_training": false,
+  "release_checkpoint": false,
+  "stages": [
+    {
+      "actual_curriculum_token_mix": {
+        "public_chinese_pretraining": 5584522,
+        "rag_evidence_grounded": 301323,
+        "reasoning_symbolic": 161346,
+        "secondary_english_mixed": 2149717,
+        "sft_public_instruction": 1328285,
+        "sft_rag_evidence": 183912,
+        "sft_refusal_boundary": 246674,
+        "sft_value_aesthetic": 25098,
+        "user_answered_anchor": 2386,
+        "value_aesthetic": 16737
+      },
+      "approval_marker_consumed": false,
+      "artifact_path": "artifacts/r27a5/model_lab/runs/r27a5_sustained_pilot_distillation_v1/metrics.json",
+      "campaign_id": "r27a5_sustained_pilot_distillation_v1",
+      "checkpoint_count": 1,
+      "checkpoint_input_path": "/Users/jarlgiovanni/Desktop/another_brain/artifacts/r27a4/model_lab/checkpoints/r27a4_long_run_campaign_v1_cpu.pt",
+      "checkpoint_output_path": "artifacts/r27a5/model_lab/checkpoints/r27a5_sustained_pilot_distillation_v1.pt",
+      "checkpoint_path": "artifacts/r27a5/model_lab/checkpoints/r27a5_sustained_pilot_distillation_v1.pt",
+      "command": "scripts/r27a5_train_campaign.py --campaign-id r27a5_sustained_pilot_distillation_v1 --lineage auto --resume-from-r27a4-if-compatible --train-stream artifacts/r27a5/training_mix/interleaved_train.jsonl --dev-stream artifacts/r27a5/training_mix/dev.jsonl --heldout-stream artifacts/r27a5/training_mix/heldout.jsonl --max-total-steps 12000 --max-total-train-tokens 24000000 --context-length auto --run-label r27a5_sustained_pilot_distillation_v1",
+      "curriculum_token_mix": {
+        "public_chinese_pretraining": 5584522,
+        "rag_evidence_grounded": 301323,
+        "reasoning_symbolic": 161346,
+        "secondary_english_mixed": 2149717,
+        "sft_public_instruction": 1328285,
+        "sft_rag_evidence": 183912,
+        "sft_refusal_boundary": 246674,
+        "sft_value_aesthetic": 25098,
+        "user_answered_anchor": 2386,
+        "value_aesthetic": 16737
+      },
+      "dev_loss": 5.901535924275716,
+      "dev_perplexity": 365.598568567558,
+      "ended_at_utc": "2026-07-05T13:30:34Z",
+      "heldout_loss": 3.613674759864807,
+      "heldout_perplexity": 37.10214408028047,
+      "model_lineage": "resume_r27a4_mini8m",
+      "resumed": true,
+      "resumed_from_checkpoint": true,
+      "stage_id": "r27a5_continued_pretraining_sft_distillation_value_rag",
+      "started_at_utc": "2026-07-05T13:19:36Z",
+      "steps": 6000,
+      "tokenizer_path": "/Users/jarlgiovanni/Desktop/another_brain/artifacts/r27a4/model_lab/tokenizer/tokenizer.json",
+      "train_loss": 6.761974811553955,
+      "train_perplexity": 864.347434773049,
+      "train_tokens": 10000000
+    }
+  ],
+  "updated_at_utc": "2026-07-05T13:30:34Z"
+}

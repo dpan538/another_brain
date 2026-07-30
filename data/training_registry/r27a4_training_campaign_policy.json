@@ -1,0 +1,26 @@
+{
+  "active_approval_after_completion": 0,
+  "allow_doubao_by_default": false,
+  "allow_external_llm_api_by_default": false,
+  "allow_hyperparameter_sweep": false,
+  "allow_raw_corpus_commit": false,
+  "allow_remote_model_weights": false,
+  "allow_resume": true,
+  "allow_weight_commit": false,
+  "allowed_stage_count": 3,
+  "browser_admission": false,
+  "campaign_id": "r27a4_long_run_training_campaign_v1",
+  "campaign_type": "engineering_pilot",
+  "formal_decoder_training": false,
+  "max_checkpoint_count": 6,
+  "max_total_steps": 6000,
+  "max_total_train_tokens": 12000000,
+  "phase_4": false,
+  "product_training": false,
+  "release_checkpoint": false,
+  "stages": [
+    "tokenizer_v2_refresh",
+    "interleaved_pretraining_stage",
+    "instruction_value_rag_stage"
+  ]
+}

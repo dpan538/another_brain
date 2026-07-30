@@ -1,0 +1,33 @@
+{
+  "campaign_id": "r27a4_long_run_training_campaign_v1",
+  "created_at_utc": "",
+  "entries": [
+    {
+      "actual_curriculum_token_mix": {
+        "instruction_distillation": 427174,
+        "public_chinese_pretraining": 2056997,
+        "rag_evidence_grounded": 96483,
+        "reasoning_symbolic": 66203,
+        "secondary_english_mixed": 1333805,
+        "user_answered_anchor": 2487,
+        "value_aesthetic": 16851
+      },
+      "approval_marker_consumed": false,
+      "artifact_path": "artifacts/r27a4/model_lab/runs/r27a4_long_run_campaign_v1_cpu/metrics.json",
+      "checkpoint_path": "artifacts/r27a4/model_lab/checkpoints/r27a4_long_run_campaign_v1_cpu.pt",
+      "command": "scripts/r27a4_train_campaign.py --campaign-id r27a4_long_run_training_campaign_v1 --model-size mini_8m --context-length 256 --max-total-steps 2500 --max-total-train-tokens 4000000 --run-label r27a4_long_run_campaign_v1_cpu",
+      "dev_loss": 5.616314220428467,
+      "ended_at_utc": "2026-07-05T12:05:58Z",
+      "heldout_loss": 5.270401239395142,
+      "resumed": false,
+      "stage_id": "interleaved_pretraining_and_instruction_value_rag_stage",
+      "started_at_utc": "2026-07-05T12:01:59Z",
+      "steps": 2500,
+      "train_loss": 5.34955358505249,
+      "train_tokens": 4000000
+    }
+  ],
+  "ok": true,
+  "policy_path": "data/training_registry/r27a4_training_campaign_policy.json",
+  "updated_at_utc": "2026-07-05T12:05:58Z"
+}

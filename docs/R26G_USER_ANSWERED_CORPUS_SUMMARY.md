@@ -4,9 +4,9 @@ R26G fixes R26E response-obligation metadata and intakes replacement 51-100 as a
 
 ## Result
 
-- R26E metadata fix: passed
+- R26E metadata fix: validated_by_target_preserved_check
 - R26E target preservation: validated_by_check_r26g_r26e_target_preserved
-- omitted first-50 promoted source rows: 2, 29, 47
+- omitted first-50 promoted source rows: none
 - replacement 51-100 parsed rows: 50
 - replacement 51-100 promoted rows: 50
 - combined user_answered rows after R26G: 98
@@ -36,7 +36,4 @@ R26G fixes R26E response-obligation metadata and intakes replacement 51-100 as a
 }
 ```
 
-R26H performs the next readiness review. It may run one tokenizer dry-run over
-the tracked reviewed corpus, but it does not train, promote more rows, mutate
-`training/llm_corpus`, approve phase_4, or commit tokenizer artifacts/weights.
-R26I is not automatic and requires fresh approval.
+Future R26H readiness review is required before any training discussion. No automatic training is authorized.

@@ -1,0 +1,1069 @@
+{
+  "artifact_paths": {
+    "dev": "artifacts/r27a3/training_mix/dev.jsonl",
+    "heldout": "artifacts/r27a3/training_mix/heldout.jsonl",
+    "train": "artifacts/r27a3/training_mix/train.jsonl"
+  },
+  "available_mix_tokens_estimate": 7409719,
+  "candidate_records": 5749,
+  "clean_chinese_public_rows_available": 988,
+  "clean_public_rows_available": 4031,
+  "contains_cot": false,
+  "contains_eval_prompts": false,
+  "curriculum_counts": {
+    "public_chinese_pretraining": 988,
+    "rag_evidence_grounded": 600,
+    "reasoning_symbolic": 304,
+    "secondary_english_mixed": 3043,
+    "user_answered_anchor": 98,
+    "value_aesthetic": 320
+  },
+  "curriculum_percentages": {
+    "public_chinese_pretraining": 18.46,
+    "rag_evidence_grounded": 11.21,
+    "reasoning_symbolic": 5.68,
+    "secondary_english_mixed": 56.85,
+    "user_answered_anchor": 1.83,
+    "value_aesthetic": 5.98
+  },
+  "declared_records": 5749,
+  "emitted_records": 5353,
+  "instruction_distillation_rows": 0,
+  "missing_curricula_in_this_run": [
+    "instruction_distillation"
+  ],
+  "ok": true,
+  "old_question_pack_001_rows_51_100_used": 0,
+  "public_corpus_available": true,
+  "records_generated_before_dedup": 5749,
+  "rejected": [
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0008"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0010"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0012"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0013"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0015"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0017"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0019"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0020"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0022"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0024"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0026"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0027"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0029"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0031"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0033"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0034"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0036"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0038"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0040"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0041"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0043"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0045"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0047"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0048"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0050"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0052"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0054"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0055"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0057"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0059"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0061"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0062"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0064"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0066"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0068"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0069"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0071"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0073"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0075"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0076"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0078"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0080"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0082"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0083"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0085"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0087"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0089"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0090"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0092"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0094"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0096"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0097"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0099"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0101"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0103"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0104"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0106"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0108"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0110"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0111"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0113"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0115"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0117"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0118"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0120"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0122"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0124"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0125"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0127"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0129"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0131"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0132"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0134"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0136"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0138"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0139"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0141"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0143"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0145"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0146"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0148"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0150"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0152"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0153"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0155"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0157"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0159"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0160"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0162"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0164"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0166"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0167"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0169"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0171"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0173"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0174"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0176"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0178"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0180"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0181"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0183"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0185"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0187"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0188"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0190"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0192"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0194"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0195"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0197"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0199"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0201"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0202"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0204"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0206"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0208"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0209"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0211"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0213"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0215"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0216"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0218"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0220"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0222"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0223"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0225"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0227"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0229"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0230"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0232"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0234"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0236"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0237"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0239"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0241"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0243"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0244"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0246"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0248"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0250"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0251"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0253"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0255"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0257"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0258"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0260"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0262"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0264"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0265"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0267"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0269"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0271"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0272"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0274"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0276"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0278"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0279"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0281"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0283"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0285"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0286"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0288"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0290"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0292"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0293"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0295"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0297"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0299"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0300"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0302"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0304"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0306"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0307"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0309"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0311"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0313"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0314"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0316"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0318"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0320"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0321"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0323"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0325"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0327"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0328"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0330"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0332"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0334"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0335"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0337"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0339"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0341"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0342"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0344"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0346"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0348"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0349"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0001",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0351"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0003",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0353"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0005",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0355"
+    },
+    {
+      "duplicate_of": "r27a3_symbolic_0006",
+      "reason": "dedup",
+      "record_id": "r27a3_symbolic_0356"
+    }
+  ],
+  "required_curricula": [
+    "public_chinese_pretraining",
+    "secondary_english_mixed",
+    "instruction_distillation",
+    "rag_evidence_grounded",
+    "reasoning_symbolic",
+    "value_aesthetic",
+    "user_answered_anchor"
+  ],
+  "row_16_used": 0,
+  "row_9_used": 0,
+  "skip_reasons": {
+    "dedup": 396,
+    "not_engineering_admitted": 3
+  },
+  "skipped_records": 399,
+  "split_counts": {
+    "dev": 542,
+    "heldout": 513,
+    "train": 4298
+  },
+  "split_records": {
+    "dev": 542,
+    "heldout": 513,
+    "train": 4298
+  },
+  "trained_records": 4298,
+  "value_aesthetic_rows": 320
+}
