@@ -154,7 +154,7 @@ def build_mix(root: Path = ROOT, *, write_artifacts: bool = True) -> dict[str, A
         output.mkdir(parents=True, exist_ok=True)
         for split, items in rows.items():
             path = output / f"{split}.jsonl"
-            path.write_text("".join(f"{__import__('json').dumps(item, ensure_ascii=False, sort_keys=True)}\\n" for item in items), encoding="utf-8")
+            path.write_text("".join(f"{__import__('json').dumps(item, ensure_ascii=False, sort_keys=True)}\n" for item in items), encoding="utf-8")
         write_json(root / "artifacts/r29a1/reports/training_mix_report.json", report)
     return report
 

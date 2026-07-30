@@ -14,8 +14,11 @@ class R29A1KnowledgeCountermeasureTests(unittest.TestCase):
 
     def test_mix_has_disjoint_heldout_sources_and_tone(self):
         with tempfile.TemporaryDirectory() as directory:
-            report = campaign.build_mix(Path(directory), write_artifacts=True)
+            root = Path(directory)
+            report = campaign.build_mix(root, write_artifacts=True)
+            generated_rows = campaign._read_rows(root / "artifacts/r29a1/training_mix/train.jsonl")
         self.assertTrue(report["ok"])
+        self.assertEqual(len(generated_rows), report["counts"]["train"])
         self.assertEqual(report["split_source_overlap"], [])
         self.assertEqual(report["tone_profile"]["answer_order"], ["结论", "依据与不确定性", "分级对策", "代价或边界"])
         self.assertFalse(report["raw_external_text_ingested"])
