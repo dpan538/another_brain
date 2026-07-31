@@ -12,3 +12,8 @@ class FoundationPreflightTests(unittest.TestCase):
     def test_script_bootstraps_repository_import_path(self):
         source = Path("scripts/r29a8_run_foundation_preflight.py").read_text(encoding="utf-8")
         self.assertIn("sys.path.insert(0", source)
+
+    def test_preflight_saves_only_an_isolated_checkpoint(self):
+        source = Path("scripts/r29a8_run_foundation_preflight.py").read_text(encoding="utf-8")
+        self.assertIn('"checkpoints" / f"{CAMPAIGN_ID}_last.pt"', source)
+        self.assertIn('"product_model_admission": False', source)

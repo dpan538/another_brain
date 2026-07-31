@@ -92,8 +92,12 @@ def main() -> None:
         if ledger["optimizer_steps"] % 25 == 0: write_json(report_dir / "heartbeat_latest.json", {"ok": True, "campaign_id": CAMPAIGN_ID, "optimizer_tokens": ledger["optimizer_tokens"], "optimizer_steps": ledger["optimizer_steps"], "phase": "continued_pretraining"})
     if device == "mps": torch.mps.synchronize()
     final = {"dev": evaluate(torch, model, dev, device, context, "foundation_dev_final"), "heldout": evaluate(torch, model, heldout, device, context, "foundation_heldout_final")}
+    checkpoint = args.artifact_root / "checkpoints" / f"{CAMPAIGN_ID}_last.pt"
+    checkpoint.parent.mkdir(parents=True, exist_ok=True)
+    torch.save({"model_state_dict": model.state_dict(), "config": {**spec, "campaign_id": CAMPAIGN_ID, "source_manifest_sha256": source_manifest["sha256"], "mask_policy": FULL_NEXT_TOKEN, **NON_CLAIMS}}, checkpoint)
     ledger.update({"completed_at_utc": now_utc(), "wall_clock_seconds": round(time.time() - started, 3), "running_train_loss": acc.to_report(), "final": final, "stop_reason": ledger.get("stop_reason", "optimizer_token_cap_reached")})
     improved = float(final["heldout"].get("average_loss", math.inf)) < float(baseline["heldout"].get("average_loss", math.inf))
+    ledger["checkpoint_path"] = str(checkpoint)
     ledger["foundation_gate"] = {"passed": bool(ledger["ok"] and improved), "heldout_improved": improved, "product_model_admission": False, "browser_admission": False}; write_json(report_dir / "preflight_ledger.json", ledger); print(json.dumps(ledger, ensure_ascii=False, sort_keys=True))
 
 
