@@ -35,3 +35,8 @@ class R29A7IndependentControllerTests(unittest.TestCase):
 
     def test_supervisor_abort_is_available_for_interrupted_runs(self):
         self.assertTrue(callable(campaign.abort_due_to_supervisor))
+
+    def test_first_segment_probe_failure_stops_before_second_segment(self):
+        contents = Path(campaign.__file__).read_text(encoding="utf-8")
+        self.assertIn('ledger["stop_reason"] = "probe_quality_below_threshold"', contents)
+        self.assertIn('write_json(paths["ledger"], ledger); _heartbeat(', contents)
