@@ -10,8 +10,11 @@ import argparse
 import hashlib
 import json
 import math
+import sys
 import time
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.training.campaign.r27a10_intake import NON_CLAIMS, now_utc, write_json
 from src.training.campaign.r28a13_controller import _load_model, _load_tokenizer, _resolve_device, _resolve_tokenizer_path
