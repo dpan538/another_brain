@@ -582,6 +582,10 @@ def _probe_prompt(probe: dict[str, Any]) -> str:
 
 def _generate(torch, model, tokenizer, prompt: str, device: str, context_length: int, max_new_tokens: int = 96) -> str:
     ids = tokenizer.encode(prompt)
+    # Training masks the prompt and removes tokenizer-appended EOS before the
+    # assistant target. Keep inference on that same continuation boundary.
+    if ids and ids[-1] == getattr(tokenizer, "eos", 3):
+        ids = ids[:-1]
     ids = ids[-context_length:]
     out = list(ids)
     model.eval()
