@@ -27,3 +27,8 @@ class R29A7IndependentControllerTests(unittest.TestCase):
         contents = Path(source).read_text(encoding="utf-8")
         self.assertNotIn("r29a6_single_wrapper_anchor", contents)
         self.assertNotIn("r29a5_chat_format_anchor", contents)
+
+    def test_slow_phases_write_current_run_heartbeat(self):
+        contents = Path(campaign.__file__).read_text(encoding="utf-8")
+        self.assertIn('"loading_model_and_baseline"', contents)
+        self.assertIn('if steps % 25 == 0: _heartbeat', contents)

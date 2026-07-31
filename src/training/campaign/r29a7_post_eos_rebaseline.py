@@ -115,6 +115,11 @@ def _probe(torch, model, tokenizer, device: str, context_length: int) -> dict[st
     return {"probe_average_score": round(sum(p["score"] for p in probes) / len(probes), 4), "role_prefix_leaks": [p["id"] for p in probes if p["output"].startswith(("用户：", "回答："))], "below_threshold": [p["id"] for p in probes if p["score"] < .7], "probes": probes}
 
 
+def _heartbeat(paths: dict[str, Path], config: RunConfig, contract: dict[str, Any], phase: str, **progress: Any) -> None:
+    """Write a current-run heartbeat before every potentially slow MPS phase."""
+    write_json(paths["heartbeat"], {"ok": True, "campaign_id": config.campaign_id, "phase": phase, "updated_at_utc": now_utc(), "control_contract": contract, **progress})
+
+
 def run(*, prefer_device: str = "mps", resource_safe: bool = True, config: RunConfig = CONFIG) -> dict[str, Any]:
     import torch
     contract = _contract(config); paths = config.paths(); marker = read_json(paths["marker"], {})
@@ -131,6 +136,7 @@ def run(*, prefer_device: str = "mps", resource_safe: bool = True, config: RunCo
     if resource_safe and not guard["ok"]: return _blocked(config, ["disk_space_critical"])
     mix = build_mix(config=config)
     if not mix["ok"]: return _blocked(config, ["training_mix_invalid"])
+    _heartbeat(paths, config, contract, "loading_model_and_baseline", optimizer_tokens=0, optimizer_steps=0)
     os.environ.setdefault("OMP_NUM_THREADS", "2"); torch.set_num_threads(2); random.seed(config.policy["seed"]); torch.manual_seed(config.policy["seed"])
     tokenizer_path = _resolve_tokenizer_path()
     if tokenizer_path is None: return _blocked(config, ["tokenizer_missing"])
@@ -138,6 +144,7 @@ def run(*, prefer_device: str = "mps", resource_safe: bool = True, config: RunCo
     train, dev, heldout = (_dataset_tensors(torch, encode_masked_dataset(_read_rows(paths["mix"] / f"{split}.jsonl"), tokenizer, context_length), device) for split in ("train", "dev", "heldout")); batch = config.policy["batch_size"]
     baseline = {"dev": _evaluate_masked(torch, model, dev, "r29a7_dev_baseline", batch), "heldout": _evaluate_masked(torch, model, heldout, "r29a7_heldout_baseline", batch), "probe": _probe(torch, model, tokenizer, device, context_length)}
     ledger = {"ok": True, "campaign_id": config.campaign_id, "created_at_utc": now_utc(), "train_started": True, "training_ran": True, "selected_model": config.policy["selected_model"], "selected_device": device, "context_length": context_length, "resume_from": lineage, "baseline": baseline, "optimizer_tokens": 0, "optimizer_steps": 0, "segments": [], "policy": config.policy, "control_contract": contract, "active_approval_after_completion": 0, **NON_CLAIMS}; write_json(paths["ledger"], ledger)
+    _heartbeat(paths, config, contract, "baseline_complete", optimizer_tokens=0, optimizer_steps=0, baseline_probe_average_score=baseline["probe"]["probe_average_score"])
     optimizer = torch.optim.AdamW(model.parameters(), lr=config.policy["learning_rate"], weight_decay=.01); inputs, targets, masks = train; best_probe = baseline["probe"]["probe_average_score"]; deadline = time.time() + config.policy["wall_clock_cap_hours"] * 3600
     for index in range(1, config.policy["max_segments"] + 1):
         acc = LossAccumulator(split=f"r29a7_train_segment_{index}", mask_policy=ASSISTANT_RESPONSE_ONLY); tokens = steps = 0
@@ -145,6 +152,7 @@ def run(*, prefer_device: str = "mps", resource_safe: bool = True, config: RunCo
             indices = torch.randint(0, inputs.shape[0], (batch,), device=device); logits, _ = model(inputs[indices]); _, loss_tokens, loss = token_weighted_torch_loss(torch, logits, targets[indices], masks[indices]); value = float(loss.detach().cpu())
             if not math.isfinite(value): ledger.update({"ok": False, "stop_reason": "nan_loss", "blockers": ["nan_loss"]}); break
             optimizer.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), .7); optimizer.step(); acc.add(value, loss_tokens, ASSISTANT_RESPONSE_ONLY); tokens += int(loss_tokens); steps += 1
+            if steps % 25 == 0: _heartbeat(paths, config, contract, "training", segment_index=index, optimizer_tokens=ledger["optimizer_tokens"] + tokens, optimizer_steps=ledger["optimizer_steps"] + steps)
         if ledger.get("stop_reason"): break
         if device == "mps": torch.mps.synchronize()
         dev_eval = _evaluate_masked(torch, model, dev, "r29a7_dev", batch); heldout_eval = _evaluate_masked(torch, model, heldout, "r29a7_heldout", batch); probe = _probe(torch, model, tokenizer, device, context_length)
