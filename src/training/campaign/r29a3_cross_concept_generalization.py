@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 from typing import Any
 
@@ -97,6 +98,34 @@ def _probe_model(torch, model, tokenizer, device: str, context_length: int) -> d
     return {"probe_average_score": round(sum(item["score"] for item in probes) / len(probes), 4), "role_prefix_leaks": leaks, "below_threshold": [item["id"] for item in probes if item["score"] < 0.7], "probes": probes}
 
 
+def build_mix(root: Path = ROOT, *, write_artifacts: bool = True) -> dict[str, Any]:
+    root = Path(root)
+    rows: dict[str, list[dict[str, Any]]] = {"train": [], "dev": [], "heldout": []}
+    for index in range(16):
+        for card in TRAIN_CARDS:
+            split = "dev" if _stable_index(f"{card[0]}:{index}", 6) == 0 else "train"
+            rows[split].append(_row(card, index, split))
+    for index in range(12):
+        for card in HELDOUT_CARDS:
+            rows["heldout"].append(_row((*card, "project-authored-heldout"), index, "heldout"))
+    source_ids = {split: {row["source_card"]["source_id"] for row in items} for split, items in rows.items()}
+    report = {
+        "ok": bool(rows["train"] and rows["dev"] and rows["heldout"]), "campaign_id": CAMPAIGN_ID,
+        "counts": {split: len(items) for split, items in rows.items()},
+        "split_source_overlap": sorted((source_ids["train"] | source_ids["dev"]) & source_ids["heldout"]),
+        "tone_profile": TONE_PROFILE, "curriculum_modes": [mode for mode, _ in QUESTION_MODES],
+        "raw_external_text_ingested": False, "processed_corpus_committed": False,
+    }
+    report["ok"] = report["ok"] and not report["split_source_overlap"]
+    if write_artifacts:
+        output = root / "artifacts/r29a3/training_mix"
+        output.mkdir(parents=True, exist_ok=True)
+        for split, items in rows.items():
+            (output / f"{split}.jsonl").write_text("".join(f"{json.dumps(item, ensure_ascii=False, sort_keys=True)}\n" for item in items), encoding="utf-8")
+        base.write_json(root / "artifacts/r29a3/reports/training_mix_report.json", report)
+    return report
+
+
 def _configure() -> None:
     base.CAMPAIGN_ID = CAMPAIGN_ID
     base.SEED = SEED
@@ -104,14 +133,7 @@ def _configure() -> None:
     base.REPORTS, base.CHECKPOINTS, base.RUNS, base.MIX = ART / "reports", ART / "model_lab/checkpoints", ART / "model_lab/runs", ART / "training_mix"
     base.MARKER, base.LEDGER, base.HEARTBEAT = base.REPORTS / "campaign_marker.json", base.REPORTS / "campaign_ledger.json", base.REPORTS / "heartbeat_latest.json"
     base.TONE_PROFILE, base.CAMPAIGN_POLICY = TONE_PROFILE, CAMPAIGN_POLICY
-    base.TRAIN_CARDS, base.HELDOUT_CARDS, base._row, base._probe_model = TRAIN_CARDS, HELDOUT_CARDS, _row, _probe_model
-
-
-def build_mix(root: Path = ROOT, *, write_artifacts: bool = True) -> dict[str, Any]:
-    _configure()
-    report = base.build_mix(root, write_artifacts=write_artifacts)
-    report["curriculum_modes"] = [mode for mode, _ in QUESTION_MODES]
-    return report
+    base.TRAIN_CARDS, base.HELDOUT_CARDS, base._row, base._probe_model, base.build_mix = TRAIN_CARDS, HELDOUT_CARDS, _row, _probe_model, build_mix
 
 
 def create_campaign_marker(campaign_id: str = CAMPAIGN_ID) -> dict[str, Any]:
