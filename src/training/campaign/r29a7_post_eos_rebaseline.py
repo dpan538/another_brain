@@ -93,6 +93,18 @@ def _blocked(config: RunConfig, blockers: list[str]) -> dict[str, Any]:
     write_json(config.paths()["ledger"], ledger); return ledger
 
 
+def abort_due_to_supervisor(reason: str, config: RunConfig = CONFIG) -> dict[str, Any]:
+    """Close an interrupted run so its marker cannot be mistaken for approval."""
+    paths = config.paths(); ledger = read_json(paths["ledger"], {})
+    ledger.update({"ok": False, "campaign_id": config.campaign_id, "stop_reason": reason, "blockers": [reason], "completed_at_utc": now_utc(), "active_approval_after_completion": 0, "control_contract": _contract(config)})
+    write_json(paths["ledger"], ledger)
+    marker = read_json(paths["marker"], {})
+    marker.update({"active": False, "consumed": True, "consumed_at_utc": now_utc(), "active_approval_after_completion": 0})
+    write_json(paths["marker"], marker)
+    _heartbeat(paths, config, _contract(config), "supervisor_abort", stop_reason=reason, optimizer_tokens=ledger.get("optimizer_tokens", 0))
+    return ledger
+
+
 def _read_rows(path: Path) -> list[dict[str, Any]]: return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
 
 

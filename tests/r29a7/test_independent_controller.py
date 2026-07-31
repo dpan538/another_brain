@@ -32,3 +32,6 @@ class R29A7IndependentControllerTests(unittest.TestCase):
         contents = Path(campaign.__file__).read_text(encoding="utf-8")
         self.assertIn('"loading_model_and_baseline"', contents)
         self.assertIn('if steps % 25 == 0: _heartbeat', contents)
+
+    def test_supervisor_abort_is_available_for_interrupted_runs(self):
+        self.assertTrue(callable(campaign.abort_due_to_supervisor))
