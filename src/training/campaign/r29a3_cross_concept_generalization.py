@@ -85,6 +85,9 @@ def _row(card: tuple[str, str, str, str], index: int, split: str) -> dict[str, A
     }
 
 
+ROW_BUILDER = _row
+
+
 def _probe_model(torch, model, tokenizer, device: str, context_length: int) -> dict[str, Any]:
     probes = []
     for key, _, _ in HELDOUT_CARDS:
@@ -134,7 +137,7 @@ def _configure() -> None:
     base.REPORTS, base.CHECKPOINTS, base.RUNS, base.MIX = ART / "reports", ART / "model_lab/checkpoints", ART / "model_lab/runs", ART / "training_mix"
     base.MARKER, base.LEDGER, base.HEARTBEAT = base.REPORTS / "campaign_marker.json", base.REPORTS / "campaign_ledger.json", base.REPORTS / "heartbeat_latest.json"
     base.TONE_PROFILE, base.CAMPAIGN_POLICY = TONE_PROFILE, CAMPAIGN_POLICY
-    base.TRAIN_CARDS, base.HELDOUT_CARDS, base._row, base._probe_model, base.build_mix = TRAIN_CARDS, HELDOUT_CARDS, _row, _probe_model, build_mix
+    base.TRAIN_CARDS, base.HELDOUT_CARDS, base._row, base._probe_model, base.build_mix = TRAIN_CARDS, HELDOUT_CARDS, ROW_BUILDER, _probe_model, build_mix
 
 
 def create_campaign_marker(campaign_id: str = CAMPAIGN_ID) -> dict[str, Any]:
