@@ -11,6 +11,7 @@ from src.training.campaign import r29a1_knowledge_countermeasure as base
 
 
 CAMPAIGN_ID = "r29a3_96m_cross_concept_generalization_v1"
+APPROVAL_KEY = "R29A3_CROSS_CONCEPT_GENERALIZATION_ALLOWED"
 SEED = 2913
 ART = ROOT / "artifacts/r29a3"
 TONE_PROFILE = {
@@ -118,11 +119,11 @@ def build_mix(root: Path = ROOT, *, write_artifacts: bool = True) -> dict[str, A
     }
     report["ok"] = report["ok"] and not report["split_source_overlap"]
     if write_artifacts:
-        output = root / "artifacts/r29a3/training_mix"
+        output = root / ART.relative_to(ROOT) / "training_mix"
         output.mkdir(parents=True, exist_ok=True)
         for split, items in rows.items():
             (output / f"{split}.jsonl").write_text("".join(f"{json.dumps(item, ensure_ascii=False, sort_keys=True)}\n" for item in items), encoding="utf-8")
-        base.write_json(root / "artifacts/r29a3/reports/training_mix_report.json", report)
+        base.write_json(root / ART.relative_to(ROOT) / "reports/training_mix_report.json", report)
     return report
 
 
@@ -139,7 +140,7 @@ def _configure() -> None:
 def create_campaign_marker(campaign_id: str = CAMPAIGN_ID) -> dict[str, Any]:
     _configure()
     marker = base.create_campaign_marker(campaign_id)
-    marker["approval"] = {"R29A3_CROSS_CONCEPT_GENERALIZATION_ALLOWED": True}
+    marker["approval"] = {APPROVAL_KEY: True}
     base.write_json(base.MARKER, marker)
     return marker
 
