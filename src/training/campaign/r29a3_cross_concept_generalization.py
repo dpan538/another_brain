@@ -116,7 +116,10 @@ def build_mix(root: Path = ROOT, *, write_artifacts: bool = True) -> dict[str, A
 
 def create_campaign_marker(campaign_id: str = CAMPAIGN_ID) -> dict[str, Any]:
     _configure()
-    return base.create_campaign_marker(campaign_id)
+    marker = base.create_campaign_marker(campaign_id)
+    marker["approval"] = {"R29A3_CROSS_CONCEPT_GENERALIZATION_ALLOWED": True}
+    base.write_json(base.MARKER, marker)
+    return marker
 
 
 def run_cross_concept_generalization(campaign_id: str = CAMPAIGN_ID, *, prefer_device: str = "mps", resource_safe: bool = True) -> dict[str, Any]:
