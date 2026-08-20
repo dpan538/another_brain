@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate the ignored 6,000-session R29B2M-R1 dialogue SFT dataset."""
+"""Rejected R29B2M-R1 generator retained only as an audit fixture.
+
+REJECTED_GENERATOR_DO_NOT_USE_FOR_TRAINING: its bucket-wide target tails caused
+systematic semantic misalignment.  Normal execution is permanently denied.
+"""
 
 from __future__ import annotations
 
@@ -20,6 +24,9 @@ from src.training.mlx.r29b2m_r1_campaign import CAMPAIGN_ID, atomic_json, utc_no
 from src.training.mlx.r29b2m_r1_dataset import encode_assistant_response_only  # noqa: E402
 from src.training.mlx.r29b2m_r1_dataset_seeds import SEEDS, SemanticSeed  # noqa: E402
 from src.training.mlx.r29b2m_tokenizer import ExactRuntimeTokenizer, WRAPPER_VERSION  # noqa: E402
+
+
+GENERATOR_STATUS = "REJECTED_GENERATOR_DO_NOT_USE_FOR_TRAINING"
 
 
 VARIATION_COUNTS = {
@@ -323,7 +330,25 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-root", type=Path, required=True)
     parser.add_argument("--tokenizer", type=Path, required=True)
+    parser.add_argument(
+        "--audit-rejected-generator-fixture",
+        action="store_true",
+        help="Explicitly run the rejected generator only for isolated regression auditing.",
+    )
     args = parser.parse_args()
+    if not args.audit_rejected_generator_fixture:
+        print(
+            json.dumps(
+                {
+                    "status": GENERATOR_STATUS,
+                    "error": "old_r29b2m_r1_generator_denied_for_training",
+                    "permitted_use": "audit_and_regression_fixture_only",
+                },
+                sort_keys=True,
+            ),
+            file=sys.stderr,
+        )
+        return 3
     tokenizer = ExactRuntimeTokenizer.from_file(args.tokenizer)
     dataset_dir = args.artifact_root.resolve() / "dataset"
     dataset_dir.mkdir(parents=True, exist_ok=True)
