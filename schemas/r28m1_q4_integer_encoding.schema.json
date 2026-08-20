@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.com/schemas/r28m1_q4_integer_encoding.schema.json",
+  "title": "R28M1 signed-int4 offset-binary encoding contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "encoding",
+    "signed_range",
+    "zero_point",
+    "decode",
+    "nibble_order",
+    "scale_formula",
+    "q4_padding",
+    "bool_bit_order"
+  ],
+  "properties": {
+    "encoding": { "const": "signed_int4_offset_binary" },
+    "signed_range": {
+      "type": "array",
+      "prefixItems": [{ "const": -8 }, { "const": 7 }],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "zero_point": { "const": 8 },
+    "decode": { "const": "nibble - 8" },
+    "nibble_order": { "const": "low_then_high" },
+    "scale_formula": { "const": "max_abs / 7 if max_abs > 0 else 1.0" },
+    "q4_padding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["odd_count_pad_nibble", "pad_nibbles"],
+      "properties": {
+        "odd_count_pad_nibble": { "const": 0 },
+        "pad_nibbles": { "enum": [0, 1] }
+      }
+    },
+    "bool_bit_order": { "const": "little" }
+  }
+}

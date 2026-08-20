@@ -1,7 +1,7 @@
-"""Strict, framework-independent reader for the committed R28M1 q4 package.
+"""Strict reader for the committed R28M1 offset-binary q4 package.
 
-The browser bundle stores signed int4 values in little nibble order (low nibble
-first) with one symmetric scale per tensor.  The loader validates every
+The exporter stores signed int4 values as ``signed + 8`` in little nibble order
+(low nibble first) with one symmetric scale per tensor.  The loader validates every
 declared byte, checksum and tensor range before dequantising.  It deliberately
 does not know how to open a PyTorch checkpoint: R29B2M's seed provenance is
 q4-recovered only.
@@ -45,12 +45,25 @@ def _read_json(path: Path) -> dict[str, Any]:
     return value
 
 
-def _int4_low_then_high(raw: bytes, count: int) -> np.ndarray:
+def decode_offset_binary_int4_numpy(raw: bytes, count: int) -> np.ndarray:
+    """Decode ``low_then_high`` nibbles using the R28M1 ``nibble - 8`` rule."""
+    if count < 0 or count > len(raw) * 2:
+        raise Q4SourceError("invalid_q4_decode_count")
     packed = np.frombuffer(raw, dtype=np.uint8)
     values = np.empty(packed.size * 2, dtype=np.int8)
     values[0::2] = (packed & 0x0F).astype(np.int8) - 8
     values[1::2] = (packed >> 4).astype(np.int8) - 8
     return values[:count]
+
+
+def decode_offset_binary_int4_mlx(raw: bytes, count: int):
+    """MLX parity decoder; import MLX lazily so source audits remain NumPy-only."""
+    import mlx.core as mx
+
+    decoded = decode_offset_binary_int4_numpy(raw, count)
+    result = mx.array(decoded)
+    mx.eval(result)
+    return result
 
 
 def _unpack_bool_little_endian(raw: bytes, count: int) -> np.ndarray:
@@ -107,7 +120,7 @@ class R28M1Source:
                 raise Q4SourceError(f"q4_byte_count:{name}")
             if record.pad_nibbles not in (0, 1):
                 raise Q4SourceError(f"q4_pad_nibbles:{name}")
-            values = _int4_low_then_high(raw, count).astype(dtype, copy=False)
+            values = decode_offset_binary_int4_numpy(raw, count).astype(dtype, copy=False)
             return (values * np.asarray(record.scale, dtype=dtype)).reshape(record.shape)
         if record.encoding == "bitpack_bool":
             expected = (count + 7) // 8

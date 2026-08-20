@@ -1,3 +1,5 @@
+import { q4OffsetBinaryValueAt } from "./q4_integer_encoding.js";
+
 const R28HOTFIX2_Q4_RUNTIME_VERSION = "r28ship0-unified-q4-mount";
 const R28HOTFIX1_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
 const R28HOTFIX3_Q4_RUNTIME_VERSION = R28HOTFIX2_Q4_RUNTIME_VERSION;
@@ -312,15 +314,8 @@ function decodeExactRuntimeTokenIds(tokenIds, tokenizer, options = {}) {
   };
 }
 
-function q4SignedValue(nibble) {
-  const value = Number(nibble) & 0x0f;
-  return value >= 8 ? value - 16 : value;
-}
-
 function q4ValueAt(bytes, index, scale = 1) {
-  const byte = bytes[Math.floor(index / 2)] || 0;
-  const nibble = index % 2 === 0 ? byte & 0x0f : (byte >> 4) & 0x0f;
-  return q4SignedValue(nibble) * scale;
+  return q4OffsetBinaryValueAt(bytes, index, scale);
 }
 
 function addInPlace(target, value) {

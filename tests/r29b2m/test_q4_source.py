@@ -16,7 +16,7 @@ def test_committed_q4_source_is_strictly_auditable_without_torch():
     assert source.dequantize_numpy("blocks.0.attn.mask").shape == (256, 256)
 
 
-def test_q4_low_then_high_signed_nibble_order_is_documented_by_result():
+def test_q4_low_then_high_offset_binary_order_is_documented_by_result():
     source = load_r28m1_q4_source(ASSETS)
     value = source.dequantize_numpy("ln_f.weight")
     assert value.shape == (896,)
