@@ -5,6 +5,7 @@ import { ROOT } from "./r18_utils.mjs";
 
 const RECOVERY_PROMPTS = resolve(ROOT, "evals/r24_intelligence_recovery/prompts.jsonl");
 const LONG_HORIZON_TASKS = resolve(ROOT, "training/long_horizon/seed_tasks.jsonl");
+const R29B2M_DAILY_DIALOGUE_V2 = resolve(ROOT, "evals/r29b2m_daily_dialogue_v2/sessions.jsonl");
 const MIN_SNIPPET_CHARS = 22;
 const SCAN_PATHS = [
   "web",
@@ -51,6 +52,16 @@ function promptTextsFromLongHorizon(rows) {
   return out;
 }
 
+function promptTextsFromDailyDialogue(rows) {
+  const out = [];
+  for (const row of rows) {
+    for (const message of row.messages || []) {
+      if (message.role === "user") out.push({ id: row.session_id, text: message.content || "" });
+    }
+  }
+  return out;
+}
+
 function snippetsFor(text) {
   const normalized = normalize(text);
   if (normalized.length < MIN_SNIPPET_CHARS) return [];
@@ -77,8 +88,9 @@ async function walk(path) {
 async function main() {
   const recovery = await readJsonl(RECOVERY_PROMPTS);
   const longHorizon = await readJsonl(LONG_HORIZON_TASKS);
+  const dailyDialogue = await readJsonl(R29B2M_DAILY_DIALOGUE_V2);
   const promptSnippets = [];
-  for (const item of [...promptTextsFromRecovery(recovery), ...promptTextsFromLongHorizon(longHorizon)]) {
+  for (const item of [...promptTextsFromRecovery(recovery), ...promptTextsFromLongHorizon(longHorizon), ...promptTextsFromDailyDialogue(dailyDialogue)]) {
     for (const snippet of snippetsFor(item.text)) {
       promptSnippets.push({ id: item.id, snippet, source_text: item.text });
     }

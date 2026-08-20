@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "R29B2M-R1 daily dialogue eval-v2 session",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "session_id", "family_id", "scenario_seed_id", "messages",
+    "turn_count_including_generated_assistant", "expected_behaviors",
+    "forbidden_behaviors", "referent_truth", "active_constraints",
+    "correction_truth", "expected_action", "maximum_answer_length",
+    "critical_failure_rules", "split", "provenance", "review_status"
+  ],
+  "properties": {
+    "session_id": {"type": "string", "minLength": 1},
+    "family_id": {"type": "string", "minLength": 1},
+    "scenario_seed_id": {"type": "string", "minLength": 1},
+    "messages": {
+      "type": "array", "minItems": 1, "maxItems": 5,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["role", "content"],
+        "properties": {"role": {"enum": ["user", "assistant"]}, "content": {"type": "string", "minLength": 1}}
+      }
+    },
+    "turn_count_including_generated_assistant": {"type": "integer", "minimum": 2, "maximum": 6},
+    "expected_behaviors": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "forbidden_behaviors": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "referent_truth": {"type": ["string", "null"]},
+    "active_constraints": {"type": "array", "items": {"type": "string"}},
+    "correction_truth": {"type": ["string", "null"]},
+    "expected_action": {"type": "string", "minLength": 1},
+    "maximum_answer_length": {"type": "integer", "minimum": 1, "maximum": 96},
+    "critical_failure_rules": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "split": {"const": "eval_v2"},
+    "provenance": {"const": "project_authored_public_safe_semantic_scenario"},
+    "review_status": {"const": "frozen_before_training_data_generation"}
+  }
+}
