@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "R29B2M-R4H Hybrid Product Simulation Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "family",
+    "messages",
+    "oracle_local_signal_packet",
+    "expected_packet_properties",
+    "forbidden_packet_properties",
+    "response_quality_rubric",
+    "maximum_answer_characters",
+    "latency_class",
+    "provenance",
+    "split",
+    "allowed_for_training"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string"
+    },
+    "family": {
+      "type": "string"
+    },
+    "messages": {
+      "type": "array",
+      "minItems": 1
+    },
+    "oracle_local_signal_packet": {
+      "$ref": "../../schemas/local_signal_packet_v1.schema.json"
+    },
+    "expected_packet_properties": {
+      "type": "object"
+    },
+    "forbidden_packet_properties": {
+      "type": "array"
+    },
+    "response_quality_rubric": {
+      "type": "array"
+    },
+    "maximum_answer_characters": {
+      "type": "integer",
+      "minimum": 20,
+      "maximum": 220
+    },
+    "latency_class": {
+      "enum": [
+        "warm_short",
+        "reasoned_short"
+      ]
+    },
+    "provenance": {
+      "type": "string"
+    },
+    "split": {
+      "const": "product_simulation_eval"
+    },
+    "allowed_for_training": {
+      "const": false
+    }
+  }
+}

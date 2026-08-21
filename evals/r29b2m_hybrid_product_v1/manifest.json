@@ -1,0 +1,23 @@
+{
+  "campaign_id": "r29b2m_r4h_hybrid_signal_simulation_v1",
+  "version": "r29b2m-hybrid-product-v1",
+  "session_count": 120,
+  "family_counts": {
+    "ordinary_daily_conversation": 24,
+    "emotional_acknowledgement": 20,
+    "practical_daily_question": 16,
+    "rewrite_summary": 12,
+    "comparison_opinion": 12,
+    "logic_question": 12,
+    "philosophical_question": 12,
+    "uncertainty_clarification": 6,
+    "identity_privacy_boundary": 6
+  },
+  "split": "product_simulation_eval",
+  "allowed_for_training": false,
+  "public_safe": true,
+  "contains_answer_targets": false,
+  "source_policy": "project_authored_independently_of_r2_training_eval_v2_and_r3_outputs",
+  "cases_sha256": "ad033ad7f667c82ef6f2def8d14e85b5d25d4dd83761bfe27d26390e0048f0bc",
+  "packet_schema_sha256": "9f303feeea9e3c474c4c1081d0b55f9080eb8f8e324b7d9650101cf534fa5b1e"
+}

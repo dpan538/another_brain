@@ -1,0 +1,32 @@
+{
+  "campaign_id": "r29b2m_r4h_hybrid_signal_simulation_v1",
+  "valid": true,
+  "reviewer_class": "codex_agent_oracle_packet_review_not_human",
+  "human_review_completed": false,
+  "codex_semantic_review_completed": true,
+  "reviewed_session_count": 120,
+  "oracle_packet_count": 120,
+  "valid_packet_count": 120,
+  "anchor_grounding_rate": 1,
+  "affect_over_inference_failures": 0,
+  "style_grammar_mismatch_failures": 0,
+  "private_data_failures": 0,
+  "answer_target_count": 0,
+  "eval_v2_isolation": {
+    "source": "frozen_eval_v2_user_messages",
+    "maximum_similarity": 0.3157894736842105,
+    "maximum_similarity_case_id": "r29b2m_r4h_identity_privacy_boundary_00",
+    "threshold": 0.72,
+    "near_duplicates": []
+  },
+  "r2_train_isolation": {
+    "source": "r2_train_user_messages",
+    "maximum_similarity": 0.25,
+    "maximum_similarity_case_id": "r29b2m_r4h_identity_privacy_boundary_01",
+    "threshold": 0.72,
+    "near_duplicates": []
+  },
+  "r1_rejected_dataset_used": false,
+  "r3_generated_outputs_used": false,
+  "owner_review_completed": false
+}
