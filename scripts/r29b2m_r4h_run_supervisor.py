@@ -51,7 +51,7 @@ def atomic_json(path: Path, value: dict[str, Any]) -> None:
 
 
 class Supervisor:
-    def __init__(self, repo: Path, artifact_root: Path, browser_port: int) -> None:
+    def __init__(self, repo: Path, artifact_root: Path, browser_port: int, resume_aborted_validation: bool = False) -> None:
         self.repo = repo.resolve()
         self.artifact_root = artifact_root.expanduser().resolve()
         self.browser_port = browser_port
@@ -65,6 +65,14 @@ class Supervisor:
         self.last_heartbeat_at: str | None = None
         self.state = self._initial_state()
         self._load_resume_state()
+        if resume_aborted_validation and self.state.get("state") == "ABORTED_SAFELY":
+            history = list(self.state.get("prior_terminal_history", []))
+            history.append({"state": self.state.get("state"), "terminal_at": self.state.get("terminal_at"), "terminal_reason": self.state.get("terminal_reason")})
+            self.state["prior_terminal_history"] = history
+            self.state["state"] = "PAUSED_RECOVERABLE"
+            self.state["phase_started_at"] = utc_now()
+            self.state["terminal_at"] = None
+            self.state["terminal_reason"] = None
 
     def _initial_state(self) -> dict[str, Any]:
         now = utc_now()
@@ -339,7 +347,7 @@ class Supervisor:
         r3_python = str(venv_python if venv_python.is_file() else Path(sys.executable))
         return [
             ("R4H_tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests/r29b2m_r4h", "-q"]),
-            ("R2_relevant_tests", [sys.executable, "-m", "unittest", "discover", "-s", "tests/r29b2m_r2", "-q"]),
+            ("R2_relevant_tests", [r3_python, "-m", "pytest", "-q", "tests/r29b2m_r2"]),
             ("R3_relevant_tests", [r3_python, "-m", "pytest", "-q", "tests/r29b2m_r3"]),
             ("browser_q4_integer_parity", [r3_python, "-m", "pytest", "-q", "tests/r29b2m/test_q4_encoding_parity.py"]),
             ("browser_regression", ["npm", "run", "test:r28hotfix4"]),
@@ -366,8 +374,9 @@ def main() -> int:
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--artifact-root", type=Path, default=default_artifact_root())
     parser.add_argument("--browser-port", type=int, default=41738)
+    parser.add_argument("--resume-aborted-validation", action="store_true")
     args = parser.parse_args()
-    supervisor = Supervisor(args.repo, args.artifact_root, args.browser_port)
+    supervisor = Supervisor(args.repo, args.artifact_root, args.browser_port, args.resume_aborted_validation)
 
     def stop(_signum: int, _frame: object) -> None:
         supervisor.interrupted.set()
