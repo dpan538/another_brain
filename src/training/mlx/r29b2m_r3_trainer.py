@@ -79,6 +79,12 @@ def _tree_all_finite(tree: Any) -> bool:
     return all(bool(value.item()) for value in checks)
 
 
+def activate_training_mode(model: Any) -> Any:
+    """Normalize seed and resumed models to the same recursive train mode."""
+    model.train()
+    return model
+
+
 class R29B2MTrainer:
     def __init__(
         self,
@@ -90,7 +96,7 @@ class R29B2MTrainer:
         artifact_root: Path,
         progress: TrainingProgress | None = None,
     ) -> None:
-        self.model = model
+        self.model = activate_training_mode(model)
         self.optimizer = optimizer
         self.tokenizer = tokenizer
         self.dataset = dataset

@@ -53,6 +53,15 @@ def _read(path: Path) -> dict[str, Any]:
     return value
 
 
+def _valid_report(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    try:
+        return _read(path).get("valid") is True
+    except (OSError, json.JSONDecodeError, ValueError):
+        return False
+
+
 def _git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout.strip()
 
@@ -330,7 +339,7 @@ class Supervisor:
         self.transition("CHECKPOINT_DRY_RUN")
         self.transition("RESUME_VALIDATION")
         resume_proof = self.paths.reports / "exact_resume_proof.json"
-        if not resume_proof.is_file():
+        if not _valid_report(resume_proof):
             resource = _read(self.paths.reports / "resource_report.json")
             self.run_child([
                 self.python, "scripts/r29b2m_r3_verify_resume.py",
