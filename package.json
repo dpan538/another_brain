@@ -802,6 +802,12 @@
     "r29a2:knowledge-addon-readiness": "python3 scripts/r29a2_knowledge_addon_readiness.py",
     "test:r29a2": "python3 -m unittest discover -s tests/r29a2",
     "test:r29b1": "python3 -m unittest discover -s tests/r29b1",
-    "test:r29b2m-r3": "python3 -m pytest -q tests/r29b2m_r3"
+    "test:r29b2m-r3": "python3 -m pytest -q tests/r29b2m_r3",
+    "r29b2m-r4h:build-oracle-eval": "node --experimental-strip-types scripts/r29b2m_r4h_build_oracle_eval.mjs",
+    "r29b2m-r4h:offline-simulation": "node --experimental-strip-types scripts/r29b2m_r4h_run_offline_simulation.mjs",
+    "r29b2m-r4h:build-lab": "node scripts/r29b2m_r4h_build_lab.mjs",
+    "r29b2m-r4h:local-proxy": "node --experimental-strip-types scripts/r29b2m_r4h_local_proxy.mjs",
+    "r29b2m-r4h:supervisor": "python3 scripts/r29b2m_r4h_run_supervisor.py",
+    "test:r29b2m-r4h": "python3 -m unittest discover -s tests/r29b2m_r4h -q"
   }
 }
