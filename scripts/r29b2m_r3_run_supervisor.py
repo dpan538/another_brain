@@ -249,7 +249,9 @@ class Supervisor:
 
     @property
     def python(self) -> str:
-        return str(self.args.venv_python.resolve())
+        # Keep the venv entrypoint itself.  Resolving its interpreter symlink
+        # bypasses pyvenv.cfg and silently drops the MLX environment.
+        return str(self.args.venv_python.absolute())
 
     @property
     def seed(self) -> Path:
