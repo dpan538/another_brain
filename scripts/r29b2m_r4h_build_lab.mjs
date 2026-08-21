@@ -84,7 +84,7 @@ async function run(text) {
   readyState.textContent = 'Responding'; signalAnimation.classList.add('active'); status.dataset.phase = 'responding'; mark('immediate_submitted', turnId);
   const immediateAckMs = performance.now() - submittedAt; let requestCount = 0; let retryCount = 0; let firstTokenAt = null;
   try {
-    await sleep(120, controller.signal); const packet = exactPacket(text, turnId); const signalAt = performance.now(); mark('packet_ready', turnId);
+    await sleep(600, controller.signal); const packet = exactPacket(text, turnId); const signalAt = performance.now(); mark('packet_ready', turnId);
     signalAnimation.classList.remove('active'); readyState.textContent = 'Streaming'; status.dataset.phase = 'streaming';
     const compiled = 'LOCAL SIGNAL — advisory, not factual: focus exact user span; concise; no customer-service tone.';
     const chunks = selected === 'slow' ? ['这是一段', '缓慢但稳定的', 'Hybrid 模拟回答。'] : ['这是一段', '用于浏览器验证的', 'Hybrid 模拟回答。'];
