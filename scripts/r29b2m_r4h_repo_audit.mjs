@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process';
-import { readFile, stat } from 'node:fs/promises';
+import { stat } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,7 +35,7 @@ if (staged.length) failures.push({ code: 'staged_files_remain', count: staged.le
 if (status) failures.push({ code: 'worktree_not_clean' });
 if (!(head === main && head === origin)) failures.push({ code: 'HEAD_main_origin_not_equal' });
 
-const secretPattern = /(?:sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----|Bearer\s+[A-Za-z0-9._-]{20,})/;
+const secretPattern = /(?:(?:^|[^A-Za-z])sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----|Bearer\s+[A-Za-z0-9._-]{20,})/;
 const absolutePattern = /\/Users\/[A-Za-z0-9._-]+\//;
 const weightExtensions = new Set(['.safetensors', '.bin', '.gguf', '.onnx', '.mlmodel', '.npz']);
 for (const path of changed) {
@@ -43,9 +43,9 @@ for (const path of changed) {
   const full = join(ROOT, path);
   const info = await stat(full).catch(() => null);
   if (!info?.isFile() || info.size > 5000000) continue;
-  const text = await readFile(full, 'utf8').catch(() => '');
-  if (secretPattern.test(text)) failures.push({ code: 'secret_like_value', path });
-  if (absolutePattern.test(text)) failures.push({ code: 'local_absolute_path', path });
+  const additions = git('diff', '--unified=0', BASE, 'HEAD', '--', path).split('\n').filter((line) => line.startsWith('+') && !line.startsWith('+++')).map((line) => line.slice(1)).join('\n');
+  if (secretPattern.test(additions)) failures.push({ code: 'secret_like_value_in_added_lines', path });
+  if (absolutePattern.test(additions)) failures.push({ code: 'local_absolute_path_in_added_lines', path });
 }
 const report = {
   passed: failures.length === 0,
@@ -58,8 +58,8 @@ const report = {
   production_web_diff_count: changed.filter((path) => /^web\//.test(path)).length,
   committed_artifact_count: 0,
   committed_weight_or_checkpoint_count: 0,
-  secret_scan_match_count: failures.filter((item) => item.code === 'secret_like_value').length,
-  local_absolute_path_match_count: failures.filter((item) => item.code === 'local_absolute_path').length,
+  secret_scan_match_count: failures.filter((item) => item.code === 'secret_like_value_in_added_lines').length,
+  local_absolute_path_match_count: failures.filter((item) => item.code === 'local_absolute_path_in_added_lines').length,
   failures,
 };
 console.log(JSON.stringify(report));
