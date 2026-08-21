@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.com/schemas/local_signal_packet_v1.schema.json",
+  "title": "Local Signal Packet V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "source",
+    "turn_id",
+    "anchors",
+    "affect",
+    "dialogue_act",
+    "style",
+    "emotional_rule_ids",
+    "avoid_flags",
+    "response_shape",
+    "confidence"
+  ],
+  "properties": {
+    "version": { "const": "local-signal.v1" },
+    "source": {
+      "enum": ["oracle_fixture", "heuristic_simulator", "future_efish"]
+    },
+    "turn_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9._:-]+$"
+    },
+    "anchors": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text", "start_codepoint", "end_codepoint", "salience"],
+        "properties": {
+          "text": { "type": "string", "minLength": 1, "maxLength": 48 },
+          "start_codepoint": { "type": "integer", "minimum": 0 },
+          "end_codepoint": { "type": "integer", "minimum": 1 },
+          "salience": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "affect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "intensity", "confidence"],
+      "properties": {
+        "label": {
+          "enum": [
+            "neutral", "tired", "frustrated", "relieved", "sad", "excited",
+            "uncertain", "embarrassed", "reflective", "playful", "guarded", "warm"
+          ]
+        },
+        "intensity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "dialogue_act": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "confidence"],
+      "properties": {
+        "label": {
+          "enum": [
+            "greeting", "acknowledgement", "emotional_acknowledgement",
+            "direct_daily_question", "practical_advice_request", "rewrite_request",
+            "summary_request", "comparison_request", "logic_question",
+            "philosophical_question", "uncertainty", "clarification_needed",
+            "identity_boundary", "privacy_boundary", "casual_conversation", "opinion_request"
+          ]
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "secondary", "confidence"],
+      "properties": {
+        "primary": {
+          "enum": [
+            "quiet_warm", "concise", "reflective", "playful_light", "direct",
+            "balanced", "gentle", "matter_of_fact", "open_ended",
+            "non_therapeutic", "non_customer_service"
+          ]
+        },
+        "secondary": {
+          "type": "array",
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "quiet_warm", "concise", "reflective", "playful_light", "direct",
+              "balanced", "gentle", "matter_of_fact", "open_ended",
+              "non_therapeutic", "non_customer_service"
+            ]
+          }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "emotional_rule_ids": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "tired_keep_space",
+          "frustration_acknowledge_before_advice",
+          "relief_match_lightness",
+          "sad_warm_without_therapy",
+          "excited_match_partial_energy",
+          "embarrassed_light_normalize",
+          "uncertain_acknowledge_gap",
+          "reflective_offer_two_views",
+          "playful_light_no_sarcasm",
+          "guarded_do_not_press",
+          "ordinary_do_not_problem_solve"
+        ]
+      }
+    },
+    "avoid_flags": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "bullet_list", "customer_service_tone", "therapy_tone", "excessive_validation",
+          "unsolicited_advice", "over_explanation", "forced_optimism", "pretend_certainty",
+          "forced_question", "textbook_outline", "moralising", "repeat_user_words",
+          "fake_memory", "internal_system_reference"
+        ]
+      }
+    },
+    "response_shape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum_characters", "preferred_sentences", "question_policy"],
+      "properties": {
+        "maximum_characters": { "type": "integer", "minimum": 20, "maximum": 220 },
+        "preferred_sentences": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "question_policy": {
+          "enum": ["none", "one_if_required", "allowed", "required_one"]
+        }
+      }
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}
