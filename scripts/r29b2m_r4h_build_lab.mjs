@@ -78,10 +78,11 @@ async function run(text) {
   if (!text.trim()) return;
   if (active) active.controller.abort('stale_turn');
   const turnId = 'browser-turn-' + (++turnCounter); const controller = new AbortController(); const selected = scenario.value;
+  const submittedAt = performance.now();
   active = { turnId, controller }; lastMessage = text; retry.disabled = true; cancel.disabled = false;
   message('user', text, turnId); const answer = message('assistant', '', turnId);
   readyState.textContent = 'Responding'; signalAnimation.classList.add('active'); status.dataset.phase = 'responding'; mark('immediate_submitted', turnId);
-  const submittedAt = performance.now(); let requestCount = 0; let retryCount = 0; let firstTokenAt = null;
+  const immediateAckMs = performance.now() - submittedAt; let requestCount = 0; let retryCount = 0; let firstTokenAt = null;
   try {
     await sleep(120, controller.signal); const packet = exactPacket(text, turnId); const signalAt = performance.now(); mark('packet_ready', turnId);
     signalAnimation.classList.remove('active'); readyState.textContent = 'Streaming'; status.dataset.phase = 'streaming';
@@ -91,7 +92,7 @@ async function run(text) {
       requestCount += 1; mark('request_start', turnId);
       if ((selected === 'retry' && requestCount === 1) || selected === 'timeout') { await sleep(70, controller.signal); throw new Error('before_first_token_timeout'); }
       for (let index = 0; index < chunks.length; index += 1) {
-        await sleep(selected === 'slow' ? 95 : 35, controller.signal);
+        await sleep(selected === 'slow' ? 600 : 35, controller.signal);
         if (active?.turnId !== turnId) throw new DOMException('stale', 'AbortError');
         answer.textContent += chunks[index];
         if (firstTokenAt === null && /\\S/u.test(chunks[index])) { firstTokenAt = performance.now(); mark('first_token', turnId); }
@@ -104,12 +105,12 @@ async function run(text) {
       else throw error;
     }
     readyState.textContent = 'Complete'; status.dataset.phase = 'complete'; cancel.disabled = true; retry.disabled = false; window.__R4H_LAB__.completedTurns += 1; mark('complete', turnId);
-    debug = { packet, compiled_style_policy:compiled, source_trace:'hybrid_heuristic_simulation', signal_elapsed_ms:signalAt-submittedAt, first_token_ms:firstTokenAt-submittedAt, total_elapsed_ms:performance.now()-submittedAt, request_count:requestCount, retry_count:retryCount, simulation_only:true, actual_browser_signal_inference:false }; refreshDebug();
+    debug = { packet, compiled_style_policy:compiled, source_trace:'hybrid_heuristic_simulation', immediate_ack_ms:immediateAckMs, signal_elapsed_ms:signalAt-submittedAt, first_token_ms:firstTokenAt-submittedAt, total_elapsed_ms:performance.now()-submittedAt, request_count:requestCount, retry_count:retryCount, simulation_only:true, actual_browser_signal_inference:false }; refreshDebug();
   } catch (error) {
     signalAnimation.classList.remove('active'); cancel.disabled = true; retry.disabled = false;
     if (controller.signal.aborted || error.name === 'AbortError') { readyState.textContent = controller.signal.reason === 'user_cancel' ? 'Cancelled' : 'Stale turn cancelled'; status.dataset.phase = 'cancelled'; mark('cancelled', turnId); }
     else { readyState.textContent = firstTokenAt === null ? 'Timed out before answer' : 'Stream interrupted — not retried'; status.dataset.phase = 'failed'; answer.classList.add('error'); if (!answer.textContent) answer.textContent = 'This simulated turn did not complete.'; mark('failed', turnId); }
-    debug = { source_trace:'hybrid_heuristic_simulation', error_category:String(error.message || error), request_count:requestCount, retry_count:retryCount, first_token_seen:firstTokenAt!==null, simulation_only:true, actual_browser_signal_inference:false }; refreshDebug();
+    debug = { source_trace:'hybrid_heuristic_simulation', immediate_ack_ms:immediateAckMs, error_category:String(error.message || error), request_count:requestCount, retry_count:retryCount, first_token_seen:firstTokenAt!==null, simulation_only:true, actual_browser_signal_inference:false }; refreshDebug();
   } finally { if (active?.turnId === turnId) active = null; }
 }
 
