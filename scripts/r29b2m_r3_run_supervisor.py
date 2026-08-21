@@ -65,6 +65,11 @@ class Supervisor:
         seed_manifest = _read(args.prior_runtime_root / "seed" / "seed_manifest.json")
         if self.paths.state.exists():
             self.state = _read(self.paths.state)
+            current_revision = _git("rev-parse", "HEAD")
+            if self.state.get("source_revision") != current_revision:
+                if self.state.get("training_started") is True or int(self.state.get("global_optimizer_step", 0)) > 0:
+                    raise ValueError("source_revision_changed_after_training_started")
+                self.state["source_revision"] = current_revision
             if self.state.get("state") == "PAUSED_RECOVERABLE":
                 self.state["state"] = self.state.get("resume_phase") or "ORIENTATION"
                 self.state["resume_status"] = "RESUMING_FROM_DURABLE_STATE"
