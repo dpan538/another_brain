@@ -801,6 +801,7 @@
     "test:r29a1": "python3 -m unittest discover -s tests/r29a1",
     "r29a2:knowledge-addon-readiness": "python3 scripts/r29a2_knowledge_addon_readiness.py",
     "test:r29a2": "python3 -m unittest discover -s tests/r29a2",
-    "test:r29b1": "python3 -m unittest discover -s tests/r29b1"
+    "test:r29b1": "python3 -m unittest discover -s tests/r29b1",
+    "test:r29b2m-r3": "python3 -m pytest -q tests/r29b2m_r3"
   }
 }
