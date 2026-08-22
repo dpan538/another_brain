@@ -24,7 +24,9 @@ export interface DeepSeekRequest {
   thinking: { type: "disabled" };
   stream: true;
   stream_options: { include_usage: true };
-  max_tokens: 192;
+  max_tokens: number;
+  temperature?: number;
+  top_p?: number;
 }
 
 export type DeepSeekStreamEvent =

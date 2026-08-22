@@ -11,14 +11,17 @@ const TEXT_EXTS = new Set([".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".json"
 const SKIP_DIRS = new Set([".git", "node_modules", "artifacts"]);
 const LAB_PATHS = [
   /^config\/deepseek_pricing_snapshot\.json$/,
-  /^config\/r29b2m_r4h(?:_r2)?_live_policy\.json$/,
+  /^config\/r29b2m_r4h(?:_r[23])?_live_policy\.json$/,
   /^data\/hybrid_signal\//,
   /^docs\/R29B2M_R4H_R2_GROUNDED_ATTENTION_STYLE_RECOVERY\.md$/,
   /^docs\/efish_emotional_grammar_v1\.md$/,
   /^docs\/r29b2m_r4h_r1_/,
+  /^docs\/R29B2M_R4H_R3_/,
+  /^evals\/r29b2m_hybrid_critic_v1\//,
   /^evals\/r29b2m_hybrid_product_v[12]\//,
-  /^prompts\/hybrid_dialogue_system_v[12]\.txt$/,
-  /^reports\/v[12]_/,
+  /^prompts\/hybrid_(?:dialogue_system_v[12]|canonical_answer_system_v3|constrained_rewrite_system_v3|controlled_one_call_system_v3)\.txt$/,
+  /^reports\/(?:v[12]_|r3_)/,
+  /^schemas\/local_critic_packet_v1\.schema\.json$/,
   /^schemas\/local_signal_packet_v[12]\.schema\.json$/,
   /^scripts\/audit_legacy_no_backend_full_repo\.mjs$/,
   /^scripts\/check_hybrid_lab_isolation\.mjs$/,
@@ -26,7 +29,7 @@ const LAB_PATHS = [
   /^scripts\/check_static_local_product_no_backend\.mjs$/,
   /^scripts\/r29b2m_r4h_/,
   /^src\/hybrid_runtime\//,
-  /^tests\/r29b2m_r4h(?:_r2)?\//,
+  /^tests\/r29b2m_r4h(?:_r[23])?\//,
 ];
 
 export function isHybridLabPath(path) {

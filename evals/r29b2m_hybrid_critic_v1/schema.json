@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "R29B2M R4H R3 Critic Evaluation Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_id", "family", "messages", "oracle_local_signal_packet_v2", "oracle_critic_fixture", "semantic_guard_metadata", "response_quality_rubric", "maximum_answer_characters", "provenance", "reviewer_class", "review_status", "split", "allowed_for_training"],
+  "properties": {
+    "case_id": { "type": "string" },
+    "family": { "type": "string" },
+    "messages": { "type": "array", "minItems": 1 },
+    "oracle_local_signal_packet_v2": { "type": "object" },
+    "oracle_critic_fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "style_target", "issues", "preferred_span_policy"],
+      "properties": {
+        "version": { "const": "oracle-critic-fixture.v1" },
+        "style_target": { "type": "string" },
+        "issues": { "type": "array", "minItems": 1 },
+        "preferred_span_policy": { "const": "protect_first_conclusion_or_named_value" }
+      }
+    },
+    "semantic_guard_metadata": { "type": "object" },
+    "response_quality_rubric": { "type": "array" },
+    "maximum_answer_characters": { "type": "integer" },
+    "provenance": { "type": "string" },
+    "reviewer_class": { "const": "codex_agent_oracle_critic_v1_review_not_human" },
+    "review_status": { "type": "string" },
+    "split": { "const": "product_simulation_eval" },
+    "allowed_for_training": { "const": false }
+  }
+}

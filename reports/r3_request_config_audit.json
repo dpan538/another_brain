@@ -1,0 +1,36 @@
+{
+  "campaign_id": "r29b2m_r4h_r3_controlled_critic_hybrid_v1",
+  "audited_commit": "0691d284f64770f7f35baeac1e7110eda9dfa05c",
+  "source_files": [
+    "src/hybrid_runtime/deepseek_adapter.ts",
+    "scripts/r29b2m_r4h_r1_live_experiment.mjs",
+    "scripts/r29b2m_r4h_r2_live_experiment.mjs"
+  ],
+  "previous_temperature_explicit": false,
+  "previous_effective_temperature": 1,
+  "previous_top_p_explicit": false,
+  "official_api_evidence": {
+    "source": "https://api-docs.deepseek.com/api/create-chat-completion/",
+    "checked_at": "2026-08-22",
+    "documented_temperature_default": 1,
+    "documented_parameter_guidance": "change temperature or top_p, not both"
+  },
+  "previous_request_structure": {
+    "base_system_message_count": 1,
+    "control_additional_local_system_message": false,
+    "treatment_additional_local_system_message": true,
+    "control_compiled_signal_null_confirmed": true,
+    "message_structure_confounded": true
+  },
+  "r3_control_contract": {
+    "temperature": 0,
+    "top_p_sent": false,
+    "system_message_count": 1,
+    "message_role_sequence_equal_between_arms": true,
+    "local_guidance_slot_present_in_all_arms": true,
+    "control_slot_value": "NONE"
+  },
+  "previous_r4h_r2_terminal": "BLOCKED_HYBRID_V2_FACTUAL",
+  "previous_r4h_r2_terminal_modified": false,
+  "pass": true
+}

@@ -821,6 +821,14 @@
     "r29b2m-r4h-r2:live-supervisor": "python3 scripts/r29b2m_r4h_r2_run_supervisor.py",
     "r29b2m-r4h-r2:secret-scan": "node scripts/r29b2m_r4h_r2_secret_scan.mjs",
     "r29b2m-r4h-r2:finalize": "node --experimental-strip-types scripts/r29b2m_r4h_r2_finalize.mjs",
-    "test:r29b2m-r4h-r2": "python3 -m unittest discover -s tests/r29b2m_r4h_r2 -q"
+    "test:r29b2m-r4h-r2": "python3 -m unittest discover -s tests/r29b2m_r4h_r2 -q",
+    "r29b2m-r4h-r3:build-critic-fixtures": "node --experimental-strip-types scripts/r29b2m_r4h_r3_build_critic_fixtures.mjs",
+    "r29b2m-r4h-r3:request-config-audit": "node scripts/r29b2m_r4h_r3_request_config_audit.mjs",
+    "r29b2m-r4h-r3:live-supervisor": "python3 scripts/r29b2m_r4h_r3_run_supervisor.py",
+    "r29b2m-r4h-r3:evaluate-reviews": "node --experimental-strip-types scripts/r29b2m_r4h_r3_evaluate_reviews.mjs",
+    "r29b2m-r4h-r3:reapply-guard": "node --experimental-strip-types scripts/r29b2m_r4h_r3_reapply_semantic_guard.mjs",
+    "r29b2m-r4h-r3:secret-scan": "node scripts/r29b2m_r4h_r3_secret_scan.mjs",
+    "r29b2m-r4h-r3:finalize": "node --experimental-strip-types scripts/r29b2m_r4h_r3_finalize.mjs",
+    "test:r29b2m-r4h-r3": "python3 -m unittest discover -s tests/r29b2m_r4h_r3 -q"
   }
 }

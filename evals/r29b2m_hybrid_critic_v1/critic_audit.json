@@ -1,0 +1,311 @@
+{
+  "campaign": "R29B2M-R4H-R3",
+  "reviewer_class": "codex_agent_oracle_critic_v1_review_not_human",
+  "cases_reviewed": 30,
+  "pass": true,
+  "failures": [],
+  "actual_efish_critic_model_trained": false,
+  "oracle_critic": true,
+  "reviews": [
+    {
+      "case_id": "r29b2m_r4h_ordinary_daily_conversation_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_ordinary_daily_conversation_02",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_ordinary_daily_conversation_03",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_ordinary_daily_conversation_04",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_emotional_acknowledgement_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_emotional_acknowledgement_02",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_emotional_acknowledgement_03",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_emotional_acknowledgement_04",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_02",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_03",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_04",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_05",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_rewrite_summary_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_rewrite_summary_02",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_comparison_opinion_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_comparison_opinion_02",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_02",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_03",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_04",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_05",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_02",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_03",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_04",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_05",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_uncertainty_clarification_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_uncertainty_clarification_02",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    },
+    {
+      "case_id": "r29b2m_r4h_identity_privacy_boundary_01",
+      "style_target_allowed": true,
+      "issues_allowed": true,
+      "packet_contains_no_answer_content": true,
+      "packet_contains_no_user_emotion": true,
+      "preferred_span_policy_extract_only": true,
+      "messages_identical_to_r2": true,
+      "reviewed": true
+    }
+  ]
+}
