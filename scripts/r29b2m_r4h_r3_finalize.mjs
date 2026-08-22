@@ -189,4 +189,14 @@ await atomicJson(join(ARTIFACT_ROOT, "campaign_state.json"), {
   optimizer_tokens: 0,
   assistant_target_tokens: 0,
 });
+await atomicJson(join(ARTIFACT_ROOT, "heartbeat_latest.json"), {
+  campaign_id: "r29b2m_r4h_r3_controlled_critic_hybrid_v1",
+  state: terminal,
+  process_active: false,
+  live_request_count: liveState.live_request_count,
+  training_started: false,
+  optimizer_tokens: 0,
+  assistant_target_tokens: 0,
+  key_value_logged: false,
+});
 console.log(JSON.stringify({ terminal, live_requests: liveState.live_request_count, one_call_passed: false, two_stage_passed: false, training_authorized: false, failed_gates: twoStageCausalFailures }));
