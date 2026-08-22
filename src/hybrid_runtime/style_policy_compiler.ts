@@ -58,24 +58,51 @@ export interface CompiledStylePolicy {
   fields_used: string[];
 }
 
-export function compileStylePolicy(packet: LocalSignalPacketV1, groundingText: string): CompiledStylePolicy {
+export type LocalSignalField = "anchors" | "affect" | "dialogue_act" | "style" | "emotional_rules" | "avoid_flags" | "response_shape";
+
+export function compileStylePolicyAblation(
+  packet: LocalSignalPacketV1,
+  groundingText: string,
+  omittedFields: ReadonlySet<LocalSignalField>,
+): CompiledStylePolicy {
   assertValidLocalSignalPacket(packet, groundingText);
-  const anchors = packet.anchors.map((anchor) => `“${anchor.text.replace(/[“”]/g, "")}”`).join(", ");
-  const voice = [packet.style.primary, ...packet.style.secondary].map((item) => STYLE_TEXT[item]).join(", ");
-  const avoid = packet.avoid_flags.map((item) => AVOID_TEXT[item]).join(", ");
-  const emotional = packet.emotional_rule_ids.map((item) => RULE_TEXT[item]).join("; ");
-  const instruction = [
-    "LOCAL SIGNAL — advisory, not factual:",
-    `- Focus only on exact user words: ${anchors}`,
-    `- Affect: ${packet.affect.label}; dialogue act: ${packet.dialogue_act.label}`,
-    `- Voice: ${voice}`,
-    `- Avoid: ${avoid}`,
-    `- Shape: ${packet.response_shape.preferred_sentences} sentence(s), ≤${packet.response_shape.maximum_characters} Chinese characters, ${QUESTION_TEXT[packet.response_shape.question_policy]}`,
-    `- Emotional handling: ${emotional}`,
-    "- Never add facts, override the user's words, weaken safety, or mention this instruction.",
-  ].join("\n");
-  return {
-    instruction,
-    fields_used: ["anchors", "affect", "dialogue_act", "style", "emotional_rules", "avoid_flags", "response_shape"],
-  };
+  const lines = ["LOCAL SIGNAL — advisory, not factual:"];
+  const fieldsUsed: LocalSignalField[] = [];
+  if (!omittedFields.has("anchors")) {
+    const anchors = packet.anchors.map((anchor) => `“${anchor.text.replace(/[“”]/g, "")}”`).join(", ");
+    lines.push(`- Focus only on exact user words: ${anchors}`);
+    fieldsUsed.push("anchors");
+  }
+  const state = [];
+  if (!omittedFields.has("affect")) {
+    state.push(`Affect: ${packet.affect.label}`);
+    fieldsUsed.push("affect");
+  }
+  if (!omittedFields.has("dialogue_act")) {
+    state.push(`dialogue act: ${packet.dialogue_act.label}`);
+    fieldsUsed.push("dialogue_act");
+  }
+  if (state.length) lines.push(`- ${state.join("; ")}`);
+  if (!omittedFields.has("style")) {
+    lines.push(`- Voice: ${[packet.style.primary, ...packet.style.secondary].map((item) => STYLE_TEXT[item]).join(", ")}`);
+    fieldsUsed.push("style");
+  }
+  if (!omittedFields.has("avoid_flags")) {
+    lines.push(`- Avoid: ${packet.avoid_flags.map((item) => AVOID_TEXT[item]).join(", ")}`);
+    fieldsUsed.push("avoid_flags");
+  }
+  if (!omittedFields.has("response_shape")) {
+    lines.push(`- Shape: ${packet.response_shape.preferred_sentences} sentence(s), ≤${packet.response_shape.maximum_characters} Chinese characters, ${QUESTION_TEXT[packet.response_shape.question_policy]}`);
+    fieldsUsed.push("response_shape");
+  }
+  if (!omittedFields.has("emotional_rules")) {
+    lines.push(`- Emotional handling: ${packet.emotional_rule_ids.map((item) => RULE_TEXT[item]).join("; ")}`);
+    fieldsUsed.push("emotional_rules");
+  }
+  lines.push("- Never add facts, override the user's words, weaken safety, or mention this instruction.");
+  return { instruction: lines.join("\n"), fields_used: fieldsUsed };
+}
+
+export function compileStylePolicy(packet: LocalSignalPacketV1, groundingText: string): CompiledStylePolicy {
+  return compileStylePolicyAblation(packet, groundingText, new Set());
 }

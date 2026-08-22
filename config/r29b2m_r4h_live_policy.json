@@ -1,0 +1,19 @@
+{
+  "profile": "hybrid_lab",
+  "production": false,
+  "listener_host": "127.0.0.1",
+  "public_fixture_path": "evals/r29b2m_hybrid_product_v1/cases.jsonl",
+  "maximum_total_requests": 90,
+  "maximum_input_tokens": 300000,
+  "maximum_output_tokens": 30000,
+  "maximum_estimated_cost_cny": 5.0,
+  "concurrency": 1,
+  "allow_private_user_messages": false,
+  "allow_arbitrary_manual_prompt": false,
+  "allow_dynamic_internet_input": false,
+  "allow_production_route": false,
+  "allow_production_import": false,
+  "allow_production_build_copy": false,
+  "allow_browser_key": false,
+  "allow_deployment": false
+}

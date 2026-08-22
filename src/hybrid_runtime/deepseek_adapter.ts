@@ -30,8 +30,10 @@ export interface DeepSeekRequest {
 export type DeepSeekStreamEvent =
   | { type: "first_byte"; at: number }
   | { type: "content"; content: string }
+  | { type: "reasoning_present" }
   | { type: "usage"; input_tokens: number; output_tokens: number; cache_hit_tokens?: number; cache_miss_tokens?: number }
-  | { type: "finish"; finish_reason: DeepSeekFinishReason };
+  | { type: "finish"; finish_reason: DeepSeekFinishReason }
+  | { type: "done" };
 
 export interface AdapterStreamOptions {
   turnId: string;
@@ -49,11 +51,15 @@ export interface DeepSeekAdapter {
 export class HybridAdapterError extends Error {
   readonly category: DeepSeekFinishReason;
   readonly beforeFirstToken: boolean;
-  constructor(category: DeepSeekFinishReason, beforeFirstToken: boolean, message = category) {
+  readonly httpStatus: number | null;
+  readonly retriable: boolean;
+  constructor(category: DeepSeekFinishReason, beforeFirstToken: boolean, message = category, options: { httpStatus?: number | null; retriable?: boolean } = {}) {
     super(message);
     this.name = "HybridAdapterError";
     this.category = category;
     this.beforeFirstToken = beforeFirstToken;
+    this.httpStatus = options.httpStatus ?? null;
+    this.retriable = options.retriable ?? category === "network_timeout";
   }
 }
 

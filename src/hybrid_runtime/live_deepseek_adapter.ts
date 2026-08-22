@@ -42,11 +42,17 @@ export class LiveDeepSeekAdapter implements DeepSeekAdapter {
         body: JSON.stringify(request),
         signal: local.signal,
       });
-      if (!response.ok || !response.body) throw new HybridAdapterError("network_timeout", true, safeStatus(response.status));
+      if (!response.ok || !response.body) {
+        throw new HybridAdapterError("network_timeout", true, safeStatus(response.status), {
+          httpStatus: response.status,
+          retriable: response.status === 408 || response.status === 429 || response.status >= 500,
+        });
+      }
       const reader = response.body.getReader();
       const text = new TextDecoder();
       const sse = new SseFrameDecoder();
       let firstByte = true;
+      let sawDone = false;
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
@@ -55,17 +61,21 @@ export class LiveDeepSeekAdapter implements DeepSeekAdapter {
           yield { type: "first_byte", at: performance.now() };
         }
         for (const frame of sse.push(text.decode(value, { stream: true }))) {
-          if ("done" in frame) continue;
+          if ("done" in frame) {
+            sawDone = true;
+            yield { type: "done" };
+            continue;
+          }
           const usage = frame.usage as Record<string, unknown> | null | undefined;
           if (usage) {
-            const details = usage.prompt_cache_hit_tokens ?? usage.prompt_tokens_details;
-            const hit = typeof details === "number" ? details : Number((details as Record<string, unknown> | undefined)?.cached_tokens ?? 0);
+            const hit = Number(usage.prompt_cache_hit_tokens ?? 0);
+            const miss = Number(usage.prompt_cache_miss_tokens ?? Math.max(0, Number(usage.prompt_tokens ?? 0) - hit));
             yield {
               type: "usage",
               input_tokens: Number(usage.prompt_tokens ?? 0),
               output_tokens: Number(usage.completion_tokens ?? 0),
               cache_hit_tokens: hit,
-              cache_miss_tokens: Math.max(0, Number(usage.prompt_tokens ?? 0) - hit),
+              cache_miss_tokens: miss,
             };
           }
           const choices = Array.isArray(frame.choices) ? frame.choices : [];
@@ -73,6 +83,9 @@ export class LiveDeepSeekAdapter implements DeepSeekAdapter {
             const delta = (choice.delta ?? {}) as Record<string, unknown>;
             if (Array.isArray(delta.tool_calls) && delta.tool_calls.length) {
               throw new HybridAdapterError("tool_calls", !firstContentSeen, "unexpected_tool_calls");
+            }
+            if (typeof delta.reasoning_content === "string" && /\S/u.test(delta.reasoning_content)) {
+              yield { type: "reasoning_present" };
             }
             if (typeof delta.content === "string" && delta.content.length) {
               if (/\S/u.test(delta.content) && !firstContentSeen) {
@@ -88,8 +101,14 @@ export class LiveDeepSeekAdapter implements DeepSeekAdapter {
         }
       }
       for (const frame of sse.finish()) {
-        if (!("done" in frame)) throw new HybridAdapterError("malformed_stream", !firstContentSeen, "unterminated_sse_payload");
+        if ("done" in frame) {
+          sawDone = true;
+          yield { type: "done" };
+        } else {
+          throw new HybridAdapterError("malformed_stream", !firstContentSeen, "unterminated_sse_payload", { retriable: false });
+        }
       }
+      if (!sawDone) throw new HybridAdapterError("malformed_stream", !firstContentSeen, "missing_sse_done", { retriable: false });
     } catch (error) {
       if (error instanceof HybridAdapterError) throw error;
       if (local.signal.aborted) {

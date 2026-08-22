@@ -16,19 +16,32 @@ import {
 import {
   isModelWeightPath,
   manifestAssetPathToRepoCandidates,
-  normalizeRepoPath,
-  pathInApprovedStaticLlmAssetDir,
-  pathInApprovedStaticLlmFixtureDir
+  normalizeRepoPath
 } from "./static_llm_policy.mjs";
+import { validateR28M1ExactCompatibility } from "./r28m1_exact_legacy_approval.mjs";
+import { classifyTrackedModelWeights } from "./model_weight_gate_policy.mjs";
 
 async function main() {
   const failures = [];
   const trackedFiles = await gitLsFiles(["ls-files", "--cached"]);
   const trackedModelLikeFiles = trackedFiles.filter(isModelWeightPath);
+  const r28m1Approval = await validateR28M1ExactCompatibility({ trackedModelLikeFiles });
+  const exactLegacyPaths = new Set(
+    r28m1Approval.ok
+      ? trackedModelLikeFiles.filter((path) => normalizeRepoPath(path).startsWith("web/another_brain/model_assets/r28m1/"))
+      : []
+  );
   const legacyApprovalMarkerPresent = await exists(resolve(ROOT, APPROVAL_MARKER_PATH));
   const candidateApproval = await checkStaticLlmAdmissionApproval();
   const commitApprovalCandidates = candidateApproval.candidates.filter((candidate) => candidate.may_commit_assets);
-  const approvalMarkerPresent = legacyApprovalMarkerPresent || commitApprovalCandidates.length > 0;
+  const approvalMarkerPresent = legacyApprovalMarkerPresent || commitApprovalCandidates.length > 0 || r28m1Approval.ok;
+
+  if (!r28m1Approval.ok) {
+    failures.push({
+      code: "r28m1_exact_legacy_approval_failed",
+      failure_codes: r28m1Approval.failures.map((failure) => failure.code),
+    });
+  }
 
   const admittedAssetPaths = new Set();
   let dryRunManifestCount = 0;
@@ -45,21 +58,13 @@ async function main() {
     }
   }
 
-  for (const path of trackedModelLikeFiles) {
-    if (pathInApprovedStaticLlmFixtureDir(path)) continue;
-    if (!pathInApprovedStaticLlmAssetDir(path)) {
-      failures.push({ code: "tracked_model_weight_outside_approved_static_llm_assets", path });
-      continue;
-    }
-    if (!admittedAssetPaths.has(path)) failures.push({ code: "tracked_model_weight_not_backed_by_admitted_manifest", path });
-    if (!approvalMarkerPresent) {
-      failures.push({
-        code: "tracked_model_weight_missing_explicit_approval_marker",
-        path,
-        approval_marker: "static_llm/inbox/<candidate>/APPROVE_STATIC_LLM_PRODUCTION_ADMISSION.json with scope commit_assets"
-      });
-    }
-  }
+  failures.push(...classifyTrackedModelWeights({
+    trackedModelLikeFiles,
+    admittedAssetPaths,
+    exactLegacyPaths,
+    r28m1ExactApproved: r28m1Approval.ok,
+    generalApprovalPresent: legacyApprovalMarkerPresent || commitApprovalCandidates.length > 0,
+  }));
 
   const report = {
     ok: failures.length === 0,
@@ -69,6 +74,7 @@ async function main() {
     commit_approval_candidate_count: commitApprovalCandidates.length,
     admitted_asset_count: admittedAssetPaths.size,
     dry_run_manifests_ignored_for_weight_approval: dryRunManifestCount,
+    r28m1_exact_legacy_approval: r28m1Approval,
     fixture_files_allowed: true,
     failures
   };

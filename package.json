@@ -117,6 +117,7 @@
     "score:static-decoder-candidates": "node scripts/score_static_decoder_candidate_decision.mjs",
     "check:static-llm-conversion-paths": "node scripts/validate_static_llm_conversion_paths.mjs",
     "check:no-unapproved-model-weights": "node scripts/check_no_unapproved_model_weights.mjs",
+    "check:r28m1-exact-legacy-approval": "node scripts/r28m1_exact_legacy_approval.mjs",
     "generate:r25b-llm-corpus": "node scripts/generate_r25b_llm_corpus.mjs",
     "check:llm-training-corpus": "node scripts/validate_llm_training_corpus.mjs",
     "check:llm-training-contamination": "node scripts/check_llm_training_eval_contamination.mjs",
@@ -124,7 +125,10 @@
     "build:r25b-training-pack": "node scripts/build_r25b_training_pack.mjs",
     "check:static-llm-manifest": "node scripts/validate_static_llm_manifest.mjs",
     "check:static-llm-budget": "node scripts/check_static_llm_budget.mjs",
-    "check:no-backend-llm": "node scripts/check_no_backend_llm_inference.mjs",
+    "check:no-backend-llm": "node scripts/check_no_backend_llm_reconciled.mjs",
+    "check:static-local-product": "node scripts/check_static_local_product_no_backend.mjs",
+    "check:hybrid-lab-isolation": "node scripts/check_hybrid_lab_isolation.mjs",
+    "audit:legacy-no-backend-full-repo": "node scripts/audit_legacy_no_backend_full_repo.mjs",
     "create:static-llm-manifest": "node scripts/create_static_llm_manifest.mjs",
     "eval:static-llm-asset-loader": "node scripts/eval_static_llm_asset_loader.mjs",
     "eval:static-llm-candidate-loader": "node scripts/eval_static_llm_candidate_loader.mjs",
@@ -808,6 +812,8 @@
     "r29b2m-r4h:build-lab": "node scripts/r29b2m_r4h_build_lab.mjs",
     "r29b2m-r4h:local-proxy": "node --experimental-strip-types scripts/r29b2m_r4h_local_proxy.mjs",
     "r29b2m-r4h:supervisor": "python3 scripts/r29b2m_r4h_run_supervisor.py",
+    "r29b2m-r4h-r1:live-supervisor": "python3 scripts/r29b2m_r4h_r1_run_supervisor.py",
+    "test:r29b2m-r4h-gates": "node scripts/r29b2m_r4h_gate_mutation_tests.mjs",
     "test:r29b2m-r4h": "python3 -m unittest discover -s tests/r29b2m_r4h -q"
   }
 }

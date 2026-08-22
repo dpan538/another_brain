@@ -293,7 +293,7 @@ export class HybridOrchestrator {
             : new HybridAdapterError("network_timeout", !thisAttemptSawContent, sanitizeTelemetryError(error));
           finishReason = adapterError.category;
           errorCategory = adapterError.category;
-          if (!thisAttemptSawContent && firstContent === null && attempt === 0 && this.spendingGuard.canStart()) {
+          if (adapterError.retriable && !thisAttemptSawContent && firstContent === null && attempt === 0 && this.spendingGuard.canStart()) {
             retryCount += 1;
             await delay(jitterFor(input.turnId), controller.signal);
             continue;
