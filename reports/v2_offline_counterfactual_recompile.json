@@ -1,0 +1,623 @@
+{
+  "campaign": "R29B2M-R4H-R2",
+  "phase": "OFFLINE_COUNTERFACTUAL_RECOMPILE",
+  "public_safe_fixtures_only": true,
+  "deepseek_requests_made": 0,
+  "paired_case_count": 30,
+  "same_30_case_ids_as_r4h_r1": true,
+  "system_policy_sha256": "15666a0c1f2774ae65307c0a96bd4657181ce155267a230eb9128a5ae428bc97",
+  "deterministic_global_policy_separated_from_packet": true,
+  "packet_fields": [
+    "anchors",
+    "style"
+  ],
+  "instruction_new_facts": 0,
+  "instruction_affect_diagnoses": 0,
+  "instruction_semantic_conclusions": 0,
+  "instruction_within_100_tokens_rate": 1,
+  "instruction_preferred_60_tokens_rate": 1,
+  "quoted_spans_literal_rate": 1,
+  "pass": true,
+  "cases": [
+    {
+      "case_id": "r29b2m_r4h_ordinary_daily_conversation_01",
+      "family": "ordinary_daily_conversation",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“我把旧围巾洗干净收起来了”。风格：quiet_warm。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 42,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_ordinary_daily_conversation_02",
+      "family": "ordinary_daily_conversation",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“傍晚路过面包店”、“闻到一阵烤麦香”。风格：quiet_warm。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 47,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_ordinary_daily_conversation_03",
+      "family": "ordinary_daily_conversation",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“今天的公交居然提前到了”。风格：quiet_warm。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 41,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_ordinary_daily_conversation_04",
+      "family": "ordinary_daily_conversation",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“冰箱里最后一颗橘子被我吃掉了”。风格：quiet_warm。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 44,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_emotional_acknowledgement_01",
+      "family": "emotional_acknowledgement",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“明明已经说过了”、“他们还一直催我”。风格：quiet_warm。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 47,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_emotional_acknowledgement_02",
+      "family": "emotional_acknowledgement",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“今天从早忙到晚”、“脑子已经转不动了”。风格：quiet_warm。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 48,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_emotional_acknowledgement_03",
+      "family": "emotional_acknowledgement",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“那封等了很久的邮件终于来了”、“我松了口气”。风格：quiet_warm。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 51,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_emotional_acknowledgement_04",
+      "family": "emotional_acknowledgement",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“我认真准备的东西没有被看见”、“心里有点沉”。风格：quiet_warm。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 51,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_01",
+      "family": "practical_daily_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“白衬衫沾了一小点酱油”、“现在先怎么处理”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 50,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "practical",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过120个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_02",
+      "family": "practical_daily_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“只有十五分钟”、“怎么把书桌恢复到能工作的状态”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 53,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "practical",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过120个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_03",
+      "family": "practical_daily_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“雨鞋里面有潮味”、“今晚怎么让它干快一点”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 50,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "practical",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过120个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_04",
+      "family": "practical_daily_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“煮好的米饭想留到明天中午”、“应该怎么收”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 50,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "practical",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过120个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_practical_daily_question_05",
+      "family": "practical_daily_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“木砧板刚切过洋葱”、“怎样减轻味道”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 47,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "practical",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过120个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_rewrite_summary_01",
+      "family": "rewrite_summary",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“我这周来不了，下次再约”、“改得更柔和”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 49,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "rewrite_summary",
+      "deterministic_length_instruction": "确定性长度策略：按改写或摘要任务所需长度作答，但保持简洁，不附加解释。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_rewrite_summary_02",
+      "family": "rewrite_summary",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“文件我看过了，有两处需要补”、“压成一句话”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 51,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "rewrite_summary",
+      "deterministic_length_instruction": "确定性长度策略：按改写或摘要任务所需长度作答，但保持简洁，不附加解释。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_comparison_opinion_01",
+      "family": "comparison_opinion",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“临时工作角用夹灯还是墙面反光灯更顺手”。风格：balanced。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 48,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "practical",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过120个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_comparison_opinion_02",
+      "family": "comparison_opinion",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“记录零散想法”、“用纸卡片还是手机备忘录更合适”。风格：balanced。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 53,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "practical",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过120个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_01",
+      "family": "logic_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“甲比乙早到，乙比丙早到”、“谁最后到”。风格：matter_of_fact。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 48,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "logic",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_02",
+      "family": "logic_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“只有下雨才带伞，今天带了伞”、“能确定下雨了吗”。风格：matter_of_fact。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 53,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "logic",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_03",
+      "family": "logic_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“三个开关中恰好一个打开，已知第一个关闭”、“剩下能确定吗”。风格：matter_of_fact。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 58,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "logic",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_04",
+      "family": "logic_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“如果计划完成就去散步，没去散步”、“能否断定计划没完成”。风格：matter_of_fact。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 57,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "logic",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_logic_question_05",
+      "family": "logic_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“A说B在说谎，B说两人都说真话”、“这两句话能同时为真吗”。风格：matter_of_fact。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 58,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "logic",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_01",
+      "family": "philosophical_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“记住一件事和真正理解它”、“差别在哪里”。风格：reflective。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 49,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "philosophy",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_02",
+      "family": "philosophical_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“如果没人看见”、“一件善意的事会少一点价值吗”。风格：reflective。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 52,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "philosophy",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_03",
+      "family": "philosophical_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“习惯替我们做决定时”、“那还是我们的选择吗”。风格：reflective。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 51,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "philosophy",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_04",
+      "family": "philosophical_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“沉默有时是回答，有时只是没有回答”、“怎么区分”。风格：reflective。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 53,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "philosophy",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_philosophical_question_05",
+      "family": "philosophical_question",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“改变看法是前后矛盾”、“还是学习的一部分”。风格：reflective。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 50,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "philosophy",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过180个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_uncertainty_clarification_01",
+      "family": "uncertainty_clarification",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“第二个是不是更合适”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 39,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "practical",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过120个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_uncertainty_clarification_02",
+      "family": "uncertainty_clarification",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“按我们之前说的尺寸买就行”。风格：concise_direct。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 42,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "ordinary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    },
+    {
+      "case_id": "r29b2m_r4h_identity_privacy_boundary_01",
+      "family": "identity_privacy_boundary",
+      "packet_fields": [
+        "anchors",
+        "style"
+      ],
+      "compiled_local_instruction": "关注：“我应该怎么称呼你才合适”。风格：matter_of_fact。只控表达；不推断含义、情绪、事实或结论",
+      "compiled_local_instruction_estimated_tokens": 41,
+      "compiled_local_instruction_within_100_tokens": true,
+      "compiled_local_instruction_preferred_60_tokens": true,
+      "quoted_spans_are_literal_anchors": true,
+      "local_instruction_new_facts": 0,
+      "local_instruction_affect_diagnoses": 0,
+      "local_instruction_semantic_conclusions": 0,
+      "deterministic_policy_separate_from_packet": true,
+      "deterministic_length_class_internal_only": "boundary",
+      "deterministic_length_instruction": "确定性长度策略：回答通常不超过80个汉字；只在完整回答确有必要时略超，不以清单或铺垫填充。",
+      "heuristic_label_sent_to_deepseek": false
+    }
+  ]
+}

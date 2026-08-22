@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.com/evals/r29b2m_hybrid_product_v2/schema.json",
+  "title": "R29B2M Hybrid Product V2 Public-Safe Oracle Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "family",
+    "messages",
+    "oracle_local_signal_packet_v2",
+    "response_quality_rubric",
+    "maximum_answer_characters",
+    "latency_class",
+    "provenance",
+    "reviewer_class",
+    "review_status",
+    "split",
+    "allowed_for_training"
+  ],
+  "properties": {
+    "case_id": { "type": "string", "pattern": "^r29b2m_r4h_[a-z0-9_]+_[0-9]{2}$" },
+    "family": { "type": "string", "minLength": 1 },
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "content"],
+        "properties": {
+          "role": { "enum": ["user", "assistant"] },
+          "content": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "oracle_local_signal_packet_v2": { "$ref": "../../schemas/local_signal_packet_v2.schema.json" },
+    "response_quality_rubric": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "maximum_answer_characters": { "type": "integer", "minimum": 20, "maximum": 220 },
+    "latency_class": { "type": "string", "minLength": 1 },
+    "provenance": { "const": "project_authored_public_safe_r29b2m_r4h_v2_oracle_regeneration" },
+    "reviewer_class": { "const": "codex_agent_packet_v2_review_not_human" },
+    "review_status": { "const": "reviewed_100_percent_for_packet_v2_eval_only" },
+    "split": { "const": "product_simulation_eval" },
+    "allowed_for_training": { "const": false }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.com/schemas/local_signal_packet_v2.schema.json",
+  "title": "Local Signal Packet V2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "anchors",
+    "style"
+  ],
+  "properties": {
+    "version": {
+      "const": "local-signal.v2"
+    },
+    "anchors": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "text",
+          "start_codepoint",
+          "end_codepoint",
+          "salience",
+          "role"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 48
+          },
+          "start_codepoint": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_codepoint": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "salience": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "role": {
+            "enum": [
+              "context",
+              "emphasis",
+              "question_core",
+              "contrast",
+              "constraint",
+              "tone_cue"
+            ]
+          }
+        }
+      }
+    },
+    "style": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label"
+      ],
+      "properties": {
+        "label": {
+          "enum": [
+            "quiet_warm",
+            "concise_direct",
+            "reflective",
+            "playful_light",
+            "balanced",
+            "matter_of_fact"
+          ]
+        }
+      }
+    }
+  }
+}

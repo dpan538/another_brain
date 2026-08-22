@@ -814,6 +814,13 @@
     "r29b2m-r4h:supervisor": "python3 scripts/r29b2m_r4h_run_supervisor.py",
     "r29b2m-r4h-r1:live-supervisor": "python3 scripts/r29b2m_r4h_r1_run_supervisor.py",
     "test:r29b2m-r4h-gates": "node scripts/r29b2m_r4h_gate_mutation_tests.mjs",
-    "test:r29b2m-r4h": "python3 -m unittest discover -s tests/r29b2m_r4h -q"
+    "test:r29b2m-r4h": "python3 -m unittest discover -s tests/r29b2m_r4h -q",
+    "r29b2m-r4h-r2:build-oracle-v2": "node --experimental-strip-types scripts/r29b2m_r4h_r2_build_oracle_v2.mjs",
+    "r29b2m-r4h-r2:build-v1-forensics": "node scripts/r29b2m_r4h_r2_build_v1_forensics.mjs",
+    "r29b2m-r4h-r2:offline-recompile": "node --experimental-strip-types scripts/r29b2m_r4h_r2_offline_recompile.mjs",
+    "r29b2m-r4h-r2:live-supervisor": "python3 scripts/r29b2m_r4h_r2_run_supervisor.py",
+    "r29b2m-r4h-r2:secret-scan": "node scripts/r29b2m_r4h_r2_secret_scan.mjs",
+    "r29b2m-r4h-r2:finalize": "node --experimental-strip-types scripts/r29b2m_r4h_r2_finalize.mjs",
+    "test:r29b2m-r4h-r2": "python3 -m unittest discover -s tests/r29b2m_r4h_r2 -q"
   }
 }
