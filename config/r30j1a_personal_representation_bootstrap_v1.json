@@ -1,0 +1,112 @@
+{
+  "campaign_id": "r30j1a_personal_representation_bootstrap_v1",
+  "status": "DESCRIPTIVE_BOOTSTRAP_AUTHORIZED",
+  "historical_states_preserved": {
+    "r30j0": "HUMAN_OWNER_REVIEW_REQUIRED",
+    "r30j0_p": "PERSONAL_SOURCE_EVIDENCE_READY",
+    "r30j0_p2": "R30J0_P2_PERSONA_EXCAVATION_READY",
+    "r30j0_p2_expected_next": "HUMAN_PERSONA_ELICITATION_REQUIRED"
+  },
+  "authorization": {
+    "descriptive_representation_bootstrap": true,
+    "normative_persona_training": false,
+    "final_persona_training": false,
+    "personal_fit_training": false,
+    "persona_mode_training": false,
+    "crocodile_classifier_training": false,
+    "answer_generation": false,
+    "product_admission": false
+  },
+  "model": {
+    "family": "efish-personal-judge-v1",
+    "source_layers": 7,
+    "hidden_size": 896,
+    "source_positions": 256,
+    "context_length": 512,
+    "normal_target_tokens": 448,
+    "reserved_tokens": 64,
+    "projection": [896, 768, 512],
+    "projection_activation": "exact_gelu",
+    "representation_normalized": true,
+    "dropout": 0.0,
+    "lm_head_present": false,
+    "autoregressive_decode": false
+  },
+  "outputs": {
+    "domain": [
+      "AUTHENTIC_OWNER",
+      "CONTROLLED_OWNER_STYLE_VARIANT",
+      "GENERIC_ASSISTANT",
+      "OTHER_PUBLIC_SAFE"
+    ],
+    "mechanics": [
+      "customer_service_opening",
+      "over_structured",
+      "expanded_explanation",
+      "generic_validation",
+      "forced_question",
+      "textbook_framing",
+      "repetition",
+      "corporate_politeness",
+      "over_conclusion",
+      "excessive_disclaimer"
+    ],
+    "representation_dimensions": 512,
+    "natural_language_output": false
+  },
+  "losses": {
+    "families": ["domain", "register", "mechanics", "proxy_contrastive"],
+    "forbidden": ["personal_fit", "persona_mode", "crocodile", "preference", "generation"],
+    "weights_frozen_after_calibration": true,
+    "proxy_temperature": 0.12
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "learning_rate": 0.00003,
+    "betas": [0.9, 0.999],
+    "epsilon": 1e-08,
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "microbatch": 1,
+    "gradient_accumulation": 4,
+    "seed": 3001101
+  },
+  "probes": [
+    {"arm": "A", "lineage": "r28m1_q4_recovered", "attention": "causal"},
+    {"arm": "B", "lineage": "r28m1_q4_recovered", "attention": "bidirectional"},
+    {"arm": "C", "lineage": "r3_stage_a_080k", "attention": "causal"},
+    {"arm": "D", "lineage": "r3_stage_a_080k", "attention": "bidirectional"}
+  ],
+  "probe_trainable_scope": ["new_position_rows_256_511", "representation_projection", "descriptive_heads"],
+  "main_trainable_scope_maximum": ["probe_scope", "final_layer_norm", "last_two_transformer_blocks"],
+  "foreground": {
+    "training_backgrounded": false,
+    "automation_used": false,
+    "detached_process_used": false,
+    "tmux_used": false,
+    "nohup_used": false,
+    "cron_used": false,
+    "parent_supervised_every_segment": true
+  },
+  "resource": {
+    "preferred_mlx_peak_bytes": 4500000000,
+    "soft_warning_mlx_peak_bytes": 5500000000,
+    "hard_stop_mlx_peak_bytes": 6500000000,
+    "sustained_swap_growth_stop_bytes": 1000000000,
+    "campaign_storage_preferred_bytes": 14000000000,
+    "campaign_storage_hard_bytes": 16000000000,
+    "checkpoint_roles": ["BASELINE", "LATEST", "BEST_DEV", "PREVIOUS_SAFE"]
+  },
+  "value_gates": {
+    "domain_macro_f1": 0.75,
+    "register_macro_f1": 0.65,
+    "matched_style_contrast_accuracy": 0.75,
+    "surface_baseline_uplift_points": 10.0,
+    "maximum_shortcut_slice_drop_points": 15.0
+  },
+  "network_api_requests": 0,
+  "deepseek_requests": 0,
+  "production_changes": false,
+  "deployment": false,
+  "q4_export": false
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://another-brain.local/schemas/r30j1a_descriptive_example_v1.schema.json",
+  "title": "R30J1A descriptive representation example",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "example_id", "source_kind", "source_ref",
+    "source_group_id", "semantic_family_id", "mutation_family_id",
+    "mutation_id", "admission_class", "domain_label", "register_label",
+    "mechanics_labels", "context", "response", "serialized_text",
+    "input_ids", "original_tokens", "selected_tokens", "window_method",
+    "semantic_cut_detected", "public_safe", "normative_label",
+    "personal_fit_label", "persona_mode_label", "allowed_for_training"
+  ],
+  "properties": {
+    "schema_version": {"const": "r30j1a.descriptive-example.v1"},
+    "example_id": {"type": "string", "minLength": 8},
+    "source_kind": {"enum": ["owner_transcript", "owner_controlled_variant", "public_safe_dialogue", "public_controlled_generic"]},
+    "source_ref": {"type": "string", "minLength": 8},
+    "source_group_id": {"type": "string", "minLength": 8},
+    "semantic_family_id": {"type": "string", "minLength": 8},
+    "mutation_family_id": {"type": "string", "minLength": 8},
+    "mutation_id": {"type": "string", "minLength": 3},
+    "admission_class": {"enum": ["TRAINING_PUBLIC_SAFE", "TRAINING_DEIDENTIFIED_SAFE"]},
+    "domain_label": {"enum": ["AUTHENTIC_OWNER", "CONTROLLED_OWNER_STYLE_VARIANT", "GENERIC_ASSISTANT", "OTHER_PUBLIC_SAFE"]},
+    "register_label": {
+      "enum": [
+        "ordinary_chat", "casual_banter", "weird_question", "absurd_meta_ai",
+        "practical_advice", "technical_explanation", "debugging",
+        "project_discussion", "academic_discussion", "philosophy",
+        "personal_reflection", "light_emotional", "formal_message",
+        "creative_play", "roleplay"
+      ]
+    },
+    "mechanics_labels": {
+      "type": "array", "minItems": 10, "maxItems": 10,
+      "items": {"type": "integer", "enum": [0, 1]}
+    },
+    "context": {"type": "string", "minLength": 1},
+    "response": {"type": "string", "minLength": 1},
+    "serialized_text": {"type": "string", "minLength": 1},
+    "input_ids": {"type": "array", "minItems": 1, "maxItems": 512, "items": {"type": "integer", "minimum": 0, "maximum": 15999}},
+    "original_tokens": {"type": "integer", "minimum": 1},
+    "selected_tokens": {"type": "integer", "minimum": 1, "maximum": 512},
+    "window_method": {"enum": ["full_source_no_window", "protected_context_suffix_window"]},
+    "semantic_cut_detected": {"const": false},
+    "public_safe": {"const": true},
+    "normative_label": {"const": false},
+    "personal_fit_label": {"const": false},
+    "persona_mode_label": {"const": false},
+    "allowed_for_training": {"const": true}
+  }
+}
