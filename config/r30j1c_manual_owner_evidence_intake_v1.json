@@ -1,0 +1,102 @@
+{
+  "schema_version": "r30j1c.manual-owner-evidence-intake.v1",
+  "campaign": "R30J1C",
+  "purpose": "admit manually supplied owner evidence into a local correction workflow without promoting descriptive evidence into personal gold",
+  "historical_state_boundary": {
+    "rewrite_prior_campaign_states": false,
+    "modify_prior_campaign_artifacts": false,
+    "reopen_prior_heldout": false,
+    "inherit_prior_training_authorization": false
+  },
+  "execution_boundary": {
+    "local_offline_only": true,
+    "network_requests_allowed": false,
+    "api_requests": 0,
+    "external_model_requests": 0,
+    "raw_source_root_must_be_ignored": true,
+    "tracked_source_values_allowed": false,
+    "production_change_allowed": false,
+    "deployment_allowed": false
+  },
+  "evidence_classes": [
+    "CURRENT_EXPLICIT_OWNER_ASSERTION",
+    "OWNER_CHAT_TRANSCRIPT_HIGH_CONFIDENCE",
+    "PEER_RECEPTION_EVIDENCE",
+    "PEER_PLAYFUL_MYTHOLOGY"
+  ],
+  "authorship_boundary": {
+    "owner_chat_requires_owner_attestation": true,
+    "owner_chat_requires_direct_message_body": true,
+    "quoted_text_is_owner_authorship_evidence": false,
+    "peer_text_is_owner_authorship_evidence": false,
+    "peer_reception_is_owner_normative_evidence": false,
+    "playful_mythology_is_owner_identity_truth": false,
+    "raw_mixed_chat_container_is_training_eligible": false
+  },
+  "privacy_boundary": {
+    "raw_screenshots_local_only": true,
+    "raw_transcript_local_only": true,
+    "owner_alias_mapping_local_only": true,
+    "raw_paths_and_hashes_local_only": true,
+    "third_party_names_and_avatars_removed": true,
+    "exact_timestamps_removed_from_training_candidates": true,
+    "third_party_body_text_allowed_in_optimizer": false,
+    "privacy_and_deidentification_gate_required": true,
+    "tracked_raw_excerpt_allowed": false
+  },
+  "source_family_boundary": {
+    "one_conversation_one_family": true,
+    "owner_utterances_share_family": true,
+    "derived_variants_share_family": true,
+    "peer_annotations_share_family": true,
+    "correction_items_share_family": true,
+    "cross_split_family_leakage_allowed": false,
+    "source_family_eligible_for_blind_heldout": false
+  },
+  "evidence_epistemics": {
+    "authorship_confidence_separate_from_descriptive_confidence": true,
+    "descriptive_confidence_separate_from_normative_confidence": true,
+    "descriptive_owner_writing_establishes_normative_preference": false,
+    "peer_convergence_establishes_normative_preference": false,
+    "source_specific_hypotheses_require_owner_review": true,
+    "source_specific_hypotheses_may_be_runtime_modes": false,
+    "source_specific_hypotheses_may_freeze_profile": false,
+    "topic_slice_may_become_model_register_without_evidence": false
+  },
+  "correction_boundary": {
+    "local_only": true,
+    "allowed_actions": ["ACCEPT", "REJECT", "EDIT", "DEPENDS", "UNSURE"],
+    "depends_requires_condition": true,
+    "owner_response_present_initially": false,
+    "gold_admission_initially": false,
+    "allowed_for_training_initially": false,
+    "same_source_family_required": true
+  },
+  "tracked_output_boundary": {
+    "schemas": true,
+    "empty_templates": true,
+    "public_safe_methodology": true,
+    "validators": true,
+    "synthetic_tests": true,
+    "aggregate_receipts": true,
+    "actual_source_id": false,
+    "actual_aliases": false,
+    "actual_object_or_purchase_facts": false,
+    "raw_or_deidentified_transcript": false,
+    "source_paths_or_hashes": false,
+    "peer_names_or_text": false,
+    "actual_hypothesis_values": false,
+    "actual_correction_questions_or_answers": false,
+    "owner_profile_or_gold_labels": false
+  },
+  "training_state": {
+    "training_started": false,
+    "optimizer_tokens": 0,
+    "assistant_target_tokens": 0,
+    "classification_updates": 0,
+    "checkpoint": null,
+    "candidate": null,
+    "gold_admission_authorized": false,
+    "allowed_for_training": false
+  }
+}

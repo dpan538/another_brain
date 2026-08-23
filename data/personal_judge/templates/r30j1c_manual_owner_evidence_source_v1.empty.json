@@ -1,0 +1,78 @@
+{
+  "version": "r30j1c.manual-owner-evidence-source.v1",
+  "status": "EMPTY_TEMPLATE",
+  "artifact_class": "MANUAL_HIGH_VALUE_OWNER_EVIDENCE_SOURCE",
+  "local_only": true,
+  "must_remain_ignored": true,
+  "portable_public_safe": false,
+  "contains_owner_specific_values": false,
+  "owner_review_completed": false,
+  "gold_admission_status": "PENDING_OWNER_CORRECTION",
+  "profile_frozen": false,
+  "allowed_for_training": false,
+  "training_authorized": false,
+  "source_family": null,
+  "evidence_class_counts": {
+    "current_explicit_owner_assertion": 0,
+    "owner_chat_direct": 0,
+    "peer_reception": 0,
+    "peer_playful_mythology": 0
+  },
+  "privacy_receipt": {
+    "raw_assets_local_only": true,
+    "raw_assets_tracked": false,
+    "raw_excerpts_tracked": false,
+    "private_paths_tracked": false,
+    "content_hashes_tracked": false,
+    "deidentification_complete": false,
+    "quote_blocks_separated": false,
+    "third_party_identifiers_removed": false,
+    "third_party_body_optimizer_eligible": false,
+    "sensitive_values_persisted_in_receipt": false
+  },
+  "authorship_receipt": {
+    "owner_chat_authorship_class": "OWNER_CHAT_TRANSCRIPT_HIGH_CONFIDENCE",
+    "owner_chat_attestation_kind": "OWNER_SUPPLIED_CHAT_SCREENSHOT_RECORD",
+    "owner_attestation_present": false,
+    "direct_body_attribution_pass": false,
+    "quoted_text_owner_admissible": false,
+    "peer_text_owner_admissible": false,
+    "peer_reception_normative": false,
+    "playful_mythology_owner_identity_truth": false,
+    "raw_mixed_container_training_eligible": false
+  },
+  "split_receipt": {
+    "one_conversation_one_family": true,
+    "owner_utterances_share_family": true,
+    "derived_variants_share_family": true,
+    "peer_annotations_share_family": true,
+    "correction_items_share_family": true,
+    "cross_split_family_leakage": false,
+    "heldout_eligible": false
+  },
+  "hypothesis_receipt": {
+    "source_specific_hypotheses_tracked": false,
+    "descriptive_promoted_to_normative": false,
+    "peer_convergence_promoted_to_preference": false,
+    "owner_review_required": true,
+    "runtime_modes_created": false,
+    "actual_profile_values_present": false
+  },
+  "correction_pack_receipt": {
+    "correction_item_count": 0,
+    "actual_question_text_tracked": false,
+    "owner_responses_present": false,
+    "same_source_family": true,
+    "owner_review_required": true,
+    "gold_admission": false,
+    "allowed_for_training": false
+  },
+  "training_state": {
+    "training_started": false,
+    "optimizer_tokens": 0,
+    "assistant_target_tokens": 0,
+    "classification_updates": 0,
+    "checkpoint": null,
+    "candidate": null
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r30j1c_owner_correction_item_v1.schema.json",
+  "title": "R30J1C Owner Correction Item V1",
+  "description": "Local-only, pre-review correction question derived from manual evidence. Populated values and owner answers are never tracked.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "local_only",
+    "must_remain_ignored",
+    "correction_id",
+    "source_family_ref",
+    "split_family_ref",
+    "target_hypothesis_refs",
+    "evidence_refs",
+    "information_goal",
+    "question_family",
+    "register_context",
+    "topic_slice_ref",
+    "question_text_local",
+    "contains_source_excerpt",
+    "review_actions",
+    "depends_requires_condition",
+    "owner_response_present",
+    "owner_review_status",
+    "owner_review_required",
+    "gold_admission",
+    "allowed_for_training",
+    "heldout_eligible"
+  ],
+  "properties": {
+    "version": {"const": "r30j1c.owner-correction-item.v1"},
+    "status": {"enum": ["EMPTY_TEMPLATE", "OWNER_REVIEW_REQUIRED"]},
+    "local_only": {"const": true},
+    "must_remain_ignored": {"const": true},
+    "correction_id": {
+      "anyOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^local\\.correction\\.[a-f0-9]{16,64}$"}
+      ]
+    },
+    "source_family_ref": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/opaqueRef"}
+      ]
+    },
+    "split_family_ref": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/opaqueRef"}
+      ]
+    },
+    "target_hypothesis_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/opaqueRef"}
+    },
+    "evidence_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/opaqueRef"}
+    },
+    "information_goal": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/safeCode"}
+      ]
+    },
+    "question_family": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/safeCode"}
+      ]
+    },
+    "register_context": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/register"}
+      ]
+    },
+    "topic_slice_ref": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/opaqueRef"}
+      ]
+    },
+    "question_text_local": {
+      "anyOf": [
+        {"type": "null"},
+        {"type": "string", "minLength": 1, "maxLength": 2000}
+      ]
+    },
+    "contains_source_excerpt": {"const": false},
+    "review_actions": {"const": ["ACCEPT", "REJECT", "EDIT", "DEPENDS", "UNSURE"]},
+    "depends_requires_condition": {"const": true},
+    "owner_response_present": {"const": false},
+    "owner_review_status": {"const": "UNREVIEWED"},
+    "owner_review_required": {"const": true},
+    "gold_admission": {"const": false},
+    "allowed_for_training": {"const": false},
+    "heldout_eligible": {"const": false}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "EMPTY_TEMPLATE"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "correction_id": {"type": "null"},
+          "source_family_ref": {"type": "null"},
+          "split_family_ref": {"type": "null"},
+          "target_hypothesis_refs": {"maxItems": 0},
+          "evidence_refs": {"maxItems": 0},
+          "information_goal": {"type": "null"},
+          "question_family": {"type": "null"},
+          "register_context": {"type": "null"},
+          "topic_slice_ref": {"type": "null"},
+          "question_text_local": {"type": "null"}
+        }
+      },
+      "else": {
+        "properties": {
+          "correction_id": {"type": "string", "pattern": "^local\\.correction\\.[a-f0-9]{16,64}$"},
+          "source_family_ref": {"$ref": "#/$defs/opaqueRef"},
+          "split_family_ref": {"$ref": "#/$defs/opaqueRef"},
+          "target_hypothesis_refs": {"minItems": 1},
+          "evidence_refs": {"minItems": 1},
+          "information_goal": {"$ref": "#/$defs/safeCode"},
+          "question_family": {"$ref": "#/$defs/safeCode"},
+          "question_text_local": {"type": "string", "minLength": 1, "maxLength": 2000}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "opaqueRef": {
+      "type": "string",
+      "pattern": "^local\\.[a-f0-9]{16,64}$"
+    },
+    "safeCode": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]{2,127}$"
+    },
+    "register": {
+      "enum": [
+        "ordinary_chat",
+        "casual_banter",
+        "weird_question",
+        "absurd_meta_ai",
+        "practical_advice",
+        "technical_explanation",
+        "debugging",
+        "project_discussion",
+        "academic_discussion",
+        "philosophy",
+        "personal_reflection",
+        "light_emotional",
+        "formal_message",
+        "creative_play",
+        "roleplay"
+      ]
+    }
+  }
+}

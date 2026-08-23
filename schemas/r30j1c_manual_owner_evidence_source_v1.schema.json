@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r30j1c_manual_owner_evidence_source_v1.schema.json",
+  "title": "R30J1C Manual Owner Evidence Source Envelope V1",
+  "description": "Contract for an ignored local manual-evidence envelope. It carries opaque references and aggregate receipts, never source text or owner-specific values.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "artifact_class",
+    "local_only",
+    "must_remain_ignored",
+    "portable_public_safe",
+    "contains_owner_specific_values",
+    "owner_review_completed",
+    "gold_admission_status",
+    "profile_frozen",
+    "allowed_for_training",
+    "training_authorized",
+    "source_family",
+    "evidence_class_counts",
+    "privacy_receipt",
+    "authorship_receipt",
+    "split_receipt",
+    "hypothesis_receipt",
+    "correction_pack_receipt",
+    "training_state"
+  ],
+  "properties": {
+    "version": {"const": "r30j1c.manual-owner-evidence-source.v1"},
+    "status": {
+      "enum": [
+        "EMPTY_TEMPLATE",
+        "LOCAL_EVIDENCE_PENDING_REVIEW",
+        "OWNER_CORRECTION_PENDING",
+        "OWNER_CORRECTION_IN_PROGRESS"
+      ]
+    },
+    "artifact_class": {"const": "MANUAL_HIGH_VALUE_OWNER_EVIDENCE_SOURCE"},
+    "local_only": {"const": true},
+    "must_remain_ignored": {"const": true},
+    "portable_public_safe": {"const": false},
+    "contains_owner_specific_values": {"type": "boolean"},
+    "owner_review_completed": {"const": false},
+    "gold_admission_status": {"const": "PENDING_OWNER_CORRECTION"},
+    "profile_frozen": {"const": false},
+    "allowed_for_training": {"const": false},
+    "training_authorized": {"const": false},
+    "source_family": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/sourceFamily"}
+      ]
+    },
+    "evidence_class_counts": {"$ref": "#/$defs/evidenceClassCounts"},
+    "privacy_receipt": {"$ref": "#/$defs/privacyReceipt"},
+    "authorship_receipt": {"$ref": "#/$defs/authorshipReceipt"},
+    "split_receipt": {"$ref": "#/$defs/splitReceipt"},
+    "hypothesis_receipt": {"$ref": "#/$defs/hypothesisReceipt"},
+    "correction_pack_receipt": {"$ref": "#/$defs/correctionPackReceipt"},
+    "training_state": {"$ref": "#/$defs/trainingState"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "EMPTY_TEMPLATE"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "contains_owner_specific_values": {"const": false},
+          "source_family": {"type": "null"},
+          "evidence_class_counts": {
+            "properties": {
+              "current_explicit_owner_assertion": {"const": 0},
+              "owner_chat_direct": {"const": 0},
+              "peer_reception": {"const": 0},
+              "peer_playful_mythology": {"const": 0}
+            }
+          },
+          "correction_pack_receipt": {
+            "properties": {"correction_item_count": {"const": 0}}
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "contains_owner_specific_values": {"const": true},
+          "source_family": {"$ref": "#/$defs/sourceFamily"},
+          "privacy_receipt": {
+            "properties": {
+              "deidentification_complete": {"const": true},
+              "quote_blocks_separated": {"const": true},
+              "third_party_identifiers_removed": {"const": true}
+            }
+          },
+          "authorship_receipt": {
+            "properties": {
+              "owner_attestation_present": {"const": true},
+              "direct_body_attribution_pass": {"const": true}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "opaqueRef": {
+      "type": "string",
+      "pattern": "^local\\.[a-f0-9]{16,64}$"
+    },
+    "sourceFamily": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_family_ref",
+        "document_group_ref",
+        "idea_group_ref",
+        "family_group_ref"
+      ],
+      "properties": {
+        "source_family_ref": {"$ref": "#/$defs/opaqueRef"},
+        "document_group_ref": {"$ref": "#/$defs/opaqueRef"},
+        "idea_group_ref": {"$ref": "#/$defs/opaqueRef"},
+        "family_group_ref": {"$ref": "#/$defs/opaqueRef"}
+      }
+    },
+    "evidenceClassCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_explicit_owner_assertion",
+        "owner_chat_direct",
+        "peer_reception",
+        "peer_playful_mythology"
+      ],
+      "properties": {
+        "current_explicit_owner_assertion": {"type": "integer", "minimum": 0},
+        "owner_chat_direct": {"type": "integer", "minimum": 0},
+        "peer_reception": {"type": "integer", "minimum": 0},
+        "peer_playful_mythology": {"type": "integer", "minimum": 0}
+      }
+    },
+    "privacyReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_assets_local_only",
+        "raw_assets_tracked",
+        "raw_excerpts_tracked",
+        "private_paths_tracked",
+        "content_hashes_tracked",
+        "deidentification_complete",
+        "quote_blocks_separated",
+        "third_party_identifiers_removed",
+        "third_party_body_optimizer_eligible",
+        "sensitive_values_persisted_in_receipt"
+      ],
+      "properties": {
+        "raw_assets_local_only": {"const": true},
+        "raw_assets_tracked": {"const": false},
+        "raw_excerpts_tracked": {"const": false},
+        "private_paths_tracked": {"const": false},
+        "content_hashes_tracked": {"const": false},
+        "deidentification_complete": {"type": "boolean"},
+        "quote_blocks_separated": {"type": "boolean"},
+        "third_party_identifiers_removed": {"type": "boolean"},
+        "third_party_body_optimizer_eligible": {"const": false},
+        "sensitive_values_persisted_in_receipt": {"const": false}
+      }
+    },
+    "authorshipReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_chat_authorship_class",
+        "owner_chat_attestation_kind",
+        "owner_attestation_present",
+        "direct_body_attribution_pass",
+        "quoted_text_owner_admissible",
+        "peer_text_owner_admissible",
+        "peer_reception_normative",
+        "playful_mythology_owner_identity_truth",
+        "raw_mixed_container_training_eligible"
+      ],
+      "properties": {
+        "owner_chat_authorship_class": {"const": "OWNER_CHAT_TRANSCRIPT_HIGH_CONFIDENCE"},
+        "owner_chat_attestation_kind": {"const": "OWNER_SUPPLIED_CHAT_SCREENSHOT_RECORD"},
+        "owner_attestation_present": {"type": "boolean"},
+        "direct_body_attribution_pass": {"type": "boolean"},
+        "quoted_text_owner_admissible": {"const": false},
+        "peer_text_owner_admissible": {"const": false},
+        "peer_reception_normative": {"const": false},
+        "playful_mythology_owner_identity_truth": {"const": false},
+        "raw_mixed_container_training_eligible": {"const": false}
+      }
+    },
+    "splitReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "one_conversation_one_family",
+        "owner_utterances_share_family",
+        "derived_variants_share_family",
+        "peer_annotations_share_family",
+        "correction_items_share_family",
+        "cross_split_family_leakage",
+        "heldout_eligible"
+      ],
+      "properties": {
+        "one_conversation_one_family": {"const": true},
+        "owner_utterances_share_family": {"const": true},
+        "derived_variants_share_family": {"const": true},
+        "peer_annotations_share_family": {"const": true},
+        "correction_items_share_family": {"const": true},
+        "cross_split_family_leakage": {"const": false},
+        "heldout_eligible": {"const": false}
+      }
+    },
+    "hypothesisReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_specific_hypotheses_tracked",
+        "descriptive_promoted_to_normative",
+        "peer_convergence_promoted_to_preference",
+        "owner_review_required",
+        "runtime_modes_created",
+        "actual_profile_values_present"
+      ],
+      "properties": {
+        "source_specific_hypotheses_tracked": {"const": false},
+        "descriptive_promoted_to_normative": {"const": false},
+        "peer_convergence_promoted_to_preference": {"const": false},
+        "owner_review_required": {"const": true},
+        "runtime_modes_created": {"const": false},
+        "actual_profile_values_present": {"const": false}
+      }
+    },
+    "correctionPackReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "correction_item_count",
+        "actual_question_text_tracked",
+        "owner_responses_present",
+        "same_source_family",
+        "owner_review_required",
+        "gold_admission",
+        "allowed_for_training"
+      ],
+      "properties": {
+        "correction_item_count": {"type": "integer", "minimum": 0},
+        "actual_question_text_tracked": {"const": false},
+        "owner_responses_present": {"const": false},
+        "same_source_family": {"const": true},
+        "owner_review_required": {"const": true},
+        "gold_admission": {"const": false},
+        "allowed_for_training": {"const": false}
+      }
+    },
+    "trainingState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "training_started",
+        "optimizer_tokens",
+        "assistant_target_tokens",
+        "classification_updates",
+        "checkpoint",
+        "candidate"
+      ],
+      "properties": {
+        "training_started": {"const": false},
+        "optimizer_tokens": {"const": 0},
+        "assistant_target_tokens": {"const": 0},
+        "classification_updates": {"const": 0},
+        "checkpoint": {"type": "null"},
+        "candidate": {"type": "null"}
+      }
+    }
+  }
+}
