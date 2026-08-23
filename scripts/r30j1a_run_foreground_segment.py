@@ -7,7 +7,6 @@ import argparse
 import json
 import os
 from pathlib import Path
-import shutil
 import sys
 from typing import Any
 
@@ -18,10 +17,16 @@ sys.path.insert(0, str(ROOT))
 import mlx.core as mx  # noqa: E402
 
 from src.training.mlx.r29b2m_tokenizer import ExactRuntimeTokenizer  # noqa: E402
+from src.training.mlx.r30j1a_supervision import (  # noqa: E402
+    build_failed_segment_receipt,
+    incomplete_segments_without_parent_decision,
+    resource_stop_reason,
+)
 from src.training.mlx.r30j1a_training import (  # noqa: E402
     CAMPAIGN_ID,
     DEFAULT_LOSS_WEIGHTS,
     ForegroundTrainer,
+    TrainingState,
     append_jsonl,
     atomic_json,
     calibration_report,
@@ -37,11 +42,7 @@ from src.training.mlx.r30j1a_training import (  # noqa: E402
 )
 
 
-def directory_bytes(path: Path) -> int:
-    return sum(item.stat().st_size for item in path.rglob("*") if item.is_file()) if path.exists() else 0
-
-
-def main() -> int:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--artifact-root", type=Path, default=ROOT / "artifacts" / "r30j1a")
     parser.add_argument("--dataset-root", type=Path, default=ROOT / "artifacts" / "r30j1a" / "dataset")
@@ -61,15 +62,150 @@ def main() -> int:
         raise ValueError("segment_steps_out_of_bounds")
     if args.skip_dev_eval and args.phase != "RESUME_PROOF":
         raise ValueError("dev_eval_may_only_be_skipped_for_resume_proof")
-    artifact_root = args.artifact_root.resolve()
-    recorder = artifact_root / "training_flight_recorder"
-    segment_root = recorder / "segments" / args.segment_id
-    if segment_root.exists():
-        raise FileExistsError("segment_artifact_already_exists")
-    segment_root.mkdir(parents=True, exist_ok=False, mode=0o700)
+    return args
+
+
+def initial_manifest(args: argparse.Namespace) -> dict[str, Any]:
+    return {
+        "schema_version": "r30j1a.segment-manifest.v1",
+        "campaign_id": CAMPAIGN_ID,
+        "segment_id": args.segment_id,
+        "phase": args.phase,
+        "status": "INITIALIZING",
+        "planned_steps": args.steps,
+        "starting_global_optimizer_step": 0,
+        "starting_training_state": TrainingState().as_dict(),
+        "resumed": bool(args.resume_checkpoint),
+        "foreground_training": True,
+        "background_training": False,
+        "automation_used": False,
+        "detached_process_used": False,
+        "tmux_used": False,
+        "nohup_used": False,
+        "cron_used": False,
+        "heldout_opened": False,
+        "raw_text_logging": False,
+        "architecture": None,
+        "resource_before": None,
+        "created_at": utc_now(),
+    }
+
+
+def running_state(
+    *,
+    args: argparse.Namespace,
+    state: TrainingState,
+    checkpoint_logical_path: str | None,
+) -> dict[str, Any]:
+    return {
+        "campaign_id": CAMPAIGN_ID,
+        "state": args.phase,
+        **state.as_dict(),
+        "current_process": os.getpid(),
+        "active_segment": args.segment_id,
+        "active_checkpoint": checkpoint_logical_path,
+        "training_started": state.global_optimizer_step > 0,
+        "heldout_opened": False,
+        "descriptive_bootstrap_authorized": True,
+        "normative_persona_training_authorized": False,
+        "final_persona_training_authorized": False,
+        "foreground_training": True,
+        "background_training": False,
+        "parent_decision_pending": False,
+        "updated_at": utc_now(),
+    }
+
+
+def persist_failure(
+    *,
+    args: argparse.Namespace,
+    artifact_root: Path,
+    segment_root: Path,
+    error: BaseException,
+) -> None:
+    receipt_path = segment_root / "segment_receipt.json"
+    if receipt_path.exists():
+        return
+    receipt = build_failed_segment_receipt(
+        segment_root=segment_root,
+        error=error,
+        failure_source="foreground_supervisor_exception",
+        checkpoint_root=artifact_root / "checkpoints" / args.segment_id,
+    )
+    receipt["failed_at"] = utc_now()
+    atomic_json(receipt_path, receipt)
+    append_jsonl(artifact_root / "training_flight_recorder" / "timeline.jsonl", {
+        "event": "SEGMENT_FAILED",
+        "segment_id": args.segment_id,
+        "failure_code": receipt["failure_code"],
+        "attempted_optimizer_updates": receipt["attempted_optimizer_updates"],
+        "durable_global_optimizer_step": receipt["durable_global_optimizer_step"],
+        "checkpoint_verified": receipt["checkpoint_verified"],
+        "at": utc_now(),
+    })
+    attempted = receipt["attempted_training_state"]
+    durable = receipt.get("durable_training_state") or {
+        "global_optimizer_step": receipt["durable_global_optimizer_step"],
+        "examples_seen": 0,
+        "optimizer_tokens": 0,
+        "representation_target_examples": 0,
+        "assistant_target_tokens": 0,
+    }
+    checkpoint_path = None
+    if receipt["checkpoint_verified"]:
+        checkpoint_path = f"artifacts/r30j1a/checkpoints/{args.segment_id}/{receipt['checkpoint']['checkpoint_id']}"
+    atomic_json(artifact_root / "campaign_state.json", {
+        "campaign_id": CAMPAIGN_ID,
+        "state": "SEGMENT_AUDIT",
+        **durable,
+        "current_process": None,
+        "active_segment": args.segment_id,
+        "active_checkpoint": checkpoint_path,
+        "training_started": int(attempted["global_optimizer_step"]) > 0,
+        "attempted_training_state": attempted,
+        "discarded_uncheckpointed_optimizer_updates": receipt["discarded_uncheckpointed_optimizer_updates"],
+        "heldout_opened": False,
+        "descriptive_bootstrap_authorized": True,
+        "normative_persona_training_authorized": False,
+        "final_persona_training_authorized": False,
+        "foreground_training": True,
+        "background_training": False,
+        "parent_decision_pending": True,
+        "last_segment_failed": True,
+        "failure_code": receipt["failure_code"],
+        "updated_at": utc_now(),
+    })
+    atomic_json(artifact_root / "heartbeat_latest.json", {
+        "campaign_id": CAMPAIGN_ID,
+        "state": "SEGMENT_AUDIT",
+        "current_process": None,
+        "process_running": False,
+        "training_running": False,
+        "segment_id": args.segment_id,
+        "durable_global_optimizer_step": receipt["durable_global_optimizer_step"],
+        "attempted_ending_global_optimizer_step": receipt["attempted_ending_global_optimizer_step"],
+        "parent_decision_pending": True,
+        "failure_code": receipt["failure_code"],
+        "updated_at": utc_now(),
+    })
+    print(json.dumps({
+        "event": "SEGMENT_FAILED",
+        "segment_id": args.segment_id,
+        "failure_code": receipt["failure_code"],
+        "attempted_updates": receipt["attempted_optimizer_updates"],
+        "durable_step": receipt["durable_global_optimizer_step"],
+        "checkpoint_verified": receipt["checkpoint_verified"],
+        "parent_decision_pending": True,
+    }, sort_keys=True), flush=True)
+
+
+def run_segment(args: argparse.Namespace, artifact_root: Path, segment_root: Path) -> int:
     dataset = load_dataset(args.dataset_root, open_heldout=False)
     tokenizer = ExactRuntimeTokenizer.from_file(args.tokenizer.resolve())
     before = resource_snapshot(artifact_root)
+    initial_stop = resource_stop_reason(before, before)
+    if initial_stop is not None:
+        raise MemoryError(initial_stop)
     if before["free_disk_bytes"] < 2_000_000_000:
         raise OSError("pre_segment_filesystem_safety_reserve_failed")
     if args.resume_checkpoint:
@@ -81,6 +217,7 @@ def main() -> int:
         if architecture["attention_mode"] != args.attention or architecture["trainable_scope"] != args.scope:
             raise ValueError("resume_architecture_argument_mismatch")
         resumed = True
+        checkpoint_at_start = f"resume_checkpoint:{args.resume_checkpoint.name}"
     else:
         model, architecture = create_model(
             lineage_path=args.lineage_path,
@@ -90,11 +227,10 @@ def main() -> int:
             register_labels=dataset.register_labels,
         )
         optimizer = create_optimizer(model)
-        from src.training.mlx.r30j1a_training import TrainingState
-
         state = TrainingState()
         lineage = architecture
         resumed = False
+        checkpoint_at_start = None
     architecture_receipt = {
         "architecture_sha256": architecture["architecture_sha256"],
         "attention_mode": args.attention,
@@ -104,26 +240,30 @@ def main() -> int:
         "lm_head_absent": True,
         "autoregressive_decode": False,
     }
-    atomic_json(segment_root / "segment_manifest.json", {
-        "schema_version": "r30j1a.segment-manifest.v1",
-        "campaign_id": CAMPAIGN_ID,
-        "segment_id": args.segment_id,
-        "phase": args.phase,
-        "planned_steps": args.steps,
+    manifest = initial_manifest(args) | {
+        "status": "ACTIVE",
         "starting_global_optimizer_step": state.global_optimizer_step,
+        "starting_training_state": state.as_dict(),
         "resumed": resumed,
-        "foreground_training": True,
-        "background_training": False,
-        "automation_used": False,
-        "detached_process_used": False,
-        "tmux_used": False,
-        "nohup_used": False,
-        "cron_used": False,
-        "heldout_opened": False,
-        "raw_text_logging": False,
         "architecture": architecture_receipt,
         "resource_before": before,
-        "created_at": utc_now(),
+    }
+    atomic_json(segment_root / "segment_manifest.json", manifest)
+    atomic_json(artifact_root / "campaign_state.json", running_state(
+        args=args,
+        state=state,
+        checkpoint_logical_path=checkpoint_at_start,
+    ))
+    atomic_json(artifact_root / "heartbeat_latest.json", {
+        "campaign_id": CAMPAIGN_ID,
+        "state": args.phase,
+        "current_process": os.getpid(),
+        "process_running": True,
+        "training_running": False,
+        "segment_id": args.segment_id,
+        "global_optimizer_step": state.global_optimizer_step,
+        "heldout_opened": False,
+        "updated_at": utc_now(),
     })
     if args.calibrate:
         calibration = calibration_report(model=model, dataset=dataset, output_path=segment_root / "loss_calibration.json")
@@ -145,20 +285,34 @@ def main() -> int:
         resource["global_optimizer_step"] = event["global_optimizer_step"]
         append_jsonl(segment_root / "resource_events.jsonl", resource)
         peak_rss = max(peak_rss, int(resource["process_rss_bytes"]))
+        atomic_json(artifact_root / "heartbeat_latest.json", {
+            "campaign_id": CAMPAIGN_ID,
+            "state": args.phase,
+            "current_process": os.getpid(),
+            "process_running": True,
+            "training_running": True,
+            "segment_id": args.segment_id,
+            "global_optimizer_step": event["global_optimizer_step"],
+            "optimizer_tokens": event["optimizer_tokens"],
+            "examples_seen": event["examples_seen"],
+            "heldout_opened": False,
+            "resource": resource,
+            "updated_at": utc_now(),
+        })
         print(json.dumps({
             "event": "OPTIMIZER_STEP",
             "step": event["global_optimizer_step"],
             "combined_loss": round(event["combined_loss"], 6),
             "gradient_norm": round(event["gradient_norm"], 6),
-            "mlx_peak_bytes": event["MLX_peak_memory_bytes"],
-            "rss_bytes": event["process_rss_bytes"],
+            "mlx_peak_bytes": resource["mlx_peak_memory_bytes"],
+            "rss_bytes": resource["process_rss_bytes"],
+            "memory_pressure_state": resource["memory_pressure"]["state"],
+            "swap_growth_bytes": int(resource["swap"]["used_bytes"]) - int(before["swap"]["used_bytes"]),
             "step_seconds": round(event["step_time_seconds"], 4),
         }, sort_keys=True), flush=True)
-        if int(resource["MLX_peak_memory_bytes"]) > 6_500_000_000:
-            raise MemoryError("j1a_mlx_hard_stop_exceeded")
-        swap_growth = int(resource["swap"]["used_bytes"]) - int(before["swap"]["used_bytes"])
-        if swap_growth > 1_000_000_000:
-            raise MemoryError("j1a_sustained_swap_growth_stop")
+        stop_reason = resource_stop_reason(before, resource)
+        if stop_reason is not None:
+            raise MemoryError(stop_reason)
     if trainer.state.global_optimizer_step != starting_step + args.steps:
         raise AssertionError("bounded_segment_step_count_mismatch")
     if args.skip_dev_eval:
@@ -187,6 +341,9 @@ def main() -> int:
     )
     storage = checkpoint_storage_projection(receipt)
     after = resource_snapshot(artifact_root)
+    final_stop = resource_stop_reason(before, after)
+    if final_stop is not None:
+        raise MemoryError(final_stop)
     swap_delta = int(after["swap"]["used_bytes"]) - int(before["swap"]["used_bytes"])
     completion = {
         "schema_version": "r30j1a.segment-receipt.v1",
@@ -194,15 +351,19 @@ def main() -> int:
         "segment_id": args.segment_id,
         "phase": args.phase,
         "completed": True,
+        "failed": False,
         "exact_bounded_steps": args.steps,
         "starting_global_optimizer_step": starting_step,
         "ending_global_optimizer_step": trainer.state.global_optimizer_step,
         "training_state": trainer.state.as_dict(),
         "checkpoint": receipt,
+        "checkpoint_created": True,
+        "checkpoint_verified": receipt["verified"],
         "checkpoint_logical_path": f"artifacts/r30j1a/checkpoints/{args.segment_id}/{checkpoint.name}",
         "storage_projection": storage,
         "resource_before": before,
         "resource_after": after,
+        "resource_telemetry_complete": True,
         "swap_delta_bytes": swap_delta,
         "peak_process_rss_bytes": peak_rss,
         "peak_mlx_memory_bytes": int(mx.get_peak_memory()),
@@ -215,7 +376,7 @@ def main() -> int:
     }
     atomic_json(segment_root / "segment_receipt.json", completion)
     atomic_json(segment_root / "checkpoint_receipt.json", receipt)
-    append_jsonl(recorder / "timeline.jsonl", {
+    append_jsonl(artifact_root / "training_flight_recorder" / "timeline.jsonl", {
         "event": "SEGMENT_COMPLETED",
         "segment_id": args.segment_id,
         "ending_global_optimizer_step": trainer.state.global_optimizer_step,
@@ -234,15 +395,21 @@ def main() -> int:
         "descriptive_bootstrap_authorized": True,
         "normative_persona_training_authorized": False,
         "final_persona_training_authorized": False,
+        "foreground_training": True,
         "background_training": False,
+        "parent_decision_pending": True,
+        "last_segment_failed": False,
         "updated_at": utc_now(),
     })
     atomic_json(artifact_root / "heartbeat_latest.json", {
         "campaign_id": CAMPAIGN_ID,
         "state": "SEGMENT_AUDIT",
         "current_process": None,
+        "process_running": False,
+        "training_running": False,
         "segment_id": args.segment_id,
         "global_optimizer_step": trainer.state.global_optimizer_step,
+        "parent_decision_pending": True,
         "updated_at": utc_now(),
     })
     print(json.dumps({
@@ -255,6 +422,31 @@ def main() -> int:
         "parent_decision_pending": True,
     }, sort_keys=True), flush=True)
     return 0
+
+
+def main() -> int:
+    args = parse_args()
+    artifact_root = args.artifact_root.resolve()
+    recorder = artifact_root / "training_flight_recorder"
+    existing_segments = sorted((recorder / "segments").iterdir()) if (recorder / "segments").is_dir() else []
+    pending = incomplete_segments_without_parent_decision(existing_segments)
+    if pending:
+        raise RuntimeError("prior_segment_parent_decision_missing:" + ",".join(pending))
+    segment_root = recorder / "segments" / args.segment_id
+    if segment_root.exists():
+        raise FileExistsError("segment_artifact_already_exists")
+    segment_root.mkdir(parents=True, exist_ok=False, mode=0o700)
+    atomic_json(segment_root / "segment_manifest.json", initial_manifest(args))
+    try:
+        return run_segment(args, artifact_root, segment_root)
+    except BaseException as error:
+        persist_failure(
+            args=args,
+            artifact_root=artifact_root,
+            segment_root=segment_root,
+            error=error,
+        )
+        raise
 
 
 if __name__ == "__main__":

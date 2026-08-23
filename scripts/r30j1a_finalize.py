@@ -77,23 +77,35 @@ def main() -> int:
     segment_roots = sorted((artifact / "training_flight_recorder/segments").iterdir())
     segment_receipts = [load(path / "segment_receipt.json") for path in segment_roots]
     parent_decisions = [load(path / "parent_decision.json") for path in segment_roots]
+    completed_segments = [row for row in segment_receipts if row.get("completed") is True]
+    failed_segments = [row for row in segment_receipts if row.get("failed") is True and row.get("completed") is False]
     all_segments_supervised = (
         len(segment_receipts) > 0
         and len(segment_receipts) == len(parent_decisions)
+        and len(completed_segments) + len(failed_segments) == len(segment_receipts)
         and all(row["foreground_training"] is True and row["background_training"] is False and row["parent_decision_pending"] is False for row in segment_receipts)
         and all(row["all_synchronous_auditors_returned"] is True and row["training_running_during_audit"] is False for row in parent_decisions)
+        and all(
+            decision["decision"] in {"ADJUST_ONE_VARIABLE", "HOLD", "ABORT"}
+            for receipt, decision in zip(segment_receipts, parent_decisions)
+            if receipt.get("failed") is True
+        )
     )
     max_peak_mlx = max(int(row["peak_mlx_memory_bytes"]) for row in segment_receipts)
     max_peak_rss = max(int(row["peak_process_rss_bytes"]) for row in segment_receipts)
-    maximum_swap_growth = max(int(row["swap_delta_bytes"]) for row in segment_receipts)
-    max_campaign_storage = max(int(row["checkpoint"]["campaign_storage_bytes_after"]) for row in segment_receipts)
-    final_segment = max(segment_receipts, key=lambda row: int(row["ending_global_optimizer_step"]))
+    measured_swap_deltas = [int(row["swap_delta_bytes"]) for row in segment_receipts if row.get("swap_delta_bytes") is not None]
+    if not completed_segments or not measured_swap_deltas:
+        raise ValueError("completed_segment_resource_evidence_missing")
+    maximum_swap_growth = max(measured_swap_deltas)
+    max_campaign_storage = max(int(row["checkpoint"]["campaign_storage_bytes_after"]) for row in completed_segments)
+    final_segment = max(completed_segments, key=lambda row: int(row["ending_global_optimizer_step"]))
     final_checkpoint = final_segment["checkpoint"]
     resources_ok = (
         max_peak_mlx <= 6_500_000_000
         and maximum_swap_growth <= 1_000_000_000
         and max_campaign_storage <= 16_000_000_000
-        and all(int(row["resource_after"]["free_disk_bytes"]) >= 2_000_000_000 for row in segment_receipts)
+        and all(row.get("resource_telemetry_complete") is True for row in completed_segments)
+        and all(int(row["resource_after"]["free_disk_bytes"]) >= 2_000_000_000 for row in completed_segments)
     )
     value = {
         "domain_macro_f1": float(heldout["domain"]["macro_f1"]),
@@ -182,6 +194,19 @@ def main() -> int:
         "value_metrics": value,
         "gates": gates,
         "resource_report": resource_report,
+        "supervision_history": {
+            "segment_count": len(segment_receipts),
+            "completed_segment_count": len(completed_segments),
+            "failed_segment_count": len(failed_segments),
+            "failed_segments_audited": all(
+                decision["decision"] in {"ADJUST_ONE_VARIABLE", "HOLD", "ABORT"}
+                for receipt, decision in zip(segment_receipts, parent_decisions)
+                if receipt.get("failed") is True
+            ),
+            "discarded_uncheckpointed_optimizer_updates": sum(
+                int(row.get("discarded_uncheckpointed_optimizer_updates", 0)) for row in failed_segments
+            ),
+        },
         "automation_contract": {
             "training_backgrounded": False,
             "automation_used": False,

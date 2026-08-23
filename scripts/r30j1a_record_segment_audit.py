@@ -47,10 +47,16 @@ def main() -> int:
     root = args.artifact_root / "training_flight_recorder" / "segments" / args.segment_id
     receipt = json.loads((root / "segment_receipt.json").read_text(encoding="utf-8"))
     dev = json.loads((root / "dev_eval.json").read_text(encoding="utf-8")) if (root / "dev_eval.json").exists() else {"skipped": True}
-    if receipt.get("completed") is not True or receipt.get("parent_decision_pending") is not True:
+    completed = receipt.get("completed") is True
+    failed = receipt.get("failed") is True and completed is False
+    if not (completed or failed) or receipt.get("parent_decision_pending") is not True:
         raise ValueError("segment_not_ready_for_parent_decision")
-    if args.decision in {"CONTINUE", "ADJUST_ONE_VARIABLE"} and args.integrity_status == "FAIL":
+    if completed and args.decision in {"CONTINUE", "ADJUST_ONE_VARIABLE"} and args.integrity_status == "FAIL":
         raise ValueError("cannot_continue_after_integrity_failure")
+    if failed and args.decision == "CONTINUE":
+        raise ValueError("failed_segment_cannot_continue")
+    if failed and args.decision == "ADJUST_ONE_VARIABLE" and receipt.get("resume_allowed") is not False:
+        raise ValueError("failed_segment_adjustment_requires_fresh_restart")
     if args.decision == "ADJUST_ONE_VARIABLE" and args.next_change == "none":
         raise ValueError("adjustment_requires_one_named_change")
     metrics_summary = {
@@ -71,12 +77,20 @@ def main() -> int:
         "normative_persona_truth_assigned": False,
         "raw_text_included": False,
     }
+    checkpoint_receipt = receipt.get("checkpoint")
+    checkpoint_verified = bool(
+        receipt.get("checkpoint_verified", checkpoint_receipt.get("verified", False) if isinstance(checkpoint_receipt, dict) else False)
+    )
     integrity_summary = {
         "auditor": "RESOURCE_AND_INTEGRITY_AUDITOR",
         "status": args.integrity_status,
-        "checkpoint_verified": receipt["checkpoint"]["verified"],
+        "segment_completed": completed,
+        "failure_code": receipt.get("failure_code"),
+        "checkpoint_created": receipt.get("checkpoint_created", completed),
+        "checkpoint_verified": checkpoint_verified,
         "heldout_opened": receipt["heldout_opened"],
         "swap_delta_bytes": receipt["swap_delta_bytes"],
+        "resource_telemetry_complete": receipt.get("resource_telemetry_complete", True),
         "peak_mlx_memory_bytes": receipt["peak_mlx_memory_bytes"],
         "background_training": receipt["background_training"],
         "raw_text_included": False,
@@ -92,7 +106,7 @@ def main() -> int:
         "metrics_reviewed": metrics_summary,
         "shortcut_reviewed": shortcut_summary,
         "resource_reviewed": integrity_summary,
-        "checkpoint_verified": receipt["checkpoint"]["verified"],
+        "checkpoint_verified": integrity_summary["checkpoint_verified"],
         "next_change_if_any": args.next_change,
         "one_primary_variable_at_most": True,
         "all_synchronous_auditors_returned": True,
@@ -102,6 +116,27 @@ def main() -> int:
     receipt["parent_decision_pending"] = False
     receipt["parent_decision"] = args.decision
     atomic_json(root / "segment_receipt.json", receipt)
+    campaign_path = args.artifact_root / "campaign_state.json"
+    campaign = json.loads(campaign_path.read_text(encoding="utf-8"))
+    campaign.update({
+        "state": "SEGMENT_AUDIT",
+        "current_process": None,
+        "active_segment": args.segment_id,
+        "parent_decision_pending": False,
+        "last_parent_decision": args.decision,
+        "next_change_if_any": args.next_change,
+    })
+    atomic_json(campaign_path, campaign)
+    atomic_json(args.artifact_root / "heartbeat_latest.json", {
+        "campaign_id": campaign["campaign_id"],
+        "state": campaign["state"],
+        "current_process": None,
+        "process_running": False,
+        "training_running": False,
+        "segment_id": args.segment_id,
+        "parent_decision_pending": False,
+        "last_parent_decision": args.decision,
+    })
     print(json.dumps({"valid": True, "segment": args.segment_id, "decision": args.decision}, sort_keys=True))
     return 0
 

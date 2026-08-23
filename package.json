@@ -859,6 +859,7 @@
     "r30j1a:run-foreground-segment": "python3 scripts/r30j1a_run_foreground_segment.py",
     "r30j1a:verify-exact-resume": "python3 scripts/r30j1a_verify_exact_resume.py",
     "r30j1a:record-segment-audit": "python3 scripts/r30j1a_record_segment_audit.py",
+    "r30j1a:reconcile-failed-segment": "python3 scripts/r30j1a_reconcile_failed_segment.py",
     "r30j1a:select-probe": "python3 scripts/r30j1a_select_probe.py",
     "r30j1a:prepare-first-report": "python3 scripts/r30j1a_prepare_first_report.py",
     "r30j1a:freeze-history": "python3 scripts/r30j1a_freeze_historical_states.py",

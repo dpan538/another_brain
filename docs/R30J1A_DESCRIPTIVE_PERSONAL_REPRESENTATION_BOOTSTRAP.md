@@ -90,6 +90,12 @@ until synchronous metrics, shortcut/personalization, and resource/integrity
 audits have returned and the parent has written `CONTINUE`,
 `ADJUST_ONE_VARIABLE`, `HOLD`, or `ABORT`.
 
+Resource telemetry is fail-closed: macOS swap and memory-pressure readings,
+RSS, MLX active/peak memory, and free disk must all be measurable. A failed
+segment records attempted versus checkpoint-durable updates separately. An
+uncheckpointed branch is never called a resume and cannot continue until its
+synchronous audits and parent decision are complete.
+
 Checkpoints bind model state, optimizer state, constant-scheduler state,
 global step, example/token counters, deterministic data schedule, Python and
 MLX RNG, dataset manifest, architecture, lineage, metrics, and SHA-256 values.

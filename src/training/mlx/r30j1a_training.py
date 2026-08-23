@@ -39,6 +39,7 @@ from src.training.mlx.r30j1a_model import (
     parameter_report,
     sha256_file,
 )
+from src.training.mlx.r30j1a_supervision import parse_memory_pressure, parse_swap_usage, validate_resource_snapshot
 
 
 TRAINING_SEED = 3_001_101
@@ -325,47 +326,45 @@ def _domain_schedule(rows: Sequence[dict[str, Any]], step: int) -> list[dict[str
 
 
 def _rss_bytes() -> int:
-    try:
-        import psutil
+    import psutil
 
-        return int(psutil.Process().memory_info().rss)
-    except Exception:
-        return 0
+    result = int(psutil.Process().memory_info().rss)
+    if result <= 0:
+        raise RuntimeError("process_rss_telemetry_unavailable")
+    return result
 
 
 def _swap_bytes() -> dict[str, int]:
-    try:
-        result = subprocess.run(["sysctl", "-n", "vm.swapusage"], capture_output=True, text=True, check=True)
-        values = dict(re.findall(r"(total|used|free) = ([0-9.]+)([MG])", result.stdout))
-        output: dict[str, int] = {}
-        for key, (number, unit) in values.items():
-            output[f"{key}_bytes"] = int(float(number) * (1024 ** (2 if unit == "M" else 3)))
-        return output
-    except Exception:
-        return {"total_bytes": 0, "used_bytes": 0, "free_bytes": 0}
+    result = subprocess.run(["sysctl", "-n", "vm.swapusage"], capture_output=True, text=True, check=True)
+    return parse_swap_usage(result.stdout)
+
+
+def _memory_pressure() -> dict[str, Any]:
+    result = subprocess.run(["memory_pressure"], capture_output=True, text=True, check=True)
+    return parse_memory_pressure(result.stdout)
 
 
 def resource_snapshot(root: Path) -> dict[str, Any]:
-    try:
-        import psutil
+    import psutil
 
-        memory = psutil.virtual_memory()
-        ram = {
-            "system_ram_bytes": int(memory.total),
-            "available_ram_bytes": int(memory.available),
-            "memory_percent": float(memory.percent),
-        }
-    except Exception:
-        ram = {"system_ram_bytes": 0, "available_ram_bytes": 0, "memory_percent": 0.0}
-    return {
+    memory = psutil.virtual_memory()
+    ram = {
+        "system_ram_bytes": int(memory.total),
+        "available_ram_bytes": int(memory.available),
+        "memory_percent": float(memory.percent),
+    }
+    snapshot = {
         "measured_at": utc_now(),
         **ram,
         "swap": _swap_bytes(),
+        "memory_pressure": _memory_pressure(),
         "process_rss_bytes": _rss_bytes(),
         "mlx_active_memory_bytes": int(mx.get_active_memory()),
         "mlx_peak_memory_bytes": int(mx.get_peak_memory()),
         "free_disk_bytes": int(shutil.disk_usage(root).free),
     }
+    validate_resource_snapshot(snapshot)
+    return snapshot
 
 
 @dataclass
