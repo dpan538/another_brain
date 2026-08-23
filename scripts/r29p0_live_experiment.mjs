@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -37,6 +37,9 @@ const SOURCE_FILES = [
   "evals/r29p0_pairwise_oracle_v1/schema.json",
   "evals/r29p0_pairwise_oracle_v1/contamination_report.json",
   "evals/r29p0_pairwise_oracle_v1/semantic_audit.json",
+  "src/hybrid_runtime/r29p0_candidate_request.ts",
+  "src/hybrid_runtime/r29p0_live_client.ts",
+  "scripts/r29p0_live_experiment.mjs",
 ];
 
 if (!PHASES.has(PHASE)) throw new Error("r29p0_invalid_live_phase");
