@@ -10,7 +10,7 @@ const BASE = "6cb53030d5d681f67f04636fdcf0629f8380de31";
 const changed = execFileSync("git", ["diff", "--name-only", BASE, "HEAD"], { cwd: ROOT, encoding: "utf8" })
   .trim().split("\n").filter(Boolean);
 const productionPattern = /^(?:web|api|pages\/api|app\/api|functions|netlify\/functions|vercel\/functions)(?:\/|$)|^(?:vercel\.json|netlify\.toml)$/u;
-const allowedPattern = /^(?:config\/r29p0_|docs\/R29P0_|evals\/r29p0_|prompts\/r29p0_|scripts\/(?:r29p0_|check_hybrid_lab_isolation\.mjs|r29b2m_r4h_no_backend_production_gate\.mjs)|src\/hybrid_runtime\/(?:r29p0_|protected_feature_signature\.ts)|tests\/r29p0\/|package\.json)/u;
+const allowedPattern = /^(?:config\/r29p0_|docs\/R29P0_|evals\/r29p0_|prompts\/r29p0_|reports\/r29p0_pairwise_oracle_engineering_receipt\.json|scripts\/(?:r29p0_|check_hybrid_lab_isolation\.mjs|r29b2m_r4h_no_backend_production_gate\.mjs)|src\/hybrid_runtime\/(?:r29p0_|protected_feature_signature\.ts)|tests\/r29p0\/|package\.json)/u;
 const forbiddenCommitPattern = /(?:^|\/)(?:\.env(?:\.|$)|artifacts(?:\/|$)|checkpoints?(?:\/|$)|weights?(?:\/|$)|corpus(?:\/|$))|\.(?:safetensors|pt|pth|ckpt|npz|bin)$/iu;
 const productionPaths = changed.filter((path) => productionPattern.test(path));
 const unexpectedPaths = changed.filter((path) => !allowedPattern.test(path));
@@ -18,7 +18,7 @@ const forbiddenCommittedPaths = changed.filter((path) => forbiddenCommitPattern.
 const deepseekOutsideLab = [];
 for (const path of changed) {
   const body = await readFile(resolve(ROOT, path), "utf8").catch(() => "");
-  if (/api\.deepseek\.com|DEEPSEEK_API_KEY|deepseek-v4-flash/iu.test(body) && !/^(?:config\/r29p0_|docs\/R29P0_|scripts\/(?:r29p0_|r29b2m_r4h_no_backend_production_gate\.mjs|check_hybrid_lab_isolation\.mjs)|src\/hybrid_runtime\/r29p0_|tests\/r29p0\/)/u.test(path)) {
+  if (/api\.deepseek\.com|DEEPSEEK_API_KEY|deepseek-v4-flash/iu.test(body) && !/^(?:config\/r29p0_|docs\/R29P0_|reports\/r29p0_pairwise_oracle_engineering_receipt\.json|scripts\/(?:r29p0_|r29b2m_r4h_no_backend_production_gate\.mjs|check_hybrid_lab_isolation\.mjs)|src\/hybrid_runtime\/r29p0_|tests\/r29p0\/)/u.test(path)) {
     deepseekOutsideLab.push(path);
   }
 }

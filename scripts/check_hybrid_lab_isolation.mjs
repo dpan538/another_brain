@@ -23,6 +23,7 @@ const LAB_PATHS = [
   /^evals\/r29b2m_hybrid_product_v[12]\//,
   /^prompts\/hybrid_(?:dialogue_system_v[12]|canonical_answer_system_v3|constrained_rewrite_system_v3|controlled_one_call_system_v3)\.txt$/,
   /^reports\/(?:v[12]_|r3_)/,
+  /^reports\/r29p0_pairwise_oracle_engineering_receipt\.json$/,
   /^schemas\/local_critic_packet_v1\.schema\.json$/,
   /^schemas\/local_signal_packet_v[12]\.schema\.json$/,
   /^scripts\/audit_legacy_no_backend_full_repo\.mjs$/,

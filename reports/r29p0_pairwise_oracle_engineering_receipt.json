@@ -1,0 +1,128 @@
+{
+  "schema_version": "r29p0.engineering_receipt.v1",
+  "campaign_id": "r29p0_equivalence_pairwise_oracle_v1",
+  "orientation_base": "6cb53030d5d681f67f04636fdcf0629f8380de31",
+  "terminal_state": "BLOCKED_CANDIDATE_HEADROOM",
+  "terminal_reason": [
+    "batch-1 safe equivalent non-identical headroom was 0%, below the frozen 25% futility threshold",
+    "the provisional oracle selected B in 0%, below the frozen 15% futility threshold",
+    "only 55% of Batch-1 pairs fit the future ranker serialization under the 256-token efish context, below the 95% requirement"
+  ],
+  "generation": {
+    "smoke_cases": 3,
+    "smoke_requests": 9,
+    "smoke_passed": true,
+    "scored_cases_generated": 20,
+    "scored_requests": 60,
+    "total_live_requests": 69,
+    "batch_2_started": false,
+    "batch_3_started": false,
+    "requests_not_spent_after_futility": 121,
+    "candidate_a_b_request_bodies_identical": true,
+    "temperature": 0,
+    "thinking_disabled": true,
+    "candidates_parallel": true,
+    "unselected_candidate_exposed": false
+  },
+  "batch_1": {
+    "cases": 20,
+    "reviewer_class": "codex_agent_provisional_panel_a_not_human",
+    "human_review": false,
+    "exact_duplicate_count": 12,
+    "exact_duplicate_rate": 0.6,
+    "nonidentical_count": 8,
+    "panel_a_equivalent": 19,
+    "panel_a_inequivalent": 1,
+    "panel_a_uncertain": 0,
+    "raw_provisional_equivalent_nonidentical_count": 7,
+    "raw_provisional_equivalent_nonidentical_rate": 0.35,
+    "protected_guard_failure_count": 8,
+    "protected_guard_failure_rate": 0.4,
+    "safe_equivalent_nonidentical_headroom_count": 0,
+    "safe_equivalent_nonidentical_headroom_rate": 0,
+    "oracle_a_to_b_count": 0,
+    "oracle_a_to_b_rate": 0,
+    "futility_decision": "STOP_BEFORE_BATCH_2"
+  },
+  "protected_mismatch_counts": {
+    "chinese_numerals": 6,
+    "conditions_modality": 5,
+    "logic_conclusion": 5,
+    "named_explicit_values": 1,
+    "negation_polarity": 5,
+    "quantities": 1,
+    "quoted_strings": 5,
+    "units": 7
+  },
+  "context_fit": {
+    "actual_efish_tokenizer": true,
+    "case_count": 20,
+    "fit_count": 11,
+    "fit_rate": 0.55,
+    "required_rate": 0.95,
+    "total_tokens_min": 77,
+    "total_tokens_median": 217,
+    "total_tokens_max": 739,
+    "semantic_truncation_count": 0,
+    "overflow_decision": "ABSTAIN_FALLBACK_A"
+  },
+  "latency": {
+    "pair_ready_p50_ms": 1259.457416,
+    "pair_ready_p75_ms": 2035.319875,
+    "pair_ready_p90_ms": 3374.4485,
+    "pair_ready_p95_ms": 3404.758792,
+    "pair_ready_max_ms": 3441.897666,
+    "guard_benchmark_p95_ms": 0.095117,
+    "projected_350ms_local_p95_ms": 3754.853909,
+    "projected_350ms_local_max_ms": 3791.98447,
+    "latency_blocker": false
+  },
+  "usage_and_cost": {
+    "input_tokens": 6066,
+    "output_tokens": 3585,
+    "cache_hit_tokens": 0,
+    "cache_miss_tokens": 6066,
+    "estimated_actual_period_cost_cny": 0.0370062,
+    "peak_price_guard_cost_cny": 0.0740124,
+    "hard_cost_ceiling_cny": 2
+  },
+  "decision_scope": {
+    "architecture_value": "NOT_DEMONSTRATED",
+    "trainability": "NOT_TESTED",
+    "actual_96m_value": "NOT_TESTED",
+    "browser_ranker_value": "NOT_TESTED",
+    "product_admission": false,
+    "factual_gate_evaluated": false,
+    "value_gate_evaluated": false
+  },
+  "training": {
+    "training_started": false,
+    "optimizer_tokens": 0,
+    "assistant_target_tokens": 0,
+    "local_ranker_trained": false,
+    "actual_efish_ranker_used": false,
+    "ranker_training_authorized": false
+  },
+  "safety_and_governance": {
+    "secret_scan_pass": true,
+    "secret_exposure": false,
+    "production_modified": false,
+    "deployment_performed": false,
+    "model_weights_changed": false,
+    "training_corpus_committed": false,
+    "raw_responses_committed": false,
+    "historical_terminal_states_preserved": true
+  },
+  "artifact_evidence": [
+    "artifacts/r29p0_pairwise_oracle/reports/batch1_futility.json",
+    "artifacts/r29p0_pairwise_oracle/reports/context_fit_analysis.json",
+    "artifacts/r29p0_pairwise_oracle/reports/latency_analysis.json",
+    "artifacts/r29p0_pairwise_oracle/reports/cost_analysis.json",
+    "artifacts/r29p0_pairwise_oracle/reports/final_terminal.json"
+  ],
+  "contains_raw_response": false,
+  "contains_request_id": false,
+  "contains_system_fingerprint": false,
+  "contains_secret_or_secret_metadata": false,
+  "public_safe": true
+}

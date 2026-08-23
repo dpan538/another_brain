@@ -15,7 +15,7 @@ const violations = [];
 if (productionPaths.length) violations.push({ code: 'production_surface_changed', paths: productionPaths });
 for (const path of changed.filter((item) => !isExperimentalScript(item))) {
   const text = await readFile(resolve(ROOT, path), 'utf8').catch(() => '');
-  if (/api\.deepseek\.com|DEEPSEEK_API_KEY|deepseek-v4-flash/.test(text) && !/^(?:src\/hybrid_runtime|config\/(?:deepseek_pricing_snapshot|r29b2m_r4h_r[23]_live_policy|r29p0_(?:deepseek_pricing_snapshot|deterministic_controller_v1|live_policy|official_api_contract|protocol_freeze))\.json|docs\/(?:R29B2M_R4H_R[23]_|R29P0_EQUIVALENCE_PAIRWISE_ORACLE\.md)|scripts\/(?:check_hybrid_lab_isolation|check_static_local_product_no_backend|r29p0_)|tests\/(?:r29b2m_r4h|r29p0)|prompts\/(?:hybrid_|r29p0_))/.test(path)) {
+  if (/api\.deepseek\.com|DEEPSEEK_API_KEY|deepseek-v4-flash/.test(text) && !/^(?:src\/hybrid_runtime|config\/(?:deepseek_pricing_snapshot|r29b2m_r4h_r[23]_live_policy|r29p0_(?:deepseek_pricing_snapshot|deterministic_controller_v1|live_policy|official_api_contract|protocol_freeze))\.json|docs\/(?:R29B2M_R4H_R[23]_|R29P0_EQUIVALENCE_PAIRWISE_ORACLE\.md)|reports\/r29p0_pairwise_oracle_engineering_receipt\.json|scripts\/(?:check_hybrid_lab_isolation|check_static_local_product_no_backend|r29p0_)|tests\/(?:r29b2m_r4h|r29p0)|prompts\/(?:hybrid_|r29p0_))/.test(path)) {
     violations.push({ code: 'DeepSeek_reference_outside_experimental_runtime', path });
   }
 }

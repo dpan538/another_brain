@@ -837,6 +837,8 @@
     "r29p0:build-owner-review": "node --experimental-strip-types scripts/r29p0_build_owner_review_pack.mjs",
     "r29p0:secret-scan": "python3 scripts/r29p0_secret_scan.py",
     "r29p0:production-diff-gate": "node scripts/r29p0_no_production_change_gate.mjs",
+    "r29p0:measure-guard-latency": "node --experimental-strip-types scripts/r29p0_measure_guard_latency.mjs",
+    "r29p0:finalize-blocked": "python3 scripts/r29p0_finalize_blocked.py",
     "test:r29p0": "python3 -m unittest discover -s tests/r29p0 -q"
   }
 }

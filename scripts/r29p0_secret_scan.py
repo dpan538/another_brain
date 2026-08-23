@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
+import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +44,7 @@ def candidate_files(artifact_root: Path) -> list[Path]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact-root", default="artifacts/r29p0_pairwise_oracle")
+    parser.add_argument("--output")
     args = parser.parse_args()
     key = load_key()
     files = candidate_files((ROOT / args.artifact_root).resolve())
@@ -68,6 +71,19 @@ def main() -> int:
         "key_value_logged": False,
         "secret_metadata_logged": False,
     }
+    if args.output:
+        output = (ROOT / args.output).resolve()
+        output.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, temporary = tempfile.mkstemp(prefix=f".{output.name}.", dir=output.parent)
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+                json.dump(result, handle, sort_keys=True, indent=2)
+                handle.write("\n")
+            os.chmod(temporary, 0o600)
+            os.replace(temporary, output)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
     print(json.dumps(result, sort_keys=True))
     return 0 if violation_count == 0 else 1
 
