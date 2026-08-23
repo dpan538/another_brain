@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/personal_source_provenance_v1.schema.json",
+  "title": "PersonalSourceProvenanceV1",
+  "description": "Hash-bound authorship evidence. A filename, directory name, or writing-style guess is never sufficient provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "subject_sha256",
+    "authorship_class",
+    "source_type",
+    "attestation_kind",
+    "review_status",
+    "reviewed_by_role",
+    "contains_sensitive_sections",
+    "estimated_owner_content_ratio",
+    "split_groups"
+  ],
+  "properties": {
+    "version": {"const": "personal-source-provenance.v1"},
+    "subject_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "authorship_class": {
+      "enum": [
+        "OWNER_AUTHORED_HIGH_CONFIDENCE",
+        "OWNER_ANSWER_TRANSCRIPT_HIGH_CONFIDENCE",
+        "OWNER_AUTHORED_EDITED",
+        "MIXED_OWNER_AI",
+        "AI_OR_CODEX_GENERATED",
+        "THIRD_PARTY",
+        "UNKNOWN"
+      ]
+    },
+    "source_type": {
+      "enum": [
+        "casual_chinese",
+        "casual_english",
+        "spoken_answer_chinese",
+        "spoken_answer_english",
+        "reflective_writing",
+        "project_explanation",
+        "academic_writing",
+        "formal_email_or_message",
+        "short_message",
+        "caption_or_microcopy",
+        "creative_writing",
+        "other"
+      ]
+    },
+    "attestation_kind": {
+      "enum": [
+        "OWNER_DECLARATION",
+        "TRANSCRIPT_PROCESS_RECORD",
+        "EDIT_HISTORY_AUDIT",
+        "EXTERNAL_LICENSE_RECORD",
+        "SYNTHETIC_GENERATION_RECORD",
+        "UNKNOWN"
+      ]
+    },
+    "review_status": {"enum": ["UNREVIEWED", "REVIEW_REQUIRED", "OWNER_APPROVED", "REJECTED"]},
+    "reviewed_by_role": {"enum": ["OWNER", "NOT_REVIEWED"]},
+    "contains_sensitive_sections": {"type": "boolean"},
+    "estimated_owner_content_ratio": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "split_groups": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document", "idea", "family"],
+      "properties": {
+        "document": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"},
+        "idea": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"},
+        "family": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "authorship_class": {
+            "enum": [
+              "OWNER_AUTHORED_HIGH_CONFIDENCE",
+              "OWNER_ANSWER_TRANSCRIPT_HIGH_CONFIDENCE",
+              "OWNER_AUTHORED_EDITED"
+            ]
+          }
+        },
+        "required": ["authorship_class"]
+      },
+      "then": {
+        "properties": {
+          "review_status": {"const": "OWNER_APPROVED"},
+          "reviewed_by_role": {"const": "OWNER"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"authorship_class": {"const": "OWNER_AUTHORED_HIGH_CONFIDENCE"}},
+        "required": ["authorship_class"]
+      },
+      "then": {"properties": {"attestation_kind": {"const": "OWNER_DECLARATION"}}}
+    },
+    {
+      "if": {
+        "properties": {"authorship_class": {"const": "OWNER_ANSWER_TRANSCRIPT_HIGH_CONFIDENCE"}},
+        "required": ["authorship_class"]
+      },
+      "then": {"properties": {"attestation_kind": {"const": "TRANSCRIPT_PROCESS_RECORD"}}}
+    },
+    {
+      "if": {
+        "properties": {"authorship_class": {"const": "OWNER_AUTHORED_EDITED"}},
+        "required": ["authorship_class"]
+      },
+      "then": {"properties": {"attestation_kind": {"const": "EDIT_HISTORY_AUDIT"}}}
+    }
+  ]
+}

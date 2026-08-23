@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/personal_register_profile_v1.schema.json",
+  "title": "PersonalRegisterProfileV1",
+  "description": "Owner-reviewed register-conditioned preference profile. The empty template contains no inferred owner values.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "profile_id",
+    "status",
+    "owner_review_completed",
+    "public_safe",
+    "contains_sensitive_traits",
+    "registers"
+  ],
+  "properties": {
+    "version": {"const": "personal-register-profile.v1"},
+    "profile_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,63}$"},
+    "status": {"enum": ["owner_review_required", "owner_approved"]},
+    "owner_review_completed": {"type": "boolean"},
+    "public_safe": {"const": true},
+    "contains_sensitive_traits": {"const": false},
+    "registers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ordinary_chat",
+        "practical_answer",
+        "logic_explanation",
+        "philosophical_reflection",
+        "project_discussion",
+        "formal_message"
+      ],
+      "properties": {
+        "ordinary_chat": {"$ref": "#/$defs/reviewableRegister"},
+        "practical_answer": {"$ref": "#/$defs/reviewableRegister"},
+        "logic_explanation": {"$ref": "#/$defs/reviewableRegister"},
+        "philosophical_reflection": {"$ref": "#/$defs/reviewableRegister"},
+        "project_discussion": {"$ref": "#/$defs/reviewableRegister"},
+        "formal_message": {"$ref": "#/$defs/reviewableRegister"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"owner_review_completed": {"const": true}},
+        "required": ["owner_review_completed"]
+      },
+      "then": {
+        "properties": {
+          "status": {"const": "owner_approved"},
+          "registers": {
+            "properties": {
+              "ordinary_chat": {"$ref": "#/$defs/approvedRegister"},
+              "practical_answer": {"$ref": "#/$defs/approvedRegister"},
+              "logic_explanation": {"$ref": "#/$defs/approvedRegister"},
+              "philosophical_reflection": {"$ref": "#/$defs/approvedRegister"},
+              "project_discussion": {"$ref": "#/$defs/approvedRegister"},
+              "formal_message": {"$ref": "#/$defs/approvedRegister"}
+            }
+          }
+        }
+      },
+      "else": {"properties": {"status": {"const": "owner_review_required"}}}
+    }
+  ],
+  "$defs": {
+    "axisValues": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "response_density",
+        "warmth",
+        "directness",
+        "formality",
+        "reflection",
+        "explanation_depth",
+        "assistantness_tolerance",
+        "question_frequency",
+        "humour",
+        "philosophy_style"
+      ],
+      "properties": {
+        "response_density": {"enum": ["sparse", "compact", "moderate", null]},
+        "warmth": {"enum": ["restrained", "quiet_warm", "expressive", null]},
+        "directness": {"enum": ["direct", "balanced", "exploratory", null]},
+        "formality": {"enum": ["casual", "neutral", "formal", null]},
+        "reflection": {"enum": ["practical", "mixed", "reflective", null]},
+        "explanation_depth": {"enum": ["minimal", "bounded", "detailed", null]},
+        "assistantness_tolerance": {"enum": ["very_low", "low", "moderate", null]},
+        "question_frequency": {"enum": ["rarely", "only_if_needed", "conversational", null]},
+        "humour": {"enum": ["none", "light", "playful", null]},
+        "philosophy_style": {"enum": ["concise_open", "dialectical", "analytic", null]}
+      }
+    },
+    "approvedAxisValues": {
+      "allOf": [
+        {"$ref": "#/$defs/axisValues"},
+        {
+          "properties": {
+            "response_density": {"enum": ["sparse", "compact", "moderate"]},
+            "warmth": {"enum": ["restrained", "quiet_warm", "expressive"]},
+            "directness": {"enum": ["direct", "balanced", "exploratory"]},
+            "formality": {"enum": ["casual", "neutral", "formal"]},
+            "reflection": {"enum": ["practical", "mixed", "reflective"]},
+            "explanation_depth": {"enum": ["minimal", "bounded", "detailed"]},
+            "assistantness_tolerance": {"enum": ["very_low", "low", "moderate"]},
+            "question_frequency": {"enum": ["rarely", "only_if_needed", "conversational"]},
+            "humour": {"enum": ["none", "light", "playful"]},
+            "philosophy_style": {"enum": ["concise_open", "dialectical", "analytic"]}
+          }
+        }
+      ]
+    },
+    "reviewableRegister": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidence_status", "axes", "descriptive_evidence_ids", "hypothesis_ids"],
+      "properties": {
+        "status": {"enum": ["owner_review_required", "owner_approved"]},
+        "evidence_status": {"enum": ["UNKNOWN", "INSUFFICIENT", "OWNER_REVIEWED"]},
+        "axes": {"$ref": "#/$defs/axisValues"},
+        "descriptive_evidence_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"}
+        },
+        "hypothesis_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"}
+        }
+      }
+    },
+    "approvedRegister": {
+      "allOf": [
+        {"$ref": "#/$defs/reviewableRegister"},
+        {
+          "properties": {
+            "status": {"const": "owner_approved"},
+            "evidence_status": {"const": "OWNER_REVIEWED"},
+            "axes": {"$ref": "#/$defs/approvedAxisValues"}
+          }
+        }
+      ]
+    }
+  }
+}

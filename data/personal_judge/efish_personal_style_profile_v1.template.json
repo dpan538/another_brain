@@ -1,0 +1,20 @@
+{
+  "version": "efish-personal-style-profile.v1",
+  "profile_id": "candidate-profile-unreviewed",
+  "charter_version": "efish-personal-preference-charter.v1",
+  "status": "owner_review_required",
+  "owner_review_completed": false,
+  "public_safe": true,
+  "axes": {
+    "response_density": null,
+    "warmth": null,
+    "directness": null,
+    "formality": null,
+    "reflection": null,
+    "explanation_depth": null,
+    "assistantness_tolerance": null,
+    "question_frequency": null,
+    "humour": null,
+    "philosophy_style": null
+  }
+}

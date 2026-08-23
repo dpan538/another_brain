@@ -1,0 +1,133 @@
+{
+  "schema_version": "r30j0.personal-source-discovery.v1",
+  "campaign": "R30J0-P",
+  "status": "methodology_only_no_training",
+  "execution": {
+    "local_offline_only": true,
+    "network_requests_allowed": false,
+    "scan_scope": "current_repository_tree_including_ignored_files",
+    "follow_symlinks": false,
+    "source_files_modified": false,
+    "maximum_text_bytes_for_content_scan": 4194304,
+    "output_root": "artifacts/r30j0/personal_sources",
+    "output_root_must_be_ignored": true,
+    "stdout_may_contain_paths": false,
+    "stdout_may_contain_excerpts": false
+  },
+  "hard_exclusions": [
+    "node_modules",
+    ".git",
+    "weights_and_checkpoints",
+    "build_outputs",
+    "api_or_deepseek_traffic",
+    "codex_reports",
+    "tests_and_evaluations",
+    "logs_and_telemetry",
+    "generated_or_synthetic_material",
+    "public_or_external_corpus",
+    "secret_bearing_files"
+  ],
+  "authorship_classes": [
+    "OWNER_AUTHORED_HIGH_CONFIDENCE",
+    "OWNER_ANSWER_TRANSCRIPT_HIGH_CONFIDENCE",
+    "OWNER_AUTHORED_EDITED",
+    "MIXED_OWNER_AI",
+    "AI_OR_CODEX_GENERATED",
+    "THIRD_PARTY",
+    "UNKNOWN"
+  ],
+  "authorship_evidence_precedence": [
+    "hash_bound_owner_approved_provenance",
+    "hash_bound_transcript_process_record",
+    "hash_bound_edit_history_audit",
+    "explicit_external_or_synthetic_provenance",
+    "UNKNOWN"
+  ],
+  "filename_alone_may_establish_authorship": false,
+  "selection_policy": {
+    "primary": [
+      "OWNER_AUTHORED_HIGH_CONFIDENCE",
+      "OWNER_ANSWER_TRANSCRIPT_HIGH_CONFIDENCE"
+    ],
+    "secondary": ["OWNER_AUTHORED_EDITED"],
+    "quarantine_or_exclude": [
+      "MIXED_OWNER_AI",
+      "AI_OR_CODEX_GENERATED",
+      "THIRD_PARTY",
+      "UNKNOWN"
+    ],
+    "training_candidate_allowed_in_j0": false
+  },
+  "source_types": [
+    "casual_chinese",
+    "casual_english",
+    "spoken_answer_chinese",
+    "spoken_answer_english",
+    "reflective_writing",
+    "project_explanation",
+    "academic_writing",
+    "formal_email_or_message",
+    "short_message",
+    "caption_or_microcopy",
+    "creative_writing",
+    "other"
+  ],
+  "sensitive_boundary": {
+    "categories_are_not_reported": true,
+    "matched_values_are_never_returned_or_persisted": true,
+    "excluded_record_only_marker": "excluded_sensitive_content=true",
+    "covers": [
+      "secrets",
+      "contact_details",
+      "addresses",
+      "account_identifiers",
+      "health",
+      "religion",
+      "politics",
+      "sexuality",
+      "criminal_history",
+      "financial_records",
+      "third_party_private_information",
+      "school_affairs"
+    ]
+  },
+  "evidence_layers": {
+    "descriptive": "personal_preference_evidence_ledger_v1",
+    "normative": "personal_preference_hypotheses_v1",
+    "must_remain_separate": true,
+    "owner_hypothesis_approval_required": true
+  },
+  "registers": [
+    "ordinary_chat",
+    "practical_answer",
+    "logic_explanation",
+    "philosophical_reflection",
+    "project_discussion",
+    "formal_message"
+  ],
+  "historical_asset_decisions": ["REUSE", "REVIEW", "REJECT", "SUPERSEDED"],
+  "split_contract": {
+    "document_group_required": true,
+    "idea_group_required": true,
+    "family_group_required": true,
+    "filename_random_split_forbidden": true,
+    "exact_document_duplicates_grouped_by_content_hash": true,
+    "near_ngram_overlap_requires_shared_group_or_quarantine": true,
+    "ngram_overlap_threshold": 0.85
+  },
+  "tracked_output_boundary": {
+    "public_safe_schemas_templates_and_code_only": true,
+    "real_logical_paths": false,
+    "real_filenames": false,
+    "content_hashes": false,
+    "source_excerpts": false,
+    "owner_values": false,
+    "derived_owner_hypotheses": false
+  },
+  "training_state": {
+    "training_started": false,
+    "classification_updates": 0,
+    "examples_seen_by_optimizer": 0,
+    "allowed_for_training": false
+  }
+}

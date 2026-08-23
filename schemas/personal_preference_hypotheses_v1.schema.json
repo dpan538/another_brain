@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/personal_preference_hypotheses_v1.schema.json",
+  "title": "PersonalPreferenceHypothesesV1",
+  "description": "Ignored, owner-review-required normative hypotheses kept separate from descriptive evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "owner_review_completed",
+    "allowed_for_training",
+    "hypotheses"
+  ],
+  "properties": {
+    "version": {"const": "personal-preference-hypotheses.v1"},
+    "status": {"enum": ["EMPTY_TEMPLATE", "OWNER_REVIEW_REQUIRED", "OWNER_REVIEWED"]},
+    "owner_review_completed": {"type": "boolean"},
+    "allowed_for_training": {"const": false},
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "hypothesis_id",
+          "register",
+          "dimension",
+          "candidate_value",
+          "supporting_source_count",
+          "supporting_source_types",
+          "contradicting_source_count",
+          "confidence",
+          "register_dependency",
+          "owner_review_required",
+          "allowed_for_training"
+        ],
+        "properties": {
+          "hypothesis_id": {"$ref": "#/$defs/safeCode"},
+          "register": {"$ref": "#/$defs/register"},
+          "dimension": {"$ref": "#/$defs/dimension"},
+          "candidate_value": {"type": ["string", "number", "boolean", "null"]},
+          "supporting_source_count": {"type": "integer", "minimum": 0},
+          "supporting_source_types": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"$ref": "#/$defs/sourceType"}
+          },
+          "contradicting_source_count": {"type": "integer", "minimum": 0},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "register_dependency": {
+            "enum": [
+              "ordinary_chat",
+              "practical_answer",
+              "logic_explanation",
+              "philosophical_reflection",
+              "project_discussion",
+              "formal_message",
+              "cross_register",
+              "unknown"
+            ]
+          },
+          "owner_review_required": {"const": true},
+          "allowed_for_training": {"const": false}
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"dimension": {"const": "response_density"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["sparse", "compact", "moderate", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "warmth"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["restrained", "quiet_warm", "expressive", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "directness"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["direct", "balanced", "exploratory", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "formality"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["casual", "neutral", "formal", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "reflection"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["practical", "mixed", "reflective", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "explanation_depth"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["minimal", "bounded", "detailed", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "assistantness_tolerance"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["very_low", "low", "moderate", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "question_frequency"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["rarely", "only_if_needed", "conversational", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "humour"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["none", "light", "playful", null]}}}
+          },
+          {
+            "if": {"properties": {"dimension": {"const": "philosophy_style"}}, "required": ["dimension"]},
+            "then": {"properties": {"candidate_value": {"enum": ["concise_open", "dialectical", "analytic", null]}}}
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "safeCode": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"},
+    "register": {
+      "enum": [
+        "ordinary_chat",
+        "practical_answer",
+        "logic_explanation",
+        "philosophical_reflection",
+        "project_discussion",
+        "formal_message"
+      ]
+    },
+    "dimension": {
+      "enum": [
+        "response_density",
+        "warmth",
+        "directness",
+        "formality",
+        "reflection",
+        "explanation_depth",
+        "assistantness_tolerance",
+        "question_frequency",
+        "humour",
+        "philosophy_style"
+      ]
+    },
+    "sourceType": {
+      "enum": [
+        "casual_chinese",
+        "casual_english",
+        "spoken_answer_chinese",
+        "spoken_answer_english",
+        "reflective_writing",
+        "project_explanation",
+        "academic_writing",
+        "formal_email_or_message",
+        "short_message",
+        "caption_or_microcopy",
+        "creative_writing",
+        "other"
+      ]
+    }
+  }
+}

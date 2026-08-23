@@ -1,0 +1,73 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #25231f;
+  background: #f5f2ec;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 36px 22px 64px;
+  line-height: 1.55;
+}
+
+header, main, footer {
+  background: #fffdf9;
+  border: 1px solid #ddd7cc;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+header h1 { margin: 0 0 8px; }
+.eyebrow { color: #715b40; font-size: .82rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.small, .muted { color: #6b665e; font-size: .9rem; }
+.status { margin-top: 16px; padding: 12px; background: #f2ede4; border-radius: 9px; }
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+button, select, textarea, input { font: inherit; }
+button, .file-control {
+  border: 1px solid #8b806f;
+  border-radius: 8px;
+  background: #fff;
+  padding: 9px 13px;
+  cursor: pointer;
+}
+button.active { background: #3d362d; color: white; }
+button.danger { color: #8a2828; border-color: #ad7777; }
+
+label { display: grid; gap: 5px; margin: 12px 0; }
+label.inline { display: flex; align-items: center; gap: 8px; }
+input[type="checkbox"] { width: 18px; height: 18px; }
+input[type="text"], select, textarea {
+  width: 100%;
+  border: 1px solid #bdb5a8;
+  border-radius: 7px;
+  padding: 9px;
+  background: white;
+}
+textarea { min-height: 92px; resize: vertical; }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.card { border: 1px solid #ddd7cc; border-radius: 10px; padding: 16px; margin: 12px 0; }
+.label-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px; }
+.slot-nav { display: grid; grid-template-columns: 1fr auto auto; align-items: end; gap: 8px; }
+.validation-pass { background: #e9f4e8; color: #244c27; }
+.validation-fail { background: #faece8; color: #712c24; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #f4f1eb; padding: 12px; border-radius: 8px; }
+footer { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.file-control input { display: block; margin-top: 5px; }
+
+@media (max-width: 720px) {
+  .grid, .label-grid, .slot-nav { grid-template-columns: 1fr; }
+  body { padding: 18px 10px 40px; }
+  header, main, footer { padding: 17px; }
+}

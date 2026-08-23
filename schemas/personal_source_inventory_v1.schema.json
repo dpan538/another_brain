@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/personal_source_inventory_v1.schema.json",
+  "title": "PersonalSourceInventoryV1",
+  "description": "Local-only source inventory. Populated instances contain filenames and hashes and must remain under ignored artifacts/r30j0/personal_sources.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "must_remain_ignored",
+    "portable_public_safe",
+    "contains_raw_excerpts",
+    "allowed_for_training",
+    "sources"
+  ],
+  "properties": {
+    "version": {"const": "personal-source-inventory.v1"},
+    "status": {"enum": ["EMPTY_TEMPLATE", "DISCOVERED_REVIEW_REQUIRED"]},
+    "must_remain_ignored": {"const": true},
+    "portable_public_safe": {"const": false},
+    "contains_raw_excerpts": {"const": false},
+    "allowed_for_training": {"const": false},
+    "sources": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/source"}
+    }
+  },
+  "$defs": {
+    "safeCode": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"},
+    "authorshipClass": {
+      "enum": [
+        "OWNER_AUTHORED_HIGH_CONFIDENCE",
+        "OWNER_ANSWER_TRANSCRIPT_HIGH_CONFIDENCE",
+        "OWNER_AUTHORED_EDITED",
+        "MIXED_OWNER_AI",
+        "AI_OR_CODEX_GENERATED",
+        "THIRD_PARTY",
+        "UNKNOWN"
+      ]
+    },
+    "sourceType": {
+      "enum": [
+        "casual_chinese",
+        "casual_english",
+        "spoken_answer_chinese",
+        "spoken_answer_english",
+        "reflective_writing",
+        "project_explanation",
+        "academic_writing",
+        "formal_email_or_message",
+        "short_message",
+        "caption_or_microcopy",
+        "creative_writing",
+        "other"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "logical_path",
+        "bytes",
+        "sha256",
+        "authorship_class",
+        "source_type",
+        "language",
+        "estimated_owner_content_ratio",
+        "personalization_priority",
+        "contains_sensitive_sections",
+        "excluded_sensitive_content",
+        "allowed_for_style_analysis",
+        "allowed_for_training_candidate",
+        "reason",
+        "review_status",
+        "split_groups",
+        "historical_asset_decision",
+        "ngram_overlap_excluded"
+      ],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/safeCode"},
+        "logical_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "authorship_class": {"$ref": "#/$defs/authorshipClass"},
+        "source_type": {"$ref": "#/$defs/sourceType"},
+        "language": {"enum": ["zh", "en", "mixed", "other", "unknown"]},
+        "estimated_owner_content_ratio": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "personalization_priority": {"enum": ["PRIMARY", "SECONDARY", "QUARANTINE", "EXCLUDE"]},
+        "contains_sensitive_sections": {"type": "boolean"},
+        "excluded_sensitive_content": {"type": "boolean"},
+        "allowed_for_style_analysis": {"type": "boolean"},
+        "allowed_for_training_candidate": {"const": false},
+        "reason": {"$ref": "#/$defs/safeCode"},
+        "review_status": {"enum": ["UNREVIEWED", "REVIEW_REQUIRED", "OWNER_APPROVED", "REJECTED"]},
+        "split_groups": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["document", "idea", "family"],
+          "properties": {
+            "document": {"$ref": "#/$defs/safeCode"},
+            "idea": {"$ref": "#/$defs/safeCode"},
+            "family": {"$ref": "#/$defs/safeCode"}
+          }
+        },
+        "historical_asset_decision": {"enum": ["REUSE", "REVIEW", "REJECT", "SUPERSEDED"]},
+        "ngram_overlap_excluded": {"type": "boolean"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"contains_sensitive_sections": {"const": true}},
+            "required": ["contains_sensitive_sections"]
+          },
+          "then": {
+            "properties": {
+              "personalization_priority": {"const": "EXCLUDE"},
+              "excluded_sensitive_content": {"const": true},
+              "allowed_for_style_analysis": {"const": false},
+              "allowed_for_training_candidate": {"const": false}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"personalization_priority": {"const": "PRIMARY"}},
+            "required": ["personalization_priority"]
+          },
+          "then": {
+            "properties": {
+              "authorship_class": {
+                "enum": ["OWNER_AUTHORED_HIGH_CONFIDENCE", "OWNER_ANSWER_TRANSCRIPT_HIGH_CONFIDENCE"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"personalization_priority": {"const": "SECONDARY"}},
+            "required": ["personalization_priority"]
+          },
+          "then": {"properties": {"authorship_class": {"const": "OWNER_AUTHORED_EDITED"}}}
+        }
+      ]
+    }
+  }
+}

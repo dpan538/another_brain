@@ -1,0 +1,18 @@
+{
+  "schema_version": "r30j0.personal_source_review_payload.v1",
+  "payload_id": "replace-with-sanitized-payload-id",
+  "sanitized": true,
+  "public_safe": true,
+  "credential_free": true,
+  "sensitive_raw_removed": true,
+  "owner_review_completed": false,
+  "profile_frozen": false,
+  "allowed_for_training": false,
+  "sections": {
+    "source_summary": [],
+    "style_hypotheses": [],
+    "preference_evidence": [],
+    "contrast_pairs": [],
+    "register_profiles": []
+  }
+}

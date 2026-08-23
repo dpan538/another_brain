@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    >
+    <title>R30J0 Personal Source Review · {{SECTION_TITLE}}</title>
+    <link rel="stylesheet" href="review.css">
+    <script defer src="review_data.js"></script>
+    <script defer src="review.js"></script>
+  </head>
+  <body data-section="{{SECTION_KEY}}">
+    <header>
+      <p class="eyebrow">R30J0-P · local-only sanitized review</p>
+      <h1>{{SECTION_TITLE}}</h1>
+      <p>
+        此页面只展示经过清洗的短摘录和候选解释。不要在编辑或备注中加入秘密、身份信息、敏感原文或机器路径。
+        审阅结果不会冻结真实 profile，也不会授权训练。
+      </p>
+      <div id="status" class="status" aria-live="polite"></div>
+    </header>
+
+    <nav aria-label="Personal source review sections">
+      <a href="source_summary.html">Source summary</a>
+      <a href="style_hypotheses.html">Style hypotheses</a>
+      <a href="preference_evidence.html">Preference evidence</a>
+      <a href="contrast_pairs.html">Contrast pairs</a>
+      <a href="register_profiles.html">Register profiles</a>
+    </nav>
+
+    <main>
+      <div id="section-note" class="notice"></div>
+      <div id="app"></div>
+    </main>
+
+    <footer>
+      <button id="export-review" type="button">导出本地审阅草稿</button>
+      <button id="clear-local" class="danger" type="button">清除本地审阅状态</button>
+      <p class="small">
+        仅使用本地文件、localStorage 和浏览器下载；没有 fetch、XHR、WebSocket、服务端或 API。
+        所有导出始终保持 <code>owner_review_completed=false</code>、<code>profile_frozen=false</code>、
+        <code>allowed_for_training=false</code>。
+      </p>
+    </footer>
+  </body>
+</html>

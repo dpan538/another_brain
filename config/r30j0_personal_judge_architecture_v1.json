@@ -1,0 +1,231 @@
+{
+  "schema_version": "r30j0.personal-judge-architecture.v1",
+  "model_family": "efish-personal-judge-v1",
+  "status": "specification_only_no_training",
+  "source_decoder": {
+    "lineage": "R28M1_q4_recovered_and_R3_stage_a_080k_research_assets",
+    "context_length": 256,
+    "audited_parameter_count_excluding_masks": 96421248,
+    "actual_q4_shard_bytes": 48267968,
+    "stored_causal_mask_bitpack_bytes": 57344,
+    "disposition": "frozen_research_asset_not_continued_as_generator",
+    "r28m1_role": "default_first_lineage_for_future_probe",
+    "r3_role": "challenger_only_generation_failure_does_not_prove_representation_failure"
+  },
+  "shared_dimensions": {
+    "vocab_size": 16000,
+    "vocabulary_assumption": "retain_the_audited_16000_tokenizer_unless_a_future_profile_token_audit_explicitly_changes_it",
+    "context_length": 512,
+    "normal_target_tokens": 448,
+    "reserved_tokens": 64,
+    "overlength_policy": "ABSTAIN_OR_DETERMINISTIC_DEFAULT_PRESENTATION_NEVER_SEMANTIC_TRUNCATION",
+    "n_layer": 7,
+    "hidden_size": 896,
+    "n_head": 14,
+    "head_dim": 64,
+    "mlp_size": 3584,
+    "position_embedding": "learned_absolute_512x896",
+    "block_contract": "pre_layernorm_packed_qkv_exact_gelu_four_x_mlp",
+    "classification_pooling": "last_eos_hidden_state",
+    "pooling_parameter_count": 0,
+    "eos_required": true
+  },
+  "input_contract": {
+    "serialization_order": ["PERSONAL_PROFILE", "CONTEXT", "USER", "ANSWER", "EOS"],
+    "primary_subject": "DeepSeek_answer_in_minimum_necessary_context",
+    "profile_encoding": "compact_categorical_or_learned_representation_only_never_long_natural_language_owner_paragraph",
+    "normal_total_token_target": 448,
+    "hard_total_token_maximum": 512,
+    "reserved_token_budget": 64,
+    "semantically_important_truncation": false,
+    "overlength_action": ["OUT_OF_SCOPE", "DEFAULT_PRESENTATION"],
+    "forbidden_inputs": [
+      "sensitive_owner_traits",
+      "raw_private_chat_export",
+      "end_user_psychological_profile",
+      "hidden_prompt",
+      "factuality_or_truth_target"
+    ]
+  },
+  "attention_variants": {
+    "causal_judge": {
+      "attention_semantics": "causal_upper_triangle_mask_procedurally_generated",
+      "stored_mask_tensor": false,
+      "tensor_dimensions_equal_to_bidirectional": true,
+      "future_probe_status": "not_run",
+      "initialization_contract": "R28M1_attention_weights_may_warm_start_but_position_rows_256_511_and_all_heads_require_new_initialization",
+      "lineage_label_if_initialized_from_r28m1": "warm-started_from_r28m1_representation",
+      "r28m1_parity": false
+    },
+    "bidirectional_judge": {
+      "attention_semantics": "full_bidirectional_self_attention_no_causal_mask",
+      "stored_mask_tensor": false,
+      "tensor_dimensions_equal_to_causal": true,
+      "future_probe_status": "not_run",
+      "initialization_contract": "R28M1_tensor_values_may_warm_start_but_changed_attention_semantics_position_rows_256_511_and_all_heads_break_parity",
+      "lineage_label_if_initialized_from_r28m1": "warm-started_from_r28m1_representation",
+      "r28m1_parity": false
+    }
+  },
+  "classification_heads": {
+    "personal_fit": {
+      "kind": "three_class_linear",
+      "labels": ["PERSONAL_FIT", "NEUTRAL", "PERSONAL_MISMATCH"],
+      "output_count": 3,
+      "parameter_count": 2691
+    },
+    "voice_issues": {
+      "kind": "fourteen_label_independent_logits",
+      "labels": [
+        "too_formal",
+        "too_verbose",
+        "too_assistant_like",
+        "too_cold",
+        "too_warm",
+        "too_explanatory",
+        "too_structured",
+        "too_generic",
+        "too_apologetic",
+        "too_enthusiastic",
+        "unnecessary_question",
+        "unnecessary_disclaimer",
+        "repetitive",
+        "textbook_tone"
+      ],
+      "output_count": 14,
+      "parameter_count": 12558
+    },
+    "presentation_mode": {
+      "kind": "six_class_linear",
+      "labels": ["compact", "quiet", "reflective", "direct", "playful_light", "neutral"],
+      "output_count": 6,
+      "parameter_count": 5382,
+      "semantic_text_editing_allowed": false
+    },
+    "confidence_abstention": {
+      "kind": "three_class_linear",
+      "labels": ["CONFIDENT_PERSONALIZE", "DEFAULT_PRESENTATION", "OUT_OF_SCOPE"],
+      "output_count": 3,
+      "parameter_count": 2691
+    }
+  },
+  "profile_representation_alternatives": {
+    "fixed_profile_embedding": {
+      "profile_count": 1,
+      "parameter_delta": 896,
+      "fusion": "prepend_one_learned_virtual_profile_state_that_counts_toward_the_512_position_budget",
+      "implementation_complexity": "low",
+      "trainability": "simple_but_weakly_identifiable_with_one_profile",
+      "browser_cost": "one_896_value_lookup",
+      "multiple_profile_support": "linear_growth_one_vector_per_profile",
+      "profile_leakage_risk": "low_output_surface_but_vector_may_encode_uninspectable_correlations",
+      "calibration": "requires_owner_labeled_abstention_and_repeat_labels",
+      "selection_status": "not_selected_j0"
+    },
+    "categorical_profile_tokens": {
+      "token_count": 30,
+      "active_tokens_per_example": 10,
+      "fusion": "prepend_one_explicit_token_for_each_of_ten_reviewed_categorical_axes",
+      "accounting_cases": {
+        "reuse_audited_reserved_ids": {
+          "parameter_delta": 0,
+          "availability": "unproven_no_reserved_token_ids_have_been_authorized"
+        },
+        "extend_vocabulary": {
+          "parameter_delta": 26880,
+          "all_q4_byte_delta": 13440
+        }
+      },
+      "implementation_complexity": "low_to_medium_requires_tokenizer_reserved_id_audit",
+      "trainability": "direct_token_conditioning_but_axis_interactions_are_implicit",
+      "browser_cost": "adds_a_small_fixed_number_of_prefill_tokens",
+      "multiple_profile_support": "composes_shared_axis_values_without_owner_specific_vectors",
+      "profile_leakage_risk": "most_inspectable_but_serialized_tokens_must_never_be_rendered",
+      "calibration": "can_calibrate_per_axis_and_abstain_on_unreviewed_combinations",
+      "selection_status": "not_selected_j0"
+    },
+    "structured_side_channel": {
+      "axis_count": 10,
+      "categories_per_axis": 3,
+      "category_embedding_width": 32,
+      "parameter_delta": 288576,
+      "fusion": "concatenate_ten_selected_32d_axis_embeddings_project_to_896_and_add_to_pooled_eos_state_before_heads",
+      "implementation_complexity": "highest_requires_side_channel_fusion_and_export_support",
+      "trainability": "explicit_axes_and_compositional_but_more_parameters_need_owner_labels",
+      "browser_cost": "small_relative_to_backbone_but_adds_projection_kernel",
+      "multiple_profile_support": "strongest_structured_support_without_natural_language_profiles",
+      "profile_leakage_risk": "schema_is_inspectable_but_latent_projection_is_not",
+      "calibration": "supports_axis_coverage_and_out_of_domain_checks",
+      "selection_status": "not_selected_j0"
+    }
+  },
+  "runtime_contract": {
+    "classification_only": true,
+    "lm_head": "absent",
+    "autoregressive_decode": false,
+    "greedy_decode": false,
+    "sampling": false,
+    "kv_cache_required": false,
+    "prefill_count_per_judgement": 1,
+    "answer_text_mutation": false,
+    "factuality_head": false,
+    "emotion_or_personality_diagnosis": false,
+    "browser_implementation_exists": false
+  },
+  "projection_assumptions": {
+    "q4_encoding": "signed_offset_int4_two_values_per_byte_one_scale_per_tensor_in_metadata",
+    "q4_masks_stored": false,
+    "model_metadata_budget_bytes": 65536,
+    "model_metadata_note": "planning_envelope_not_generated_manifest_measurement",
+    "runtime_tokenizer_bytes": 997450,
+    "runtime_tokenizer_source": "measured_current_R28M1_runtime_tokenizer_json_for_projection_only",
+    "judge_runtime_bundle_budget_bytes": 524288,
+    "judge_runtime_bundle_note": "planning_envelope_no_judge_webgpu_bundle_exists",
+    "activation_dtype_bytes": 2,
+    "activation_allocator_margin_fraction": 0.25,
+    "synthetic_effective_throughput_gflops": [50, 100, 200, 300],
+    "latency_targets_ms": {"warm_p50": 250, "warm_p95": 500},
+    "latency_targets_are_unverified": true
+  },
+  "quantization_strategies": {
+    "all_q4": {
+      "selection_status": "not_selected_j0",
+      "scope": "backbone_and_all_four_classification_heads",
+      "risk": "head_logit_and_calibration_quality_must_be_measured"
+    },
+    "q4_backbone_fp16_heads": {
+      "selection_status": "not_selected_j0",
+      "scope": "q4_backbone_with_all_four_direct_linear_heads_fp16",
+      "risk": "mixed_precision_browser_export_and_kernel_support_must_be_implemented"
+    }
+  },
+  "expected_measurements": {
+    "source_decoder_parameters": 96421248,
+    "judge_common_parameters": 82337946,
+    "lm_head_parameters_removed": 14336000,
+    "position_parameters_added": 229376,
+    "classification_head_parameters_added": 23322,
+    "all_q4_weight_bytes": 41168974,
+    "q4_backbone_fp16_heads_weight_bytes": 41203956
+  },
+  "future_probe_contract": {
+    "training_in_j0": false,
+    "stage_order": [
+      "frozen_backbone_linear_heads",
+      "frozen_backbone_small_mlp_heads",
+      "partial_last_layer_adaptation",
+      "full_judge_adaptation_only_after_underfit_evidence"
+    ],
+    "causal_vs_bidirectional": "same_owner_approved_splits_same_heads_same_metrics",
+    "backbone_comparison": ["R28M1_q4_recovered", "R3_stage_a_080k"],
+    "random_initialization": "optional_sanity_check_only",
+    "perplexity_or_lm_loss_product_gate": false
+  },
+  "training_state": {
+    "training_started": false,
+    "classification_updates": 0,
+    "examples_seen_by_optimizer": 0,
+    "checkpoint": null,
+    "candidate": null
+  }
+}

@@ -1,0 +1,237 @@
+{
+  "schema_version": "r30j0.dataset_design.v1",
+  "campaign_id": "r30j0_personal_efish_judge_v1",
+  "model_family": "efish-personal-judge-v1",
+  "status": "design_only_owner_review_required",
+  "purpose": "Owner-specific personal-fit and non-semantic presentation classification for an already-formed DeepSeek answer.",
+  "not_a_target": [
+    "generic_commercial_assistant_quality",
+    "factual_correctness",
+    "truth_probability",
+    "logic_correctness",
+    "end_user_personality_inference",
+    "end_user_emotion_diagnosis",
+    "answer_generation",
+    "pairwise_product_selection"
+  ],
+  "example_schema": "schemas/efish_personal_judge_example_v1.schema.json",
+  "profile_schema": "schemas/efish_personal_style_profile_v1.schema.json",
+  "charter": "data/personal_judge/efish_personal_preference_charter_v1.json",
+  "personal_fit_labels": [
+    "PERSONAL_FIT",
+    "NEUTRAL",
+    "PERSONAL_MISMATCH"
+  ],
+  "voice_issue_labels": [
+    "too_formal",
+    "too_verbose",
+    "too_assistant_like",
+    "too_cold",
+    "too_warm",
+    "too_explanatory",
+    "too_structured",
+    "too_generic",
+    "too_apologetic",
+    "too_enthusiastic",
+    "unnecessary_question",
+    "unnecessary_disclaimer",
+    "repetitive",
+    "textbook_tone"
+  ],
+  "presentation_labels": [
+    "compact",
+    "quiet",
+    "reflective",
+    "direct",
+    "playful_light",
+    "neutral"
+  ],
+  "confidence_targets": [
+    "CONFIDENT_PERSONALIZE",
+    "DEFAULT_PRESENTATION",
+    "OUT_OF_SCOPE"
+  ],
+  "personal_profile_taxonomy": {
+    "response_density": [
+      "sparse",
+      "compact",
+      "moderate"
+    ],
+    "warmth": [
+      "restrained",
+      "quiet_warm",
+      "expressive"
+    ],
+    "directness": [
+      "direct",
+      "balanced",
+      "exploratory"
+    ],
+    "formality": [
+      "casual",
+      "neutral",
+      "formal"
+    ],
+    "reflection": [
+      "practical",
+      "mixed",
+      "reflective"
+    ],
+    "explanation_depth": [
+      "minimal",
+      "bounded",
+      "detailed"
+    ],
+    "assistantness_tolerance": [
+      "very_low",
+      "low",
+      "moderate"
+    ],
+    "question_frequency": [
+      "rarely",
+      "only_if_needed",
+      "conversational"
+    ],
+    "humour": [
+      "none",
+      "light",
+      "playful"
+    ],
+    "philosophy_style": [
+      "concise_open",
+      "dialectical",
+      "analytic"
+    ]
+  },
+  "pilot": {
+    "designed_example_count": 400,
+    "generated_example_count_j0": 0,
+    "owner_review_example_slots": 200,
+    "owner_review_contrast_pair_slots": 100,
+    "review_slots_contain_examples_j0": false,
+    "review_slots_contain_owner_labels_j0": false,
+    "mix_hypothesis": [
+      {
+        "category": "clean_acceptable_answers",
+        "percent": 30,
+        "pilot_count": 120
+      },
+      {
+        "category": "generic_good_but_efish_mismatch",
+        "percent": 25,
+        "pilot_count": 100
+      },
+      {
+        "category": "controlled_voice_style_negatives",
+        "percent": 20,
+        "pilot_count": 80
+      },
+      {
+        "category": "subtle_preference_contrast",
+        "percent": 15,
+        "pilot_count": 60
+      },
+      {
+        "category": "uncertain_or_out_of_scope",
+        "percent": 10,
+        "pilot_count": 40
+      }
+    ],
+    "mix_status": "hypothesis_requires_owner_validation",
+    "required_reverse_controls": [
+      "shorter_answer_is_too_cryptic",
+      "colder_answer_is_not_preferred",
+      "casual_answer_is_not_preferred",
+      "playful_answer_is_not_preferred",
+      "generic_answer_is_preferred_when_personalized_variant_is_vague"
+    ],
+    "owner_review_completed": false,
+    "validated_owner_export_present": false
+  },
+  "future_full_target": {
+    "minimum_examples": 6000,
+    "maximum_examples": 10000,
+    "authorized": false,
+    "authorization_requires": [
+      "owner_approved_pilot",
+      "owner_label_repeat_consistency_at_least_0.90",
+      "non_trivial_personal_fit_class_distribution",
+      "generic_baseline_uplift_at_least_0.10",
+      "oracle_personal_presentation_value",
+      "privacy_and_provenance_pass"
+    ]
+  },
+  "allowed_source_kinds": [
+    "existing_public_safe_project_dialogue",
+    "new_project_authored",
+    "controlled_deepseek_output",
+    "controlled_stylistic_mutation",
+    "explicit_owner_authored",
+    "owner_reviewed_contrast_pair",
+    "public_safe_portfolio_language"
+  ],
+  "forbidden_source_kinds": [
+    "raw_private_chat_export",
+    "private_message",
+    "email",
+    "personal_diary",
+    "hidden_memory",
+    "assistant_hidden_prompt",
+    "system_hidden_prompt",
+    "r29_eval_answer_direct_training_copy",
+    "live_product_user_conversation",
+    "secret_or_identifier_bearing_record"
+  ],
+  "split_contract": {
+    "units": [
+      "conversation_family",
+      "semantic_family",
+      "source_family",
+      "mutation_family",
+      "event_family"
+    ],
+    "individual_row_random_split_forbidden": true,
+    "owner_review_duplicates_grouped": true,
+    "r29_evaluation_families_excluded_from_training": true
+  },
+  "contrast_pair_contract": {
+    "training_supervision_only": true,
+    "product_pairwise_architecture": false,
+    "same_user_context_required": true,
+    "same_factual_content_required": true,
+    "owner_preference_values": [
+      "A",
+      "B",
+      "TIE"
+    ],
+    "must_include_generic_good_personal_mismatch": true,
+    "must_include_reverse_controls": true
+  },
+  "mutation_contract": {
+    "implementation": "src/personal_judge/mutation_contract.ts",
+    "fact_preservation_required": true,
+    "deterministic_guard_is_semantic_proof": false,
+    "human_review_required_after_guard": true,
+    "failed_mutations_are_discarded": true
+  },
+  "privacy": {
+    "local_first": true,
+    "explicit_owner_approval_required": true,
+    "versioned": true,
+    "editable": true,
+    "deletable": true,
+    "sensitive_profile_inference": false,
+    "online_learning": false,
+    "automatic_live_user_collection": false
+  },
+  "j0_execution": {
+    "training_started": false,
+    "classification_updates": 0,
+    "examples_seen_by_optimizer": 0,
+    "assistant_target_tokens": 0,
+    "checkpoint": null,
+    "candidate": null,
+    "api_requests": 0,
+    "full_dataset_generated": false
+  }
+}

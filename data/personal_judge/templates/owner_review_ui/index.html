@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    >
+    <title>R30J0 Owner Review</title>
+    <link rel="stylesheet" href="review.css">
+    <script defer src="review_data.js"></script>
+    <script defer src="review.js"></script>
+  </head>
+  <body>
+    <header>
+      <p class="eyebrow">R30J0 · local-only</p>
+      <h1>Efish personal-judge owner review</h1>
+      <p>
+        这是数据准备工具，不是模型，也不会联网。初始包没有 owner 标签、私密 profile 或训练样本。
+        只有全部内容均为 public-safe、完成审阅并通过本地校验，导出文件才会标记
+        <code>owner_review_completed=true</code>；即使如此，J0 仍不授权训练。
+      </p>
+      <div id="status" class="status" aria-live="polite"></div>
+    </header>
+
+    <nav aria-label="Review sections">
+      <button type="button" data-view="charter">Charter</button>
+      <button type="button" data-view="taxonomy">Taxonomy</button>
+      <button type="button" data-view="presentation">Presentation</button>
+      <button type="button" data-view="pilot">Pilot 200</button>
+      <button type="button" data-view="contrast">Contrast 100</button>
+      <button type="button" data-view="validation">Validation</button>
+    </nav>
+
+    <main id="app"></main>
+
+    <footer>
+      <label class="file-control">
+        导入本地草稿或 public-safe 内容
+        <input id="import-file" type="file" accept="application/json,.json">
+      </label>
+      <button id="export-draft" type="button">导出草稿（状态保持 false）</button>
+      <button id="validate-export" type="button">验证并导出</button>
+      <button id="clear-local" class="danger" type="button">清除本地浏览器草稿</button>
+      <p class="small">
+        工具只使用本地文件、浏览器 localStorage 与下载。没有 fetch、XHR、WebSocket、服务端或 API。
+      </p>
+    </footer>
+  </body>
+</html>

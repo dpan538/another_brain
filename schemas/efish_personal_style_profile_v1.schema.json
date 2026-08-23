@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/efish_personal_style_profile_v1.schema.json",
+  "title": "EfishPersonalStyleProfileV1",
+  "description": "Editable, versioned, public-safe owner preference profile. Unreviewed candidate values are not authoritative owner preferences.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "profile_id",
+    "charter_version",
+    "status",
+    "owner_review_completed",
+    "public_safe",
+    "axes"
+  ],
+  "properties": {
+    "version": {
+      "const": "efish-personal-style-profile.v1"
+    },
+    "profile_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,63}$"
+    },
+    "charter_version": {
+      "const": "efish-personal-preference-charter.v1"
+    },
+    "status": {
+      "enum": [
+        "owner_review_required",
+        "owner_approved"
+      ]
+    },
+    "owner_review_completed": {
+      "type": "boolean"
+    },
+    "public_safe": {
+      "const": true
+    },
+    "axes": {
+      "$ref": "#/$defs/reviewableAxes"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "owner_review_completed": {
+            "const": true
+          }
+        },
+        "required": [
+          "owner_review_completed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "status": {
+            "const": "owner_approved"
+          },
+          "axes": {
+            "$ref": "#/$defs/approvedAxes"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "status": {
+            "const": "owner_review_required"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "owner_approved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "owner_review_completed": {
+            "const": true
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "reviewableAxes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "response_density",
+        "warmth",
+        "directness",
+        "formality",
+        "reflection",
+        "explanation_depth",
+        "assistantness_tolerance",
+        "question_frequency",
+        "humour",
+        "philosophy_style"
+      ],
+      "properties": {
+        "response_density": {
+          "type": ["string", "null"],
+          "enum": ["sparse", "compact", "moderate", null]
+        },
+        "warmth": {
+          "type": ["string", "null"],
+          "enum": ["restrained", "quiet_warm", "expressive", null]
+        },
+        "directness": {
+          "type": ["string", "null"],
+          "enum": ["direct", "balanced", "exploratory", null]
+        },
+        "formality": {
+          "type": ["string", "null"],
+          "enum": ["casual", "neutral", "formal", null]
+        },
+        "reflection": {
+          "type": ["string", "null"],
+          "enum": ["practical", "mixed", "reflective", null]
+        },
+        "explanation_depth": {
+          "type": ["string", "null"],
+          "enum": ["minimal", "bounded", "detailed", null]
+        },
+        "assistantness_tolerance": {
+          "type": ["string", "null"],
+          "enum": ["very_low", "low", "moderate", null]
+        },
+        "question_frequency": {
+          "type": ["string", "null"],
+          "enum": ["rarely", "only_if_needed", "conversational", null]
+        },
+        "humour": {
+          "type": ["string", "null"],
+          "enum": ["none", "light", "playful", null]
+        },
+        "philosophy_style": {
+          "type": ["string", "null"],
+          "enum": ["concise_open", "dialectical", "analytic", null]
+        }
+      }
+    },
+    "approvedAxes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "response_density",
+        "warmth",
+        "directness",
+        "formality",
+        "reflection",
+        "explanation_depth",
+        "assistantness_tolerance",
+        "question_frequency",
+        "humour",
+        "philosophy_style"
+      ],
+      "properties": {
+        "response_density": {
+          "enum": ["sparse", "compact", "moderate"]
+        },
+        "warmth": {
+          "enum": ["restrained", "quiet_warm", "expressive"]
+        },
+        "directness": {
+          "enum": ["direct", "balanced", "exploratory"]
+        },
+        "formality": {
+          "enum": ["casual", "neutral", "formal"]
+        },
+        "reflection": {
+          "enum": ["practical", "mixed", "reflective"]
+        },
+        "explanation_depth": {
+          "enum": ["minimal", "bounded", "detailed"]
+        },
+        "assistantness_tolerance": {
+          "enum": ["very_low", "low", "moderate"]
+        },
+        "question_frequency": {
+          "enum": ["rarely", "only_if_needed", "conversational"]
+        },
+        "humour": {
+          "enum": ["none", "light", "playful"]
+        },
+        "philosophy_style": {
+          "enum": ["concise_open", "dialectical", "analytic"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "r30j0.owner_review_pack_template.v1",
+  "campaign_id": "r30j0_personal_efish_judge_v1",
+  "model_family": "efish-personal-judge-v1",
+  "owner_review_completed": false,
+  "validated_export": false,
+  "allowed_for_training": false,
+  "candidate_profile": {
+    "status": "owner_review_required",
+    "values": {
+      "response_density": null,
+      "warmth": null,
+      "directness": null,
+      "formality": null,
+      "reflection": null,
+      "explanation_depth": null,
+      "assistantness_tolerance": null,
+      "question_frequency": null,
+      "humour": null,
+      "philosophy_style": null
+    }
+  },
+  "owner_attestation": {
+    "explicit_owner_review": false,
+    "contains_only_non_sensitive_preferences": false,
+    "approves_public_safe_pilot_for_future_training_review": false,
+    "reviewer_note": ""
+  },
+  "review_questions": [
+    "Does this feel like efish?",
+    "Which answer would you actually prefer?",
+    "Is this too assistant-like?",
+    "Is it too short?",
+    "Is it too cold?",
+    "Is it too polished?",
+    "Is the proposed presentation mode appropriate?"
+  ],
+  "pilot_slot_count": 200,
+  "contrast_slot_count": 100,
+  "slot_content_status": "awaiting_public_safe_content",
+  "slot_owner_label_status": "unreviewed",
+  "private_profile_in_template": false,
+  "owner_labels_in_template": false,
+  "training_examples_in_template": false
+}

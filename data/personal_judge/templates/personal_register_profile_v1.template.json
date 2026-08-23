@@ -1,0 +1,118 @@
+{
+  "version": "personal-register-profile.v1",
+  "profile_id": "candidate-register-profile-unreviewed",
+  "status": "owner_review_required",
+  "owner_review_completed": false,
+  "public_safe": true,
+  "contains_sensitive_traits": false,
+  "registers": {
+    "ordinary_chat": {
+      "status": "owner_review_required",
+      "evidence_status": "UNKNOWN",
+      "axes": {
+        "response_density": null,
+        "warmth": null,
+        "directness": null,
+        "formality": null,
+        "reflection": null,
+        "explanation_depth": null,
+        "assistantness_tolerance": null,
+        "question_frequency": null,
+        "humour": null,
+        "philosophy_style": null
+      },
+      "descriptive_evidence_ids": [],
+      "hypothesis_ids": []
+    },
+    "practical_answer": {
+      "status": "owner_review_required",
+      "evidence_status": "UNKNOWN",
+      "axes": {
+        "response_density": null,
+        "warmth": null,
+        "directness": null,
+        "formality": null,
+        "reflection": null,
+        "explanation_depth": null,
+        "assistantness_tolerance": null,
+        "question_frequency": null,
+        "humour": null,
+        "philosophy_style": null
+      },
+      "descriptive_evidence_ids": [],
+      "hypothesis_ids": []
+    },
+    "logic_explanation": {
+      "status": "owner_review_required",
+      "evidence_status": "UNKNOWN",
+      "axes": {
+        "response_density": null,
+        "warmth": null,
+        "directness": null,
+        "formality": null,
+        "reflection": null,
+        "explanation_depth": null,
+        "assistantness_tolerance": null,
+        "question_frequency": null,
+        "humour": null,
+        "philosophy_style": null
+      },
+      "descriptive_evidence_ids": [],
+      "hypothesis_ids": []
+    },
+    "philosophical_reflection": {
+      "status": "owner_review_required",
+      "evidence_status": "UNKNOWN",
+      "axes": {
+        "response_density": null,
+        "warmth": null,
+        "directness": null,
+        "formality": null,
+        "reflection": null,
+        "explanation_depth": null,
+        "assistantness_tolerance": null,
+        "question_frequency": null,
+        "humour": null,
+        "philosophy_style": null
+      },
+      "descriptive_evidence_ids": [],
+      "hypothesis_ids": []
+    },
+    "project_discussion": {
+      "status": "owner_review_required",
+      "evidence_status": "UNKNOWN",
+      "axes": {
+        "response_density": null,
+        "warmth": null,
+        "directness": null,
+        "formality": null,
+        "reflection": null,
+        "explanation_depth": null,
+        "assistantness_tolerance": null,
+        "question_frequency": null,
+        "humour": null,
+        "philosophy_style": null
+      },
+      "descriptive_evidence_ids": [],
+      "hypothesis_ids": []
+    },
+    "formal_message": {
+      "status": "owner_review_required",
+      "evidence_status": "UNKNOWN",
+      "axes": {
+        "response_density": null,
+        "warmth": null,
+        "directness": null,
+        "formality": null,
+        "reflection": null,
+        "explanation_depth": null,
+        "assistantness_tolerance": null,
+        "question_frequency": null,
+        "humour": null,
+        "philosophy_style": null
+      },
+      "descriptive_evidence_ids": [],
+      "hypothesis_ids": []
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/personal_preference_evidence_ledger_v1.schema.json",
+  "title": "PersonalPreferenceEvidenceLedgerRowV1",
+  "description": "One descriptive, public-contract row for an ignored local JSONL ledger. It records evidence, never an accepted owner preference.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_id",
+    "source_id",
+    "evidence_type",
+    "domain",
+    "language",
+    "proposed_dimension",
+    "proposed_value",
+    "confidence",
+    "source_type",
+    "owner_review_required",
+    "sensitive_content_removed",
+    "notes"
+  ],
+  "properties": {
+    "evidence_id": {"$ref": "#/$defs/safeCode"},
+    "source_id": {"$ref": "#/$defs/safeCode"},
+    "evidence_type": {
+      "enum": [
+        "descriptive_style",
+        "explicit_preference",
+        "explicit_rejection",
+        "explicit_acceptance",
+        "contrast_preference"
+      ]
+    },
+    "domain": {"$ref": "#/$defs/register"},
+    "language": {"enum": ["zh", "en", "mixed", "other", "unknown"]},
+    "proposed_dimension": {"$ref": "#/$defs/dimension"},
+    "proposed_value": {"type": ["string", "number", "boolean", "null"]},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "source_type": {"$ref": "#/$defs/sourceType"},
+    "owner_review_required": {"const": true},
+    "sensitive_content_removed": {"type": "boolean"},
+    "notes": {"type": "string", "maxLength": 240, "pattern": "^[a-z0-9._ -]*$"}
+  },
+  "$defs": {
+    "safeCode": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,127}$"},
+    "register": {
+      "enum": [
+        "ordinary_chat",
+        "practical_answer",
+        "logic_explanation",
+        "philosophical_reflection",
+        "project_discussion",
+        "formal_message"
+      ]
+    },
+    "dimension": {
+      "enum": [
+        "response_density",
+        "warmth",
+        "directness",
+        "formality",
+        "reflection",
+        "explanation_depth",
+        "assistantness_tolerance",
+        "question_frequency",
+        "humour",
+        "philosophy_style",
+        "sentence_rhythm",
+        "opening_style",
+        "closing_style"
+      ]
+    },
+    "sourceType": {
+      "enum": [
+        "casual_chinese",
+        "casual_english",
+        "spoken_answer_chinese",
+        "spoken_answer_english",
+        "reflective_writing",
+        "project_explanation",
+        "academic_writing",
+        "formal_email_or_message",
+        "short_message",
+        "caption_or_microcopy",
+        "creative_writing",
+        "other"
+      ]
+    }
+  }
+}

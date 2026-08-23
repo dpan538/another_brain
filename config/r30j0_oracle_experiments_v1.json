@@ -1,0 +1,63 @@
+{
+  "schema_version": "r30j0.oracle_experiments.v1",
+  "campaign_id": "r30j0_personal_efish_judge_v1",
+  "status": "specified_not_executed_owner_review_required",
+  "oracle_is_actual_efish_model": false,
+  "j0_api_requests": 0,
+  "presentation_upper_bound": {
+    "experiment_id": "oracle_personal_presentation_upper_bound_v1",
+    "status": "not_run",
+    "frozen_public_safe_case_count": {
+      "minimum": 100,
+      "target": 120,
+      "maximum": 150
+    },
+    "control": "unchanged_answer_with_default_presentation",
+    "treatment": "same_unchanged_answer_with_oracle_owner_selected_presentation",
+    "answer_text_must_be_byte_identical": true,
+    "semantic_text_editing_allowed": false,
+    "owner_review_required": true,
+    "blinded_order_required": true,
+    "measures": [
+      "owner_preference",
+      "perceived_fit",
+      "brand_fit",
+      "distraction",
+      "over_animation"
+    ],
+    "drop_rule": "Drop the presentation head if oracle presentation creates no measurable owner value.",
+    "results": null
+  },
+  "personal_fit_upper_bound": {
+    "experiment_id": "oracle_personal_fit_label_upper_bound_v1",
+    "status": "not_run",
+    "answer_count": 200,
+    "labels": [
+      "PERSONAL_FIT",
+      "NEUTRAL",
+      "PERSONAL_MISMATCH"
+    ],
+    "owner_review_required": true,
+    "blind_repeat_fraction": 0.1,
+    "minimum_repeat_consistency": 0.9,
+    "maximum_single_class_share": 0.8,
+    "class_diversity_required_before_training": true,
+    "results": null
+  },
+  "generic_personal_uplift_gate": {
+    "status": "not_run",
+    "baseline": "config/r30j0_generic_baseline_v1.json",
+    "same_frozen_owner_review_split": true,
+    "primary_metric": "owner_preference_accuracy",
+    "minimum_absolute_uplift": 0.1,
+    "results": null
+  },
+  "execution_boundaries": {
+    "public_safe_cases_only": true,
+    "private_profile_in_bundle": false,
+    "raw_private_chat_source": false,
+    "network_required_for_owner_review": false,
+    "oracle_label_may_be_called_model_output": false,
+    "training_authorized_by_specification_alone": false
+  }
+}

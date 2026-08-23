@@ -839,6 +839,14 @@
     "r29p0:production-diff-gate": "node scripts/r29p0_no_production_change_gate.mjs",
     "r29p0:measure-guard-latency": "node --experimental-strip-types scripts/r29p0_measure_guard_latency.mjs",
     "r29p0:finalize-blocked": "python3 scripts/r29p0_finalize_blocked.py",
-    "test:r29p0": "python3 -m unittest discover -s tests/r29p0 -q"
+    "test:r29p0": "python3 -m unittest discover -s tests/r29p0 -q",
+    "r30j0:measure-architecture": "python3 scripts/r30j0_measure_architecture.py",
+    "r30j0:build-owner-review": "node scripts/r30j0_build_owner_review_pack.mjs",
+    "r30j0:discover-personal-sources": "python3 scripts/r30j0_discover_personal_sources.py",
+    "r30j0:build-personal-source-review": "node scripts/r30j0_build_personal_source_review_pack.mjs --payload artifacts/r30j0/owner_review/personal_source_review/sanitized_review_payload.json",
+    "r30j0:secret-scan": "python3 scripts/r30j0_secret_scan.py --output artifacts/r30j0/reports/secret_scan.json",
+    "r30j0:production-diff-gate": "node scripts/r30j0_no_production_change_gate.mjs",
+    "r30j0:finalize": "python3 scripts/r30j0_finalize.py",
+    "test:r30j0": "python3 -m unittest discover -s tests/r30j0 -q"
   }
 }

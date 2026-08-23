@@ -1,0 +1,9 @@
+{
+  "version": "personal-preference-evidence-ledger.v1",
+  "status": "EMPTY_TEMPLATE",
+  "must_remain_ignored_when_populated": true,
+  "descriptive_only": true,
+  "contains_raw_excerpts": false,
+  "allowed_for_training": false,
+  "records": []
+}

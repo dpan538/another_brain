@@ -1,0 +1,9 @@
+{
+  "version": "personal-source-inventory.v1",
+  "status": "EMPTY_TEMPLATE",
+  "must_remain_ignored": true,
+  "portable_public_safe": false,
+  "contains_raw_excerpts": false,
+  "allowed_for_training": false,
+  "sources": []
+}

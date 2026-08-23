@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/efish_personal_judge_example_v1.schema.json",
+  "title": "Efish Personal Judge Example V1",
+  "description": "Public-safe classification example contract. Optional answer pairs are preference-supervision data, not a product pairwise-selection architecture.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "example_id",
+    "conversation_id",
+    "split_group",
+    "context",
+    "latest_user_message",
+    "deepseek_answer",
+    "personal_profile_version",
+    "personal_fit_label",
+    "voice_issue_labels",
+    "presentation_label",
+    "confidence_target",
+    "source_kind",
+    "mutation_kind",
+    "owner_review_status",
+    "generic_quality_status",
+    "public_safe",
+    "allowed_for_training",
+    "notes"
+  ],
+  "properties": {
+    "example_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,95}$"
+    },
+    "conversation_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,95}$"
+    },
+    "split_group": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 96
+    },
+    "context": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "content"],
+        "properties": {
+          "role": {
+            "enum": ["user", "assistant"]
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        }
+      }
+    },
+    "latest_user_message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "deepseek_answer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "personal_profile_version": {
+      "type": "string",
+      "pattern": "^efish-personal-style-profile\\.v[1-9][0-9]*$"
+    },
+    "personal_fit_label": {
+      "enum": ["PERSONAL_FIT", "NEUTRAL", "PERSONAL_MISMATCH"]
+    },
+    "voice_issue_labels": {
+      "type": "array",
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "too_formal",
+          "too_verbose",
+          "too_assistant_like",
+          "too_cold",
+          "too_warm",
+          "too_explanatory",
+          "too_structured",
+          "too_generic",
+          "too_apologetic",
+          "too_enthusiastic",
+          "unnecessary_question",
+          "unnecessary_disclaimer",
+          "repetitive",
+          "textbook_tone"
+        ]
+      }
+    },
+    "presentation_label": {
+      "enum": ["compact", "quiet", "reflective", "direct", "playful_light", "neutral"]
+    },
+    "confidence_target": {
+      "enum": ["CONFIDENT_PERSONALIZE", "DEFAULT_PRESENTATION", "OUT_OF_SCOPE"]
+    },
+    "source_kind": {
+      "enum": [
+        "existing_public_safe_project_dialogue",
+        "new_project_authored",
+        "controlled_deepseek_output",
+        "controlled_stylistic_mutation",
+        "explicit_owner_authored",
+        "owner_reviewed_contrast_pair",
+        "public_safe_portfolio_language"
+      ]
+    },
+    "mutation_kind": {
+      "enum": [
+        "none",
+        "make_more_formal",
+        "make_more_verbose",
+        "add_customer_service_opening",
+        "add_unnecessary_validation",
+        "add_unnecessary_disclaimer",
+        "add_bullet_structure",
+        "add_textbook_framing",
+        "make_too_cold",
+        "make_too_warm",
+        "add_unnecessary_question",
+        "add_repetition",
+        "make_overly_enthusiastic",
+        "make_overly_apologetic"
+      ]
+    },
+    "owner_review_status": {
+      "enum": ["OWNER_REVIEW_REQUIRED", "OWNER_APPROVED", "OWNER_REJECTED"]
+    },
+    "generic_quality_status": {
+      "enum": ["GENERIC_GOOD", "GENERIC_ACCEPTABLE", "GENERIC_MEDIOCRE", "GENERIC_POOR", "NOT_ASSESSED"]
+    },
+    "public_safe": {
+      "const": true
+    },
+    "allowed_for_training": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "pair_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,95}$"
+    },
+    "answer_A": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "answer_B": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "owner_preference": {
+      "enum": ["A", "B", "TIE"]
+    }
+  },
+  "dependentRequired": {
+    "pair_id": ["answer_A", "answer_B", "owner_preference"],
+    "answer_A": ["pair_id", "answer_B", "owner_preference"],
+    "answer_B": ["pair_id", "answer_A", "owner_preference"],
+    "owner_preference": ["pair_id", "answer_A", "answer_B"]
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "allowed_for_training": {
+            "const": true
+          }
+        },
+        "required": ["allowed_for_training"]
+      },
+      "then": {
+        "properties": {
+          "owner_review_status": {
+            "const": "OWNER_APPROVED"
+          }
+        }
+      }
+    }
+  ]
+}

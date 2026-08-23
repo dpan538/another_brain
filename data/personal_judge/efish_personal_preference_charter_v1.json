@@ -1,0 +1,167 @@
+{
+  "version": "efish-personal-preference-charter.v1",
+  "model_family": "efish-personal-judge-v1",
+  "public_safe": true,
+  "status": "owner_review_required",
+  "owner_review_completed": false,
+  "purpose": "Define an owner-approved, non-semantic personal-fit judgement contract for DeepSeek answers.",
+  "authority_boundary": {
+    "deepseek_controls": [
+      "factual_content",
+      "reasoning",
+      "knowledge",
+      "logic",
+      "philosophy",
+      "final_answer_semantics"
+    ],
+    "efish_judge_controls": [
+      "personal_fit",
+      "voice_fit",
+      "conversational_rhythm",
+      "response_density",
+      "approved_presentation_mode",
+      "personalization_confidence_or_abstention"
+    ],
+    "efish_judge_must_not": [
+      "invent_facts",
+      "alter_factual_conclusions",
+      "diagnose_end_user_emotion",
+      "infer_sensitive_identity",
+      "rewrite_semantic_meaning",
+      "make_medical_legal_or_financial_decisions",
+      "claim_authorship_of_deepseek_text"
+    ]
+  },
+  "preference_axes": {
+    "response_density": [
+      "sparse",
+      "compact",
+      "moderate"
+    ],
+    "warmth": [
+      "restrained",
+      "quiet_warm",
+      "expressive"
+    ],
+    "directness": [
+      "direct",
+      "balanced",
+      "exploratory"
+    ],
+    "formality": [
+      "casual",
+      "neutral",
+      "formal"
+    ],
+    "reflection": [
+      "practical",
+      "mixed",
+      "reflective"
+    ],
+    "explanation_depth": [
+      "minimal",
+      "bounded",
+      "detailed"
+    ],
+    "assistantness_tolerance": [
+      "very_low",
+      "low",
+      "moderate"
+    ],
+    "question_frequency": [
+      "rarely",
+      "only_if_needed",
+      "conversational"
+    ],
+    "humour": [
+      "none",
+      "light",
+      "playful"
+    ],
+    "philosophy_style": [
+      "concise_open",
+      "dialectical",
+      "analytic"
+    ]
+  },
+  "candidate_defaults": {
+    "status": "owner_review_required",
+    "owner_review_completed": false,
+    "values": {
+      "response_density": null,
+      "warmth": null,
+      "directness": null,
+      "formality": null,
+      "reflection": null,
+      "explanation_depth": null,
+      "assistantness_tolerance": null,
+      "question_frequency": null,
+      "humour": null,
+      "philosophy_style": null
+    }
+  },
+  "judge_head_taxonomies": {
+    "personal_fit": [
+      "PERSONAL_FIT",
+      "NEUTRAL",
+      "PERSONAL_MISMATCH"
+    ],
+    "voice_issues": [
+      "too_formal",
+      "too_verbose",
+      "too_assistant_like",
+      "too_cold",
+      "too_warm",
+      "too_explanatory",
+      "too_structured",
+      "too_generic",
+      "too_apologetic",
+      "too_enthusiastic",
+      "unnecessary_question",
+      "unnecessary_disclaimer",
+      "repetitive",
+      "textbook_tone"
+    ],
+    "presentation_mode": [
+      "compact",
+      "quiet",
+      "reflective",
+      "direct",
+      "playful_light",
+      "neutral"
+    ],
+    "confidence_abstention": [
+      "CONFIDENT_PERSONALIZE",
+      "DEFAULT_PRESENTATION",
+      "OUT_OF_SCOPE"
+    ]
+  },
+  "privacy_boundary": {
+    "profile_subject": "owner_approved_efish_brand_preferences",
+    "end_user_profiling": false,
+    "sensitive_inference": false,
+    "automatic_live_learning": false,
+    "background_online_learning": false,
+    "raw_private_sources_allowed": false,
+    "forbidden_profile_fields": [
+      "health_status",
+      "diagnosis",
+      "religion",
+      "politics",
+      "sexuality",
+      "criminal_history",
+      "private_raw_diary",
+      "private_chat_logs",
+      "passwords",
+      "identifiers",
+      "api_keys"
+    ],
+    "later_end_user_adaptation_requires_explicit_structured_settings": true
+  },
+  "review_contract": {
+    "owner_values_are_unset": true,
+    "codex_may_not_infer_owner_values": true,
+    "profile_is_not_active_until_owner_review": true,
+    "approval_requires_explicit_owner_review_export": true
+  }
+}

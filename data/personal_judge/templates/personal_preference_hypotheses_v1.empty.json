@@ -1,0 +1,10 @@
+{
+  "version": "personal-preference-hypotheses.v1",
+  "status": "EMPTY_TEMPLATE",
+  "must_remain_ignored_when_populated": true,
+  "normative_hypotheses_only": true,
+  "owner_review_completed": false,
+  "contains_raw_excerpts": false,
+  "allowed_for_training": false,
+  "hypotheses": []
+}
