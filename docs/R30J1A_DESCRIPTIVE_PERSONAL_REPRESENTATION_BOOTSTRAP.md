@@ -96,6 +96,11 @@ segment records attempted versus checkpoint-durable updates separately. An
 uncheckpointed branch is never called a resume and cannot continue until its
 synchronous audits and parent decision are complete.
 
+The DEV path reclaims unused MLX/Python evaluation buffers after the base pass
+and every shortcut slice. It records and gates resource snapshots after
+training, after each evaluation stage, and after checkpoint serialization, so
+the exact snapshot that triggers a stop is durable evidence.
+
 Checkpoints bind model state, optimizer state, constant-scheduler state,
 global step, example/token counters, deterministic data schedule, Python and
 MLX RNG, dataset manifest, architecture, lineage, metrics, and SHA-256 values.

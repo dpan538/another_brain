@@ -278,6 +278,31 @@ def run_segment(args: argparse.Namespace, artifact_root: Path, segment_root: Pat
     starting_step = state.global_optimizer_step
     print(json.dumps({"event": "SEGMENT_START", "segment_id": args.segment_id, "steps": args.steps, "starting_step": starting_step, "foreground": True}, sort_keys=True), flush=True)
     peak_rss = before["process_rss_bytes"]
+
+    def capture_resource(stage: str) -> dict[str, Any]:
+        nonlocal peak_rss
+        snapshot = resource_snapshot(artifact_root)
+        snapshot["global_optimizer_step"] = trainer.state.global_optimizer_step
+        snapshot["stage"] = stage
+        append_jsonl(segment_root / "resource_events.jsonl", snapshot)
+        peak_rss = max(peak_rss, int(snapshot["process_rss_bytes"]))
+        stop_reason = resource_stop_reason(before, snapshot)
+        print(json.dumps({
+            "event": "RESOURCE_STAGE",
+            "stage": stage,
+            "step": trainer.state.global_optimizer_step,
+            "memory_pressure_state": snapshot["memory_pressure"]["state"],
+            "mlx_active_bytes": snapshot["mlx_active_memory_bytes"],
+            "mlx_cache_bytes": snapshot["mlx_cache_memory_bytes"],
+            "mlx_peak_bytes": snapshot["mlx_peak_memory_bytes"],
+            "rss_bytes": snapshot["process_rss_bytes"],
+            "swap_growth_bytes": int(snapshot["swap"]["used_bytes"]) - int(before["swap"]["used_bytes"]),
+            "stop_reason": stop_reason,
+        }, sort_keys=True), flush=True)
+        if stop_reason is not None:
+            raise MemoryError(stop_reason)
+        return snapshot
+
     for _ in range(args.steps):
         event = trainer.train_one_update()
         append_jsonl(segment_root / "train_events.jsonl", event)
@@ -315,11 +340,18 @@ def run_segment(args: argparse.Namespace, artifact_root: Path, segment_root: Pat
             raise MemoryError(stop_reason)
     if trainer.state.global_optimizer_step != starting_step + args.steps:
         raise AssertionError("bounded_segment_step_count_mismatch")
+    capture_resource("post_training")
     if args.skip_dev_eval:
         dev_eval: dict[str, Any] = {"skipped": True, "reason": "isolated_exact_resume_proof", "heldout_opened": False}
     else:
         print(json.dumps({"event": "DEV_EVAL_START", "examples": len(dataset.dev)}, sort_keys=True), flush=True)
-        dev_eval = evaluate_dev(model=model, dataset=dataset, tokenizer=tokenizer, output_path=segment_root / "dev_eval.json")
+        dev_eval = evaluate_dev(
+            model=model,
+            dataset=dataset,
+            tokenizer=tokenizer,
+            output_path=segment_root / "dev_eval.json",
+            resource_callback=capture_resource,
+        )
         print(json.dumps({
             "event": "DEV_EVAL_COMPLETE",
             "domain_macro_f1": round(dev_eval["domain"]["macro_f1"], 6),
@@ -340,10 +372,7 @@ def run_segment(args: argparse.Namespace, artifact_root: Path, segment_root: Pat
         metrics=dev_eval,
     )
     storage = checkpoint_storage_projection(receipt)
-    after = resource_snapshot(artifact_root)
-    final_stop = resource_stop_reason(before, after)
-    if final_stop is not None:
-        raise MemoryError(final_stop)
+    after = capture_resource("post_checkpoint")
     swap_delta = int(after["swap"]["used_bytes"]) - int(before["swap"]["used_bytes"])
     completion = {
         "schema_version": "r30j1a.segment-receipt.v1",

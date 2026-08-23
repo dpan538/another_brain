@@ -42,6 +42,8 @@ class R30J1AContractTests(unittest.TestCase):
         self.assertTrue(config["resource"]["resource_telemetry_fail_closed"])
         self.assertEqual(config["resource"]["memory_pressure_warning_free_percent"], 10)
         self.assertEqual(config["resource"]["memory_pressure_critical_free_percent"], 5)
+        self.assertEqual(config["resource"]["evaluation_cache_reclamation"], "after_base_and_each_shortcut_slice")
+        self.assertTrue(config["resource"]["stage_resource_snapshots"])
 
     def test_historical_states_are_not_rewritten(self):
         states = json.loads((ROOT / "config/r30j1a_personal_representation_bootstrap_v1.json").read_text())["historical_states_preserved"]
@@ -174,6 +176,7 @@ class R30J1AContractTests(unittest.TestCase):
             "process_rss_bytes": 100_000_000,
             "free_disk_bytes": 20_000_000_000,
             "mlx_active_memory_bytes": 0,
+            "mlx_cache_memory_bytes": 0,
             "mlx_peak_memory_bytes": 0,
             "swap": {"total_bytes": 16_000_000_000, "used_bytes": 10_000_000_000, "free_bytes": 6_000_000_000},
             "memory_pressure": normal,
@@ -196,6 +199,7 @@ class R30J1AContractTests(unittest.TestCase):
                 "process_rss_bytes": 100_000_000,
                 "free_disk_bytes": 20_000_000_000,
                 "mlx_active_memory_bytes": 0,
+                "mlx_cache_memory_bytes": 0,
                 "mlx_peak_memory_bytes": 0,
                 "swap": {"total_bytes": 16_000_000_000, "used_bytes": 10_000_000_000, "free_bytes": 6_000_000_000},
                 "memory_pressure": pressure,
@@ -288,6 +292,40 @@ class R30J1AContractTests(unittest.TestCase):
         self.assertIn("discarded_uncheckpointed_optimizer_updates", source)
         self.assertIn("failed_segments_audited", source)
         self.assertIn("completed_segments", source)
+
+    def test_resource_stop_audit_can_freeze_verified_checkpoint_for_forensics(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            artifact = Path(temporary)
+            segment = artifact / "training_flight_recorder/segments/resource-stop"
+            segment.mkdir(parents=True)
+            receipt = {
+                "completed": False, "failed": True, "parent_decision_pending": True,
+                "resume_allowed": True, "recoverable": True,
+                "checkpoint": {"verified": True}, "checkpoint_created": True,
+                "checkpoint_verified": True, "heldout_opened": False, "swap_delta_bytes": 0,
+                "resource_telemetry_complete": True, "peak_mlx_memory_bytes": 700_000_000,
+                "background_training": False, "failure_code": "j1a_swap_growth_stop",
+            }
+            (segment / "segment_receipt.json").write_text(json.dumps(receipt), encoding="utf-8")
+            (artifact / "campaign_state.json").write_text(json.dumps({"campaign_id": "test"}), encoding="utf-8")
+            process = subprocess.run([
+                "python3", str(ROOT / "scripts/r30j1a_record_segment_audit.py"),
+                "--artifact-root", str(artifact), "--segment-id", "resource-stop",
+                "--metrics-status", "UNDERFIT", "--shortcut-status", "FAIL", "--integrity-status", "FAIL",
+                "--decision", "ADJUST_ONE_VARIABLE", "--reason", "resource-stop",
+                "--next-change", "segment_end_evaluation_resource_integrity",
+                "--triggering-resource-snapshot-missing", "--checkpoint-forensics-only",
+            ], capture_output=True, text=True)
+            self.assertEqual(process.returncode, 0, process.stderr)
+            frozen = json.loads((segment / "segment_receipt.json").read_text(encoding="utf-8"))
+            self.assertIsNone(frozen["swap_delta_bytes"])
+            self.assertFalse(frozen["resource_telemetry_complete"])
+            self.assertFalse(frozen["triggering_resource_snapshot_persisted"])
+            self.assertTrue(frozen["checkpoint_forensics_only"])
+            self.assertEqual(frozen["checkpoint_role"], "FORENSIC_DURABLE_ONLY")
+            self.assertFalse(frozen["continuation_authorized"])
+            self.assertFalse(frozen["resume_allowed"])
+            self.assertTrue(frozen["restart_from_original_seed_required"])
 
 
 if __name__ == "__main__":

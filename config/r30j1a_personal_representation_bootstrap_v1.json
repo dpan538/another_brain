@@ -96,6 +96,8 @@
     "memory_pressure_warning_free_percent": 10,
     "memory_pressure_critical_free_percent": 5,
     "resource_telemetry_fail_closed": true,
+    "evaluation_cache_reclamation": "after_base_and_each_shortcut_slice",
+    "stage_resource_snapshots": true,
     "campaign_storage_preferred_bytes": 14000000000,
     "campaign_storage_hard_bytes": 16000000000,
     "checkpoint_roles": ["BASELINE", "LATEST", "BEST_DEV", "PREVIOUS_SAFE"]

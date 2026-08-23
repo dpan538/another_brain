@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import gc
 import hashlib
 import json
 import math
@@ -16,7 +17,7 @@ import shutil
 import subprocess
 import tempfile
 from time import perf_counter
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Callable, Iterable, Mapping, Sequence
 
 import mlx.core as mx
 import mlx.nn as nn
@@ -360,6 +361,7 @@ def resource_snapshot(root: Path) -> dict[str, Any]:
         "memory_pressure": _memory_pressure(),
         "process_rss_bytes": _rss_bytes(),
         "mlx_active_memory_bytes": int(mx.get_active_memory()),
+        "mlx_cache_memory_bytes": int(mx.get_cache_memory()),
         "mlx_peak_memory_bytes": int(mx.get_peak_memory()),
         "free_disk_bytes": int(shutil.disk_usage(root).free),
     }
@@ -577,6 +579,13 @@ def _mechanics_metrics(truth: np.ndarray, pred: np.ndarray) -> dict[str, Any]:
     return {"macro_f1": sum(value["f1"] for value in per_label) / len(per_label), "per_label": per_label}
 
 
+def reclaim_evaluation_memory() -> None:
+    """Release unused host/Metal evaluation buffers at a bounded boundary."""
+
+    gc.collect()
+    mx.clear_cache()
+
+
 def evaluate_rows(model: EfishPersonalJudgeJ1A, rows: Sequence[dict[str, Any]], register_labels: Sequence[str]) -> dict[str, Any]:
     if not rows:
         raise ValueError("empty_evaluation_rows")
@@ -690,6 +699,7 @@ def shortcut_slice_report(
     register_labels: Sequence[str],
     tokenizer: Any,
     full_domain_macro_f1: float,
+    resource_callback: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     by_domain_lengths: dict[str, list[int]] = defaultdict(list)
     for row in rows:
@@ -731,6 +741,10 @@ def shortcut_slice_report(
             "domain_macro_f1": score,
             "drop_points": (full_domain_macro_f1 - score) * 100.0,
         }
+        del result
+        reclaim_evaluation_memory()
+        if resource_callback is not None:
+            resource_callback(f"shortcut_slice:{name}")
     return output
 
 
@@ -757,18 +771,28 @@ def _balanced_register_subset(rows: Sequence[dict[str, Any]]) -> list[dict[str, 
 
 
 def evaluate_dev(
-    *, model: EfishPersonalJudgeJ1A, dataset: DatasetBundle, tokenizer: Any, output_path: Path
+    *,
+    model: EfishPersonalJudgeJ1A,
+    dataset: DatasetBundle,
+    tokenizer: Any,
+    output_path: Path,
+    resource_callback: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
+    reclaim_evaluation_memory()
     base = evaluate_rows(model, dataset.dev, dataset.register_labels)
     matrix = base.pop("_embeddings")
     base.pop("_domain_truth")
     base.pop("_domain_pred")
+    reclaim_evaluation_memory()
+    if resource_callback is not None:
+        resource_callback("dev_base")
     slices = shortcut_slice_report(
         model=model,
         rows=dataset.dev,
         register_labels=dataset.register_labels,
         tokenizer=tokenizer,
         full_domain_macro_f1=float(base["domain"]["macro_f1"]),
+        resource_callback=resource_callback,
     )
     report = {
         "schema_version": "r30j1a.dev-eval.v1",
@@ -784,6 +808,9 @@ def evaluate_dev(
     # Personal embeddings are ignored and never enter the tracked tree.
     embedding_path = output_path.with_name("dev_embeddings.npz")
     np.savez_compressed(embedding_path, embeddings=matrix)
+    reclaim_evaluation_memory()
+    if resource_callback is not None:
+        resource_callback("dev_complete")
     return report
 
 

@@ -43,6 +43,8 @@ def main() -> int:
     parser.add_argument("--decision", choices=("CONTINUE", "ADJUST_ONE_VARIABLE", "HOLD", "ABORT"), required=True)
     parser.add_argument("--reason", required=True)
     parser.add_argument("--next-change", default="none")
+    parser.add_argument("--triggering-resource-snapshot-missing", action="store_true")
+    parser.add_argument("--checkpoint-forensics-only", action="store_true")
     args = parser.parse_args()
     root = args.artifact_root / "training_flight_recorder" / "segments" / args.segment_id
     receipt = json.loads((root / "segment_receipt.json").read_text(encoding="utf-8"))
@@ -51,6 +53,21 @@ def main() -> int:
     failed = receipt.get("failed") is True and completed is False
     if not (completed or failed) or receipt.get("parent_decision_pending") is not True:
         raise ValueError("segment_not_ready_for_parent_decision")
+    if args.triggering_resource_snapshot_missing:
+        if not failed or not str(receipt.get("failure_code", "")).endswith(("swap_growth_stop", "memory_pressure_not_normal", "mlx_hard_stop_exceeded")):
+            raise ValueError("resource_snapshot_correction_not_applicable")
+        receipt["last_persisted_resource_swap_delta_bytes"] = receipt.get("swap_delta_bytes")
+        receipt["swap_delta_bytes"] = None
+        receipt["resource_telemetry_complete"] = False
+        receipt["triggering_resource_snapshot_persisted"] = False
+    if args.checkpoint_forensics_only:
+        if not failed or receipt.get("checkpoint_verified") is not True:
+            raise ValueError("forensics_only_checkpoint_not_applicable")
+        receipt["checkpoint_forensics_only"] = True
+        receipt["checkpoint_role"] = "FORENSIC_DURABLE_ONLY"
+        receipt["continuation_authorized"] = False
+        receipt["resume_allowed"] = False
+        receipt["restart_from_original_seed_required"] = True
     if completed and args.decision in {"CONTINUE", "ADJUST_ONE_VARIABLE"} and args.integrity_status == "FAIL":
         raise ValueError("cannot_continue_after_integrity_failure")
     if failed and args.decision == "CONTINUE":
@@ -111,6 +128,8 @@ def main() -> int:
         "one_primary_variable_at_most": True,
         "all_synchronous_auditors_returned": True,
         "training_running_during_audit": False,
+        "triggering_resource_snapshot_missing": args.triggering_resource_snapshot_missing,
+        "checkpoint_forensics_only": args.checkpoint_forensics_only,
     }
     atomic_json(root / "parent_decision.json", decision)
     receipt["parent_decision_pending"] = False
@@ -118,6 +137,10 @@ def main() -> int:
     atomic_json(root / "segment_receipt.json", receipt)
     campaign_path = args.artifact_root / "campaign_state.json"
     campaign = json.loads(campaign_path.read_text(encoding="utf-8"))
+    if args.checkpoint_forensics_only:
+        campaign["forensics_checkpoint"] = campaign.get("active_checkpoint")
+        campaign["active_checkpoint"] = None
+        campaign["continuation_checkpoint_authorized"] = False
     campaign.update({
         "state": "SEGMENT_AUDIT",
         "current_process": None,

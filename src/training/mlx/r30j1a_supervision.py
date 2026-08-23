@@ -76,7 +76,7 @@ def validate_resource_snapshot(snapshot: Mapping[str, Any]) -> None:
     for key in required_positive:
         if int(snapshot.get(key, 0)) <= 0:
             raise ValueError(f"resource_telemetry_invalid:{key}")
-    for key in ("mlx_active_memory_bytes", "mlx_peak_memory_bytes"):
+    for key in ("mlx_active_memory_bytes", "mlx_cache_memory_bytes", "mlx_peak_memory_bytes"):
         if int(snapshot.get(key, -1)) < 0:
             raise ValueError(f"resource_telemetry_invalid:{key}")
     swap = snapshot.get("swap")
