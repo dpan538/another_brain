@@ -12,11 +12,13 @@ const SKIP_DIRS = new Set([".git", "node_modules", "artifacts"]);
 const LAB_PATHS = [
   /^config\/deepseek_pricing_snapshot\.json$/,
   /^config\/r29b2m_r4h(?:_r[23])?_live_policy\.json$/,
+  /^config\/r29p0_(?:deterministic_controller_v1|live_policy|official_api_contract|protocol_freeze)\.json$/,
   /^data\/hybrid_signal\//,
   /^docs\/R29B2M_R4H_R2_GROUNDED_ATTENTION_STYLE_RECOVERY\.md$/,
   /^docs\/efish_emotional_grammar_v1\.md$/,
   /^docs\/r29b2m_r4h_r1_/,
   /^docs\/R29B2M_R4H_R3_/,
+  /^docs\/R29P0_EQUIVALENCE_PAIRWISE_ORACLE\.md$/,
   /^evals\/r29b2m_hybrid_critic_v1\//,
   /^evals\/r29b2m_hybrid_product_v[12]\//,
   /^prompts\/hybrid_(?:dialogue_system_v[12]|canonical_answer_system_v3|constrained_rewrite_system_v3|controlled_one_call_system_v3)\.txt$/,
@@ -28,8 +30,10 @@ const LAB_PATHS = [
   /^scripts\/check_no_backend_llm_reconciled\.mjs$/,
   /^scripts\/check_static_local_product_no_backend\.mjs$/,
   /^scripts\/r29b2m_r4h_/,
+  /^scripts\/r29p0_/,
   /^src\/hybrid_runtime\//,
   /^tests\/r29b2m_r4h(?:_r[23])?\//,
+  /^tests\/r29p0\//,
 ];
 
 export function isHybridLabPath(path) {

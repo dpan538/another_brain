@@ -171,7 +171,7 @@ const tests = {
     const result = spawnSync("git", ["diff", "--name-only", BASE_SHA], { cwd: ROOT, encoding: "utf8" });
     assert.equal(result.status, 0);
     const changed = result.stdout.split(/\r?\n/u).filter(Boolean);
-    const allowed = /^(config\/r29p0_|docs\/R29P0_|evals\/r29p0_|prompts\/r29p0_|scripts\/r29p0_|src\/hybrid_runtime\/r29p0_|src\/hybrid_runtime\/protected_feature_signature\.ts|tests\/r29p0\/|package\.json)/u;
+    const allowed = /^(config\/r29p0_|docs\/R29P0_|evals\/r29p0_|prompts\/r29p0_|scripts\/r29p0_|scripts\/check_hybrid_lab_isolation\.mjs|src\/hybrid_runtime\/r29p0_|src\/hybrid_runtime\/protected_feature_signature\.ts|tests\/r29p0\/|package\.json)/u;
     assert.ok(changed.every((path) => allowed.test(path)), changed.join("\n"));
     assert.ok(changed.every((path) => !/^(web\/|api\/|app\/api\/|pages\/api\/|vercel\.json$)/u.test(path)));
   },
