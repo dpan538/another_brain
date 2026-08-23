@@ -467,6 +467,13 @@ def run_segment(args: argparse.Namespace, artifact_root: Path, segment_root: Pat
 def main() -> int:
     args = parse_args()
     artifact_root = args.artifact_root.resolve()
+    campaign_path = artifact_root / "campaign_state.json"
+    if campaign_path.is_file():
+        campaign = json.loads(campaign_path.read_text(encoding="utf-8"))
+        if campaign.get("terminal_state") is not None:
+            raise RuntimeError("terminal_campaign_blocks_new_segment")
+        if campaign.get("last_parent_decision") in {"HOLD", "ABORT"}:
+            raise RuntimeError("parent_hold_or_abort_blocks_new_segment")
     recorder = artifact_root / "training_flight_recorder"
     existing_segments = sorted((recorder / "segments").iterdir()) if (recorder / "segments").is_dir() else []
     pending = incomplete_segments_without_parent_decision(existing_segments)

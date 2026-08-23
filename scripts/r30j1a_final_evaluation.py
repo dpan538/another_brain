@@ -276,17 +276,68 @@ def main() -> int:
     parser.add_argument("--open-frozen-heldout-once", action="store_true", required=True)
     args = parser.parse_args()
     report_root = args.artifact_root / "reports"
+    probe = json.loads((report_root / "probe_decision.json").read_text(encoding="utf-8"))
+    if (
+        probe.get("selected_candidate_count") != 1
+        or int(probe.get("qualified_candidate_count", 0)) < 1
+        or probe.get("main_training_authorized") is not True
+        or probe.get("heldout_evaluation_authorized") is not True
+        or probe.get("selected_checkpoint_logical_path") is None
+    ):
+        raise ValueError("qualified_probe_required_before_heldout_open")
     open_receipt = report_root / "heldout_open_receipt.json"
     if open_receipt.exists():
         raise FileExistsError("permanent_j1a_heldout_already_opened")
     segment_root = args.artifact_root / "training_flight_recorder" / "segments" / args.final_segment
+    segment_manifest = json.loads((segment_root / "segment_manifest.json").read_text(encoding="utf-8"))
+    segment_receipt = json.loads((segment_root / "segment_receipt.json").read_text(encoding="utf-8"))
     parent = json.loads((segment_root / "parent_decision.json").read_text(encoding="utf-8"))
-    if parent["decision"] not in {"HOLD", "CONTINUE"} or parent["checkpoint_verified"] is not True:
+    expected_checkpoint = (ROOT / segment_receipt["checkpoint_logical_path"]).resolve()
+    architecture_receipt = segment_manifest.get("architecture", {})
+    main_checkpoint_bound = (
+        segment_manifest.get("phase") == "MAIN"
+        and segment_manifest.get("resumed") is True
+        and architecture_receipt.get("lineage_label") == probe["selected_lineage"]
+        and architecture_receipt.get("attention_mode") == probe["selected_attention"]
+        and architecture_receipt.get("trainable_scope") in {"last_one", "last_two"}
+        and segment_receipt.get("completed") is True
+        and segment_receipt.get("checkpoint_verified") is True
+        and expected_checkpoint == args.checkpoint.resolve()
+    )
+    if (
+        not main_checkpoint_bound
+        or parent["decision"] not in {"HOLD", "CONTINUE"}
+        or parent["checkpoint_verified"] is not True
+    ):
         raise ValueError("training_decisions_not_frozen")
+    safe_dataset = load_dataset(args.dataset_root, open_heldout=False)
+    model, _, _, architecture, lineage = load_checkpoint(
+        args.checkpoint, dataset=safe_dataset, lineage_path=args.lineage_path
+    )
+    if (
+        architecture["lineage_label"] != probe["selected_lineage"]
+        or architecture["attention_mode"] != probe["selected_attention"]
+        or architecture["trainable_scope"] not in {"last_one", "last_two"}
+    ):
+        raise ValueError("selected_probe_lineage_not_preserved_by_main_checkpoint")
+    state_path = args.artifact_root / "campaign_state.json"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    opened_at = utc_now()
+    atomic_json(open_receipt, {
+        "schema_version": "r30j1a.heldout-open-receipt.v2",
+        "status": "OPEN_INTENT_COMMITTED",
+        "opened_at": opened_at,
+        "opened_once": True,
+        "architecture_sha256": architecture["architecture_sha256"],
+        "checkpoint": args.checkpoint.name,
+        "tuning_permitted_after_open": False,
+        "heldout_example_count": None,
+    })
+    state.update({"state": "HELDOUT_EVAL", "heldout_opened": True, "tuning_after_heldout": False, "updated_at": opened_at})
+    atomic_json(state_path, state)
     dataset = load_dataset(args.dataset_root, open_heldout=True)
     if dataset.heldout is None:
         raise AssertionError("explicit_heldout_open_failed")
-    model, _, _, architecture, lineage = load_checkpoint(args.checkpoint, dataset=dataset, lineage_path=args.lineage_path)
     tokenizer = ExactRuntimeTokenizer.from_file(args.tokenizer)
     before = resource_snapshot(args.artifact_root)
     base = evaluate_rows(model, dataset.heldout, dataset.register_labels)
@@ -379,16 +430,15 @@ def main() -> int:
     report["owner_correction_item_count"] = correction_item_count
     atomic_json(report_root / "heldout_final_evaluation.json", report)
     atomic_json(open_receipt, {
-        "schema_version": "r30j1a.heldout-open-receipt.v1",
-        "opened_at": utc_now(),
+        "schema_version": "r30j1a.heldout-open-receipt.v2",
+        "status": "EVALUATION_COMPLETED",
+        "opened_at": opened_at,
         "opened_once": True,
         "architecture_sha256": architecture["architecture_sha256"],
         "checkpoint": args.checkpoint.name,
         "tuning_permitted_after_open": False,
         "heldout_example_count": len(dataset.heldout),
     })
-    state_path = args.artifact_root / "campaign_state.json"
-    state = json.loads(state_path.read_text(encoding="utf-8"))
     state.update({"state": "REPRESENTATION_ANALYSIS", "heldout_opened": True, "tuning_after_heldout": False, "updated_at": utc_now()})
     atomic_json(state_path, state)
     print(json.dumps({

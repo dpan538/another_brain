@@ -29,6 +29,8 @@ from src.training.mlx.r30j1a_supervision import (  # noqa: E402
     safe_failure_code,
     validate_resource_snapshot,
 )
+from scripts.r30j1a_finalize_probe_blocked import secret_scan_passes  # noqa: E402
+from scripts.r30j1a_secret_scan import candidate_files  # noqa: E402
 
 
 class R30J1AContractTests(unittest.TestCase):
@@ -46,6 +48,10 @@ class R30J1AContractTests(unittest.TestCase):
         self.assertEqual(config["resource"]["evaluation_cache_reclamation"], "after_base_and_each_shortcut_slice")
         self.assertEqual(config["resource"]["training_cache_reclamation"], "after_every_optimizer_update")
         self.assertTrue(config["resource"]["stage_resource_snapshots"])
+        selection = config["probe_selection"]
+        self.assertTrue(selection["allow_zero_qualified_candidates"])
+        self.assertFalse(selection["zero_candidate_main_training_authorized"])
+        self.assertEqual(selection["zero_candidate_heldout_policy"], "remain_sealed")
 
     def test_historical_states_are_not_rewritten(self):
         states = json.loads((ROOT / "config/r30j1a_personal_representation_bootstrap_v1.json").read_text())["historical_states_preserved"]
@@ -387,6 +393,221 @@ class R30J1AContractTests(unittest.TestCase):
         self.assertIn("discarded_uncheckpointed_optimizer_updates", source)
         self.assertIn("failed_segments_audited", source)
         self.assertIn("completed_segments", source)
+
+    def test_probe_selector_does_not_promote_the_relative_best_loser(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            artifact = Path(temporary)
+            reports = artifact / "reports"
+            reports.mkdir(parents=True)
+            baseline = {
+                "split": "dev",
+                "heldout_opened": False,
+                "surface_s1": {"domain": {"macro_f1": 0.56}},
+                "lexical_s2": {"domain": {"macro_f1": 0.63}},
+            }
+            (reports / "shortcut_baselines.json").write_text(json.dumps(baseline), encoding="utf-8")
+            segments = ("a", "b", "c", "d")
+            for index, segment in enumerate(segments):
+                root = artifact / "training_flight_recorder" / "segments" / segment
+                root.mkdir(parents=True)
+                score = 0.40 + index * 0.02
+                dev = {
+                    "split": "dev",
+                    "heldout_opened": False,
+                    "domain": {
+                        "macro_f1": score,
+                        "per_class": {
+                            "AUTHENTIC_OWNER": {"f1": 0.05},
+                            "CONTROLLED_OWNER_STYLE_VARIANT": {"f1": 0.70},
+                        },
+                    },
+                    "register": {"macro_f1": 0.10},
+                    "mechanics": {"macro_f1": 0.0},
+                    "representation": {
+                        "matched_style_contrast_accuracy": 0.55,
+                        "collapsed": False,
+                        "same_register_nearest_neighbor_rate": 0.0,
+                        "effective_rank": 30.0,
+                    },
+                    "maximum_shortcut_drop_points": 16.0,
+                }
+                receipt = {
+                    "checkpoint": {"verified": True},
+                    "checkpoint_verified": True,
+                    "completed": True,
+                    "failed": False,
+                    "exact_bounded_steps": 50,
+                    "starting_global_optimizer_step": 0,
+                    "ending_global_optimizer_step": 50,
+                    "foreground_training": True,
+                    "background_training": False,
+                    "heldout_opened": False,
+                    "parent_decision_pending": False,
+                    "peak_mlx_memory_bytes": 800_000_000,
+                    "checkpoint_logical_path": f"artifacts/test/{segment}",
+                }
+                lineage, attention = (
+                    ("r28m1_q4_recovered", "causal"),
+                    ("r28m1_q4_recovered", "bidirectional"),
+                    ("r3_stage_a_080k", "causal"),
+                    ("r3_stage_a_080k", "bidirectional"),
+                )[index]
+                segment_manifest = {
+                    "phase": "PROBE",
+                    "planned_steps": 50,
+                    "foreground_training": True,
+                    "background_training": False,
+                    "heldout_opened": False,
+                    "architecture": {
+                        "lineage_label": lineage,
+                        "attention_mode": attention,
+                        "trainable_scope": "probe",
+                    },
+                }
+                decision = {
+                    "segment": segment,
+                    "decision": "CONTINUE" if segment != "d" else "HOLD",
+                    "reason": "synthetic_probe_review",
+                    "all_synchronous_auditors_returned": True,
+                    "training_running_during_audit": False,
+                    "metrics_reviewed": {"status": "UNDERFIT"},
+                    "shortcut_reviewed": {"status": "FAIL"},
+                    "resource_reviewed": {"status": "PASS"},
+                }
+                for name, value in (
+                    ("segment_manifest.json", segment_manifest),
+                    ("dev_eval.json", dev),
+                    ("segment_receipt.json", receipt),
+                    ("parent_decision.json", decision),
+                ):
+                    (root / name).write_text(json.dumps(value), encoding="utf-8")
+            process = subprocess.run([
+                "python3", str(ROOT / "scripts/r30j1a_select_probe.py"),
+                "--artifact-root", str(artifact), "--segments", *segments,
+            ], capture_output=True, text=True)
+            self.assertEqual(process.returncode, 0, process.stderr)
+            report = json.loads((reports / "probe_decision.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["schema_version"], "r30j1a.probe-decision.v2")
+            self.assertEqual(report["selection_outcome"], "NO_QUALIFIED_CANDIDATE")
+            self.assertEqual(report["qualified_candidate_count"], 0)
+            self.assertEqual(report["selected_candidate_count"], 0)
+            self.assertIsNone(report["selected_arm"])
+            self.assertFalse(report["main_training_authorized"])
+            self.assertFalse(report["heldout_evaluation_authorized"])
+            self.assertEqual(report["terminal_recommendation"], "BLOCKED_SHORTCUT_DOMINANCE")
+            self.assertTrue(report["relative_best_diagnostic_only"])
+
+            # Relative rank is computed only after qualification.  A HOLD arm
+            # with larger raw scores cannot displace a qualified CONTINUE arm.
+            for segment, domain, register, matched, shortcut, decision_name in (
+                ("a", 0.50, 0.20, 0.60, 5.0, "CONTINUE"),
+                ("b", 0.80, 0.70, 0.80, 5.0, "CONTINUE"),
+                ("c", 0.55, 0.30, 0.65, 5.0, "CONTINUE"),
+                ("d", 0.90, 0.80, 0.90, 5.0, "HOLD"),
+            ):
+                root = artifact / "training_flight_recorder" / "segments" / segment
+                dev = json.loads((root / "dev_eval.json").read_text(encoding="utf-8"))
+                dev["domain"]["macro_f1"] = domain
+                dev["register"]["macro_f1"] = register
+                dev["representation"]["matched_style_contrast_accuracy"] = matched
+                dev["maximum_shortcut_drop_points"] = shortcut
+                (root / "dev_eval.json").write_text(json.dumps(dev), encoding="utf-8")
+                decision = json.loads((root / "parent_decision.json").read_text(encoding="utf-8"))
+                decision["decision"] = decision_name
+                decision["shortcut_reviewed"]["status"] = "PASS"
+                (root / "parent_decision.json").write_text(json.dumps(decision), encoding="utf-8")
+            process = subprocess.run([
+                "python3", str(ROOT / "scripts/r30j1a_select_probe.py"),
+                "--artifact-root", str(artifact), "--segments", *segments,
+            ], capture_output=True, text=True)
+            self.assertEqual(process.returncode, 0, process.stderr)
+            report = json.loads((reports / "probe_decision.json").read_text(encoding="utf-8"))
+            self.assertEqual(report["selection_outcome"], "QUALIFIED_CANDIDATE_SELECTED")
+            self.assertEqual(report["selected_candidate_count"], 1)
+            self.assertEqual(report["selected_arm"], "B")
+            self.assertTrue(report["main_training_authorized"])
+            self.assertTrue(report["heldout_evaluation_authorized"])
+
+    def test_zero_candidate_blocks_new_training_and_heldout_before_read(self):
+        runner = (ROOT / "scripts/r30j1a_run_foreground_segment.py").read_text(encoding="utf-8")
+        heldout = (ROOT / "scripts/r30j1a_final_evaluation.py").read_text(encoding="utf-8")
+        blocked = (ROOT / "scripts/r30j1a_finalize_probe_blocked.py").read_text(encoding="utf-8")
+        self.assertIn("parent_hold_or_abort_blocks_new_segment", runner)
+        self.assertIn("qualified_probe_required_before_heldout_open", heldout)
+        self.assertLess(heldout.index("qualified_probe_required_before_heldout_open"), heldout.index("open_heldout=True"))
+        self.assertIn('"status": "OPEN_INTENT_COMMITTED"', heldout)
+        self.assertLess(heldout.index('"status": "OPEN_INTENT_COMMITTED"'), heldout.index("open_heldout=True"))
+        self.assertIn('segment_manifest.get("phase") == "MAIN"', heldout)
+        self.assertIn("expected_checkpoint == args.checkpoint.resolve()", heldout)
+        self.assertIn("selected_probe_lineage_not_preserved_by_main_checkpoint", heldout)
+        self.assertNotIn('load(reports / "heldout_final_evaluation.json")', blocked)
+        self.assertNotIn("sha256(heldout_path)", blocked)
+        self.assertIn('"heldout_content_read_by_finalizer": False', blocked)
+        self.assertIn('"selected_candidate_count": 0', blocked)
+        self.assertIn('"main_adaptation_started": False', blocked)
+
+    def test_secret_scan_excludes_secret_heldout_and_checkpoint_binaries(self):
+        source = (ROOT / "scripts/r30j1a_secret_scan.py").read_text(encoding="utf-8")
+        self.assertIn("path != SECRET_PATH.resolve()", source)
+        self.assertIn('artifact_root / "dataset" / "heldout.sealed.jsonl"', source)
+        self.assertIn("path != sealed_heldout", source)
+        self.assertIn("path.suffix.casefold() not in BINARY_SUFFIXES", source)
+        self.assertIn('"secret_file_read": False', source)
+        self.assertIn('"heldout_file_read": False', source)
+        self.assertIn('"checkpoint_binary_read": False', source)
+        with tempfile.TemporaryDirectory() as temporary:
+            artifact = Path(temporary)
+            sealed = artifact / "dataset" / "heldout.sealed.jsonl"
+            sealed.parent.mkdir(parents=True)
+            sealed.write_text("sealed sentinel", encoding="utf-8")
+            admitted, _, excluded_heldout = candidate_files(artifact)
+            self.assertNotIn(sealed.resolve(), admitted)
+            self.assertEqual(excluded_heldout, 1)
+
+    def test_probe_blocked_secret_gate_rejects_incomplete_or_tampered_receipt(self):
+        receipt = {
+            "schema_version": "r30j1a.secret-scan.v1",
+            "scanned_head": "synthetic-head",
+            "artifact_scope": "artifacts/r30j1a",
+            "files_scanned": 10,
+            "excluded_heldout_file_count": 1,
+            "excluded_binary_file_count": 2,
+            "passed": True,
+            "violations": 0,
+            "read_errors": 0,
+            "secret_exists": True,
+            "secret_ignored": True,
+            "secret_tracked": False,
+            "secret_permission_safe": True,
+            "secret_file_read": False,
+            "heldout_file_read": False,
+            "checkpoint_binary_read": False,
+            "key_value_logged": False,
+            "secret_metadata_logged": False,
+            "secret_exposure": False,
+        }
+        self.assertTrue(secret_scan_passes(receipt, expected_head="synthetic-head"))
+        for key, unsafe in (
+            ("schema_version", "wrong"),
+            ("scanned_head", "wrong"),
+            ("artifact_scope", "outside_repository_scope"),
+            ("files_scanned", 0),
+            ("excluded_heldout_file_count", 0),
+            ("passed", False),
+            ("read_errors", 1),
+            ("secret_exists", False),
+            ("secret_ignored", False),
+            ("secret_tracked", True),
+            ("secret_permission_safe", False),
+            ("secret_file_read", True),
+            ("heldout_file_read", True),
+            ("checkpoint_binary_read", True),
+            ("key_value_logged", True),
+            ("secret_metadata_logged", True),
+            ("secret_exposure", True),
+        ):
+            with self.subTest(key=key):
+                self.assertFalse(secret_scan_passes(receipt | {key: unsafe}, expected_head="synthetic-head"))
 
     def test_resource_stop_audit_can_freeze_verified_checkpoint_for_forensics(self):
         with tempfile.TemporaryDirectory() as temporary:

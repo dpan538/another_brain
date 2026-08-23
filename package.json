@@ -865,7 +865,9 @@
     "r30j1a:freeze-history": "python3 scripts/r30j1a_freeze_historical_states.py",
     "r30j1a:final-evaluation": "python3 scripts/r30j1a_final_evaluation.py",
     "r30j1a:final-validation": "python3 scripts/r30j1a_run_final_validation.py",
+    "r30j1a:secret-scan": "python3 scripts/r30j1a_secret_scan.py",
     "r30j1a:finalize": "python3 scripts/r30j1a_finalize.py",
+    "r30j1a:finalize-probe-blocked": "python3 scripts/r30j1a_finalize_probe_blocked.py",
     "r30j1a:production-diff-gate": "node scripts/r30j1a_no_production_change_gate.mjs",
     "test:r30j1a": "python3 -m unittest discover -s tests/r30j1a -q"
   }

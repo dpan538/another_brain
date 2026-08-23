@@ -41,6 +41,12 @@ trainable parameters. Layers 0–4 remain frozen.
 Four frozen-backbone probes compare R28/R3 lineage and causal/bidirectional
 attention. Bidirectional variants are explicitly warm-starts, never parity
 claims. Selection uses dev evidence, not final heldout or raw training loss.
+Relative rank is not qualification: an arm must pass every frozen value gate
+and both the shortcut and resource audits before it can authorize main
+adaptation. Zero qualified candidates is a valid scientific result. In that
+case the campaign terminates at the probe gate, keeps the permanent heldout
+sealed, skips exact-resume/main training, and does not create an owner
+correction pack.
 
 ## Data and privacy
 

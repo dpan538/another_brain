@@ -77,6 +77,16 @@
     {"arm": "C", "lineage": "r3_stage_a_080k", "attention": "causal"},
     {"arm": "D", "lineage": "r3_stage_a_080k", "attention": "bidirectional"}
   ],
+  "probe_selection": {
+    "maximum_selected_candidates": 1,
+    "allow_zero_qualified_candidates": true,
+    "require_all_frozen_value_gates": true,
+    "require_shortcut_audit_not_fail": true,
+    "require_resource_audit_not_fail": true,
+    "probe_surface_uplift_metric": "dev_domain_macro_f1_minus_dev_surface_domain_macro_f1_points",
+    "zero_candidate_heldout_policy": "remain_sealed",
+    "zero_candidate_main_training_authorized": false
+  },
   "probe_trainable_scope": ["new_position_rows_256_511", "representation_projection", "descriptive_heads"],
   "main_trainable_scope_maximum": ["probe_scope", "final_layer_norm", "last_two_transformer_blocks"],
   "foreground": {
