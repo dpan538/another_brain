@@ -1,0 +1,49 @@
+{
+  "schema_version": "r29p0.live_policy.v1",
+  "campaign_id": "r29p0_equivalence_pairwise_oracle_v1",
+  "artifact_root": "artifacts/r29p0_pairwise_oracle",
+  "api": {
+    "base_url": "https://api.deepseek.com",
+    "endpoint": "/chat/completions",
+    "model": "deepseek-v4-flash",
+    "thinking": { "type": "disabled" },
+    "temperature": 0,
+    "stream": true,
+    "stream_options": { "include_usage": true },
+    "max_tokens": 192,
+    "tools": "none",
+    "top_p": "omitted",
+    "native_multi_choice": "not_in_official_contract"
+  },
+  "request_guard": {
+    "maximum_live_requests": 190,
+    "maximum_estimated_cost_cny": 2,
+    "case_concurrency": 1,
+    "candidate_concurrency_within_case": 2,
+    "smoke_requests": 9,
+    "scored_requests": 180
+  },
+  "candidate_contract": {
+    "a_role": "canonical_fallback",
+    "b_role": "independent_alternative",
+    "requests_identical_except_provider_execution": true,
+    "b_conditioned_on_a": false,
+    "selected_text_modified": false,
+    "unselected_candidate_exposed": false
+  },
+  "training": {
+    "training_started": false,
+    "optimizer_tokens": 0,
+    "assistant_target_tokens": 0,
+    "local_ranker_trained": false,
+    "actual_efish_ranker_used": false,
+    "ranker_training_authorized": false
+  },
+  "official_contract_recheck": {
+    "checked_at_utc": "2026-08-23T00:00:00Z",
+    "official_sources_only": true,
+    "temperature_zero_is_determinism_guarantee": false,
+    "system_fingerprint_capture": "when_present_null_safe",
+    "usage_cache_fields": "parse_when_present_null_safe"
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "campaign_id": "r29p0_equivalence_pairwise_oracle_v1",
+  "version": "r29p0-pairwise-oracle-v1",
+  "split": "pairwise_oracle_product_eval",
+  "scored_case_count": 60,
+  "smoke_case_count": 3,
+  "smoke_cases_scored": false,
+  "family_counts": {
+    "everyday": 36,
+    "logic": 12,
+    "philosophy": 12
+  },
+  "case_ids": [
+    "r29p0_case_everyday_001", "r29p0_case_everyday_002", "r29p0_case_everyday_003", "r29p0_case_everyday_004",
+    "r29p0_case_everyday_005", "r29p0_case_everyday_006", "r29p0_case_everyday_007", "r29p0_case_everyday_008",
+    "r29p0_case_everyday_009", "r29p0_case_everyday_010", "r29p0_case_everyday_011", "r29p0_case_everyday_012",
+    "r29p0_case_everyday_013", "r29p0_case_everyday_014", "r29p0_case_everyday_015", "r29p0_case_everyday_016",
+    "r29p0_case_everyday_017", "r29p0_case_everyday_018", "r29p0_case_everyday_019", "r29p0_case_everyday_020",
+    "r29p0_case_everyday_021", "r29p0_case_everyday_022", "r29p0_case_everyday_023", "r29p0_case_everyday_024",
+    "r29p0_case_everyday_025", "r29p0_case_everyday_026", "r29p0_case_everyday_027", "r29p0_case_everyday_028",
+    "r29p0_case_everyday_029", "r29p0_case_everyday_030", "r29p0_case_everyday_031", "r29p0_case_everyday_032",
+    "r29p0_case_everyday_033", "r29p0_case_everyday_034", "r29p0_case_everyday_035", "r29p0_case_everyday_036",
+    "r29p0_case_logic_001", "r29p0_case_logic_002", "r29p0_case_logic_003", "r29p0_case_logic_004",
+    "r29p0_case_logic_005", "r29p0_case_logic_006", "r29p0_case_logic_007", "r29p0_case_logic_008",
+    "r29p0_case_logic_009", "r29p0_case_logic_010", "r29p0_case_logic_011", "r29p0_case_logic_012",
+    "r29p0_case_philosophy_001", "r29p0_case_philosophy_002", "r29p0_case_philosophy_003", "r29p0_case_philosophy_004",
+    "r29p0_case_philosophy_005", "r29p0_case_philosophy_006", "r29p0_case_philosophy_007", "r29p0_case_philosophy_008",
+    "r29p0_case_philosophy_009", "r29p0_case_philosophy_010", "r29p0_case_philosophy_011", "r29p0_case_philosophy_012"
+  ],
+  "smoke_case_ids": [
+    "r29p0_smoke_everyday_001",
+    "r29p0_smoke_logic_001",
+    "r29p0_smoke_philosophy_001"
+  ],
+  "batch_assignment": {
+    "method": "stratified SHA-256 ordering",
+    "seed": "r29p0-candidate-batches-20260823-v1",
+    "cases_per_batch": 20,
+    "family_counts_per_batch": { "everyday": 12, "logic": 4, "philosophy": 4 }
+  },
+  "batches": {
+    "batch_1": [
+      "r29p0_case_logic_010", "r29p0_case_everyday_012", "r29p0_case_philosophy_004", "r29p0_case_philosophy_005",
+      "r29p0_case_everyday_003", "r29p0_case_philosophy_001", "r29p0_case_everyday_035", "r29p0_case_logic_003",
+      "r29p0_case_everyday_022", "r29p0_case_everyday_006", "r29p0_case_everyday_014", "r29p0_case_philosophy_012",
+      "r29p0_case_everyday_010", "r29p0_case_everyday_001", "r29p0_case_everyday_015", "r29p0_case_everyday_036",
+      "r29p0_case_logic_011", "r29p0_case_everyday_030", "r29p0_case_logic_012", "r29p0_case_everyday_013"
+    ],
+    "batch_2": [
+      "r29p0_case_everyday_029", "r29p0_case_everyday_034", "r29p0_case_everyday_009", "r29p0_case_everyday_005",
+      "r29p0_case_everyday_020", "r29p0_case_everyday_031", "r29p0_case_philosophy_010", "r29p0_case_logic_008",
+      "r29p0_case_everyday_019", "r29p0_case_everyday_008", "r29p0_case_philosophy_003", "r29p0_case_logic_001",
+      "r29p0_case_everyday_011", "r29p0_case_philosophy_007", "r29p0_case_logic_009", "r29p0_case_logic_002",
+      "r29p0_case_everyday_017", "r29p0_case_everyday_033", "r29p0_case_philosophy_002", "r29p0_case_everyday_002"
+    ],
+    "batch_3": [
+      "r29p0_case_philosophy_011", "r29p0_case_everyday_023", "r29p0_case_logic_005", "r29p0_case_logic_004",
+      "r29p0_case_everyday_004", "r29p0_case_everyday_021", "r29p0_case_philosophy_006", "r29p0_case_logic_007",
+      "r29p0_case_everyday_024", "r29p0_case_everyday_007", "r29p0_case_everyday_028", "r29p0_case_everyday_016",
+      "r29p0_case_everyday_018", "r29p0_case_philosophy_009", "r29p0_case_everyday_026", "r29p0_case_philosophy_008",
+      "r29p0_case_everyday_027", "r29p0_case_logic_006", "r29p0_case_everyday_032", "r29p0_case_everyday_025"
+    ]
+  },
+  "review_seeds": {
+    "codex_panel_a_batch1": "r29p0-codex-panel-a-batch1-20260823-v1",
+    "codex_panel_a_full": "r29p0-codex-panel-a-full-20260823-v2",
+    "human_panel_a_full": "r29p0-human-panel-a-full-20260823-v3",
+    "codex_panel_b_full": "r29p0-codex-panel-b-full-20260823-v4",
+    "human_panel_b_full": "r29p0-human-panel-b-full-20260823-v5"
+  },
+  "everyday_required_subfamilies": [
+    "casual_acknowledgement",
+    "light_emotional_acknowledgement",
+    "ordinary_practical_question",
+    "opinion",
+    "concise_explanation",
+    "rewrite",
+    "comparison",
+    "customer_service_tone_risk",
+    "over_explanation_risk",
+    "cold_textbook_tone_risk",
+    "unnecessary_disclaimer_risk",
+    "overly_formal_wording_risk"
+  ],
+  "source_policy": "project-authored public-safe cases, independently regenerated for R29P0 and not mechanically transformed from R2, eval-v2, R4H, or prior live outputs",
+  "contains_target_answer": false,
+  "contains_preferred_wording": false,
+  "contains_oracle_decision": false,
+  "contains_old_deepseek_response": false,
+  "logic_conclusion_metadata_role": "protected semantic guard metadata only; never candidate wording or a preference target",
+  "public_safe": true,
+  "allowed_for_training": false,
+  "frozen_before_first_live_request": true,
+  "live_requests_at_freeze": 0,
+  "training_started": false,
+  "optimizer_tokens": 0,
+  "assistant_target_tokens": 0,
+  "reviewer_class": "codex_agent_caseset_semantic_review_not_human",
+  "review_status": "reviewed_100_percent_for_public_safe_pairwise_oracle_eval_only",
+  "files": {
+    "cases.jsonl": {
+      "bytes": 46737,
+      "sha256": "45dddc388755d277a19eb22ebe8b45229c0039f005bcffb15898a7a0251dd0f4",
+      "role": "60 scored frozen public-safe product cases"
+    },
+    "smoke_cases.jsonl": {
+      "bytes": 2306,
+      "sha256": "0072d2353f6a33106850c1948261c295b80d43e1814824474487743fc9e558b3",
+      "role": "three separate non-scored API configuration cases"
+    },
+    "schema.json": {
+      "bytes": 3715,
+      "sha256": "c604c47e2ad3b489efdfbb3c22a5ee50037a9c647e6a7bb52e502065192de903",
+      "role": "closed JSON schema for scored and smoke case records"
+    },
+    "contamination_report.json": {
+      "bytes": 5341,
+      "sha256": "1c18909b32b24559caffbbeaa4606b20d331f7ef48ecbef92a3196fb2799d761",
+      "role": "R2, eval-v2, R4H, paired-case, and prior-response contamination audit"
+    },
+    "semantic_audit.json": {
+      "bytes": 8170,
+      "sha256": "8b2150e557dce38f3b303f4cae77f5f07147031209b46f90523c6cdfb8de4fed",
+      "role": "100-percent manual semantic and public-safety audit"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": "r29p0.deepseek_official_contract.v1",
+  "verified_at": "2026-08-23",
+  "official_sources_only": true,
+  "model": "deepseek-v4-flash",
+  "base_url": "https://api.deepseek.com",
+  "chat_completions_endpoint": "/chat/completions",
+  "thinking_disabled_body": { "thinking": { "type": "disabled" } },
+  "thinking_default": "enabled",
+  "temperature": {
+    "supported_range": [0, 2],
+    "default": 1,
+    "experiment_value": 0,
+    "determinism_guaranteed": false,
+    "top_p_also_sent": false
+  },
+  "stream": {
+    "enabled": true,
+    "transport": "data-only SSE",
+    "done_sentinel": "[DONE]",
+    "include_usage": true
+  },
+  "usage_fields": [
+    "prompt_tokens",
+    "completion_tokens",
+    "total_tokens",
+    "prompt_cache_hit_tokens",
+    "prompt_cache_miss_tokens"
+  ],
+  "system_fingerprint": "capture_when_present_do_not_treat_as_determinism_guarantee",
+  "max_tokens": 192,
+  "request_side_n_documented": false,
+  "native_multi_choice_contract": false,
+  "sources": [
+    "https://api-docs.deepseek.com/api/create-chat-completion/",
+    "https://api-docs.deepseek.com/guides/thinking_mode/",
+    "https://api-docs.deepseek.com/quick_start/pricing/",
+    "https://api-docs.deepseek.com/api/list-models/",
+    "https://api-docs.deepseek.com/updates/"
+  ]
+}

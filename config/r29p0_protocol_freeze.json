@@ -1,0 +1,49 @@
+{
+  "schema_version": "r29p0.protocol_freeze.v1",
+  "campaign_id": "r29p0_equivalence_pairwise_oracle_v1",
+  "orientation_base_head": "6cb53030d5d681f67f04636fdcf0629f8380de31",
+  "orientation_origin_main": "6cb53030d5d681f67f04636fdcf0629f8380de31",
+  "frozen_before_first_live_request": true,
+  "live_requests_at_freeze": 0,
+  "cases": { "count": 60, "everyday": 36, "logic": 12, "philosophy": 12 },
+  "smoke_cases": { "count": 3, "scored": false },
+  "request_contract": {
+    "candidate_a_b_identical": true,
+    "model": "deepseek-v4-flash",
+    "temperature": 0,
+    "thinking": "disabled",
+    "stream": true,
+    "max_tokens": 192,
+    "top_p_sent": false,
+    "tools_sent": false,
+    "a_b_parallel": true,
+    "candidate_a_canonical_fallback": true
+  },
+  "training": {
+    "training_started": false,
+    "optimizer_tokens": 0,
+    "assistant_target_tokens": 0,
+    "local_ranker_trained": false,
+    "actual_efish_ranker_used": false,
+    "ranker_training_authorized": false
+  },
+  "historical_terminal_states": {
+    "R29B2M-R3": "BLOCKED_DIALOGUE_QUALITY_WITH_EVIDENCE",
+    "R29B2M-R4H": "ABORTED_SAFELY",
+    "R29B2M-R4H-R1": "BLOCKED_HYBRID_VALUE",
+    "R29B2M-R4H-R2": "BLOCKED_HYBRID_V2_FACTUAL",
+    "R29B2M-R4H-R3": "BLOCKED_HYBRID_ARCHITECTURE"
+  },
+  "frozen_files": [
+    { "path": "prompts/r29p0_candidate_system_v1.txt", "sha256": "ee8c5c0eb8df0a024c46055e89e407a166cf63a9eb3948a638cd267c50320bc2" },
+    { "path": "config/r29p0_deterministic_controller_v1.json", "sha256": "1bcb983aeabece3d3175b5116f73520a239b753cbe419aa3229becb637d71faa" },
+    { "path": "config/r29p0_live_policy.json", "sha256": "bf7a23d24386c16498e418584f773ee839e520297f8ad2532d1adf66d1c469ae" },
+    { "path": "config/r29p0_official_api_contract.json", "sha256": "07a9f228988d67d24d0606b29671e8b6d7ac09f380298b3b99ba95181b161a40" },
+    { "path": "evals/r29p0_pairwise_oracle_v1/cases.jsonl", "sha256": "45dddc388755d277a19eb22ebe8b45229c0039f005bcffb15898a7a0251dd0f4" },
+    { "path": "evals/r29p0_pairwise_oracle_v1/smoke_cases.jsonl", "sha256": "0072d2353f6a33106850c1948261c295b80d43e1814824474487743fc9e558b3" },
+    { "path": "evals/r29p0_pairwise_oracle_v1/manifest.json", "sha256": "195c93278bfa8e333a8f97c05d6ddbb6ae6b0b37aa01a7b495f0a2bef21e12e3" },
+    { "path": "evals/r29p0_pairwise_oracle_v1/schema.json", "sha256": "c604c47e2ad3b489efdfbb3c22a5ee50037a9c647e6a7bb52e502065192de903" },
+    { "path": "evals/r29p0_pairwise_oracle_v1/contamination_report.json", "sha256": "1c18909b32b24559caffbbeaa4606b20d331f7ef48ecbef92a3196fb2799d761" },
+    { "path": "evals/r29p0_pairwise_oracle_v1/semantic_audit.json", "sha256": "8b2150e557dce38f3b303f4cae77f5f07147031209b46f90523c6cdfb8de4fed" }
+  ]
+}

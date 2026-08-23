@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r29p0-pairwise-oracle-case-v1.json",
+  "title": "R29P0 Pairwise Oracle Public-Safe Evaluation Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "family",
+    "subfamily",
+    "messages",
+    "latest_user_message",
+    "expected_scope",
+    "maximum_answer_characters",
+    "protected_values",
+    "protected_conditions",
+    "boundary_expectation",
+    "logic_conclusion_if_applicable",
+    "review_notes",
+    "public_safe",
+    "allowed_for_training"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^r29p0_(?:case|smoke)_[a-z0-9_]+$"
+    },
+    "family": {
+      "enum": ["everyday", "logic", "philosophy"]
+    },
+    "subfamily": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 64
+    },
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "content"],
+        "properties": {
+          "role": {"enum": ["user", "assistant"]},
+          "content": {"type": "string", "minLength": 1, "maxLength": 240}
+        }
+      }
+    },
+    "latest_user_message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "expected_scope": {
+      "enum": [
+        "brief_conversational_acknowledgement",
+        "brief_emotional_acknowledgement_without_diagnosis",
+        "short_practical_guidance",
+        "bounded_opinion",
+        "concise_explanation",
+        "faithful_concise_rewrite",
+        "balanced_brief_comparison",
+        "direct_help_without_service_filler",
+        "single_point_answer",
+        "warm_non_textbook_reply",
+        "creative_short_reply_without_disclaimer",
+        "natural_colloquial_rewrite",
+        "bounded_logic_answer_with_short_justification",
+        "bounded_conversational_reflection"
+      ]
+    },
+    "maximum_answer_characters": {
+      "type": "integer",
+      "minimum": 40,
+      "maximum": 180
+    },
+    "protected_values": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "value"],
+        "properties": {
+          "kind": {
+            "enum": [
+              "arabic_number",
+              "chinese_numeral",
+              "quantity",
+              "unit",
+              "currency",
+              "percentage",
+              "date",
+              "time",
+              "named_value",
+              "quoted_string",
+              "ordered_alternative",
+              "logic_entity",
+              "polarity_marker"
+            ]
+          },
+          "value": {"type": "string", "minLength": 1, "maxLength": 160}
+        }
+      }
+    },
+    "protected_conditions": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {"type": "string", "minLength": 1, "maxLength": 180}
+    },
+    "boundary_expectation": {
+      "enum": [
+        "none",
+        "respect_no_analysis",
+        "respect_no_list",
+        "respect_single_step",
+        "respect_privacy_refusal",
+        "respect_no_guessing",
+        "respect_rewrite_constraints"
+      ]
+    },
+    "logic_conclusion_if_applicable": {
+      "type": "string",
+      "pattern": "^(?:not_applicable|affirmative|negative|underdetermined|named_value:[^\\n]{1,32})$"
+    },
+    "review_notes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": {"type": "string", "minLength": 3, "maxLength": 180}
+    },
+    "public_safe": {"const": true},
+    "allowed_for_training": {"const": false}
+  }
+}

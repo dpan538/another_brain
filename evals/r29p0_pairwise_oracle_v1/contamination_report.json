@@ -1,0 +1,130 @@
+{
+  "campaign_id": "r29p0_equivalence_pairwise_oracle_v1",
+  "caseset_version": "r29p0-pairwise-oracle-v1",
+  "reviewer_class": "codex_agent_caseset_contamination_review_not_human",
+  "review_scope": {
+    "new_scored_cases": 60,
+    "new_smoke_cases": 3,
+    "smoke_cases_excluded_from_scored_metrics": true,
+    "prompt_fields_compared": "all user-message content in each new case",
+    "response_reuse_check": "new user-message content compared with prior public-safe live response excerpts"
+  },
+  "comparison_method": {
+    "normalization": "lowercase; remove whitespace and punctuation; retain letters, digits, underscores, and CJK codepoints",
+    "exact_duplicate": "normalized strings equal",
+    "near_duplicate": "SequenceMatcher ratio >= 0.82 OR character-trigram Jaccard >= 0.70",
+    "embedding_similarity_used_as_equivalence_proof": false,
+    "manual_review": "all 60 cases plus the highest-overlap pair from every source"
+  },
+  "sources": [
+    {
+      "source": "r29b2m_r2/dataset/train.jsonl",
+      "evidence_class": "R2 training data",
+      "source_sha256": "6537226cf8d59a4748d10f70cfae5f2578282041a98a7e64a20348770ab4b957",
+      "strings_compared": 2310,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.5333333333333333
+    },
+    {
+      "source": "r29b2m_r2/dataset/dev.jsonl",
+      "evidence_class": "R2 training data",
+      "source_sha256": "33d807108ddf344741e133e208d8ed4c43960b71934e09a192376d08d35a781b",
+      "strings_compared": 456,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.35714285714285715
+    },
+    {
+      "source": "r29b2m_daily_dialogue_v2/sessions.jsonl",
+      "evidence_class": "eval-v2",
+      "source_sha256": "a4bca4c0f7cc01e983fffb6a17f5d7b2a91621351daade883a9fa123f1b7a9cd",
+      "strings_compared": 410,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.3783783783783784
+    },
+    {
+      "source": "r29b2m_hybrid_product_v1/cases.jsonl",
+      "evidence_class": "R4H and R4H-R1 paired-case definitions",
+      "source_sha256": "ad033ad7f667c82ef6f2def8d14e85b5d25d4dd83761bfe27d26390e0048f0bc",
+      "strings_compared": 120,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.4230769230769231
+    },
+    {
+      "source": "r29b2m_hybrid_product_v2/cases.jsonl",
+      "evidence_class": "R4H-R2 paired-case definitions",
+      "source_sha256": "d8afe0f526b1a00212f7cde70b5c1ddad5e3e809c7ca6fa2dfa3dd8f018c4ff9",
+      "strings_compared": 120,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.4230769230769231
+    },
+    {
+      "source": "r29b2m_hybrid_critic_v1/cases.jsonl",
+      "evidence_class": "R4H-R3 paired-case definitions",
+      "source_sha256": "62dec30cc8e495e7266e5f1eafe6ccda23bc99ae89c22e4b3981a71be3fc5429",
+      "strings_compared": 30,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.4
+    },
+    {
+      "source": "r29b2m_r4h_r1/raw/live_records.json#response-excerpts",
+      "evidence_class": "prior public-safe live response excerpts",
+      "source_sha256": "995bc2eff1932e94fc9dc460b850fb878d6901f0982c04e33178727022b19b29",
+      "strings_compared": 84,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.3
+    },
+    {
+      "source": "r29b2m_r4h_r2/raw/live_records.json#response-excerpts",
+      "evidence_class": "prior public-safe live response excerpts",
+      "source_sha256": "b441671843a84f6b067dc66668a596ab659046f48c3a33d59178b930ef28a5db",
+      "strings_compared": 66,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.3157894736842105
+    },
+    {
+      "source": "r29b2m_r4h_r3/raw/live_records.json#response-excerpts",
+      "evidence_class": "prior public-safe live response excerpts",
+      "source_sha256": "cf21d6ef36ff659fd290d730dbf68b1b98c3f153f8f6f44cf8640469fcdf6708",
+      "strings_compared": 120,
+      "exact_duplicates": 0,
+      "near_duplicates": 0,
+      "maximum_similarity": 0.2608695652173913
+    }
+  ],
+  "manual_overlap_review": [
+    {
+      "new_case_id": "r29p0_case_everyday_009",
+      "source_case_id": "r2_authored_111_v01",
+      "finding": "topic-level overlap only: both concern a suitcase wheel, but the frozen scenario, material, requested operation, and wording are new",
+      "trivializes_experiment": false
+    },
+    {
+      "new_case_id": "r29p0_case_everyday_033",
+      "source_case_id": "r29b2m_eval_v2_privacy_boundary_00",
+      "finding": "shared privacy domain only: the new case asks for a concise refusal in a distinct third-party workplace scenario and does not reuse prior wording or any response",
+      "trivializes_experiment": false
+    },
+    {
+      "new_case_id": "r29p0_case_logic_001",
+      "source_case_id": "r29b2m_r4h_logic_question_00",
+      "finding": "shared bounded class-reasoning family only; entities, predicates, conditions, and conclusion wording are new",
+      "trivializes_experiment": false
+    }
+  ],
+  "result": {
+    "exact_duplicate_count": 0,
+    "near_duplicate_count": 0,
+    "reused_response_target_count": 0,
+    "old_pair_output_copied_count": 0,
+    "topic_overlap_without_scenario_reuse_allowed": true,
+    "contamination_gate": "pass"
+  }
+}

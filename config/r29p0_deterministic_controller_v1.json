@@ -1,0 +1,30 @@
+{
+  "schema_version": "r29p0.deterministic_controller.v1",
+  "frozen_before_live_generation": true,
+  "learned_signal": false,
+  "semantic_facts_allowed": false,
+  "policies": {
+    "everyday": {
+      "maximum_answer_characters": 100,
+      "density": "one compact conversational paragraph; normally no list",
+      "guidance": "直接回应当前请求，保持自然简洁；不主动扩展建议或背景。"
+    },
+    "logic": {
+      "maximum_answer_characters": 180,
+      "density": "state conclusion, then only the minimum supporting steps",
+      "guidance": "先给结论，再给必要的最短推理；不要添加题目之外的事实。"
+    },
+    "philosophy": {
+      "maximum_answer_characters": 180,
+      "density": "one bounded framing with a concise qualification when needed",
+      "guidance": "给出一个有边界的观点，保留合理余地；不要写成小论文。"
+    }
+  },
+  "forbidden_controls": [
+    "new_semantic_fact",
+    "emotion_interpretation",
+    "learned_model_output",
+    "oracle_preference",
+    "candidate_identity"
+  ]
+}
