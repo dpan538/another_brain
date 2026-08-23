@@ -27,9 +27,9 @@ const PHASES = new Set(["smoke", "batch1", "batch2", "batch3"]);
 const SOURCE_FILES = [
   "config/r29p0_live_policy.json",
   "config/r29p0_official_api_contract.json",
+  "config/r29p0_deepseek_pricing_snapshot.json",
   "config/r29p0_protocol_freeze.json",
   "config/r29p0_deterministic_controller_v1.json",
-  "config/deepseek_pricing_snapshot.json",
   "prompts/r29p0_candidate_system_v1.txt",
   "evals/r29p0_pairwise_oracle_v1/cases.jsonl",
   "evals/r29p0_pairwise_oracle_v1/smoke_cases.jsonl",
@@ -47,7 +47,7 @@ if (!process.env.DEEPSEEK_API_KEY) throw new Error("deepseek_api_key_unavailable
 
 const POLICY = JSON.parse(await readFile(join(ROOT, "config/r29p0_live_policy.json"), "utf8"));
 const CONTROLLER = JSON.parse(await readFile(join(ROOT, "config/r29p0_deterministic_controller_v1.json"), "utf8"));
-const PRICING = JSON.parse(await readFile(join(ROOT, "config/deepseek_pricing_snapshot.json"), "utf8"));
+const PRICING = JSON.parse(await readFile(join(ROOT, "config/r29p0_deepseek_pricing_snapshot.json"), "utf8"));
 const SYSTEM_PROMPT = await readFile(join(ROOT, "prompts/r29p0_candidate_system_v1.txt"), "utf8");
 const MANIFEST = JSON.parse(await readFile(join(ROOT, "evals/r29p0_pairwise_oracle_v1/manifest.json"), "utf8"));
 const PROTOCOL_FREEZE = JSON.parse(await readFile(join(ROOT, "config/r29p0_protocol_freeze.json"), "utf8"));
@@ -131,20 +131,28 @@ function aggregate(records) {
     cache_hit_tokens: total.cache_hit_tokens + Number(record.result.cache_hit_tokens || 0),
     cache_miss_tokens: total.cache_miss_tokens + Number(record.result.cache_miss_tokens || 0),
     estimated_cost_usd: total.estimated_cost_usd + Number(record.estimated_cost_usd || 0),
-  }), { requests: 0, input_tokens: 0, output_tokens: 0, cache_hit_tokens: 0, cache_miss_tokens: 0, estimated_cost_usd: 0 });
+    estimated_cost_usd_guard: total.estimated_cost_usd_guard + Number(record.estimated_cost_usd_guard || 0),
+  }), { requests: 0, input_tokens: 0, output_tokens: 0, cache_hit_tokens: 0, cache_miss_tokens: 0, estimated_cost_usd: 0, estimated_cost_usd_guard: 0 });
 }
 
-function requestCostUsd(result) {
+function isPeakUtc(timestamp) {
+  const date = new Date(timestamp);
+  const day = date.getUTCDay();
+  const hour = date.getUTCHours();
+  return day >= 1 && day <= 5 && ((hour >= 1 && hour < 4) || (hour >= 6 && hour < 10));
+}
+
+function requestCostUsd(result, rates) {
   return (
-    Number(result.cache_hit_tokens || 0) * PRICING.input_cache_hit +
-    Number(result.cache_miss_tokens || 0) * PRICING.input_cache_miss +
-    Number(result.output_tokens || 0) * PRICING.output
+    Number(result.cache_hit_tokens || 0) * rates.input_cache_hit +
+    Number(result.cache_miss_tokens || 0) * rates.input_cache_miss +
+    Number(result.output_tokens || 0) * rates.output
   ) / PRICING.unit_tokens;
 }
 
 function conservativeRequestCostUsd(request) {
   const byteUpperBound = Buffer.byteLength(JSON.stringify(request), "utf8");
-  return (byteUpperBound * PRICING.input_cache_miss + request.max_tokens * PRICING.output) / PRICING.unit_tokens;
+  return (byteUpperBound * PRICING.peak.input_cache_miss + request.max_tokens * PRICING.peak.output) / PRICING.unit_tokens;
 }
 
 async function writeState(state, records, sourceLock, nextState) {
@@ -158,7 +166,9 @@ async function writeState(state, records, sourceLock, nextState) {
   state.cache_hit_tokens = totals.cache_hit_tokens;
   state.cache_miss_tokens = totals.cache_miss_tokens;
   state.estimated_cost_usd = totals.estimated_cost_usd;
-  state.estimated_cost_cny_conservative = totals.estimated_cost_usd * 10;
+  state.estimated_cost_usd_peak_guard = totals.estimated_cost_usd_guard;
+  state.estimated_cost_cny = totals.estimated_cost_usd * 10;
+  state.estimated_cost_cny_conservative = totals.estimated_cost_usd_guard * 10;
   await atomicJson(STATE_PATH, state);
 }
 
@@ -177,8 +187,8 @@ async function reserveRequests(state, records, sourceLock, specs) {
   if (state.started_request_count + specs.length > POLICY.request_guard.maximum_live_requests) {
     throw new Error("r29p0_request_budget_exceeded");
   }
-  const actualUsd = aggregate(records).estimated_cost_usd;
-  const conservativeUsd = specs.reduce((sum, spec) => sum + conservativeRequestCostUsd(spec.request), actualUsd);
+  const priorGuardUsd = aggregate(records).estimated_cost_usd_guard;
+  const conservativeUsd = specs.reduce((sum, spec) => sum + conservativeRequestCostUsd(spec.request), priorGuardUsd);
   if (conservativeUsd * 10 > POLICY.request_guard.maximum_estimated_cost_cny) {
     throw new Error("r29p0_cost_budget_exceeded");
   }
@@ -195,6 +205,7 @@ async function commitRecords(state, records, sourceLock, newRecords, nextState) 
 }
 
 function makeRecord(spec, result, sourceLock, additional = {}) {
+  const actualPricingPeriod = isPeakUtc(result.request_started_at) ? "peak" : "off_peak";
   return {
     schema_version: "r29p0.live_record.v1",
     campaign_id: POLICY.campaign_id,
@@ -206,7 +217,9 @@ function makeRecord(spec, result, sourceLock, additional = {}) {
     source_lock_sha256: sourceLock.combined_sha256,
     request_body_sha256: sha256(JSON.stringify(spec.request)),
     result,
-    estimated_cost_usd: requestCostUsd(result),
+    pricing_period_utc: actualPricingPeriod,
+    estimated_cost_usd: requestCostUsd(result, PRICING[actualPricingPeriod]),
+    estimated_cost_usd_guard: requestCostUsd(result, PRICING.peak),
     ...additional,
   };
 }
@@ -274,7 +287,7 @@ async function runCase(fixture, state, records, sourceLock) {
     started_request_count: state.started_request_count,
     pair_ready_ms: Math.round(Number(pairReadyMs) * 10) / 10,
     dispatch_skew_ms: Math.round(Number(dispatchSkewMs) * 10) / 10,
-    estimated_cost_cny_conservative: Math.round(totals.estimated_cost_usd * 10 * 1e8) / 1e8,
+    estimated_cost_cny_conservative: Math.round(totals.estimated_cost_usd_guard * 10 * 1e8) / 1e8,
   }));
 }
 

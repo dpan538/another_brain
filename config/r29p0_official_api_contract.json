@@ -29,6 +29,7 @@
   ],
   "system_fingerprint": "capture_when_present_do_not_treat_as_determinism_guarantee",
   "max_tokens": 192,
+  "pricing_snapshot": "config/r29p0_deepseek_pricing_snapshot.json",
   "request_side_n_documented": false,
   "native_multi_choice_contract": false,
   "sources": [
