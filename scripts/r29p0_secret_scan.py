@@ -14,6 +14,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SECRET_PATH = ROOT / ".env.deepseek.local"
+ORIENTATION_BASE = "6cb53030d5d681f67f04636fdcf0629f8380de31"
 
 
 def load_key() -> bytes | None:
@@ -29,13 +30,17 @@ def load_key() -> bytes | None:
 
 
 def candidate_files(artifact_root: Path) -> list[Path]:
-    changed = subprocess.run(
+    committed = subprocess.run(
+        ["git", "diff", "--name-only", ORIENTATION_BASE, "HEAD"], cwd=ROOT,
+        text=True, capture_output=True, check=True,
+    ).stdout.splitlines()
+    working = subprocess.run(
         ["git", "diff", "--name-only", "HEAD"], cwd=ROOT, text=True, capture_output=True, check=True
     ).stdout.splitlines()
     untracked = subprocess.run(
         ["git", "ls-files", "--others", "--exclude-standard"], cwd=ROOT, text=True, capture_output=True, check=True
     ).stdout.splitlines()
-    files = [ROOT / relative for relative in sorted(set(changed + untracked))]
+    files = [ROOT / relative for relative in sorted(set(committed + working + untracked))]
     if artifact_root.is_dir():
         files.extend(path for path in artifact_root.rglob("*") if path.is_file())
     return [path for path in files if path.is_file() and path != SECRET_PATH]

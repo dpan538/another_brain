@@ -165,7 +165,9 @@ const tests = {
   test_secret_redaction() {
     const sources = [text("scripts/r29p0_run_supervisor.py"), text("scripts/r29p0_live_experiment.mjs"), text("src/hybrid_runtime/r29p0_live_client.ts")];
     assert.ok(sources.every((source) => !/console\.log\([^\n]*(?:apiKey|DEEPSEEK_API_KEY)/u.test(source)));
-    assert.match(text("scripts/r29p0_secret_scan.py"), /key_value_logged/);
+    const scanner = text("scripts/r29p0_secret_scan.py");
+    assert.match(scanner, /key_value_logged/);
+    assert.match(scanner, /ORIENTATION_BASE, "HEAD"/);
   },
   test_no_production_change() {
     const result = spawnSync("git", ["diff", "--name-only", BASE_SHA], { cwd: ROOT, encoding: "utf8" });
