@@ -829,6 +829,13 @@
     "r29b2m-r4h-r3:reapply-guard": "node --experimental-strip-types scripts/r29b2m_r4h_r3_reapply_semantic_guard.mjs",
     "r29b2m-r4h-r3:secret-scan": "node scripts/r29b2m_r4h_r3_secret_scan.mjs",
     "r29b2m-r4h-r3:finalize": "node --experimental-strip-types scripts/r29b2m_r4h_r3_finalize.mjs",
-    "test:r29b2m-r4h-r3": "python3 -m unittest discover -s tests/r29b2m_r4h_r3 -q"
+    "test:r29b2m-r4h-r3": "python3 -m unittest discover -s tests/r29b2m_r4h_r3 -q",
+    "r29p0:live-supervisor": "python3 scripts/r29p0_run_supervisor.py",
+    "r29p0:build-panel-a": "node --experimental-strip-types scripts/r29p0_build_panel_a_packet.mjs",
+    "r29p0:evaluate-panel-a": "node --experimental-strip-types scripts/r29p0_evaluate_panel_a.mjs",
+    "r29p0:build-panel-b": "node --experimental-strip-types scripts/r29p0_build_panel_b_packet.mjs",
+    "r29p0:build-owner-review": "node --experimental-strip-types scripts/r29p0_build_owner_review_pack.mjs",
+    "r29p0:secret-scan": "python3 scripts/r29p0_secret_scan.py",
+    "test:r29p0": "python3 -m unittest discover -s tests/r29p0 -q"
   }
 }
