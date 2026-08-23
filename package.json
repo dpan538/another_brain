@@ -836,6 +836,7 @@
     "r29p0:build-panel-b": "node --experimental-strip-types scripts/r29p0_build_panel_b_packet.mjs",
     "r29p0:build-owner-review": "node --experimental-strip-types scripts/r29p0_build_owner_review_pack.mjs",
     "r29p0:secret-scan": "python3 scripts/r29p0_secret_scan.py",
+    "r29p0:production-diff-gate": "node scripts/r29p0_no_production_change_gate.mjs",
     "test:r29p0": "python3 -m unittest discover -s tests/r29p0 -q"
   }
 }
