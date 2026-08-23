@@ -1,0 +1,9 @@
+{
+  "version": "persona-coverage-matrix.v1",
+  "status": "EMPTY_TEMPLATE",
+  "owner_review_completed": false,
+  "complete_coverage_required": false,
+  "allowed_for_training": false,
+  "registers_evaluated": [],
+  "rows": []
+}

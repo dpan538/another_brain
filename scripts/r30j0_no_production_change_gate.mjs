@@ -15,7 +15,7 @@ const changed = [...new Set([
   ...lines(["ls-files", "--others", "--exclude-standard"]),
 ])].sort();
 
-const allowed = /^(?:config\/r30j0_|data\/personal_judge\/(?:efish_|templates\/(?:r30j0_|personal_(?:preference_evidence_ledger_v1\.empty\.json|preference_hypotheses_v1\.empty\.json|register_profile_v1\.template\.json|source_inventory_v1\.empty\.json)$|owner_review_ui\/(?:index\.html|review\.css|review\.js)$|personal_source_review_ui\/(?:page\.html|review\.css|review\.js|sanitized_review_payload\.template\.json)$))|docs\/(?:EFISH_PERSONAL_|R30J0_|models\/efish-personal-judge-v1\.md)|schemas\/(?:efish_personal_|personal_)|scripts\/r30j0_|src\/personal_judge\/|tests\/r30j0\/|package\.json$)/u;
+const allowed = /^(?:config\/r30j0_|data\/personal_judge\/(?:efish_|templates\/(?:r30j0_|personal_(?:preference_evidence_ledger_v1\.empty\.json|preference_hypotheses_v1\.empty\.json|register_profile_v1\.template\.json|source_inventory_v1\.empty\.json)$|owner_review_ui\/(?:index\.html|review\.css|review\.js)$|personal_source_review_ui\/(?:page\.html|review\.css|review\.js|sanitized_review_payload\.template\.json)$|persona_review_v2\/))|docs\/(?:EFISH_PERSONAL_|R30J0_|models\/efish-personal-judge-v1\.md)|schemas\/(?:efish_personal_|personal_|r30j0_p2_)|scripts\/r30j0_|src\/personal_judge\/|tests\/r30j0\/|package\.json$)/u;
 const production = /^(?:web|api|pages\/api|app\/api|functions|netlify\/functions|vercel\/functions)(?:\/|$)|^(?:vercel\.json|netlify\.toml)$/u;
 const forbidden = /(?:^|\/)(?:\.env(?:\.|$)|artifacts(?:\/|$)|checkpoints?(?:\/|$)|weights?(?:\/|$)|corpus(?:\/|$))|\.(?:safetensors|pt|pth|ckpt|npz|bin|gguf|onnx)$/iu;
 const privatePath = /\/Users\/|\/private\/tmp\/|\/private\/var\/|\/Volumes\//u;

@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r30j0_p2_persona_mode_boundary_v1.schema.json",
+  "title": "PersonaModeBoundaryV1",
+  "description": "Candidate persona modes with mandatory positive and negative boundaries; no mode is implemented by this contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "status", "owner_review_completed", "implementation_authorized", "allowed_for_training", "modes"],
+  "properties": {
+    "version": {"const": "persona-mode-boundary.v1"},
+    "status": {"enum": ["EMPTY_TEMPLATE", "HYPOTHESES_OWNER_REVIEW_REQUIRED", "OWNER_REVIEW_IN_PROGRESS"]},
+    "owner_review_completed": {"const": false},
+    "implementation_authorized": {"const": false},
+    "allowed_for_training": {"const": false},
+    "modes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/mode"}
+    }
+  },
+  "$defs": {
+    "safeId": {"type": "string", "pattern": "^(?!wired$)[a-z][a-z0-9._-]{2,127}$"},
+    "publicSafeText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "not": {"pattern": "[Ww][Ii][Rr][Ee][Dd]"}
+    },
+    "register": {
+      "enum": [
+        "ordinary_chat",
+        "casual_banter",
+        "weird_question",
+        "absurd_meta_ai",
+        "practical_advice",
+        "technical_explanation",
+        "debugging",
+        "project_discussion",
+        "academic_discussion",
+        "philosophy",
+        "personal_reflection",
+        "light_emotional",
+        "formal_message",
+        "creative_play",
+        "roleplay"
+      ]
+    },
+    "triggerDimension": {
+      "enum": [
+        "absurdity",
+        "meta_ai",
+        "factual_stakes",
+        "practical_stakes",
+        "seriousness_request",
+        "roleplay_invitation",
+        "existing_playful_tone",
+        "repeat_frequency",
+        "technicality",
+        "urgency",
+        "ambiguity",
+        "register",
+        "other"
+      ]
+    },
+    "triggerCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimension", "condition"],
+      "properties": {
+        "dimension": {"$ref": "#/$defs/triggerDimension"},
+        "condition": {"$ref": "#/$defs/publicSafeText"}
+      }
+    },
+    "epistemicCategory": {
+      "enum": [
+        "REAL_UNCERTAINTY",
+        "PLAYFUL_FAUX_IGNORANCE",
+        "ROLEPLAYED_IGNORANCE",
+        "REFUSAL_TO_OVEREXPLAIN",
+        "DEADPAN_MISDIRECTION",
+        null
+      ]
+    },
+    "mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode_id",
+        "mode_code",
+        "mode_description",
+        "seed_status",
+        "boundary_status",
+        "epistemic_category",
+        "trigger_positive",
+        "trigger_negative",
+        "minimum_confidence",
+        "compatible_registers",
+        "forbidden_registers",
+        "maximum_intensity",
+        "fallback_mode",
+        "evidence_refs",
+        "evidence_count",
+        "contradiction_count",
+        "should_trigger_refs",
+        "may_trigger_refs",
+        "should_not_trigger_refs",
+        "owner_review_status",
+        "owner_review_required",
+        "allowed_for_training"
+      ],
+      "properties": {
+        "mode_id": {"$ref": "#/$defs/safeId"},
+        "mode_code": {"$ref": "#/$defs/safeId"},
+        "mode_description": {"$ref": "#/$defs/publicSafeText"},
+        "seed_status": {"enum": ["OWNER_ASSERTED_SEED", "HISTORICAL_HYPOTHESIS", "ELICITATION_HYPOTHESIS"]},
+        "boundary_status": {"enum": ["BOUNDARY_NOT_YET_KNOWN", "HYPOTHESIZED", "OWNER_REVIEW_IN_PROGRESS"]},
+        "epistemic_category": {"$ref": "#/$defs/epistemicCategory"},
+        "trigger_positive": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/triggerCondition"}
+        },
+        "trigger_negative": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/triggerCondition"}
+        },
+        "minimum_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "compatible_registers": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/register"}
+        },
+        "forbidden_registers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/register"}
+        },
+        "maximum_intensity": {"enum": ["minimal", "subtle", "one_line", "short_bit", "extended_bit"]},
+        "fallback_mode": {"$ref": "#/$defs/safeId"},
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "evidence_count": {"type": "integer", "minimum": 0},
+        "contradiction_count": {"type": "integer", "minimum": 0},
+        "should_trigger_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "may_trigger_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "should_not_trigger_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "owner_review_status": {"enum": ["UNREVIEWED", "ACCEPT", "REJECT", "EDIT", "DEPENDS", "UNSURE"]},
+        "owner_review_required": {"const": true},
+        "allowed_for_training": {"const": false}
+      }
+    }
+  }
+}

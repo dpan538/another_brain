@@ -1,0 +1,187 @@
+{
+  "schema_version": "r30j0.p2-persona-excavation.v1",
+  "campaign": "R30J0-P2",
+  "purpose": "discover conditional personal interaction grammar without training or freezing an owner profile",
+  "historical_state_contract": {
+    "r30j0_personal_source_state": "PERSONAL_SOURCE_EVIDENCE_READY",
+    "r30j0_owner_state": "HUMAN_OWNER_REVIEW_REQUIRED",
+    "states_are_preserved": true,
+    "coarse_taxonomy_v1_is_input_not_final_truth": true,
+    "owner_review_v1_paused": true
+  },
+  "execution_boundary": {
+    "local_offline_only": true,
+    "api_requests": 0,
+    "deployment_allowed": false,
+    "production_behavior_change_allowed": false,
+    "model_architecture_change_allowed": false,
+    "persona_steering_implementation_allowed": false,
+    "owner_asserted_seed_records": "ignored_actual_data_only",
+    "tracked_owner_values_allowed": false,
+    "tracked_owner_excerpts_allowed": false
+  },
+  "training_state": {
+    "training_started": false,
+    "classification_updates": 0,
+    "optimizer_tokens": 0,
+    "checkpoint": null,
+    "candidate": null,
+    "r30j1_authorized": false,
+    "allowed_for_training": false
+  },
+  "persona_interaction_grammar_layers": [
+    "global_boundaries",
+    "register_preferences",
+    "microtraits",
+    "persona_modes",
+    "trigger_rules",
+    "anti_patterns",
+    "exceptions",
+    "confidence_owner_evidence"
+  ],
+  "microtrait_dimension_families": [
+    "RESPONSE_SHAPE",
+    "SOCIAL_STANCE",
+    "EPISTEMIC_STANCE",
+    "HUMOUR_STRATEGY",
+    "ROLEPLAY_PERSONA",
+    "SERIOUSNESS_SWITCHING",
+    "EXPLANATION_STRATEGY",
+    "AGREEMENT_DISAGREEMENT",
+    "EMOTIONAL_RESPONSE_STYLE",
+    "PHILOSOPHICAL_RESPONSE_STYLE",
+    "TECHNICAL_RESPONSE_STYLE",
+    "ABSURD_WEIRD_QUESTION_HANDLING",
+    "LANGUAGE_CODE_SWITCHING",
+    "OPENING_CLOSING_BEHAVIOUR",
+    "INTERACTION_RHYTHM",
+    "AI_SELF_PRESENTATION",
+    "ANTI_PATTERNS"
+  ],
+  "text_behavior_classes": [
+    "TEXT_SEMANTIC",
+    "TEXT_STYLE",
+    "PRESENTATION",
+    "INTERACTION_POLICY",
+    "ROLEPLAY",
+    "META_AI",
+    "UNKNOWN"
+  ],
+  "epistemic_persona_categories": [
+    "REAL_UNCERTAINTY",
+    "PLAYFUL_FAUX_IGNORANCE",
+    "ROLEPLAYED_IGNORANCE",
+    "REFUSAL_TO_OVEREXPLAIN",
+    "DEADPAN_MISDIRECTION"
+  ],
+  "epistemic_categories_must_remain_distinct": true,
+  "deprecated_oversimplified_label_policy": {
+    "may_be_model_class": false,
+    "may_be_persona_axis": false,
+    "may_be_training_label": false,
+    "may_be_profile_value": false,
+    "decomposition_requires_evidence_and_owner_review": true
+  },
+  "expanded_registers_to_evaluate": [
+    "ordinary_chat",
+    "casual_banter",
+    "weird_question",
+    "absurd_meta_ai",
+    "practical_advice",
+    "technical_explanation",
+    "debugging",
+    "project_discussion",
+    "academic_discussion",
+    "philosophy",
+    "personal_reflection",
+    "light_emotional",
+    "formal_message",
+    "creative_play",
+    "roleplay"
+  ],
+  "register_merge_policy": {
+    "merge_only_after_evidence": true,
+    "global_trait_collapse_forbidden": true,
+    "blank_coverage_cells_allowed": true
+  },
+  "mode_boundary_contract": {
+    "required_fields": [
+      "trigger_positive",
+      "trigger_negative",
+      "minimum_confidence",
+      "compatible_registers",
+      "forbidden_registers",
+      "maximum_intensity",
+      "fallback_mode",
+      "evidence_count",
+      "contradiction_count"
+    ],
+    "negative_boundary_required": true,
+    "mode_without_negative_boundary_rejected": true,
+    "implementation_authorized": false
+  },
+  "evidence_admission": {
+    "normative_routes": [
+      "explicit_owner_assertion",
+      "at_least_three_independent_historical_normative_items",
+      "at_least_two_items_plus_owner_elicitation_confirmation"
+    ],
+    "descriptive_writing_alone_establishes_normative_preference": false,
+    "codex_generated_text_weight": 0,
+    "sensitive_traits_forbidden": true,
+    "psychological_diagnosis_forbidden": true,
+    "private_excerpt_in_tracked_output_forbidden": true,
+    "evidence_time_buckets": [
+      "early_project",
+      "middle_project",
+      "recent_project",
+      "current",
+      "unknown"
+    ],
+    "current_explicit_owner_preference_has_priority_on_conflict": true
+  },
+  "actual_artifact_root": "artifacts/r30j0/persona_excavation",
+  "actual_artifact_root_must_be_ignored": true,
+  "elicitation_contract": {
+    "allowed_actions": ["ACCEPT", "REJECT", "EDIT", "DEPENDS", "UNSURE"],
+    "depends_requires_condition_text": true,
+    "none_of_these_supported": true,
+    "it_depends_supported": true,
+    "blind_repeat_minimum_fraction": 0.12,
+    "initial_decision_target_minimum": 180,
+    "initial_decision_target_maximum": 220,
+    "owner_authored_answer_prompt_minimum": 30,
+    "owner_authored_answer_prompt_maximum": 50,
+    "weird_question_prompt_minimum": 40,
+    "mode_boundary_pair_minimum": 24,
+    "generic_good_mismatch_minimum": 50,
+    "reverse_control_minimum": 40,
+    "open_ended_question_minimum": 20,
+    "open_ended_question_maximum": 30,
+    "autosave_local_only": true,
+    "network_allowed": false,
+    "partial_completion_supported": true
+  },
+  "owner_review_sessions": [
+    {"session": "A", "focus": "high_information", "target_items": 40},
+    {"session": "B", "focus": "persona_modes", "target_items": 40},
+    {"session": "C", "focus": "weird_and_mode_boundaries", "target_items": 40},
+    {"session": "D", "focus": "registers_and_antipatterns", "target_items": 40},
+    {"session": "E", "focus": "open_ended_and_contradictions", "target_items": 30}
+  ],
+  "tracked_output_boundary": {
+    "schemas": true,
+    "empty_templates": true,
+    "public_safe_methodology": true,
+    "synthetic_fixtures": true,
+    "actual_owner_profile": false,
+    "owner_answers": false,
+    "private_excerpts": false,
+    "historical_private_inventory": false,
+    "personal_labels": false,
+    "persona_decisions": false,
+    "owner_review_export": false
+  },
+  "expected_phase_state": "R30J0_P2_PERSONA_EXCAVATION_READY",
+  "expected_next_state": "HUMAN_PERSONA_ELICITATION_REQUIRED"
+}

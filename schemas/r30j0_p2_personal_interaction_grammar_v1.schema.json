@@ -1,0 +1,283 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r30j0_p2_personal_interaction_grammar_v1.schema.json",
+  "title": "PersonalInteractionGrammarV1",
+  "description": "Eight-layer, owner-review-gated conditional interaction grammar. Actual owner values belong only in ignored local artifacts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "owner_review_completed",
+    "profile_frozen",
+    "allowed_for_training",
+    "layers"
+  ],
+  "properties": {
+    "version": {"const": "personal-interaction-grammar.v1"},
+    "status": {"enum": ["EMPTY_TEMPLATE", "HYPOTHESES_OWNER_REVIEW_REQUIRED", "OWNER_REVIEW_IN_PROGRESS"]},
+    "owner_review_completed": {"const": false},
+    "profile_frozen": {"const": false},
+    "allowed_for_training": {"const": false},
+    "layers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "global_boundaries",
+        "register_preferences",
+        "microtraits",
+        "persona_modes",
+        "trigger_rules",
+        "anti_patterns",
+        "exceptions",
+        "confidence_owner_evidence"
+      ],
+      "properties": {
+        "global_boundaries": {"$ref": "#/$defs/globalBoundaryLayer"},
+        "register_preferences": {"$ref": "#/$defs/registerPreferenceLayer"},
+        "microtraits": {"$ref": "#/$defs/microtraitLayer"},
+        "persona_modes": {"$ref": "#/$defs/personaModeLayer"},
+        "trigger_rules": {"$ref": "#/$defs/triggerRuleLayer"},
+        "anti_patterns": {"$ref": "#/$defs/antiPatternLayer"},
+        "exceptions": {"$ref": "#/$defs/exceptionLayer"},
+        "confidence_owner_evidence": {"$ref": "#/$defs/confidenceEvidenceLayer"}
+      }
+    }
+  },
+  "$defs": {
+    "safeId": {
+      "type": "string",
+      "pattern": "^(?!wired$)[a-z][a-z0-9._-]{2,127}$"
+    },
+    "publicSafeText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "not": {"pattern": "[Ww][Ii][Rr][Ee][Dd]"}
+    },
+    "register": {
+      "enum": [
+        "ordinary_chat",
+        "casual_banter",
+        "weird_question",
+        "absurd_meta_ai",
+        "practical_advice",
+        "technical_explanation",
+        "debugging",
+        "project_discussion",
+        "academic_discussion",
+        "philosophy",
+        "personal_reflection",
+        "light_emotional",
+        "formal_message",
+        "creative_play",
+        "roleplay"
+      ]
+    },
+    "behaviourClass": {
+      "enum": [
+        "TEXT_SEMANTIC",
+        "TEXT_STYLE",
+        "PRESENTATION",
+        "INTERACTION_POLICY",
+        "ROLEPLAY",
+        "META_AI",
+        "UNKNOWN"
+      ]
+    },
+    "epistemicCategory": {
+      "enum": [
+        "REAL_UNCERTAINTY",
+        "PLAYFUL_FAUX_IGNORANCE",
+        "ROLEPLAYED_IGNORANCE",
+        "REFUSAL_TO_OVEREXPLAIN",
+        "DEADPAN_MISDIRECTION",
+        null
+      ]
+    },
+    "reviewStatus": {
+      "enum": ["UNREVIEWED", "ACCEPT", "REJECT", "EDIT", "DEPENDS", "UNSURE"]
+    },
+    "evidenceTimeBucket": {
+      "enum": ["early_project", "middle_project", "recent_project", "current", "unknown"]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normative_route",
+        "evidence_refs",
+        "independent_evidence_count",
+        "contradiction_count",
+        "time_buckets",
+        "contains_raw_excerpt"
+      ],
+      "properties": {
+        "normative_route": {
+          "enum": [
+            "EXPLICIT_OWNER_ASSERTION",
+            "THREE_INDEPENDENT_HISTORICAL_NORMATIVE_ITEMS",
+            "TWO_ITEMS_PLUS_OWNER_ELICITATION",
+            "INSUFFICIENT_HYPOTHESIS_ONLY"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "independent_evidence_count": {"type": "integer", "minimum": 0},
+        "contradiction_count": {"type": "integer", "minimum": 0},
+        "time_buckets": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/evidenceTimeBucket"}
+        },
+        "contains_raw_excerpt": {"const": false}
+      }
+    },
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative"],
+      "properties": {
+        "positive": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/publicSafeText"}
+        },
+        "negative": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/publicSafeText"}
+        }
+      },
+      "anyOf": [
+        {"properties": {"positive": {"minItems": 1}}},
+        {"properties": {"negative": {"minItems": 1}}}
+      ]
+    },
+    "baseItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grammar_item_id",
+        "layer",
+        "status",
+        "trigger",
+        "context",
+        "preferred_behaviour",
+        "anti_behaviour",
+        "intensity",
+        "exceptions",
+        "registers",
+        "behaviour_class",
+        "epistemic_category",
+        "confidence",
+        "evidence",
+        "owner_review_status",
+        "owner_review_required",
+        "allowed_for_training"
+      ],
+      "properties": {
+        "grammar_item_id": {"$ref": "#/$defs/safeId"},
+        "layer": {
+          "enum": [
+            "global_boundaries",
+            "register_preferences",
+            "microtraits",
+            "persona_modes",
+            "trigger_rules",
+            "anti_patterns",
+            "exceptions",
+            "confidence_owner_evidence"
+          ]
+        },
+        "status": {
+          "enum": [
+            "HYPOTHESIS",
+            "OWNER_ASSERTED_SEED",
+            "BOUNDARY_NOT_YET_KNOWN",
+            "OWNER_REVIEW_REQUIRED"
+          ]
+        },
+        "trigger": {"$ref": "#/$defs/trigger"},
+        "context": {"$ref": "#/$defs/publicSafeText"},
+        "preferred_behaviour": {"$ref": "#/$defs/publicSafeText"},
+        "anti_behaviour": {"$ref": "#/$defs/publicSafeText"},
+        "intensity": {"enum": ["minimal", "low", "moderate", "high", "context_bounded"]},
+        "exceptions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/publicSafeText"}
+        },
+        "registers": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/register"}
+        },
+        "behaviour_class": {"$ref": "#/$defs/behaviourClass"},
+        "epistemic_category": {"$ref": "#/$defs/epistemicCategory"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "evidence": {"$ref": "#/$defs/evidence"},
+        "owner_review_status": {"$ref": "#/$defs/reviewStatus"},
+        "owner_review_required": {"const": true},
+        "allowed_for_training": {"const": false}
+      }
+    },
+    "globalBoundaryItem": {
+      "allOf": [
+        {"$ref": "#/$defs/baseItem"},
+        {"properties": {"layer": {"const": "global_boundaries"}}}
+      ]
+    },
+    "registerPreferenceItem": {
+      "allOf": [
+        {"$ref": "#/$defs/baseItem"},
+        {"properties": {"layer": {"const": "register_preferences"}}}
+      ]
+    },
+    "microtraitItem": {
+      "allOf": [
+        {"$ref": "#/$defs/baseItem"},
+        {"properties": {"layer": {"const": "microtraits"}}}
+      ]
+    },
+    "personaModeItem": {
+      "allOf": [
+        {"$ref": "#/$defs/baseItem"},
+        {"properties": {"layer": {"const": "persona_modes"}}}
+      ]
+    },
+    "triggerRuleItem": {
+      "allOf": [
+        {"$ref": "#/$defs/baseItem"},
+        {"properties": {"layer": {"const": "trigger_rules"}}}
+      ]
+    },
+    "antiPatternItem": {
+      "allOf": [
+        {"$ref": "#/$defs/baseItem"},
+        {"properties": {"layer": {"const": "anti_patterns"}}}
+      ]
+    },
+    "exceptionItem": {
+      "allOf": [
+        {"$ref": "#/$defs/baseItem"},
+        {"properties": {"layer": {"const": "exceptions"}}}
+      ]
+    },
+    "confidenceEvidenceItem": {
+      "allOf": [
+        {"$ref": "#/$defs/baseItem"},
+        {"properties": {"layer": {"const": "confidence_owner_evidence"}}}
+      ]
+    },
+    "globalBoundaryLayer": {"type": "array", "items": {"$ref": "#/$defs/globalBoundaryItem"}},
+    "registerPreferenceLayer": {"type": "array", "items": {"$ref": "#/$defs/registerPreferenceItem"}},
+    "microtraitLayer": {"type": "array", "items": {"$ref": "#/$defs/microtraitItem"}},
+    "personaModeLayer": {"type": "array", "items": {"$ref": "#/$defs/personaModeItem"}},
+    "triggerRuleLayer": {"type": "array", "items": {"$ref": "#/$defs/triggerRuleItem"}},
+    "antiPatternLayer": {"type": "array", "items": {"$ref": "#/$defs/antiPatternItem"}},
+    "exceptionLayer": {"type": "array", "items": {"$ref": "#/$defs/exceptionItem"}},
+    "confidenceEvidenceLayer": {"type": "array", "items": {"$ref": "#/$defs/confidenceEvidenceItem"}}
+  }
+}

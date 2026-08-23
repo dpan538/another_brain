@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r30j0_p2_owner_persona_review_export_v2.schema.json",
+  "title": "OwnerPersonaReviewExportV2",
+  "description": "Canonical ignored local export shape produced by the P2 owner-review UI. It never freezes a profile or authorizes training.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "pack_id",
+    "status",
+    "responses",
+    "owner_written_responses",
+    "owner_review_completed",
+    "profile_frozen",
+    "training_authorized",
+    "training_started",
+    "allowed_for_training"
+  ],
+  "properties": {
+    "schema_version": {"const": "r30j0.owner_persona_elicitation_review.v2"},
+    "pack_id": {
+      "anyOf": [
+        {"type": "string", "pattern": "^r30j0-p2-[a-f0-9]{16}$"},
+        {"type": "null"}
+      ]
+    },
+    "status": {"enum": ["EMPTY_TEMPLATE", "HUMAN_PERSONA_ELICITATION_REQUIRED"]},
+    "responses": {
+      "type": "object",
+      "propertyNames": {"pattern": "^P2-[A-E]-[0-9]{3}$"},
+      "additionalProperties": {"$ref": "#/$defs/response"}
+    },
+    "owner_written_responses": {
+      "type": "object",
+      "propertyNames": {"pattern": "^P2-W-[0-9]{3}$"},
+      "additionalProperties": {"type": "string", "maxLength": 10000}
+    },
+    "owner_review_completed": {"const": false},
+    "profile_frozen": {"const": false},
+    "training_authorized": {"const": false},
+    "training_started": {"const": false},
+    "allowed_for_training": {"const": false},
+    "progress": {"$ref": "#/$defs/progress"},
+    "repeat_consistency": {"$ref": "#/$defs/repeatConsistency"},
+    "export_contract": {"$ref": "#/$defs/exportContract"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "EMPTY_TEMPLATE"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "pack_id": {"type": "null"},
+          "responses": {"maxProperties": 0},
+          "owner_written_responses": {"maxProperties": 0}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"status": {"const": "HUMAN_PERSONA_ELICITATION_REQUIRED"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "pack_id": {"type": "string", "pattern": "^r30j0-p2-[a-f0-9]{16}$"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonBlankOwnerText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 10000,
+      "pattern": "\\S"
+    },
+    "rankValue": {"enum": ["", "1", "2", "3"]},
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_action",
+        "decision",
+        "ranks",
+        "scenario_decisions",
+        "condition",
+        "edit_text",
+        "open_response",
+        "notes"
+      ],
+      "properties": {
+        "review_action": {"enum": ["", "ACCEPT", "REJECT", "EDIT", "DEPENDS", "UNSURE"]},
+        "decision": {"type": "string", "maxLength": 64, "pattern": "^(|[A-Z][A-Z0-9_]*)$"},
+        "ranks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["A", "B", "C"],
+          "properties": {
+            "A": {"$ref": "#/$defs/rankValue"},
+            "B": {"$ref": "#/$defs/rankValue"},
+            "C": {"$ref": "#/$defs/rankValue"}
+          }
+        },
+        "scenario_decisions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["A", "B"],
+          "properties": {
+            "A": {"enum": ["", "NORMAL", "CROCODILE", "EITHER", "DEPENDS"]},
+            "B": {"enum": ["", "NORMAL", "CROCODILE", "EITHER", "DEPENDS"]}
+          }
+        },
+        "condition": {"type": "string", "maxLength": 10000},
+        "edit_text": {"type": "string", "maxLength": 10000},
+        "open_response": {"type": "string", "maxLength": 10000},
+        "notes": {"type": "string", "maxLength": 10000}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"review_action": {"const": "DEPENDS"}}, "required": ["review_action"]},
+          "then": {"properties": {"condition": {"$ref": "#/$defs/nonBlankOwnerText"}}}
+        },
+        {
+          "if": {"properties": {"review_action": {"const": "EDIT"}}, "required": ["review_action"]},
+          "then": {"properties": {"edit_text": {"$ref": "#/$defs/nonBlankOwnerText"}}}
+        },
+        {
+          "if": {"properties": {"decision": {"const": "IT_DEPENDS"}}, "required": ["decision"]},
+          "then": {"properties": {"condition": {"$ref": "#/$defs/nonBlankOwnerText"}}}
+        },
+        {
+          "if": {"properties": {"decision": {"const": "WRITE_RESPONSE"}}, "required": ["decision"]},
+          "then": {"properties": {"open_response": {"$ref": "#/$defs/nonBlankOwnerText"}}}
+        },
+        {
+          "if": {"properties": {"decision": {"const": "PAIR_DECISION"}}, "required": ["decision"]},
+          "then": {
+            "properties": {
+              "scenario_decisions": {
+                "properties": {
+                  "A": {"enum": ["NORMAL", "CROCODILE", "EITHER", "DEPENDS"]},
+                  "B": {"enum": ["NORMAL", "CROCODILE", "EITHER", "DEPENDS"]}
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "scenario_decisions": {
+                "properties": {"A": {"const": ""}, "B": {"const": ""}}
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "scenario_decisions": {
+                "anyOf": [
+                  {"properties": {"A": {"const": "DEPENDS"}}, "required": ["A"]},
+                  {"properties": {"B": {"const": "DEPENDS"}}, "required": ["B"]}
+                ]
+              }
+            },
+            "required": ["scenario_decisions"]
+          },
+          "then": {"properties": {"condition": {"$ref": "#/$defs/nonBlankOwnerText"}}}
+        }
+      ]
+    },
+    "progress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completed_decisions",
+        "total_decisions",
+        "optional_owner_written_completed",
+        "optional_owner_written_total"
+      ],
+      "properties": {
+        "completed_decisions": {"type": "integer", "minimum": 0, "maximum": 190},
+        "total_decisions": {"const": 190},
+        "optional_owner_written_completed": {"type": "integer", "minimum": 0, "maximum": 40},
+        "optional_owner_written_total": {"const": 40}
+      }
+    },
+    "repeatConsistencySlice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completed_pair_count", "consistent_pair_count", "consistency_rate"],
+      "properties": {
+        "completed_pair_count": {"type": "integer", "minimum": 0, "maximum": 24},
+        "consistent_pair_count": {"type": "integer", "minimum": 0, "maximum": 24},
+        "consistency_rate": {
+          "anyOf": [
+            {"type": "number", "minimum": 0, "maximum": 1},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "repeatConsistency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eligible_pair_count",
+        "completed_pair_count",
+        "consistent_pair_count",
+        "consistency_rate",
+        "per_trait_family"
+      ],
+      "properties": {
+        "eligible_pair_count": {"const": 24},
+        "completed_pair_count": {"type": "integer", "minimum": 0, "maximum": 24},
+        "consistent_pair_count": {"type": "integer", "minimum": 0, "maximum": 24},
+        "consistency_rate": {
+          "anyOf": [
+            {"type": "number", "minimum": 0, "maximum": 1},
+            {"type": "null"}
+          ]
+        },
+        "per_trait_family": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z0-9][a-z0-9._-]{1,127}$"},
+          "additionalProperties": {"$ref": "#/$defs/repeatConsistencySlice"}
+        }
+      }
+    },
+    "exportContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["local_only", "contains_owner_review_data", "must_remain_ignored", "authorizes_training"],
+      "properties": {
+        "local_only": {"const": true},
+        "contains_owner_review_data": {"const": true},
+        "must_remain_ignored": {"const": true},
+        "authorizes_training": {"const": false}
+      }
+    }
+  }
+}

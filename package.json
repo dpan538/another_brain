@@ -847,6 +847,11 @@
     "r30j0:secret-scan": "python3 scripts/r30j0_secret_scan.py --output artifacts/r30j0/reports/secret_scan.json",
     "r30j0:production-diff-gate": "node scripts/r30j0_no_production_change_gate.mjs",
     "r30j0:finalize": "python3 scripts/r30j0_finalize.py",
-    "test:r30j0": "python3 -m unittest discover -s tests/r30j0 -q"
+    "test:r30j0": "python3 -m unittest discover -s tests/r30j0 -q",
+    "r30j0-p2:excavate-persona": "python3 scripts/r30j0_p2_excavate_persona.py",
+    "r30j0-p2:build-elicitation": "python3 scripts/r30j0_p2_build_elicitation_pack.py",
+    "r30j0-p2:build-owner-review": "node scripts/r30j0_p2_build_owner_review_v2.mjs",
+    "r30j0-p2:finalize": "python3 scripts/r30j0_p2_finalize.py",
+    "test:r30j0-p2": "python3 -m unittest discover -s tests/r30j0 -p 'test_p2_*.py' -q"
   }
 }

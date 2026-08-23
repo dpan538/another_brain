@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r30j0_p2_persona_contradiction_ledger_v1.schema.json",
+  "title": "PersonaContradictionLedgerV1",
+  "description": "Register- and context-sensitive preference conflicts retained for owner review rather than averaged away.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "status", "owner_review_completed", "allowed_for_training", "entries"],
+  "properties": {
+    "version": {"const": "persona-contradiction-ledger.v1"},
+    "status": {"enum": ["EMPTY_TEMPLATE", "OWNER_REVIEW_REQUIRED", "OWNER_REVIEW_IN_PROGRESS"]},
+    "owner_review_completed": {"const": false},
+    "allowed_for_training": {"const": false},
+    "entries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/contradiction"}
+    }
+  },
+  "$defs": {
+    "safeId": {"type": "string", "pattern": "^(?!wired$)[a-z][a-z0-9._-]{2,127}$"},
+    "publicSafeText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "not": {"pattern": "[Ww][Ii][Rr][Ee][Dd]"}
+    },
+    "timeBucket": {
+      "enum": ["early_project", "middle_project", "recent_project", "current", "unknown"]
+    },
+    "evidenceSide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_refs", "claim_summary", "evidence_time_bucket", "normative", "contains_raw_excerpt"],
+      "properties": {
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "claim_summary": {"$ref": "#/$defs/publicSafeText"},
+        "evidence_time_bucket": {"$ref": "#/$defs/timeBucket"},
+        "normative": {"type": "boolean"},
+        "contains_raw_excerpt": {"const": false}
+      }
+    },
+    "contradiction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contradiction_id",
+        "trait",
+        "evidence_A",
+        "evidence_B",
+        "possible_register_explanation",
+        "possible_context_explanation",
+        "time_drift_possible",
+        "current_explicit_evidence_priority_applied",
+        "owner_question_required",
+        "owner_question",
+        "owner_review_status",
+        "owner_review_required",
+        "allowed_for_training"
+      ],
+      "properties": {
+        "contradiction_id": {"$ref": "#/$defs/safeId"},
+        "trait": {"$ref": "#/$defs/safeId"},
+        "evidence_A": {"$ref": "#/$defs/evidenceSide"},
+        "evidence_B": {"$ref": "#/$defs/evidenceSide"},
+        "possible_register_explanation": {"anyOf": [{"$ref": "#/$defs/publicSafeText"}, {"type": "null"}]},
+        "possible_context_explanation": {"anyOf": [{"$ref": "#/$defs/publicSafeText"}, {"type": "null"}]},
+        "time_drift_possible": {"type": "boolean"},
+        "current_explicit_evidence_priority_applied": {"type": "boolean"},
+        "owner_question_required": {"const": true},
+        "owner_question": {"$ref": "#/$defs/publicSafeText"},
+        "owner_review_status": {"enum": ["UNREVIEWED", "ACCEPT", "REJECT", "EDIT", "DEPENDS", "UNSURE"]},
+        "owner_review_required": {"const": true},
+        "allowed_for_training": {"const": false}
+      }
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r30j0_p2_persona_coverage_matrix_v1.schema.json",
+  "title": "PersonaCoverageMatrixV1",
+  "description": "Sparse microtrait/mode-by-register evidence coverage. Unknown cells are preserved and completeness is not fabricated.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "status",
+    "owner_review_completed",
+    "complete_coverage_required",
+    "allowed_for_training",
+    "registers_evaluated",
+    "rows"
+  ],
+  "properties": {
+    "version": {"const": "persona-coverage-matrix.v1"},
+    "status": {"enum": ["EMPTY_TEMPLATE", "HYPOTHESES_OWNER_REVIEW_REQUIRED", "OWNER_REVIEW_IN_PROGRESS"]},
+    "owner_review_completed": {"const": false},
+    "complete_coverage_required": {"const": false},
+    "allowed_for_training": {"const": false},
+    "registers_evaluated": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/register"}
+    },
+    "rows": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/coverageRow"}
+    }
+  },
+  "$defs": {
+    "safeId": {"type": "string", "pattern": "^(?!wired$)[a-z][a-z0-9._-]{2,127}$"},
+    "register": {
+      "enum": [
+        "ordinary_chat",
+        "casual_banter",
+        "weird_question",
+        "absurd_meta_ai",
+        "practical_advice",
+        "technical_explanation",
+        "debugging",
+        "project_discussion",
+        "academic_discussion",
+        "philosophy",
+        "personal_reflection",
+        "light_emotional",
+        "formal_message",
+        "creative_play",
+        "roleplay"
+      ]
+    },
+    "coverageCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "register",
+        "coverage",
+        "evidence_refs",
+        "contradiction_refs",
+        "owner_review_required",
+        "allowed_for_training"
+      ],
+      "properties": {
+        "register": {"$ref": "#/$defs/register"},
+        "coverage": {"enum": ["supported", "contradicted", "unknown", "not_applicable", "needs_owner_review"]},
+        "evidence_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "contradiction_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/safeId"}
+        },
+        "owner_review_required": {"const": true},
+        "allowed_for_training": {"const": false}
+      }
+    },
+    "coverageRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_id",
+        "subject_type",
+        "cells",
+        "owner_review_required",
+        "allowed_for_training"
+      ],
+      "properties": {
+        "subject_id": {"$ref": "#/$defs/safeId"},
+        "subject_type": {"enum": ["MICROTRAIT", "PERSONA_MODE"]},
+        "cells": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/coverageCell"}
+        },
+        "owner_review_required": {"const": true},
+        "allowed_for_training": {"const": false}
+      }
+    }
+  }
+}

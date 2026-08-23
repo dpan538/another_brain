@@ -1,0 +1,17 @@
+{
+  "version": "personal-interaction-grammar.v1",
+  "status": "EMPTY_TEMPLATE",
+  "owner_review_completed": false,
+  "profile_frozen": false,
+  "allowed_for_training": false,
+  "layers": {
+    "global_boundaries": [],
+    "register_preferences": [],
+    "microtraits": [],
+    "persona_modes": [],
+    "trigger_rules": [],
+    "anti_patterns": [],
+    "exceptions": [],
+    "confidence_owner_evidence": []
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": "r30j0.owner_persona_elicitation_review.v2",
+  "pack_id": null,
+  "status": "EMPTY_TEMPLATE",
+  "responses": {},
+  "owner_written_responses": {},
+  "owner_review_completed": false,
+  "profile_frozen": false,
+  "training_authorized": false,
+  "training_started": false,
+  "allowed_for_training": false
+}

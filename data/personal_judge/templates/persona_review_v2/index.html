@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    >
+    <title>R30J0-P2 Owner Persona Elicitation</title>
+    <link rel="stylesheet" href="review.css">
+    <script defer src="review_seed.js"></script>
+    <script defer src="review.js"></script>
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">R30J0-P2 · local only · no training</p>
+      <h1>Owner Persona Elicitation V2</h1>
+      <p class="lede">
+        这是一组全新、public-safe 的合成刺激，用来发现条件化的 interaction grammar。
+        它们不是已知 owner 偏好。旧的 174 项 review 暂停，且不会自动导入。
+      </p>
+      <div id="global-status" class="status" aria-live="polite"></div>
+    </header>
+
+    <nav id="session-nav" aria-label="Elicitation sessions">
+      <button type="button" data-view="overview">概览</button>
+      <button type="button" data-view="A">Session A · 40</button>
+      <button type="button" data-view="B">Session B · 40</button>
+      <button type="button" data-view="C">Session C · 40</button>
+      <button type="button" data-view="D">Session D · 40</button>
+      <button type="button" data-view="E">Session E · 30</button>
+      <button type="button" data-view="write">可选亲笔回答 · 40</button>
+      <button type="button" data-view="export">导出</button>
+    </nav>
+
+    <main id="app"></main>
+
+    <footer>
+      <label class="file-control">
+        导入本地草稿
+        <input id="import-file" type="file" accept="application/json,.json">
+      </label>
+      <button id="export-draft" type="button">导出本地草稿</button>
+      <button id="clear-local" type="button" class="danger">清除本地进度</button>
+      <p>进度只写入当前浏览器的 localStorage 或下载文件。所有导出仍保持 owner review、profile freeze 与 training 为 false。</p>
+    </footer>
+  </body>
+</html>
