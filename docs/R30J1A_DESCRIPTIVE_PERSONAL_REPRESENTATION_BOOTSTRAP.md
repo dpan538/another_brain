@@ -101,6 +101,14 @@ and every shortcut slice. It records and gates resource snapshots after
 training, after each evaluation stage, and after checkpoint serialization, so
 the exact snapshot that triggers a stop is durable evidence.
 
+The training path likewise reclaims only unused MLX cache after each completed
+optimizer update, before the resource snapshot. The completed update event is
+durably written before any fallible cache query or reclamation. A separate
+aggregate-only event records pre/post cache sizes and a bounded failure code,
+so even a reclamation failure cannot undercount attempted or discarded
+updates. Model state, optimizer state, gradients, loss weights, batches, and
+update ordering are unchanged.
+
 Checkpoints bind model state, optimizer state, constant-scheduler state,
 global step, example/token counters, deterministic data schedule, Python and
 MLX RNG, dataset manifest, architecture, lineage, metrics, and SHA-256 values.

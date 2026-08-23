@@ -579,8 +579,8 @@ def _mechanics_metrics(truth: np.ndarray, pred: np.ndarray) -> dict[str, Any]:
     return {"macro_f1": sum(value["f1"] for value in per_label) / len(per_label), "per_label": per_label}
 
 
-def reclaim_evaluation_memory() -> None:
-    """Release unused host/Metal evaluation buffers at a bounded boundary."""
+def reclaim_unused_mlx_memory() -> None:
+    """Release unused host/Metal buffers at an explicit safe boundary."""
 
     gc.collect()
     mx.clear_cache()
@@ -742,7 +742,7 @@ def shortcut_slice_report(
             "drop_points": (full_domain_macro_f1 - score) * 100.0,
         }
         del result
-        reclaim_evaluation_memory()
+        reclaim_unused_mlx_memory()
         if resource_callback is not None:
             resource_callback(f"shortcut_slice:{name}")
     return output
@@ -778,12 +778,12 @@ def evaluate_dev(
     output_path: Path,
     resource_callback: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
-    reclaim_evaluation_memory()
+    reclaim_unused_mlx_memory()
     base = evaluate_rows(model, dataset.dev, dataset.register_labels)
     matrix = base.pop("_embeddings")
     base.pop("_domain_truth")
     base.pop("_domain_pred")
-    reclaim_evaluation_memory()
+    reclaim_unused_mlx_memory()
     if resource_callback is not None:
         resource_callback("dev_base")
     slices = shortcut_slice_report(
@@ -808,7 +808,7 @@ def evaluate_dev(
     # Personal embeddings are ignored and never enter the tracked tree.
     embedding_path = output_path.with_name("dev_embeddings.npz")
     np.savez_compressed(embedding_path, embeddings=matrix)
-    reclaim_evaluation_memory()
+    reclaim_unused_mlx_memory()
     if resource_callback is not None:
         resource_callback("dev_complete")
     return report

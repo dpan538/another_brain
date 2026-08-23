@@ -20,6 +20,7 @@ from src.training.mlx.r29b2m_tokenizer import ExactRuntimeTokenizer  # noqa: E40
 from src.training.mlx.r30j1a_supervision import (  # noqa: E402
     build_failed_segment_receipt,
     incomplete_segments_without_parent_decision,
+    persist_completed_update_and_reclaim_cache,
     resource_stop_reason,
 )
 from src.training.mlx.r30j1a_training import (  # noqa: E402
@@ -37,6 +38,7 @@ from src.training.mlx.r30j1a_training import (  # noqa: E402
     load_checkpoint,
     load_dataset,
     resource_snapshot,
+    reclaim_unused_mlx_memory,
     save_checkpoint,
     utc_now,
 )
@@ -305,7 +307,14 @@ def run_segment(args: argparse.Namespace, artifact_root: Path, segment_root: Pat
 
     for _ in range(args.steps):
         event = trainer.train_one_update()
-        append_jsonl(segment_root / "train_events.jsonl", event)
+        cache_audit = persist_completed_update_and_reclaim_cache(
+            train_event_path=segment_root / "train_events.jsonl",
+            cache_event_path=segment_root / "cache_reclamation_events.jsonl",
+            event=event,
+            persist_event=append_jsonl,
+            cache_reader=mx.get_cache_memory,
+            reclaimer=reclaim_unused_mlx_memory,
+        )
         resource = resource_snapshot(artifact_root)
         resource["global_optimizer_step"] = event["global_optimizer_step"]
         append_jsonl(segment_root / "resource_events.jsonl", resource)
@@ -330,6 +339,8 @@ def run_segment(args: argparse.Namespace, artifact_root: Path, segment_root: Pat
             "combined_loss": round(event["combined_loss"], 6),
             "gradient_norm": round(event["gradient_norm"], 6),
             "mlx_peak_bytes": resource["mlx_peak_memory_bytes"],
+            "mlx_cache_bytes": resource["mlx_cache_memory_bytes"],
+            "mlx_cache_bytes_before_reclaim": cache_audit["mlx_cache_memory_bytes_before_reclaim"],
             "rss_bytes": resource["process_rss_bytes"],
             "memory_pressure_state": resource["memory_pressure"]["state"],
             "swap_growth_bytes": int(resource["swap"]["used_bytes"]) - int(before["swap"]["used_bytes"]),

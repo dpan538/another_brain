@@ -9,13 +9,53 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
-from typing import Any, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 
 MLX_HARD_STOP_BYTES = 6_500_000_000
 SWAP_GROWTH_STOP_BYTES = 1_000_000_000
 MEMORY_PRESSURE_WARNING_FREE_PERCENT = 10
 MEMORY_PRESSURE_CRITICAL_FREE_PERCENT = 5
+
+
+def persist_completed_update_and_reclaim_cache(
+    *,
+    train_event_path: Path,
+    cache_event_path: Path,
+    event: Mapping[str, Any],
+    persist_event: Callable[[Path, Mapping[str, Any]], None],
+    cache_reader: Callable[[], int],
+    reclaimer: Callable[[], None],
+) -> dict[str, Any]:
+    """Persist a completed update before any fallible cache operation."""
+
+    persist_event(train_event_path, event)
+    audit: dict[str, Any] = {
+        "global_optimizer_step": int(event["global_optimizer_step"]),
+        "status": "STARTED",
+        "mlx_cache_memory_bytes_before_reclaim": None,
+        "mlx_cache_memory_bytes_after_reclaim": None,
+        "failure_code": None,
+    }
+    reclamation_error: BaseException | None = None
+    try:
+        audit["mlx_cache_memory_bytes_before_reclaim"] = int(cache_reader())
+        reclaimer()
+        audit["mlx_cache_memory_bytes_after_reclaim"] = int(cache_reader())
+        audit["status"] = "COMPLETED"
+    except BaseException as error:
+        audit["status"] = "FAILED"
+        error_kind = type(error).__name__
+        audit["failure_code"] = (
+            error_kind
+            if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,79}", error_kind)
+            else "CacheReclamationError"
+        )
+        reclamation_error = error
+    persist_event(cache_event_path, audit)
+    if reclamation_error is not None:
+        raise reclamation_error
+    return audit
 
 
 def parse_swap_usage(text: str) -> dict[str, int]:

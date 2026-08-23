@@ -24,6 +24,7 @@ from src.training.mlx.r30j1a_supervision import (  # noqa: E402
     incomplete_segments_without_parent_decision,
     parse_memory_pressure,
     parse_swap_usage,
+    persist_completed_update_and_reclaim_cache,
     resource_stop_reason,
     safe_failure_code,
     validate_resource_snapshot,
@@ -43,6 +44,7 @@ class R30J1AContractTests(unittest.TestCase):
         self.assertEqual(config["resource"]["memory_pressure_warning_free_percent"], 10)
         self.assertEqual(config["resource"]["memory_pressure_critical_free_percent"], 5)
         self.assertEqual(config["resource"]["evaluation_cache_reclamation"], "after_base_and_each_shortcut_slice")
+        self.assertEqual(config["resource"]["training_cache_reclamation"], "after_every_optimizer_update")
         self.assertTrue(config["resource"]["stage_resource_snapshots"])
 
     def test_historical_states_are_not_rewritten(self):
@@ -284,7 +286,100 @@ class R30J1AContractTests(unittest.TestCase):
         self.assertNotIn('resource["MLX_peak_memory_bytes"]', runner)
         self.assertIn("persist_failure", runner)
         self.assertIn("incomplete_segments_without_parent_decision", runner)
+        self.assertIn("persist_completed_update_and_reclaim_cache(", runner)
+        self.assertIn('cache_event_path=segment_root / "cache_reclamation_events.jsonl"', runner)
         self.assertEqual(safe_failure_code(RuntimeError("contains /local/path")), "RuntimeError")
+
+    def test_cache_reclamation_failure_preserves_attempted_update_accounting(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            def persist(path: Path, value: dict[str, object]) -> None:
+                with path.open("a", encoding="utf-8") as handle:
+                    handle.write(json.dumps(value) + "\n")
+
+            resource = {
+                "system_ram_bytes": 16_000_000_000,
+                "available_ram_bytes": 6_000_000_000,
+                "process_rss_bytes": 100_000_000,
+                "free_disk_bytes": 20_000_000_000,
+                "mlx_active_memory_bytes": 0,
+                "mlx_cache_memory_bytes": 0,
+                "mlx_peak_memory_bytes": 0,
+                "swap": {"total_bytes": 16_000_000_000, "used_bytes": 10_000_000_000, "free_bytes": 6_000_000_000},
+                "memory_pressure": parse_memory_pressure("System-wide memory free percentage: 70%"),
+            }
+            manifest = {
+                "campaign_id": "r30j1a_personal_representation_bootstrap_v1",
+                "segment_id": "cache-reclamation-failure",
+                "phase": "RESOURCE_REHEARSAL",
+                "planned_steps": 1,
+                "starting_global_optimizer_step": 0,
+                "starting_training_state": {
+                    "global_optimizer_step": 0, "examples_seen": 0, "optimizer_tokens": 0,
+                    "representation_target_examples": 0, "assistant_target_tokens": 0,
+                },
+                "resource_before": resource,
+            }
+            (root / "segment_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            event = {
+                "global_optimizer_step": 1,
+                "examples_seen": 4,
+                "optimizer_tokens": 615,
+                "representation_target_examples": 4,
+                "assistant_target_tokens": 0,
+            }
+            reads = iter((987_654_321,))
+
+            def fail_reclaim() -> None:
+                raise RuntimeError("contains sensitive local detail")
+
+            with self.assertRaisesRegex(RuntimeError, "contains"):
+                persist_completed_update_and_reclaim_cache(
+                    train_event_path=root / "train_events.jsonl",
+                    cache_event_path=root / "cache_reclamation_events.jsonl",
+                    event=event,
+                    persist_event=persist,
+                    cache_reader=lambda: next(reads),
+                    reclaimer=fail_reclaim,
+                )
+            train_rows = [json.loads(line) for line in (root / "train_events.jsonl").read_text().splitlines()]
+            cache_rows = [json.loads(line) for line in (root / "cache_reclamation_events.jsonl").read_text().splitlines()]
+            self.assertEqual(train_rows, [event])
+            self.assertEqual(cache_rows[0]["status"], "FAILED")
+            self.assertEqual(cache_rows[0]["failure_code"], "RuntimeError")
+            self.assertNotIn("sensitive local detail", json.dumps(cache_rows))
+            self.assertIsNone(cache_rows[0]["mlx_cache_memory_bytes_after_reclaim"])
+            receipt = build_failed_segment_receipt(
+                segment_root=root,
+                error=RuntimeError("cache_reclamation_failed"),
+                failure_source="synthetic_test",
+            )
+            self.assertEqual(receipt["attempted_optimizer_updates"], 1)
+            self.assertEqual(receipt["discarded_uncheckpointed_optimizer_updates"], 1)
+
+    def test_cache_reclamation_audit_is_state_external_and_ordered(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            def persist(path: Path, value: dict[str, object]) -> None:
+                with path.open("a", encoding="utf-8") as handle:
+                    handle.write(json.dumps(value) + "\n")
+
+            state = {"model": "unchanged", "optimizer": 7, "scheduler": 11, "rng": 13}
+            before = dict(state)
+            reads = iter((2_000, 0))
+            audit = persist_completed_update_and_reclaim_cache(
+                train_event_path=root / "train_events.jsonl",
+                cache_event_path=root / "cache_reclamation_events.jsonl",
+                event={"global_optimizer_step": 2},
+                persist_event=persist,
+                cache_reader=lambda: next(reads),
+                reclaimer=lambda: None,
+            )
+            self.assertEqual(state, before)
+            self.assertEqual(audit["status"], "COMPLETED")
+            self.assertEqual(audit["mlx_cache_memory_bytes_before_reclaim"], 2_000)
+            self.assertEqual(audit["mlx_cache_memory_bytes_after_reclaim"], 0)
+            self.assertTrue((root / "train_events.jsonl").is_file())
 
     def test_finalizer_preserves_audited_failed_segments(self):
         source = (ROOT / "scripts/r30j1a_finalize.py").read_text(encoding="utf-8")
