@@ -1,0 +1,66 @@
+{
+  "schema_version": "r30j1c-r1.owner-correction-pack.v1",
+  "campaign_id": "r30j1c_r1_staged_error_driven_owner_correction_v1",
+  "pack_id": null,
+  "manifest_sha": null,
+  "status": "EMPTY_TEMPLATE",
+  "local_only": true,
+  "must_remain_ignored": true,
+  "network_required": false,
+  "heldout_used": false,
+  "api_requests": 0,
+  "owner_review_completed": false,
+  "profile_inference_allowed": false,
+  "profile_frozen": false,
+  "gold_admission": false,
+  "allowed_for_training": false,
+  "training_state": {
+    "training_started": false,
+    "optimizer_tokens": 0,
+    "classification_updates": 0,
+    "assistant_target_tokens": 0,
+    "training_authorized": false
+  },
+  "audit_status": {
+    "pack_receipt_passed": false,
+    "source_balance_passed": false,
+    "question_quality_passed": false,
+    "heldout_integrity_passed": false,
+    "privacy_passed": false
+  },
+  "review_contract": {
+    "session_states": ["NOT_STARTED", "IN_PROGRESS", "COMPLETED", "VALIDATED"],
+    "each_session_independently_completable": true,
+    "each_session_independently_exportable": true,
+    "partial_export_allowed": true,
+    "local_storage_autosave": true,
+    "depends_requires_condition": true,
+    "none_owner_rewrite_optional": true,
+    "notes_required_only_for": ["BOUNDARY_ITEM", "DEPENDS", "NONE", "EDIT"],
+    "partial_export_evidence_class": "OWNER_CORRECTION_EVIDENCE",
+    "partial_export_is_training_gold": false,
+    "automatic_profile_inference": false
+  },
+  "sessions": [],
+  "decision_items": [],
+  "owner_write_prompts": [],
+  "coverage": {
+    "decision_item_count": 0,
+    "owner_write_prompt_count": 0,
+    "blind_repeat_count": 0,
+    "blind_repeat_rate": 0,
+    "crocodile_related_count": 0,
+    "crocodile_related_rate": 0,
+    "fatigue_followup_count": 0,
+    "manual_correction_theme_count": 0
+  },
+  "source_summary": {
+    "j1a_dev_error_count": 0,
+    "j1a_shortcut_count": 0,
+    "p2_hypothesis_count": 0,
+    "p2_contradiction_count": 0,
+    "manual_owner_evidence_count": 0,
+    "public_safe_synthetic_count": 0,
+    "distinct_source_family_count": 0
+  }
+}

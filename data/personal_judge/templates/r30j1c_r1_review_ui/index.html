@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+    >
+    <title>R30J1C-R1 Owner Correction</title>
+    <link rel="stylesheet" href="review.css">
+    <script defer src="review_seed.js"></script>
+    <script defer src="review.js"></script>
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">R30J1C-R1 · local only · no training</p>
+      <h1>Owner Correction Pack</h1>
+      <p class="lede">
+        一次只做一个 session 就可以。每个 session 都会独立保存、独立导出；
+        这些选择只是 owner correction evidence，不会自动变成人格结论或训练 gold。
+      </p>
+      <div id="global-status" class="status" aria-live="polite"></div>
+      <p id="storage-warning" class="storage-warning" role="alert" hidden></p>
+    </header>
+
+    <nav id="session-nav" aria-label="Owner correction sessions">
+      <button type="button" data-view="overview">概览</button>
+      <button type="button" data-view="SESSION_1">Session 1</button>
+      <button type="button" data-view="SESSION_2">Session 2</button>
+      <button type="button" data-view="SESSION_3">Session 3</button>
+      <button type="button" data-view="SESSION_4">Session 4</button>
+      <button type="button" data-view="SESSION_5">Session 5 · 可选</button>
+    </nav>
+
+    <main id="app"></main>
+
+    <footer>
+      <label class="file-control">
+        导入某个 session 的本地 JSON
+        <input id="import-file" type="file" accept="application/json,.json">
+      </label>
+      <button id="clear-session" type="button" class="danger">清除当前 session 的本地进度</button>
+      <p>
+        自动保存只使用当前浏览器的 localStorage；若保存失败，页面会持续显示警告。
+        页面不会联网；导出也不会冻结 profile、
+        批准 gold 或启动训练。
+      </p>
+    </footer>
+  </body>
+</html>

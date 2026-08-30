@@ -1,0 +1,167 @@
+{
+  "schema_version": "r30j1c-r1.owner-correction-pack-config.v1",
+  "campaign_id": "r30j1c_r1_staged_error_driven_owner_correction_v1",
+  "purpose": "build a staged, error-driven, register-aware owner correction pack without training or profile inference",
+  "historical_state_boundary": {
+    "r30j0_p_state": "PERSONAL_SOURCE_EVIDENCE_READY",
+    "r30j0_state": "HUMAN_OWNER_REVIEW_REQUIRED",
+    "r30j0_p2_state": "R30J0_P2_PERSONA_EXCAVATION_READY",
+    "r30j1a_state": "BLOCKED_SHORTCUT_DOMINANCE",
+    "manual_owner_evidence_state": "HIGH_INFORMATION_AUTHENTIC_PERSONAL_SOURCE",
+    "rewrite_historical_states": false,
+    "open_r30j1a_heldout": false,
+    "r30j1a_heldout_state": "SEALED_NOT_OPENED"
+  },
+  "execution_boundary": {
+    "local_offline_only": true,
+    "network_allowed": false,
+    "api_requests": 0,
+    "production_change_allowed": false,
+    "deployment_allowed": false,
+    "model_training_allowed": false,
+    "profile_inference_allowed": false,
+    "profile_freeze_allowed": false,
+    "gold_admission_allowed": false
+  },
+  "source_pool": {
+    "allowed_source_kinds": [
+      "J1A_DEV_ERROR",
+      "J1A_SHORTCUT",
+      "P2_HYPOTHESIS",
+      "P2_CONTRADICTION",
+      "MANUAL_OWNER_EVIDENCE",
+      "PUBLIC_SAFE_SYNTHETIC"
+    ],
+    "r30j1a_heldout_allowed": false,
+    "third_party_text_as_owner_prose_allowed": false,
+    "ai_or_codex_output_as_owner_truth_allowed": false,
+    "unanswered_hypothesis_as_normative_label_allowed": false,
+    "r30j1a_diagnostic_provenance": {
+      "anchor_status": "UNAVAILABLE_SOURCE_CLEANED",
+      "trusted_manifest_sha256": null,
+      "source_commit_sha": null,
+      "independent_terminal_receipt_sha256": null,
+      "self_signed_manifest_is_sufficient": false
+    },
+    "r30j0_p2_provenance": {
+      "anchor_status": "UNAVAILABLE_SOURCE_CLEANED",
+      "trusted_manifest_sha256": null,
+      "source_commit_sha": null,
+      "independent_terminal_receipt_sha256": null,
+      "self_signed_manifest_is_sufficient": false
+    },
+    "manual_owner_evidence_provenance": {
+      "anchor_status": "UNAVAILABLE_SOURCE_CLEANED",
+      "trusted_manifest_sha256": null,
+      "source_commit_sha": null,
+      "independent_intake_receipt_sha256": null,
+      "self_signed_manifest_is_sufficient": false
+    }
+  },
+  "burden_contract": {
+    "session_count": 5,
+    "decision_item_minimum": 60,
+    "decision_item_maximum": 64,
+    "owner_write_prompt_minimum": 12,
+    "owner_write_prompt_maximum": 18,
+    "planned_counts": {
+      "SESSION_1": 19,
+      "SESSION_2": 15,
+      "SESSION_3": 15,
+      "SESSION_4": 13,
+      "SESSION_5": 15
+    },
+    "blind_repeat_minimum": 5,
+    "blind_repeat_maximum": 6,
+    "crocodile_decision_share_minimum": 0.15,
+    "crocodile_decision_share_maximum": 0.2
+  },
+  "sessions": [
+    {
+      "session_id": "SESSION_1",
+      "title": "Session 1 · 模型误解",
+      "decision_count": 19,
+      "owner_write_count": 0,
+      "estimated_minutes_min": 10,
+      "estimated_minutes_max": 15,
+      "required": true
+    },
+    {
+      "session_id": "SESSION_2",
+      "title": "Session 2 · 场景与语气边界",
+      "decision_count": 15,
+      "owner_write_count": 0,
+      "estimated_minutes_min": 10,
+      "estimated_minutes_max": 15,
+      "required": true
+    },
+    {
+      "session_id": "SESSION_3",
+      "title": "Session 3 · 鳄鱼边界",
+      "decision_count": 15,
+      "owner_write_count": 0,
+      "estimated_minutes_min": 10,
+      "estimated_minutes_max": 15,
+      "required": true
+    },
+    {
+      "session_id": "SESSION_4",
+      "title": "Session 4 · 反向控制",
+      "decision_count": 13,
+      "owner_write_count": 0,
+      "estimated_minutes_min": 8,
+      "estimated_minutes_max": 12,
+      "required": true
+    },
+    {
+      "session_id": "SESSION_5",
+      "title": "Session 5 · 如果是 efish，你会怎么回",
+      "decision_count": 0,
+      "owner_write_count": 15,
+      "estimated_minutes_min": 15,
+      "estimated_minutes_max": 25,
+      "required": false
+    }
+  ],
+  "review_contract": {
+    "standard_actions": ["PREFER_A", "PREFER_B", "PREFER_C", "TIE", "NONE", "DEPENDS", "UNSURE"],
+    "context_actions": ["REPRESENTATIVE", "REAL_BUT_NOT_FOR_EFISH", "REGISTER_SPECIFIC", "NOT_REPRESENTATIVE"],
+    "depends_requires_condition": true,
+    "none_owner_rewrite_optional": true,
+    "edit_requires_owner_response": true,
+    "notes_required_only_for": ["BOUNDARY_ITEM", "DEPENDS", "NONE", "EDIT"],
+    "acceptable_alternatives_supported": true,
+    "gimmick_fatigue_followup_supported": true,
+    "each_session_independently_completable": true,
+    "each_session_independently_exportable": true,
+    "local_storage_autosave": true,
+    "session_states": ["NOT_STARTED", "IN_PROGRESS", "COMPLETED", "VALIDATED"],
+    "partial_exports_are_owner_correction_evidence": true,
+    "partial_exports_are_training_gold": false
+  },
+  "privacy_boundary": {
+    "actual_pack_ignored_local_only": true,
+    "tracked_templates_empty": true,
+    "source_identity_hidden_unless_ownership_question": true,
+    "third_party_names_or_avatars_allowed": false,
+    "raw_screenshots_allowed_in_ui": false,
+    "model_probability_visible_to_owner": false,
+    "source_filename_visible_to_owner": false
+  },
+  "audit_contract": {
+    "pack_receipt_required": true,
+    "source_balance_report_required": true,
+    "question_quality_audit_required": true,
+    "heldout_integrity_required": true,
+    "zero_network_ui_required": true
+  },
+  "training_state": {
+    "training_started": false,
+    "optimizer_tokens": 0,
+    "classification_updates": 0,
+    "assistant_target_tokens": 0,
+    "training_authorized": false,
+    "gold_admission": false,
+    "profile_frozen": false
+  }
+}

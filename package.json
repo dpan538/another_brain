@@ -872,6 +872,11 @@
     "test:r30j1a": "python3 -m unittest discover -s tests/r30j1a -q",
     "r30j1c:intake-manual-owner-evidence": "python3 scripts/r30j1c_ingest_manual_owner_evidence.py --input artifacts/r30j1c/manual_owner_evidence/current/source_record.input.json --image-map artifacts/r30j1c/manual_owner_evidence/current/screenshot_source_map.json --output artifacts/r30j1c/manual_owner_evidence/current",
     "r30j1c:production-diff-gate": "node scripts/r30j1c_no_production_change_gate.mjs",
-    "test:r30j1c": "python3 -m unittest discover -s tests/r30j1c -q"
+    "test:r30j1c": "python3 -m unittest discover -s tests/r30j1c -q",
+    "r30j1c-r1:build-review-ui": "python3 scripts/r30j1c_r1_build_review_ui.py",
+    "r30j1c-r1:audit-sources": "python3 scripts/r30j1c_r1_audit_source_availability.py",
+    "r30j1c-r1:finalize-blocked": "python3 scripts/r30j1c_r1_finalize_blocked.py",
+    "r30j1c-r1:production-diff-gate": "node scripts/r30j1c_r1_no_production_change_gate.mjs",
+    "test:r30j1c-r1": "python3 -m unittest discover -s tests/r30j1c_r1 -q"
   }
 }

@@ -1,0 +1,417 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://efishother.local/schemas/r30j1c_r1_correction_record_v1.schema.json",
+  "title": "R30J1C-R1 Correction Record V1",
+  "description": "One local owner correction record. It is correction evidence, never automatically profile truth or training gold.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "item_id",
+    "session_id",
+    "context_family",
+    "owner_decision",
+    "owner_condition",
+    "owner_note",
+    "owner_written_response",
+    "acceptable_alternatives",
+    "fatigue_decision",
+    "reason_codes",
+    "normative_strength",
+    "register",
+    "persona_dimension",
+    "source_family",
+    "boundary_question",
+    "review_hash",
+    "completed_at",
+    "evidence_class",
+    "privacy_review_status",
+    "metadata_reconciliation_status",
+    "profile_inference_allowed",
+    "gold_admission",
+    "allowed_for_training",
+    "training_started"
+  ],
+  "properties": {
+    "schema_version": {"const": "r30j1c-r1.correction-record.v1"},
+    "status": {"enum": ["EMPTY_TEMPLATE", "OWNER_CORRECTION_EVIDENCE"]},
+    "item_id": {
+      "anyOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^R30J1C-S(?:[1-4]-[0-9]{3}|5-W[0-9]{3})$"}
+      ]
+    },
+    "session_id": {
+      "anyOf": [
+        {"type": "null"},
+        {"enum": ["SESSION_1", "SESSION_2", "SESSION_3", "SESSION_4", "SESSION_5"]}
+      ]
+    },
+    "context_family": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/safeCode"}
+      ]
+    },
+    "owner_decision": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/ownerDecision"}
+      ]
+    },
+    "owner_condition": {"type": "string", "maxLength": 10000},
+    "owner_note": {"type": "string", "maxLength": 10000},
+    "owner_written_response": {"type": "string", "maxLength": 20000},
+    "acceptable_alternatives": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["A", "B", "C"]}
+    },
+    "fatigue_decision": {
+      "anyOf": [
+        {"type": "null"},
+        {"enum": ["STILL_NATURAL", "NATURAL_ONCE_ONLY", "BECOMES_GIMMICKY", "DEPENDS", "UNSURE"]}
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "WRONG_REGISTER",
+          "TOO_FORCED",
+          "TOO_EMPTY",
+          "TOO_COLD",
+          "TOO_GIMMICKY",
+          "TOO_IMPRECISE",
+          "SERIOUSNESS_REQUIRED",
+          "NO_REAL_PROBLEM",
+          "OTHER"
+        ]
+      }
+    },
+    "normative_strength": {
+      "enum": [
+        "UNRESOLVED",
+        "EXPLICIT_NORMATIVE_CHOICE",
+        "CONDITIONAL_NORMATIVE_EVIDENCE",
+        "OWNER_WRITTEN_PENDING_PRIVACY_REVIEW"
+      ]
+    },
+    "register": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/register"}
+      ]
+    },
+    "persona_dimension": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/safeCode"}
+      ]
+    },
+    "source_family": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/opaqueRef"}
+      ]
+    },
+    "boundary_question": {"type": "boolean"},
+    "review_hash": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/sha256"}
+      ]
+    },
+    "completed_at": {
+      "anyOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,9})?Z$"}
+      ]
+    },
+    "evidence_class": {"enum": ["UNREVIEWED", "OWNER_CORRECTION_EVIDENCE"]},
+    "privacy_review_status": {"enum": ["NOT_APPLICABLE", "PENDING"]},
+    "metadata_reconciliation_status": {
+      "enum": ["NOT_APPLICABLE", "PENDING_RECONCILIATION", "RECONCILED"]
+    },
+    "profile_inference_allowed": {"type": "boolean", "const": false},
+    "gold_admission": {"type": "boolean", "const": false},
+    "allowed_for_training": {"type": "boolean", "const": false},
+    "training_started": {"type": "boolean", "const": false}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "EMPTY_TEMPLATE"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "item_id": {"type": "null"},
+          "session_id": {"type": "null"},
+          "context_family": {"type": "null"},
+          "owner_decision": {"type": "null"},
+          "owner_condition": {"const": ""},
+          "owner_note": {"const": ""},
+          "owner_written_response": {"const": ""},
+          "acceptable_alternatives": {"maxItems": 0},
+          "fatigue_decision": {"type": "null"},
+          "reason_codes": {"maxItems": 0},
+          "normative_strength": {"const": "UNRESOLVED"},
+          "register": {"type": "null"},
+          "persona_dimension": {"type": "null"},
+          "source_family": {"type": "null"},
+          "boundary_question": {"const": false},
+          "review_hash": {"type": "null"},
+          "completed_at": {"type": "null"},
+          "evidence_class": {"const": "UNREVIEWED"},
+          "privacy_review_status": {"const": "NOT_APPLICABLE"}
+          ,"metadata_reconciliation_status": {"const": "NOT_APPLICABLE"}
+        }
+      },
+      "else": {
+        "properties": {
+          "item_id": {"type": "string", "pattern": "^R30J1C-S(?:[1-4]-[0-9]{3}|5-W[0-9]{3})$"},
+          "session_id": {"enum": ["SESSION_1", "SESSION_2", "SESSION_3", "SESSION_4", "SESSION_5"]},
+          "owner_decision": {"$ref": "#/$defs/ownerDecision"},
+          "review_hash": {"$ref": "#/$defs/sha256"},
+          "completed_at": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]{1,9})?Z$"},
+          "evidence_class": {"const": "OWNER_CORRECTION_EVIDENCE"},
+          "privacy_review_status": {"const": "PENDING"},
+          "metadata_reconciliation_status": {
+            "enum": ["PENDING_RECONCILIATION", "RECONCILED"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"owner_decision": {"const": "DEPENDS"}},
+        "required": ["owner_decision"]
+      },
+      "then": {
+        "properties": {
+          "owner_condition": {"$ref": "#/$defs/nonBlankText"},
+          "owner_note": {"$ref": "#/$defs/nonBlankText"},
+          "normative_strength": {"const": "CONDITIONAL_NORMATIVE_EVIDENCE"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"owner_decision": {"const": "REGISTER_SPECIFIC"}},
+        "required": ["owner_decision"]
+      },
+      "then": {
+        "properties": {
+          "owner_condition": {"$ref": "#/$defs/nonBlankText"},
+          "normative_strength": {"const": "CONDITIONAL_NORMATIVE_EVIDENCE"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "OWNER_CORRECTION_EVIDENCE"},
+          "owner_decision": {"const": "UNSURE"}
+        },
+        "required": ["status", "owner_decision"]
+      },
+      "then": {"properties": {"normative_strength": {"const": "UNRESOLVED"}}}
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "OWNER_CORRECTION_EVIDENCE"},
+          "owner_decision": {
+            "not": {
+              "enum": ["DEPENDS", "REGISTER_SPECIFIC", "UNSURE", "OWNER_WRITTEN"]
+            }
+          }
+        },
+        "required": ["status", "owner_decision"]
+      },
+      "then": {
+        "properties": {"normative_strength": {"const": "EXPLICIT_NORMATIVE_CHOICE"}}
+      }
+    },
+    {
+      "if": {
+        "properties": {"metadata_reconciliation_status": {"const": "PENDING_RECONCILIATION"}},
+        "required": ["metadata_reconciliation_status"]
+      },
+      "then": {
+        "properties": {
+          "context_family": {"type": "null"},
+          "register": {"type": "null"},
+          "persona_dimension": {"type": "null"},
+          "source_family": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"metadata_reconciliation_status": {"const": "RECONCILED"}},
+        "required": ["metadata_reconciliation_status"]
+      },
+      "then": {
+        "properties": {
+          "context_family": {"$ref": "#/$defs/safeCode"},
+          "register": {"$ref": "#/$defs/register"},
+          "source_family": {"$ref": "#/$defs/opaqueRef"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"fatigue_decision": {"const": "DEPENDS"}},
+        "required": ["fatigue_decision"]
+      },
+      "then": {"properties": {"owner_condition": {"$ref": "#/$defs/nonBlankText"}}}
+    },
+    {
+      "if": {
+        "properties": {"owner_decision": {"const": "NONE"}},
+        "required": ["owner_decision"]
+      },
+      "then": {"properties": {"owner_note": {"$ref": "#/$defs/nonBlankText"}}}
+    },
+    {
+      "if": {
+        "properties": {"owner_decision": {"const": "EDIT"}},
+        "required": ["owner_decision"]
+      },
+      "then": {
+        "properties": {
+          "owner_note": {"$ref": "#/$defs/nonBlankText"},
+          "owner_written_response": {"$ref": "#/$defs/nonBlankText"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"boundary_question": {"const": true}},
+        "required": ["boundary_question"]
+      },
+      "then": {"properties": {"owner_note": {"$ref": "#/$defs/nonBlankText"}}}
+    },
+    {
+      "if": {
+        "properties": {"session_id": {"const": "SESSION_5"}},
+        "required": ["session_id"]
+      },
+      "then": {
+        "properties": {
+          "item_id": {"type": "string", "pattern": "^R30J1C-S5-W[0-9]{3}$"},
+          "owner_decision": {"const": "OWNER_WRITTEN"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "session_id": {"enum": ["SESSION_1", "SESSION_2", "SESSION_3", "SESSION_4"]}
+        },
+        "required": ["session_id"]
+      },
+      "then": {
+        "properties": {
+          "item_id": {"type": "string", "pattern": "^R30J1C-S[1-4]-[0-9]{3}$"},
+          "owner_decision": {"not": {"const": "OWNER_WRITTEN"}}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"session_id": {"const": "SESSION_1"}}, "required": ["session_id"]},
+      "then": {"properties": {"item_id": {"type": "string", "pattern": "^R30J1C-S1-[0-9]{3}$"}}}
+    },
+    {
+      "if": {"properties": {"session_id": {"const": "SESSION_2"}}, "required": ["session_id"]},
+      "then": {"properties": {"item_id": {"type": "string", "pattern": "^R30J1C-S2-[0-9]{3}$"}}}
+    },
+    {
+      "if": {"properties": {"session_id": {"const": "SESSION_3"}}, "required": ["session_id"]},
+      "then": {"properties": {"item_id": {"type": "string", "pattern": "^R30J1C-S3-[0-9]{3}$"}}}
+    },
+    {
+      "if": {"properties": {"session_id": {"const": "SESSION_4"}}, "required": ["session_id"]},
+      "then": {"properties": {"item_id": {"type": "string", "pattern": "^R30J1C-S4-[0-9]{3}$"}}}
+    },
+    {
+      "if": {
+        "properties": {"owner_decision": {"const": "OWNER_WRITTEN"}},
+        "required": ["owner_decision"]
+      },
+      "then": {
+        "properties": {
+          "session_id": {"const": "SESSION_5"},
+          "item_id": {"type": "string", "pattern": "^R30J1C-S5-W[0-9]{3}$"},
+          "owner_condition": {"const": ""},
+          "owner_note": {"const": ""},
+          "owner_written_response": {"$ref": "#/$defs/nonBlankText"},
+          "acceptable_alternatives": {"maxItems": 0},
+          "fatigue_decision": {"type": "null"},
+          "reason_codes": {"maxItems": 0},
+          "boundary_question": {"const": false},
+          "normative_strength": {"const": "OWNER_WRITTEN_PENDING_PRIVACY_REVIEW"},
+          "privacy_review_status": {"const": "PENDING"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "safeCode": {"type": "string", "pattern": "^[a-z][a-z0-9._-]{1,127}$"},
+    "opaqueRef": {"type": "string", "pattern": "^local\\.[a-z0-9._-]{8,160}$"},
+    "nonBlankText": {"type": "string", "minLength": 1, "maxLength": 20000, "pattern": "\\S"},
+    "register": {
+      "enum": [
+        "CASUAL",
+        "TECHNICAL",
+        "REFLECTIVE",
+        "FORMAL",
+        "PLAYFUL",
+        "LIGHT_EMOTIONAL",
+        "PROJECT_DESIGN",
+        "AMBIGUOUS",
+        "MIXED"
+      ]
+    },
+    "ownerDecision": {
+      "enum": [
+        "PREFER_A",
+        "PREFER_B",
+        "PREFER_C",
+        "TIE",
+        "NONE",
+        "DEPENDS",
+        "UNSURE",
+        "YES_REPRESENTATIVE",
+        "REPRESENTATIVE",
+        "REAL_BUT_NOT_FOR_EFISH",
+        "REGISTER_SPECIFIC",
+        "NO_LONGER_REPRESENTATIVE",
+        "NOT_REPRESENTATIVE",
+        "ACTUALLY_FITS",
+        "TOO_GENERIC",
+        "TOO_SHORT",
+        "TOO_CASUAL",
+        "TOO_POLISHED",
+        "TOO_ASSISTANT_LIKE",
+        "TOO_COLD",
+        "TOO_STRUCTURED",
+        "OTHER",
+        "CASUAL",
+        "TECHNICAL",
+        "REFLECTIVE",
+        "FORMAL",
+        "PLAYFUL",
+        "MIXED",
+        "SURFACE_DIFFERENCE_NOT_IMPORTANT",
+        "EDIT",
+        "OWNER_WRITTEN"
+      ]
+    }
+  }
+}
