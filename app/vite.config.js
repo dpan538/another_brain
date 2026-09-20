@@ -12,7 +12,7 @@ export default defineConfig({
     efishApi(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.png", "icons/*.png", "ime/pinyin_dict.json"],
+      includeAssets: ["favicon.svg", "favicon.png", "icons/*.png", "ime/pinyin_dict.json"],
       manifest: {
         name: "efish other",
         short_name: "efish",
