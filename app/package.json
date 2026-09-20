@@ -8,7 +8,9 @@
     "dev": "vite --host 127.0.0.1 --port 5190",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --port 5191",
-    "test": "node --test tests/engine.test.mjs tests/server.test.mjs tests/scene.test.mjs"
+    "test": "node --test tests/engine.test.mjs tests/server.test.mjs tests/scene.test.mjs",
+    "key": "node scripts/set_key.mjs",
+    "ask": "node scripts/ask.mjs"
   },
   "dependencies": {
     "@fontsource/abril-fatface": "^5.3.0",

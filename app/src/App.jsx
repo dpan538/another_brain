@@ -10,6 +10,7 @@ import Keyboard from "./ui/Keyboard.jsx";
 import { createAnswerPath, systemNote } from "./engine/answer_path.js";
 import { createMemoryStore, groupConversations } from "./engine/memory_store.js";
 import { clearKey } from "./engine/key_store.js";
+import { createPacer, NOTICE_MS } from "./engine/pacer.js";
 import { U } from "./ui/Hand.jsx";
 
 // the owner's key lives behind this endpoint; "" switches to a key stored on the device
@@ -145,15 +146,23 @@ export default function App() {
     if (command === "/memory") { setMemoryOpen(true); return; }
 
     const history = turnsRef.current.filter((t) => t.role !== "note").map((t) => ({ role: t.role === "efish" ? "assistant" : "user", content: t.text }));
-    setTurns((t) => [...t, { role: "user", text: typed }, { role: "efish", text: "", pending: true }]);
+    // the question lands on its own; only after a beat does efish visibly start to think
+    const still = Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
+    setTurns((t) => [...t, { role: "user", text: typed }]);
     setBusy(true);
+    const noticed = new Promise((resolve) => setTimeout(() => { setTurns((t) => [...t, { role: "efish", text: "", pending: true }]); resolve(); }, still ? 0 : NOTICE_MS));
     const c = conversationRef.current;
     if (typed.trim()) memory.append("user", typed, { c });
 
-    const result = await path.answer({
-      userText: typed, conversation: history, preset: preset?.id,
-      onText: (text) => setTurns((t) => { const next = t.slice(); next[next.length - 1] = { role: "efish", text, pending: true }; return next; })
+    // The question lands first. efish then takes a moment and writes the answer out,
+    // whether the words come from the model's stream or were ready at once.
+    const pacer = createPacer({
+      instant: still,
+      onShow: (text) => setTurns((t) => { const next = t.slice(); next[next.length - 1] = { role: "efish", text, pending: true }; return next; })
     });
+    const result = await path.answer({ userText: typed, conversation: history, preset: preset?.id, onText: (text) => pacer.push(text) });
+    await noticed;
+    if (result.ok) await pacer.end(result.text); else pacer.stop();
 
     setTurns((t) => {
       const next = t.slice(0, -1);
@@ -188,7 +197,7 @@ export default function App() {
                 <button type="button" className="card-new" onClick={startNew} disabled={busy || turns.length === 0} aria-label="start a new conversation"><U v={3}>new</U></button>
                 <div className="pages" ref={pagesEl} aria-live="polite">
                   {turns.map((t, i) => (
-                    <p className={`msg msg-${t.role}`} key={i}>{t.text}{t.pending && !t.text ? <span className="caret caret-write" /> : null}</p>
+                    <p className={`msg msg-${t.role}`} key={i}>{t.text}{t.pending ? <span className={`caret caret-write ${t.text ? "" : "is-thinking"}`} /> : null}</p>
                   ))}
                 </div>
                 <div className="pg-draft">

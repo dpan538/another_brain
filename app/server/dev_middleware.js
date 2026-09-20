@@ -6,7 +6,10 @@ import { loadEnv } from "vite";
 import { handleChat } from "./chat_handler.js";
 
 export function efishApi() {
-  let env = {};
+  let mode = "development";
+  // Read on every request, so a key saved to .env.local works on the next question
+  // without restarting the server. Local development only; on Vercel the platform provides env.
+  const readEnv = () => ({ ...loadEnv(mode, process.cwd(), ""), ...process.env });
   // Must return nothing: Vite treats a returned function as a post-hook and would call it bare.
   const mount = (server) => { server.middlewares.use("/api/chat", async (req, res) => {
     const chunks = []; for await (const c of req) chunks.push(c);
@@ -17,6 +20,7 @@ export function efishApi() {
       body: req.method === "POST" ? Buffer.concat(chunks) : undefined
     });
     // EFISH_UPSTREAM_URL is honoured only here, for local testing against a mock.
+    const env = readEnv();
     const response = await handleChat(request, { env, upstreamUrl: env.EFISH_UPSTREAM_URL || undefined });
     res.statusCode = response.status;
     response.headers.forEach((v, k) => res.setHeader(k, v));
@@ -27,7 +31,7 @@ export function efishApi() {
   }); };
   return {
     name: "efish-api",
-    config(_, { mode }) { env = { ...loadEnv(mode, process.cwd(), ""), ...process.env }; },
+    config(_, ctx) { mode = ctx.mode; },
     configureServer: mount,
     configurePreviewServer: mount
   };

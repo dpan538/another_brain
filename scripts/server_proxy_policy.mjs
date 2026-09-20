@@ -26,7 +26,11 @@ export const SERVER_PROXY_FILES = Object.freeze([
 ]);
 // Files that have to NAME the environment variable without ever holding its value:
 // the relay's tests inject it, and the README tells the owner where to put it.
-export const SERVER_PROXY_TEST_FILES = Object.freeze(["app/tests/server.test.mjs", "app/README.md"]);
+export const SERVER_PROXY_TEST_FILES = Object.freeze([
+  "app/tests/server.test.mjs", "app/README.md",
+  "app/scripts/set_key.mjs",     // the owner runs it to store the key locally; hidden input, never echoed
+  "app/scripts/ask.mjs"          // asks the relay a question from a terminal; mentions the variable in a hint
+]);
 
 const FILES = new Set(SERVER_PROXY_FILES);
 const TESTS = new Set(SERVER_PROXY_TEST_FILES);
@@ -45,6 +49,11 @@ export function serverProxyFileFailures(path, text) {
   if (OTHER_MODEL_HOSTS.test(text)) failures.push({ code: "server_proxy_references_other_model_host", path: rel });
   if (LAB_IMPORT.test(text)) failures.push({ code: "server_proxy_imports_server_lab", path: rel });
   if (!TESTS.has(rel) && /\bconsole\.(?:log|info|debug|warn|error)\s*\(/.test(text)) failures.push({ code: "server_proxy_logs", path: rel });
+  // a tool that handles the key may say that it saved it, never what it is
+  if (TESTS.has(rel)) {
+    const code = text.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, '""');     // the word "key" inside a message is not the key
+    if (/(?:console\.\w+|stdout\.write)\s*\([^)]*\bkey\b(?!\.length)/.test(code)) failures.push({ code: "server_proxy_tool_prints_key", path: rel });
+  }
   return failures;
 }
 

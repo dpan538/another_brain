@@ -27,6 +27,7 @@
 
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
+html { background: var(--ground); }
 body {
   margin: 0;
   background: var(--ground);
@@ -39,10 +40,12 @@ body {
 }
 button { font: inherit; color: inherit; cursor: pointer; }
 
-/* scanned-paper grain over everything */
+/* Scanned-paper grain over everything. It is neutral grey noise blended as soft light, so it
+   adds tooth without darkening the page: Safari tints its status bar and toolbar with the page
+   colour, and a grain that multiplied the paper darker left two brighter bands above and below. */
 body::before {
-  content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .06; mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+  content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .55; mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='1.6 0 0 0 -.3  1.6 0 0 0 -.3  1.6 0 0 0 -.3  0 0 0 0 1'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
 }
 
 .app { position: relative; height: 100%; max-width: 480px; margin: 0 auto; overflow: hidden; }
@@ -175,9 +178,13 @@ body::before {
 .draft-rule { position: absolute; left: 0; bottom: 0; width: 132px; height: 6px; overflow: visible; }
 .draft-rule path { fill: none; stroke: var(--ink); stroke-width: 1.25; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .ghost { opacity: .32; }
-.caret { display: inline-block; width: .55em; height: 1.05em; margin-left: 2px; vertical-align: -.16em; background: var(--ink); animation: blink 1.05s steps(1) infinite; }
-.caret-write { width: .5em; }
-@keyframes blink { 50% { opacity: 0; } }
+/* the input caret: a thin bar that fades in and out slowly, like a line waiting rather than an alarm */
+.caret { display: inline-block; width: 2px; height: 1em; margin-left: 3px; vertical-align: -.12em; border-radius: 1px; background: var(--ink); animation: blink 1.6s ease-in-out infinite; }
+@keyframes blink { 0%, 38% { opacity: 1; } 52%, 86% { opacity: 0; } 100% { opacity: 1; } }
+/* efish's pen: a short underscore that breathes while it thinks and trails the words while it writes */
+.caret-write { width: .55em; height: 2.5px; margin-left: 4px; vertical-align: -.06em; animation: none; opacity: .9; }
+.caret-write.is-thinking { margin-left: 0; animation: breathe 1.7s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { opacity: .18; transform: scaleX(.7); } 50% { opacity: 1; transform: scaleX(1); } }
 
 /* ───────── keyboard ───────── */
 .kb { flex: 0 0 auto; padding: 0 3px calc(8px + env(safe-area-inset-bottom)); color: var(--ink); touch-action: none; }
@@ -194,28 +201,34 @@ body::before {
 .kb-cand:first-child { background: linear-gradient(transparent 52%, var(--neon) 52%, var(--neon) 88%, transparent 88%); }
 
 .kb-row { display: flex; gap: 0; justify-content: center; margin: 0; }
-.kb-row-1 .key:first-child { flex-grow: 1.5; justify-items: end; padding-right: 2px; }
-.kb-row-1 .key:last-child { flex-grow: 1.5; justify-items: start; padding-left: 2px; }
-.key { position: relative; flex: 1 1 0; min-width: 0; height: 60px; padding: 0 1.5px; background: none; border: 0; color: var(--ink); display: grid; place-items: center; -webkit-tap-highlight-color: transparent; touch-action: none; }
+/* the edge keys of the middle row reach the screen edge, but their caps stay the size of their neighbours */
+.kb-row-1 .key:first-child { flex-grow: 1.5; }
+.kb-row-1 .key:first-child .cap { left: 33.4%; }
+.kb-row-1 .key:last-child { flex-grow: 1.5; }
+.kb-row-1 .key:last-child .cap { right: 33.4%; }
+/* A key is a plain positioned box and its cap is pinned to it by offsets. (A cap sized as a
+   percentage inside a centred grid collapsed to a sliver in Safari once the key had been
+   pressed, because the press preview being added and removed re-ran the track sizing.) */
+.key { position: relative; display: block; flex: 1 1 0; min-width: 0; height: 60px; padding: 0; margin: 0; background: none; border: 0; border-radius: 0; color: var(--ink); -webkit-appearance: none; appearance: none; -webkit-tap-highlight-color: transparent; touch-action: none; }
 .key-wide { flex-grow: 1.45; }
-.key-space { flex-grow: 4.6; padding: 0 4px; }
+.key-space { flex-grow: 4.6; }
 .key-return { flex-grow: 2.1; }
-.cap { position: relative; width: calc(100% - 5px); height: 45px; display: grid; place-items: center; transform: rotate(var(--tilt, 0deg)); font: 700 19px/1 var(--type); }
+.cap { position: absolute; left: 3px; right: 3px; top: 7.5px; height: 45px; display: flex; align-items: center; justify-content: center; transform: rotate(var(--tilt, 0deg)); font: 700 19px/1 var(--type); pointer-events: none; }
 .cap-line { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .cap-line path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; transition: fill .08s, stroke .08s; }
-.cap-label { position: relative; display: grid; place-items: center; transition: color .08s; }
+.cap-label { position: relative; display: flex; align-items: center; justify-content: center; transition: color .08s; }
 .cap-eyu { font: 700 18px var(--write); }
 .cap-eyu .cap-line path { fill: var(--dot); stroke: var(--dot); }
 .key[data-lit] .cap-line path, .key[aria-pressed="true"] .cap-line path, .ask[data-lit] .cap-line path { fill: var(--clay); stroke: var(--clay); }
 .key[data-lit] .cap-label, .key[aria-pressed="true"] .cap-label, .ask[data-lit] .cap-label { color: var(--paper); }
-.unit { position: relative; display: block; width: 100%; height: 40px; margin-top: 4px; border: 1.5px solid currentColor; border-top: 0; border-bottom-style: dashed; border-radius: 0 0 14px 14px; }
+.unit { position: absolute; left: 5px; right: 5px; top: 12px; height: 40px; display: block; pointer-events: none; border: 1.5px solid currentColor; border-top: 0; border-bottom-style: dashed; border-radius: 0 0 14px 14px; }
 .unit b { position: absolute; left: 9px; top: -3px; font: 700 10px var(--write); letter-spacing: .05em; }
 .key[data-lit] .unit { background: rgba(128, 82, 74, .16); }
 
 /* the 鳄 board: questions instead of letters, drawn with the same pen, same height as the three letter rows */
 .kb-croc { height: 180px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 60px); }
-.ask { min-width: 0; height: 60px; padding: 0 2px; display: grid; place-items: center; background: none; border: 0; color: var(--ink); touch-action: none; -webkit-tap-highlight-color: transparent; }
-.cap-ask { width: calc(100% - 10px); height: 44px; font: 500 15.5px/1.15 var(--type); letter-spacing: .01em; }
+.ask { position: relative; display: block; min-width: 0; height: 60px; padding: 0; margin: 0; background: none; border: 0; border-radius: 0; color: var(--ink); -webkit-appearance: none; appearance: none; touch-action: none; -webkit-tap-highlight-color: transparent; }
+.cap-ask { left: 7px; right: 7px; top: 8px; height: 44px; font: 500 15.5px/1.15 var(--type); letter-spacing: .01em; }
 .key-egg { flex-grow: 1.1; }
 .key-memory { flex-grow: 3.1; }
 .cap-memory { font: 500 15px/1 var(--type); }
@@ -264,6 +277,6 @@ button:focus-visible, .about-link:focus-visible { outline: 2px solid var(--neon)
 @media (prefers-reduced-motion: reduce) {
   .lt { animation: none; }
   .logo-scribble path { animation: none; stroke-dashoffset: 0; }
-  .scroll-hint svg, .caret { animation: none; }
+  .scroll-hint svg, .caret, .caret-write.is-thinking { animation: none; }
   .topbar .logo { transition: none; }
 }

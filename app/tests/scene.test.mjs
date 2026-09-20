@@ -59,3 +59,27 @@ test("the 鳄 board answers locally, never with more than two sentences, and nev
   }
   assert.equal(called, 0);
 });
+
+test("an answer that is ready at once still waits, then is written out in order", async () => {
+  const { createPacer, thinkTime } = await import("../src/engine/pacer.js");
+  assert.ok(thinkTime("背后有两个：一个是我们自己从零训练的小模型。") > thinkTime("够了。"));
+  let clock = 0; const queue = []; const shown = [];
+  const pacer = createPacer({ onShow: (t) => shown.push([clock, t]), charMs: 10, minThinkMs: 100, now: () => clock, schedule: (fn, ms) => { const job = { at: clock + ms, fn }; queue.push(job); return job; }, cancel: (job) => queue.splice(queue.indexOf(job), 1) });
+  const done = pacer.end("好。够了");
+  while (queue.length) { queue.sort((a, b) => a.at - b.at); const job = queue.shift(); clock = job.at; job.fn(); }
+  await done;
+  assert.ok(shown[0][0] >= thinkTime("好。够了"), "nothing is shown before the pause is over");
+  assert.deepEqual(shown.map((s) => s[1]), ["好", "好。", "好。够", "好。够了"]);
+  assert.ok(shown[2][0] - shown[1][0] > shown[1][0] - shown[0][0], "a full stop is followed by a longer breath");
+});
+
+test("a streamed answer is followed as it grows and never shows more than it was given", async () => {
+  const { createPacer } = await import("../src/engine/pacer.js");
+  let clock = 0; const queue = []; const shown = [];
+  const run = (until) => { for (;;) { queue.sort((a, b) => a.at - b.at); if (!queue.length || queue[0].at > until) break; const job = queue.shift(); clock = job.at; job.fn(); } clock = until; };
+  const pacer = createPacer({ onShow: (t) => shown.push(t), charMs: 10, minThinkMs: 50, now: () => clock, schedule: (fn, ms) => { const job = { at: clock + ms, fn }; queue.push(job); return job; }, cancel: () => {} });
+  run(400); pacer.push("影子"); run(500); pacer.push("影子并不是身体"); run(600);
+  const done = pacer.end("影子并不是身体。"); run(2000); await done;
+  assert.equal(shown.at(-1), "影子并不是身体。");
+  for (let i = 1; i < shown.length; i += 1) assert.ok(shown[i].startsWith(shown[i - 1]), "the text only ever grows");
+});

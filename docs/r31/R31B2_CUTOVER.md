@@ -50,3 +50,24 @@ not edited to pass.
 A live DeepSeek answer; the Vercel build itself before the push (simulated locally
 from a clean checkout with the same commands); iOS/macOS Safari on real WebKit
 (the simulator could not be driven on this machine); physical touch hardware.
+
+## R31B3 follow-up (2026-09-20, after the first look on a real iPhone)
+
+- **Keys collapsing in Safari after being pressed.** A cap was sized as a percentage inside a
+  centred grid button; adding and removing the press preview re-ran WebKit's track sizing and
+  the cap came back at min-content width. Keys are now plain positioned boxes and caps are
+  pinned by offsets (`left/right`), so no size depends on an auto track. Not reproducible in
+  Chromium; to be confirmed on the phone.
+- **Bright bands above and below the page in Safari.** Safari tints its status bar and toolbar
+  with the page colour (#FBFAF8) while the paper grain multiplied the page ≈1.6 % darker.
+  The grain is now neutral grey noise blended as soft light, so the page's mean colour equals
+  the page colour.
+- **Rhythm of an answer** (`app/src/engine/pacer.js`): the question lands alone (≈0.5 s), efish
+  visibly thinks (≈1.9–3 s, longer for longer answers), then the answer is written out
+  (≈48 ms a character, longer rests at commas and full stops). Same for 鳄-board replies,
+  easter eggs and streamed model answers; reduced motion shows the text at once.
+- Carets: the input caret is a thin bar fading over 1.6 s; efish's pen is a short underscore that
+  breathes while thinking and trails the text while writing.
+- Local key and testing: `npm --prefix app run key` (hidden input → `app/.env.local`, mode 600;
+  the dev server re-reads it on every request) and `npm --prefix app run ask -- "问题"`
+  (`--prod` for the live site). Neither prints or reads the key.

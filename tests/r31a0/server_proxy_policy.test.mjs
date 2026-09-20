@@ -39,3 +39,9 @@ test("a second route, or a bundle that reads the server environment, is refused"
   const got = codes(serverProxyContractFailures(m));
   assert.ok(got.includes("unreviewed_api_route")); assert.ok(got.includes("client_bundle_reads_server_environment"));
 });
+
+test("the local key tool never echoes the key, and a tool that did would be refused", async () => {
+  for (const p of ["app/scripts/set_key.mjs", "app/scripts/ask.mjs"]) assert.deepEqual(serverProxyFileFailures(p, await read(p)), [], p);
+  assert.ok(codes(serverProxyFileFailures("app/scripts/set_key.mjs", "console.log('saved', key)")).includes("server_proxy_tool_prints_key"));
+  assert.deepEqual(serverProxyFileFailures("app/scripts/set_key.mjs", "console.log('saved', key.length)"), []);
+});
