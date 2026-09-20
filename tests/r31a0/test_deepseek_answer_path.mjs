@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-const CHAT = new URL("../../web/another_brain_chat/", import.meta.url);
+const CHAT = new URL("../../archive/legacy_site/web/another_brain_chat/", import.meta.url);
 const mod = (name) => import(new URL(name, CHAT).href);
 
 const { createDeepSeekAnswerPath, SpendingGuard, describeFailure } = await mod("deepseek_answer_path.js");

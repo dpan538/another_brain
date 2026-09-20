@@ -216,6 +216,38 @@
             </div>
           </section>
 
+          <section class="engine-bar" id="engine-bar" aria-label="回答引擎">
+            <div class="engine-summary">
+              <span class="engine-dot" id="engine-dot" data-engine-state="local" aria-hidden="true"></span>
+              <strong id="engine-label">本地静态回答</strong>
+              <span class="engine-note" id="engine-note">未设置 API key</span>
+            </div>
+            <button type="button" class="button-secondary small-button" id="engine-settings-toggle" aria-expanded="false" aria-controls="engine-settings">设置</button>
+          </section>
+
+          <section class="engine-settings" id="engine-settings" hidden aria-label="回答引擎设置">
+            <p class="engine-settings-intro">
+              填入你自己的 DeepSeek API key，回答将由 DeepSeek 生成。key 只保存在这台设备的浏览器里，
+              只发往 <code>api.deepseek.com</code>，不会上传到本站或任何其他地方。本站没有后端。
+            </p>
+            <div class="engine-key-row">
+              <label class="sr-only" for="deepseek-key-input">DeepSeek API key</label>
+              <input type="password" id="deepseek-key-input" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+              <button type="button" id="deepseek-key-save">保存</button>
+              <button type="button" class="button-secondary" id="deepseek-key-clear">清除</button>
+            </div>
+            <p class="engine-key-status" id="deepseek-key-status" aria-live="polite">未设置</p>
+            <label class="engine-toggle">
+              <input type="checkbox" id="local-signal-toggle" />
+              <span>启用本地信号层（实验性，默认关闭）</span>
+            </label>
+            <p class="engine-toggle-note">
+              R29B2M-R4H-R3 的对照实验里，注入本地信号把事实不回归率从 95% 的要求压到 79.2%，并引入 7 处无依据事实。
+              在有经过评测的个人模型之前，这个开关只用于实验。
+            </p>
+            <p class="engine-usage" id="engine-usage" aria-live="polite"></p>
+          </section>
+
           <form class="composer" id="chat-form">
             <label class="sr-only" for="chat-input">Message</label>
             <textarea id="chat-input" name="message" rows="2" placeholder="输入中文问题，或试试：你好" required></textarea>

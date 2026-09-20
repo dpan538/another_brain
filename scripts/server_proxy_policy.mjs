@@ -20,7 +20,7 @@
 import { normalizeRepoPath } from "./static_llm_policy.mjs";
 
 export const SERVER_PROXY_FILES = Object.freeze([
-  "app/api/chat.js",              // the Vercel Edge entry: one line that calls the handler
+  "api/chat.js",                  // the Vercel Edge entry at the repository root: one line that calls the handler
   "app/server/chat_handler.js",   // the relay itself
   "app/server/dev_middleware.js"  // the same handler mounted in `vite dev` / `vite preview`
 ]);
@@ -64,7 +64,7 @@ export function serverProxyContractFailures(byPath) {
   if (!/not_configured/.test(handler) || !/503/.test(handler)) fail("server_proxy_missing_key_not_handled");
   if (/upstream\.text\(\)|await\s+\w+\.text\(\)\s*[,)}]/.test(handler) && /JSON\.stringify\([^)]*upstream/.test(handler)) fail("server_proxy_forwards_provider_error_body");
 
-  const entry = byPath.get("app/api/chat.js") || "";
+  const entry = byPath.get("api/chat.js") || "";
   if (!/handleChat\s*\(/.test(entry)) fail("server_proxy_entry_bypasses_handler");
   if (/fetch\s*\(/.test(entry)) fail("server_proxy_entry_calls_out_by_itself");
 
@@ -73,7 +73,7 @@ export function serverProxyContractFailures(byPath) {
     if (/^app\/src\//.test(path) && /DEEPSEEK_API_KEY|process\.env/.test(text)) failures.push({ code: "client_bundle_reads_server_environment", path });
   }
   // and there is exactly one route
-  const routes = [...byPath.keys()].filter((p) => /^app\/api\//.test(p));
-  for (const p of routes) if (p !== "app/api/chat.js") failures.push({ code: "unreviewed_api_route", path: p });
+  const routes = [...byPath.keys()].filter((p) => /^(?:api|app\/api|pages\/api|functions)\//.test(p));
+  for (const p of routes) if (p !== "api/chat.js") failures.push({ code: "unreviewed_api_route", path: p });
   return failures;
 }

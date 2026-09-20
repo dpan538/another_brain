@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run build:vercel",
-    "build:vercel": "node scripts/r28hotfix1_sync_static_entries.mjs && node scripts/prepare_vercel_static_build.mjs && npm run check:knowledge-runtime && npm run check:vercel-build",
+    "build:vercel": "npm --prefix app ci && npm --prefix app run build",
     "check:vercel-build": "node scripts/check_vercel_static_build.mjs",
     "build:knowledge": "python3 scripts/build_knowledge_base.py && python3 scripts/build_knowledge_shards.py",
     "check": "npm run check:release && npm run check:launch-policy && npm run check:seo && npm run check:identity-pack && npm run check:help-onboarding && npm run check:fallback-overuse && npm run check:dataset-splits && npm run check:frontend-latency && npm run check:voice-verifier && npm run check:output-sanitizer && npm run check:dialog-sanity && npm run check:gate-effectiveness && npm run check:r9-reasoning-gate && npm run check:culture-awareness && npm run check:context-gate && npm run check:blind-casepacks && python3 scripts/validate_distillation.py && python3 scripts/eval_tiny_router.py && python3 scripts/eval_dialog_persona.py && python3 scripts/validate_context_stress_cases.py && python3 scripts/validate_clone_logic_ethics.py && node scripts/eval_casepacks_node.mjs --min-score 0.88 --out artifacts/training_os/casepack_eval_report.json && node scripts/run_model_gate_node.mjs --out artifacts/training_os/model_inference_report.json",
@@ -881,6 +881,9 @@
     "r30j1c-r1:finalize-blocked": "python3 scripts/r30j1c_r1_finalize_blocked.py",
     "r30j1c-r1:production-diff-gate": "node scripts/r30j1c_r1_no_production_change_gate.mjs",
     "test:r30j1c-r1": "python3 -m unittest discover -s tests/r30j1c_r1 -q",
-    "check:server-proxy-policy": "node --test tests/r31a0/server_proxy_policy.test.mjs"
+    "check:server-proxy-policy": "node --test tests/r31a0/server_proxy_policy.test.mjs",
+    "legacy:build:vercel": "node scripts/r28hotfix1_sync_static_entries.mjs && node scripts/prepare_vercel_static_build.mjs && npm run check:knowledge-runtime && npm run check:vercel-build",
+    "test:app": "npm --prefix app test",
+    "check:app-budget": "node scripts/check_app_budget.mjs"
   }
 }

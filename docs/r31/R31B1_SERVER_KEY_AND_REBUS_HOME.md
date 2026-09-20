@@ -17,7 +17,7 @@ ask each visitor for a key. This replaces the R31A0 rule "no API route" with
   12 requests/minute and 200/day per address (best effort, per instance).
   The provider's error body is never forwarded; a missing key answers `503 not_configured`.
   Hanging up cancels the upstream generation. Nothing is logged.
-- `app/api/chat.js` — the Vercel Edge entry: one call to the handler.
+- `api/chat.js` (repository root) — the Vercel Edge entry: one call to the handler.
 - `app/server/dev_middleware.js` — the same handler under `vite dev` / `vite preview`.
 - Client: `src/engine/deepseek_stream.js` sends only `{messages}` to `/api/chat`.
   If the server says `not_configured`, the app falls back to a key stored on the
@@ -42,7 +42,7 @@ relay exists). Tests: `tests/r31a0/server_proxy_policy.test.mjs`, including nega
 ### To make it live (owner only — the key is never handled by tooling)
 
 1. Local: put `DEEPSEEK_API_KEY=…` in `app/.env.local` (git-ignored), `npm --prefix app run dev`.
-2. Vercel: Root Directory `app`; Environment Variable `DEEPSEEK_API_KEY` (Production + Preview).
+2. Vercel: Environment Variable `DEEPSEEK_API_KEY` (Production + Preview). The build is declared in the root `vercel.json` (see R31B2).
    Optional `EFISH_ALLOWED_ORIGINS` for extra domains.
 3. Recommended: a Vercel WAF rate rule on `/api/chat`; a prepaid DeepSeek balance is the hard spending cap.
 
@@ -102,5 +102,4 @@ intro, no glides, acts change instantly.
   (one wheel gesture with coasting = exactly one act), direct jumps, the 鳄 board,
   `new`, 本地记忆, About.
 - Not verified: a live DeepSeek answer, a Vercel deployment, real touch hardware,
-  iOS Safari. The legacy `web/` tree still ships (static budget gate red at 71 MB);
-  removing it needs the owner's explicit approval.
+  iOS Safari. The legacy site was archived in R31B2 (`docs/r31/R31B2_CUTOVER.md`).

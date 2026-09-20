@@ -16,7 +16,7 @@
     }
   ],
   "hosted_vector_store": false,
-  "max_total_static_bytes": 100000000,
+  "max_total_static_bytes": 1000000000,
   "model_asset_manifest": {
     "browser_admission": false,
     "exact_runtime_tokenizer": true,
@@ -256,7 +256,7 @@
   ],
   "tokenizer_decode_status": "exact_runtime_tokenizer",
   "tokenizer_exact_decode": true,
-  "total_declared_bytes": 49812422,
+  "total_declared_bytes": 49820132,
   "branch_marker": "R28LIVEFIX0",
   "branch_name": "r28livefix0-live-q4-mount",
   "build_commit_short": "build-env-pending",

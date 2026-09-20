@@ -52,11 +52,11 @@ and unmodified it is 22 MB.
 ## The key (R31B1)
 
 The DeepSeek key is held by the server and relayed through one route, `/api/chat`
-(`api/chat.js` → `server/chat_handler.js`). It is never in the bundle, a log or a response.
+(`/api/chat.js` at the repository root → `app/server/chat_handler.js`). It is never in the bundle, a log or a response.
 
 - Local: create `app/.env.local` with `DEEPSEEK_API_KEY=` and your key, then `npm run dev`.
-- Vercel: set the project's Root Directory to `app` and add the environment variable
-  `DEEPSEEK_API_KEY`. Optional: `EFISH_ALLOWED_ORIGINS` (comma separated) for extra domains.
+- Vercel: add the environment variable `DEEPSEEK_API_KEY`. The build (`app/dist`) and the route are
+  declared in the repository's root `vercel.json` and `api/`; keep the project's Root Directory at the root. Optional: `EFISH_ALLOWED_ORIGINS` (comma separated) for extra domains.
 - Without a key the route answers `503 not_configured`; the 鳄 board and the easter eggs still work.
 
-See `docs/r31/R31B1_SERVER_KEY_AND_REBUS_HOME.md`.
+See `docs/r31/R31B1_SERVER_KEY_AND_REBUS_HOME.md` and `docs/r31/R31B2_CUTOVER.md`.

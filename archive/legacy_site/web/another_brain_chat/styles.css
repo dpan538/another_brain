@@ -2961,3 +2961,130 @@ body[data-ui-mode="chat"] {
     word-spacing: 0.2em;
   }
 }
+
+/* R31A0 — answer engine bar and BYOK settings. */
+.engine-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-alt, rgba(255, 255, 255, 0.04));
+}
+
+.engine-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.engine-summary strong {
+  font-size: 0.92rem;
+}
+
+.engine-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.engine-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--muted);
+}
+
+.engine-dot[data-engine-state="remote"] {
+  background: var(--accent-strong);
+}
+
+.engine-dot[data-engine-state="error"] {
+  background: var(--amber);
+}
+
+.engine-settings[hidden] {
+  display: none !important;
+}
+
+.engine-settings {
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-alt, rgba(255, 255, 255, 0.04));
+  display: grid;
+  gap: 10px;
+}
+
+.engine-settings-intro,
+.engine-toggle-note {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.engine-settings-intro code {
+  font-size: 0.78rem;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(127, 127, 127, 0.18);
+}
+
+.engine-key-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.engine-key-row input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.engine-key-status {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.engine-key-status[data-state="ok"] {
+  color: var(--accent-strong);
+}
+
+.engine-key-status[data-state="warn"] {
+  color: var(--amber);
+}
+
+.engine-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.engine-usage {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 520px) {
+  .engine-key-row input {
+    flex-basis: 100%;
+  }
+}

@@ -23,7 +23,7 @@ const {
 const { checkStaticLocalProduct } = await import(new URL("../../scripts/check_static_local_product_no_backend.mjs", import.meta.url).href);
 const { checkHybridLabIsolation } = await import(new URL("../../scripts/check_hybrid_lab_isolation.mjs", import.meta.url).href);
 
-const BYOK_FILE = "web/another_brain_chat/deepseek_browser_adapter.js";
+const BYOK_FILE = "archive/legacy_site/web/another_brain_chat/deepseek_browser_adapter.js";
 
 test("the repository's current tree satisfies both production gates", async () => {
   const staticReport = await checkStaticLocalProduct({ root: ROOT });
@@ -79,7 +79,7 @@ test("a provenance comment naming the lab is not treated as an import", () => {
 });
 
 test("the allow-list is closed: an unlisted web file gets no exemption", () => {
-  assert.equal(isByokProductPath("web/another_brain_chat/runtime_worker.js"), false);
+  assert.equal(isByokProductPath("archive/legacy_site/web/another_brain_chat/runtime_worker.js"), false);
   assert.equal(isByokProductPath("web/app.js"), false);
   assert.equal(isByokProductPath("api/answer.ts"), false);
   for (const listed of BYOK_PRODUCT_FILES) assert.equal(isByokProductPath(listed), true);
@@ -87,9 +87,9 @@ test("the allow-list is closed: an unlisted web file gets no exemption", () => {
 
 test("the contract check fails when the key store loses its runtime scoping", () => {
   const byPath = new Map([
-    ["web/another_brain_chat/deepseek_key_store.js", "export function readKey() { return BUILD_KEY; } redactKeyMaterial"],
-    ["web/another_brain_chat/deepseek_browser_adapter.js", `${ALLOWED_REMOTE_HOST} redactKeyMaterial`],
-    ["web/another_brain_chat/deepseek_answer_path.js", "SpendingGuard"]
+    ["archive/legacy_site/web/another_brain_chat/deepseek_key_store.js", "export function readKey() { return BUILD_KEY; } redactKeyMaterial"],
+    ["archive/legacy_site/web/another_brain_chat/deepseek_browser_adapter.js", `${ALLOWED_REMOTE_HOST} redactKeyMaterial`],
+    ["archive/legacy_site/web/another_brain_chat/deepseek_answer_path.js", "SpendingGuard"]
   ]);
   const failures = byokContractFailures(byPath);
   assert.ok(failures.some((failure) => failure.code === "byok_key_store_not_runtime_scoped"));
@@ -97,27 +97,32 @@ test("the contract check fails when the key store loses its runtime scoping", ()
 
 test("the contract check fails when redaction or the spending guard disappears", () => {
   const noRedaction = new Map([
-    ["web/another_brain_chat/deepseek_key_store.js", "localStorage"],
-    ["web/another_brain_chat/deepseek_browser_adapter.js", ALLOWED_REMOTE_HOST],
-    ["web/another_brain_chat/deepseek_answer_path.js", "SpendingGuard"]
+    ["archive/legacy_site/web/another_brain_chat/deepseek_key_store.js", "localStorage"],
+    ["archive/legacy_site/web/another_brain_chat/deepseek_browser_adapter.js", ALLOWED_REMOTE_HOST],
+    ["archive/legacy_site/web/another_brain_chat/deepseek_answer_path.js", "SpendingGuard"]
   ]);
   const failures = byokContractFailures(noRedaction);
   assert.ok(failures.some((failure) => failure.code === "byok_key_redaction_missing"));
   assert.ok(failures.some((failure) => failure.code === "byok_adapter_redaction_missing"));
 
   const noGuard = new Map([
-    ["web/another_brain_chat/deepseek_key_store.js", "localStorage redactKeyMaterial"],
-    ["web/another_brain_chat/deepseek_browser_adapter.js", `${ALLOWED_REMOTE_HOST} redactKeyMaterial`],
-    ["web/another_brain_chat/deepseek_answer_path.js", "no guard here"]
+    ["archive/legacy_site/web/another_brain_chat/deepseek_key_store.js", "localStorage redactKeyMaterial"],
+    ["archive/legacy_site/web/another_brain_chat/deepseek_browser_adapter.js", `${ALLOWED_REMOTE_HOST} redactKeyMaterial`],
+    ["archive/legacy_site/web/another_brain_chat/deepseek_answer_path.js", "no guard here"]
   ]);
   assert.ok(byokContractFailures(noGuard).some((failure) => failure.code === "byok_spending_guard_missing"));
 });
 
-test("production still declares no backend, function, or edge route", async () => {
+// R31B2: the owner moved the key to the server and archived the legacy static site.
+// Production is now the built app plus exactly one reviewed relay route.
+test("production serves the built app and declares nothing beyond the reviewed relay", async () => {
   const vercel = JSON.parse(await readFile(join(ROOT, "vercel.json"), "utf8"));
-  assert.equal(vercel.outputDirectory, "web");
+  assert.equal(vercel.outputDirectory, "app/dist");
   assert.ok(!("functions" in vercel));
-  assert.ok(!("rewrites" in vercel && JSON.stringify(vercel.rewrites).includes("/api/")));
+  assert.ok(!("rewrites" in vercel));
+  const report = await checkStaticLocalProduct({ root: ROOT });
+  assert.equal(report.policy.server_held_key_single_relay_route, true);
+  assert.equal(report.policy.no_backend_inference, true);
 });
 
 test("no shipped web file carries key material", async () => {

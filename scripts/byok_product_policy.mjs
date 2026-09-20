@@ -18,20 +18,23 @@
 import { normalizeRepoPath } from "./static_llm_policy.mjs";
 import { isServerProxyPath, isServerProxyTestPath } from "./server_proxy_policy.mjs";
 
+// R31B2: the legacy site is archived under archive/legacy_site/. Its browser-key files are
+// still listed so the archive stays held to the same contract; none of them is deployed.
+export const LEGACY_CHAT_DIR = "archive/legacy_site/web/another_brain_chat";
 export const BYOK_PRODUCT_FILES = Object.freeze([
-  "web/another_brain_chat/deepseek_answer_path.js",
-  "web/another_brain_chat/deepseek_browser_adapter.js",
-  "web/another_brain_chat/deepseek_key_store.js",
-  "web/another_brain_chat/deepseek_system_prompt.js",
-  "web/another_brain_chat/deterministic_length_policy.js",
-  "web/another_brain_chat/local_signal_provider.js",
-  "web/another_brain_chat/style_policy_compiler.js",
-  "web/another_brain_chat/app.js",
-  "web/another_brain_chat/index.html",
+  "archive/legacy_site/web/another_brain_chat/deepseek_answer_path.js",
+  "archive/legacy_site/web/another_brain_chat/deepseek_browser_adapter.js",
+  "archive/legacy_site/web/another_brain_chat/deepseek_key_store.js",
+  "archive/legacy_site/web/another_brain_chat/deepseek_system_prompt.js",
+  "archive/legacy_site/web/another_brain_chat/deterministic_length_policy.js",
+  "archive/legacy_site/web/another_brain_chat/local_signal_provider.js",
+  "archive/legacy_site/web/another_brain_chat/style_policy_compiler.js",
+  "archive/legacy_site/web/another_brain_chat/app.js",
+  "archive/legacy_site/web/another_brain_chat/index.html",
   // Build outputs: prepare_vercel_static_build copies the chat shell to the
   // site root and to the legacy chat path.
-  "web/index.html",
-  "web/another_brain_chat.html"
+  "archive/legacy_site/web/index.html",
+  "archive/legacy_site/web/another_brain_chat.html"
 ]);
 
 const BYOK_SET = new Set(BYOK_PRODUCT_FILES);
@@ -76,7 +79,15 @@ export function importsServerLab(text) {
 // constant. This is asserted positively so the guarantee cannot rot silently.
 export function byokContractFailures(byPath) {
   const failures = [];
-  const keyStore = byPath.get("web/another_brain_chat/deepseek_key_store.js") || "";
+  // R31B2: the legacy browser-key surface is archived and no longer part of the
+  // production tree. The device-key fallback of the new app (the owner's "/key"
+  // testing path) is held to the same three guarantees instead.
+  const legacy = byPath.has(`${LEGACY_CHAT_DIR}/deepseek_key_store.js`);
+  const files = legacy
+    ? { store: `${LEGACY_CHAT_DIR}/deepseek_key_store.js`, adapter: `${LEGACY_CHAT_DIR}/deepseek_browser_adapter.js`, path: `${LEGACY_CHAT_DIR}/deepseek_answer_path.js`, guard: /SpendingGuard/ }
+    : { store: "app/src/engine/key_store.js", adapter: "app/src/engine/deepseek_stream.js", path: "app/src/engine/answer_path.js", guard: /SESSION_REQUEST_LIMIT/ };
+
+  const keyStore = byPath.get(files.store) || "";
   if (!keyStore) {
     failures.push({ code: "byok_key_store_missing" });
     return failures;
@@ -84,7 +95,7 @@ export function byokContractFailures(byPath) {
   if (!/localStorage/.test(keyStore)) failures.push({ code: "byok_key_store_not_runtime_scoped" });
   if (!/redactKeyMaterial/.test(keyStore)) failures.push({ code: "byok_key_redaction_missing" });
 
-  const adapter = byPath.get("web/another_brain_chat/deepseek_browser_adapter.js") || "";
+  const adapter = byPath.get(files.adapter) || "";
   if (!adapter) {
     failures.push({ code: "byok_adapter_missing" });
     return failures;
@@ -94,8 +105,8 @@ export function byokContractFailures(byPath) {
   }
   if (!/redactKeyMaterial/.test(adapter)) failures.push({ code: "byok_adapter_redaction_missing" });
 
-  const answerPath = byPath.get("web/another_brain_chat/deepseek_answer_path.js") || "";
-  if (!/SpendingGuard/.test(answerPath)) failures.push({ code: "byok_spending_guard_missing" });
+  const answerPath = byPath.get(files.path) || "";
+  if (!files.guard.test(answerPath)) failures.push({ code: "byok_spending_guard_missing" });
 
   return failures;
 }

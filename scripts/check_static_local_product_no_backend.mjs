@@ -91,7 +91,7 @@ export async function checkStaticLocalProduct(options = {}) {
 
   // R31B1: report what is true of this tree. When the relay is present there IS an
   // API route and an Edge function, exactly one, and saying otherwise would be a lie.
-  const relay = byPath.has("app/api/chat.js");
+  const relay = byPath.has("api/chat.js");
   return {
     ok: failures.length === 0,
     profile: "static_local_product",

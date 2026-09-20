@@ -34,6 +34,8 @@ const LAB_PATHS = [
   // R31A0 BYOK policy and its tests name the DeepSeek host by design.
   /^scripts\/byok_product_policy\.mjs$/,
   /^scripts\/server_proxy_policy\.mjs$/,
+  // R31B2: the archived legacy site is kept for the record and is not deployed.
+  /^archive\/legacy_site\/(?!web\/another_brain_chat\/)/,
   /^tests\/r31a0\//,
   /^docs\/r31\//,
   /^scripts\/check_no_backend_llm_reconciled\.mjs$/,

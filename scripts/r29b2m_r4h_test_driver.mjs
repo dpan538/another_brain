@@ -144,26 +144,26 @@ const tests = {
     for (const marker of ['optimizer.step(', 'mlx.optimizers', 'loss.backward(', 'model.train(']) assert.ok(!text.includes(marker));
   },
   async no_production_api_route() {
-    // The R4H lab ran live DeepSeek experiments. What this must prove is that
-    // the lab added no API route, no serverless or edge function, and no
-    // committed secret to production. It previously proved that by requiring a
-    // byte-frozen production tree, which also forbids any later deliberate
-    // product change. R31A0 introduced one: the browser answers with DeepSeek
-    // using a key the user supplies at runtime. The substantive guarantee is
-    // therefore asserted directly, against the same baseline.
-    const diff = execFileSync('git', ['diff', '--name-only', '55df7f6d811e585789afb00979d7b246272d32eb', '--', 'web', 'api', 'vercel.json'], { cwd: ROOT, encoding: 'utf8' });
-    const changed = diff.trim().split('\n').filter(Boolean);
+    // The R4H lab ran live DeepSeek experiments. What this must prove is that the
+    // lab itself added no route, function or secret to production.
+    // R31A0 made the first deliberate product change (the browser answers with a
+    // key the visitor supplies). R31B1/B2 made the second: the owner's key is held
+    // on the server behind exactly one reviewed relay route, and the legacy static
+    // site is archived. So the guarantee is asserted directly: the only route in the
+    // tree is that relay, it satisfies its written contract, and nothing carries a key.
+    const { serverProxyContractFailures, serverProxyFileFailures, SERVER_PROXY_FILES } = await import('./server_proxy_policy.mjs');
+    const tracked = execFileSync('git', ['ls-files', 'api', 'app/api', 'app/server', 'app/src', 'pages/api', 'functions', 'netlify/functions'], { cwd: ROOT, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
     const routePattern = /^(?:api|pages\/api|app\/api|functions|netlify\/functions|vercel\/functions)(?:\/|$)/u;
-    assert.deepEqual(changed.filter((path) => routePattern.test(path)), [], 'no API or function route may be added');
-    const secretPattern = /\bsk-[A-Za-z0-9_-]{12,}|DEEPSEEK_API_KEY/u;
-    for (const path of changed) {
-      const body = await readFile(join(ROOT, path), 'utf8').catch(() => '');
-      assert.ok(!secretPattern.test(body), `production file must carry no secret material: ${path}`);
-    }
-    const vercelConfig = await readFile(join(ROOT, 'vercel.json'), 'utf8');
-    const vercel = JSON.parse(vercelConfig);
-    assert.equal(vercel.outputDirectory, 'web', 'production stays a static output directory');
-    assert.ok(!('functions' in vercel), 'no Vercel function may be declared');
+    assert.deepEqual(tracked.filter((path) => routePattern.test(path)), ['api/chat.js'], 'the reviewed relay is the only route');
+    const byPath = new Map();
+    for (const path of tracked) byPath.set(path, await readFile(join(ROOT, path), 'utf8').catch(() => ''));
+    assert.deepEqual(serverProxyContractFailures(byPath), [], 'the relay keeps its contract');
+    for (const path of SERVER_PROXY_FILES) assert.deepEqual(serverProxyFileFailures(path, byPath.get(path) || ''), [], path);
+    for (const [path, body] of byPath) assert.ok(!/\bsk-[A-Za-z0-9_-]{12,}/u.test(body), `production file must carry no key: ${path}`);
+    for (const path of tracked.filter((p) => p.startsWith('app/src/'))) assert.ok(!/r29b2m_r4h|hybrid_runtime/u.test(byPath.get(path)), `the product must not import the lab: ${path}`);
+    const vercel = JSON.parse(await readFile(join(ROOT, 'vercel.json'), 'utf8'));
+    assert.equal(vercel.outputDirectory, 'app/dist', 'production serves the built app');
+    assert.ok(!('functions' in vercel), 'no function may be declared beyond the reviewed route');
     const proxy = await readFile(join(ROOT, 'scripts', 'r29b2m_r4h_local_proxy.mjs'), 'utf8');
     assert.match(proxy, /local_proxy|LOCAL_PROXY/);
   },

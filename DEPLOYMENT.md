@@ -1,3 +1,5 @@
+> **Superseded (R31B2, 2026-09-20).** Production is now the app in `app/`, built by the root `vercel.json`, with one relay route `api/chat.js`. The legacy static site described below is archived under `archive/legacy_site/web/`. See `docs/r31/R31B2_CUTOVER.md`.
+
 # Deployment
 
 The first public deployment target is `efishother.com` on Vercel static hosting.

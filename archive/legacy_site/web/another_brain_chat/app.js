@@ -1,5 +1,7 @@
 import { BrowserChatRuntime } from "./browser_runtime.js?v=r28livefix0-live-q4-mount";
 import { createLocalContextBridge, createStateAdapterPacket } from "./context_bridge.js?v=r28livefix0-live-q4-mount";
+import { createDeepSeekAnswerPath, describeFailure } from "./deepseek_answer_path.js?v=r31a0-deepseek-product-path";
+import { clearKey, hasKey, isWellFormedKey, maskKey, saveKey, storageAvailable } from "./deepseek_key_store.js?v=r31a0-deepseek-product-path";
 
 const R28LIVEFIX0_BRANCH_MARKER = "R28LIVEFIX0";
 const R28LIVEFIX0_BRANCH_NAME = "r28livefix0-live-q4-mount";
@@ -519,6 +521,37 @@ function appendMessage(role, text, meta = {}) {
   }
   messageList.append(article);
   messageList.scrollTop = messageList.scrollHeight;
+}
+
+// R31A0: a message whose body can be updated while a remote answer streams in.
+function beginAssistantMessage() {
+  if (!messageList) {
+    warnMissing("message-list", "stream_assistant_message");
+    return { update() {}, finish() {}, remove() {} };
+  }
+  const article = document.createElement("article");
+  article.className = "message message-assistant";
+  const roleNode = document.createElement("div");
+  roleNode.className = "message-role";
+  roleNode.textContent = "efish";
+  const body = document.createElement("p");
+  body.textContent = "";
+  article.append(roleNode, body);
+  messageList.append(article);
+  messageList.scrollTop = messageList.scrollHeight;
+  return {
+    update(text) {
+      body.textContent = String(text || "");
+      messageList.scrollTop = messageList.scrollHeight;
+    },
+    finish(text) {
+      body.textContent = String(text || body.textContent || "");
+      messageList.scrollTop = messageList.scrollHeight;
+    },
+    remove() {
+      article.remove();
+    }
+  };
 }
 
 function shortEvidenceHint(packet = {}) {
@@ -1620,6 +1653,7 @@ on(contextClearButton, "click", () => {
   contextBridge.clear();
   runtime.setContextPackets([]);
   conversationTurns = [];
+  remoteConversation = [];
   setValue(contextImport, "");
   renderContextBridge();
 });
@@ -1634,6 +1668,203 @@ on(stateExportButton, "click", () => {
   setText(contextValidation, "StatePacket ready");
 });
 
+// ---------------------------------------------------------------------------
+// R31A0 — DeepSeek answer engine.
+//
+// When the person using this browser has supplied their own DeepSeek key, the
+// answer comes from DeepSeek. Otherwise, and whenever the remote call fails,
+// the existing local static router answers instead. The local q4 model is not
+// in the remote path: with a correct forward it failed every dialogue
+// behaviour family (R29B2M-R3), and the shipped browser worker attends over a
+// single token, so its generation is not contextual.
+// ---------------------------------------------------------------------------
+
+const engineBar = document.querySelector("#engine-bar");
+const engineDot = document.querySelector("#engine-dot");
+const engineLabel = document.querySelector("#engine-label");
+const engineNote = document.querySelector("#engine-note");
+const engineSettings = document.querySelector("#engine-settings");
+const engineSettingsToggle = document.querySelector("#engine-settings-toggle");
+const engineUsage = document.querySelector("#engine-usage");
+const keyInput = document.querySelector("#deepseek-key-input");
+const keySaveButton = document.querySelector("#deepseek-key-save");
+const keyClearButton = document.querySelector("#deepseek-key-clear");
+const keyStatus = document.querySelector("#deepseek-key-status");
+const localSignalToggle = document.querySelector("#local-signal-toggle");
+
+const LOCAL_SIGNAL_PREFERENCE = "another_brain.local_signal_enabled.v1";
+
+function readLocalSignalPreference() {
+  try {
+    return globalThis.localStorage?.getItem(LOCAL_SIGNAL_PREFERENCE) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeLocalSignalPreference(enabled) {
+  try {
+    globalThis.localStorage?.setItem(LOCAL_SIGNAL_PREFERENCE, enabled ? "1" : "0");
+  } catch {
+    /* preference is optional */
+  }
+}
+
+let deepseekPath = createDeepSeekAnswerPath({ localSignalEnabled: readLocalSignalPreference() });
+let engineTurnController = null;
+
+// The local router keeps a soft-limited history (72/96 characters per turn) that
+// suits its 256-token context. A remote model needs the turns intact, so the
+// remote path keeps its own untruncated, bounded transcript.
+const REMOTE_HISTORY_MAX_MESSAGES = 12;
+let remoteConversation = [];
+
+function rememberRemoteTurn(role, text) {
+  const content = String(text || "").trim();
+  if (!content) return;
+  remoteConversation.push({ role, content });
+  if (remoteConversation.length > REMOTE_HISTORY_MAX_MESSAGES) {
+    remoteConversation = remoteConversation.slice(-REMOTE_HISTORY_MAX_MESSAGES);
+  }
+}
+
+function rebuildAnswerPath() {
+  deepseekPath = createDeepSeekAnswerPath({ localSignalEnabled: readLocalSignalPreference() });
+}
+
+function setEngineState(state, label, note) {
+  if (engineDot) engineDot.setAttribute("data-engine-state", state);
+  setText(engineLabel, label);
+  setText(engineNote, note);
+}
+
+function renderEngineStatus(note) {
+  const present = hasKey();
+  if (present) {
+    setEngineState("remote", "DeepSeek 回答", note ?? `key ${maskKey()}`);
+  } else {
+    setEngineState("local", "本地静态回答", note ?? "未设置 API key");
+  }
+  if (keyStatus) {
+    keyStatus.textContent = present ? `已保存：${maskKey()}` : "未设置";
+    keyStatus.setAttribute("data-state", present ? "ok" : "warn");
+  }
+  renderEngineUsage();
+}
+
+function renderEngineUsage() {
+  if (!engineUsage) return;
+  const spending = deepseekPath.spending;
+  if (!spending.requests) {
+    engineUsage.textContent = "";
+    return;
+  }
+  engineUsage.textContent = `本次会话：${spending.requests}/${spending.request_limit} 次请求 · 输入 ${spending.input_tokens} tokens · 输出 ${spending.output_tokens} tokens`;
+}
+
+on(engineSettingsToggle, "click", () => {
+  if (!engineSettings) return;
+  const willOpen = engineSettings.hidden;
+  engineSettings.hidden = !willOpen;
+  engineSettingsToggle?.setAttribute("aria-expanded", String(willOpen));
+  if (willOpen) focusNode(keyInput);
+});
+
+on(keySaveButton, "click", () => {
+  const candidate = getValue(keyInput).trim();
+  if (!candidate) {
+    setText(keyStatus, "请先粘贴 key");
+    keyStatus?.setAttribute("data-state", "warn");
+    return;
+  }
+  if (!isWellFormedKey(candidate)) {
+    setText(keyStatus, "key 格式不像 DeepSeek key（应以 sk- 开头）");
+    keyStatus?.setAttribute("data-state", "warn");
+    return;
+  }
+  const saved = saveKey(candidate);
+  setValue(keyInput, "");
+  if (!saved.ok) {
+    setText(keyStatus, saved.reason === "browser_storage_unavailable" ? "此浏览器不允许本地存储" : "保存失败");
+    keyStatus?.setAttribute("data-state", "warn");
+    return;
+  }
+  rebuildAnswerPath();
+  renderEngineStatus();
+});
+
+on(keyClearButton, "click", () => {
+  clearKey();
+  setValue(keyInput, "");
+  rebuildAnswerPath();
+  renderEngineStatus();
+});
+
+on(localSignalToggle, "change", () => {
+  writeLocalSignalPreference(Boolean(localSignalToggle?.checked));
+  rebuildAnswerPath();
+  renderEngineStatus();
+});
+
+// Returns true when DeepSeek produced the answer, false to fall through to the
+// local static path.
+async function runDeepSeekTurn(text) {
+  const stream = beginAssistantMessage();
+  engineTurnController = new AbortController();
+  setEngineState("remote", "DeepSeek 回答", "生成中…");
+  let sawToken = false;
+  try {
+    const result = await deepseekPath.answer({
+      userText: text,
+      conversation: remoteConversation.slice(),
+      signal: engineTurnController.signal,
+      onToken: (_delta, accumulated) => {
+        sawToken = true;
+        stream.update(accumulated);
+      }
+    });
+
+    if (result.ok) {
+      stream.finish(result.text);
+      rememberConversationTurn("assistant", result.text);
+      rememberRemoteTurn("assistant", result.text);
+      const timing = result.first_token_ms === null ? "" : ` · 首字 ${result.first_token_ms}ms`;
+      renderEngineStatus(`key ${maskKey()}${timing}`);
+      return true;
+    }
+
+    stream.remove();
+    if (result.category === "user_cancel") {
+      renderEngineStatus("已取消");
+      return true;
+    }
+    setEngineState("error", "本地静态回答", describeFailure(result.category, result.reason));
+    return false;
+  } catch (error) {
+    stream.remove();
+    setEngineState("error", "本地静态回答", "远端回答失败，已回到本地路径");
+    return false;
+  } finally {
+    if (sawToken) renderEngineUsage();
+    engineTurnController = null;
+  }
+}
+
+// Warm the remote prefix cache when the visitor starts typing, so the first
+// answer does not pay the uncached prefill. Fires once, and never for someone
+// who only looks at the page.
+on(input, "focus", () => {
+  if (!deepseekPath.available()) return;
+  deepseekPath.primeCache().catch(() => {});
+}, { once: true });
+
+if (!storageAvailable()) {
+  setEngineState("local", "本地静态回答", "此浏览器不允许本地存储，无法保存 key");
+} else {
+  if (localSignalToggle) localSignalToggle.checked = readLocalSignalPreference();
+  renderEngineStatus();
+}
+
 on(form, "submit", async (event) => {
   event.preventDefault();
   if (running) return;
@@ -1644,6 +1875,7 @@ on(form, "submit", async (event) => {
 
   appendMessage("user", text);
   rememberConversationTurn("user", text);
+  rememberRemoteTurn("user", text);
   setValue(input, "");
   focusNode(input);
 
@@ -1658,6 +1890,13 @@ on(form, "submit", async (event) => {
   running = true;
   setDisabled(abortButton, false);
   try {
+    if (deepseekPath.available()) {
+      const answeredRemotely = await runDeepSeekTurn(text);
+      if (answeredRemotely) {
+        renderDebug();
+        return;
+      }
+    }
     const packet = await runtime.run(runtimeInput, { onStatus: setPipelineStatus });
     packet.display_input = text;
     packet.contextual_input_used = runtimeInput !== text;
@@ -1672,6 +1911,7 @@ on(form, "submit", async (event) => {
       fallbackReason: packet.fallback_reason || packet.process_trace?.generation?.fallback_reason || ""
     });
     rememberConversationTurn("assistant", packet.final_answer);
+    rememberRemoteTurn("assistant", packet.final_answer);
     packet.final_answer = dashboardFinalAnswer;
     updateStatus(packet);
     renderAssetStatus(packet.asset_status, runtime.deliveryConfig);
@@ -1695,6 +1935,8 @@ on(input, "keydown", (event) => {
 
 on(debugToggle, "change", renderDebug);
 on(abortButton, "click", () => {
+  engineTurnController?.abort("user_cancel");
+  deepseekPath.cancel();
   runtime.abort();
   setDisabled(abortButton, true);
   setPipelineStatus("fallback");
