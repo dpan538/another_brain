@@ -1,0 +1,269 @@
+/* efish other — visual system
+   ground / paper / dot / ink come from the brown collage reference;
+   the typewriter face, underlined labels and date stamp from the ticket;
+   mixed faces inside one word from the book cover; the chat card from the
+   wavy-bordered page; the keys from the line-drawn unit sheet.
+   The page and the card share one bright paper white, so on the chat page only
+   the wavy line separates them. The clay brown of the collage reference is kept
+   as an accent (date stamp, struck keys) rather than as a ground. The neon
+   marker is the only colour outside that palette. */
+:root {
+  --ground: #fbfaf8;
+  --clay: #80524a;
+  --paper: #fbfaf8;
+  --ink: #1c1b1a;
+  --dot: #9fd4e8;
+  --neon: #3dff1f;
+  /* OPPO Sans 4.0 is the global face. "OPPO Sans Web" is the shipped file, added
+     by ui/fonts.js once the page is idle; "OPPO Sans 4.0" is a copy already on the
+     device. Typewriter Latin stays Courier Prime; its Chinese is OPPO Sans. */
+  --oppo: "OPPO Sans Web", "OPPO Sans 4.0", "OPPO Sans";
+  --type: "Courier Prime", "Courier New", var(--oppo), "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", monospace;
+  --write: var(--oppo), "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+  --bar-h: 72px;
+  --edge: 28px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--type);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  -webkit-user-select: none; user-select: none;
+  -webkit-touch-callout: none;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+
+/* scanned-paper grain over everything */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .06; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+}
+
+.app { position: relative; height: 100%; max-width: 480px; margin: 0 auto; overflow: hidden; }
+
+/* ───────── top bar ───────── */
+.topbar {
+  position: absolute; z-index: 20; top: 0; left: 0; right: 0;
+  height: calc(var(--bar-h) + env(safe-area-inset-top)); padding: calc(env(safe-area-inset-top) + 10px) var(--edge) 0;
+  display: flex; align-items: center; justify-content: space-between; pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+/* one logo for the whole product: large over the first drawing, docked here once the page moves */
+.topbar .logo { transform-origin: 0 0; transform: translate(var(--lx, 0px), var(--ly, 0px)) scale(var(--ls, 1)); will-change: transform; }
+/* a direct jump: the stage cross-fades while the logo travels in a straight line */
+.app.is-jumping .topbar .logo { transition: transform .5s cubic-bezier(.4, 0, .2, 1); }
+.stage { transition: opacity .2s linear; }
+.about-link {
+  background: none; border: 0; padding: 6px 2px; color: var(--ink);
+  font: 400 15px var(--type); letter-spacing: .04em; text-transform: uppercase;
+  border-radius: 0;
+}
+
+/* ───────── hand-drawn marks ───────── */
+.hu { position: relative; display: inline-block; padding-bottom: .42em; }
+.hu-line { position: absolute; left: -3%; bottom: 0; width: 106%; height: .52em; overflow: visible; pointer-events: none; }
+.hu-line path { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+
+/* ───────── logo ───────── */
+.logo { background: none; border: 0; padding: 0; display: inline-block; line-height: 1; color: var(--ink); }
+.logo--dark { color: var(--ink); }
+.logo-word { position: relative; display: inline-flex; align-items: baseline; font-size: var(--logo-size, 28px); padding: .12em .1em .1em; }
+.logo--sm { --logo-size: 27px; }
+.logo--xl { --logo-size: clamp(64px, 21vw, 92px); }
+.lt { display: inline-block; position: relative; animation: lt-in .7s cubic-bezier(.25, .7, .3, 1) both; }
+@keyframes lt-in { from { opacity: 0; transform: translateY(.12em) rotate(-4deg) scale(.94); } }
+.lf-abril { font-family: "Abril Fatface", Georgia, serif; font-size: 1.04em; }
+.lf-yellow { font-family: "Yellowtail", cursive; font-size: 1.26em; margin: 0 -.02em; }
+.lf-courier { font-family: "Courier Prime", monospace; font-weight: 700; font-size: .98em; }
+.lf-fraktur { font-family: "UnifrakturMaguntia", serif; font-size: 1.14em; }
+.lf-outline { font-family: "Space Mono", monospace; font-weight: 700; font-size: .98em; color: transparent; -webkit-text-stroke: .035em var(--ink); }
+.lf-playfair { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 900; font-size: 1.06em; }
+.lf-rubik { font-family: "Rubik Mono One", sans-serif; font-size: .8em; }
+.lt-i { padding: 0 .1em; margin: 0 .05em; color: var(--ink); }
+.lt-i.lf-outline { -webkit-text-stroke-color: var(--ink); }
+.lt-i-patch { position: absolute; inset: .04em -.02em -.02em; background: var(--dot); z-index: -1; transform: rotate(-4deg); clip-path: polygon(3% 6%, 97% 0, 100% 95%, 0 100%); }
+.logo-scribble { position: absolute; left: -6%; top: -8%; width: 112%; height: 116%; overflow: visible; pointer-events: none; mix-blend-mode: multiply; }
+.logo-scribble path { fill: none; stroke: #39ff14; stroke-width: 7.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: scribble 11s cubic-bezier(.5, 0, .3, 1) infinite; }
+.logo-scribble path.late { animation-name: scribble-late; }
+@keyframes scribble { 0% { stroke-dashoffset: 1; } 11% { stroke-dashoffset: 0; } 90% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1; } }
+@keyframes scribble-late { 0%, 10% { stroke-dashoffset: 1; } 15% { stroke-dashoffset: 0; } 92% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1; } }
+
+/* ───────── one pinned stage ─────────
+   The deck scrolls, the stage does not: 4.2 screens of scroll pass under one
+   sticky screen, and scroll position is the only clock the drawing has. The chat
+   window is not a second page; it is the last frame of the same stage. */
+.deck { height: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.deck::-webkit-scrollbar { display: none; }
+.track { position: relative; height: 560vh; height: 560dvh; }
+.stage { --bar-px: 72; position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden; touch-action: none; }
+
+.scene { position: absolute; inset: 0; pointer-events: none; will-change: opacity; }
+.stage.is-chat .scene { visibility: hidden; }
+.fig { position: absolute; inset: 0; display: block; overflow: visible; }
+.fig-lines path, .fig-arcs path { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+.fig-arcs path { stroke-width: 2.2px; stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+.fig-dot { fill: var(--ink); }
+.fig-sticker { fill: var(--dot); }
+.fig-water { fill: var(--dot); stroke: none; }
+.fig-water + .fig-land, .fig-land { fill: var(--ink); stroke: none; }
+.fig-neon { fill: none; stroke: #39ff14; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; mix-blend-mode: multiply; }
+/* letters sit on top of lines: a paper-coloured edge keeps them readable where a line passes behind */
+.fig-glyph text { fill: var(--ink); paint-order: stroke; stroke: var(--ground); stroke-width: 7px; stroke-linejoin: round; }
+.fig-glyph.is-paper text { fill: var(--paper); stroke: none; }
+.fig-glyph.is-bare text { stroke: none; }
+.fig-glyph.is-paper .fig-dot { fill: var(--paper); }
+.g-abril { font-family: "Abril Fatface", Georgia, serif; }
+.g-yellow { font-family: "Yellowtail", cursive; }
+.g-courier { font-family: "Courier Prime", monospace; font-weight: 700; }
+.g-fraktur { font-family: "UnifrakturMaguntia", serif; }
+.g-playfair { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 900; }
+.g-rubik { font-family: "Rubik Mono One", sans-serif; }
+.g-sans { font-family: var(--write); font-weight: 700; }
+.g-han { font-family: var(--write); font-weight: 700; }
+.g-italic { font-family: "Courier Prime", monospace; font-style: italic; font-weight: 400; }
+
+.scene-line { position: absolute; left: var(--edge); right: var(--edge); margin: 0; text-align: center; font: 400 clamp(16px, 4.5vw, 19px)/1.45 var(--type); letter-spacing: .02em; }
+.scene-text { position: absolute; left: var(--edge); right: var(--edge); bottom: calc(66px + env(safe-area-inset-bottom)); height: 44px; display: grid; place-items: center; text-align: center; }
+.scene-cap { grid-area: 1 / 1; margin: 0; font: 700 clamp(17px, 4.8vw, 20px)/1.35 var(--write); letter-spacing: .02em; will-change: transform, opacity; }
+
+.scroll-hint {
+  position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px; background: none; border: 0; color: var(--ink);
+  font: 400 12px var(--type); letter-spacing: .16em; text-transform: uppercase; will-change: opacity;
+}
+.scroll-hint svg { animation: bob 1.8s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+/* ───────── chat ───────── */
+.chat-layer { position: absolute; inset: 0; display: flex; flex-direction: column; padding-top: calc(var(--bar-h) + env(safe-area-inset-top)); opacity: var(--chat, 0); pointer-events: none; }
+.stage.is-chat .chat-layer { pointer-events: auto; }
+.chat-layer .kb { transform: translateY(calc((1 - var(--chat, 0)) * 26px)); }
+.chat-card { flex: 1 1 auto; min-height: 0; margin: 2px 8px 6px; }
+.wavy-card { position: relative; background: var(--paper); color: var(--ink); }
+.wavy-frame { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.wavy-frame path { fill: none; stroke: var(--ink); stroke-width: 1.25; stroke-linejoin: round; }
+.wavy-label { position: absolute; left: 30px; top: 28px; z-index: 2; font: 700 13px var(--write); letter-spacing: .01em; }
+.card-new { position: absolute; right: 28px; top: 22px; z-index: 3; background: none; border: 0; padding: 6px 4px; color: var(--ink); font: 400 14px var(--type); letter-spacing: .1em; text-transform: uppercase; transition: opacity .2s; }
+.card-new:disabled { opacity: .28; }
+
+.pages {
+  touch-action: pan-y;
+  position: absolute; inset: 54px 24px 92px 24px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+  display: flex; flex-direction: column; gap: 16px; padding: 22px 0 10px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30px, #000 calc(100% - 12px), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, #000 30px, #000 calc(100% - 12px), transparent 100%);
+  -webkit-user-select: text; user-select: text;
+}
+.pages::-webkit-scrollbar { display: none; }
+.pages > :first-child { margin-top: auto; }          /* a short conversation sits at the bottom, above the input line */
+.msg { margin: 0; max-width: 84%; white-space: pre-wrap; overflow-wrap: anywhere; }
+/* you, typed: on the right */
+.msg-user { align-self: flex-end; text-align: right; font: 400 clamp(16px, 4.4vw, 18px)/1.5 var(--type); }
+/* efish, written: on the left */
+.msg-efish { align-self: flex-start; text-align: left; font: 700 clamp(18px, 5vw, 21px)/1.36 var(--write); letter-spacing: -.005em; }
+/* the app, not efish */
+.msg-note { align-self: center; text-align: center; font: italic 400 14px/1.5 var(--type); opacity: .62; }
+/* the line you type on: bottom-left, where a typed line begins */
+.pg-draft { position: absolute; left: 38px; right: 30px; bottom: 34px; max-height: 3.2em; display: flex; align-items: flex-end; overflow: hidden; padding-bottom: 9px; }
+.pg-draft p { margin: 0; width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; font: 400 clamp(17px, 4.7vw, 20px)/1.5 var(--type); }
+.draft-rule { position: absolute; left: 0; bottom: 0; width: 132px; height: 6px; overflow: visible; }
+.draft-rule path { fill: none; stroke: var(--ink); stroke-width: 1.25; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.ghost { opacity: .32; }
+.caret { display: inline-block; width: .55em; height: 1.05em; margin-left: 2px; vertical-align: -.16em; background: var(--ink); animation: blink 1.05s steps(1) infinite; }
+.caret-write { width: .5em; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ───────── keyboard ───────── */
+.kb { flex: 0 0 auto; padding: 0 3px calc(8px + env(safe-area-inset-bottom)); color: var(--ink); touch-action: none; }
+.kb-bar { height: 46px; display: flex; align-items: center; gap: 10px; padding: 0 8px; margin: 0 5px; border-bottom: 1.5px dashed rgba(28, 27, 26, .32); }
+.kb-buffer { flex: 0 0 auto; font: 700 17px var(--type); padding: 0 1px .3em; }
+.kb-buffer .hu-line path { stroke: var(--neon); stroke-width: 2.6; }
+.kb-buffer.is-fixed .hu-line path { stroke: var(--clay); }
+.key-pop { position: absolute; left: 50%; bottom: calc(100% - 6px); transform: translateX(-50%); z-index: 5; min-width: 52px; height: 60px; padding: 0 8px; display: grid; place-items: center; background: var(--paper); border: 1.5px solid var(--ink); border-radius: 10px; font: 700 30px/1 var(--type); color: var(--ink); pointer-events: none; }
+.kb-mode { flex: 0 0 auto; font: 400 11px var(--type); letter-spacing: .14em; text-transform: uppercase; opacity: .55; }
+.kb-cands { touch-action: pan-x; flex: 1 1 auto; min-width: 0; display: flex; align-items: center; overflow-x: auto; scrollbar-width: none; }
+.kb-cands::-webkit-scrollbar { display: none; }
+.kb-cand { flex: 0 0 auto; background: none; border: 0; padding: 8px 10px; font: 600 21px var(--write); color: var(--ink); white-space: nowrap; touch-action: pan-x; }
+.kb-cand sup { font: 400 10px var(--type); opacity: .55; margin-right: 2px; vertical-align: 7px; }
+.kb-cand:first-child { background: linear-gradient(transparent 52%, var(--neon) 52%, var(--neon) 88%, transparent 88%); }
+
+.kb-row { display: flex; gap: 0; justify-content: center; margin: 0; }
+.kb-row-1 .key:first-child { flex-grow: 1.5; justify-items: end; padding-right: 2px; }
+.kb-row-1 .key:last-child { flex-grow: 1.5; justify-items: start; padding-left: 2px; }
+.key { position: relative; flex: 1 1 0; min-width: 0; height: 60px; padding: 0 1.5px; background: none; border: 0; color: var(--ink); display: grid; place-items: center; -webkit-tap-highlight-color: transparent; touch-action: none; }
+.key-wide { flex-grow: 1.45; }
+.key-space { flex-grow: 4.6; padding: 0 4px; }
+.key-return { flex-grow: 2.1; }
+.cap { position: relative; width: calc(100% - 5px); height: 45px; display: grid; place-items: center; transform: rotate(var(--tilt, 0deg)); font: 700 19px/1 var(--type); }
+.cap-line { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.cap-line path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; transition: fill .08s, stroke .08s; }
+.cap-label { position: relative; display: grid; place-items: center; transition: color .08s; }
+.cap-eyu { font: 700 18px var(--write); }
+.cap-eyu .cap-line path { fill: var(--dot); stroke: var(--dot); }
+.key[data-lit] .cap-line path, .key[aria-pressed="true"] .cap-line path, .ask[data-lit] .cap-line path { fill: var(--clay); stroke: var(--clay); }
+.key[data-lit] .cap-label, .key[aria-pressed="true"] .cap-label, .ask[data-lit] .cap-label { color: var(--paper); }
+.unit { position: relative; display: block; width: 100%; height: 40px; margin-top: 4px; border: 1.5px solid currentColor; border-top: 0; border-bottom-style: dashed; border-radius: 0 0 14px 14px; }
+.unit b { position: absolute; left: 9px; top: -3px; font: 700 10px var(--write); letter-spacing: .05em; }
+.key[data-lit] .unit { background: rgba(128, 82, 74, .16); }
+
+/* the 鳄 board: questions instead of letters, drawn with the same pen, same height as the three letter rows */
+.kb-croc { height: 180px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 60px); }
+.ask { min-width: 0; height: 60px; padding: 0 2px; display: grid; place-items: center; background: none; border: 0; color: var(--ink); touch-action: none; -webkit-tap-highlight-color: transparent; }
+.cap-ask { width: calc(100% - 10px); height: 44px; font: 500 15.5px/1.15 var(--type); letter-spacing: .01em; }
+.key-egg { flex-grow: 1.1; }
+.key-memory { flex-grow: 3.1; }
+.cap-memory { font: 500 15px/1 var(--type); }
+
+/* ───────── about / key sheet ───────── */
+.about::-webkit-scrollbar { display: none; }
+.about { scrollbar-width: none; position: absolute; inset: 0; z-index: 40; background: var(--paper); color: var(--ink); overflow-y: auto; -webkit-user-select: text; user-select: text; }
+.about-bar { position: sticky; top: 0; height: calc(var(--bar-h) + env(safe-area-inset-top)); padding: calc(env(safe-area-inset-top) + 10px) var(--edge) 0; display: flex; align-items: center; justify-content: space-between; background: var(--paper); }
+.xhand { width: 44px; height: 44px; margin-right: -4px; display: grid; place-items: center; background: none; border: 0; padding: 0; color: var(--ink); transform: rotate(-4deg); }
+.about-body { max-width: 30em; margin: 0 auto; padding: 5vh 34px calc(36px + env(safe-area-inset-bottom)); display: grid; gap: 34px; justify-items: center; text-align: center; }
+.about-foot { justify-self: stretch; }
+.about h2, .sheet h2 { margin: 0 0 12px; font: 400 15px var(--type); letter-spacing: .12em; }
+.about p { margin: 0; font: 400 17px/1.62 var(--type); }
+.about p.zh { opacity: .72; }
+.about-go { display: inline-flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; color: var(--ink); }
+.about-go svg:last-child { margin-top: -.5em; }
+.about-tag { font-size: 21px !important; line-height: 1.25 !important; display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: .3em; }
+.t-type { font: 400 .92em var(--type); }
+.t-write { font: 700 1em var(--write); letter-spacing: -.02em; }
+.t-chat { font: 400 1.3em "Yellowtail", cursive; }
+.about-foot { display: grid; justify-items: center; gap: 6px; padding-top: 16px; border-top: 1.5px dashed rgba(28, 27, 26, .4); font: 400 12px var(--type); opacity: .7; }
+
+/* 本地记忆 */
+.memory-title { margin: 0 !important; font: 700 17px var(--write) !important; letter-spacing: .04em !important; }
+.memory-body { max-width: 30em; margin: 0 auto; padding: 2vh 34px calc(36px + env(safe-area-inset-bottom)); }
+.memory-note, .memory-empty { font: 400 14px/1.6 var(--write) !important; opacity: .62; text-align: center; }
+.memory-list { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 0; }
+.memory-list li { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-top: 1.5px dashed rgba(28, 27, 26, .32); }
+.memory-list li.is-current .memory-line::before { content: ""; display: inline-block; width: .55em; height: .55em; margin-right: .5em; border-radius: 50%; background: var(--neon); vertical-align: .08em; }
+.memory-open { flex: 1 1 auto; min-width: 0; display: grid; gap: 4px; text-align: left; background: none; border: 0; padding: 0; color: var(--ink); }
+.memory-when { font: 400 12px var(--type); opacity: .6; letter-spacing: .04em; }
+.memory-line { font: 700 17px/1.35 var(--write); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.memory-forget { flex: 0 0 auto; background: none; border: 0; padding: 6px 2px; color: var(--ink); font: 400 12px var(--type); letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
+
+.sheet { position: absolute; inset: 0; z-index: 45; display: grid; place-items: center; padding: 24px; background: rgba(28, 27, 26, .38); }
+.sheet-card { width: 100%; max-width: 360px; background: var(--paper); color: var(--ink); padding: 22px; -webkit-user-select: text; user-select: text; }
+.sheet p { margin: 0 0 12px; font: 400 13px/1.55 var(--type); }
+.sheet input { width: 100%; padding: 10px; border: 1.5px solid var(--ink); border-radius: 0; background: transparent; font: 400 15px var(--type); color: var(--ink); }
+.sheet-note { min-height: 1.4em; opacity: .7; margin-top: 8px !important; }
+.sheet-actions { display: flex; gap: 8px; }
+.sheet-actions button { flex: 1; padding: 9px 0; background: none; border: 1.5px solid var(--ink); border-radius: 0; font: 700 13px var(--type); text-transform: uppercase; letter-spacing: .08em; }
+.sheet-actions button:first-child { background: var(--ink); color: var(--paper); }
+
+button:focus-visible, .about-link:focus-visible { outline: 2px solid var(--neon); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lt { animation: none; }
+  .logo-scribble path { animation: none; stroke-dashoffset: 0; }
+  .scroll-hint svg, .caret { animation: none; }
+  .topbar .logo { transition: none; }
+}

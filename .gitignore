@@ -110,3 +110,7 @@ context_payloads/
 *.context-packet.json
 *.evidence-packet.json
 *.state-packet.json
+
+# R31 new app build output
+app/dist/
+app/node_modules/

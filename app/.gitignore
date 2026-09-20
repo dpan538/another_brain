@@ -1,0 +1,6 @@
+
+# local secrets for the dev server — never commit
+.env.local
+.env.*.local
+node_modules/
+dist/

@@ -5,6 +5,8 @@ import { dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { normalizeRepoPath } from "./static_llm_policy.mjs";
+import { byokContractFailures, byokFileFailures, importsServerLab, isByokProductPath } from "./byok_product_policy.mjs";
+import { isServerProxyPath, serverProxyContractFailures, serverProxyFileFailures } from "./server_proxy_policy.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const TEXT_EXTS = new Set([".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".json", ".md", ".html", ".txt", ".sh"]);
@@ -17,7 +19,7 @@ const PRODUCTION_BUILD_FILES = new Set([
 ]);
 
 function isProductionPath(rel) {
-  return /^(?:web|api|pages\/api|app\/api|functions|netlify\/functions|vercel\/functions)(?:\/|$)/.test(rel) || PRODUCTION_BUILD_FILES.has(rel);
+  return /^(?:web|api|pages\/api|app\/api|app\/server|app\/src|functions|netlify\/functions|vercel\/functions)(?:\/|$)/.test(rel) || PRODUCTION_BUILD_FILES.has(rel);
 }
 
 async function walk(dir) {
@@ -40,11 +42,25 @@ export async function checkStaticLocalProduct(options = {}) {
   const failures = [];
   const allFiles = await walk(root);
   const productionFiles = allFiles.filter((path) => isProductionPath(normalizeRepoPath(relative(root, path))));
+  const byPath = new Map();
   for (const path of productionFiles) {
     const rel = normalizeRepoPath(relative(root, path));
     if (!TEXT_EXTS.has(extname(path).toLowerCase())) continue;
     const text = await readFile(path, "utf8").catch(() => "");
     if (!text) continue;
+    byPath.set(rel, text);
+
+    // A reviewed BYOK file may name the DeepSeek host. It still may not carry a
+    // secret, reference another model host, or import the server-side lab.
+    if (isByokProductPath(rel)) {
+      failures.push(...byokFileFailures(rel, text));
+      continue;
+    }
+    // R31B1: one reviewed relay route. It is held to its own, stricter contract.
+    if (isServerProxyPath(rel)) {
+      failures.push(...serverProxyFileFailures(rel, text));
+      continue;
+    }
     if (/^(?:api|pages\/api|app\/api|functions|netlify\/functions|vercel\/functions)\//.test(rel) && /llm|model|inference|generate|completion|deepseek|static_llm/i.test(text)) {
       failures.push({ code: "api_or_function_llm_inference_surface", path: rel });
     }
@@ -63,21 +79,35 @@ export async function checkStaticLocalProduct(options = {}) {
     for (const match of lineMatches(text, /DEEPSEEK_API_KEY|Authorization\s*[:=]\s*["'`]?Bearer|\bsk-[A-Za-z0-9_-]{12,}/i)) {
       failures.push({ code: "browser_or_production_secret_reference", path: rel, line: match.line });
     }
-    for (const match of lineMatches(text, /src\/hybrid_runtime|hybrid_runtime\/|r29b2m_r4h_(?:local_proxy|live|run_live)/i)) {
-      failures.push({ code: "production_import_or_copy_of_hybrid_lab", path: rel, line: match.line });
+    if (importsServerLab(text)) {
+      failures.push({ code: "production_import_or_copy_of_hybrid_lab", path: rel });
+    }
+    for (const match of lineMatches(text, /r29b2m_r4h_(?:local_proxy|live|run_live)/i)) {
+      failures.push({ code: "production_copy_of_hybrid_lab_runner", path: rel, line: match.line });
     }
   }
+  failures.push(...byokContractFailures(byPath));
+  failures.push(...serverProxyContractFailures(byPath));
+
+  // R31B1: report what is true of this tree. When the relay is present there IS an
+  // API route and an Edge function, exactly one, and saying otherwise would be a lie.
+  const relay = byPath.has("app/api/chat.js");
   return {
     ok: failures.length === 0,
     profile: "static_local_product",
     scanned_production_files: productionFiles.length,
     policy: {
-      no_external_model_api: true,
+      // R31A0: the product answers with DeepSeek, called by the browser with a
+      // key the user supplies at runtime. R31B1: or relayed through one reviewed
+      // route that holds the owner's key on the server. Neither does any inference.
+      browser_byok_remote_answer: true,
+      server_held_key_single_relay_route: relay,
+      no_committed_secret: true,
       no_backend_inference: true,
-      no_api_route: true,
-      no_vercel_function: true,
-      no_edge_function: true,
-      no_browser_key: true,
+      no_api_route: !relay,
+      no_vercel_function: !relay,
+      no_edge_function: !relay,
+      no_committed_browser_key: true,
       same_origin_static_model_assets_only: true,
     },
     failures,

@@ -5,10 +5,13 @@ import { dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { normalizeRepoPath } from "./static_llm_policy.mjs";
+import { byokFileFailures, importsServerLab, isByokProductPath } from "./byok_product_policy.mjs";
+import { isServerProxyPath, isServerProxyTestPath, serverProxyFileFailures } from "./server_proxy_policy.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const TEXT_EXTS = new Set([".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".json", ".md", ".html", ".txt", ".sh"]);
-const SKIP_DIRS = new Set([".git", "node_modules", "artifacts"]);
+// "dist" is build output: it is checked at its source, not re-scanned as a bundle.
+const SKIP_DIRS = new Set([".git", "node_modules", "artifacts", "dist"]);
 const LAB_PATHS = [
   /^config\/deepseek_pricing_snapshot\.json$/,
   /^config\/r29b2m_r4h(?:_r[23])?_live_policy\.json$/,
@@ -28,6 +31,11 @@ const LAB_PATHS = [
   /^schemas\/local_signal_packet_v[12]\.schema\.json$/,
   /^scripts\/audit_legacy_no_backend_full_repo\.mjs$/,
   /^scripts\/check_hybrid_lab_isolation\.mjs$/,
+  // R31A0 BYOK policy and its tests name the DeepSeek host by design.
+  /^scripts\/byok_product_policy\.mjs$/,
+  /^scripts\/server_proxy_policy\.mjs$/,
+  /^tests\/r31a0\//,
+  /^docs\/r31\//,
   /^scripts\/check_no_backend_llm_reconciled\.mjs$/,
   /^scripts\/check_static_local_product_no_backend\.mjs$/,
   /^scripts\/r29b2m_r4h_/,
@@ -89,9 +97,20 @@ export function evaluateHybridIsolation(entries, policy) {
   }
 
   for (const [path, text] of byPath) {
+    // R31A0: reviewed BYOK product files answer with DeepSeek from the browser.
+    // They are held to the BYOK contract instead of the lab-isolation rule.
+    if (isByokProductPath(path)) {
+      failures.push(...byokFileFailures(path, text));
+      continue;
+    }
+    // R31B1: the one reviewed relay route holds the owner's key on the server.
+    if (isServerProxyPath(path) || isServerProxyTestPath(path)) {
+      failures.push(...serverProxyFileFailures(path, text));
+      continue;
+    }
     const deepseekReference = /api\.deepseek\.com|DEEPSEEK_API_KEY|deepseek-v4-flash|LiveDeepSeekAdapter|live_deepseek_adapter/i.test(text);
     if (deepseekReference && !isHybridLabPath(path)) failures.push({ code: "deepseek_reference_outside_hybrid_lab", path });
-    if (isProductionSurface(path) && /api\.deepseek\.com|DEEPSEEK_API_KEY|Authorization\s*[:=]\s*["'`]?Bearer|src\/hybrid_runtime|hybrid_runtime\/|r29b2m_r4h_/i.test(text)) {
+    if (isProductionSurface(path) && (/api\.deepseek\.com|DEEPSEEK_API_KEY|Authorization\s*[:=]\s*["'`]?Bearer|r29b2m_r4h_/i.test(text) || importsServerLab(text))) {
       failures.push({ code: "production_surface_imports_or_exposes_hybrid_lab", path });
     }
     if (isHybridServerSource(path) && /(?:listen|host|bind)[^\n]{0,80}(?:0\.0\.0\.0|\[?::\]?)/i.test(text)) {
@@ -123,6 +142,7 @@ export function evaluateHybridIsolation(entries, policy) {
     public_safe_fixtures_only: true,
     production_route_allowed: false,
     browser_key_allowed: false,
+    byok_product_path_allowed: true,
     deployment_allowed: false,
     failures,
   };

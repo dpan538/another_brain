@@ -128,6 +128,9 @@
     "check:no-backend-llm": "node scripts/check_no_backend_llm_reconciled.mjs",
     "check:static-local-product": "node scripts/check_static_local_product_no_backend.mjs",
     "check:hybrid-lab-isolation": "node scripts/check_hybrid_lab_isolation.mjs",
+    "test:r31a0": "node --test tests/r31a0/test_deepseek_answer_path.mjs tests/r31a0/test_byok_policy.mjs tests/r31a0/test_performance_budget.mjs tests/r31a0/test_bilingual_evidence.mjs tests/r31a0/server_proxy_policy.test.mjs",
+    "check:byok-product-policy": "node --test tests/r31a0/test_byok_policy.mjs",
+    "check:r31a0-product-path": "npm run --silent check:static-local-product && npm run --silent check:hybrid-lab-isolation && npm run --silent check:r27b0-static-budget && npm run --silent test:r31a0",
     "audit:legacy-no-backend-full-repo": "node scripts/audit_legacy_no_backend_full_repo.mjs",
     "create:static-llm-manifest": "node scripts/create_static_llm_manifest.mjs",
     "eval:static-llm-asset-loader": "node scripts/eval_static_llm_asset_loader.mjs",
@@ -877,6 +880,7 @@
     "r30j1c-r1:audit-sources": "python3 scripts/r30j1c_r1_audit_source_availability.py",
     "r30j1c-r1:finalize-blocked": "python3 scripts/r30j1c_r1_finalize_blocked.py",
     "r30j1c-r1:production-diff-gate": "node scripts/r30j1c_r1_no_production_change_gate.mjs",
-    "test:r30j1c-r1": "python3 -m unittest discover -s tests/r30j1c_r1 -q"
+    "test:r30j1c-r1": "python3 -m unittest discover -s tests/r30j1c_r1 -q",
+    "check:server-proxy-policy": "node --test tests/r31a0/server_proxy_policy.test.mjs"
   }
 }

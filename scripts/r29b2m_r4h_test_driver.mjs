@@ -144,8 +144,28 @@ const tests = {
     for (const marker of ['optimizer.step(', 'mlx.optimizers', 'loss.backward(', 'model.train(']) assert.ok(!text.includes(marker));
   },
   async no_production_api_route() {
+    // The R4H lab ran live DeepSeek experiments. What this must prove is that
+    // the lab added no API route, no serverless or edge function, and no
+    // committed secret to production. It previously proved that by requiring a
+    // byte-frozen production tree, which also forbids any later deliberate
+    // product change. R31A0 introduced one: the browser answers with DeepSeek
+    // using a key the user supplies at runtime. The substantive guarantee is
+    // therefore asserted directly, against the same baseline.
     const diff = execFileSync('git', ['diff', '--name-only', '55df7f6d811e585789afb00979d7b246272d32eb', '--', 'web', 'api', 'vercel.json'], { cwd: ROOT, encoding: 'utf8' });
-    assert.equal(diff.trim(), ''); const proxy = await readFile(join(ROOT, 'scripts', 'r29b2m_r4h_local_proxy.mjs'), 'utf8'); assert.match(proxy, /local_proxy|LOCAL_PROXY/);
+    const changed = diff.trim().split('\n').filter(Boolean);
+    const routePattern = /^(?:api|pages\/api|app\/api|functions|netlify\/functions|vercel\/functions)(?:\/|$)/u;
+    assert.deepEqual(changed.filter((path) => routePattern.test(path)), [], 'no API or function route may be added');
+    const secretPattern = /\bsk-[A-Za-z0-9_-]{12,}|DEEPSEEK_API_KEY/u;
+    for (const path of changed) {
+      const body = await readFile(join(ROOT, path), 'utf8').catch(() => '');
+      assert.ok(!secretPattern.test(body), `production file must carry no secret material: ${path}`);
+    }
+    const vercelConfig = await readFile(join(ROOT, 'vercel.json'), 'utf8');
+    const vercel = JSON.parse(vercelConfig);
+    assert.equal(vercel.outputDirectory, 'web', 'production stays a static output directory');
+    assert.ok(!('functions' in vercel), 'no Vercel function may be declared');
+    const proxy = await readFile(join(ROOT, 'scripts', 'r29b2m_r4h_local_proxy.mjs'), 'utf8');
+    assert.match(proxy, /local_proxy|LOCAL_PROXY/);
   },
 };
 
