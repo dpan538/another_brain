@@ -84,13 +84,19 @@ export const DESIGN = { w: 400, h: 520 };
 const CROWN = [200, 176];
 const SEED = [[200, 318], [200, 262], [200, 205], [128, 232], [262, 246], [300, 214], [158, 160], [250, 168], [112, 150], [84, 196], [140, 96],
   [196, 120], [190, 62], [92, 262], [150, 290], [298, 132], [268, 108], [322, 176], [240, 300], [306, 270], [70, 170], [244, 70]];
-const NODES = SEED.map(([x, y], n) => (n === 0 ? [200, 304] : [200 + (x - 200) * 0.88, 180 + (y - 190) * 0.78]));
+const NODES = SEED.map(([x, y], n) => (n === 0 ? [200, 298] : [200 + (x - 200) * 0.88, 180 + (y - 190) * 0.78]));
 const EDGES = [[0, 1], [1, 2], [1, 3], [1, 4], [4, 5], [2, 6], [2, 7], [6, 8], [8, 9], [6, 10], [2, 11], [11, 12], [3, 13], [3, 14], [7, 15], [7, 16], [5, 17], [4, 18], [5, 19], [9, 20], [16, 21]];
 const STICKERS = [3, 7, 12, 17];
 function actTree() {
-  const crown = curve((t) => { const a = -Math.PI / 2 + t * TAU; const f = 0.84 + 0.2 * Math.abs(Math.sin(4 * a + 0.35)) * (1 + 0.16 * Math.sin(3 * a + 1)); return onEllipse(CROWN, 174, 150, a, f); }, 400);
-  const strokes = [crown, bent([[177, 310], [173, 396], [162, 430], [130, 452]]), bent([[223, 310], [227, 396], [238, 430], [270, 452]]), seg([88, 452], [312, 452]),
-    ...EDGES.map(([a, b]) => seg(NODES[a], NODES[b]))];
+  // Eight lobes. The phase puts the middle of a lobe at the very bottom (and top), so the trunk
+  // joins a smooth stretch of outline instead of a cusp; the slow second term keeps it from
+  // looking stamped.
+  const crownAt = (a) => onEllipse(CROWN, 174, 150, a, 0.84 + 0.2 * Math.abs(Math.cos(4 * a)) * (1 + 0.14 * Math.sin(3 * a + 1)));
+  const crown = curve((t) => crownAt(-Math.PI / 2 + t * TAU), 480);
+  // where the outline is, under the crown, at a given x: the trunk starts exactly on the line
+  const undersideY = (x) => { let best = null; for (let i = 0; i <= 400; i += 1) { const q = crownAt(Math.PI / 2 - 0.5 + (i / 400)); if (!best || Math.abs(q[0] - x) < Math.abs(best[0] - x)) best = q; } return best[1]; };
+  const trunk = (side) => { const x0 = 200 + side * 21; const y0 = undersideY(x0); return curve((t) => [x0 + side * (3 * t + 46 * Math.pow(t, 4.2)), y0 + (452 - y0) * t], 120); };
+  const strokes = [crown, trunk(-1), trunk(1), seg([96, 452], [304, 452]), ...EDGES.map(([a, b]) => seg(NODES[a], NODES[b]))];
   return {
     strokes: finish(strokes), nodes: NODES, stickers: STICKERS.map((n) => NODES[n]),
     text: chain("person", ["abril", "courier", "fraktur", "yellow", "playfair", "rubik"]),
