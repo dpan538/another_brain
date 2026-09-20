@@ -12,7 +12,7 @@ import { K, ACTS, MORPH, REVEAL, VANISH, buildScene, phaseAt, presence, morphPoi
 // docked top-left as soon as the page moves.
 
 const FACE_K = { abril: 1.04, yellow: 1.26, courier: 0.98, fraktur: 1.14, playfair: 1.06, rubik: 0.8, sans: 1, han: 1, italic: 1 };
-const CAPTIONS = ["是人。", "是记忆。锁在这台设备里，三十天。", "是鳄鱼。家在湖边，在沪边上。", "是对话框。", "可以打字。"];
+const CAPTIONS = ["是人。", "是记忆。锁在这台设备里，三十天。", "是鳄鱼。家在湖边。", "是对话框。", "可以打字。"];
 // only the shape of the text is needed to render; positions arrive with the first measure
 const SHAPE = buildScene({ W: 375, H: 812, top: 76, bottom: 684, card: { x: 8, y: 74, w: 359, h: 474 } }).text.map((t) => ({ glyphs: t.glyphs.map((g) => ({ ch: g.ch, face: g.face, dot: g.dot, paper: g.paper, bare: g.bare })), arcs: t.arcs.length }));
 

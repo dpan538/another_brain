@@ -16,7 +16,7 @@ export const EGGS = [
   { id: "you_are_wrong", match: only(/^(你肯定错了[。.!！]*\s*){1,}$/),
     reply: "你肯定错了。如果是我也这样说。" },
   { id: "crocodile", match: only(/^(鳄|鳄鱼|🐊|efish)$/i),
-    reply: "鳄鱼生活在水里，也可以生活在陆地上。家在湖边，在沪边上。" },
+    reply: "鳄鱼生活在水里，也可以生活在陆地上。家在湖边。" },
   { id: "enough", match: only(/^(够了|enough)[。.]?$/i),
     reply: "这就够了。然后第二天又不够了。" },
   { id: "wave", match: only(/^[~～]+$/),

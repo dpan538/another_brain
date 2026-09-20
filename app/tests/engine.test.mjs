@@ -89,10 +89,10 @@ test("pinyin: composition stays fast enough to run on every keystroke", () => {
 });
 
 test("the persona carries the four identities, leads with short / plain / never invented, and holds no imagery to lift", () => {
-  for (const must of ["是人，是记忆，是鳄鱼，是对话框", "不超过两句", "湖边", "沪边", "不造比喻", "不编造任何经历"]) assert.ok(PERSONA_PROMPT.includes(must), must);
+  for (const must of ["是人，是记忆，是鳄鱼，是对话框", "不超过两句", "湖边", "不造比喻", "不编造任何经历", "不替他表态"]) assert.ok(PERSONA_PROMPT.includes(must), must);
   // The first live answers lifted images straight out of the prompt. Vivid material stays out of it.
-  for (const never of ["三个世界", "暗处", "底片", "三明治", "保温杯", "贝壳", "镜面", "甜筒", "拿铁"]) assert.ok(!PERSONA_PROMPT.includes(never), `imagery in the prompt: ${never}`);
-  assert.ok(PERSONA_PROMPT.indexOf("最重要的三条") < 80, "the three rules come first");
+  for (const never of ["沪", "三个世界", "暗处", "底片", "三明治", "保温杯", "贝壳", "镜面", "甜筒", "拿铁"]) assert.ok(!PERSONA_PROMPT.includes(never), `imagery in the prompt: ${never}`);
+  assert.ok(PERSONA_PROMPT.indexOf("最重要的四条") < 80, "the rules come first");
   // Checked by shape, not by value: naming the owner's private details here would publish them.
   const shapes = { street_address: /\b\d{1,4}\s+[A-Z][a-z]+\s+(?:St|Street|Ave|Avenue|Rd|Road)\b/, unit_number: /\b\d{1,3}[A-Z]\b/, coordinates: /\b\d{2,3}\.\d{2,}\b/, email: /[A-Za-z0-9._-]+@[A-Za-z0-9-]+\./, phone: /\b\d{7,}\b/ };
   for (const [kind, re] of Object.entries(shapes)) assert.ok(!re.test(PERSONA_PROMPT), `private detail leaked: ${kind}`);
