@@ -39,7 +39,9 @@ for (const q of questions) {
     }
   }
   const limited = limitSentences(raw, 2); const shown = typeof limited === "string" ? limited : limited.text;   // what the app would actually display
+  const clauses = shown.split(/[，。！？；：、,.!?;:—…]+/u).map((c) => Array.from(c.trim()).length).filter(Boolean);
+  const shape = Array.from(shown).length + " chars, longest clause " + Math.max(0, ...clauses);
   console.log(""); console.log("> " + q); console.log("  " + shown);
-  console.log("  [" + (model ? "model " + model + ", " : "") + "first word " + Math.round(first ?? 0) + " ms, done " + Math.round(performance.now() - t0) + " ms" + (shown !== raw.trim() ? ", cut to two sentences" : "") + "]");
+  console.log("  [" + shape + " | " + (model ? "model " + model + ", " : "") + "first word " + Math.round(first ?? 0) + " ms, done " + Math.round(performance.now() - t0) + " ms" + (shown !== raw.trim() ? ", cut to two sentences" : "") + "]");
   messages.push({ role: "assistant", content: shown });
 }
