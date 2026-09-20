@@ -54,9 +54,14 @@ export default function Scene({ deckRef, stageRef, onEnter, onChat }) {
       // the logo over the first drawing
       const logo = app?.querySelector(".topbar .logo");
       if (logo) {
-        const S = Math.min(3.1, (sr.width - 72) / Math.max(1, logo.offsetWidth)); const top = bar + 6;
-        const lineTop = top + logo.offsetHeight * S + 8; const bottom = lineTop + 50;
-        hero = { S, x: (sr.width - logo.offsetWidth * S) / 2 - logo.offsetLeft, y: top - logo.offsetTop, lineTop, bottom };
+        // The logo is typeset at the size it is shown (font-size), not scaled up from its small
+        // size: a transform-scaled layer is rasterised small and looks soft on a phone.
+        const word = logo.querySelector(".logo-word"); const BASE = 27;
+        const live = parseFloat(getComputedStyle(word || logo).fontSize) || BASE;
+        const w0 = (logo.offsetWidth * BASE) / live; const h0 = (logo.offsetHeight * BASE) / live;
+        const S = Math.min(3.1, (sr.width - 72) / Math.max(1, w0)); const top = bar + 6;
+        const lineTop = top + h0 * S + 8; const bottom = lineTop + 50;
+        hero = { S, base: BASE, x: (sr.width - w0 * S) / 2 - logo.offsetLeft, y: top - logo.offsetTop, lineTop, bottom };
         const room = sr.height - 122 - bottom; const k0 = Math.min(1, room / scene.box.height);
         hero.k0 = k0; hero.y0 = (bottom + sr.height - 122) / 2; hero.yc = scene.box.top + scene.box.height / 2; hero.W = sr.width;
         if (sentence.current) sentence.current.style.top = `${lineTop.toFixed(0)}px`;
@@ -77,7 +82,10 @@ export default function Scene({ deckRef, stageRef, onEnter, onChat }) {
       // the logo docks, and the drawing takes the room it leaves
       const dock = ease(span(p, 0, 0.055));
       if (hero && app) {
-        app.style.setProperty("--ls", lerp(hero.S, 1, dock).toFixed(4)); app.style.setProperty("--lx", `${lerp(hero.x, 0, dock).toFixed(1)}px`); app.style.setProperty("--ly", `${lerp(hero.y, 0, dock).toFixed(1)}px`);
+        // size and vertical travel come from here; the horizontal centring is done in CSS against the
+        // logo's own live width, because its letters keep changing face (and width) while it rests
+        app.style.setProperty("--logo-live", `${lerp(hero.base * hero.S, hero.base, dock).toFixed(2)}px`); app.style.setProperty("--dock", dock.toFixed(4));
+        app.style.setProperty("--stage-w", `${hero.W}px`); app.style.setProperty("--hero-dy", `${hero.y.toFixed(1)}px`);
         world.current?.setAttribute("transform", `translate(${(hero.W / 2).toFixed(1)} ${lerp(hero.y0, hero.yc, dock).toFixed(1)}) scale(${lerp(hero.k0, 1, dock).toFixed(4)}) translate(${(-hero.W / 2).toFixed(1)} ${(-hero.yc).toFixed(1)})`);
       }
       if (sentence.current) sentence.current.style.opacity = String(clamp01(intro * 3) * (1 - span(p, 0.008, 0.04)));

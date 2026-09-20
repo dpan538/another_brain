@@ -58,9 +58,17 @@ body::before {
 }
 .topbar > * { pointer-events: auto; }
 /* one logo for the whole product: large over the first drawing, docked here once the page moves */
-.topbar .logo { transform-origin: 0 0; transform: translate(var(--lx, 0px), var(--ly, 0px)) scale(var(--ls, 1)); will-change: transform; }
+/* Out of the flex row, so growing to its home-page size never pushes "about" around. Its size is a
+   real font-size (--logo-live, set by the scene), so the letters are always drawn sharp. */
+.topbar .logo {
+  position: absolute; left: var(--edge); top: calc(env(safe-area-inset-top) + 24px); --logo-size: var(--logo-live, 27px);
+  /* --dock runs 0 (home) → 1 (docked). -50% is the logo's own width, so it stays centred whatever its letters are wearing. */
+  transform: translate(calc((1 - var(--dock, 1)) * (var(--stage-w, 100vw) / 2 - var(--edge) - 50%)), calc((1 - var(--dock, 1)) * var(--hero-dy, 0px)));
+}
+.topbar .about-link { margin-left: auto; }
 /* a direct jump: the stage cross-fades while the logo travels in a straight line */
 .app.is-jumping .topbar .logo { transition: transform .5s cubic-bezier(.4, 0, .2, 1); }
+.app.is-jumping .topbar .logo .logo-word { transition: font-size .5s cubic-bezier(.4, 0, .2, 1); }
 .stage { transition: opacity .2s linear; }
 .about-link {
   background: none; border: 0; padding: 6px 2px; color: var(--ink);

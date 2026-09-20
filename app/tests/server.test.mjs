@@ -46,7 +46,9 @@ test("a system message from outside is refused", async () => {
 
 test("size limits hold", () => {
   assert.equal(validateMessages([]), null);
-  assert.equal(validateMessages(Array.from({ length: 13 }, () => ({ role: "user", content: "a" }))), null);
+  assert.equal(validateMessages(Array.from({ length: 41 }, () => ({ role: "user", content: "a" }))), null);
+  assert.ok(validateMessages(Array.from({ length: 40 }, () => ({ role: "user", content: "a" }))), "about twenty exchanges fit");
+  assert.equal(validateMessages(Array.from({ length: 20 }, () => ({ role: "user", content: "字".repeat(500) }))), null, "10000 characters in total is too much");
   assert.equal(validateMessages([{ role: "user", content: "x".repeat(601) }]), null);
   assert.equal(validateMessages([{ role: "user", content: "a" }, { role: "assistant", content: "b" }]), null, "must end on the visitor's turn");
   assert.deepEqual(validateMessages([{ role: "user", content: "  你好  " }]), [{ role: "user", content: "你好" }]);

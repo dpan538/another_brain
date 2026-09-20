@@ -62,12 +62,21 @@ function categoryFor(status, viaProxy) {
   return "network";
 }
 
+// What efish is given to remember within one conversation: the last few exchanges, never more than
+// the relay accepts (40 messages ≈ twenty exchanges, 600 characters each, 8000 in total). Older turns drop off the
+// front; the window always opens on something the person said and ends on their newest message.
+export function windowConversation(conversation = [], { maxMessages = 40, maxChars = 7600, maxMessageChars = 600 } = {}) {
+  let list = conversation.filter((m) => m && (m.role === "user" || m.role === "assistant") && String(m.content ?? "").trim())
+    .map((m) => ({ role: m.role, content: String(m.content).slice(0, maxMessageChars) })).slice(-maxMessages);
+  const total = () => list.reduce((n, m) => n + m.content.length, 0);
+  while (list.length > 1 && (total() > maxChars || list[0].role !== "user")) list = list.slice(1);
+  return list;
+}
+
 export function buildRequest({ systemPrompt, conversation = [], extraSystem = "", model = DEFAULT_MODEL, maxTokens = 160 }) {
   const messages = [{ role: "system", content: String(systemPrompt || "") }];
   if (extraSystem) messages.push({ role: "system", content: String(extraSystem) });
-  for (const m of conversation.slice(-12)) {
-    if (m && (m.role === "user" || m.role === "assistant")) messages.push({ role: m.role, content: String(m.content ?? "") });
-  }
+  messages.push(...windowConversation(conversation));
   return { model, messages, thinking: { type: "disabled" }, stream: true, stream_options: { include_usage: true }, max_tokens: maxTokens };
 }
 

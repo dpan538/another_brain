@@ -163,3 +163,21 @@ test("failures never leak the key", async () => {
   assert.equal(r.ok, false);
   assert.ok(!JSON.stringify({ r, t: path.telemetry }).includes(KEY));
 });
+
+test("the context window keeps the newest exchanges, opens on the person, and fits what the relay accepts", async () => {
+  const { windowConversation } = await E("deepseek_stream.js");
+  const { validateMessages } = await import("../server/chat_handler.js");
+  const long = []; for (let i = 0; i < 60; i += 1) long.push({ role: "user", content: `问题${i}` }, { role: "assistant", content: `回答${i}` });
+  long.push({ role: "user", content: "最新的问题" });
+  const w = windowConversation(long);
+  assert.ok(w.length <= 40 && w.length >= 38); assert.equal(w[0].role, "user"); assert.equal(w.at(-1).content, "最新的问题");
+  assert.ok(validateMessages(w), "the relay accepts the window");
+  // very long messages: trimmed per message and dropped from the front until the total fits
+  const heavy = []; for (let i = 0; i < 12; i += 1) heavy.push({ role: "user", content: "长".repeat(900) }, { role: "assistant", content: "短。" });
+  heavy.push({ role: "user", content: "还在吗" });
+  const h = windowConversation(heavy);
+  assert.ok(h.every((m) => m.content.length <= 600)); assert.ok(h.reduce((n, m) => n + m.content.length, 0) <= 7600);
+  assert.equal(h[0].role, "user"); assert.equal(h.at(-1).content, "还在吗"); assert.ok(validateMessages(h));
+  // notes and empty turns never travel
+  assert.deepEqual(windowConversation([{ role: "note", content: "x" }, { role: "assistant", content: "" }, { role: "user", content: "嗯" }]), [{ role: "user", content: "嗯" }]);
+});

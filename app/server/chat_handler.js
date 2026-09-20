@@ -13,10 +13,12 @@ export const UPSTREAM_URL = "https://api.deepseek.com/chat/completions";
 // "deepseek-v4-flash" is a retired alias that is still accepted and routed to the same model.
 export const MODEL = "deepseek-flash";
 export const MAX_TOKENS = 160;            // two sentences
-export const MAX_MESSAGES = 12;
+// About twenty exchanges. Measured: the persona is ~2,150 tokens (≈93 % served from the provider's
+// cache) and a two-sentence exchange is ~25, so a full window adds ~500 tokens to a request.
+export const MAX_MESSAGES = 40;
 export const MAX_MESSAGE_CHARS = 600;
-export const MAX_TOTAL_CHARS = 4000;
-export const MAX_BODY_BYTES = 16_384;
+export const MAX_TOTAL_CHARS = 8000;
+export const MAX_BODY_BYTES = 49_152;       // 8000 characters of Chinese in UTF-8, plus JSON
 export const PER_MINUTE = 12;
 export const PER_DAY = 200;
 
