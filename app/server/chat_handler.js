@@ -9,7 +9,9 @@
 import { buildPersonaSystemPrompt } from "../src/engine/persona_prompt.js";
 
 export const UPSTREAM_URL = "https://api.deepseek.com/chat/completions";
-export const MODEL = "deepseek-v4-flash";
+// DeepSeek's current name for its Flash model (served by V4.1-Flash as of 2026-09). The older
+// "deepseek-v4-flash" is a retired alias that is still accepted and routed to the same model.
+export const MODEL = "deepseek-flash";
 export const MAX_TOKENS = 160;            // two sentences
 export const MAX_MESSAGES = 12;
 export const MAX_MESSAGE_CHARS = 600;

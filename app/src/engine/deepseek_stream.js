@@ -10,7 +10,7 @@
 import { redactKeyMaterial } from "./key_store.js";
 
 export const DEEPSEEK_URL = "https://api.deepseek.com/chat/completions";
-export const DEFAULT_MODEL = "deepseek-v4-flash";
+export const DEFAULT_MODEL = "deepseek-flash";      // current name; "deepseek-v4-flash" is a retired alias of the same model
 export const FIRST_TOKEN_TIMEOUT_MS = 8_000;
 export const TOTAL_TIMEOUT_MS = 20_000;
 

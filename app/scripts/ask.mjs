@@ -21,7 +21,7 @@ const BLANK = String.fromCharCode(10, 10);
 const messages = [];
 for (const q of questions) {
   messages.push({ role: "user", content: q });
-  const t0 = performance.now(); let first = null; let raw = "";
+  const t0 = performance.now(); let first = null; let raw = ""; let model = null;
   const res = await fetch(base + "/api/chat", { method: "POST", headers: { "content-type": "application/json", origin: base }, body: JSON.stringify({ messages }) })
     .catch((e) => ({ ok: false, status: 0, text: async () => String(e.cause?.code || e.message) }));
   if (!res.ok) {
@@ -35,11 +35,11 @@ for (const q of questions) {
     let at; while ((at = buf.indexOf(BLANK)) >= 0) {
       const line = buf.slice(0, at).trim(); buf = buf.slice(at + 2);
       if (!line.startsWith("data:") || line.includes("[DONE]")) continue;
-      try { const piece = JSON.parse(line.slice(5)).choices?.[0]?.delta?.content || ""; if (piece && first == null) first = performance.now() - t0; raw += piece; } catch { /* keep-alive */ }
+      try { const data = JSON.parse(line.slice(5)); model ??= data.model || null; const piece = data.choices?.[0]?.delta?.content || ""; if (piece && first == null) first = performance.now() - t0; raw += piece; } catch { /* keep-alive */ }
     }
   }
   const limited = limitSentences(raw, 2); const shown = typeof limited === "string" ? limited : limited.text;   // what the app would actually display
   console.log(""); console.log("> " + q); console.log("  " + shown);
-  console.log("  [first word " + Math.round(first ?? 0) + " ms, done " + Math.round(performance.now() - t0) + " ms" + (shown !== raw.trim() ? ", cut to two sentences" : "") + "]");
+  console.log("  [" + (model ? "model " + model + ", " : "") + "first word " + Math.round(first ?? 0) + " ms, done " + Math.round(performance.now() - t0) + " ms" + (shown !== raw.trim() ? ", cut to two sentences" : "") + "]");
   messages.push({ role: "assistant", content: shown });
 }

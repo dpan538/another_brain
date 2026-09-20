@@ -12,7 +12,7 @@ ask each visitor for a key. This replaces the R31A0 rule "no API route" with
 - `app/server/chat_handler.js` — the relay. POST only; the caller's `Origin` must match
   the host (or `EFISH_ALLOWED_ORIGINS`); the body is `{messages}` with roles
   `user`/`assistant` only, last one `user`, ≤12 messages, ≤600 chars each, ≤4000 total.
-  The server adds the key, the persona prompt, the model (`deepseek-v4-flash`),
+  The server adds the key, the persona prompt, the model (`deepseek-flash`, i.e. DeepSeek-V4.1-Flash),
   `max_tokens: 160` and `thinking: disabled`. The caller can choose none of them.
   12 requests/minute and 200/day per address (best effort, per instance).
   The provider's error body is never forwarded; a missing key answers `503 not_configured`.
