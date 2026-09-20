@@ -243,11 +243,14 @@ body::before {
 
 /* ───────── about / key sheet ───────── */
 .about::-webkit-scrollbar { display: none; }
-.about { scrollbar-width: none; position: absolute; inset: 0; z-index: 40; background: var(--paper); color: var(--ink); overflow-y: auto; -webkit-user-select: text; user-select: text; }
-.about-bar { position: sticky; top: 0; height: calc(var(--bar-h) + env(safe-area-inset-top)); padding: calc(env(safe-area-inset-top) + 10px) var(--edge) 0; display: flex; align-items: center; justify-content: space-between; background: var(--paper); }
+.about { scrollbar-width: none; position: absolute; inset: 0; z-index: 40; background: var(--paper); color: var(--ink); overflow-y: auto; display: flex; flex-direction: column; -webkit-user-select: text; user-select: text; }
+.about-bar { position: sticky; top: 0; flex: 0 0 auto; height: calc(var(--bar-h) + env(safe-area-inset-top)); padding: calc(env(safe-area-inset-top) + 10px) var(--edge) 0; display: flex; align-items: center; justify-content: space-between; background: var(--paper); }
 .xhand { width: 44px; height: 44px; margin-right: -4px; display: grid; place-items: center; background: none; border: 0; padding: 0; color: var(--ink); transform: rotate(-4deg); }
-.about-body { max-width: 30em; margin: 0 auto; padding: 5vh 34px calc(36px + env(safe-area-inset-bottom)); display: grid; gap: 34px; justify-items: center; text-align: center; }
-.about-foot { justify-self: stretch; }
+/* the little there is to say sits in the middle of the page, a touch below centre */
+.about-body { flex: 1 0 auto; width: 100%; max-width: 30em; margin: 0 auto; padding: 9vh 34px 3vh; display: grid; align-content: center; gap: 44px; justify-items: center; text-align: center; }
+.about-say { display: grid; gap: 22px; justify-items: center; }
+.about-sum { line-height: 1.9 !important; }
+.about-foot { flex: 0 0 auto; width: calc(100% - 68px); max-width: 30em; margin: 0 auto; }
 .about h2, .sheet h2 { margin: 0 0 12px; font: 400 15px var(--type); letter-spacing: .12em; }
 .about p { margin: 0; font: 400 17px/1.62 var(--type); }
 .about p.zh { opacity: .72; }
@@ -257,7 +260,7 @@ body::before {
 .t-type { font: 400 .92em var(--type); }
 .t-write { font: 700 1em var(--write); letter-spacing: -.02em; }
 .t-chat { font: 400 1.3em "Yellowtail", cursive; }
-.about-foot { display: grid; justify-items: center; gap: 6px; padding-top: 16px; border-top: 1.5px dashed rgba(28, 27, 26, .4); font: 400 12px var(--type); opacity: .7; }
+.about-foot { display: grid; justify-items: center; gap: 6px; padding: 16px 0 calc(28px + env(safe-area-inset-bottom)); border-top: 1.5px dashed rgba(28, 27, 26, .4); font: 400 12px var(--type); opacity: .7; }
 
 /* 本地记忆 */
 .memory-title { margin: 0 !important; font: 700 17px var(--write) !important; letter-spacing: .04em !important; }
