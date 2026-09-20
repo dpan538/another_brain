@@ -12,11 +12,11 @@ export default function About({ onClose, onHome, onChat }) {
       <main className="about-body">
         <section className="about-say">
           <h2><U v={1}>ABOUT</U></h2>
-          <p>efish other is a person, a memory, a crocodile and a dialog box.</p>
+          <p>efish other is a person, a memory, an efish and a dialog box.</p>
           <p className="about-sum">
             our small transformer<br />
             + deepseek<br />
-            + a crocodile&rsquo;s knowledge base<br />
+            + an efish&rsquo;s knowledge base<br />
             + tuned by hand.
           </p>
           <p className="zh">它是人，是记忆，是鳄鱼，是对话框。</p>

@@ -6,8 +6,9 @@
 它背后不是一层 API 外壳，而是一段研究：一个从零训练的 96M 中文 transformer、一套盲测与放行纪律、
 几个被如实记录的否定结论、一份从本人写作里整理出来的人格契约，以及为它专门做的键盘、输入法和首页。
 
-efish other is a chat-only PWA that answers as one person's *other* — a person, a memory, a
-crocodile and a dialog box at once — in two sentences at most. This repository is the research
+efish other is a chat-only PWA that answers as one person's *other* — a person, a memory, an
+efish (鳄鱼: the owner's alligator, which in this project is simply called *efish*) and a dialog box
+at once — in two sentences at most. This repository is the research
 behind it as much as the product: most of what is here is evidence about what did **not** work,
 kept because it decided what the product became.
 
