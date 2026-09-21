@@ -46,7 +46,7 @@ def map_path(d, fx, fy):
     return re.sub(r"-?\d+(?:\.\d+)?", repl, d)
 
 
-def build(size=512, word_width=0.84, scribble_w=0.98, scribble_h=0.62, stroke=0.05, background=WHITE, y_shift=0.0):
+def build(size=512, word_width=0.84, scribble_w=0.98, scribble_h=0.62, stroke=0.05, background=WHITE, y_shift=0.0, letters=True, strokes=None):
     F = 100.0                                   # lay out at a nominal em, then scale to the target width
     items = []; x = 0.0
     for letter, rel, k, outlined in FACES:
@@ -63,7 +63,7 @@ def build(size=512, word_width=0.84, scribble_w=0.98, scribble_h=0.62, stroke=0.
 
     # the cut-out patch behind the i
     for letter, gs, name, scale, gx, adv, outlined, k in items:
-        if letter != "i": continue
+        if letter != "i" or not letters: continue
         x0 = left + (gx - 0.10 * F) * S; x1 = left + (gx + adv + 0.10 * F) * S
         top = base - 0.80 * F * S; bot = base + 0.20 * F * S; w = x1 - x0; h = bot - top
         pts = [(x0 + 0.03 * w, top + 0.06 * h), (x0 + 0.97 * w, top), (x1, top + 0.95 * h), (x0, bot)]
@@ -73,12 +73,12 @@ def build(size=512, word_width=0.84, scribble_w=0.98, scribble_h=0.62, stroke=0.
     # the marker: mapped point by point, so its width stays even however the box is stretched
     sw, sh = size * scribble_w, size * scribble_h
     sx0, sy0 = (size - sw) / 2, size * (0.5 + y_shift) - sh * 0.52
-    for d in SCRIBBLE:
+    for d in (SCRIBBLE if strokes is None else SCRIBBLE[:strokes]):
         mapped = map_path(d, lambda v: sx0 + v / 300 * sw, lambda v: sy0 + v / 120 * sh)
         parts.append(f'<path d="{mapped}" fill="none" stroke="{NEON}" stroke-width="{size * stroke:.1f}" stroke-linecap="round" stroke-linejoin="round" style="mix-blend-mode:multiply"/>')
 
     # the five letters, as outlines
-    for letter, gs, name, scale, gx, adv, outlined, k in items:
+    for letter, gs, name, scale, gx, adv, outlined, k in (items if letters else []):
         pen = SVGPathPen(gs)
         tpen = TransformPen(pen, (scale * S, 0, 0, -scale * S, left + gx * S, base))
         gs[name].draw(tpen)
@@ -137,8 +137,12 @@ if __name__ == "__main__":
     # The marker is an accent, not the subject: a thin line, and clear white all round, most of all left and right.
     regular = build(word_width=0.66, scribble_w=0.76, scribble_h=0.54, stroke=0.030)    # home screen, manifest "any"
     maskable = build(word_width=0.54, scribble_w=0.62, scribble_h=0.46, stroke=0.026)   # everything inside the safe circle, with air
-    small = build(word_width=0.80, scribble_w=0.88, scribble_h=0.62, stroke=0.046)      # browser tab: a little tighter and heavier, still with a margin
+    # The small icon (browser tab, search results, bookmarks) is the marker alone: no letters survive at 16–48 px,
+    # a loose green line does. White is kept on both sides; the tiniest sizes get a heavier line so it does not fade.
+    small = build(letters=False, scribble_w=0.78, scribble_h=0.50, stroke=0.058, strokes=1)
+    tiny = build(letters=False, scribble_w=0.78, scribble_h=0.52, stroke=0.082, strokes=1)
     (OUT / "icon.svg").write_text(regular); (OUT / "icon-maskable.svg").write_text(maskable); (APP / "public" / "favicon.svg").write_text(small)
+    tiny_svg = Path(tempfile.mkdtemp()) / "favicon-tiny.svg"; tiny_svg.write_text(tiny)
     if shutil.which("qlmanage") and "--svg-only" not in sys.argv:
         rasterise(OUT / "icon.svg", OUT / "icon-512.png", 512); rasterise(OUT / "icon.svg", OUT / "icon-192.png", 192)
         rasterise(OUT / "icon.svg", OUT / "apple-touch-icon.png", 180); rasterise(OUT / "icon-maskable.svg", OUT / "icon-512-maskable.png", 512)
@@ -147,7 +151,7 @@ if __name__ == "__main__":
         rasterise(APP / "public" / "favicon.svg", APP / "public" / "favicon-48.png", 48)
         tmp_ico = Path(tempfile.mkdtemp()); sizes = []
         for px in (16, 32, 48):
-            rasterise(APP / "public" / "favicon.svg", tmp_ico / f"{px}.png", px); sizes.append((px, tmp_ico / f"{px}.png"))
+            rasterise(tiny_svg if px < 48 else APP / "public" / "favicon.svg", tmp_ico / f"{px}.png", px); sizes.append((px, tmp_ico / f"{px}.png"))
         write_ico(sizes, APP / "public" / "favicon.ico"); shutil.rmtree(tmp_ico, ignore_errors=True)
         card = Path(tempfile.mkdtemp()) / "og.svg"; card.write_text(build_card())
         rasterise(card, APP / "public" / "og.png", 1200)
