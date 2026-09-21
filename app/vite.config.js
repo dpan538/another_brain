@@ -12,7 +12,7 @@ export default defineConfig({
     efishApi(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "favicon.png", "icons/*.png", "ime/pinyin_dict.json"],
+      includeAssets: ["favicon.ico", "favicon.svg", "favicon.png", "favicon-48.png", "icons/*.png", "ime/pinyin_dict.json"],
       manifest: {
         name: "efish other",
         short_name: "efish",
@@ -37,7 +37,7 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 3_000_000,
         navigateFallback: "/index.html",
         // plain files must be served as themselves, not as the app shell
-        navigateFallbackDenylist: [/^\/api\//, /^\/(?:robots|about|llms|humans)\.txt$/, /^\/sitemap\.xml$/, /^\/og\.png$/],
+        navigateFallbackDenylist: [/^\/api\//, /^\/(?:robots|about|llms|humans)\.txt$/, /^\/sitemap\.xml$/, /^\/og\.png$/, /^\/favicon\./],
         cleanupOutdatedCaches: true,
         // The 22 MB font is never part of the install. It is fetched once, in the
         // background, and kept from then on.

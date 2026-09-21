@@ -122,6 +122,16 @@ def rasterise(svg_path, png_path, px, py=None):
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def write_ico(pngs, path):
+    """favicon.ico holding PNG images (every current browser and crawler reads these)."""
+    import struct
+    blobs = [(size, Path(p).read_bytes()) for size, p in pngs]
+    head = struct.pack("<HHH", 0, 1, len(blobs)); entries = b""; offset = 6 + 16 * len(blobs)
+    for size, blob in blobs:
+        entries += struct.pack("<BBBBHHII", size % 256, size % 256, 0, 0, 1, 32, len(blob), offset); offset += len(blob)
+    Path(path).write_bytes(head + entries + b"".join(b for _, b in blobs))
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     # The marker is an accent, not the subject: a thin line, and clear white all round, most of all left and right.
@@ -133,6 +143,12 @@ if __name__ == "__main__":
         rasterise(OUT / "icon.svg", OUT / "icon-512.png", 512); rasterise(OUT / "icon.svg", OUT / "icon-192.png", 192)
         rasterise(OUT / "icon.svg", OUT / "apple-touch-icon.png", 180); rasterise(OUT / "icon-maskable.svg", OUT / "icon-512-maskable.png", 512)
         rasterise(APP / "public" / "favicon.svg", APP / "public" / "favicon.png", 96)
+        # Google's result pages want a square icon whose side is a multiple of 48 px; many crawlers only ever ask for /favicon.ico
+        rasterise(APP / "public" / "favicon.svg", APP / "public" / "favicon-48.png", 48)
+        tmp_ico = Path(tempfile.mkdtemp()); sizes = []
+        for px in (16, 32, 48):
+            rasterise(APP / "public" / "favicon.svg", tmp_ico / f"{px}.png", px); sizes.append((px, tmp_ico / f"{px}.png"))
+        write_ico(sizes, APP / "public" / "favicon.ico"); shutil.rmtree(tmp_ico, ignore_errors=True)
         card = Path(tempfile.mkdtemp()) / "og.svg"; card.write_text(build_card())
         rasterise(card, APP / "public" / "og.png", 1200)
         subprocess.run(["sips", "-c", "630", "1200", str(APP / "public" / "og.png")], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
