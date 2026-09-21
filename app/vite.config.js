@@ -34,7 +34,8 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,woff2,png,svg,json}"],
         maximumFileSizeToCacheInBytes: 3_000_000,
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/api\//],
+        // plain files must be served as themselves, not as the app shell
+        navigateFallbackDenylist: [/^\/api\//, /^\/(?:robots|about|llms)\.txt$/, /^\/sitemap\.xml$/, /^\/og\.png$/],
         cleanupOutdatedCaches: true,
         // The 22 MB font is never part of the install. It is fetched once, in the
         // background, and kept from then on.

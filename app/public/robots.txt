@@ -1,0 +1,7 @@
+# efish other — https://www.efishother.com/
+# Everyone is welcome to read the page, including AI crawlers. The chat route answers people, not bots.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://www.efishother.com/sitemap.xml

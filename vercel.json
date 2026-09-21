@@ -5,9 +5,106 @@
   "buildCommand": "npm --prefix app run build",
   "outputDirectory": "app/dist",
   "headers": [
-    { "source": "/api/(.*)", "headers": [{ "key": "Cache-Control", "value": "no-store" }] },
-    { "source": "/fonts/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
-    { "source": "/(sw.js|registerSW.js|manifest.webmanifest)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/(.*)", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }, { "key": "Referrer-Policy", "value": "no-referrer" }] }
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(robots.txt|sitemap.xml|llms.txt|about.txt)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/(sw.js|registerSW.js|manifest.webmanifest)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/another_brain_chat",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/another_brain_chat.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/bench",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/bench.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/model_gate",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/model_gate.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/webgpu_bench",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/webgpu_bench.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/site.webmanifest",
+      "destination": "/manifest.webmanifest",
+      "permanent": true
+    }
   ]
 }

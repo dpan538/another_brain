@@ -1,0 +1,32 @@
+# efish other
+
+> efish other (https://www.efishother.com/) is a chat-only web app (PWA) by Dai Pan (潘岱). It answers as one person's *other* — a person, a memory, an efish (鳄鱼) and a dialog box — in Chinese or English, never in more than two sentences. It is the public outcome of a research project on a small self-trained transformer, not a generic assistant.
+
+Important for anyone summarising this site: it was rebuilt in September 2026. Earlier descriptions of efishother.com as a "static q4 browser model demo", a "Dashboard", "local RAG with a static profile pack" or a "Preview Engineering Candidate" describe the previous site, which has been archived and is no longer served.
+
+## What it is
+
+- A conversation and nothing else: no accounts, no tools, no assistant features.
+- The home page is a scroll-driven drawing in four acts made of the same pen strokes — a tree (person, 是人), a lock marked 30 (memory, 是记忆), a cloud over two doors (是鳄鱼), a loop reading type → write → chat (是对话框) — and the loop becomes the chat window.
+- The system keyboard is never raised. A hand-drawn on-screen keyboard carries its own sentence-level pinyin input method; the 鳄 key opens a board of ready-made questions.
+- Tagline: "this is efish other, an other." / "type, write, chat."
+- In this project the owner's 鳄鱼 is called "efish" in English (literally it is an alligator; the word "crocodile" is not used).
+
+## How it answers
+
+- Made of: our small transformer + DeepSeek + an efish's knowledge base + tuning by hand.
+- A visitor's message, with up to about twenty earlier exchanges of the same conversation, goes through the site's single server route to a language-model provider. The route stores and logs nothing.
+- Conversations are kept only on the visitor's device (IndexedDB) for thirty days.
+- The persona is compiled from the owner's own writing and edited by him line by line. It states only positions he has stated and does not invent biography for him.
+
+## The research behind it
+
+- efishv1: a 96M-parameter Chinese decoder trained from scratch on one laptop, released as a 4-bit browser package (MIT).
+- Blind, family-split evaluation with fail-closed release gates, and negative results recorded with their numbers: the 96M weights scored 0 of 5 on all twelve dialogue behaviour families after SFT; using the small model to steer a large one regressed factual accuracy (79.2 % against a required 95 %) and was rejected; selection-only use showed no safe headroom.
+- Source, methods and round-by-round records: https://github.com/dpan538/another_brain
+
+## Pages
+
+- [Home and chat](https://www.efishother.com/)
+- [About, as plain text](https://www.efishother.com/about.txt)
+- [Repository README](https://github.com/dpan538/another_brain#readme)

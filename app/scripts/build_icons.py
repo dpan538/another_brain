@@ -90,24 +90,51 @@ def build(size=512, word_width=0.84, scribble_w=0.98, scribble_h=0.62, stroke=0.
     return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" width="{size}" height="{size}">' + "".join(parts) + "</svg>"
 
 
-def rasterise(svg_path, png_path, px):
+def text_path(text, rel, size, cx, baseline, fill=INK):
+    """A line of text as outlines, centred on cx."""
+    font = TTFont(FONTS / rel); upm = font["head"].unitsPerEm; cmap = font.getBestCmap(); gs = font.getGlyphSet(); k = size / upm
+    advances = [gs[cmap[ord(ch)]].width * k for ch in text]; x = cx - sum(advances) / 2; out = []
+    for ch, adv in zip(text, advances):
+        pen = SVGPathPen(gs); gs[cmap[ord(ch)]].draw(TransformPen(pen, (k, 0, 0, -k, x, baseline))); d = pen.getCommands()
+        if d: out.append(f'<path d="{d}" fill="{fill}"/>')
+        x += adv
+    return "".join(out)
+
+
+def build_card(w=1200, h=630):
+    """The link-preview card: the mark, and the sentence under it. Drawn in the middle band of a square
+    (QuickLook only thumbnails squares faithfully) and cropped to w × h afterwards."""
+    mark = build(size=h, word_width=0.62, scribble_w=0.72, scribble_h=0.50, stroke=0.026, y_shift=-0.07)
+    inner = mark[mark.index(">") + 1: mark.rindex("</svg>")].replace(f'<rect width="{h}" height="{h}" fill="{WHITE}"/>', "")
+    top = (w - h) / 2
+    line = text_path("this is efish other, an other.", "courier-prime/files/courier-prime-latin-400-normal.woff", 34, w / 2, top + h * 0.80)
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {w}" width="{w}" height="{w}"><rect width="{w}" height="{w}" fill="{WHITE}"/>'
+            f'<g transform="translate({(w - h) / 2:.1f} {top:.1f})">{inner}</g>{line}</svg>')
+
+
+def rasterise(svg_path, png_path, px, py=None):
     tmp = Path(tempfile.mkdtemp())
     try:
         subprocess.run(["qlmanage", "-t", "-s", str(px), "-o", str(tmp), str(svg_path)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         produced = tmp / (svg_path.name + ".png")
-        subprocess.run(["sips", "-z", str(px), str(px), str(produced), "--out", str(png_path)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["sips", "-z", str(py or px), str(px), str(produced), "--out", str(png_path)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
-    regular = build(word_width=0.9, scribble_w=1.0, scribble_h=0.8, stroke=0.058)       # home screen, manifest "any": the marker fills the square
-    maskable = build(word_width=0.66, scribble_w=0.98, scribble_h=0.72, stroke=0.05)    # everything that matters inside the safe circle
-    small = build(word_width=0.96, scribble_w=1.04, scribble_h=0.9, stroke=0.085)       # browser tab: bigger letters, fatter marker
+    # The marker is an accent, not the subject: a thin line, and clear white all round, most of all left and right.
+    regular = build(word_width=0.66, scribble_w=0.76, scribble_h=0.54, stroke=0.030)    # home screen, manifest "any"
+    maskable = build(word_width=0.54, scribble_w=0.62, scribble_h=0.46, stroke=0.026)   # everything inside the safe circle, with air
+    small = build(word_width=0.80, scribble_w=0.88, scribble_h=0.62, stroke=0.046)      # browser tab: a little tighter and heavier, still with a margin
     (OUT / "icon.svg").write_text(regular); (OUT / "icon-maskable.svg").write_text(maskable); (APP / "public" / "favicon.svg").write_text(small)
     if shutil.which("qlmanage") and "--svg-only" not in sys.argv:
         rasterise(OUT / "icon.svg", OUT / "icon-512.png", 512); rasterise(OUT / "icon.svg", OUT / "icon-192.png", 192)
         rasterise(OUT / "icon.svg", OUT / "apple-touch-icon.png", 180); rasterise(OUT / "icon-maskable.svg", OUT / "icon-512-maskable.png", 512)
         rasterise(APP / "public" / "favicon.svg", APP / "public" / "favicon.png", 96)
+        card = Path(tempfile.mkdtemp()) / "og.svg"; card.write_text(build_card())
+        rasterise(card, APP / "public" / "og.png", 1200)
+        subprocess.run(["sips", "-c", "630", "1200", str(APP / "public" / "og.png")], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        shutil.rmtree(card.parent, ignore_errors=True)
     print("icons written to", OUT)

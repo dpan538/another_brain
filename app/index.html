@@ -3,21 +3,73 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
-    <title>efish other</title>
-    <meta name="description" content="this is efish other, an other. type, write, chat." />
+    <title>efish other — this is efish other, an other.</title>
+    <meta name="description" content="efish other is a chat-only web app that answers as one person's other — a person, a memory, an efish and a dialog box — in two sentences at most. 它是人，是记忆，是鳄鱼，是对话框。" />
+    <meta name="author" content="Dai Pan / 潘岱" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="https://www.efishother.com/" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="efish other, for language models" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="efish other" />
+    <meta property="og:title" content="efish other — this is efish other, an other." />
+    <meta property="og:description" content="efish other is a chat-only web app that answers as one person's other — a person, a memory, an efish and a dialog box — in two sentences at most." />
+    <meta property="og:url" content="https://www.efishother.com/" />
+    <meta property="og:image" content="https://www.efishother.com/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Efish, each letter in a different typeface, over a neon green marker scribble on white: this is efish other, an other." />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="efish other — this is efish other, an other." />
+    <meta name="twitter:description" content="efish other is a chat-only web app that answers as one person's other — a person, a memory, an efish and a dialog box — in two sentences at most." />
+    <meta name="twitter:image" content="https://www.efishother.com/og.png" />
+
     <meta name="theme-color" content="#FBFAF8" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <!-- a light page: keep the system's dark status text instead of drawing white text over paper -->
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="format-detection" content="telephone=no" />
     <meta name="apple-mobile-web-app-title" content="efish" />
+    <meta name="format-detection" content="telephone=no" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+
+    <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://www.efishother.com/#site", "url": "https://www.efishother.com/", "name": "efish other", "alternateName": ["Efish", "efishother"], "description": "efish other is a chat-only web app that answers as one person's other — a person, a memory, an efish and a dialog box — in two sentences at most.", "inLanguage": ["zh-CN", "en"], "author": {"@id": "https://www.efishother.com/#author"}}, {"@type": "WebApplication", "@id": "https://www.efishother.com/#app", "name": "efish other", "url": "https://www.efishother.com/", "description": "efish other is a chat-only web app that answers as one person's other — a person, a memory, an efish and a dialog box — in two sentences at most. A hand-drawn keyboard with its own pinyin input method, a scroll-driven drawing for a home page, and conversations that stay on the visitor's device for thirty days.", "applicationCategory": "CommunicationApplication", "operatingSystem": "Any", "browserRequirements": "Requires JavaScript", "inLanguage": ["zh-CN", "en"], "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "image": "https://www.efishother.com/og.png", "author": {"@id": "https://www.efishother.com/#author"}, "sameAs": ["https://github.com/dpan538/another_brain"]}, {"@type": "Person", "@id": "https://www.efishother.com/#author", "name": "Dai Pan", "alternateName": "潘岱", "sameAs": ["https://github.com/dpan538"]}]}</script>
+    <style>
+      /* The page below is what a reader without JavaScript gets (crawlers, link previews, screen readers
+         before the app starts). It says what the app says; the app replaces it as soon as it mounts. */
+      .plain { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+      noscript p { margin: 18vh 28px 0; font: 16px/1.6 "Courier New", monospace; text-align: center; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main class="plain">
+        <h1>efish other</h1>
+        <p>this is efish other, an other.</p>
+        <h2>about</h2>
+        <p>efish other is a person, a memory, an efish and a dialog box.</p>
+        <p lang="zh-CN">它是人，是记忆，是鳄鱼，是对话框。</p>
+        <p>our small transformer + deepseek + an efish&rsquo;s knowledge base + tuned by hand.</p>
+        <h2>what it is</h2>
+        <p>A web app that only talks: type, write, chat. It answers as one person&rsquo;s other, in Chinese or English, never in more than two sentences. No accounts, no tools, no assistant features.</p>
+        <h2>what you see</h2>
+        <ol>
+          <li>a tree — person — <span lang="zh-CN">是人。</span></li>
+          <li>a lock marked thirty — memory — <span lang="zh-CN">是记忆。锁在这台设备里，三十天。</span></li>
+          <li>a cloud over two doors — <span lang="zh-CN">是鳄鱼。家在湖边。</span></li>
+          <li>a loop: type, write, chat — <span lang="zh-CN">是对话框。可以打字。</span></li>
+        </ol>
+        <p>The loop becomes the chat window. The keyboard is drawn by hand and carries its own pinyin input method.</p>
+        <h2>what happens to what you type</h2>
+        <p>It is sent through this site&rsquo;s one server route to a language-model provider to be answered. Conversations are kept only on your device, for thirty days.</p>
+        <p>Made by Dai Pan / <span lang="zh-CN">潘岱</span>. Research record and source: <a href="https://github.com/dpan538/another_brain">github.com/dpan538/another_brain</a>. Plain-text versions: <a href="/about.txt">about.txt</a>, <a href="/llms.txt">llms.txt</a>.</p>
+      </main>
+    </div>
+    <noscript><p>efish other draws and types with JavaScript. Without it there is only this: a person, a memory, an efish and a dialog box. <a href="/about.txt">about.txt</a></p></noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

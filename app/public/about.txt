@@ -1,0 +1,35 @@
+efish other
+this is efish other, an other.
+https://www.efishother.com/
+
+efish other is a person, a memory, an efish and a dialog box.
+它是人，是记忆，是鳄鱼，是对话框。
+
+our small transformer
++ deepseek
++ an efish's knowledge base
++ tuned by hand.
+
+What it is
+  A web app (PWA) that only talks. No accounts, no tools, no assistant features.
+  It answers as one person's other, in Chinese or English, never in more than two sentences.
+
+What you see
+  A drawing that moves when you scroll, in four acts made of the same lines:
+    a tree            person       是人。
+    a lock, "30"      memory       是记忆。锁在这台设备里，三十天。
+    a cloud, two doors             是鳄鱼。家在湖边。
+    a loop            type, write, chat      是对话框。可以打字。
+  The loop becomes the chat window. The keyboard is drawn by hand and has its own pinyin
+  input method; the 鳄 key opens a board of ready-made questions.
+
+What happens to what you type
+  It is sent through this site's one server route to a language-model provider to be answered.
+  Your conversations are kept only on your device, for thirty days.
+
+This site was rebuilt in September 2026. Descriptions of efishother.com as a "static q4
+browser model demo", a "Dashboard" or a "Preview Engineering Candidate" describe the previous
+site, which is archived and no longer served.
+
+Made by Dai Pan / 潘岱.
+Research record and source: https://github.com/dpan538/another_brain
