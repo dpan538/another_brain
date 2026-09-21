@@ -103,6 +103,13 @@ npm run test:r29b2m-r4h               # the lab added no route; the only route i
 The R27–R30 suites that build or byte-freeze the legacy site describe the archived runtime and
 are kept for the record (`docs/r31/R31B2_CUTOVER.md`).
 
+## Author
+
+[Dai Pan / 潘岱](https://daipan.art/) — visual artist, designer, photographer, printmaker and writer, who moved
+from fine art into computer science and NLP research. efish other is his *other*: the voice is compiled from
+his own writing and corrected by him line by line. See also the poems of *Three Worlds* at
+[daipan.ink](https://www.daipan.ink/) and [IN_PRAISE_OF_TIME](https://www.inpraiseoftime.site/).
+
 ## What is not distributed
 
 Raw private materials, the owner's value-logic profile and source writing, raw/clean/processed

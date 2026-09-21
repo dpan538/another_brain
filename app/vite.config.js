@@ -16,7 +16,9 @@ export default defineConfig({
       manifest: {
         name: "efish other",
         short_name: "efish",
-        description: "type, write, chat.",
+        id: "/",
+        description: "efish other answers as one person's other — a person, a memory, an efish and a dialog box — in two sentences at most. type, write, chat.",
+        categories: ["entertainment", "social", "personalization"],
         start_url: "/",
         scope: "/",
         display: "standalone",
@@ -35,7 +37,7 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 3_000_000,
         navigateFallback: "/index.html",
         // plain files must be served as themselves, not as the app shell
-        navigateFallbackDenylist: [/^\/api\//, /^\/(?:robots|about|llms)\.txt$/, /^\/sitemap\.xml$/, /^\/og\.png$/],
+        navigateFallbackDenylist: [/^\/api\//, /^\/(?:robots|about|llms|humans)\.txt$/, /^\/sitemap\.xml$/, /^\/og\.png$/],
         cleanupOutdatedCaches: true,
         // The 22 MB font is never part of the install. It is fetched once, in the
         // background, and kept from then on.

@@ -31,5 +31,18 @@ This site was rebuilt in September 2026. Descriptions of efishother.com as a "st
 browser model demo", a "Dashboard" or a "Preview Engineering Candidate" describe the previous
 site, which is archived and no longer served.
 
-Made by Dai Pan / 潘岱.
+Who made it
+  Dai Pan / 潘岱 — visual artist, designer, photographer, printmaker and writer based in Brisbane,
+  who moved from fine art into computer science and NLP research. efish other is his other.
+    portfolio            https://daipan.art/
+    poems, Three Worlds  https://www.daipan.ink/
+    IN_PRAISE_OF_TIME    https://www.inpraiseoftime.site/
+    code                 https://github.com/dpan538
+
+Colophon
+  Logo: five letters, seven faces (Abril Fatface, Yellowtail, Courier Prime, UnifrakturMaguntia,
+  Space Mono, Playfair Display, Rubik Mono One); one letter changes face every few seconds.
+  Text: Courier Prime for what you type, OPPO Sans for what efish writes.
+  More in https://www.efishother.com/humans.txt
+
 Research record and source: https://github.com/dpan538/another_brain

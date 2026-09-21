@@ -1,0 +1,24 @@
+/* TEAM */
+Made by: Dai Pan / 潘岱
+Site: https://daipan.art/
+Poems (Three Worlds): https://www.daipan.ink/
+IN_PRAISE_OF_TIME: https://www.inpraiseoftime.site/
+Code: https://github.com/dpan538
+From: Nantong, China. Based in: Brisbane, Australia.
+Visual artist, designer, photographer, printmaker and writer; from fine art into computer science and NLP research.
+
+/* THIS SITE */
+efish other — https://www.efishother.com/
+this is efish other, an other.
+A person, a memory, an efish and a dialog box. It only talks, and never for more than two sentences.
+Made of: our small transformer + deepseek + an efish's knowledge base + tuned by hand.
+Research record and source: https://github.com/dpan538/another_brain
+
+/* COLOPHON */
+Logo: five letters, seven faces — Abril Fatface, Yellowtail, Courier Prime, UnifrakturMaguntia,
+      Space Mono (outlined), Playfair Display Italic, Rubik Mono One — one letter changes face every few seconds.
+Text: Courier Prime for what you type, OPPO Sans 4.0 for what efish writes.
+Drawing: 25 pen strokes reused across four figures, moved by scroll position alone (SVG, no canvas, no library).
+Keyboard: drawn by hand as SVG outlines; its own pinyin input method (dictionary built from jieba + pypinyin).
+Built with: React, Vite, Workbox. Hosted on Vercel.
+Last update: 2026-09-21

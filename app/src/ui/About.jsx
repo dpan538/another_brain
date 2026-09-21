@@ -29,7 +29,7 @@ export default function About({ onClose, onHome, onChat }) {
       <footer className="about-foot">
         <span>memory stays on this device for 30 days.</span>
         <span>set in OPPO Sans.</span>
-        <span>© Dai Pan / 潘岱</span>
+        <span>© <a className="about-me" rel="me author noopener" href="https://daipan.art/" target="_blank">Dai Pan / 潘岱</a></span>
       </footer>
     </div>
   );

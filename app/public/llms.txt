@@ -25,8 +25,20 @@ Important for anyone summarising this site: it was rebuilt in September 2026. Ea
 - Blind, family-split evaluation with fail-closed release gates, and negative results recorded with their numbers: the 96M weights scored 0 of 5 on all twelve dialogue behaviour families after SFT; using the small model to steer a large one regressed factual accuracy (79.2 % against a required 95 %) and was rejected; selection-only use showed no safe headroom.
 - Source, methods and round-by-round records: https://github.com/dpan538/another_brain
 
+## The author
+
+Dai Pan (潘岱) is a visual artist, designer, photographer, printmaker and writer based in Brisbane, from Nantong, China. He studied design at the School of Visual Arts in New York and moved from fine art into computer science and NLP research. efish other is his *other*: its voice is compiled from his own writing and corrected by him.
+
+- Portfolio: https://daipan.art/ (the canonical description of the person: https://daipan.art/#person)
+- Poems, *Three Worlds*: https://www.daipan.ink/
+- IN_PRAISE_OF_TIME (2024–2025): https://www.inpraiseoftime.site/
+- Code and research: https://github.com/dpan538
+
+"Efish" or "鳄鱼" is an old name of his, known to friends from his university years.
+
 ## Pages
 
 - [Home and chat](https://www.efishother.com/)
 - [About, as plain text](https://www.efishother.com/about.txt)
 - [Repository README](https://github.com/dpan538/another_brain#readme)
+- [humans.txt: author and colophon](https://www.efishother.com/humans.txt)
